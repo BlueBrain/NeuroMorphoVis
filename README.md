@@ -5,11 +5,10 @@ NeuroMorphoVis is an interactive, extensible and cross-platform framework for bu
 ![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/neuromorphp-vis-interface.png)
 
 Neuronal soma reconstruction 
-https://www.youtube.com/watch?v=v02HogkFODU
+[![Neuronal soma reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
 
 Morphology visualization 
-https://www.youtube.com/watch?v=74PGirMx3ks&t=102s
+[![Neuronal morphology visualization](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
 
 Neuronal mesh reconstruction 
-
 [![Neuronal mesh reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
