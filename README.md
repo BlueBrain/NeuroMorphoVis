@@ -11,4 +11,5 @@ Morphology visualization
 https://www.youtube.com/watch?v=74PGirMx3ks&t=102s
 
 Neuronal mesh reconstruction 
-https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s
+
+[![Neuronal mesh reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
