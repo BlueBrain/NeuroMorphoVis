@@ -1,0 +1,313 @@
+\hypertarget{namespacecamera__ops}{}\section{camera\+\_\+ops Namespace Reference}
+\label{namespacecamera__ops}\index{camera\+\_\+ops@{camera\+\_\+ops}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacecamera__ops_aff8f1b741160e2a06cae616cdb53b95a}{add\+\_\+camera} (location=Vector((0, 0, 0)), rotation=Vector((0, 0, 0)), name=\textquotesingle{}camera\textquotesingle{})
+\item 
+def \hyperlink{namespacecamera__ops_a44b28a34f85e1a83028865a0f11616fe}{rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point} (camera, target\+\_\+point)
+\item 
+def \hyperlink{namespacecamera__ops_a94ee825e5994f76634c3e911e3fd6489}{rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view} (camera)
+\item 
+def \hyperlink{namespacecamera__ops_aee12303ca5e41f499a7a48290c33f348}{rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view} (camera)
+\item 
+def \hyperlink{namespacecamera__ops_a2f87aae73015b2df942ea8c7ee30b2ac}{rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view} (camera)
+\item 
+def \hyperlink{namespacecamera__ops_a02108f8f64c92640022f536a4af01c37}{set\+\_\+active\+\_\+camera} (camera)
+\item 
+def \hyperlink{namespacecamera__ops_a4a83c4e5821a85b1c5549f2ebb975d0d}{set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view} (camera, resolution, view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{}, bounds=None)
+\item 
+def \hyperlink{namespacecamera__ops_a5fc0416d5207989ea97456d828285e0f}{set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view} (camera, scale\+\_\+factor, view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{}, bounds=None)
+\item 
+def \hyperlink{namespacecamera__ops_a7f914fff58bd089d5ce31d8598c2a064}{set\+\_\+camera\+\_\+resolution} (camera, resolution, bounds=None)
+\item 
+def \hyperlink{namespacecamera__ops_ac39cb449acdd5117d4e9cc8d6d680f40}{render\+\_\+scene\+\_\+to\+\_\+image} (camera, file\+\_\+name=\textquotesingle{}image\textquotesingle{})
+\item 
+def \hyperlink{namespacecamera__ops_a871d84c3a1b7e15beec9273ec11b8b85}{render\+\_\+scene} (file\+\_\+name=\textquotesingle{}image\textquotesingle{}, film\+\_\+base\+\_\+resolution=512, view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{})
+\item 
+def \hyperlink{namespacecamera__ops_ad6f640adf5e176268db59c080ae0566c}{render\+\_\+scene\+\_\+to\+\_\+scale} (file\+\_\+name=\textquotesingle{}image\textquotesingle{}, resolution\+\_\+scale\+\_\+factor=1, view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{})
+\item 
+def \hyperlink{namespacecamera__ops_a6db4df5adb2bcc60a9247517e5883ca0}{create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera} (film\+\_\+base\+\_\+resolution=512, close\+\_\+up\+\_\+dimension=20)
+\item 
+def \hyperlink{namespacecamera__ops_a799685fc481a4c88b31b4d05e4321a84}{create\+\_\+camera} (view\+\_\+bounding\+\_\+box, image\+\_\+base\+\_\+resolution=512, camera\+\_\+view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{})
+\item 
+def \hyperlink{namespacecamera__ops_a52b2fdc4444cd3ca7680527dd05969f6}{create\+\_\+to\+\_\+scale\+\_\+camera} (view\+\_\+bounding\+\_\+box, image\+\_\+scale\+\_\+factor=1.\+0, camera\+\_\+view=\textquotesingle{}F\+R\+O\+NT\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}camera_ops.py:
+    A set of utilities for handling the cameras in the scene.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\index{camera\+\_\+ops@{camera\+\_\+ops}!add\+\_\+camera@{add\+\_\+camera}}
+\index{add\+\_\+camera@{add\+\_\+camera}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{add\+\_\+camera(location=\+Vector((0, 0, 0)), rotation=\+Vector((0, 0, 0)), name=\textquotesingle{}camera\textquotesingle{})}{add_camera(location=Vector((0, 0, 0)), rotation=Vector((0, 0, 0)), name='camera')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+add\+\_\+camera (
+\begin{DoxyParamCaption}
+\item[{}]{location = {\ttfamily Vector((0,~0,~0))}, }
+\item[{}]{rotation = {\ttfamily Vector((0,~0,~0))}, }
+\item[{}]{name = {\ttfamily \textquotesingle{}camera\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_aff8f1b741160e2a06cae616cdb53b95a}{}\label{namespacecamera__ops_aff8f1b741160e2a06cae616cdb53b95a}
+
+
+
+
+\begin{DoxyVerb}Creates a new camera, add it to the scene and returns a reference to it.
+
+:param location: The location of the camera.
+:param rotation: The rotation axis of the camera.
+:param name: The name of the camera.
+:return: A reference to the camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!create\+\_\+camera@{create\+\_\+camera}}
+\index{create\+\_\+camera@{create\+\_\+camera}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{create\+\_\+camera(view\+\_\+bounding\+\_\+box, image\+\_\+base\+\_\+resolution=512, camera\+\_\+view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{})}{create_camera(view_bounding_box, image_base_resolution=512, camera_view='FRONT')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+create\+\_\+camera (
+\begin{DoxyParamCaption}
+\item[{}]{view\+\_\+bounding\+\_\+box, }
+\item[{}]{image\+\_\+base\+\_\+resolution = {\ttfamily 512}, }
+\item[{}]{camera\+\_\+view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a799685fc481a4c88b31b4d05e4321a84}{}\label{namespacecamera__ops_a799685fc481a4c88b31b4d05e4321a84}
+
+
+
+
+\begin{DoxyVerb}Creates a camera and adds it to the scene based on the specified view.
+
+:param view_bounding_box: View bounding box.
+:param image_base_resolution: The base resolution of the requested image.
+:param camera_view: Direction, 'FRONT', 'SIDE' or 'TOP'
+:return: The created camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera@{create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera}}
+\index{create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera@{create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera(film\+\_\+base\+\_\+resolution=512, close\+\_\+up\+\_\+dimension=20)}{create_soma_close_up_camera(film_base_resolution=512, close_up_dimension=20)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+create\+\_\+soma\+\_\+close\+\_\+up\+\_\+camera (
+\begin{DoxyParamCaption}
+\item[{}]{film\+\_\+base\+\_\+resolution = {\ttfamily 512}, }
+\item[{}]{close\+\_\+up\+\_\+dimension = {\ttfamily 20}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a6db4df5adb2bcc60a9247517e5883ca0}{}\label{namespacecamera__ops_a6db4df5adb2bcc60a9247517e5883ca0}
+
+
+
+
+\begin{DoxyVerb}Creates a camera for rendering the a close up around the soma.
+
+:param film_base_resolution: The 'base' resolution of the film.
+:param close_up_dimension: The unified dimension of the close up in microns.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!create\+\_\+to\+\_\+scale\+\_\+camera@{create\+\_\+to\+\_\+scale\+\_\+camera}}
+\index{create\+\_\+to\+\_\+scale\+\_\+camera@{create\+\_\+to\+\_\+scale\+\_\+camera}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{create\+\_\+to\+\_\+scale\+\_\+camera(view\+\_\+bounding\+\_\+box, image\+\_\+scale\+\_\+factor=1.\+0, camera\+\_\+view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{})}{create_to_scale_camera(view_bounding_box, image_scale_factor=1.0, camera_view='FRONT')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+create\+\_\+to\+\_\+scale\+\_\+camera (
+\begin{DoxyParamCaption}
+\item[{}]{view\+\_\+bounding\+\_\+box, }
+\item[{}]{image\+\_\+scale\+\_\+factor = {\ttfamily 1.0}, }
+\item[{}]{camera\+\_\+view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a52b2fdc4444cd3ca7680527dd05969f6}{}\label{namespacecamera__ops_a52b2fdc4444cd3ca7680527dd05969f6}
+
+
+
+
+\begin{DoxyVerb}Creates a camera and adds it to the scene based on the specified view.
+
+:param view_bounding_box: View bounding box.
+:param image_scale_factor: The scale factor of the image.
+:param camera_view: Direction, 'FRONT', 'SIDE' or 'TOP'
+:return: The created camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!render\+\_\+scene@{render\+\_\+scene}}
+\index{render\+\_\+scene@{render\+\_\+scene}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{render\+\_\+scene(file\+\_\+name=\textquotesingle{}image\textquotesingle{}, film\+\_\+base\+\_\+resolution=512, view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{})}{render_scene(file_name='image', film_base_resolution=512, view='FRONT')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+render\+\_\+scene (
+\begin{DoxyParamCaption}
+\item[{}]{file\+\_\+name = {\ttfamily \textquotesingle{}image\textquotesingle{}}, }
+\item[{}]{film\+\_\+base\+\_\+resolution = {\ttfamily 512}, }
+\item[{}]{view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a871d84c3a1b7e15beec9273ec11b8b85}{}\label{namespacecamera__ops_a871d84c3a1b7e15beec9273ec11b8b85}
+
+
+
+
+\begin{DoxyVerb}Renders the current scene to an image.
+
+:param file_name: The output name of the rendered image.
+:param film_resolution: The 'base' resolution of the image.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!render\+\_\+scene\+\_\+to\+\_\+image@{render\+\_\+scene\+\_\+to\+\_\+image}}
+\index{render\+\_\+scene\+\_\+to\+\_\+image@{render\+\_\+scene\+\_\+to\+\_\+image}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{render\+\_\+scene\+\_\+to\+\_\+image(camera, file\+\_\+name=\textquotesingle{}image\textquotesingle{})}{render_scene_to_image(camera, file_name='image')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+render\+\_\+scene\+\_\+to\+\_\+image (
+\begin{DoxyParamCaption}
+\item[{}]{camera, }
+\item[{}]{file\+\_\+name = {\ttfamily \textquotesingle{}image\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_ac39cb449acdd5117d4e9cc8d6d680f40}{}\label{namespacecamera__ops_ac39cb449acdd5117d4e9cc8d6d680f40}
+
+
+
+
+\begin{DoxyVerb}Renders an image to a file.
+
+:param camera: The camera that will be used to render the image.
+:param file_name: The output name of the rendered image.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!render\+\_\+scene\+\_\+to\+\_\+scale@{render\+\_\+scene\+\_\+to\+\_\+scale}}
+\index{render\+\_\+scene\+\_\+to\+\_\+scale@{render\+\_\+scene\+\_\+to\+\_\+scale}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{render\+\_\+scene\+\_\+to\+\_\+scale(file\+\_\+name=\textquotesingle{}image\textquotesingle{}, resolution\+\_\+scale\+\_\+factor=1, view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{})}{render_scene_to_scale(file_name='image', resolution_scale_factor=1, view='FRONT')}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+render\+\_\+scene\+\_\+to\+\_\+scale (
+\begin{DoxyParamCaption}
+\item[{}]{file\+\_\+name = {\ttfamily \textquotesingle{}image\textquotesingle{}}, }
+\item[{}]{resolution\+\_\+scale\+\_\+factor = {\ttfamily 1}, }
+\item[{}]{view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_ad6f640adf5e176268db59c080ae0566c}{}\label{namespacecamera__ops_ad6f640adf5e176268db59c080ae0566c}
+
+
+
+
+\begin{DoxyVerb}Renders the current scene to an image.
+
+:param file_name: The output name of the rendered image.
+:param resolution_scale_factor: The 'base' resolution of the image.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view}}
+\index{rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view(camera)}{rotate_camera_for_front_view(camera)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+rotate\+\_\+camera\+\_\+for\+\_\+front\+\_\+view (
+\begin{DoxyParamCaption}
+\item[{}]{camera}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a94ee825e5994f76634c3e911e3fd6489}{}\label{namespacecamera__ops_a94ee825e5994f76634c3e911e3fd6489}
+
+
+
+
+\begin{DoxyVerb}Rotates the camera in the direction of the typical front view.
+
+:param camera: A reference to a given camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view}}
+\index{rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view(camera)}{rotate_camera_for_side_view(camera)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+rotate\+\_\+camera\+\_\+for\+\_\+side\+\_\+view (
+\begin{DoxyParamCaption}
+\item[{}]{camera}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_aee12303ca5e41f499a7a48290c33f348}{}\label{namespacecamera__ops_aee12303ca5e41f499a7a48290c33f348}
+
+
+
+
+\begin{DoxyVerb}Rotates the camera in the direction of the typical side view.
+
+:param camera: A reference to a given camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view}}
+\index{rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view@{rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view(camera)}{rotate_camera_for_top_view(camera)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+rotate\+\_\+camera\+\_\+for\+\_\+top\+\_\+view (
+\begin{DoxyParamCaption}
+\item[{}]{camera}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a2f87aae73015b2df942ea8c7ee30b2ac}{}\label{namespacecamera__ops_a2f87aae73015b2df942ea8c7ee30b2ac}
+
+
+
+
+\begin{DoxyVerb}Rotates the camera in the direction of the typical top view.
+
+:param camera: A reference to a given camera.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point@{rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point}}
+\index{rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point@{rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point(camera, target\+\_\+point)}{rotate_camera_to_target_point(camera, target_point)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+rotate\+\_\+camera\+\_\+to\+\_\+target\+\_\+point (
+\begin{DoxyParamCaption}
+\item[{}]{camera, }
+\item[{}]{target\+\_\+point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a44b28a34f85e1a83028865a0f11616fe}{}\label{namespacecamera__ops_a44b28a34f85e1a83028865a0f11616fe}
+
+
+
+
+\begin{DoxyVerb} Rotates the camera towards a target point.
+
+:param camera: An input camera.
+:param target_point: The target point where the camera should point to.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!set\+\_\+active\+\_\+camera@{set\+\_\+active\+\_\+camera}}
+\index{set\+\_\+active\+\_\+camera@{set\+\_\+active\+\_\+camera}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{set\+\_\+active\+\_\+camera(camera)}{set_active_camera(camera)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+set\+\_\+active\+\_\+camera (
+\begin{DoxyParamCaption}
+\item[{}]{camera}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a02108f8f64c92640022f536a4af01c37}{}\label{namespacecamera__ops_a02108f8f64c92640022f536a4af01c37}
+
+
+
+
+\begin{DoxyVerb}Sets the active camera in the scene to the given one.
+
+:param camera: The given camera that should be set active.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!set\+\_\+camera\+\_\+resolution@{set\+\_\+camera\+\_\+resolution}}
+\index{set\+\_\+camera\+\_\+resolution@{set\+\_\+camera\+\_\+resolution}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{set\+\_\+camera\+\_\+resolution(camera, resolution, bounds=\+None)}{set_camera_resolution(camera, resolution, bounds=None)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+set\+\_\+camera\+\_\+resolution (
+\begin{DoxyParamCaption}
+\item[{}]{camera, }
+\item[{}]{resolution, }
+\item[{}]{bounds = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a7f914fff58bd089d5ce31d8598c2a064}{}\label{namespacecamera__ops_a7f914fff58bd089d5ce31d8598c2a064}
+
+
+
+
+\begin{DoxyVerb}Sets the resolution of the camera film.
+
+:param camera: The input camera.
+:param resolution: The 'base' resolution of the camera.
+:param bounds: An optional bounding box of the scene.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view@{set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view}}
+\index{set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view@{set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view(camera, resolution, view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{}, bounds=\+None)}{set_camera_resolution_for_specific_view(camera, resolution, view='FRONT', bounds=None)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+set\+\_\+camera\+\_\+resolution\+\_\+for\+\_\+specific\+\_\+view (
+\begin{DoxyParamCaption}
+\item[{}]{camera, }
+\item[{}]{resolution, }
+\item[{}]{view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}, }
+\item[{}]{bounds = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a4a83c4e5821a85b1c5549f2ebb975d0d}{}\label{namespacecamera__ops_a4a83c4e5821a85b1c5549f2ebb975d0d}
+
+
+
+
+\begin{DoxyVerb}Sets the resolution of the camera film based on the rendering view.
+
+:param camera: The input camera.
+:param resolution: The 'base' resolution of the camera.
+:param view: The view of the camera 'FRONT', 'SIDE' or 'TOP'.
+:param bounds: An optional bounding box dimensions of the scene or a specific object.
+\end{DoxyVerb}
+ \index{camera\+\_\+ops@{camera\+\_\+ops}!set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view@{set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view}}
+\index{set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view@{set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view}!camera\+\_\+ops@{camera\+\_\+ops}}
+\subsubsection[{\texorpdfstring{set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view(camera, scale\+\_\+factor, view=\textquotesingle{}\+F\+R\+O\+N\+T\textquotesingle{}, bounds=\+None)}{set_camera_resolution_to_scale_for_specific_view(camera, scale_factor, view='FRONT', bounds=None)}}]{\setlength{\rightskip}{0pt plus 5cm}def camera\+\_\+ops.\+set\+\_\+camera\+\_\+resolution\+\_\+to\+\_\+scale\+\_\+for\+\_\+specific\+\_\+view (
+\begin{DoxyParamCaption}
+\item[{}]{camera, }
+\item[{}]{scale\+\_\+factor, }
+\item[{}]{view = {\ttfamily \textquotesingle{}FRONT\textquotesingle{}}, }
+\item[{}]{bounds = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacecamera__ops_a5fc0416d5207989ea97456d828285e0f}{}\label{namespacecamera__ops_a5fc0416d5207989ea97456d828285e0f}
+
+
+
+
+\begin{DoxyVerb}Sets the resolution of the camera film based on a given scale factor and the rendering view.
+
+:param camera: The input camera.
+:param scale_factor: Scale factor to scale the resolution of the image.
+:param view: The view of the camera 'FRONT', 'SIDE' or 'TOP'.
+:param bounds: An optional bounding box dimensions of the scene or a specific object.
+\end{DoxyVerb}
+ 

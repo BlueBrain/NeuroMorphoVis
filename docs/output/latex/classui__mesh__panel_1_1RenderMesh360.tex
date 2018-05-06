@@ -1,0 +1,102 @@
+\hypertarget{classui__mesh__panel_1_1RenderMesh360}{}\section{ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360 Class Reference}
+\label{classui__mesh__panel_1_1RenderMesh360}\index{ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360}}
+
+
+Inheritance diagram for ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360\+:
+% FIG 0
+
+
+Collaboration diagram for ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classui__mesh__panel_1_1RenderMesh360_ae63bd81bc80ea41d6b617cee289ebdb5}{modal} (self, context, event)
+\item 
+def \hyperlink{classui__mesh__panel_1_1RenderMesh360_ab35d6526427d96e85d3e20a08159f3ab}{execute} (self, context)
+\item 
+def \hyperlink{classui__mesh__panel_1_1RenderMesh360_a3a086cce1bf70570958df08e8a73ecf9}{cancel} (self, context)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+string {\bfseries bl\+\_\+idname} = \char`\"{}render\+\_\+mesh.\+360\char`\"{}\hypertarget{classui__mesh__panel_1_1RenderMesh360_a72feb2ff902e9d760b28dd69dcabf5e1}{}\label{classui__mesh__panel_1_1RenderMesh360_a72feb2ff902e9d760b28dd69dcabf5e1}
+
+\item 
+string {\bfseries bl\+\_\+label} = \char`\"{}360\char`\"{}\hypertarget{classui__mesh__panel_1_1RenderMesh360_aef3baa0b659f44d7311983e722ae51d9}{}\label{classui__mesh__panel_1_1RenderMesh360_aef3baa0b659f44d7311983e722ae51d9}
+
+\item 
+{\bfseries event\+\_\+timer} = None\hypertarget{classui__mesh__panel_1_1RenderMesh360_acf91b633efb427363ba5beca3fdac0d0}{}\label{classui__mesh__panel_1_1RenderMesh360_acf91b633efb427363ba5beca3fdac0d0}
+
+\item 
+{\bfseries timer\+\_\+limits} = bpy.\+props.\+Int\+Property(default=0)\hypertarget{classui__mesh__panel_1_1RenderMesh360_a922e69b7da545adc646e4c809dfaeaf9}{}\label{classui__mesh__panel_1_1RenderMesh360_a922e69b7da545adc646e4c809dfaeaf9}
+
+\item 
+{\bfseries camera\+\_\+360} = None\hypertarget{classui__mesh__panel_1_1RenderMesh360_a9d9a1f3eb7f9a3161dff2f22e40a3f58}{}\label{classui__mesh__panel_1_1RenderMesh360_a9d9a1f3eb7f9a3161dff2f22e40a3f58}
+
+\item 
+{\bfseries output\+\_\+directory} = None\hypertarget{classui__mesh__panel_1_1RenderMesh360_a543706ba087294e7ac923408b70dfef1}{}\label{classui__mesh__panel_1_1RenderMesh360_a543706ba087294e7ac923408b70dfef1}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Render a 360 view of the reconstructed mesh\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}!cancel@{cancel}}
+\index{cancel@{cancel}!ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}}
+\subsubsection[{\texorpdfstring{cancel(self, context)}{cancel(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360.\+cancel (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__mesh__panel_1_1RenderMesh360_a3a086cce1bf70570958df08e8a73ecf9}{}\label{classui__mesh__panel_1_1RenderMesh360_a3a086cce1bf70570958df08e8a73ecf9}
+
+
+
+
+\begin{DoxyVerb}Cancel the panel processing and return to the interaction mode.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}!execute@{execute}}
+\index{execute@{execute}!ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}}
+\subsubsection[{\texorpdfstring{execute(self, context)}{execute(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360.\+execute (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__mesh__panel_1_1RenderMesh360_ab35d6526427d96e85d3e20a08159f3ab}{}\label{classui__mesh__panel_1_1RenderMesh360_ab35d6526427d96e85d3e20a08159f3ab}
+
+
+
+
+\begin{DoxyVerb}Execute the operator.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}!modal@{modal}}
+\index{modal@{modal}!ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360@{ui\+\_\+mesh\+\_\+panel\+::\+Render\+Mesh360}}
+\subsubsection[{\texorpdfstring{modal(self, context, event)}{modal(self, context, event)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+mesh\+\_\+panel.\+Render\+Mesh360.\+modal (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context, }
+\item[{}]{event}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__mesh__panel_1_1RenderMesh360_ae63bd81bc80ea41d6b617cee289ebdb5}{}\label{classui__mesh__panel_1_1RenderMesh360_ae63bd81bc80ea41d6b617cee289ebdb5}
+
+
+
+
+\begin{DoxyVerb}Threading and non-blocking handling.
+
+:param context: Panel context.
+:param event: A given event for the panel.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/interface/tmp/ui\+\_\+mesh\+\_\+panel.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,31 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="Panel",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="meshy.neuromorphovis.interface.ui.analysis\l_panel.AnalysisPanel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel.html"];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="meshy.neuromorphovis.interface.ui.io\l_panel.IOPanel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1io__panel_1_1IOPanel.html"];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="meshy.neuromorphovis.interface.ui.mesh\l_panel.MeshPanel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1mesh__panel_1_1MeshPanel.html"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="meshy.neuromorphovis.interface.ui.morphology\l_panel.MorphologyPanel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1morphology__panel_1_1MorphologyPanel.html"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="meshy.neuromorphovis.interface.ui.soma\l_panel.SomaPanel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1soma__panel_1_1SomaPanel.html"];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="meshy.neuromorphovis.interface.ui.volume\l_panel.VolumeOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1volume__panel_1_1VolumeOptions.html"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="ui_analysis_panel.Analysis\lOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__analysis__panel_1_1AnalysisOptions.html"];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="ui_input_output_panel.Input\lOutputData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__input__output__panel_1_1InputOutputData.html"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="ui_mesh_panel.MeshOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__mesh__panel_1_1MeshOptions.html"];
+  Node1 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="ui_morphology_panel.Morphology\lOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__morphology__panel_1_1MorphologyOptions.html"];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="ui_soft_body_panel.SoftBody\lOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__soft__body__panel_1_1SoftBodyOptions.html"];
+  Node1 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="ui_volume_panel.VolumeOptions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classui__volume__panel_1_1VolumeOptions.html"];
+}

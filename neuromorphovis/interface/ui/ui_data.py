@@ -1,0 +1,54 @@
+####################################################################################################
+# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the
+# GNU Lesser General Public License version 3.0 as published by the Free Software Foundation.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library;
+# if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301 USA.
+####################################################################################################
+
+__author__      = "Marwan Abdellah"
+__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
+__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
+__version__     = "1.0.0"
+__maintainer__  = "Marwan Abdellah"
+__email__       = "marwan.abdellah@epfl.ch"
+__status__      = "Production"
+
+# Internal imports
+import neuromorphovis as nmv
+import neuromorphovis.options
+
+# A global variable for the system options.
+# All the parameters of the system are stored in this global variable and updated following the
+# execution of an active element in the GUI.
+# You can access all the parameters of the system as follows:
+#   ui_options.options.io.VARIABLE : for the input/output directories
+#   ui_options.options.soma.VARIABLE : for the soma options
+#   ui_options.options.morphology.VARIABLE : for the morphology options
+#   ui_options.options.mesh.VARIABLE : for the mesh options
+#   ui_options.options.analysis.VARIABLE : for the analysis options
+ui_options = nmv.options.NeuroMorphoVisOptions()
+
+# The morphology skeleton object loaded after UI interaction.
+ui_morphology = None
+
+# The reconstructed soma mesh object
+ui_soma_mesh = None
+
+# A list of all the objects that correspond to the reconstructed morphology skeleton
+ui_reconstructed_skeleton = list()
+
+# A list of all the objects that correspond to the reconstructed mesh of the neuron
+# NOTE: If this list contains a single mesh object, then it accounts for the entire mesh after
+# joining all the mesh objects together
+ui_reconstructed_mesh = list()

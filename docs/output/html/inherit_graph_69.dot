@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="meshy.neuromorphovis.rendering.renderes.mesh\l_renderer.NeuronMeshRenderer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1mesh__renderer_1_1NeuronMeshRenderer.html"];
+}

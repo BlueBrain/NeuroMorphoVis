@@ -1,0 +1,332 @@
+\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops}{}\section{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops Namespace Reference}
+\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops}\index{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops@{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_aa57bef98c6dc3b0302a38a98df2e8a6a}{convert\+\_\+to\+\_\+bmesh\+\_\+object} (mesh\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ae5c9883e9e9b45ea1660cbd6203761fa}{smooth\+\_\+object} (mesh\+\_\+object, level=1)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_adeca79d5efa663602ee8dc90330e1cef}{shade\+\_\+smooth\+\_\+object} (mesh\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_afc07ab7cfdcea2162f1bd6b3fb9c0dee}{smooth\+\_\+object\+\_\+vertices} (mesh\+\_\+object, level=1)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ac6ba8e835a4c65a473a6dc38ef113733}{decimate\+\_\+mesh\+\_\+object} (mesh\+\_\+object, decimation\+\_\+ratio=1.\+0)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a0827e6fc10b80a1829ef46aaf70e7d53}{joint\+\_\+meshes} (soma\+\_\+mesh=None, branches\+\_\+meshes=\mbox{[}$\,$\mbox{]}, spines\+\_\+meshes=\mbox{[}$\,$\mbox{]})
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a96eae9dc0aecc0e21f0974e302ede891}{clip\+\_\+mesh\+\_\+object} (primary\+\_\+object, secondary\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a46f25189b948c4c5e063c2f585261fea}{transform\+\_\+mesh} (mesh\+\_\+object, transformation\+\_\+matrix)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a2d866ad43ae9da1c684e7311680e58a7}{bridge\+\_\+mesh\+\_\+objects} (mesh\+\_\+object\+\_\+1, mesh\+\_\+object\+\_\+2, connecting\+\_\+point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a4ca8463c4fbe256a4f69dc58d36460d6}{bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list} (mesh\+\_\+objects\+\_\+list, connecting\+\_\+points\+\_\+list)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af8f012f18baf31008f2fcab3d2fcaf0b}{union\+\_\+mesh\+\_\+objects} (mesh\+\_\+object\+\_\+1, mesh\+\_\+object\+\_\+2)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a08f50cce663245479c0a5f910d971ecc}{union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list} (mesh\+\_\+objects\+\_\+list)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af189d3df0473f28c73e51cf0baeae00d}{intersect\+\_\+mesh\+\_\+objects} (mesh\+\_\+object1, mesh\+\_\+object2)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a22f71ef20288e1fd4aa9435c4337bf7d}{join\+\_\+mesh\+\_\+objects} (mesh\+\_\+list, name)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}mesh_object_ops.py:
+A set of utilities and operators for handling mesh objects.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!bridge\+\_\+mesh\+\_\+objects@{bridge\+\_\+mesh\+\_\+objects}}
+\index{bridge\+\_\+mesh\+\_\+objects@{bridge\+\_\+mesh\+\_\+objects}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{bridge\+\_\+mesh\+\_\+objects(mesh\+\_\+object\+\_\+1, mesh\+\_\+object\+\_\+2, connecting\+\_\+point)}{bridge_mesh_objects(mesh_object_1, mesh_object_2, connecting_point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+bridge\+\_\+mesh\+\_\+objects (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object\+\_\+1, }
+\item[{}]{mesh\+\_\+object\+\_\+2, }
+\item[{}]{connecting\+\_\+point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a2d866ad43ae9da1c684e7311680e58a7}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a2d866ad43ae9da1c684e7311680e58a7}
+
+
+
+
+\begin{DoxyVerb}Bridge two mesh objects at a given point.
+
+:param mesh_object_1:
+    A reference to the first mesh object.
+:param mesh_object_2:
+    A reference to the second mesh object.
+:param connecting_point:
+    A reference to the connecting point where the bringing should happen.
+:return:
+    A reference to the resulting mesh after the bridging operation.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list@{bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list}}
+\index{bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list@{bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list(mesh\+\_\+objects\+\_\+list, connecting\+\_\+points\+\_\+list)}{bridge_mesh_objects_in_list(mesh_objects_list, connecting_points_list)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+bridge\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+objects\+\_\+list, }
+\item[{}]{connecting\+\_\+points\+\_\+list}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a4ca8463c4fbe256a4f69dc58d36460d6}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a4ca8463c4fbe256a4f69dc58d36460d6}
+
+
+
+
+\begin{DoxyVerb}Bridge a list of meshes and construct a single object out of them.
+
+:param mesh_objects_list:
+    A list of mesh objects to be bridged.
+:param connecting_points_list:
+    A list of the corresponding connection points.
+:return:
+    A reference to the final mesh.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!clip\+\_\+mesh\+\_\+object@{clip\+\_\+mesh\+\_\+object}}
+\index{clip\+\_\+mesh\+\_\+object@{clip\+\_\+mesh\+\_\+object}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{clip\+\_\+mesh\+\_\+object(primary\+\_\+object, secondary\+\_\+object)}{clip_mesh_object(primary_object, secondary_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+clip\+\_\+mesh\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{primary\+\_\+object, }
+\item[{}]{secondary\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a96eae9dc0aecc0e21f0974e302ede891}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a96eae9dc0aecc0e21f0974e302ede891}
+\begin{DoxyVerb}Apply a boolean union operator on the two meshes to make them only one mesh object.
+
+
+NOTE: This functions assumes that mesh_object1 to be the base and the other object will be
+deleted after the application of the union operator.
+
+:param primary_object:
+    The primary object of the union operation.
+:param secondary_object:
+    The secondary object of the union operation.
+:return:
+    A reference to the primary object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!convert\+\_\+to\+\_\+bmesh\+\_\+object@{convert\+\_\+to\+\_\+bmesh\+\_\+object}}
+\index{convert\+\_\+to\+\_\+bmesh\+\_\+object@{convert\+\_\+to\+\_\+bmesh\+\_\+object}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{convert\+\_\+to\+\_\+bmesh\+\_\+object(mesh\+\_\+object)}{convert_to_bmesh_object(mesh_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+convert\+\_\+to\+\_\+bmesh\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_aa57bef98c6dc3b0302a38a98df2e8a6a}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_aa57bef98c6dc3b0302a38a98df2e8a6a}
+
+
+
+
+\begin{DoxyVerb}Convert the mesh object to a bmesh object and returns a reference to it.
+
+:param mesh_object:
+    A given mesh object.
+:return:
+    A reference to the created bmesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!decimate\+\_\+mesh\+\_\+object@{decimate\+\_\+mesh\+\_\+object}}
+\index{decimate\+\_\+mesh\+\_\+object@{decimate\+\_\+mesh\+\_\+object}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{decimate\+\_\+mesh\+\_\+object(mesh\+\_\+object, decimation\+\_\+ratio=1.\+0)}{decimate_mesh_object(mesh_object, decimation_ratio=1.0)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+decimate\+\_\+mesh\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{decimation\+\_\+ratio = {\ttfamily 1.0}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ac6ba8e835a4c65a473a6dc38ef113733}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ac6ba8e835a4c65a473a6dc38ef113733}
+
+
+
+
+\begin{DoxyVerb}Decimate a mesh object.
+
+:param mesh_object:
+    A given mesh object.
+:param decimation_ratio:
+    Decimation ratio between 0.01 and 1.0
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!intersect\+\_\+mesh\+\_\+objects@{intersect\+\_\+mesh\+\_\+objects}}
+\index{intersect\+\_\+mesh\+\_\+objects@{intersect\+\_\+mesh\+\_\+objects}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{intersect\+\_\+mesh\+\_\+objects(mesh\+\_\+object1, mesh\+\_\+object2)}{intersect_mesh_objects(mesh_object1, mesh_object2)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+intersect\+\_\+mesh\+\_\+objects (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object1, }
+\item[{}]{mesh\+\_\+object2}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af189d3df0473f28c73e51cf0baeae00d}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af189d3df0473f28c73e51cf0baeae00d}
+
+
+
+
+\begin{DoxyVerb}Apply a boolean union operator on the two meshes to make them only one mesh object.
+
+NOTE: This functions assumes that mesh_object1 to be the base and the other object will be
+delete after the application of the union operator.
+
+:param mesh_object1:
+    The first mesh object.
+:param mesh_object2:
+    The second mesh object.
+:return:
+    The final mesh object after the intersection operation.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!join\+\_\+mesh\+\_\+objects@{join\+\_\+mesh\+\_\+objects}}
+\index{join\+\_\+mesh\+\_\+objects@{join\+\_\+mesh\+\_\+objects}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{join\+\_\+mesh\+\_\+objects(mesh\+\_\+list, name)}{join_mesh_objects(mesh_list, name)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+join\+\_\+mesh\+\_\+objects (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+list, }
+\item[{}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a22f71ef20288e1fd4aa9435c4337bf7d}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a22f71ef20288e1fd4aa9435c4337bf7d}
+
+
+
+
+\begin{DoxyVerb}Join all the meshes into one only and rename it.
+
+:param mesh_list:
+    An input list of meshes to be joint.
+:param name:
+    The name of the outcome.
+:return:
+    A joint mesh.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!joint\+\_\+meshes@{joint\+\_\+meshes}}
+\index{joint\+\_\+meshes@{joint\+\_\+meshes}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{joint\+\_\+meshes(soma\+\_\+mesh=\+None, branches\+\_\+meshes=[], spines\+\_\+meshes=[])}{joint_meshes(soma_mesh=None, branches_meshes=[], spines_meshes=[])}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+joint\+\_\+meshes (
+\begin{DoxyParamCaption}
+\item[{}]{soma\+\_\+mesh = {\ttfamily None}, }
+\item[{}]{branches\+\_\+meshes = {\ttfamily \mbox{[}\mbox{]}}, }
+\item[{}]{spines\+\_\+meshes = {\ttfamily \mbox{[}\mbox{]}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a0827e6fc10b80a1829ef46aaf70e7d53}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a0827e6fc10b80a1829ef46aaf70e7d53}
+
+
+
+
+\begin{DoxyVerb}Join all the meshes of a neuron into a single mesh.
+
+NOTE: This function takes a distinct mesh for the soma, and a list of meshes for the arbors
+or the branches and another list for the spines.
+TODO: Rename the function to specify it to neurons.
+
+:param soma_mesh:
+    The mesh of the soma.
+:param branches_meshes:
+    A list of the meshes of all the bracnes.
+:param spines_meshes:
+    A list of the meshes of the spines.
+:return:
+    A single mesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!shade\+\_\+smooth\+\_\+object@{shade\+\_\+smooth\+\_\+object}}
+\index{shade\+\_\+smooth\+\_\+object@{shade\+\_\+smooth\+\_\+object}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{shade\+\_\+smooth\+\_\+object(mesh\+\_\+object)}{shade_smooth_object(mesh_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+shade\+\_\+smooth\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_adeca79d5efa663602ee8dc90330e1cef}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_adeca79d5efa663602ee8dc90330e1cef}
+
+
+
+
+\begin{DoxyVerb}Smooth a given mesh object using the 'faces_shade_smooth' operator.
+
+:param mesh_object: A given mesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!smooth\+\_\+object@{smooth\+\_\+object}}
+\index{smooth\+\_\+object@{smooth\+\_\+object}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{smooth\+\_\+object(mesh\+\_\+object, level=1)}{smooth_object(mesh_object, level=1)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+smooth\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{level = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ae5c9883e9e9b45ea1660cbd6203761fa}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_ae5c9883e9e9b45ea1660cbd6203761fa}
+
+
+
+
+\begin{DoxyVerb}Smooth a mesh object.
+
+:param mesh_object:
+    A given mesh object.
+:param level:
+    Smoothing or subdivision level, by default 1.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!smooth\+\_\+object\+\_\+vertices@{smooth\+\_\+object\+\_\+vertices}}
+\index{smooth\+\_\+object\+\_\+vertices@{smooth\+\_\+object\+\_\+vertices}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{smooth\+\_\+object\+\_\+vertices(mesh\+\_\+object, level=1)}{smooth_object_vertices(mesh_object, level=1)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+smooth\+\_\+object\+\_\+vertices (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{level = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_afc07ab7cfdcea2162f1bd6b3fb9c0dee}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_afc07ab7cfdcea2162f1bd6b3fb9c0dee}
+
+
+
+
+\begin{DoxyVerb}Smooth the vertices of the mesh object.
+
+:param mesh_object:
+    A given mesh object.
+:param level:
+    Smoothing or subdivision level, by default 1.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!transform\+\_\+mesh@{transform\+\_\+mesh}}
+\index{transform\+\_\+mesh@{transform\+\_\+mesh}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{transform\+\_\+mesh(mesh\+\_\+object, transformation\+\_\+matrix)}{transform_mesh(mesh_object, transformation_matrix)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+transform\+\_\+mesh (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{transformation\+\_\+matrix}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a46f25189b948c4c5e063c2f585261fea}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a46f25189b948c4c5e063c2f585261fea}
+
+
+
+
+\begin{DoxyVerb}Transform a mesh object by a given transformation.
+
+:param mesh_object:
+    A given mesh object.
+:param transformation_matrix:
+    Transformation matrix.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!union\+\_\+mesh\+\_\+objects@{union\+\_\+mesh\+\_\+objects}}
+\index{union\+\_\+mesh\+\_\+objects@{union\+\_\+mesh\+\_\+objects}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{union\+\_\+mesh\+\_\+objects(mesh\+\_\+object\+\_\+1, mesh\+\_\+object\+\_\+2)}{union_mesh_objects(mesh_object_1, mesh_object_2)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+union\+\_\+mesh\+\_\+objects (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object\+\_\+1, }
+\item[{}]{mesh\+\_\+object\+\_\+2}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af8f012f18baf31008f2fcab3d2fcaf0b}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_af8f012f18baf31008f2fcab3d2fcaf0b}
+
+
+
+
+\begin{DoxyVerb}Apply a boolean union operator on the two meshes to make them only one mesh object.
+
+NOTE: This functions assumes that mesh_object1 to be the base and the other object will be
+deleted after the application of the union operator.
+
+:param mesh_object_1:
+    A reference to the first mesh object.
+:param mesh_object_2:
+    A reference to the second mesh object.
+:return:
+The union of the two mesh objects.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}!union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list@{union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list}}
+\index{union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list@{union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list(mesh\+\_\+objects\+\_\+list)}{union_mesh_objects_in_list(mesh_objects_list)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+object\+\_\+ops.\+union\+\_\+mesh\+\_\+objects\+\_\+in\+\_\+list (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+objects\+\_\+list}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a08f50cce663245479c0a5f910d971ecc}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__object__ops_a08f50cce663245479c0a5f910d971ecc}
+
+
+
+
+\begin{DoxyVerb}Union a list of mesh objects into a single mesh.
+:param mesh_objects_list:
+    A list of mesh objects to be merged into a single mesh relying on the union operator.
+:return:
+    The final mesh resulting from the union operator.
+\end{DoxyVerb}
+ 

@@ -1,0 +1,95 @@
+\hypertarget{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops}{}\section{meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops Namespace Reference}
+\label{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops}\index{meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops@{meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_a590f080dde2a3e22fbb6dc68a45537dd}{convert\+\_\+to\+\_\+mesh\+\_\+object} (bmesh\+\_\+object, name)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_acc52e632db05725b8b277cf1c5838961}{convert\+\_\+from\+\_\+mesh\+\_\+object} (mesh\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_aea0035f9e83e6f43f0eb15b745d807fe}{link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene} (bmesh\+\_\+object, name)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_af1c9484a2c57dcb92a0411c7814290ce}{link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene} (bmesh\+\_\+object, scene\+\_\+object)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}bmesh_object_ops.py:
+A set of utilities and operators for handling bmesh objects.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\index{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}!convert\+\_\+from\+\_\+mesh\+\_\+object@{convert\+\_\+from\+\_\+mesh\+\_\+object}}
+\index{convert\+\_\+from\+\_\+mesh\+\_\+object@{convert\+\_\+from\+\_\+mesh\+\_\+object}!meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{convert\+\_\+from\+\_\+mesh\+\_\+object(mesh\+\_\+object)}{convert_from_mesh_object(mesh_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops.\+convert\+\_\+from\+\_\+mesh\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_acc52e632db05725b8b277cf1c5838961}{}\label{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_acc52e632db05725b8b277cf1c5838961}
+
+
+
+
+\begin{DoxyVerb}Converts the mesh object to a bmesh object and returns a reference to it.
+
+:param mesh_object: An input mesh object.
+:return: A reference to the bmesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}!convert\+\_\+to\+\_\+mesh\+\_\+object@{convert\+\_\+to\+\_\+mesh\+\_\+object}}
+\index{convert\+\_\+to\+\_\+mesh\+\_\+object@{convert\+\_\+to\+\_\+mesh\+\_\+object}!meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{convert\+\_\+to\+\_\+mesh\+\_\+object(bmesh\+\_\+object, name)}{convert_to_mesh_object(bmesh_object, name)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops.\+convert\+\_\+to\+\_\+mesh\+\_\+object (
+\begin{DoxyParamCaption}
+\item[{}]{bmesh\+\_\+object, }
+\item[{}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_a590f080dde2a3e22fbb6dc68a45537dd}{}\label{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_a590f080dde2a3e22fbb6dc68a45537dd}
+
+
+
+
+\begin{DoxyVerb}Converts the bmesh to a new mesh object and rename it. This operation returns a reference to
+the created object.
+
+:param bmesh_object: An input bmesh object.
+:param name: The name of the mesh object.
+:return: Returns a reference to the converted object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}!link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene@{link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene}}
+\index{link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene@{link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene}!meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene(bmesh\+\_\+object, scene\+\_\+object)}{link_to_existing_object_in_scene(bmesh_object, scene_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops.\+link\+\_\+to\+\_\+existing\+\_\+object\+\_\+in\+\_\+scene (
+\begin{DoxyParamCaption}
+\item[{}]{bmesh\+\_\+object, }
+\item[{}]{scene\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_af1c9484a2c57dcb92a0411c7814290ce}{}\label{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_af1c9484a2c57dcb92a0411c7814290ce}
+
+
+
+
+\begin{DoxyVerb}Links the bmesh object to an existing object in the scene.
+
+:param bmesh_object: An input bmesh object.
+:param scene_object: An object existing in the scene where the bmesh object will be linked to.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}!link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene@{link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene}}
+\index{link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene@{link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene}!meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops@{meshy\+::neuromorphovis\+::bmeshi\+::ops\+::bmesh\+\_\+object\+\_\+ops}}
+\subsubsection[{\texorpdfstring{link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene(bmesh\+\_\+object, name)}{link_to_new_object_in_scene(bmesh_object, name)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+bmeshi.\+ops.\+bmesh\+\_\+object\+\_\+ops.\+link\+\_\+to\+\_\+new\+\_\+object\+\_\+in\+\_\+scene (
+\begin{DoxyParamCaption}
+\item[{}]{bmesh\+\_\+object, }
+\item[{}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_aea0035f9e83e6f43f0eb15b745d807fe}{}\label{namespacemeshy_1_1neuromorphovis_1_1bmeshi_1_1ops_1_1bmesh__object__ops_aea0035f9e83e6f43f0eb15b745d807fe}
+
+
+
+
+\begin{DoxyVerb}Converts the bmesh to a new mesh object, renames it and links it to the scene as a blender
+object such that you can see it in the interface.
+This operation returns a reference to the created blender object.
+
+:param bmesh_object: An input bmesh object.
+:param name: The name of the object.
+:return: A reference to the linked object.
+\end{DoxyVerb}
+ 

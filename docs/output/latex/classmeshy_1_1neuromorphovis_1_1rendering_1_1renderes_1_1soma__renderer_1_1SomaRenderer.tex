@@ -1,0 +1,101 @@
+\hypertarget{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer}{}\section{meshy.\+neuromorphovis.\+rendering.\+renderes.\+soma\+\_\+renderer.\+Soma\+Renderer Class Reference}
+\label{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer}\index{meshy.\+neuromorphovis.\+rendering.\+renderes.\+soma\+\_\+renderer.\+Soma\+Renderer@{meshy.\+neuromorphovis.\+rendering.\+renderes.\+soma\+\_\+renderer.\+Soma\+Renderer}}
+
+
+ 
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_af32f54f1c7677a6a6d09076a568f9fb3}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self)\hypertarget{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_af32f54f1c7677a6a6d09076a568f9fb3}{}\label{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_af32f54f1c7677a6a6d09076a568f9fb3}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_ac02798b8144c92a004ecdc01dc0bfd90}{render} (view\+\_\+extent=25.\+0, camera\+\_\+view=nmv.\+enums.\+Camera.\+View.\+F\+R\+O\+NT, image\+\_\+resolution=512, image\+\_\+name=\textquotesingle{}S\+O\+MA\textquotesingle{}, image\+\_\+directory=None, keep\+\_\+camera\+\_\+in\+\_\+scene=False)
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_adfe2b9df2f2c9bab95a31500c4438027}{render\+\_\+at\+\_\+angle} (soma\+\_\+mesh, angle=0.\+0, view\+\_\+extent=25.\+0, camera\+\_\+view=nmv.\+enums.\+Camera.\+View.\+F\+R\+O\+NT, image\+\_\+resolution=512, image\+\_\+name=\textquotesingle{}S\+O\+MA\textquotesingle{}, image\+\_\+directory=None)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\begin{DoxyVerb}A simple factory for rendering reconstructed somata meshes.\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer@{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer}!render@{render}}
+\index{render@{render}!meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer@{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer}}
+\subsubsection[{\texorpdfstring{render(view\+\_\+extent=25.\+0, camera\+\_\+view=nmv.\+enums.\+Camera.\+View.\+F\+R\+O\+N\+T, image\+\_\+resolution=512, image\+\_\+name=\textquotesingle{}\+S\+O\+M\+A\textquotesingle{}, image\+\_\+directory=\+None, keep\+\_\+camera\+\_\+in\+\_\+scene=\+False)}{render(view_extent=25.0, camera_view=nmv.enums.Camera.View.FRONT, image_resolution=512, image_name='SOMA', image_directory=None, keep_camera_in_scene=False)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+rendering.\+renderes.\+soma\+\_\+renderer.\+Soma\+Renderer.\+render (
+\begin{DoxyParamCaption}
+\item[{}]{view\+\_\+extent = {\ttfamily 25.0}, }
+\item[{}]{camera\+\_\+view = {\ttfamily nmv.enums.Camera.View.FRONT}, }
+\item[{}]{image\+\_\+resolution = {\ttfamily 512}, }
+\item[{}]{image\+\_\+name = {\ttfamily \textquotesingle{}SOMA\textquotesingle{}}, }
+\item[{}]{image\+\_\+directory = {\ttfamily None}, }
+\item[{}]{keep\+\_\+camera\+\_\+in\+\_\+scene = {\ttfamily False}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_ac02798b8144c92a004ecdc01dc0bfd90}{}\label{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_ac02798b8144c92a004ecdc01dc0bfd90}
+
+
+
+
+\begin{DoxyVerb}Render the soma to a .PNG image.
+
+:param view_extent:
+    The extent of the view, by default 25.0 microns.
+:param camera_view:
+    The view of the camera, by default FRONT.
+:param image_resolution:
+    The resolution of the image, by default 512.
+:param image_name:
+    The name of the image, by default 'SOMA'.
+:param image_directory:
+    The directory where the image will be rendered. If the directory is set to None,
+    then the prefix is included in @image_name.
+:param keep_camera_in_scene:
+    Keep the camera used to do the rendering after the rendering is done.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer@{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer}!render\+\_\+at\+\_\+angle@{render\+\_\+at\+\_\+angle}}
+\index{render\+\_\+at\+\_\+angle@{render\+\_\+at\+\_\+angle}!meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer@{meshy\+::neuromorphovis\+::rendering\+::renderes\+::soma\+\_\+renderer\+::\+Soma\+Renderer}}
+\subsubsection[{\texorpdfstring{render\+\_\+at\+\_\+angle(soma\+\_\+mesh, angle=0.\+0, view\+\_\+extent=25.\+0, camera\+\_\+view=nmv.\+enums.\+Camera.\+View.\+F\+R\+O\+N\+T, image\+\_\+resolution=512, image\+\_\+name=\textquotesingle{}\+S\+O\+M\+A\textquotesingle{}, image\+\_\+directory=\+None)}{render_at_angle(soma_mesh, angle=0.0, view_extent=25.0, camera_view=nmv.enums.Camera.View.FRONT, image_resolution=512, image_name='SOMA', image_directory=None)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+rendering.\+renderes.\+soma\+\_\+renderer.\+Soma\+Renderer.\+render\+\_\+at\+\_\+angle (
+\begin{DoxyParamCaption}
+\item[{}]{soma\+\_\+mesh, }
+\item[{}]{angle = {\ttfamily 0.0}, }
+\item[{}]{view\+\_\+extent = {\ttfamily 25.0}, }
+\item[{}]{camera\+\_\+view = {\ttfamily nmv.enums.Camera.View.FRONT}, }
+\item[{}]{image\+\_\+resolution = {\ttfamily 512}, }
+\item[{}]{image\+\_\+name = {\ttfamily \textquotesingle{}SOMA\textquotesingle{}}, }
+\item[{}]{image\+\_\+directory = {\ttfamily None}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_adfe2b9df2f2c9bab95a31500c4438027}{}\label{classmeshy_1_1neuromorphovis_1_1rendering_1_1renderes_1_1soma__renderer_1_1SomaRenderer_adfe2b9df2f2c9bab95a31500c4438027}
+
+
+
+
+\begin{DoxyVerb}Render the soma mesh at a specific angle.
+
+:param soma_mesh:
+    A reference to the reconstructed soma mesh.
+:param angle:
+    The orientation of the reconstructed soma mesh.
+:param view_extent:
+    The extent of the view, by default 25.0 microns.
+:param camera_view:
+    The view of the camera, by default FRONT.
+:param image_resolution:
+    The resolution of the image, by default 512.
+:param image_name:
+    The name of the image, by default 'SOMA'.
+:param image_directory:
+    The directory where the image will be rendered. If the directory is set to None,
+    then the prefix is included in @image_name.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/rendering/renderes/soma\+\_\+renderer.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,92 @@
+\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample}{}\section{meshy.\+neuromorphovis.\+morphologies.\+\_\+skeleton.\+sample.\+Sample Class Reference}
+\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample}\index{meshy.\+neuromorphovis.\+morphologies.\+\_\+skeleton.\+sample.\+Sample@{meshy.\+neuromorphovis.\+morphologies.\+\_\+skeleton.\+sample.\+Sample}}
+
+
+\hyperlink{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample}{Sample}.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a1b8bd9837282e2bf5fda0ab22174f512}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self, point, radius, id, morphology\+\_\+id=-\/1, section=None)
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a96ea29a92eb08dfb3333e00b8d6cc773}{print\+\_\+data} (self)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries point}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a89dd268bf46170f6dcc149cd45e2348f}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a89dd268bf46170f6dcc149cd45e2348f}
+
+\item 
+{\bfseries radius}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_abd18abc3df0037b8c783c56e1dfeb29a}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_abd18abc3df0037b8c783c56e1dfeb29a}
+
+\item 
+{\bfseries id}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_aa295372ec40b56912ddcadbf0253e368}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_aa295372ec40b56912ddcadbf0253e368}
+
+\item 
+{\bfseries morphology\+\_\+index}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a4c50a12108d74975cce358b25f4c1696}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a4c50a12108d74975cce358b25f4c1696}
+
+\item 
+{\bfseries section}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a101094cb28629c53ebdd3edbf2cd3852}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a101094cb28629c53ebdd3edbf2cd3852}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample}{Sample}. 
+
+\begin{DoxyVerb}A morphological sample represents a single point on each segment. \end{DoxyVerb}
+ 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample@{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample@{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample}}
+\subsubsection[{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+(self, point, radius, id, morphology\+\_\+id=-\/1, section=\+None)}{__init__(self, point, radius, id, morphology_id=-1, section=None)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+morphologies.\+\_\+skeleton.\+sample.\+Sample.\+\_\+\+\_\+init\+\_\+\+\_\+ (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{point, }
+\item[{}]{radius, }
+\item[{}]{id, }
+\item[{}]{morphology\+\_\+id = {\ttfamily -\/1}, }
+\item[{}]{section = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a1b8bd9837282e2bf5fda0ab22174f512}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a1b8bd9837282e2bf5fda0ab22174f512}
+
+
+
+
+\begin{DoxyVerb}Sample constructor
+
+:param point:
+    Sample position in the cartesian space, Vector((x, y, z)).
+:param radius:
+    Sample radius in microns.
+:param id:
+    Sample index along the section from 0 to N-1 if the section has N samples.
+:param morphology_id:
+    Sample index as reported in the morphology file.
+:param section:
+    A reference to the section where the sample belongs to, initially None.
+    This member is updated after re-constructing the morphology skeleton.
+\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample@{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample}!print\+\_\+data@{print\+\_\+data}}
+\index{print\+\_\+data@{print\+\_\+data}!meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample@{meshy\+::neuromorphovis\+::morphologies\+::\+\_\+skeleton\+::sample\+::\+Sample}}
+\subsubsection[{\texorpdfstring{print\+\_\+data(self)}{print_data(self)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+morphologies.\+\_\+skeleton.\+sample.\+Sample.\+print\+\_\+data (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}\hypertarget{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a96ea29a92eb08dfb3333e00b8d6cc773}{}\label{classmeshy_1_1neuromorphovis_1_1morphologies_1_1__skeleton_1_1sample_1_1Sample_a96ea29a92eb08dfb3333e00b8d6cc773}
+
+
+
+
+\begin{DoxyVerb}Print the details of the sample.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/morphologies/\+\_\+skeleton/sample.\+py\end{DoxyCompactItemize}

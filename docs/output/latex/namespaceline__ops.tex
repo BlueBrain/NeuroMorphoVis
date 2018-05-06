@@ -1,0 +1,150 @@
+\hypertarget{namespaceline__ops}{}\section{line\+\_\+ops Namespace Reference}
+\label{namespaceline__ops}\index{line\+\_\+ops@{line\+\_\+ops}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespaceline__ops_a1c1e6d2c47476f9e0f4efad0660ca32c}{compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data} (poly\+\_\+line\+\_\+data)
+\item 
+def \hyperlink{namespaceline__ops_aa28100a7aaa999c79143eef61d9f04e3}{create\+\_\+line\+\_\+object\+\_\+from\+\_\+data} (data, point1, point2, name=\textquotesingle{}line\textquotesingle{})
+\item 
+def \hyperlink{namespaceline__ops_aaffad18467b48ace39bf92fa9a7ff2ce}{draw\+\_\+line} (point1=Vector((0, 0, 0)), point2=Vector((1, 1, 1)), format=\textquotesingle{}S\+O\+L\+ID\textquotesingle{}, thickness=1.\+0, material=None, color=None, name=\textquotesingle{}line\textquotesingle{})
+\item 
+def \hyperlink{namespaceline__ops_af11269b33e46b7eb141d9583e75001eb}{draw\+\_\+cone\+\_\+line} (point1=Vector((0, 0, 0)), point2=Vector((1, 1, 1)), point1\+\_\+radius=0.\+0, point2\+\_\+radius=1.\+0, color=(1, 1, 1), name=\textquotesingle{}line\textquotesingle{}, smoothness\+\_\+factor=1)
+\item 
+def \hyperlink{namespaceline__ops_aab5a8673f145eb5e729faeb5d0b0a521}{draw\+\_\+poly\+\_\+line} (poly\+\_\+line\+\_\+data, format=\textquotesingle{}S\+O\+L\+ID\textquotesingle{}, name=\textquotesingle{}poly\+\_\+line\textquotesingle{}, material=None, color=None, bevel\+\_\+object=None, caps=True)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}line_ops.py:
+    A set of operations for line creation and handling.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\index{line\+\_\+ops@{line\+\_\+ops}!compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data@{compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data}}
+\index{compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data@{compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data}!line\+\_\+ops@{line\+\_\+ops}}
+\subsubsection[{\texorpdfstring{compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data(poly\+\_\+line\+\_\+data)}{compute_section_centroid_from_poly_line_data(poly_line_data)}}]{\setlength{\rightskip}{0pt plus 5cm}def line\+\_\+ops.\+compute\+\_\+section\+\_\+centroid\+\_\+from\+\_\+poly\+\_\+line\+\_\+data (
+\begin{DoxyParamCaption}
+\item[{}]{poly\+\_\+line\+\_\+data}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceline__ops_a1c1e6d2c47476f9e0f4efad0660ca32c}{}\label{namespaceline__ops_a1c1e6d2c47476f9e0f4efad0660ca32c}
+
+
+
+
+\begin{DoxyVerb}Computes the centroid of a series of points given in the format of a poly-line data.
+
+:param poly_line_data: Section data in poly-line format.
+:return: The centroid of all the given points.
+\end{DoxyVerb}
+ \index{line\+\_\+ops@{line\+\_\+ops}!create\+\_\+line\+\_\+object\+\_\+from\+\_\+data@{create\+\_\+line\+\_\+object\+\_\+from\+\_\+data}}
+\index{create\+\_\+line\+\_\+object\+\_\+from\+\_\+data@{create\+\_\+line\+\_\+object\+\_\+from\+\_\+data}!line\+\_\+ops@{line\+\_\+ops}}
+\subsubsection[{\texorpdfstring{create\+\_\+line\+\_\+object\+\_\+from\+\_\+data(data, point1, point2, name=\textquotesingle{}line\textquotesingle{})}{create_line_object_from_data(data, point1, point2, name='line')}}]{\setlength{\rightskip}{0pt plus 5cm}def line\+\_\+ops.\+create\+\_\+line\+\_\+object\+\_\+from\+\_\+data (
+\begin{DoxyParamCaption}
+\item[{}]{data, }
+\item[{}]{point1, }
+\item[{}]{point2, }
+\item[{}]{name = {\ttfamily \textquotesingle{}line\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceline__ops_aa28100a7aaa999c79143eef61d9f04e3}{}\label{namespaceline__ops_aa28100a7aaa999c79143eef61d9f04e3}
+
+
+
+
+\begin{DoxyVerb}Creates a line object and returns a reference to it.
+
+:param data: Properties of the line such as caps, depth, dimensions, ect... .
+:param point1: Starting point of the line.
+:param point2: End point of the line.
+:param name: The name of the line object.
+:return: A reference to the created line object.
+\end{DoxyVerb}
+ \index{line\+\_\+ops@{line\+\_\+ops}!draw\+\_\+cone\+\_\+line@{draw\+\_\+cone\+\_\+line}}
+\index{draw\+\_\+cone\+\_\+line@{draw\+\_\+cone\+\_\+line}!line\+\_\+ops@{line\+\_\+ops}}
+\subsubsection[{\texorpdfstring{draw\+\_\+cone\+\_\+line(point1=\+Vector((0, 0, 0)), point2=\+Vector((1, 1, 1)), point1\+\_\+radius=0.\+0, point2\+\_\+radius=1.\+0, color=(1, 1, 1), name=\textquotesingle{}line\textquotesingle{}, smoothness\+\_\+factor=1)}{draw_cone_line(point1=Vector((0, 0, 0)), point2=Vector((1, 1, 1)), point1_radius=0.0, point2_radius=1.0, color=(1, 1, 1), name='line', smoothness_factor=1)}}]{\setlength{\rightskip}{0pt plus 5cm}def line\+\_\+ops.\+draw\+\_\+cone\+\_\+line (
+\begin{DoxyParamCaption}
+\item[{}]{point1 = {\ttfamily Vector((0,~0,~0))}, }
+\item[{}]{point2 = {\ttfamily Vector((1,~1,~1))}, }
+\item[{}]{point1\+\_\+radius = {\ttfamily 0.0}, }
+\item[{}]{point2\+\_\+radius = {\ttfamily 1.0}, }
+\item[{}]{color = {\ttfamily (1,~1,~1)}, }
+\item[{}]{name = {\ttfamily \textquotesingle{}line\textquotesingle{}}, }
+\item[{}]{smoothness\+\_\+factor = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceline__ops_af11269b33e46b7eb141d9583e75001eb}{}\label{namespaceline__ops_af11269b33e46b7eb141d9583e75001eb}
+
+
+
+
+\begin{DoxyVerb}Draws a cone line between two points, with different radii at the beginning and the end of
+the line .
+
+:param point1: Starting point of the line.
+:param point2: End point of the line.
+:param point1_radius: The radius of the line at the starting point.
+:param point2_radius: The radius of the line at the end point.
+:param color: The color of the line
+:param name: The name of the line.
+:param smoothness_factor: Smoothing the created line (1 - 5), by default set to 1.
+:return: A reference to the create line.
+\end{DoxyVerb}
+ \index{line\+\_\+ops@{line\+\_\+ops}!draw\+\_\+line@{draw\+\_\+line}}
+\index{draw\+\_\+line@{draw\+\_\+line}!line\+\_\+ops@{line\+\_\+ops}}
+\subsubsection[{\texorpdfstring{draw\+\_\+line(point1=\+Vector((0, 0, 0)), point2=\+Vector((1, 1, 1)), format=\textquotesingle{}\+S\+O\+L\+I\+D\textquotesingle{}, thickness=1.\+0, material=\+None, color=\+None, name=\textquotesingle{}line\textquotesingle{})}{draw_line(point1=Vector((0, 0, 0)), point2=Vector((1, 1, 1)), format='SOLID', thickness=1.0, material=None, color=None, name='line')}}]{\setlength{\rightskip}{0pt plus 5cm}def line\+\_\+ops.\+draw\+\_\+line (
+\begin{DoxyParamCaption}
+\item[{}]{point1 = {\ttfamily Vector((0,~0,~0))}, }
+\item[{}]{point2 = {\ttfamily Vector((1,~1,~1))}, }
+\item[{}]{format = {\ttfamily \textquotesingle{}SOLID\textquotesingle{}}, }
+\item[{}]{thickness = {\ttfamily 1.0}, }
+\item[{}]{material = {\ttfamily None}, }
+\item[{}]{color = {\ttfamily None}, }
+\item[{}]{name = {\ttfamily \textquotesingle{}line\textquotesingle{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceline__ops_aaffad18467b48ace39bf92fa9a7ff2ce}{}\label{namespaceline__ops_aaffad18467b48ace39bf92fa9a7ff2ce}
+
+
+
+
+\begin{DoxyVerb}Draws a line between two connected points in the space and returns a reference to it.
+NOTE: If you want to have a thin line, use 0.1 for the thickness and if you want to set it
+to scale, use 1.0.
+
+:param point1: Starting point of the line.
+:param point2: End point of the line.
+:param format: The format of the line, can be SIMPLE or SOLID.
+:param thickness: The thickness of the line (between 0.1 and 1.0).
+:param material: The material of the line.
+:param color: The color of the line, in case no material is given.
+:param name: The name of the line.
+:return: A reference to the create line.
+\end{DoxyVerb}
+ \index{line\+\_\+ops@{line\+\_\+ops}!draw\+\_\+poly\+\_\+line@{draw\+\_\+poly\+\_\+line}}
+\index{draw\+\_\+poly\+\_\+line@{draw\+\_\+poly\+\_\+line}!line\+\_\+ops@{line\+\_\+ops}}
+\subsubsection[{\texorpdfstring{draw\+\_\+poly\+\_\+line(poly\+\_\+line\+\_\+data, format=\textquotesingle{}\+S\+O\+L\+I\+D\textquotesingle{}, name=\textquotesingle{}poly\+\_\+line\textquotesingle{}, material=\+None, color=\+None, bevel\+\_\+object=\+None, caps=\+True)}{draw_poly_line(poly_line_data, format='SOLID', name='poly_line', material=None, color=None, bevel_object=None, caps=True)}}]{\setlength{\rightskip}{0pt plus 5cm}def line\+\_\+ops.\+draw\+\_\+poly\+\_\+line (
+\begin{DoxyParamCaption}
+\item[{}]{poly\+\_\+line\+\_\+data, }
+\item[{}]{format = {\ttfamily \textquotesingle{}SOLID\textquotesingle{}}, }
+\item[{}]{name = {\ttfamily \textquotesingle{}poly\+\_\+line\textquotesingle{}}, }
+\item[{}]{material = {\ttfamily None}, }
+\item[{}]{color = {\ttfamily None}, }
+\item[{}]{bevel\+\_\+object = {\ttfamily None}, }
+\item[{}]{caps = {\ttfamily True}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceline__ops_aab5a8673f145eb5e729faeb5d0b0a521}{}\label{namespaceline__ops_aab5a8673f145eb5e729faeb5d0b0a521}
+
+
+
+
+\begin{DoxyVerb}Draws a poly line (connected segments of lines) with multiple formats.
+
+:param poly_line_data: The data of the poly-line such as its points and radii.
+:param format: The format can be SIMPLE or SOLID.
+:param name: The name of the line.
+:param material: The material of the line.
+:param color: The color of the poly-line.
+:param bevel_object: A given bevel object that would scale the diameter of the poly-line.
+:param caps: A flag to indicate the line terminals are filled with caps or not.
+:return: A reference to the line object.
+\end{DoxyVerb}
+ 

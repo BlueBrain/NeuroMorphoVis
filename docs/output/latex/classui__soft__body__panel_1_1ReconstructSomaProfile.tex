@@ -1,0 +1,126 @@
+\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile}{}\section{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile Class Reference}
+\label{classui__soft__body__panel_1_1ReconstructSomaProfile}\index{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile}}
+
+
+Inheritance diagram for ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile\+:
+% FIG 0
+
+
+Collaboration diagram for ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classui__soft__body__panel_1_1ReconstructSomaProfile_a90855b4e9ae27e5daf41ecebff0a3482}{load\+\_\+morphology} (self, scene)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1ReconstructSomaProfile_a117f07d8992f9bf4a32e1dcf86d19a2c}{modal} (self, context, event)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1ReconstructSomaProfile_a854efe7f6173e4d64c987dc5bfcee3a4}{execute} (self, context)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1ReconstructSomaProfile_a0d57b9b4518c7803eadf7a3e83d51f9b}{cancel} (self, context)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+string {\bfseries bl\+\_\+idname} = \char`\"{}reconstruct.\+soma\+\_\+profile\char`\"{}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a96e245e3b980b5d0f45db69df75bc9a7}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a96e245e3b980b5d0f45db69df75bc9a7}
+
+\item 
+string {\bfseries bl\+\_\+label} = \char`\"{}Profile\char`\"{}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_ae5d9a1cb040df4826904c44fd276bf5f}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_ae5d9a1cb040df4826904c44fd276bf5f}
+
+\item 
+{\bfseries event\+\_\+timer} = None\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_ae50a7f97e9bf86df3853a387cab031e6}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_ae50a7f97e9bf86df3853a387cab031e6}
+
+\item 
+{\bfseries timer\+\_\+limits} = bpy.\+props.\+Int\+Property(default=0)\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a1279d0aa730c1a5207c87ef6f68d97c1}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a1279d0aa730c1a5207c87ef6f68d97c1}
+
+\item 
+{\bfseries meshy\+\_\+soma\+\_\+builder} = None\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_aad5cdeed55ee9868a31d4f3d24906383}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_aad5cdeed55ee9868a31d4f3d24906383}
+
+\item 
+{\bfseries soma\+\_\+sphere\+\_\+object} = None\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_affc179f15dde0932128f981f9d7d2065}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_affc179f15dde0932128f981f9d7d2065}
+
+\item 
+{\bfseries min\+\_\+simulation\+\_\+limit} = nmv.\+consts.\+\_\+\+\_\+min\+\_\+simulation\+\_\+frame\+\_\+\+\_\+\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a99697c53891bf9f93f702af21bb8cc90}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a99697c53891bf9f93f702af21bb8cc90}
+
+\item 
+{\bfseries max\+\_\+simulation\+\_\+limit} = nmv.\+consts.\+\_\+\+\_\+max\+\_\+simulation\+\_\+frame\+\_\+\+\_\+\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a4a3c89405bbd882eee08ffbc3ea5f61a}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a4a3c89405bbd882eee08ffbc3ea5f61a}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Soma profile reconstruction operator\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}!cancel@{cancel}}
+\index{cancel@{cancel}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}}
+\subsubsection[{\texorpdfstring{cancel(self, context)}{cancel(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile.\+cancel (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a0d57b9b4518c7803eadf7a3e83d51f9b}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a0d57b9b4518c7803eadf7a3e83d51f9b}
+
+
+
+
+\begin{DoxyVerb}Cancel the panel processing and return to the interaction mode.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}!execute@{execute}}
+\index{execute@{execute}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}}
+\subsubsection[{\texorpdfstring{execute(self, context)}{execute(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile.\+execute (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a854efe7f6173e4d64c987dc5bfcee3a4}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a854efe7f6173e4d64c987dc5bfcee3a4}
+
+
+
+
+\begin{DoxyVerb}Execute the operator.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}!load\+\_\+morphology@{load\+\_\+morphology}}
+\index{load\+\_\+morphology@{load\+\_\+morphology}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}}
+\subsubsection[{\texorpdfstring{load\+\_\+morphology(self, scene)}{load_morphology(self, scene)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile.\+load\+\_\+morphology (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{scene}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a90855b4e9ae27e5daf41ecebff0a3482}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a90855b4e9ae27e5daf41ecebff0a3482}
+
+
+
+
+\begin{DoxyVerb}Loads the morphology from file.
+
+:param scene: Scene.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}!modal@{modal}}
+\index{modal@{modal}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Reconstruct\+Soma\+Profile}}
+\subsubsection[{\texorpdfstring{modal(self, context, event)}{modal(self, context, event)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Reconstruct\+Soma\+Profile.\+modal (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context, }
+\item[{}]{event}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1ReconstructSomaProfile_a117f07d8992f9bf4a32e1dcf86d19a2c}{}\label{classui__soft__body__panel_1_1ReconstructSomaProfile_a117f07d8992f9bf4a32e1dcf86d19a2c}
+
+
+
+
+\begin{DoxyVerb}Threading and non-blocking handling.
+
+:param context: Panel context.
+:param event: A given event for the panel.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/interface/tmp/ui\+\_\+soft\+\_\+body\+\_\+panel.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,329 @@
+\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops}{}\section{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops Namespace Reference}
+\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops}\index{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops@{meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ac5c90d2baef067b71c3347002e20c8c5}{rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point} (mesh\+\_\+object, face, to\+\_\+point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_acb06525aa97ba478f3be98b140aa75dc}{rotate\+\_\+face\+\_\+towards\+\_\+point} (mesh\+\_\+object, target\+\_\+point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a32c3e6f234570fea2cd52ad46dd46411}{convert\+\_\+face\+\_\+to\+\_\+circle} (mesh\+\_\+object, face\+\_\+index, face\+\_\+radius)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a55210c04dd065fca375f8d804d2cb4ef}{map\+\_\+face\+\_\+to\+\_\+circle} (mesh\+\_\+object, vertices\+\_\+indices, mapping\+\_\+circle)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5cfb06002c2830c640cebb368c86e371}{extrude\+\_\+face\+\_\+to\+\_\+face} (mesh\+\_\+object, face\+\_\+index, target\+\_\+point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a78c69d1bfa16f22380191227d0e7f70c}{extrude\+\_\+face\+\_\+to\+\_\+joint} (mesh\+\_\+object, face\+\_\+index, target\+\_\+point, delta\+\_\+ratio=0.\+1)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a800e3217a8f34409cc6e862c9d5712af}{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces} (mesh\+\_\+object, faces\+\_\+indices, point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a08b58a40da73b5c5916cfc3baad09e07}{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point} (mesh\+\_\+object, point)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a185ab5f3ef9c32efda919a7a9db7be5e}{get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta} (mesh\+\_\+object, point, delta=0.\+2)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a476542d2d1e9ab4319efb42e92908c2d}{subdivide\+\_\+faces} (mesh\+\_\+object, faces\+\_\+indices, cuts=1)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a4505ed40b69400b36c2f30e63f899ee2}{close\+\_\+open\+\_\+faces} (mesh\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ad0c2ea169c7726da0ddd75b2942b0fa1}{close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh} (mesh\+\_\+object)
+\item 
+def \hyperlink{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5c79f5ffa2e914b6087c9e0ca5f072d7}{close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices} (mesh\+\_\+object, n)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}mesh_face_ops.py:
+A set of utilities and operators for handling faces of mesh objects.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh@{close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh}}
+\index{close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh@{close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh(mesh\+\_\+object)}{close_caps_for_4_vertices_mesh(mesh_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+close\+\_\+caps\+\_\+for\+\_\+4\+\_\+vertices\+\_\+mesh (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ad0c2ea169c7726da0ddd75b2942b0fa1}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ad0c2ea169c7726da0ddd75b2942b0fa1}
+
+
+
+
+\begin{DoxyVerb}Close all the open faces of a mesh object.
+
+:param mesh_object:
+    A given mesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices@{close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices}}
+\index{close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices@{close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices(mesh\+\_\+object, n)}{close_caps_for_n_vertices(mesh_object, n)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+close\+\_\+caps\+\_\+for\+\_\+n\+\_\+vertices (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{n}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5c79f5ffa2e914b6087c9e0ca5f072d7}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5c79f5ffa2e914b6087c9e0ca5f072d7}
+
+
+
+
+\begin{DoxyVerb}Close the caps for a mesh based on n-vertex polygon.
+
+:param mesh_object:
+    A given mesh object.
+:param n:
+    The number of vertices of the base polygon of the mesh.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!close\+\_\+open\+\_\+faces@{close\+\_\+open\+\_\+faces}}
+\index{close\+\_\+open\+\_\+faces@{close\+\_\+open\+\_\+faces}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{close\+\_\+open\+\_\+faces(mesh\+\_\+object)}{close_open_faces(mesh_object)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+close\+\_\+open\+\_\+faces (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a4505ed40b69400b36c2f30e63f899ee2}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a4505ed40b69400b36c2f30e63f899ee2}
+
+
+
+
+\begin{DoxyVerb}Close all the open faces of a mesh object.
+
+:param mesh_object:
+    A given mesh object.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!convert\+\_\+face\+\_\+to\+\_\+circle@{convert\+\_\+face\+\_\+to\+\_\+circle}}
+\index{convert\+\_\+face\+\_\+to\+\_\+circle@{convert\+\_\+face\+\_\+to\+\_\+circle}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{convert\+\_\+face\+\_\+to\+\_\+circle(mesh\+\_\+object, face\+\_\+index, face\+\_\+radius)}{convert_face_to_circle(mesh_object, face_index, face_radius)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+convert\+\_\+face\+\_\+to\+\_\+circle (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{face\+\_\+index, }
+\item[{}]{face\+\_\+radius}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a32c3e6f234570fea2cd52ad46dd46411}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a32c3e6f234570fea2cd52ad46dd46411}
+
+
+
+
+\begin{DoxyVerb}Convert the face of a mesh object from irregular shape to a circle-like pattern to make it
+clean for the extrusion.
+
+:param mesh_object:
+    A given mesh object.
+:param face_index:
+    The index of the face being mapped to a circle.
+:param face_radius:
+    The given radius of the circle.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!extrude\+\_\+face\+\_\+to\+\_\+face@{extrude\+\_\+face\+\_\+to\+\_\+face}}
+\index{extrude\+\_\+face\+\_\+to\+\_\+face@{extrude\+\_\+face\+\_\+to\+\_\+face}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{extrude\+\_\+face\+\_\+to\+\_\+face(mesh\+\_\+object, face\+\_\+index, target\+\_\+point)}{extrude_face_to_face(mesh_object, face_index, target_point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+extrude\+\_\+face\+\_\+to\+\_\+face (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{face\+\_\+index, }
+\item[{}]{target\+\_\+point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5cfb06002c2830c640cebb368c86e371}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a5cfb06002c2830c640cebb368c86e371}
+
+
+
+
+\begin{DoxyVerb}Extrude a face in a mesh object specified by its face index to a given point.
+
+NOTE: This operation returns the index of the final extruded face.
+
+:param mesh_object:
+    A given mesh object.
+:param face_index:
+    The index of the face that will get extruded.
+:param target_point:
+    A destination point where the face will be extruded to.
+:return:
+    The index of the final extruded face.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!extrude\+\_\+face\+\_\+to\+\_\+joint@{extrude\+\_\+face\+\_\+to\+\_\+joint}}
+\index{extrude\+\_\+face\+\_\+to\+\_\+joint@{extrude\+\_\+face\+\_\+to\+\_\+joint}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{extrude\+\_\+face\+\_\+to\+\_\+joint(mesh\+\_\+object, face\+\_\+index, target\+\_\+point, delta\+\_\+ratio=0.\+1)}{extrude_face_to_joint(mesh_object, face_index, target_point, delta_ratio=0.1)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+extrude\+\_\+face\+\_\+to\+\_\+joint (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{face\+\_\+index, }
+\item[{}]{target\+\_\+point, }
+\item[{}]{delta\+\_\+ratio = {\ttfamily 0.1}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a78c69d1bfa16f22380191227d0e7f70c}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a78c69d1bfa16f22380191227d0e7f70c}
+
+
+
+
+\begin{DoxyVerb}Extrude a face specified by its face index to a given point on a joint.
+
+NOTE: This operation returns a list of the indices of the extruded joint.
+
+:param mesh_object:
+    A given mesh object.
+:param face_index:
+    The index of the face that should be extruded.
+:param target_point:
+    A destination point where the face will be extruded to.
+:param delta_ratio:
+    Joint side length.
+:return:
+    A list of the indices of the extruded joint.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point@{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point}}
+\index{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point@{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point(mesh\+\_\+object, point)}{get_index_of_nearest_face_to_point(mesh_object, point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a08b58a40da73b5c5916cfc3baad09e07}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a08b58a40da73b5c5916cfc3baad09e07}
+
+
+
+
+\begin{DoxyVerb}Get the index of the nearest face of an object to a given point in the space.
+
+:param mesh_object:
+    A given mesh object.
+:param point:
+    A point in the three-dimensional space.
+:return:
+    The index of the nearest face in the given mesh object to the point.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces@{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces}}
+\index{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces@{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces(mesh\+\_\+object, faces\+\_\+indices, point)}{get_index_of_nearest_face_to_point_in_faces(mesh_object, faces_indices, point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+get\+\_\+index\+\_\+of\+\_\+nearest\+\_\+face\+\_\+to\+\_\+point\+\_\+in\+\_\+faces (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{faces\+\_\+indices, }
+\item[{}]{point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a800e3217a8f34409cc6e862c9d5712af}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a800e3217a8f34409cc6e862c9d5712af}
+
+
+
+
+\begin{DoxyVerb}Get the index of the nearest face of an object to a given point in the space.
+
+:param mesh_object:
+    A given mesh object.
+:param faces_indices:
+    A list of indices of all the faces we need to check for.
+:param point:
+    A point in the three-dimensional space.
+:return:
+    The index of the nearest face in the list.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta@{get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta}}
+\index{get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta@{get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta(mesh\+\_\+object, point, delta=0.\+2)}{get_indices_of_nearest_faces_to_point_within_delta(mesh_object, point, delta=0.2)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+get\+\_\+indices\+\_\+of\+\_\+nearest\+\_\+faces\+\_\+to\+\_\+point\+\_\+within\+\_\+delta (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{point, }
+\item[{}]{delta = {\ttfamily 0.2}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a185ab5f3ef9c32efda919a7a9db7be5e}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a185ab5f3ef9c32efda919a7a9db7be5e}
+
+
+
+
+\begin{DoxyVerb}Get the indices of the nearest faces to point within a given range.
+
+:param mesh_object:
+    A given mesh object.
+:param point:
+    A point in the three-dimensional space.
+:param delta:
+    Delta value.
+:return:
+    A list of indices of faces.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!map\+\_\+face\+\_\+to\+\_\+circle@{map\+\_\+face\+\_\+to\+\_\+circle}}
+\index{map\+\_\+face\+\_\+to\+\_\+circle@{map\+\_\+face\+\_\+to\+\_\+circle}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{map\+\_\+face\+\_\+to\+\_\+circle(mesh\+\_\+object, vertices\+\_\+indices, mapping\+\_\+circle)}{map_face_to_circle(mesh_object, vertices_indices, mapping_circle)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+map\+\_\+face\+\_\+to\+\_\+circle (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{vertices\+\_\+indices, }
+\item[{}]{mapping\+\_\+circle}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a55210c04dd065fca375f8d804d2cb4ef}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a55210c04dd065fca375f8d804d2cb4ef}
+
+
+
+
+\begin{DoxyVerb}Maps a given face in a given mesh object with the specified vertices to a circle.
+
+:param mesh_object:
+    A given mesh object.
+:param vertices_indices:
+    The indices of the vertices of the face that should be mapped.
+:param mapping_circle:
+    A given circle that will be used to do the mapping operation.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point@{rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point}}
+\index{rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point@{rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point(mesh\+\_\+object, face, to\+\_\+point)}{rotate_face_in_object_towards_point(mesh_object, face, to_point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+rotate\+\_\+face\+\_\+in\+\_\+object\+\_\+towards\+\_\+point (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{face, }
+\item[{}]{to\+\_\+point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ac5c90d2baef067b71c3347002e20c8c5}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_ac5c90d2baef067b71c3347002e20c8c5}
+
+
+
+
+\begin{DoxyVerb}Rotate a selected face in a mesh object towards certain target point.
+
+:param mesh_object:
+    A given mesh object.
+:param face:
+    The selected face in the mesh.
+:param to_point:
+    The target point the face should be rotated towards.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!rotate\+\_\+face\+\_\+towards\+\_\+point@{rotate\+\_\+face\+\_\+towards\+\_\+point}}
+\index{rotate\+\_\+face\+\_\+towards\+\_\+point@{rotate\+\_\+face\+\_\+towards\+\_\+point}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{rotate\+\_\+face\+\_\+towards\+\_\+point(mesh\+\_\+object, target\+\_\+point)}{rotate_face_towards_point(mesh_object, target_point)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+rotate\+\_\+face\+\_\+towards\+\_\+point (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{target\+\_\+point}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_acb06525aa97ba478f3be98b140aa75dc}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_acb06525aa97ba478f3be98b140aa75dc}
+
+
+
+
+\begin{DoxyVerb}Rotate a single-faced mesh object towards a target point.
+
+NOTE: This function will generate wrong results if the given object contains more than a single
+face, since it's always assumed to select the first face and apply the rotation operation on it.
+
+:param mesh_object:
+    A given mesh object that has only a single face.
+:param target_point:
+    The target point the mesh 'or the face' should be rotated towards.
+:return
+    True or False.
+\end{DoxyVerb}
+ \index{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}!subdivide\+\_\+faces@{subdivide\+\_\+faces}}
+\index{subdivide\+\_\+faces@{subdivide\+\_\+faces}!meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops@{meshy\+::neuromorphovis\+::mesh\+::ops\+::mesh\+\_\+face\+\_\+ops}}
+\subsubsection[{\texorpdfstring{subdivide\+\_\+faces(mesh\+\_\+object, faces\+\_\+indices, cuts=1)}{subdivide_faces(mesh_object, faces_indices, cuts=1)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+mesh.\+ops.\+mesh\+\_\+face\+\_\+ops.\+subdivide\+\_\+faces (
+\begin{DoxyParamCaption}
+\item[{}]{mesh\+\_\+object, }
+\item[{}]{faces\+\_\+indices, }
+\item[{}]{cuts = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)}\hypertarget{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a476542d2d1e9ab4319efb42e92908c2d}{}\label{namespacemeshy_1_1neuromorphovis_1_1mesh_1_1ops_1_1mesh__face__ops_a476542d2d1e9ab4319efb42e92908c2d}
+
+
+
+
+\begin{DoxyVerb}Subdivide a set of faces defined by their indices into multiple cuts.
+
+:param mesh_object:
+    A given mesh object.
+:param faces_indices:
+    A list of the indices of the faces.
+:param cuts:
+    Number of cuts, by default set to 1.
+\end{DoxyVerb}
+ 

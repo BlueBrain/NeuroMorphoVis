@@ -1,0 +1,114 @@
+\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel}{}\section{meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel Class Reference}
+\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel}\index{meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel@{meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel}}
+
+
+ 
+
+
+
+
+Inheritance diagram for meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel\+:
+% FIG 0
+
+
+Collaboration diagram for meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a02789a1ef807d6f9076def3300fade56}{draw} (self, context)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a2448e419f0f6393183f47022f03b05bc}{bl\+\_\+space\+\_\+type} = \textquotesingle{}V\+I\+E\+W\+\_\+3D\textquotesingle{}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a2448e419f0f6393183f47022f03b05bc}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a2448e419f0f6393183f47022f03b05bc}
+
+\begin{DoxyCompactList}\small\item\em Panel parameters. \end{DoxyCompactList}\item 
+string {\bfseries bl\+\_\+region\+\_\+type} = \textquotesingle{}T\+O\+O\+LS\textquotesingle{}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a97c06c1164b15ec62895d21ea93b4324}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a97c06c1164b15ec62895d21ea93b4324}
+
+\item 
+string {\bfseries bl\+\_\+label} = \textquotesingle{}Morphology Analysis\textquotesingle{}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9f1b401e6e60a63cf36936f78c587ac0}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9f1b401e6e60a63cf36936f78c587ac0}
+
+\item 
+string {\bfseries bl\+\_\+context} = \textquotesingle{}objectmode\textquotesingle{}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a928f86a061a3706720781eb4d7e50a14}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a928f86a061a3706720781eb4d7e50a14}
+
+\item 
+string {\bfseries bl\+\_\+category} = \textquotesingle{}Neuro\+Morpho\+Vis\textquotesingle{}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a608eedbf6628b9253cb9d52df510f844}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a608eedbf6628b9253cb9d52df510f844}
+
+\item 
+{\bfseries Analyze\+Number\+Samples\+Per\+Section}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a962b5044f7a2ce1d7f39cd25a8319986}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a962b5044f7a2ce1d7f39cd25a8319986}
+
+\item 
+{\bfseries name}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a0be3959dddec1621099c84f7ae4c8ba2}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a0be3959dddec1621099c84f7ae4c8ba2}
+
+\item 
+{\bfseries description}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_ab9c6725932aef6b1c1b534f9d672d0e9}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_ab9c6725932aef6b1c1b534f9d672d0e9}
+
+\item 
+{\bfseries default}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a0ea40fb87f2529c43a87da91c1bdd620}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a0ea40fb87f2529c43a87da91c1bdd620}
+
+\item 
+{\bfseries Analyze\+Number\+Segments\+Per\+Section}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_ab3a61db3a1569376627990d17925a7c8}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_ab3a61db3a1569376627990d17925a7c8}
+
+\item 
+{\bfseries Analyze\+Number\+Sections\+Per\+Arbor}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a16049a7466cef3826c7555c9a6e92494}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a16049a7466cef3826c7555c9a6e92494}
+
+\item 
+{\bfseries Analyze\+Number\+Children\+Per\+Section}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a624fab28e7d53f22b05d2a4c61b2b1c9}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a624fab28e7d53f22b05d2a4c61b2b1c9}
+
+\item 
+{\bfseries Analyze\+Branching\+Angles}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9b5247757243878dd17accb902ac249e}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9b5247757243878dd17accb902ac249e}
+
+\item 
+{\bfseries Analyze\+Branching\+Radii}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a69000441ec86cb804a7d259236cd7c92}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a69000441ec86cb804a7d259236cd7c92}
+
+\item 
+{\bfseries Analyze\+Sections\+Length}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_aeca4b1c1205610de8b77f5eb59a93449}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_aeca4b1c1205610de8b77f5eb59a93449}
+
+\item 
+{\bfseries Analyze\+Sections\+Radii}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9a7a7edc0269c89991c5d9f2b4c60d3e}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a9a7a7edc0269c89991c5d9f2b4c60d3e}
+
+\item 
+{\bfseries Analyze\+Short\+Sections}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a5f7026909ea30021a21facbe013d7484}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a5f7026909ea30021a21facbe013d7484}
+
+\item 
+{\bfseries Analyze\+Duplicate\+Samples}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a61d1510968fb08faf141e2e0256d8cb4}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a61d1510968fb08faf141e2e0256d8cb4}
+
+\item 
+{\bfseries Analyze\+Disconnected\+Axons}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a875bc7c5e478e0ee8e05666e024bec24}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a875bc7c5e478e0ee8e05666e024bec24}
+
+\item 
+{\bfseries Analyze\+Branches\+With\+Negative\+Samples}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a3ffb95e62f4a79e2acf6c39d7eeb9f14}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a3ffb95e62f4a79e2acf6c39d7eeb9f14}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\begin{DoxyVerb}Analysis panel\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{meshy\+::neuromorphovis\+::interface\+::ui\+::analysis\+\_\+panel\+::\+Analysis\+Panel@{meshy\+::neuromorphovis\+::interface\+::ui\+::analysis\+\_\+panel\+::\+Analysis\+Panel}!draw@{draw}}
+\index{draw@{draw}!meshy\+::neuromorphovis\+::interface\+::ui\+::analysis\+\_\+panel\+::\+Analysis\+Panel@{meshy\+::neuromorphovis\+::interface\+::ui\+::analysis\+\_\+panel\+::\+Analysis\+Panel}}
+\subsubsection[{\texorpdfstring{draw(self, context)}{draw(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def meshy.\+neuromorphovis.\+interface.\+ui.\+analysis\+\_\+panel.\+Analysis\+Panel.\+draw (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a02789a1ef807d6f9076def3300fade56}{}\label{classmeshy_1_1neuromorphovis_1_1interface_1_1ui_1_1analysis__panel_1_1AnalysisPanel_a02789a1ef807d6f9076def3300fade56}
+
+
+
+
+\begin{DoxyVerb}Draw the panel
+
+:param context:
+    Rendering context
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/interface/ui/analysis\+\_\+panel.\+py\end{DoxyCompactItemize}

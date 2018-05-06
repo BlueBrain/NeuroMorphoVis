@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="meshy.neuromorphovis.file.readers.morphology.h5\l_reader.H5Reader",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1file_1_1readers_1_1morphology_1_1h5__reader_1_1H5Reader.html"];
+}

@@ -1,0 +1,135 @@
+\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive}{}\section{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive Class Reference}
+\label{classui__soft__body__panel_1_1RenderSomaProgressive}\index{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive}}
+
+
+Inheritance diagram for ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive\+:
+% FIG 0
+
+
+Collaboration diagram for ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classui__soft__body__panel_1_1RenderSomaProgressive_a5cc0467dbcb4e1482fa7c410691d4794}{load\+\_\+morphology} (self, scene)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1RenderSomaProgressive_a6074218526ca3281715cef7f3c48a93a}{modal} (self, context, event)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1RenderSomaProgressive_a782ed3f97b392e55259aeed1537fd286}{execute} (self, context)
+\item 
+def \hyperlink{classui__soft__body__panel_1_1RenderSomaProgressive_a0336ecc11d4a2ae244907d39a3b855b1}{cancel} (self, context)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+string {\bfseries bl\+\_\+idname} = \char`\"{}render\+\_\+soma.\+progressive\char`\"{}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a9ed073c9322b4d35e68f2b54a60ecae3}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a9ed073c9322b4d35e68f2b54a60ecae3}
+
+\item 
+string {\bfseries bl\+\_\+label} = \char`\"{}Progressive\char`\"{}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a4e9bbe59d56bcf56c89531db50fc3c8c}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a4e9bbe59d56bcf56c89531db50fc3c8c}
+
+\item 
+{\bfseries event\+\_\+timer} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_af82de5dbad3964051238e770b2b69407}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_af82de5dbad3964051238e770b2b69407}
+
+\item 
+{\bfseries timer\+\_\+limits} = bpy.\+props.\+Int\+Property(default=0)\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a85106f8aa8616019392c627af1689ad5}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a85106f8aa8616019392c627af1689ad5}
+
+\item 
+{\bfseries camera\+\_\+progressive} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a642d8c570d130bf104f72e4a336a74fe}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a642d8c570d130bf104f72e4a336a74fe}
+
+\item 
+{\bfseries output\+\_\+directory} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_aa81f2e671d34eebea346e21e71bff9f9}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_aa81f2e671d34eebea346e21e71bff9f9}
+
+\item 
+{\bfseries morphology\+\_\+object} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a99a5361f83cf068fdbc7c4be0790e64d}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a99a5361f83cf068fdbc7c4be0790e64d}
+
+\item 
+{\bfseries meshy\+\_\+soma\+\_\+builder} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a2370a502edae165b0fab7c4ed68b73cf}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a2370a502edae165b0fab7c4ed68b73cf}
+
+\item 
+{\bfseries soma\+\_\+sphere\+\_\+object} = None\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_ac32c155432d8cf32655c2da08ec47a41}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_ac32c155432d8cf32655c2da08ec47a41}
+
+\item 
+{\bfseries min\+\_\+simulation\+\_\+limit} = nmv.\+consts.\+\_\+\+\_\+min\+\_\+simulation\+\_\+frame\+\_\+\+\_\+\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a254ecbb15f0ed9d9fde691a9a9d39801}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a254ecbb15f0ed9d9fde691a9a9d39801}
+
+\item 
+{\bfseries max\+\_\+simulation\+\_\+limit} = nmv.\+consts.\+\_\+\+\_\+max\+\_\+simulation\+\_\+frame\+\_\+\+\_\+\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a12ddde4b7c68f65961efbdf5a15d3b1f}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a12ddde4b7c68f65961efbdf5a15d3b1f}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Render progressive soma reconstruction\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}!cancel@{cancel}}
+\index{cancel@{cancel}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}}
+\subsubsection[{\texorpdfstring{cancel(self, context)}{cancel(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive.\+cancel (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a0336ecc11d4a2ae244907d39a3b855b1}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a0336ecc11d4a2ae244907d39a3b855b1}
+
+
+
+
+\begin{DoxyVerb}Cancel the panel processing and return to the interaction mode.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}!execute@{execute}}
+\index{execute@{execute}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}}
+\subsubsection[{\texorpdfstring{execute(self, context)}{execute(self, context)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive.\+execute (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a782ed3f97b392e55259aeed1537fd286}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a782ed3f97b392e55259aeed1537fd286}
+
+
+
+
+\begin{DoxyVerb}Execute the operator.
+
+:param context: Panel context.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}!load\+\_\+morphology@{load\+\_\+morphology}}
+\index{load\+\_\+morphology@{load\+\_\+morphology}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}}
+\subsubsection[{\texorpdfstring{load\+\_\+morphology(self, scene)}{load_morphology(self, scene)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive.\+load\+\_\+morphology (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{scene}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a5cc0467dbcb4e1482fa7c410691d4794}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a5cc0467dbcb4e1482fa7c410691d4794}
+
+
+
+
+\begin{DoxyVerb}Loads the morphology from file.
+
+:param scene: Scene.
+\end{DoxyVerb}
+ \index{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}!modal@{modal}}
+\index{modal@{modal}!ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive@{ui\+\_\+soft\+\_\+body\+\_\+panel\+::\+Render\+Soma\+Progressive}}
+\subsubsection[{\texorpdfstring{modal(self, context, event)}{modal(self, context, event)}}]{\setlength{\rightskip}{0pt plus 5cm}def ui\+\_\+soft\+\_\+body\+\_\+panel.\+Render\+Soma\+Progressive.\+modal (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{context, }
+\item[{}]{event}
+\end{DoxyParamCaption}
+)}\hypertarget{classui__soft__body__panel_1_1RenderSomaProgressive_a6074218526ca3281715cef7f3c48a93a}{}\label{classui__soft__body__panel_1_1RenderSomaProgressive_a6074218526ca3281715cef7f3c48a93a}
+
+
+
+
+\begin{DoxyVerb}Threading and non-blocking handling.
+
+:param context: Panel context.
+:param event: A given event for the panel.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/abdellah/.\+config/blender/2.\+76/scripts/addons/meshy/neuromorphovis/interface/tmp/ui\+\_\+soft\+\_\+body\+\_\+panel.\+py\end{DoxyCompactItemize}
