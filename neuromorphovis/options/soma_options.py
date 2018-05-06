@@ -32,6 +32,9 @@ class SomaOptions:
         # Subdivision level of the sphere
         self.subdivision_level = nmv.consts.SoftBody.SUBDIVISIONS_DEFAULT
 
+        # Irregular subdivisions for the faces created for extruding the arbors
+        self.irregular_subdivisions = False
+
         # Simulation steps
         self.simulation_steps = nmv.consts.SoftBody.SIMULATION_STEPS_DEFAULT
 

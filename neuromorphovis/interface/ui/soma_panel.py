@@ -84,7 +84,7 @@ class SomaPanel(bpy.types.Panel):
 
     # Ico-sphere subdivision level option
     bpy.types.Scene.SubdivisionLevel = IntProperty(
-        name="Subdivision",
+        name="Subdivisions",
         description="Subdivision level of the ico-sphere (2-10), convenient 4",
         default=4, min=2, max=10)
 
@@ -121,6 +121,12 @@ class SomaPanel(bpy.types.Panel):
     bpy.types.Scene.SomaRenderingProgress = IntProperty(
         name="Soma Rendering Progress",
         default=0, min=0, max=100, subtype='PERCENTAGE')
+
+    # Irregular subdivisions for the faces extruded for emanating the arbors
+    bpy.types.Scene.IrregularSubdivisions = BoolProperty(
+        name="Irregular Subdivisions",
+        description="Make further irregular subdivisions for the faces created for the arbors",
+        default=False)
 
     ################################################################################################
     # @draw
@@ -169,9 +175,12 @@ class SomaPanel(bpy.types.Panel):
         # Ico-sphere subdivision level option
         subdivision_level_row = layout.row()
         subdivision_level_row.prop(context.scene, 'SubdivisionLevel')
+        irregular_subdivisions_row = layout.row()
+        irregular_subdivisions_row.prop(context.scene, 'IrregularSubdivisions')
 
         # Pass options from UI to system
         nmv.interface.ui_options.soma.subdivision_level = context.scene.SubdivisionLevel
+        nmv.interface.ui_options.soma.irregular_subdivisions = context.scene.IrregularSubdivisions
 
         # Simulation steps
         simulation_steps_row = layout.row()

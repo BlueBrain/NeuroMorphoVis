@@ -228,7 +228,7 @@ class SomaBuilder:
             soma_sphere, connection_point_on_soma, extrusion_radius)
 
         # Make a subdivision for extra processing, if the topology is not required to be preserved
-        if not self.preserve_topology_at_connections:
+        if self.options.soma.irregular_subdivisions:
             nmv.bmeshi.ops.subdivide_faces(soma_sphere, faces_indices, cuts=4)
 
         # Get the actual intersecting faces via their indices (this is for smoothing)
@@ -237,6 +237,7 @@ class SomaBuilder:
 
         # If we did not get any faces from the previous operation, then try to get the nearest face
         # This case might happen when the branch is very thin and cannot map to more than one face
+
         if len(faces_indices) < 1:
 
             # Get the nearest face, subdivide it and use it
@@ -297,7 +298,7 @@ class SomaBuilder:
 
         face_center = face.center
         point_0 = face_center + face_center.normalized() * 0.01
-        point_1 = branch.samples[0].point - (face_center.normalized() * 1.0)
+        point_1 = branch.samples[0].point# - (face_center.normalized() * 1.0)
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, vertex_group)
