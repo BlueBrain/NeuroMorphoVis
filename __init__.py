@@ -79,7 +79,8 @@ if "bpy" in locals():
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-    #import neuromorphovis.interface.ui.volume_panel
+
+    import neuromorphovis.neurorender.neurorender
 
     imp.reload(neuromorphovis.interface.ui.io_panel)
     imp.reload(neuromorphovis.interface.ui.analysis_panel)
@@ -93,16 +94,14 @@ else:
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-    #import neuromorphovis.interface.ui.volume_panel
+    import neuromorphovis.neurorender.neurorender
 
 
 ####################################################################################################
 # @register
 ####################################################################################################
 def register():
-    """
-    Register the different modules of the interface.
-    :return:
+    """Register the different modules of the interface.
     """
 
     # Register panels
@@ -113,14 +112,14 @@ def register():
     neuromorphovis.interface.ui.mesh_panel.register_panel()
     #neuromorphovis.interface.ui.volume_panel.register_panel()
 
+    neuromorphovis.neurorender.neurorender.register_panel()
+
 
 ####################################################################################################
 # @unregister
 ####################################################################################################
 def unregister():
-    """
-    Unregister the different modules of the interface.
-    :return:
+    """Unregister the different modules of the interface.
     """
 
     # Un-register panels
@@ -130,6 +129,8 @@ def unregister():
     neuromorphovis.interface.ui.morphology_panel.unregister_panel()
     neuromorphovis.interface.ui.mesh_panel.unregister_panel()
     #neuromorphovis.interface.ui.volume_panel.unregister_panel()
+
+    neuromorphovis.neurorender.neurorender.unregister_panel()
 
 
 ####################################################################################################
