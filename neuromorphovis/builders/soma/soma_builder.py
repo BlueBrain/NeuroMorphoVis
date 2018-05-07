@@ -298,15 +298,14 @@ class SomaBuilder:
 
         face_center = face.center
         point_0 = face_center + face_center.normalized() * 0.01
-        point_1 = branch.samples[0].point# - (face_center.normalized() * 1.0)
+        point_1 = branch.samples[0].point - (face_center.normalized() * 0.55)
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, vertex_group)
 
         # Create the hook and attach it to the vertices
-        hook = nmv.physics.hook.ops.add_hook_to_vertices(soma_sphere_object, vertices_indices,
-            name='hook_%d' % branch.id)
-        #hook = nmv.physics.ops.add_hook_to_vertices()
+        hook = nmv.physics.hook.ops.add_hook_to_vertices(
+            soma_sphere_object, vertices_indices, name='hook_%d' % branch.id)
 
         # The hook is stretched from the center of the face to the branch initial segment point
         # Set the hook positions at the different key frames

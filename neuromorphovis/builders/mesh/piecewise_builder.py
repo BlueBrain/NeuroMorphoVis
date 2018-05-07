@@ -42,6 +42,7 @@ import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
+import neuromorphovis.morphologies
 
 
 ####################################################################################################
@@ -722,206 +723,24 @@ class PiecewiseBuilder:
                 bpy.context.object.data.texspace_size[1] = 5
                 bpy.context.object.data.texspace_size[2] = 5
 
-                # Update the reconstructed_neuron_meshes list to None
-                self.reconstructed_neuron_meshes.append(neuron_mesh)
+                # Update the reconstructed_neuron_meshes list to a single object
+                self.reconstructed_neuron_meshes = [neuron_mesh]
+
+        # Transform the neuron object to the global coordinates
+        if self.options.mesh.global_coordinates:
+
+            nmv.logger.line()
+            nmv.logger.log('Transforming to global coordinates')
+            nmv.logger.line()
+
+            for mesh_object in self.reconstructed_neuron_meshes:
+                nmv.skeleton. ops.transform_to_global(
+                    neuron_object=mesh_object,
+                    blue_config=self.options.morphology.blue_config,
+                    gid=self.options.morphology.gid)
 
         nmv.logger.line()
         nmv.logger.log('Done!')
         nmv.logger.line()
 
         return self.reconstructed_neuron_meshes
-
-
-
-
-
-        # If the beauty mode is selected, then apply the user parameters
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.SMOOTH:
-
-            nmv.logger.line()
-            nmv.logger.log('Connecting arbors to the soma')
-            nmv.logger.line()
-            if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-                nmv.logger.log('\t * Connecting the valida arbors to the soma')
-                self.connect_arbors_to_soma()
-            else:
-                nmv.logger.log('\t * The arbors are NOT connected to the soma, as requested')
-
-            nmv.logger.line()
-            nmv.logger.log('Decimation and connection into a single mesh, if requested')
-            nmv.logger.line()
-
-
-
-            # If decimation is required, we have two cases. The first when the whole object is
-            # connected into one mesh and in the second one when each object is individual object.
-            # For the first case, Apply the decimation function on all the mesh objects, and in the
-            # second one, skip decimating the soma
-            if 0.05 < self.options.mesh.tessellation_level < 1.0:
-                nmv.logger.log('\t * Decimation')
-
-                # Do it mesh by mesh
-                for i, object_mesh in enumerate(self.reconstructed_neuron_meshes):
-
-                    # Update the texture space of the created meshes
-                    object_mesh.select = True
-                    bpy.context.object.data.use_auto_texspace = False
-                    bpy.context.object.data.texspace_size[0] = 5
-                    bpy.context.object.data.texspace_size[1] = 5
-                    bpy.context.object.data.texspace_size[2] = 5
-
-                    # Skip the soma, if the soma is disconnected
-                    if 'soma' in object_mesh.name:
-                        if self.options.mesh.soma_connection == \
-                                nmv.enums.Meshing.SomaConnection.DISCONNECTED:
-                            continue
-
-                    # Show the progress
-                    nmv.utilities.show_progress('\t * Decimating the mesh',
-                                            float(i), float(len(self.reconstructed_neuron_meshes)))
-
-                    # Decimate each mesh object
-                    nmv.mesh.ops.decimate_mesh_object(
-                        mesh_object=object_mesh,
-                        decimation_ratio=self.options.mesh.tessellation_level)
-
-            if self.options.mesh.neuron_objects_connection == \
-                    nmv.enums.Meshing.ObjectsConnection.CONNECTED:
-                nmv.logger.log('\t * Connecting neuron: [%s_mesh]' % self.options.morphology.label)
-
-                # Group all the objects into a single mesh object after the decimation
-                neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-                    mesh_list=self.reconstructed_neuron_meshes,
-                    name='%s_mesh' % self.options.morphology.label)
-
-                # If the meshes are merged into a single object, we must override the texture values
-                # Update the texture space of the created mesh
-                neuron_mesh.select = True
-                bpy.context.object.data.use_auto_texspace = False
-                bpy.context.object.data.texspace_size[0] = 5
-                bpy.context.object.data.texspace_size[1] = 5
-                bpy.context.object.data.texspace_size[2] = 5
-
-                # Update the reconstructed_neuron_mesheslist to None
-                self.reconstructed_neuron_meshes.append(neuron_mesh)
-
-            else:
-                nmv.logger.log('\t * The mesh objects are NOT connected into a single mesh object')
-
-        # Otherwise, apply the beauty measures
-        else:
-
-            nmv.logger.line()
-            nmv.logger.log('Connecting arbors to the soma')
-            nmv.logger.line()
-            nmv.logger.log('\t * Connecting the valida arbors to the soma')
-            self.connect_arbors_to_soma()
-
-            # Compile a list of all the meshes in the scene, they account for the different mesh
-            # objects of the neuron
-            for scene_object in bpy.context.scene.objects:
-                if scene_object.type == 'MESH':
-
-                    # Add the object to the list
-                    self.reconstructed_neuron_meshes.append(scene_object)
-
-            nmv.logger.line()
-            nmv.logger.log('Operations')
-            nmv.logger.line()
-            # Group all the objects into a single mesh object after the decimation
-            nmv.logger.log('\t * Grouping into a single mesh')
-            neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-                mesh_list=self.reconstructed_neuron_meshes,
-                name='%s_mesh' % self.options.morphology.label)
-
-            # Apply the noise function
-            nmv.logger.log('\t * Applying noise')
-
-            # Get the connection extents
-            connection_extents = self.get_connection_extents()
-            stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
-                self.morphology)
-
-            import random
-            for i in range(len(neuron_mesh.data.vertices)):
-                vertex = neuron_mesh.data.vertices[i]
-
-                if random.uniform(0, 1.0) < 0.1:
-                    if nmv.geometry.ops.is_point_inside_sphere(
-                            stable_extent_center, stable_extent_radius, vertex.co):
-                        # Otherwise, shift it
-                        vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
-                        vertex.select = False
-                    else:
-                        # Otherwise, shift it
-                        vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(-0.05, 0.5))
-                        vertex.select = False
-                else:
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
-                    vertex.select = False
-
-
-
-
-
-            # Do it mesh by mesh
-            nmv.logger.log('\t * Decimation')
-            # Decimate each mesh object
-            nmv.mesh.ops.decimate_mesh_object(
-                mesh_object=neuron_mesh,
-                decimation_ratio=self.options.mesh.tessellation_level)
-
-            # Smooth neuron
-            nmv.mesh.ops.smooth_object(neuron_mesh, level=1)
-
-            # If the meshes are merged into a single object, we must override the texture values
-            # Update the texture space of the created mesh
-            nmv.logger.log('\t * Update texturing parameters')
-            neuron_mesh.select = True
-            bpy.context.object.data.use_auto_texspace = False
-            bpy.context.object.data.texspace_size[0] = 5
-            bpy.context.object.data.texspace_size[1] = 5
-            bpy.context.object.data.texspace_size[2] = 5
-
-            # Update the reconstructed_neuron_mesheslist to None
-            self.reconstructed_neuron_meshes.append(neuron_mesh)
-
-        """
-        # If the spines are requested, then attach them to the neuron mesh
-        if self.options.mesh.build_spines:
-
-            # Build the spines and return a list of them
-            spines_objects = nmv.builders.build_circuit_spines(
-                morphology=self.morphology,
-                blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid)
-
-            # Group the spines objects into a single mesh
-            #spines_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=spines_objects, name='spines')
-
-            # Group the spines mesh with the neuron mesh into a single object
-            #neuron_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=[neuron_mesh, spines_mesh],
-            #name='%s_mesh' % self.options.morphology.label)
-        """
-
-
-
-
-
-
-
-
-
-
-
-        # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
-            morphology_geometry_opstransform_to_global(
-                neuron_object=neuron_mesh, blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid)
-
-        # Return a reference to the created neuron mesh
-        return neuron_mesh
