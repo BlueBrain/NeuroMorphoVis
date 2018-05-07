@@ -54,12 +54,18 @@ class SomaBuilder:
     def __init__(self,
                  morphology,
                  options,
+                 full_arbor_extrusion=True,
                  preserve_topology_at_connections=False):
         """
         Constructor.
 
-        :param morphology: A given morphology.
-        :param options: System options.
+        :param morphology:
+            A given morphology.
+        :param options:
+            System options.
+        :param full_arbor_extrusion:
+            A flag to indicate if the faces that correspond to the arbors will be extruded until
+            they hit the initial sample on the root arbor or not.
         """
 
         # Morphology
@@ -73,6 +79,8 @@ class SomaBuilder:
 
         # A list of all the hooks that are created to stretch the soma
         self.hooks_list = None
+
+        self.full_arbor_extrusion = full_arbor_extrusion
 
         # Preserving the topology of the mesh. This flag is used to create high quality meshes
         # with preserved topology to allow smooth connections with arbors in the meshing mode.
@@ -268,8 +276,8 @@ class SomaBuilder:
     ################################################################################################
     # @attach_hook_to_extrusion_face
     ################################################################################################
-    @staticmethod
-    def attach_hook_to_extrusion_face(soma_sphere_object,
+    def attach_hook_to_extrusion_face(self,
+                                      soma_sphere_object,
                                       branch,
                                       extrusion_face_centroid,
                                       vertex_group,
@@ -298,7 +306,10 @@ class SomaBuilder:
 
         face_center = face.center
         point_0 = face_center + face_center.normalized() * 0.01
-        point_1 = branch.samples[0].point - (face_center.normalized() * 0.55)
+        point_1 = branch.samples[0].point
+
+        if not self.full_arbor_extrusion:
+            point_1 -= face_center.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, vertex_group)
@@ -618,8 +629,9 @@ class SomaBuilder:
             extrusion_scale = self.get_branch_extrusion_scale(branch, soma_radius)
 
             # Attach hook to an extrusion face
-            face_index = self.attach_hook_to_extrusion_face(soma_sphere_object, branch,
-                face_centroid, self.vertex_group, self.hooks_list, extrusion_scale)
+            face_index = self.attach_hook_to_extrusion_face(
+                soma_sphere_object, branch, face_centroid, self.vertex_group, self.hooks_list,
+                extrusion_scale)
             faces_indices.append(face_index)
 
 
