@@ -38,8 +38,8 @@ sys.path.append('%s/' % path)
 import file_ops
 
 import neuromorphovis.skeleton
-
 import neuromorphovis.file
+
 
 ####################################################################################################
 # @get_arbors_profile_points

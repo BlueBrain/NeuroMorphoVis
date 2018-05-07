@@ -79,3 +79,9 @@ class Soma:
 
         # Sort the radii in the list
         self.possible_radii = sorted(self.possible_radii)
+
+        # The smallest radius
+        self.smallest_radius = self.possible_radii[0]
+
+        # The largest radius
+        self.largest_radius = self.possible_radii[-1]

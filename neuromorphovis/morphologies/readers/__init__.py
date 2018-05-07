@@ -24,7 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-from .bbp_morphology import *
-from .h5_morphology import *
-from .h5_parser import *
-from .swc_morphology import *
+#from .bbp_morphology import *
+#from .h5_morphology import *
+#from .h5_parser import *
+#from .swc_morphology import *

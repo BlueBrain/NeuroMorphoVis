@@ -96,6 +96,7 @@ def read_morphology_from_file(options):
 
         # Load the .h5 file
         morphology_object = read_h5_morphology(morphology_file_path)
+
     elif 'swc' in morphology_extension:
 
         # Load the .swc file

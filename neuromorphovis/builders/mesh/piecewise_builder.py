@@ -534,6 +534,7 @@ class PiecewiseBuilder:
         """
 
         # Join all the mesh objects (except the spines) of the neuron into a single mesh object
+        nmv.logger.log('\t * Joining meshes')
         neuron_meshes = list()
         for scene_object in bpy.context.scene.objects:
 
@@ -561,25 +562,44 @@ class PiecewiseBuilder:
             self.morphology)
 
         # Apply the noise addition filter
+        nmv.logger.log('\t * Adding noise')
         for i in range(len(neuron_mesh.data.vertices)):
             vertex = neuron_mesh.data.vertices[i]
-
-            if random.uniform(0, 1.0) < 0.1:
-                if nmv.geometry.ops.is_point_inside_sphere(stable_extent_center,
-                        stable_extent_radius, vertex.co):
-                    # Otherwise, shift it
+            if nmv.geometry.ops.is_point_inside_sphere(
+                    stable_extent_center, stable_extent_radius, vertex.co):
+                if nmv.geometry.ops.is_point_inside_sphere(
+                        stable_extent_center, self.morphology.soma.smallest_radius,
+                        vertex.co):
                     vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
+                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
                     vertex.select = False
                 else:
-                    # Otherwise, shift it
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(-0.05, 0.5))
-                    vertex.select = False
+                    if 0.0 < random.uniform(0, 1.0) < 0.1:
+                        vertex.select = True
+                        vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.3))
+                        vertex.select = False
             else:
+
+                value = random.uniform(-0.1, 0.1)
+                if 0.0 < random.uniform(0, 1.0) < 0.045:
+                    value += random.uniform(0.05, 0.1)
+                elif 0.045 < random.uniform(0, 1.0) < 0.06:
+                    value += random.uniform(0.2, 0.4)
                 vertex.select = True
-                vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
+                vertex.co = vertex.co + (vertex.normal * value)
                 vertex.select = False
+
+        # Decimate and smooth for getting the bumps
+        nmv.logger.log('\t * Smoothing')
+
+        # Deselect all the vertices
+        nmv.mesh.ops.deselect_all_vertices(mesh_object=neuron_mesh)
+
+        # Decimate each mesh object
+        nmv.mesh.ops.decimate_mesh_object(mesh_object=neuron_mesh, decimation_ratio=0.5)
+
+        # Smooth each mesh object
+        nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
 
     ################################################################################################
     # @reconstruct_soma_mesh
@@ -615,7 +635,6 @@ class PiecewiseBuilder:
 
         # Apply the shader to the reconstructed soma mesh
         nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
-
 
     ################################################################################################
     # @reconstruct_mesh
@@ -665,19 +684,19 @@ class PiecewiseBuilder:
         else:
             nmv.logger.log('\t * Arbors are NOT connected to the soma')
 
+            # Adding surface roughness
+            if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+                nmv.logger.line()
+                nmv.logger.log('Adding surface roughness')
+                nmv.logger.line()
+                self.add_surface_noise()
+
         # Decimation
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
             nmv.logger.line()
             nmv.logger.log('Decimating the mesh')
             nmv.logger.line()
             self.decimate_neuron_mesh()
-
-        # Adding surface roughness
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.line()
-            nmv.logger.log('Adding surface roughness')
-            nmv.logger.line()
-            self.add_surface_noise()
 
         # Create the spines
         if self.options.mesh.build_spines:
