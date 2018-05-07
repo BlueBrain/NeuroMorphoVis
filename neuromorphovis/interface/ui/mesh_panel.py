@@ -73,7 +73,7 @@ class MeshPanel(bpy.types.Panel):
     bpy.types.Scene.MeshingTechnique = EnumProperty(
         items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
                 'Piecewise Watertight',
-                'Piecewise watertight meshes for each component'),
+                'Extended piecewise watertight meshing with some flexibility to adapt the options'),
                (nmv.enums.Meshing.Technique.BRIDGING,
                 'Bridging (Watertight)',
                 'Create a mesh using the bridging method'),
@@ -652,10 +652,11 @@ class ReconstructNeuronMesh(bpy.types.Operator):
         # Load the morphology
         self.load_morphology(current_scene=context.scene)
 
-        # Create the mesh using one of the implemented meshing technique
+        # Meshing technique
+        meshing_technique = nmv.interface.ui_options.mesh.meshing_technique
+
         # Piece-wise watertight meshing
-        if nmv.interface.ui_options.mesh.meshing_technique == \
-                nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
 
             # Create the mesh builder
             mesh_builder = nmv.builders.PiecewiseBuilder(
@@ -665,7 +666,7 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Bridging
-        elif nmv.interface.ui_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.BRIDGING:
+        elif meshing_technique == nmv.enums.Meshing.Technique.BRIDGING:
 
             # Create the mesh builder
             mesh_builder = nmv.builders.BridgingBuilder(
@@ -675,7 +676,7 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Union
-        elif nmv.interface.ui_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.UNION:
+        elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
 
             # Create the mesh builder
             mesh_builder = nmv.builders.UnionBuilder(

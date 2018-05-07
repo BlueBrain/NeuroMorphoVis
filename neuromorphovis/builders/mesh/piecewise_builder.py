@@ -26,7 +26,7 @@ __status__      = "Production"
 
 
 # System imports
-import copy
+import random, copy
 
 # Blender imports
 import bpy
@@ -239,7 +239,7 @@ class PiecewiseBuilder:
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-            nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        #nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # Primary and secondary branching
         if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
@@ -396,7 +396,7 @@ class PiecewiseBuilder:
 
             # There is an apical dendrite
             if self.morphology.apical_dendrite is not None:
-                nmv.logger.log('\t * Apical dendrite')
+                nmv.logger.log('\t\t * Apical dendrite')
                 nmv.skeleton.ops.connect_arbor_to_soma(
                     self.reconstructed_soma_mesh, self.morphology.apical_dendrite)
 
@@ -405,15 +405,216 @@ class PiecewiseBuilder:
 
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                nmv.logger.log('\t * Dendrite [%d]' % i)
+                nmv.logger.log('\t\t * Dendrite [%d]' % i)
                 nmv.skeleton.ops.connect_arbor_to_soma(
                     self.reconstructed_soma_mesh, basal_dendrite)
 
         # Connecting axon
         if not self.options.morphology.ignore_axon:
-            nmv.logger.log('\t * Axon')
+            nmv.logger.log('\t\t * Axon')
             nmv.skeleton.ops.connect_arbor_to_soma(
                 self.reconstructed_soma_mesh, self.morphology.axon)
+
+    ################################################################################################
+    # @decimate_neuron_mesh
+    ################################################################################################
+    def decimate_neuron_mesh(self):
+        """Decimate the reconstructed neuron mesh"""
+
+        if 0.05 < self.options.mesh.tessellation_level < 1.0:
+            nmv.logger.log('\t * Decimating the neuron')
+
+            # Get a list of all the mesh objects (except the spines) of the neuron
+            neuron_meshes = list()
+            for scene_object in bpy.context.scene.objects:
+
+                # Only for meshes
+                if scene_object.type == 'MESH':
+
+                    # Exclude the spines
+                    if 'spine' in scene_object.name:
+                        continue
+
+                    # Otherwise, add the object to the list
+                    else:
+                        neuron_meshes.append(scene_object)
+
+            # Do it mesh by mesh
+            for i, object_mesh in enumerate(neuron_meshes):
+
+                # Update the texture space of the created meshes
+                object_mesh.select = True
+                bpy.context.object.data.use_auto_texspace = False
+                bpy.context.object.data.texspace_size[0] = 5
+                bpy.context.object.data.texspace_size[1] = 5
+                bpy.context.object.data.texspace_size[2] = 5
+
+                # Skip the soma, if the soma is disconnected
+                if 'soma' in object_mesh.name:
+                    continue
+
+                # Show the progress
+                nmv.utilities.show_progress(
+                    '\t * Decimating the mesh', float(i),float(len(neuron_meshes)))
+
+                # Decimate each mesh object
+                nmv.mesh.ops.decimate_mesh_object(
+                    mesh_object=object_mesh, decimation_ratio=self.options.mesh.tessellation_level)
+
+
+    ################################################################################################
+    # @build_hard_edges_arbors
+    ################################################################################################
+    def build_hard_edges_arbors(self):
+        """Reconstruct the meshes of the arbors of the neuron with HARD edges.
+        """
+
+        # Create a bevel object that will be used to create the mesh
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+
+        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
+        #  soma origin, otherwise extend the arbors to the origin
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            connect_to_soma_origin = False
+        else:
+            connect_to_soma_origin = True
+
+        # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
+        arbors_meshes = self.build_arbors(
+            bevel_object=bevel_object, caps=True, connect_to_soma_origin=connect_to_soma_origin)
+
+        # Close the caps
+        for arbor_object in arbors_meshes:
+            nmv.mesh.close_open_faces(arbor_object)
+
+        # Delete the bevel object
+        nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+    ################################################################################################
+    # @build_soft_edges_arbors
+    ################################################################################################
+    def build_soft_edges_arbors(self):
+        """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
+
+        """
+        # Create a bevel object that will be used to create the mesh with 4 sides only
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=4, name='bevel')
+
+        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
+        #  soma origin, otherwise extend the arbors to the origin
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            connect_to_soma_origin = False
+        else:
+            connect_to_soma_origin = True
+
+        # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
+        arbors_meshes = self.build_arbors(
+            bevel_object=bevel_object, caps=False, connect_to_soma_origin=connect_to_soma_origin)
+
+        # Smooth and close the faces in one step
+        for mesh in arbors_meshes:
+            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
+
+            # Delete the bevel object
+            nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+        # Delete the bevel object
+        nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+    ################################################################################################
+    # @add_surface_noise
+    ################################################################################################
+    def add_surface_noise(self):
+        """Adds noise to the surface of the reconstructed mesh(es).
+
+        NOTE: The surface mesh of the neuron is reconstructed as a set (or list) of meshes
+        representing the soma, different arbors and spines. This operation will JOIN all the
+        objects (except the spines) into a single object only to be able to apply it correctly.
+        """
+
+        # Join all the mesh objects (except the spines) of the neuron into a single mesh object
+        neuron_meshes = list()
+        for scene_object in bpy.context.scene.objects:
+
+            # Only for meshes
+            if scene_object.type == 'MESH':
+
+                # Exclude the spines
+                if 'spine' in scene_object.name:
+                    continue
+
+                # Otherwise, add the object to the list
+                else:
+                    neuron_meshes.append(scene_object)
+
+        # Join all the objects into a single neuron mesh
+        neuron_mesh = nmv.mesh.ops.join_mesh_objects(
+            mesh_list=neuron_meshes,
+            name='%s_mesh_proxy' % self.options.morphology.label)
+
+        # The soma is already reconstructed with high number of subdivisions for accuracy,
+        # and the arbors are reconstructed with minimal number of samples that is sufficient to
+        # make them smooth. Therefore, we must add the noise around the soma and its connections
+        # to the arbors (the stable extent) with a different amplitude.
+        stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
+            self.morphology)
+
+        # Apply the noise addition filter
+        for i in range(len(neuron_mesh.data.vertices)):
+            vertex = neuron_mesh.data.vertices[i]
+
+            if random.uniform(0, 1.0) < 0.1:
+                if nmv.geometry.ops.is_point_inside_sphere(stable_extent_center,
+                        stable_extent_radius, vertex.co):
+                    # Otherwise, shift it
+                    vertex.select = True
+                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
+                    vertex.select = False
+                else:
+                    # Otherwise, shift it
+                    vertex.select = True
+                    vertex.co = vertex.co + (vertex.normal * random.uniform(-0.05, 0.5))
+                    vertex.select = False
+            else:
+                vertex.select = True
+                vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.025))
+                vertex.select = False
+
+    ################################################################################################
+    # @reconstruct_soma_mesh
+    ################################################################################################
+    def reconstruct_soma_mesh(self):
+        """Reconstruct the mesh of the soma.
+
+        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
+        soma profile before the arbors, such that the scene is almost empty.
+
+        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
+        we must use a high number of subdivisions to make smooth connections that look nice,
+        but if the arbors are connected to the soma origin, then we can use less subdivisions
+        since the soma will not be connected to the arbor at all.
+        """
+
+        # If the soma is connected to the root arbors
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            soma_builder_object = nmv.builders.SomaBuilder(
+                morphology=self.morphology,
+                options=self.options,
+                preserve_topology_at_connections=True)
+
+        # Otherwise, ignore
+        else:
+            soma_builder_object = nmv.builders.SomaBuilder(
+                morphology=self.morphology,
+                options=self.options,
+                preserve_topology_at_connections=False)
+
+        # Reconstruct the soma mesh
+        self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+        # Apply the shader to the reconstructed soma mesh
+        nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
+
 
     ################################################################################################
     # @reconstruct_mesh
@@ -422,90 +623,117 @@ class PiecewiseBuilder:
         """Reconstructs the neuronal mesh as a set of piecewise-watertight meshes.
         The meshes are logically connected, but the different branches are intersecting,
         so they can be used perfectly for voxelization purposes, but they cannot be used for
-        surface rendering with transparency.
+        surface rendering with 'transparency'.
         """
-
-        # Verify and repair the morphology
-        self.verify_and_repair_morphology()
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
         self.create_skeleton_materials()
 
+        # Verify and repair the morphology
+        self.verify_and_repair_morphology()
+
         # Build the soma
-        # NOTE: To improve the performance of the soft body physics simulation, reconstruct the
-        # soma profile before the arbors, such that the scene is almost empty.
-        # NOTE: If the soma is requested to be connected to the initial segments of the arbors,
-        # we must use a high number of subdivisions to make smooth connections that look nice,
-        # but if the arbors are connected to the soma origin, then we can use less subdivisions
-        # since the soma will not be connected to the arbor at all.
-        preserve_topology_at_connections = True \
-            if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED \
-            else False
-        soma_builder_object = nmv.builders.SomaBuilder(
-            morphology=self.morphology, options=self.options,
-            preserve_topology_at_connections=preserve_topology_at_connections)
+        self.reconstruct_soma_mesh()
 
-        # Reconstruct the mesh of the soma
-        self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader to the reconstructed soma mesh
-        nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
-
-        nmv.logger.line()
-        nmv.logger.log('Building arbors')
-        nmv.logger.line()
         # There are two techniques for reconstructing the mesh. The first uses sharp edges without
         # any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
         # The other method creates a smoothed mesh with soft edges. In this method, we will use a
         # simplified bevel object with only 'four' vertices and smooth it later using vertices
         # smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
+        nmv.logger.line()
+        nmv.logger.log('Building arbors')
+        nmv.logger.line()
+
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
+            self.build_hard_edges_arbors()
 
-            # Create a default bevel object that will be used to create the mesh
-            bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='bevel')
-
-            # Connect the arbor to the soma origin
-            connect_to_soma_origin = False if self.options.mesh.soma_connection == \
-                                              nmv.enums.Meshing.SomaConnection.CONNECTED \
-                else True
-
-            # Create the arbors using this 16-side bevel object and closed caps (no smoothing)
-            arbors_meshes = self.build_arbors(
-                bevel_object=bevel_object, caps=False,
-                connect_to_soma_origin=connect_to_soma_origin)
-
-            # Close the caps to be able to bridge
-            for arbor_object in arbors_meshes:
-                nmv.mesh.close_open_faces(arbor_object)
-
-            # Delete the bevel object
-            nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-        # Using smooth edges
         elif self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-
-            # Create a bevel object that will be used to create the mesh with 4 sides only
-            bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=4, name='bevel')
-
-            # Connect the arbor to the soma origin
-            connect_to_soma_origin = False if self.options.mesh.soma_connection == \
-                nmv.enums.Meshing.SomaConnection.CONNECTED else True
-
-            # Create the arbors using this 4-side bevel object and open caps (for smoothing)
-            arbors_meshes = self.build_arbors\
-                (bevel_object=bevel_object, caps=False,
-                 connect_to_soma_origin=connect_to_soma_origin)
-
-            # Smooth and close the faces in one step
-            for mesh in arbors_meshes:
-                nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-            # Delete the bevel object
-                nmv.scene.ops.delete_object_in_scene(bevel_object)
+            self.build_soft_edges_arbors()
 
         else:
             nmv.logger.log('ERROR')
+
+        # The arbors are either connected to the soma or not
+        nmv.logger.line()
+        nmv.logger.log('Connecting arbors to soma')
+        nmv.logger.line()
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            nmv.logger.log('\t * Arbors are getting connected to the soma')
+            self.connect_arbors_to_soma()
+        else:
+            nmv.logger.log('\t * Arbors are NOT connected to the soma')
+
+        # Decimation
+        if 0.05 < self.options.mesh.tessellation_level < 1.0:
+            nmv.logger.line()
+            nmv.logger.log('Decimating the mesh')
+            nmv.logger.line()
+            self.decimate_neuron_mesh()
+
+        # Adding surface roughness
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+            nmv.logger.line()
+            nmv.logger.log('Adding surface roughness')
+            nmv.logger.line()
+            self.add_surface_noise()
+
+        # Create the spines
+        if self.options.mesh.build_spines:
+
+            nmv.logger.line()
+            nmv.logger.log('Adding spines')
+            nmv.logger.line()
+
+            # Build the spines and return a list of them
+            spines_objects = nmv.builders.build_circuit_spines(
+                morphology=self.morphology,
+                blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid)
+
+        # Connecting all the mesh objects together in a single object
+        if self.options.mesh.neuron_objects_connection == \
+                nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+
+                nmv.logger.line()
+                nmv.logger.log('Connecting neurons objects')
+                nmv.logger.line()
+
+                nmv.logger.log('\t * Connecting neuron: [%s_mesh]' % self.options.morphology.label)
+
+                # Compile a list of all the meshes in the scene, they account for the different mesh
+                # objects of the neuron
+                for scene_object in bpy.context.scene.objects:
+                    if scene_object.type == 'MESH':
+
+                        # Add the object to the list
+                        self.reconstructed_neuron_meshes.append(scene_object)
+
+                # Group all the objects into a single mesh object after the decimation
+                neuron_mesh = nmv.mesh.ops.join_mesh_objects(
+                    mesh_list=self.reconstructed_neuron_meshes,
+                    name='%s_mesh' % self.options.morphology.label)
+
+                # If the meshes are merged into a single object, we must override the texture values
+                # Update the texture space of the created mesh
+                neuron_mesh.select = True
+                bpy.context.object.data.use_auto_texspace = False
+                bpy.context.object.data.texspace_size[0] = 5
+                bpy.context.object.data.texspace_size[1] = 5
+                bpy.context.object.data.texspace_size[2] = 5
+
+                # Update the reconstructed_neuron_meshes list to None
+                self.reconstructed_neuron_meshes.append(neuron_mesh)
+
+        nmv.logger.line()
+        nmv.logger.log('Done!')
+        nmv.logger.line()
+
+        return self.reconstructed_neuron_meshes
+
+
+
+
 
         # If the beauty mode is selected, then apply the user parameters
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.SMOOTH:
@@ -523,13 +751,7 @@ class PiecewiseBuilder:
             nmv.logger.log('Decimation and connection into a single mesh, if requested')
             nmv.logger.line()
 
-            # Compile a list of all the meshes in the scene, they account for the different mesh
-            # objects of the neuron
-            for scene_object in bpy.context.scene.objects:
-                if scene_object.type == 'MESH':
 
-                    # Add the object to the list
-                    self.reconstructed_neuron_meshes.append(scene_object)
 
             # If decimation is required, we have two cases. The first when the whole object is
             # connected into one mesh and in the second one when each object is individual object.
@@ -667,6 +889,7 @@ class PiecewiseBuilder:
             # Update the reconstructed_neuron_mesheslist to None
             self.reconstructed_neuron_meshes.append(neuron_mesh)
 
+        """
         # If the spines are requested, then attach them to the neuron mesh
         if self.options.mesh.build_spines:
 
@@ -682,12 +905,9 @@ class PiecewiseBuilder:
             # Group the spines mesh with the neuron mesh into a single object
             #neuron_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=[neuron_mesh, spines_mesh],
             #name='%s_mesh' % self.options.morphology.label)
+        """
 
-        nmv.logger.line()
-        nmv.logger.log('Done!')
-        nmv.logger.line()
 
-        return self.reconstructed_neuron_meshes
 
 
 

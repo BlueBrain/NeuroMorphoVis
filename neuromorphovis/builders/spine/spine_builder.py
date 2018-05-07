@@ -191,7 +191,7 @@ def build_circuit_spines(morphology,
     # Create a timer to report the performance
     building_timer = nmv.utilities.timer.Timer()
 
-    nmv.logger.log('Building spines')
+    nmv.logger.log('\t *Building spines')
     building_timer.start()
 
     # Load the synapses from the file
