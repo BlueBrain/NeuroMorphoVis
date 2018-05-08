@@ -39,7 +39,9 @@ class Logger:
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self, path=None, print_stdout=True):
+    def __init__(self,
+                 path=None,
+                 print_stdout=True):
         """Constructor
 
         :param path:
@@ -101,7 +103,6 @@ class Logger:
     ################################################################################################
     def line(self):
         """Add a line to stdout.
-        :return:
         """
 
         # Print the line message to stdout
@@ -117,3 +118,16 @@ class Logger:
 
         # Close the log file
         log_file.close()
+
+    ################################################################################################
+    # @log_header
+    ################################################################################################
+    def log_header(self, *args):
+        """Log a header.
+
+        :param args:
+            Input arguments.
+        """
+        self.line()
+        self.log(args)
+        self.line()

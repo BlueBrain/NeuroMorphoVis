@@ -24,7 +24,6 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-
 # System imports
 import random, copy
 
@@ -99,13 +98,15 @@ class PiecewiseBuilder:
     def create_materials(self,
                          name,
                          color):
-        """
-        Creates just two materials of the mesh on the input parameters of the user.
+        """Creates just two materials of the mesh on the input parameters of the user.
 
-        :param name: The name of the material/color.
-        :param color: The code of the given colors.
-        :return: A list of two elements (different or same colors) where we can apply later to
-        the drawn sections or segments.
+        :param name:
+            The name of the material/color.
+        :param color:
+            The code of the given colors.
+        :return:
+            A list of two elements (different or same colors) where we can apply later to the drawn
+            sections or segments.
         """
 
         # A list of the created materials
@@ -128,8 +129,7 @@ class PiecewiseBuilder:
     # @create_skeleton_materials
     ################################################################################################
     def create_skeleton_materials(self):
-        """
-        Create the materials of the skeleton.
+        """Create the materials of the skeleton.
         """
 
         for material in bpy.data.materials:
@@ -165,8 +165,7 @@ class PiecewiseBuilder:
     # @verify_and_repair_morphology
     ################################################################################################
     def verify_and_repair_morphology(self):
-        """
-        Verifies and repairs the morphology if the contain any artifacts that would potentially
+        """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
         """
 
@@ -213,8 +212,7 @@ class PiecewiseBuilder:
                      bevel_object,
                      caps,
                      connect_to_soma_origin):
-        """
-        Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
+        """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
 
@@ -330,15 +328,13 @@ class PiecewiseBuilder:
     # @connect_arbors_to_soma
     ################################################################################################
     def connect_arbors_to_soma(self):
-        """
-        Connects the root section of a given arbor to the soma at its initial segment.
+        """Connects the root section of a given arbor to the soma at its initial segment.
+
         This function checks if the arbor mesh is 'logically' connected to the soma or not,
         following to the initial validation steps that determines if the arbor has a valid
         connection point to the soma or not.
         If the arbor is 'logically' connected to the soma, this function returns immediately.
         The arbor is a Section object, see Section() @ section.py.
-
-        :return:
         """
 
         # Connecting apical dendrite
@@ -369,7 +365,8 @@ class PiecewiseBuilder:
     # @decimate_neuron_mesh
     ################################################################################################
     def decimate_neuron_mesh(self):
-        """Decimate the reconstructed neuron mesh"""
+        """Decimate the reconstructed neuron mesh.
+        """
 
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
             nmv.logger.log('\t * Decimating the neuron')
@@ -445,7 +442,6 @@ class PiecewiseBuilder:
     ################################################################################################
     def build_soft_edges_arbors(self):
         """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
-
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=4, name='bevel')
@@ -617,9 +613,7 @@ class PiecewiseBuilder:
         # The other method creates a smoothed mesh with soft edges. In this method, we will use a
         # simplified bevel object with only 'four' vertices and smooth it later using vertices
         # smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
-        nmv.logger.line()
-        nmv.logger.log('Building arbors')
-        nmv.logger.line()
+        nmv.logger.log_header('Building arbors')
 
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
             self.build_hard_edges_arbors()
@@ -631,9 +625,7 @@ class PiecewiseBuilder:
             nmv.logger.log('ERROR')
 
         # The arbors are either connected to the soma or not
-        nmv.logger.line()
-        nmv.logger.log('Connecting arbors to soma')
-        nmv.logger.line()
+        nmv.logger.log_header('Connecting arbors to soma')
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
             nmv.logger.log('\t * Arbors are getting connected to the soma')
             self.connect_arbors_to_soma()
@@ -642,16 +634,12 @@ class PiecewiseBuilder:
 
         # Adding surface roughness
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.line()
-            nmv.logger.log('Adding surface roughness')
-            nmv.logger.line()
+            nmv.logger.log_header('Adding surface roughness')
             self.add_surface_noise()
 
         # Decimation
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
-            nmv.logger.line()
-            nmv.logger.log('Decimating the mesh')
-            nmv.logger.line()
+            nmv.logger.log_header('Decimating the mesh')
             self.decimate_neuron_mesh()
 
         # Integrated spines
@@ -660,10 +648,7 @@ class PiecewiseBuilder:
 
         # Disconnected spines
         elif self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.DISCONNECTED:
-
-            nmv.logger.line()
-            nmv.logger.log('Adding spines')
-            nmv.logger.line()
+            nmv.logger.log_header('Adding spines')
 
             # Build the spines and return a list of them
             spines_objects = nmv.builders.build_circuit_spines(
@@ -683,9 +668,7 @@ class PiecewiseBuilder:
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
-                nmv.logger.line()
-                nmv.logger.log('Connecting neurons objects')
-                nmv.logger.line()
+                nmv.logger.log_header('Connecting neurons objects')
 
                 nmv.logger.log('\t * Connecting neuron: [%s_mesh]' % self.options.morphology.label)
 
@@ -715,10 +698,7 @@ class PiecewiseBuilder:
 
         # Transform the neuron object to the global coordinates
         if self.options.mesh.global_coordinates:
-
-            nmv.logger.line()
-            nmv.logger.log('Transforming to global coordinates')
-            nmv.logger.line()
+            nmv.logger.log_header('Transforming to global coordinates')
 
             for mesh_object in self.reconstructed_neuron_meshes:
                 nmv.skeleton. ops.transform_to_global(
@@ -726,8 +706,6 @@ class PiecewiseBuilder:
                     blue_config=self.options.morphology.blue_config,
                     gid=self.options.morphology.gid)
 
-        nmv.logger.line()
-        nmv.logger.log('Done!')
-        nmv.logger.line()
+        nmv.logger.log_header('Done!')
 
         return self.reconstructed_neuron_meshes
