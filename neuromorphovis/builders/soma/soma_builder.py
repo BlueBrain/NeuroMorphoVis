@@ -45,7 +45,8 @@ import neuromorphovis.utilities
 ####################################################################################################
 class SomaBuilder:
     """A robust factory for reconstructing a three-dimensional profile of neuronal somata on a
-    physically-plausible basis using soft body objects and the physics engine of Blender.
+    physically-plausible basis using soft body objects, Hooke's law and the physics engine of
+    Blender.
     """
 
     ################################################################################################
@@ -56,8 +57,7 @@ class SomaBuilder:
                  options,
                  full_arbor_extrusion=True,
                  preserve_topology_at_connections=False):
-        """
-        Constructor.
+        """Constructor
 
         :param morphology:
             A given morphology.
@@ -80,6 +80,7 @@ class SomaBuilder:
         # A list of all the hooks that are created to stretch the soma
         self.hooks_list = None
 
+        # If this flag is set, the faces will be extruded EXACTLY to the first sample on the root
         self.full_arbor_extrusion = full_arbor_extrusion
 
         # Preserving the topology of the mesh. This flag is used to create high quality meshes
@@ -98,13 +99,15 @@ class SomaBuilder:
     @staticmethod
     def get_branch_extrusion_scale(branch,
                                    soma_radius):
-        """
-        Compute the ratio between the radius of the branch (or arbor) at the initial segment and
+        """Compute the ratio between the radius of the branch (or arbor) at the initial segment and
         its mapping on the initial ico-sphere that is used to reconstruct the soma.
 
-        :param branch: The branch (or arbor) that we need to compute the extrusion scale for.
-        :param soma_radius: The radius of the initial ico-sphere that represent the soma.
-        :return: The ratio between the given soma radius and the extrusion radius of the branch.
+        :param branch:
+            The branch (or arbor) that we need to compute the extrusion scale for.
+        :param soma_radius:
+            The radius of the initial ico-sphere that represent the soma.
+        :return:
+            The ratio between the given soma radius and the extrusion radius of the branch.
         """
 
         # Compute the scale factor that will be applied on the initial sphere representing the soma
@@ -126,17 +129,21 @@ class SomaBuilder:
                                             profile_point,
                                             profile_point_index,
                                             visualize_connection=False):
-        """
-        To reshape the soma based on the profile points, we will extrude only towards the points
+        """To reshape the soma based on the profile points, we will extrude only towards the points
         that do not have any intersections with the branches to improve the realism of the soma.
 
-        :param soma_sphere: The ico-sphere that represent the initial shape of the soma.
-        :param soma_radius: The radius of the ico-sphere that reflect the initial shape of the soma.
-        :param profile_point: A given two-dimensional profile point of the soma.
-        :param profile_point_index: The index of the given profile point.
-        :param visualize_connection: Add a sphere to represent the connection between the profile
-        point and the soma.
-        :return: The centroid of the created extrusion face.
+        :param soma_sphere:
+            The ico-sphere that represent the initial shape of the soma.
+        :param soma_radius:
+            The radius of the ico-sphere that reflect the initial shape of the soma.
+        :param profile_point:
+            A given two-dimensional profile point of the soma.
+        :param profile_point_index:
+            The index of the given profile point.
+        :param visualize_connection:
+            Add a sphere to represent the connection between the profile point and the soma.
+        :return:
+            The centroid of the created extrusion face.
         """
 
         # Compute the direction from the origin to the profile point
@@ -183,17 +190,21 @@ class SomaBuilder:
                                      soma_radius,
                                      branch,
                                      visualize_connection=False):
-        """
-        Builds a connecting extrusion face for emanating the branch from the soma. This function
-        returns the centroid of the face to be a basis for building the branch itself later and
-        attaching it to the soma.
+        """Build a connecting extrusion face for emanating the branch from the soma.
 
-        :param soma_sphere: The ico-sphere that represent the initial shape of the soma.
-        :param soma_radius: The radius of the ico-sphere that reflect the initial shape of the soma.
-        :param branch: The branch where the extrusion will happen.
-        :param visualize_connection: Add a sphere to represent the connection between the branch
-        and the soma.
-        :return: The centroid of the created extrusion face.
+        This function returns the centroid of the face to be a basis for building the branch
+        itself later and attaching it to the soma.
+
+        :param soma_sphere:
+            The ico-sphere that represent the initial shape of the soma.
+        :param soma_radius:
+            The radius of the ico-sphere that reflect the initial shape of the soma.
+        :param branch:
+            The branch where the extrusion will happen.
+        :param visualize_connection:
+            Add a sphere to represent the connection between the branch and the soma.
+        :return:
+            The centroid of the created extrusion face.
         """
 
         # Compute the direction from the origin to the branching point
@@ -237,7 +248,7 @@ class SomaBuilder:
 
         # Make a subdivision for extra processing, if the topology is not required to be preserved
         if self.options.soma.irregular_subdivisions:
-            nmv.bmeshi.ops.subdivide_faces(soma_sphere, faces_indices, cuts=4)
+            nmv.bmeshi.ops.subdivide_faces(soma_sphere, faces_indices, cuts=1)
 
         # Get the actual intersecting faces via their indices (this is for smoothing)
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_fully_intersecting_sphere(
@@ -283,8 +294,7 @@ class SomaBuilder:
                                       vertex_group,
                                       hooks_list,
                                       extrusion_scale):
-        """
-        Attaches a hook to the extrusion face and locate it at the different keyframes.
+        """Attache a hook to the extrusion face and locate it at the different keyframes.
 
         :param soma_sphere_object:
         :param branch:
@@ -307,9 +317,10 @@ class SomaBuilder:
         face_center = face.center
         point_0 = face_center + face_center.normalized() * 0.01
         point_1 = branch.samples[0].point
+        #
 
         if not self.full_arbor_extrusion:
-            point_1 -= face_center.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
+            point_1 = point_1 - face_center.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, vertex_group)
@@ -396,15 +407,17 @@ class SomaBuilder:
     ################################################################################################
     def build_soma_based_on_profile_points_only(self,
                                                 apply_shader=True):
-        """
-        Reconstructs a three-dimensional profile of the soma based on the profile points only.
+        """Reconstruct a three-dimensional profile of the soma based on the profile points only.
+
         This function is quite helpful for testing the reconstructed projection with the profile
         of the soma.
 
-        :param apply_shader: Apply the given soma shader in the configuration. This flag will be
-        set to False when the soma is created in another builder such as the skeleton builder or
-        the piecewise mesh builder.
-        :return: A reference to the reconstructed soma.
+        :param apply_shader:
+            Apply the given soma shader in the configuration. This flag will be set to False when
+            the soma is created in another builder such as the skeleton builder or the piecewise
+            mesh builder.
+        :return:
+            A reference to the reconstructed soma.
         """
 
         # Get thea reference to the soma from the morphology
@@ -496,16 +509,17 @@ class SomaBuilder:
     ################################################################################################
     def build_soma_soft_body(self,
                              apply_shader=True):
-        """
-        Builds the soma based on soft-body simulation and Hooke's law.
-        The building process ASSUMES non-overlapping and too faraway branches.
-        TODO: Consider the profile points that are not intersecting with the other branches.
+        """Build the soma based on soft-body simulation and Hooke's law.
 
-        :param apply_shader: Apply the given soma shader in the configuration. This flag will be
-        set to False when the soma is created in another builder such as the skeleton builder or
-        the piecewise mesh builder.
-        :return The soft body object after the deformation. This object will be used later to build
-        the soma mesh.
+        The building process ASSUMES non-overlapping and too faraway branches.
+
+        :param apply_shader:
+            Apply the given soma shader in the configuration. This flag will be set to False when
+            the soma is created in another builder such as the skeleton builder or the piecewise
+            mesh builder.
+        :return
+            The soft body object after the deformation. This object will be used later to build
+            the soma mesh.
         """
 
         # Soma, and its radius
@@ -669,14 +683,16 @@ class SomaBuilder:
     ################################################################################################
     def build_soma_mesh_from_soft_body_object(self,
                                               soft_body_object):
-        """
-        The soma is reconstructed in two steps. The first builds the soft body object and then
+        """The soma is reconstructed in two steps. The first builds the soft body object and then
         the mesh is obtained by converting the soft body object into a watertight mesh.
+
         This function assumes that the soft body object was created in a previous step and
         converts this object into a mesh.
 
-        :param soft_body_object: A soft body object that reflects the profile of the soma.
-        :return: A reference to the soma mesh.
+        :param soft_body_object:
+            A soft body object that reflects the profile of the soma.
+        :return:
+            A reference to the soma mesh.
         """
 
         # Convert the object to a mesh
@@ -697,14 +713,16 @@ class SomaBuilder:
     ################################################################################################
     # @reconstruct_soma_mesh
     ################################################################################################
-    def reconstruct_soma_mesh(self, apply_shader=True):
-        """
-        Reconstructs the mesh of the soma of the neuron in a single step.
+    def reconstruct_soma_mesh(self,
+                              apply_shader=True):
+        """Reconstructs the mesh of the soma of the neuron in a single step.
 
-        :param apply_shader: Apply the given soma shader in the configuration. This flag will be
-        set to False when the soma is created in another builder such as the skeleton builder or
-        the piecewise mesh builder.
-        :return: A reference to the reconstructed mesh of the soma.
+        :param apply_shader:
+            Apply the given soma shader in the configuration. This flag will be set to False when
+            the soma is created in another builder such as the skeleton builder or the piecewise
+            mesh builder.
+        :return:
+            A reference to the reconstructed mesh of the soma.
         """
 
         # Build the soft body of the soma
@@ -732,15 +750,17 @@ class SomaBuilder:
     ################################################################################################
     # @reconstruct_soma_profile_mesh
     ################################################################################################
-    def reconstruct_soma_profile_mesh(self, apply_shader=True):
-        """
-        Reconstructs the mesh of the soma of the neuron in a single step based on the profile
+    def reconstruct_soma_profile_mesh(self,
+                                      apply_shader=True):
+        """Reconstruct the mesh of the soma of the neuron in a single step based on the profile
         points only.
 
-        :param apply_shader: Apply the given soma shader in the configuration. This flag will be
-        set to False when the soma is created in another builder such as the skeleton builder or
-        the piecewise mesh builder.
-        :return: A reference to the reconstructed mesh of the soma.
+        :param apply_shader:
+            Apply the given soma shader in the configuration. This flag will be set to False when
+            the soma is created in another builder such as the skeleton builder or the piecewise
+            mesh builder.
+        :return:
+            A reference to the reconstructed mesh of the soma.
         """
 
         # Build the soft body of the soma

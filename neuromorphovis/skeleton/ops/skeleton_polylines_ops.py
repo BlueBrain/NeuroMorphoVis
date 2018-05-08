@@ -202,7 +202,8 @@ def get_connected_sections_poly_line(section,
                     radius = section.samples[0].radius
 
                     # Add the bridging sample
-                    point = section.samples[0].point - 0.5 * direction
+                    point = section.samples[0].point -\
+                            (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
 
                     # Append the sample to the list
                     poly_line.append([(point[0], point[1], point[2], 1), radius])
@@ -416,7 +417,8 @@ def get_disconnected_skeleton_sections_poly_line(section,
                 initial_sample = transform * Vector((0, 0, 0)) + direction
 
                 # Bridging sample
-                bridging_sample = section.samples[0].point - 0.5 * direction
+                bridging_sample = section.samples[0].point - \
+                                  (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
 
                 # Sample radius
                 radius = section.samples[0].radius

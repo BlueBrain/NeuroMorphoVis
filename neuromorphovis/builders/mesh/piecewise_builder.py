@@ -617,9 +617,9 @@ class PiecewiseBuilder:
         """
 
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            full_arbor_extrusion = True
-        else:
             full_arbor_extrusion = False
+        else:
+            full_arbor_extrusion = True
 
         # If the soma is connected to the root arbors
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
