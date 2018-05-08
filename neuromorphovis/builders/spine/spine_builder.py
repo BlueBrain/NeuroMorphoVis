@@ -211,12 +211,6 @@ def build_circuit_spines(morphology,
         pre_position = synapse.pre_center_position()
         post_position = synapse.post_center_position()
 
-        # Convert them to a mathutils.Vector
-        """
-        pre_position = Vector((pre_position.x(), pre_position.y(), pre_position.z()))
-        post_position = Vector((post_position.x(), post_position.y(), post_position.z()))
-        """
-
         # Transform the spine positions to the circuit coordinates
         pre_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
         post_position = Vector((post_position[0], post_position[1], post_position[2]))

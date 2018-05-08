@@ -671,11 +671,14 @@ class PiecewiseBuilder:
                 blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid)
 
-            # Group the spine objects in a single object
-            spines_mesh = nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
+            # Color the spines
+            for spine_object in spines_objects:
 
-            # Apply the shader to each spine mesh
-            nmv.shading.set_material_to_object(spines_mesh, self.spines_colors[0])
+                # Apply the shader to each spine mesh
+                nmv.shading.set_material_to_object(spine_object, self.spines_colors[0])
+
+            # Group the spine objects in a single object
+            nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
 
         # Ignore spines
         else:
