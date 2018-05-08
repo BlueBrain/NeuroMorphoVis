@@ -647,11 +647,11 @@ class PiecewiseBuilder:
             self.decimate_neuron_mesh()
 
         # Integrated spines
-        if self.options.mesh.spines == nmv.enums.Meshing.Spines.INTEGRATED:
+        if self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.INTEGRATED:
             pass
 
         # Disconnected spines
-        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.DISCONNECTED:
+        elif self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.DISCONNECTED:
 
             nmv.logger.line()
             nmv.logger.log('Adding spines')
