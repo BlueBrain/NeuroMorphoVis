@@ -37,19 +37,41 @@ class SlurmConfiguration:
         Constructor
         """
 
-        empty = ''
+        # Job name
         self.job_name = 'MSH'
+
+        # Job number
         self.job_number = 0
+
+        # Number of requested nodes for the job
         self.num_nodes = 1
+
+        # Number of tasks per node
         self.num_tasks_per_node = 1
+
+        # Number of CPUs required to run the task
         self.num_cpus_per_task = 1
+
+        # Running partition
         self.partition = 'prod'
+
+        # Required memory
         self.memory_mb = '3000'
+
+        # Session time
         self.session_time = '1:00:00'
+
+        # Session profile
         self.profile = '. /etc/profile'
-        #self.modules = ['nix/python/3.6-full',
-        #                'nix/blender/2.79-nantille',
-        #                'nix/viz/brion-py3/3.0-dev2017.10']
-        self.modules = ['BBP/viz/latest']
-        self.execution_directory = empty
-        self.logs_directory = empty
+
+        # Modules
+        # self.modules = ['nix/python/3.6-full',
+        #                 'nix/blender/2.79-nantille',
+        #                 'nix/viz/brion-py3/3.0-dev2017.10']
+        self.modules = ['BBP/Vis/latest']
+
+        # Execution directory where the scripts will run
+        self.execution_directory = ''
+
+        # Logs directory, where the logs will be written
+        self.logs_directory = ''

@@ -460,6 +460,8 @@ def set_material_to_object(mesh_object,
         The material to be assigned to the object.
     """
 
-    # assign the material to the given object.
+    # Clear the previous materials assigned to this mesh object
     mesh_object.data.materials.clear()
+
+    # Assign the material to the given object.
     mesh_object.data.materials.append(material_reference)
