@@ -195,7 +195,7 @@ def create_batch_job_script_for_gid(arguments,
 
     # Log directory
     slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
-                                             paths_consts.SLURM_LOGS_FOLDER)
+                                             paths_consts.Paths.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -207,7 +207,8 @@ def create_batch_job_script_for_gid(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
+                                      paths_consts.Paths.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(slurm_jobs_directory, gid, batch_job_config_string)
 
 
@@ -239,7 +240,7 @@ def create_batch_job_script_for_multiple_gids(arguments,
 
     # Log directory
     slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
-                                             paths_consts.SLURM_LOGS_FOLDER)
+                                             paths_consts.Paths.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -254,12 +255,13 @@ def create_batch_job_script_for_multiple_gids(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
+                                      paths_consts.Paths.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(slurm_jobs_directory, script_id, batch_job_config_string)
 
 
 ####################################################################################################
-# @create_batch_job_script_for_gid
+# @create_batch_job_script_for_morphology_file
 ####################################################################################################
 def create_batch_job_script_for_morphology_file(arguments,
                                                 morphology_file):
@@ -283,7 +285,7 @@ def create_batch_job_script_for_morphology_file(arguments,
 
     # Log directory
     slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
-                                             paths_consts.SLURM_LOGS_FOLDER)
+                                             paths_consts.Paths.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -296,7 +298,8 @@ def create_batch_job_script_for_morphology_file(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
+                                      paths_consts.Paths.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(
         slurm_jobs_directory, morphology_file, batch_job_config_string)
 
@@ -389,7 +392,8 @@ def run_gid_jobs_on_cluster(arguments,
 
     # Submit the jobs
     # TODO: Add an option for the user
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
+                                      paths_consts.Paths.SLURM_JOBS_FOLDER)
     submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=slurm_jobs_directory)
 
 
@@ -414,6 +418,7 @@ def run_morphology_files_jobs_on_cluster(arguments,
 
     # Submit the jobs
     # TODO: Add an option for the user
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
+                                      paths_consts.Paths.SLURM_JOBS_FOLDER)
     submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=slurm_jobs_directory)
 

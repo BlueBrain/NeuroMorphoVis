@@ -129,6 +129,9 @@ def run_cluster_neuromorphovis(arguments):
     # Use a specific circuit target
     if arguments.input == 'target':
 
+        # Log
+        print('Loading a target [%s] in circuit [%s]' % (arguments.target, arguments.blue_config))
+
         # Ensure a valid blue config and a target
         if arguments.blue_config is None or arguments.target is None:
             print('ERROR: Empty circuit configuration file or target')
@@ -152,6 +155,8 @@ def run_cluster_neuromorphovis(arguments):
 
     # Use a single GID
     elif arguments.input == 'gid':
+
+        print('Loading a gid [%s] in circuit [%s]' % (str(arguments.gid), arguments.blue_config))
 
         # Ensure a valid blue config and a GID
         if arguments.blue_config is None or arguments.gid is None:

@@ -645,7 +645,7 @@ def get_arguments_string_for_individual_gid(arguments,
     # Compose the arguments string
     arguments_string = ''
     for string in arguments_string_list:
-        arguments_string += '\t' + string + '\\' + '\n'
+        arguments_string += ' ' + string
 
     # Return the arguments string
     return arguments_string
@@ -673,7 +673,7 @@ def create_executable_for_single_morphology_file(arguments,
     cli_interface = '%s/cli_interface.py' % os.path.dirname(os.path.realpath(__file__))
 
     # Setup the shell command
-    shell_command = '%s -b --verbose 0 \n\t --python %s -- %s' % \
+    shell_command = '%s -b --verbose 0 --python %s -- %s' % \
                     (arguments.blender, cli_interface, arguments_string)
 
     # Return the shell command
@@ -703,7 +703,7 @@ def create_executable_for_single_gid(arguments,
     cli_interface = '%s/cli_interface.py' % os.path.dirname(os.path.realpath(__file__))
 
     # Setup the shell command
-    shell_command = '%s -b --verbose 0 --python %s -- \\\n%s' % (
+    shell_command = '%s -b --verbose 0 --python %s -- %s' % (
         arguments.blender, cli_interface, arguments_string)
 
     # Return the shell command

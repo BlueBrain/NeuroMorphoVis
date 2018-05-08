@@ -38,7 +38,7 @@ class SlurmConfiguration:
         """
 
         # Job name
-        self.job_name = 'MSH'
+        self.job_name = 'NMV'
 
         # Job number
         self.job_number = 0
@@ -68,7 +68,7 @@ class SlurmConfiguration:
         # self.modules = ['nix/python/3.6-full',
         #                 'nix/blender/2.79-nantille',
         #                 'nix/viz/brion-py3/3.0-dev2017.10']
-        self.modules = ['BBP/Vis/latest']
+        self.modules = ['BBP/viz/latest']
 
         # Execution directory where the scripts will run
         self.execution_directory = ''

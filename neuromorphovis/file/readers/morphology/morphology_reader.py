@@ -132,8 +132,7 @@ def load_from_circuit(options):
 
     import neuromorphovis.morphologies.readers
 
-    morphology_object = neuromorphovis.morphologies.readers. \
-        load_morphology_from_gid(
+    morphology_object = neuromorphovis.file.BBPReader.load_morphology_from_circuit(
         blue_config=options.morphology.blue_config, gid=options.morphology.gid)
 
     # If the morphology object is None, return False

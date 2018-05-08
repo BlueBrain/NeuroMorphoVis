@@ -107,10 +107,6 @@ def proceed_morphology_reconstruction_visualization(cli_morphology,
     if cli_options.morphology.render_progressive:
         pass
 
-
-
-
-
     # Render the projections of the morphology
     if options.morphology.render_full_view:
 
@@ -187,9 +183,6 @@ def proceed_morphology_reconstruction_visualization(cli_morphology,
             exporters.export_mesh_object(None,
                 options.output.morphologies_directory, options.morphology.label,
                 blend=options.morphology.export_blend)
-
-
-
 
 
 ####################################################################################################
@@ -510,7 +503,7 @@ if __name__ == "__main__":
     sys.argv = args[args.index("--") + 1:]
 
     # Parse the command line arguments, filter them and report the errors
-    arguments = interface.cli.parse_command_line_arguments()
+    arguments = nmv.interface.cli.parse_command_line_arguments()
 
     # Verify the output directory before screwing things !
     if not nmv.file.ops.path_exists(arguments.output_directory):
@@ -530,8 +523,9 @@ if __name__ == "__main__":
     if arguments.input == 'gid':
 
         # Load the morphology from the file
-        loading_flag, cli_morphology = nmv.file.readers.read_morphology_from_file(
-            options=nmv.interface.ui_options)
+        loading_flag, cli_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
+            blue_config = cli_options.morphology.blue_config,
+            gid = cli_options.morphology.gid)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the GID [%s] from the circuit [%s]' %
@@ -576,7 +570,7 @@ if __name__ == "__main__":
 
         # Neuron mesh reconstruction and visualization
         proceed_neuron_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
-                                                      cli_options=cli_options)
+                                                         cli_options=cli_options)
 
     exit(0)
     ################################################################################################
