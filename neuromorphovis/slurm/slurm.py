@@ -28,16 +28,15 @@ __status__      = "Production"
 import sys, os, subprocess, time
 
 # Add other modules
+sys.path.append("%s/../consts" % os.path.dirname(os.path.realpath(__file__)))
 sys.path.append("%s/../file" % os.path.dirname(os.path.realpath(__file__)))
 sys.path.append("%s/../interface" % os.path.dirname(os.path.realpath(__file__)))
-sys.path.append("%s/../shared" % os.path.dirname(os.path.realpath(__file__)))
 
 # Internal modules
 import arguments_parser
 import file_ops
+import paths_consts
 import slurm_configuration
-
-import neuromorphovis.consts
 
 
 ####################################################################################################
@@ -65,13 +64,14 @@ def squeue():
 # @get_current_number_jobs_for_user
 ####################################################################################################
 def get_current_number_jobs_for_user(user_name):
-    """
-    Get the current number of jobs running on the cluster for a specific user identified by his
+    """Get the current number of jobs running on the cluster for a specific user identified by his
     user name.
 
-    :param user_name: The user name of the user.
-    :return: The current number of jobs running on the cluster for a specific user identified by his
-    user name.
+    :param user_name:
+        The user name of the user.
+    :return:
+        The current number of jobs running on the cluster for a specific user identified by his
+        user name.
     """
 
     number_jobs = 0
@@ -86,11 +86,12 @@ def get_current_number_jobs_for_user(user_name):
 # @create_batch_job_config_string
 ####################################################################################################
 def create_batch_job_config_string(slurm_config):
-    """
-    Creates a string header for the batch job.
+    """Create a string header for the batch job.
 
-    :param slurm_config : SLURM configuration parameters.
-    :rtype Batch configuration string.
+    :param slurm_config :
+        SLURM configuration parameters.
+    :rtype
+        Batch configuration string.
     """
 
     # This is for compactness !
@@ -174,11 +175,12 @@ def create_batch_job_config_string(slurm_config):
 ####################################################################################################
 def create_batch_job_script_for_gid(arguments,
                                     gid):
-    """
-    Creates a batch job file for a neuron with specific GID.
+    """Create a batch job file for a neuron with specific GID.
 
-    :param arguments: Command line arguments.
-    :param gid: Neuron GID.
+    :param arguments:
+        Command line arguments.
+    :param gid:
+        Neuron GID.
     """
 
     # Create slurm configuration
@@ -192,8 +194,8 @@ def create_batch_job_script_for_gid(arguments,
     slurm_config.execution_directory = '%s' % arguments.output_directory
 
     # Log directory
-    slurm_config.logs_directory = '%s/%s' % \
-                                  (arguments.output_directory, nmv.consts.Paths.SLURM_LOGS_FOLDER)
+    slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
+                                             paths_consts.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -205,7 +207,7 @@ def create_batch_job_script_for_gid(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(slurm_jobs_directory, gid, batch_job_config_string)
 
 
@@ -215,12 +217,14 @@ def create_batch_job_script_for_gid(arguments,
 def create_batch_job_script_for_multiple_gids(arguments,
                                               gids,
                                               script_id):
-    """
-    Creates a batch job file for different neurons with specific gids for the meshing.
+    """Create a batch job file for different neurons with specific gids for the meshing.
 
-    :param arguments: Command line arguments.
-    :param gids: A list of GIDs.
-    :param script_id: Script ID.
+    :param arguments:
+        Command line arguments.
+    :param gids:
+        A list of GIDs.
+    :param script_id:
+        Script ID.
     """
 
     # Create slurm configuration
@@ -234,8 +238,8 @@ def create_batch_job_script_for_multiple_gids(arguments,
     slurm_config.execution_directory = '%s' % arguments.output_directory
 
     # Log directory
-    slurm_config.logs_directory = '%s/%s' % \
-                                  (arguments.output_directory, nmv.consts.Paths.SLURM_LOGS_FOLDER)
+    slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
+                                             paths_consts.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -250,7 +254,7 @@ def create_batch_job_script_for_multiple_gids(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(slurm_jobs_directory, script_id, batch_job_config_string)
 
 
@@ -259,11 +263,12 @@ def create_batch_job_script_for_multiple_gids(arguments,
 ####################################################################################################
 def create_batch_job_script_for_morphology_file(arguments,
                                                 morphology_file):
-    """
-    Creates a batch job file for a morphology file.
+    """Create a batch job file for a morphology file.
 
-    :param arguments: Command line arguments.
-    :param morphology_file: Neuron morphology_file.
+    :param arguments:
+        Command line arguments.
+    :param morphology_file:
+        Neuron morphology_file.
     """
 
     # Create slurm configuration
@@ -277,8 +282,8 @@ def create_batch_job_script_for_morphology_file(arguments,
     slurm_config.execution_directory = '%s' % arguments.output_directory
 
     # Log directory
-    slurm_config.logs_directory = '%s/%s' % \
-                                  (arguments.output_directory, nmv.consts.Paths.SLURM_LOGS_FOLDER)
+    slurm_config.logs_directory = '%s/%s' % (arguments.output_directory,
+                                             paths_consts.SLURM_LOGS_FOLDER)
 
     # Generate the batch job configuration string
     batch_job_config_string = create_batch_job_config_string(slurm_config)
@@ -291,7 +296,7 @@ def create_batch_job_script_for_morphology_file(arguments,
     batch_job_config_string += shell_command
 
     # Write the batch job script to file in the slurm jobs directory
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
     file_ops.write_batch_job_string_to_file(
         slurm_jobs_directory, morphology_file, batch_job_config_string)
 
@@ -301,12 +306,14 @@ def create_batch_job_script_for_morphology_file(arguments,
 ####################################################################################################
 def submit_batch_jobs(user_name,
                       slurm_jobs_directory):
-    """
-    Submits all the batch jobs found in the jobs directory.
+    """Submits all the batch jobs found in the jobs directory.
+
     This function takes into account the maximum limit imposed by the cluster (500 jobs per user).
 
-    :param user_name: The user name of the current user.
-    :param slurm_jobs_directory: The directory where the batch jobs are created. .
+    :param user_name:
+        The user name of the current user.
+    :param slurm_jobs_directory:
+        The directory where the batch jobs are created. .
     """
 
     # Get all the scripts in the slurm jobs directory to submit them
@@ -326,7 +333,7 @@ def submit_batch_jobs(user_name,
 
         # If the number of jobs is greater than 500, then wait a second and try again
         if number_active_jobs >= 500:
-            nmv.logger.log('Waiting for resources')
+            print('Waiting for resources ...')
             continue
 
         # Otherwise, you can submit some jobs
@@ -355,7 +362,7 @@ def submit_batch_jobs(user_name,
                 shell_command = 'sbatch %s' % script_full_path
 
                 # Execute the command
-                nmv.logger.log('Submitting [%s]' % shell_command)
+                print('Submitting [%s]' % shell_command)
                 subprocess.call(shell_command, shell=True)
 
                 # Increment the script index
@@ -367,11 +374,12 @@ def submit_batch_jobs(user_name,
 ####################################################################################################
 def run_gid_jobs_on_cluster(arguments,
                             gids):
-    """
-    Runs the batch jobs on the cluster.
+    """Runs the batch jobs on the cluster.
 
-    :param arguments: Input arguments.
-    :param gids: GID list for all the neurons.
+    :param arguments:
+        Input arguments.
+    :param gids:
+        GID list for all the neurons.
     """
 
     for gid in gids:
@@ -381,7 +389,7 @@ def run_gid_jobs_on_cluster(arguments,
 
     # Submit the jobs
     # TODO: Add an option for the user
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
     submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=slurm_jobs_directory)
 
 
@@ -390,11 +398,12 @@ def run_gid_jobs_on_cluster(arguments,
 ####################################################################################################
 def run_morphology_files_jobs_on_cluster(arguments,
                                          morphology_files):
-    """
-    Runs the batch jobs on the cluster.
+    """Runs the batch jobs on the cluster.
 
-    :param arguments: Input arguments.
-    :param morphology_files: A list of morphology files.
+    :param arguments:
+        Input arguments.
+    :param morphology_files:
+        A list of morphology files.
     """
 
     for morphology_file in morphology_files:
@@ -405,6 +414,6 @@ def run_morphology_files_jobs_on_cluster(arguments,
 
     # Submit the jobs
     # TODO: Add an option for the user
-    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SLURM_JOBS_FOLDER)
+    slurm_jobs_directory = '%s/%s' % (arguments.output_directory, paths_consts.SLURM_JOBS_FOLDER)
     submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=slurm_jobs_directory)
 

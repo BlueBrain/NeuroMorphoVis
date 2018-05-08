@@ -36,7 +36,7 @@ for import_path in import_paths:
 # Internal imports
 import arguments_parser
 import file_ops
-#import slurm
+import slurm
 
 
 ####################################################################################################
@@ -122,7 +122,8 @@ def run_local_neuromorphovis(arguments):
 def run_cluster_neuromorphovis(arguments):
     """Run the NeuroMorphoVis framework on the BBP visualization cluster using SLURM.
 
-    :param arguments Command line arguments.
+    :param arguments:
+        Command line arguments.
     """
 
     # Use a specific circuit target
@@ -130,14 +131,14 @@ def run_cluster_neuromorphovis(arguments):
 
         # Ensure a valid blue config and a target
         if arguments.blue_config is None or arguments.target is None:
-            nmv.logger.log('ERROR: Empty circuit configuration file or target')
+            print('ERROR: Empty circuit configuration file or target')
             exit(0)
 
         # Import brain
         try:
             import brain
         except ImportError:
-            nmv.logger.log('ERROR: Cannot import [brain], please load brain or install it')
+            print('ERROR: Cannot import [brain], please load brain or install it')
             exit(0)
 
         # Open a circuit with a given blue config
@@ -154,23 +155,23 @@ def run_cluster_neuromorphovis(arguments):
 
         # Ensure a valid blue config and a GID
         if arguments.blue_config is None or arguments.gid is None:
-            nmv.logger.log('ERROR: Empty circuit configuration file or GID')
+            print('ERROR: Empty circuit configuration file or GID')
             exit(0)
 
         # Run the jobs on the cluster
         slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=[str(arguments.gid)])
 
-    # Use the morphology file (.h5 or .swc)
+    # Use the morphology file (.H5 or .SWC)
     elif arguments.input == 'file':
 
         # Get the arguments string list
         arguments_string = arguments_parser.get_arguments_string(arguments=arguments)
 
         # Run the job on the cluster
-        slurm.run_morphology_files_jobs_on_cluster(arguments=arguments,
-            morphology_files=arguments.morphology_file)
+        slurm.run_morphology_files_jobs_on_cluster(
+            arguments=arguments, morphology_files=arguments.morphology_file)
 
-    # A directory
+    # Operate on a directory
     elif arguments.input == 'directory':
 
         # Get all the morphology files in this directory
@@ -181,11 +182,8 @@ def run_cluster_neuromorphovis(arguments):
             arguments=arguments, morphology_files=morphology_files)
 
     else:
-        nmv.logger.log('ERROR: Input data source, use [file, gid, target or directory]')
+        print('ERROR: Input data source, use [file, gid, target or directory]')
         exit(0)
-
-
-    return
 
 
 ####################################################################################################
