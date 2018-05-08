@@ -646,8 +646,12 @@ class PiecewiseBuilder:
             nmv.logger.line()
             self.decimate_neuron_mesh()
 
-        # Create the spines
-        if self.options.mesh.build_spines:
+        # Integrated spines
+        if self.options.mesh.spines == nmv.enums.Meshing.Spines.INTEGRATED:
+            pass
+
+        # Disconnected spines
+        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.DISCONNECTED:
 
             nmv.logger.line()
             nmv.logger.log('Adding spines')
@@ -658,6 +662,10 @@ class PiecewiseBuilder:
                 morphology=self.morphology,
                 blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid)
+
+        # Ignore spines
+        else:
+            nmv.logger.log('Spines are ignored')
 
         # Connecting all the mesh objects together in a single object
         if self.options.mesh.neuron_objects_connection == \

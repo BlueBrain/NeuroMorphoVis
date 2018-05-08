@@ -149,6 +149,19 @@ class MeshPanel(bpy.types.Panel):
         name='Model',
         default=nmv.enums.Meshing.Surface.SMOOTH)
 
+    # Rendering view
+    bpy.types.Scene.Spines = EnumProperty(
+        items=[(nmv.enums.Meshing.Spines.IGNORE,
+                'Ignore',
+                'The spines are ignored'),
+               (nmv.enums.Meshing.Spines.INTEGRATED,
+                'Integrated',
+                'The spines are integrated as part of the neuron mesh'),
+               (nmv.enums.Meshing.Spines.DISCONNECTED,
+                'Disconnected',
+                'The spines are generated but disconnected from the neuron mesh')],
+                name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
+
     # Fix artifacts flag
     bpy.types.Scene.FixMorphologyArtifacts = BoolProperty(
         name='Fix Morphology Artifacts',
@@ -329,6 +342,19 @@ class MeshPanel(bpy.types.Panel):
 
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.branching = context.scene.MeshBranching
+
+        # Spines
+        spines_row = layout.row()
+        spines_row.label('Spines:')
+        spines_row.prop(context.scene, 'Spines', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.spine_objects = context.scene.Spines
+
+        # Ignore the spines row if no circuit is given
+        if context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
+            spines_row.enabled = False
+            nmv.interface.ui_options.mesh.spine_objects = nmv.enums.Meshing.Spines.IGNORE
 
         # Tessellation parameters
         tess_level_row = layout.row()

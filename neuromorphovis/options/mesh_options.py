@@ -78,6 +78,9 @@ class MeshOptions:
         # Spines color
         self.spines_color = nmv.enums.Color.SPINES
 
+        # Ignore the spine building
+        self.spine_objects = nmv.enums.Meshing.Spines.IGNORE
+
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
 
