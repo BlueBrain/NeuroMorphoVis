@@ -173,6 +173,12 @@ def build_circuit_spines(morphology,
     # Load all the template spines and ignore the verbose messages of loading
     templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_DIRECTORY)
 
+    # Apply the shader
+    for spine_object in templates_spines_list:
+
+        # Apply the shader to each spine mesh
+        nmv.shading.set_material_to_object(spine_object, material)
+
     # Get the local to global transforms
     local_to_global_transform = circuit.transforms({int(gid)})[0]
 
@@ -215,9 +221,6 @@ def build_circuit_spines(morphology,
 
         # Emanate a spine
         spine_object = emanate_a_spine(templates_spines_list, post_position, pre_position, i)
-
-        # Apply the shader to each spine mesh
-        nmv.shading.set_material_to_object(spine_object, material)
 
         # Add the object to the list
         spines_objects.append(spine_object)
