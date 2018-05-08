@@ -204,7 +204,8 @@ def build_circuit_spines(morphology,
         """ Ignore soma synapses """
         # If the post-synaptic section id is zero, then revoke it, and continue
         post_section_id = synapse.post_section()
-        if post_section_id == 0: continue
+        if post_section_id == 0:
+                continue
 
         # Get the pre-and post-positions in the global coordinates
         pre_position = synapse.pre_surface_position()

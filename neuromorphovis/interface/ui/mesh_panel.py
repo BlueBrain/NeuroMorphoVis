@@ -215,11 +215,17 @@ class MeshPanel(bpy.types.Panel):
         default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
         description="The color of the reconstructed basal dendrites")
 
-    # The color of the reconstructed apical dendrite meshe
+    # The color of the reconstructed apical dendrite meshes
     bpy.types.Scene.ApicalDendriteMeshColor = FloatVectorProperty(
         name="Apical Dendrite Color", subtype='COLOR',
         default=nmv.enums.Color.APICAL_DENDRITES, min=0.0, max=1.0,
         description="The color of the reconstructed apical dendrite")
+
+    # The color of the spines meshes
+    bpy.types.Scene.SpinesMeshColor = FloatVectorProperty(
+        name="Spines Color", subtype='COLOR',
+        default=nmv.enums.Color.SPINES, min=0.0, max=1.0,
+        description="The color of the spines")
 
     # Rendering resolution
     bpy.types.Scene.MeshRenderingResolution = EnumProperty(
@@ -404,6 +410,10 @@ class MeshPanel(bpy.types.Panel):
                 Vector((context.scene.NeuronMeshColor.r,
                         context.scene.NeuronMeshColor.g,
                         context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.spines_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
 
         # Different colors
         else:
@@ -415,6 +425,8 @@ class MeshPanel(bpy.types.Panel):
             basal_dendrites_color_row.prop(context.scene, 'BasalDendritesMeshColor')
             apical_dendrites_color_row = layout.row()
             apical_dendrites_color_row.prop(context.scene, 'ApicalDendriteMeshColor')
+            spines_color_row = layout.row()
+            spines_color_row.prop(context.scene, 'SpinesMeshColor')
 
             # Pass options from UI to system
             nmv.interface.ui_options.mesh.soma_color = Vector((context.scene.SomaMeshColor.r,
@@ -431,6 +443,11 @@ class MeshPanel(bpy.types.Panel):
                 Vector((context.scene.ApicalDendriteMeshColor.r,
                         context.scene.ApicalDendriteMeshColor.g,
                         context.scene.ApicalDendriteMeshColor.b))
+            nmv.interface.ui_options.mesh.spines_color = \
+                Vector((context.scene.SpinesMeshColor.r,
+                        context.scene.SpinesMeshColor.g,
+                        context.scene.SpinesMeshColor.b))
+
 
         # Mesh reconstruction options
         mesh_reconstruction_row = layout.row()

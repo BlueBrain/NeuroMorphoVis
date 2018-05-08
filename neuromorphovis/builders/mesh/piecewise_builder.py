@@ -83,6 +83,9 @@ class PiecewiseBuilder:
         # A list of the colors/materials of the apical dendrite
         self.apical_dendrite_materials = None
 
+        # A list of the colors/materials of the spines
+        self.spines_colors = None
+
         # A reference to the reconstructed soma mesh
         self.reconstructed_soma_mesh = None
 
@@ -133,7 +136,8 @@ class PiecewiseBuilder:
             if 'soma_skeleton' in material.name or \
                'axon_skeleton' in material.name or \
                'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name:
+               'apical_dendrite_skeleton' in material.name or \
+               'spines' in material.name:
                 material.user_clear()
                 bpy.data.materials.remove(material)
 
@@ -152,6 +156,10 @@ class PiecewiseBuilder:
         # Apical dendrite
         self.apical_dendrite_materials = self.create_materials(
             name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
+
+        # Spines
+        self.spines_colors = self.create_materials(
+            name='spines', color=self.options.mesh.spines_color)
 
     ################################################################################################
     # @verify_and_repair_morphology
@@ -662,6 +670,12 @@ class PiecewiseBuilder:
                 morphology=self.morphology,
                 blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid)
+
+            # Group the spine objects in a single object
+            spines_mesh = nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
+
+            # Apply the shader to each spine mesh
+            nmv.shading.set_material_to_object(spines_mesh, self.spines_colors[0])
 
         # Ignore spines
         else:
