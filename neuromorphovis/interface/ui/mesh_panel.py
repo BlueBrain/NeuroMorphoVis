@@ -154,12 +154,12 @@ class MeshPanel(bpy.types.Panel):
         items=[(nmv.enums.Meshing.Spines.IGNORE,
                 'Ignore',
                 'The spines are ignored'),
-               (nmv.enums.Meshing.Spines.INTEGRATED,
-                'Integrated',
-                'The spines are integrated as part of the neuron mesh'),
                (nmv.enums.Meshing.Spines.DISCONNECTED,
                 'Disconnected',
-                'The spines are generated but disconnected from the neuron mesh')],
+                'The spines are generated but disconnected from the neuron mesh'),
+               (nmv.enums.Meshing.Spines.INTEGRATED,
+                'Integrated',
+                'The spines are integrated as part of the neuron mesh')],
                 name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
 
     # Fix artifacts flag
