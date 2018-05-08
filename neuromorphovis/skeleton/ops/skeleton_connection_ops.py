@@ -843,12 +843,13 @@ def connect_arbor_to_soma(soma_mesh,
 
 
 ####################################################################################################
-# @get_connection_extent
+# @get_soma_to_root_section_connection_extent
 ####################################################################################################
-def get_connection_extent(section):
-    """
-    Gets a sphere object reflecting the extent (or the space) between the section and the soma.
-    NOTE: The function assumes that the section is root and is ALREADY connected to the soma.
+def get_soma_to_root_section_connection_extent(section):
+    """Get a sphere object reflecting the extent (or the space) between a root section and the soma.
+
+    NOTE: The function assumes that the section is ROOT and is ALREADY connected to the soma. If
+    this is not the case, the result might be wrong.
 
     :param section:
         A given root section that is supposed to be connected to the soma.
@@ -859,15 +860,75 @@ def get_connection_extent(section):
     # Get section direction
     direction = section.samples[0].point.normalized()
 
-    # Get the extent point, assuming delta is 0.5
+    # The extent is simply a sphere with a center and radius, and therefore we will assume that
+    # the center is 0.5 microns far from the initial sample on the section
     delta = 0.5
-    extent_point = section.samples[0].point - (direction * delta)
+    extent_center = section.samples[0].point - (direction * delta)
 
     # Extent radius is a bit greater than double the radius of the first sample along the section
     extent_radius = section.samples[0].radius * 2.5
 
-    # Return the extent point and the extent radius
-    return extent_point, extent_radius
+    # Return the extent center and the extent radius
+    return extent_center, extent_radius
+
+
+################################################################################################
+# @get_connection_extents
+################################################################################################
+def get_soma_to_root_sections_connection_extent(morphology):
+    """Return the extents (or regions where the root sections are connected to the soma).
+
+    :return:
+        A list of spheres reflecting the extents of the connections between the root sections
+        and the soma.
+    """
+
+    # Initialize the list
+    connection_extents = list()
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+
+        # Only if the apical is connected
+        if morphology.apical_dendrite.connected_to_soma:
+
+            # Get the extent
+            extent_center, extent_radius = get_soma_to_root_section_connection_extent(
+                morphology.apical_dendrite)
+
+            # Append this extent to the list
+            connection_extents.append([extent_center, extent_radius])
+
+    # Apical dendrite
+    if morphology.axon is not None:
+
+        # Only if the axon is connected
+        if morphology.axon.connected_to_soma:
+
+            # Get the extent
+            extent_center, extent_radius = get_soma_to_root_section_connection_extent(
+                    morphology.axon)
+
+            # Append this extent to the list
+            connection_extents.append([extent_center, extent_radius])
+
+    # Basal dendrite s
+    if morphology.dendrites is not None:
+
+        # For each dendrite
+        for dendrite in morphology.dendrites:
+
+            # Only if the dendrite is connected
+            if dendrite.connected_to_soma:
+
+                # Get the extent
+                extent_center, extent_radius = get_soma_to_root_section_connection_extent(dendrite)
+
+                # Append this extent to the list
+                connection_extents.append([extent_center, extent_radius])
+
+    # Return a reference to the list
+    return connection_extents
 
 
 ####################################################################################################

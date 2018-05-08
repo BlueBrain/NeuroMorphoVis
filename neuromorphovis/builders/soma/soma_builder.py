@@ -24,6 +24,8 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+# System imports
+import random
 
 # Blender imports
 import bpy
@@ -31,9 +33,9 @@ import bpy
 import neuromorphovis as nmv
 import neuromorphovis.bmeshi
 import neuromorphovis.consts
-import neuromorphovis.enums
 import neuromorphovis.mesh
 import neuromorphovis.physics
+import neuromorphovis.geometry
 import neuromorphovis.scene
 import neuromorphovis.shading
 import neuromorphovis.skeleton
@@ -92,6 +94,26 @@ class SomaBuilder:
 
         # Ensure the connection between the arbors and the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+
+    ################################################################################################
+    # @add_noise_to_soma_surface
+    ################################################################################################
+    def add_noise_to_soma_surface(self, soma_mesh):
+
+        # Get the connection extents
+        connection_extents = nmv.skeleton.ops.get_soma_to_root_sections_connection_extent(
+            self.morphology)
+
+        for i in range(len(soma_mesh.data.vertices)):
+            vertex = soma_mesh.data.vertices[i]
+
+            if nmv.skeleton.ops.is_point_located_within_extents(vertex.co, connection_extents):
+                continue
+
+            vertex.select = True
+            vertex.co = vertex.co + (vertex.normal * random.uniform(-0.025, 0.025))
+            vertex.select = False
+
 
     ################################################################################################
     # @get_extrusion_scale
@@ -707,6 +729,8 @@ class SomaBuilder:
         # Smoothing the soma via shade smoothing
         nmv.mesh.ops.shade_smooth_object(soma_mesh)
 
+        self.add_noise_to_soma_surface(soma_mesh)
+
         # Return the reconstructed soma object
         return soma_mesh
 
@@ -743,6 +767,8 @@ class SomaBuilder:
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)
+
+        self.add_noise_to_soma_surface(reconstructed_soma_mesh)
 
         # Return a reference to the reconstructed soma
         return reconstructed_soma_mesh
@@ -781,6 +807,8 @@ class SomaBuilder:
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)
+
+        self.add_noise_to_soma_surface(reconstructed_soma_mesh)
 
         # Return a reference to the reconstructed soma
         return reconstructed_soma_mesh

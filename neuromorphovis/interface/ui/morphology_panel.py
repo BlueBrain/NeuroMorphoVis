@@ -120,10 +120,11 @@ class MorphologyPanel(bpy.types.Panel):
         default=True)
 
     # Axon branching order
+    # Since the axon is so complicated, we will set its default branching order to 5
     bpy.types.Scene.AxonBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the axon",
-        default=100, min=1, max=100)
+        default=100, min=1, max=5)
 
     # Build basal dendrites
     bpy.types.Scene.BuildBasalDendrites = BoolProperty(

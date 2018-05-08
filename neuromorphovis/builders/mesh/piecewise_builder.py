@@ -154,65 +154,6 @@ class PiecewiseBuilder:
             name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
 
     ################################################################################################
-    # @get_connection_extents
-    ################################################################################################
-    def get_connection_extents(self):
-        """
-        Returns the extents (or regions where the root sections are connected to the soma).
-
-        :return:
-            A list of spheres reflecting the extents of the connections between the root sections
-            and the soma.
-        """
-
-        # Initialize the list
-        connection_extents = list()
-
-        # Apical dendrite
-        if self.morphology.apical_dendrite is not None:
-
-            # Only if the apical is connected
-            if self.morphology.apical_dendrite.connected_to_soma:
-
-                # Get the extent
-                extent_point, extent_radius = \
-                    nmv.skeleton.ops.get_connection_extent(self.morphology.apical_dendrite)
-
-                # Append this extent to the list
-                connection_extents.append([extent_point, extent_radius])
-
-        # Apical dendrite
-        if self.morphology.axon is not None:
-
-            # Only if the axon is connected
-            if self.morphology.axon.connected_to_soma:
-
-                # Get the extent
-                extent_point, extent_radius = nmv.skeleton.ops.get_connection_extent(
-                        self.morphology.axon)
-
-                # Append this extent to the list
-                connection_extents.append([extent_point, extent_radius])
-
-        # Basal dendrite s
-        if self.morphology.dendrites is not None:
-
-            # For each dendrite
-            for dendrite in self.morphology.dendrites:
-
-                # Only if the dendrite is connected
-                if dendrite.connected_to_soma:
-
-                    # Get the extent
-                    extent_point, extent_radius = nmv.skeleton.ops.get_connection_extent(dendrite)
-
-                    # Append this extent to the list
-                    connection_extents.append([extent_point, extent_radius])
-
-        # Return a reference to the list
-        return connection_extents
-
-    ################################################################################################
     # @verify_and_repair_morphology
     ################################################################################################
     def verify_and_repair_morphology(self):
@@ -691,12 +632,12 @@ class PiecewiseBuilder:
         else:
             nmv.logger.log('\t * Arbors are NOT connected to the soma')
 
-            # Adding surface roughness
-            if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-                nmv.logger.line()
-                nmv.logger.log('Adding surface roughness')
-                nmv.logger.line()
-                self.add_surface_noise()
+        # Adding surface roughness
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+            nmv.logger.line()
+            nmv.logger.log('Adding surface roughness')
+            nmv.logger.line()
+            self.add_surface_noise()
 
         # Decimation
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
