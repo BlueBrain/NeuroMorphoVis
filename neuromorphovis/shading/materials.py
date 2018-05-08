@@ -461,4 +461,5 @@ def set_material_to_object(mesh_object,
     """
 
     # assign the material to the given object.
+    mesh_object.data.materials.clear()
     mesh_object.data.materials.append(material_reference)

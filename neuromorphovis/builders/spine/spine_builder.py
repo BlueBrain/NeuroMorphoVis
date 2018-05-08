@@ -40,6 +40,7 @@ import neuromorphovis.scene
 import neuromorphovis.shading
 import neuromorphovis.utilities
 
+
 ####################################################################################################
 # @load_spine
 ####################################################################################################
@@ -85,8 +86,6 @@ def load_spines(spines_directory):
 
         # Load the spine
         spine_object = load_spine(spines_directory, spine_file)
-
-        # TODO: Tessellate the spines if needed
 
         # Append the spine to the list
         spines_objects_list.append(spine_object)
