@@ -673,7 +673,7 @@ class PiecewiseBuilder:
                 material=self.spines_colors[0])
 
             # Group the spine objects in a single object
-            nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
+            # nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
 
         # Ignore spines
         else:
