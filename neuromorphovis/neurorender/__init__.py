@@ -25,3 +25,35 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 from .neurorender import *
+
+
+
+from mathutils import Vector
+
+class Neuron:
+
+    def __init__(self):
+
+        self.gid = '0'
+
+        self.location = Vector((0.0, 0.0, 0.0))
+
+        self.orientation = 0.0
+
+        self.membrane_mesh = None
+
+        self.spines_meshes = None
+
+        pass
+
+
+
+
+def read_circuit_file(circuit_file):
+
+    for line in file:
+        pass
+
+
+
+    return
