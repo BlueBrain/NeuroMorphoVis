@@ -208,8 +208,8 @@ def build_circuit_spines(morphology,
                 continue
 
         # Get the pre-and post-positions in the global coordinates
-        pre_position = synapse.pre_surface_position()
-        post_position = synapse.post_surface_position()
+        pre_position = synapse.pre_centet_position()
+        post_position = synapse.post_center_position()
 
         # Convert them to a mathutils.Vector
         """
