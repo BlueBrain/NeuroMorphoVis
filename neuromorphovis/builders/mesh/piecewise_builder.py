@@ -669,13 +669,8 @@ class PiecewiseBuilder:
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology,
                 blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid)
-
-            # Color the spines
-            for spine_object in spines_objects:
-
-                # Apply the shader to each spine mesh
-                nmv.shading.set_material_to_object(spine_object, self.spines_colors[0])
+                gid=self.options.morphology.gid,
+                material=self.spines_colors[0])
 
             # Group the spine objects in a single object
             nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')

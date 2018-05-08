@@ -32,19 +32,12 @@ import bpy
 from mathutils import Vector
 from mathutils import Matrix
 
-# Internal modules
-#import file_ops
-#import importers
-#import scene_ops
-#import time_line
-#import timer
-#import utilities
-
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.consts
 import neuromorphovis.file
 import neuromorphovis.scene
+import neuromorphovis.shading
 import neuromorphovis.utilities
 
 ####################################################################################################
@@ -149,7 +142,8 @@ def emanate_a_spine(spines_list,
 ####################################################################################################
 def build_circuit_spines(morphology,
                          blue_config,
-                         gid):
+                         gid,
+                         material=None):
     """Builds all the spines on a spiny neuron using a BBP circuit.
 
     :param morphology:
@@ -158,6 +152,8 @@ def build_circuit_spines(morphology,
         BBP circuit configuration file.
     :param gid:
         Neuron gid.
+    :param material:
+        Spine material.
     :return:
         A list of all the reconstructed spines along the neuron.
     """
@@ -219,6 +215,9 @@ def build_circuit_spines(morphology,
 
         # Emanate a spine
         spine_object = emanate_a_spine(templates_spines_list, post_position, pre_position, i)
+
+        # Apply the shader to each spine mesh
+        nmv.shading.set_material_to_object(spine_object, material)
 
         # Add the object to the list
         spines_objects.append(spine_object)
