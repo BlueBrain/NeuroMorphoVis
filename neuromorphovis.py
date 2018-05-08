@@ -36,7 +36,7 @@ for import_path in import_paths:
 # Internal imports
 import arguments_parser
 import file_ops
-#import slurm
+import slurm
 
 
 ####################################################################################################

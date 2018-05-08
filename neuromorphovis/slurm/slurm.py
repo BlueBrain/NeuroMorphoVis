@@ -37,8 +37,6 @@ import arguments_parser
 import file_ops
 import slurm_configuration
 
-import neuromorphovis.consts
-
 
 ####################################################################################################
 # @squeue

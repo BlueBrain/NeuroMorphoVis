@@ -100,7 +100,7 @@ if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
 
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
-echo -e "\nRUNNING ... meshy.py \n"
+echo -e "\nRUNNING ... neuromorphovis.py \n"
 
     python3 neuromorphovis.py                                                                       \
     --blender=$BLENDER_EXECUTABLE                                                                   \
