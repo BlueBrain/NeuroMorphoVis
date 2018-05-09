@@ -101,14 +101,17 @@ class RandomSpineBuilder:
         spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
 
         # Scale the spine
-        #nmv.scene.ops.scale_object_uniformly(spine_object, random.uniform(0.6, 1.25))
+        spine_scale = spine.size + random.uniform(0.75, 1.0)
+        nmv.scene.ops.scale_object_uniformly(spine_object, spine_scale)
 
         # Translate the spine to the post synaptic position
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
 
         # Rotate the spine towards the pre-synaptic point
-        #nmv.scene.ops.rotate_object_towards_target(
-        #    spine_object, spine.post_synaptic_position, spine.pre_synaptic_position)
+
+        nmv.scene.ops.rotate_object_towards_target(
+            spine_object, spine.post_synaptic_position,
+            spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
 
         # Return a reference to the spine
         return spine_object
@@ -139,7 +142,7 @@ class RandomSpineBuilder:
         nmv.skeleton.ops.apply_operation_to_morphology_partially(
             *[self.morphology,
               nmv.skeleton.ops.get_random_spines_on_section,
-              5,
+              50,
               spines_list],
             axon_branch_level=self.options.morphology.axon_branch_order,
             basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,

@@ -1241,7 +1241,6 @@ def get_random_spines_on_section(current_branching_level,
     # Increment the branching level
     current_branching_level[0] += 1
 
-    print(current_branching_level[0])
     for i, sample in enumerate(section.samples):
 
         # If this is the first or last sample, ignore it since they normally intersect children
@@ -1280,7 +1279,7 @@ def get_random_spines_on_section(current_branching_level,
             spine = nmv.skeleton.Spine()
             spine.post_synaptic_position = post_synaptic_position
             spine.pre_synaptic_position = pre_synaptic_position
-            spine.size = 1.0
+            spine.size = sample_radius
             spines_list.append(spine)
 
 
