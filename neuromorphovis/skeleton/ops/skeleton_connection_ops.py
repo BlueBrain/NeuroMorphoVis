@@ -582,6 +582,11 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # Is the basal dendrite disconnected from the soma !
         if is_arbor_disconnected_from_soma(basal_dendrite):
 
+            # Mark the basal dendrite disconnected from the soma
+            basal_dendrite.connected_to_soma = False
+
+            continue
+
             # Report the issue
             nmv.logger.log('\t\t* WARNING: The basal dendrite [%d] @ section [%d] is intersecting '
                   'with apical dendrite' % (i_basal_dendrite, basal_dendrite.id))
@@ -598,8 +603,6 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                    nearest_sample.section.get_type_string(),
                    str(nearest_sample.id)))
 
-            # Mark the basal dendrite disconnected from the soma
-            basal_dendrite.connected_to_soma = False
 
             # Update the basal dendrite initial sample based on the nearest dendritic sample
             # The sample should have the same location
@@ -620,6 +623,11 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                     apical_dendrite=morphology.apical_dendrite,
                     soma_radius=morphology.soma.mean_radius):
 
+                # Mark the basal dendrite disconnected from the soma
+                basal_dendrite.connected_to_soma = False
+
+                continue
+
                 # Find the intersection sample
                 nearest_sample = find_nearest_apical_dendritic_sample_to_basal_dendrite(
                     morphology=morphology, basal_dendrite=basal_dendrite)
@@ -633,8 +641,6 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                          nearest_sample.section.get_type_string(),
                          str(nearest_sample.id)))
 
-                # Mark the basal dendrite disconnected from the soma
-                basal_dendrite.connected_to_soma = False
 
                 # Update the axon initial sample based on the nearest dendritic sample
                 # The sample should have the same location
@@ -653,6 +659,10 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                 dendrite=basal_dendrite, dendrites=morphology.dendrites,
                 soma_radius=morphology.soma.mean_radius):
 
+                # Mark the basal dendrite disconnected from the soma
+                basal_dendrite.connected_to_soma = False
+                continue
+
                 # Find the intersection sample
                 nearest_sample = find_nearest_basal_dendritic_sample_to_basal_dendrite(
                         morphology=morphology, basal_dendrite=basal_dendrite)
@@ -663,8 +673,6 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                       (i_basal_dendrite, basal_dendrite.id, nearest_sample.section.id,
                        nearest_sample.section.get_type_string(), str(nearest_sample.id)))
 
-                # Mark the basal dendrite disconnected from the soma
-                basal_dendrite.connected_to_soma = False
 
                 # Update the axon initial sample based on the nearest dendritic sample
                 # The sample should have the same location
@@ -1201,10 +1209,13 @@ def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
 
 
 
-
-
-def get_random_spines_on_section(section,
-                                 propability=5.0,
+####################################################################################################
+# @get_random_spines_on_section
+####################################################################################################
+def get_random_spines_on_section(current_branching_level,
+                                 max_branching_level,
+                                 section,
+                                 probability=5.0,
                                  spines_list=[]):
     """Gets the data of some random spines on a given section.
 
@@ -1213,16 +1224,24 @@ def get_random_spines_on_section(section,
 
     :param section:
         A given section to generate the spines for.
-    :param propability:
+    :param probability:
         The probability of growing spine at a certain sample.
     :param spines_list:
-        The list that integrates the genrated spines recursively.
+        The list that integrates the generated spines recursively.
     """
 
-    if len(section.samples) < 6:
+    # If this section is axon, the return and don't add any spines
+    if section.is_axon():
         return
 
-    print(len(section.samples))
+    # If the current branching level is greater than the maximum one, exit
+    if current_branching_level[0] > max_branching_level:
+        return
+
+    # Increment the branching level
+    current_branching_level[0] += 1
+
+    print(current_branching_level[0])
     for i, sample in enumerate(section.samples):
 
         # If this is the first or last sample, ignore it since they normally intersect children
@@ -1231,7 +1250,7 @@ def get_random_spines_on_section(section,
             continue
 
         # Random spines
-        if propability > random.uniform(0.0, 1.0) * 100:
+        if probability > random.uniform(0.0, 1.0) * 100:
 
             # Get the position of sample
             sample_position = sample.point
@@ -1252,10 +1271,10 @@ def get_random_spines_on_section(section,
             v2 = p2 - p1
 
             # Compute the pre-synaptic direction
-            # pre_synaptic_direction = v1.cross(v2)
+            pre_synaptic_direction = v1.cross(v2)
 
             # Compute a random pre-synaptic position
-            pre_synaptic_position = post_synaptic_position #+ (pre_synaptic_direction * 1.0)
+            pre_synaptic_position = post_synaptic_position + (pre_synaptic_direction * 1.0)
 
             # Create the spine
             spine = nmv.skeleton.Spine()

@@ -123,6 +123,45 @@ class Section:
             return 'UNKNOWN_BRANCH_TYPE'
 
     ################################################################################################
+    # @is_axon
+    ################################################################################################
+    def is_axon(self):
+        """Check if this section belongs to the axon or not.
+
+        :return:
+            True if the section belongs to the axon.
+        """
+        if str(self.type) == '2':
+            return True
+        return False
+
+    ################################################################################################
+    # @is_basal_dendrite
+    ################################################################################################
+    def is_basal_dendrite(self):
+        """Check if this section belongs to a basal dendrite or not.
+
+        :return:
+            True if the section belongs to a basal dendrite.
+        """
+        if str(self.type) == '3':
+            return True
+        return False
+
+    ################################################################################################
+    # @is_basal_dendrite
+    ################################################################################################
+    def is_apical_dendrite(self):
+        """Check if this section belongs to an apical dendrite or not.
+
+        :return:
+            True if the section belongs to an apical dendrite.
+        """
+        if str(self.type) == '4':
+            return True
+        return False
+
+    ################################################################################################
     # @has_children
     ################################################################################################
     def has_children(self):

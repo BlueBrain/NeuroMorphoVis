@@ -136,11 +136,14 @@ class RandomSpineBuilder:
 
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology(
+        nmv.skeleton.ops.apply_operation_to_morphology_partially(
             *[self.morphology,
               nmv.skeleton.ops.get_random_spines_on_section,
               5,
-              spines_list])
+              spines_list],
+            axon_branch_level=self.options.morphology.axon_branch_order,
+            basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,
+            apical_dendrite_branch_level=self.options.morphology.apical_dendrite_branch_order)
 
         nmv.logger.log('\t *Building spines')
         building_timer = nmv.utilities.timer.Timer()
