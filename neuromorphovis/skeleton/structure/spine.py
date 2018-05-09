@@ -52,9 +52,6 @@ class Spine:
         # Post-synaptic position
         self.post_synaptic_position = Vector((0.0, 0.0, 0.0))
 
-        # Spine size
+        # Spine size (initially 1 micron)
         self.size = 1.0
-
-        # Spine mesh
-        self.mesh = None
 
