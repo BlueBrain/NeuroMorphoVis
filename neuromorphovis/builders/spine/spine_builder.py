@@ -237,3 +237,16 @@ def build_circuit_spines(morphology,
     # Return the spines objects list
     return spines_objects
 
+
+
+
+def build_random_spines(morphology,
+                        material):
+
+
+
+
+
+
+
+    return

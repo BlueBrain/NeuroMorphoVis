@@ -24,9 +24,37 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-from .sample import *
-from .section import *
-from .soma import *
-from .morphology import *
-from .spine import *
+
+# Blender imports
+from mathutils import Vector
+
+
+####################################################################################################
+# Spine
+####################################################################################################
+class Spine:
+    """Morphological Spine.
+
+    The spines are the connections between a pre-synaptic and post-synaptic neurons that have six
+    various shapes.
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        """Constructor
+        """
+
+        # Pre-synaptic position
+        self.pre_synaptic_position = Vector((0.0, 0.0, 0.0))
+
+        # Post-synaptic position
+        self.post_synaptic_position = Vector((0.0, 0.0, 0.0))
+
+        # Spine size
+        self.size = 1.0
+
+        # Spine mesh
+        self.mesh = None
 
