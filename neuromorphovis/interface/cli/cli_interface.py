@@ -321,14 +321,18 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
 
     # UnionBuilder
     if cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.UNION:
+
+        nmv.logger.log('Builder: Union')
         neuron_mesh_builder = nmv.builders.UnionBuilder(cli_morphology, cli_options)
 
     # BridgingBuilder
     elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.BRIDGING:
+        nmv.logger.log('Builder: Bridging')
         neuron_mesh_builder = nmv.builders.BridgingBuilder(cli_morphology, cli_options)
 
     # PiecewiseBuilder
     elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        nmv.logger.log('Builder: Piecewise Watertight')
         neuron_mesh_builder = nmv.builders.PiecewiseBuilder(cli_morphology, cli_options)
 
     # Unknown, kill NeuroMorphoVis
@@ -368,7 +372,7 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
             neuron_mesh_object = nmv.mesh.ops.join_mesh_objects(
                 neuron_mesh_objects, cli_options.morphology.label)
 
-        # Export the neuron meshb
+        # Export the neuron mesh
         nmv.file.export_mesh_object(neuron_mesh_object,
                                     cli_options.io.meshes_directory,
                                     neuron_mesh_file_name,
@@ -524,8 +528,8 @@ if __name__ == "__main__":
 
         # Load the morphology from the file
         loading_flag, cli_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
-            blue_config = cli_options.morphology.blue_config,
-            gid = cli_options.morphology.gid)
+            blue_config=cli_options.morphology.blue_config,
+            gid=cli_options.morphology.gid)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the GID [%s] from the circuit [%s]' %

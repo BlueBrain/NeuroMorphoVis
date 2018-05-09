@@ -925,9 +925,10 @@ class BBPReader:
             apical_dendrite = BBPReader.create_morphology_skeleton(
                 apical_dendrite_root, apical_dendrite_list)
 
-        # create the tree representation of the morphology
+        # Create the tree representation of the morphology
         morphology = nmv.skeleton.Morphology(
             soma=soma, axon=axon, dendrites=dendrites, apical_dendrite=apical_dendrite, gid=gid)
+
 
         # Return the morphology tree skeleton
         return morphology

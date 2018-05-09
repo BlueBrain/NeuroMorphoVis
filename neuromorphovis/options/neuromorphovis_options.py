@@ -298,9 +298,14 @@ class NeuroMorphoVisOptions:
 
         # Spines
         self.mesh.build_spines = arguments.build_spines
+        if arguments.build_spines:
+            self.mesh.spine_objects = nmv.enums.Meshing.Spines.DISCONNECTED
 
         # Edges of the meshes, either hard or smooth
         self.mesh.edges = nmv.enums.Meshing.Edges.get_enum(arguments.edges)
+
+        # Surface
+        self.mesh.surface = nmv.enums.Meshing.Surface.get_enum(arguments.surface)
 
         # Render a static image of the mesh
         self.mesh.render = arguments.render_neuron_mesh
@@ -332,7 +337,7 @@ class NeuroMorphoVisOptions:
         self.mesh.close_up_dimensions = arguments.close_up_dimensions
 
         # Mesh material
-        self.mesh.material = arguments.shader
+        self.mesh.material = nmv.enums.Shading.get_enum(arguments.shader)
 
         # Soma color
         self.mesh.soma_color = nmv.utilities.parse_color_from_argument(arguments.soma_color)
@@ -349,7 +354,7 @@ class NeuroMorphoVisOptions:
             arguments.apical_dendrites_color)
 
         # Spines color
-        self.mesh.spines_color = arguments.spines_color
+        self.mesh.spines_color = nmv.utilities.parse_color_from_argument(arguments.spines_color)
 
         # Save the reconstructed mesh as a .PLY file to the meshes directory
         self.mesh.export_ply = arguments.export_neuron_mesh_ply

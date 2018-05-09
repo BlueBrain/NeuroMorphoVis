@@ -33,10 +33,6 @@ if [ "$RECONSTRUCT_SOMA_MESH" == "yes" ];
     then BOOL_ARGS+=' --reconstruct-soma-mesh '; fi
 if [ "$RECONSTRUCT_NEURON_MESH" == "yes" ];
     then BOOL_ARGS+=' --reconstruct-neuron-mesh '; fi
-if [ "$SMOOTH_EDGES" == "yes" ];
-    then BOOL_ARGS+=' --smooth-edges '; fi
-if [ "$BUMBY_NOISE" == "yes" ];
-    then BOOL_ARGS+=' --rough-surface '; fi
 if [ "$CONNECT_SOMA_MESH_TO_ARBORS" == "yes" ];
     then BOOL_ARGS+=' --connect-soma-arbors'; fi
 if [ "$CONNECT_NEURON_OBJECTS_INTO_SINGLE_MESH" == "yes" ];
@@ -119,11 +115,13 @@ echo -e "\nRUNNING ... neuromorphovis.py \n"
     --soma-representation=$SOMA_REPRESENTATION                                                      \
     --soma-stiffness=$SOMA_STIFFNESS                                                                \
     --soma-subdivision-level=$SOMA_SUBDIVISION_LEVEL                                                \
+    --edges=$EDGES\
+    --surface=$SURFACE\
     --soma-color=$SOMA_COLOR                                                                        \
     --axon-color=$AXON_COLOR                                                                        \
     --apical-dendrites-color=$APICAL_DENDRITE_COLOR \
     --basal-dendrites-color=$BASAL_DENDRITES_COLOR                                                  \
-    --spines-color=$SPINES_COLOR                                                                    \
+    --spines-color=$SPINES_COLOR \
     --sections-radii=$SET_SECTION_RADII \
     --radii-scale-factor=$RADII_SCALE_FACTOR                                                        \
     --fixed-section-radius=$FIXED_SECTION_RADIUS                                                    \

@@ -664,21 +664,20 @@ class PiecewiseBuilder:
         else:
             nmv.logger.log('Spines are ignored')
 
+        # Compile a list of all the meshes in the scene, they account for the different mesh
+        # objects of the neuron
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'MESH':
+
+                # Add the object to the list
+                self.reconstructed_neuron_meshes.append(scene_object)
+
         # Connecting all the mesh objects together in a single object
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
                 nmv.logger.log_header('Connecting neurons objects')
-
                 nmv.logger.log('\t * Connecting neuron: [%s_mesh]' % self.options.morphology.label)
-
-                # Compile a list of all the meshes in the scene, they account for the different mesh
-                # objects of the neuron
-                for scene_object in bpy.context.scene.objects:
-                    if scene_object.type == 'MESH':
-
-                        # Add the object to the list
-                        self.reconstructed_neuron_meshes.append(scene_object)
 
                 # Group all the objects into a single mesh object after the decimation
                 neuron_mesh = nmv.mesh.ops.join_mesh_objects(

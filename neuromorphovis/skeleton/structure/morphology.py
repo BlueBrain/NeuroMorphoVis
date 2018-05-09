@@ -99,8 +99,10 @@ class Morphology:
         # Morphology type
         self.mtype = mtype
 
-        # Morphology label
+        # Morphology label (will be morphology name or gid)
         self.label = label
+        if gid is not None:
+            self.label = str(gid)
 
         # Morphology full bounding box
         self.bounding_box = None

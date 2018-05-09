@@ -32,6 +32,7 @@ sys.path.append("%s/" % os.path.dirname(os.path.realpath(__file__)))
 import args
 from args import *
 
+
 ####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
@@ -285,6 +286,12 @@ def parse_command_line_arguments():
                'does not apply to the morphology, only the meshes.'
     parser.add_argument(Args.MESH_EDGES,
                         action='store', default='hard',
+                        help=arg_help)
+
+    # The edges of the reconstructed meshes
+    arg_help = 'The surface of the neuron mesh, whether rough or smooth.'
+    parser.add_argument(Args.MESH_SURFACE,
+                        action='store', default='smooth',
                         help=arg_help)
 
     # The branching algorithm

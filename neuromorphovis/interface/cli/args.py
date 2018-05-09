@@ -164,6 +164,9 @@ class Args:
     # Mesh edges
     MESH_EDGES = '--edges'
 
+    # Mesh surface
+    MESH_SURFACE = '--surface'
+
     # Branching method
     BRANCHING_METHOD = '--branching'
 
