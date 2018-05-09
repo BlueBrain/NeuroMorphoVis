@@ -240,9 +240,6 @@ def build_circuit_spines(morphology,
 
 
 
-def build_random_spines(morphology,
-                        material):
-
 
 
 

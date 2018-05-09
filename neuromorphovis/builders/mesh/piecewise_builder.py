@@ -642,6 +642,14 @@ class PiecewiseBuilder:
             nmv.logger.log_header('Decimating the mesh')
             self.decimate_neuron_mesh()
 
+
+
+        spines_builder = nmv.builders.RandomSpineBuilder(morphology=self.morphology,
+                                                         options=self.options)
+        spines_objects = spines_builder.add_spines_to_morphology()
+
+
+
         # Integrated spines
         if self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.INTEGRATED:
             pass

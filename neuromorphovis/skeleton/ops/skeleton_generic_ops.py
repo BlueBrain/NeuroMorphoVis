@@ -29,8 +29,7 @@ __status__      = "Production"
 # @apply_operation_to_arbor
 ####################################################################################################
 def apply_operation_to_arbor(*args):
-    """
-    Apply a given function/filter/operation to a given arbor recursively.
+    """Apply a given function/filter/operation to a given arbor recursively.
 
     :param args:
         Arguments list, where the first argument is always the root section of the arbor and the
@@ -68,8 +67,7 @@ def apply_operation_to_arbor(*args):
 # @apply_operation_to_morphology
 ####################################################################################################
 def apply_operation_to_morphology(*args):
-    """
-    Apply a given function/filter/operation to a given morphology object including all of its
+    """Apply a given function/filter/operation to a given morphology object including all of its
     arbors recursively.
 
     :param args:

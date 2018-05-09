@@ -26,7 +26,7 @@ __status__      = "Production"
 
 
 # System imports
-import os
+import random
 
 # Blender imports
 import bpy
@@ -1203,33 +1203,66 @@ def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
 
 
 
-def emanate_random_spines_on_section(section,
-                                     propability):
+def get_random_spines_on_section(section,
+                                 propability=5.0,
+                                 spines_list=[]):
+    """Gets the data of some random spines on a given section.
 
-    # A list of spines
-    spines_list = list()
+    NOTE: The generated spines are totally random and does not follow any rules for growing the
+    spines, they are just used for artistic purposes.
 
-    for sample in section.samples:
+    :param section:
+        A given section to generate the spines for.
+    :param propability:
+        The probability of growing spine at a certain sample.
+    :param spines_list:
+        The list that integrates the genrated spines recursively.
+    """
 
-        # probability
-
-        # position of sample
-
-        # get random normal on a vector
-
-        # pre-synaptic position
-
-        # Scale based on brnach diameter
-
-        # Select the spine
-
-        # Append to list
-
-        return list
+    if len(section.samples) < 6:
         return
 
-    return
+    print(len(section.samples))
+    for i, sample in enumerate(section.samples):
 
+        # If this is the first or last sample, ignore it since they normally intersect children
+        # and parent sections
+        if i < 2 or i > len(section.samples) - 2:
+            continue
+
+        # Random spines
+        if propability > random.uniform(0.0, 1.0) * 100:
+
+            # Get the position of sample
+            sample_position = sample.point
+
+            # Get the section size at this sample (corresponding to the radius of the sample)
+            sample_radius = sample.radius
+
+            # The post synaptic position is the sample position
+            post_synaptic_position = sample_position
+
+            # The pre-synaptic position is computed based on the samples i-1 and i+1
+            p0 = section.samples[i - 1].point
+            p1 = section.samples[i].point
+            p2 = section.samples[i + 1].point
+
+            # Get the vectors
+            v1 = p0 - p1
+            v2 = p2 - p1
+
+            # Compute the pre-synaptic direction
+            # pre_synaptic_direction = v1.cross(v2)
+
+            # Compute a random pre-synaptic position
+            pre_synaptic_position = post_synaptic_position #+ (pre_synaptic_direction * 1.0)
+
+            # Create the spine
+            spine = nmv.skeleton.Spine()
+            spine.post_synaptic_position = post_synaptic_position
+            spine.pre_synaptic_position = pre_synaptic_position
+            spine.size = 1.0
+            spines_list.append(spine)
 
 
 

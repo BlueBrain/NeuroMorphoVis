@@ -25,3 +25,4 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 from .spine_builder import *
+from .random_spine_builder import *
