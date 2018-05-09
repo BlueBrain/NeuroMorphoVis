@@ -79,7 +79,9 @@ class RandomSpineBuilder:
         :return:
         """
         # Load all the template spines and ignore the verbose messages of loading
+        nmv.utilities.disable_std_output()
         self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_DIRECTORY)
+        nmv.utilities.enable_std_output()
 
         # Create the material
         material = nmv.shading.create_material(
@@ -172,8 +174,8 @@ class RandomSpineBuilder:
             spines_objects.append(spine_object)
 
         # Done
-        nmv.utilities.time_line.show_iteration_progress('Spines', number_spines, number_spines,
-                                                        done=True)
+        nmv.utilities.time_line.show_iteration_progress(
+            'Spines', number_spines, number_spines, done=True)
 
         # Report the time
         building_timer.end()
