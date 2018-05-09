@@ -35,8 +35,8 @@ from mathutils import Vector
 class Spine:
     """Morphological Spine.
 
-    The spines are the connections between a pre-synaptic and post-synaptic neurons that have six
-    various shapes.
+    The spines are the connections between pre-synaptic and post-synaptic neurons with six
+    different shapes.
     """
 
     ################################################################################################

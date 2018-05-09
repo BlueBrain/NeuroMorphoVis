@@ -40,6 +40,7 @@ import neuromorphovis.mesh
 import neuromorphovis.scene
 import neuromorphovis.skeleton
 
+
 ####################################################################################################
 # @is_arbor_disconnected_from_soma
 ####################################################################################################
@@ -1196,3 +1197,39 @@ def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
 
     # Return
     return arbor_skeleton_mesh
+
+
+
+
+
+
+def emanate_random_spines_on_section(section,
+                                     propability):
+
+    # A list of spines
+    spines_list = list()
+
+    for sample in section.samples:
+
+        # probability
+
+        # position of sample
+
+        # get random normal on a vector
+
+        # pre-synaptic position
+
+        # Scale based on brnach diameter
+
+        # Select the spine
+
+        # Append to list
+
+        return list
+        return
+
+    return
+
+
+
+
