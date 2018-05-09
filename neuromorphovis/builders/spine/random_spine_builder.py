@@ -81,6 +81,17 @@ class RandomSpineBuilder:
         # Load all the template spines and ignore the verbose messages of loading
         self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_DIRECTORY)
 
+        # Create the material
+        material = nmv.shading.create_material(
+            name='%spine_material', color=self.options.mesh.spines_color,
+            material_type=self.options.mesh.material)
+
+        # Apply the shader
+        for spine_object in self.spine_meshes:
+
+            # Apply the shader to each spine mesh
+            nmv.shading.set_material_to_object(spine_object, material)
+
     ################################################################################################
     # @emanate_spine
     ################################################################################################
@@ -129,11 +140,6 @@ class RandomSpineBuilder:
 
         # Load all the template spines and ignore the verbose messages of loading
         self.load_spine_meshes()
-
-        # Apply the shader
-        #for spine_object in templates_spines_list:
-        #    # Apply the shader to each spine mesh
-        #    nmv.shading.set_material_to_object(spine_object, material)
 
         spines_list = list()
 
