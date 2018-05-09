@@ -209,7 +209,7 @@ def build_circuit_spines(morphology,
                 continue
 
         # Get the pre-and post-positions in the global coordinates
-        pre_position = synapse.pre_center_position()
+        pre_position = synapse.pre_surface_position()
         post_position = synapse.post_center_position()
 
         # Transform the spine positions to the circuit coordinates
