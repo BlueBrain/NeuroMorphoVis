@@ -194,7 +194,8 @@ class SomaBuilder:
     def attach_hook_to_extrusion_face_on_profile_point(self,
                                                        initial_soma_sphere,
                                                        profile_point,
-                                                       profile_point_index):
+                                                       profile_point_index,
+                                                       use_face=True):
         """Attach a Blender hook on the extrusion face that corresponds to a profile point.
 
         :param initial_soma_sphere:
@@ -205,30 +206,36 @@ class SomaBuilder:
             The index of the given profile point.
         """
 
-        # search for the extrusion face by getting the nearest face in the soma
-        # sphere object to the given centroid point
-        # face_index = mesh_ops.get_index_of_nearest_face_to_point(
-        #    soma_sphere_object, extrusion_face_centroid)
-        # face = soma_sphere_object.data.polygons[face_index]
+        # Attach a full face for extruding a profile point
+        if use_face:
 
+            # Get the face index near to the profile point
+            face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+                initial_soma_sphere, profile_point)
 
-        # Search for the extrusion face by getting the nearest face in the soma sphere object to
-        # the given profile point
-        face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
-            initial_soma_sphere, profile_point)
-        face = initial_soma_sphere.data.polygons[face_index]
+            # Get a reference to the face itself from its index
+            face = initial_soma_sphere.data.polygons[face_index]
 
-        # use vertex
-        #vertex_index = nmv.mesh.ops.get_index_of_nearest_vertex_to_point(
-        #    initial_soma_sphere, profile_point)
+            # Get all the vertices of the face
+            vertices_indices = face.vertices[:]
 
-        # retrieve a list of all the vertices of the face
-        #vertices_indices = [vertex_index]  # face.vertices[:]
-        vertices_indices = face.vertices[:]
-        face_center = face.center
-        #face_center = initial_soma_sphere.data.vertices[vertex_index].co
+            # Get the face center
+            face_center = face.center
 
-        # face.center
+        # Attach a single vertex
+        else:
+
+            # Get the index of a single vertex that is close to the profile point
+            vertex_index = nmv.mesh.ops.get_index_of_nearest_vertex_to_point(
+                initial_soma_sphere, profile_point)
+
+            # Use the only vertex we use in a list
+            vertices_indices = [vertex_index]
+
+            # Assume that the face center is the vertex coordinate
+            face_center = initial_soma_sphere.data.vertices[vertex_index].co
+
+        # Compute the hook points (initial and terminal)
         point_0 = face_center + face_center.normalized() * 0.01
         point_1 = profile_point
 
@@ -236,8 +243,8 @@ class SomaBuilder:
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, self.vertex_group)
 
         # create the hook and attach it to the vertices
-        hook = nmv.physics.hook.ops.add_hook_to_vertices(initial_soma_sphere, vertices_indices,
-            name='hook_%d' % profile_point_index)
+        hook = nmv.physics.hook.ops.add_hook_to_vertices(
+            initial_soma_sphere, vertices_indices, name='hook_%d' % profile_point_index)
 
         # the hook should be stretched from the center of the face to the branch
         # initial segment point
@@ -411,7 +418,6 @@ class SomaBuilder:
 
         # Return index of the extrusion face to be used later for branch extrusion
         return face_index
-
 
     ################################################################################################
     # @build_soma_based_on_profile_points_only
