@@ -64,6 +64,9 @@ class Skeletonization:
         # Draw the skeleton and disconnect the secondary branches after repairing the arbors
         DISCONNECTED_SKELETON_REPAIRED = 'SKELETONIZATION_DISCONNECTED_SKELETON_REPAIRED'
 
+        # Draw the skeleton using tapered arbors where the radii at the earlier sections are bigger
+        TAPERED = 'SKELETONIZATION_TAPERED'
+
         ############################################################################################
         # @__init__
         ############################################################################################

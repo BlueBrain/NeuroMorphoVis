@@ -43,18 +43,13 @@ import slurm_configuration
 # @squeue
 ####################################################################################################
 def squeue():
-    """
-    Returns a list of all the current jobs on the cluster.
+    """Return a list of all the current jobs on the cluster.
 
-    :return: A list of all the current jobs on the cluster.
+    :return:
+        A list of all the current jobs on the cluster.
     """
 
     # Get the current processes running on the cluster
-    #value = subprocess.Popen('squeue', stdout=subprocess.PIPE, shell=True)
-    #(output, err) = value.communicate()
-    #output = value.communicate()[0]
-    #print(output)
-
     result = subprocess.check_output(['squeue'])
     result = str(result)
     return result.split("\\n")

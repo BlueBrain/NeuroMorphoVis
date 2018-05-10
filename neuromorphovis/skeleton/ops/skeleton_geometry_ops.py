@@ -242,12 +242,36 @@ def taper_section(section):
     # Get the length of the section (in terms of number of samples)
     number_samples = len(section.samples)
 
-    # Get the section scale
-    section_scale = section_maximum_radius / section_minimum_radius
+    # Make sure that the section has more than one sample
+    if number_samples < 2:
+        return
 
-    # Compute the step between the different samples
-    step = number_samples / section_scale
+    # Ignore root sections
+    if section.is_root():
+        # To avoid any artifacts when the arbor is getting welded to the soma
+        section.samples[1].radius = section_maximum_radius
+    else:
+        section.samples[0].radius = section_maximum_radius
+
+    # Set the radius of the last sample to the smaller radius
+    section.samples[-1].radius = section_minimum_radius
+
+    # If the section has only two samples, return
+    if number_samples == 2:
+        return
+
+    # Compute the difference
+    difference = section_maximum_radius - section_minimum_radius
+
+    # Compute the step of the inner samples between i = 1 and i = number_samples - 1
+    section_step = difference / (number_samples - 1)
 
     # Set the radii based on their distance from the first sample
-    for i, sample in enumerate(section.samples):
-        sample.radius = section_maximum_radius - (i * step)
+    for i in range(1, len(section.samples) - 2):
+
+        # Avoid changing the second sample of the root section
+        if section.is_root() and i == 1:
+            continue
+
+        # Do it for the internal samples
+        section.samples[i].radius = section_maximum_radius - (i * section_step)

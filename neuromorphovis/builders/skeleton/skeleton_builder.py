@@ -717,7 +717,8 @@ class SkeletonBuilder:
     ################################################################################################
     def draw_morphology_as_connected_sections(self,
                                               bevel_object=None,
-                                              repair_morphology=False):
+                                              repair_morphology=False,
+                                              taper_sections=False):
         """
         Reconstructs and draws the morphology as a series of connected sections.
 
@@ -725,12 +726,20 @@ class SkeletonBuilder:
             A bevel object used to scale the radii of the sections.
         :param repair_morphology:
             A flag to indicate whether we need to repair the morphology or not.
+        :param taper_sections:
+            A flag to indicate whether to taper the sections for artistic purposes or not.
         :return:
             A list of all the objects of the morphology that are already drawn.
         """
 
         # Verify the connectivity of the arbors of the morphology to the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+
+        # Taper the sections if requested
+        if taper_sections:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology,
+                  nmv.skeleton.ops.taper_section])
 
         # Primary and secondary branching
         if self.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
@@ -1140,6 +1149,11 @@ class SkeletonBuilder:
         elif method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_articulated_sections(
                 bevel_object=bevel_object))
+
+        # Change the structure of the morphology for artistic purposes
+        elif method == nmv.enums.Skeletonization.Method.TAPERED:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True, taper_sections=True))
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
         # is represented by a continuous tube
