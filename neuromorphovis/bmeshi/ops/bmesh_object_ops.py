@@ -17,14 +17,16 @@ import bpy, bmesh
 # @convert_to_mesh_object
 ####################################################################################################
 def convert_to_mesh_object(bmesh_object,
-                           name):
-    """
-    Converts the bmesh to a new mesh object and rename it. This operation returns a reference to
+                           name='mesh'):
+    """Converts the bmesh to a new mesh object and rename it. This operation returns a reference to
     the created object.
 
-    :param bmesh_object: An input bmesh object.
-    :param name: The name of the mesh object.
-    :return: Returns a reference to the converted object.
+    :param bmesh_object:
+        An input bmesh object.
+    :param name:
+        The name of the mesh object.
+    :return:
+        Returns a reference to the converted object.
     """
 
     # Create a new mesh object and convert the bmesh object to it
@@ -54,7 +56,7 @@ def convert_from_mesh_object(mesh_object):
 # @convert_to_mesh_object
 ####################################################################################################
 def link_to_new_object_in_scene(bmesh_object,
-                                name):
+                                name='bmesh'):
     """
     Converts the bmesh to a new mesh object, renames it and links it to the scene as a blender
     object such that you can see it in the interface.
@@ -91,3 +93,21 @@ def link_to_existing_object_in_scene(bmesh_object,
     # Link the bmesh to the given object, and update the mesh.
     bmesh_object.to_mesh(scene_object.data)
     bmesh.update_edit_mesh(scene_object.data, True)
+
+
+####################################################################################################
+# @convert_bmesh_to_mesh
+####################################################################################################
+def convert_bmesh_to_mesh(bmesh_object,
+                          name='bmesh'):
+    """Convert a bmesh object to a mesh object.
+
+    :param bmesh_object:
+        An input bmesh object.
+    :param name:
+        The name of the object.
+    :return:
+        A reference to the converted mesh.
+    """
+
+    return link_to_new_object_in_scene(bmesh_object=bmesh_object, name=name)

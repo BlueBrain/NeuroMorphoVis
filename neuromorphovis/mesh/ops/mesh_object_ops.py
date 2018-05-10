@@ -20,7 +20,7 @@ import neuromorphovis.utilities
 
 
 ####################################################################################################
-# @convert_to_object
+# @convert_to_bmesh_object
 ####################################################################################################
 def convert_to_bmesh_object(mesh_object):
     """Convert the mesh object to a bmesh object and returns a reference to it.
@@ -31,10 +31,13 @@ def convert_to_bmesh_object(mesh_object):
         A reference to the created bmesh object.
     """
 
-    # Create a bmesh from the linked mesh
-    bmesh_object = bmesh.from_edit_mesh(mesh_object.data)
+    # Create a new bmesh object
+    bmesh_object = bmesh.new()
 
-    # Return a reference to the bmesh
+    # Convert the mesh object to a bmesh object
+    bmesh_object.from_mesh(mesh_object.data)
+
+    # Return a reference to the bmesh object
     return bmesh_object
 
 

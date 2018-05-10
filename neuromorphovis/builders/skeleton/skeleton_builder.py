@@ -766,14 +766,8 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
-        # Zigzag the sections
+        # Zigzag the sections if required
         if zigzag_sections:
-
-            # Zigzagging requires further resampling
-            # Resample the sections
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections, 1.5])
-
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
 

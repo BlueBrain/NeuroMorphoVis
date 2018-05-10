@@ -80,13 +80,13 @@ class SomaPanel(bpy.types.Panel):
     bpy.types.Scene.Stiffness = FloatProperty(
         name="Stiffness",
         description="The spring factor (or stiffness) of the soft body",
-        default=0.5, min=0.001, max=0.999)
+        default=0.1, min=0.001, max=0.999)
 
     # Ico-sphere subdivision level option
     bpy.types.Scene.SubdivisionLevel = IntProperty(
         name="Subdivisions",
-        description="Subdivision level of the ico-sphere (2-10), convenient 4",
-        default=4, min=2, max=10)
+        description="Subdivision level of the ico-sphere (2-10), convenient 5",
+        default=5, min=2, max=10)
 
     # Simulation step option
     bpy.types.Scene.SimulationSteps = IntProperty(
@@ -126,7 +126,7 @@ class SomaPanel(bpy.types.Panel):
     bpy.types.Scene.IrregularSubdivisions = BoolProperty(
         name="Irregular Subdivisions",
         description="Make further irregular subdivisions for the faces created for the arbors",
-        default=False)
+        default=True)
 
     ################################################################################################
     # @draw
