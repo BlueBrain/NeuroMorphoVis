@@ -31,6 +31,7 @@ import math
 import neuromorphovis as nmv
 import neuromorphovis.skeleton
 
+
 ####################################################################################################
 # @compute_section_length
 ####################################################################################################
@@ -100,6 +101,58 @@ def compute_average_section_radius(section):
 
     # Return the average section radius
     return average_section_radius
+
+
+####################################################################################################
+# @compute_max_section_radius
+####################################################################################################
+def compute_max_section_radius(section):
+    """
+    Computes the max radius of a section.
+
+    :param section:
+        A given section to compute its max radius.
+    :return:
+        The max radius of the section.
+    """
+
+    # Average section radius
+    max_section_radius = 0.0
+
+    # Sum the radii of all the sample
+    for sample in section.samples:
+
+        if sample.radius > max_section_radius:
+            max_section_radius = sample.radius
+
+    # Return the max section radius
+    return max_section_radius
+
+
+####################################################################################################
+# @compute_min_section_radius
+####################################################################################################
+def compute_min_section_radius(section):
+    """
+    Computes the min radius of a section.
+
+    :param section:
+        A given section to compute its min radius.
+    :return:
+        The min radius of the section.
+    """
+
+    # Average section radius
+    min_section_radius =10000000
+
+    # Sum the radii of all the sample
+    for sample in section.samples:
+
+        if sample.radius < min_section_radius:
+            min_section_radius = sample.radius
+
+    # Return the min section radius
+    return min_section_radius
 
 
 ####################################################################################################

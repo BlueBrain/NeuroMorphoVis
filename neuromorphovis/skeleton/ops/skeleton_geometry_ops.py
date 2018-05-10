@@ -30,6 +30,7 @@ from mathutils import Vector, Matrix
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.bbox
+import neuromorphovis.skeleton
 
 ####################################################################################################
 # @compute_section_bounding_box
@@ -216,3 +217,37 @@ def transform_to_global(neuron_object,
 
         # Update the vertex coordinates
         vertex.co = transformation_matrix * vertex.co
+
+
+####################################################################################################
+# @taper_section
+####################################################################################################
+def taper_section(section):
+    """Taper a given section.
+
+    This function is used to change the structure of the morphology for artistic purposes. It gets
+    the maximum and minimum radii along the section and re-calculates the radii of the samples
+    according to their order along the section.
+
+    :param section:
+        A given section along the arbor.
+    """
+
+    # Get the maximum radius of the section
+    section_maximum_radius = nmv.skeleton.ops.compute_max_section_radius(section=section)
+
+    # Get the minimum radius of the section
+    section_minimum_radius = nmv.skeleton.ops.compute_min_section_radius(section=section)
+
+    # Get the length of the section (in terms of number of samples)
+    number_samples = len(section.samples)
+
+    # Get the section scale
+    section_scale = section_maximum_radius / section_minimum_radius
+
+    # Compute the step between the different samples
+    step = number_samples / section_scale
+
+    # Set the radii based on their distance from the first sample
+    for i, sample in enumerate(section.samples):
+        sample.radius = section_maximum_radius - (i * step)
