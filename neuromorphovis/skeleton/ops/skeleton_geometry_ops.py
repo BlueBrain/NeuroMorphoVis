@@ -24,6 +24,9 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+# System imports
+import random, copy
+
 # Blender imports
 from mathutils import Vector, Matrix
 
@@ -239,9 +242,6 @@ def taper_section(section):
     # Get the minimum radius of the section
     section_minimum_radius = nmv.skeleton.ops.compute_min_section_radius(section=section)
 
-    # Get the average radius of the section
-    section_average_radius = nmv.skeleton.ops.compute_average_section_radius(section=section)
-
     # If this is not a root section, the section maximum radius must be compared to the radius of
     # the last sample of the parent section
     if not section.is_root():
@@ -295,3 +295,37 @@ def taper_section(section):
 
         # Do it for the internal samples
         section.samples[i].radius = section_maximum_radius - (i * section_step)
+
+
+####################################################################################################
+# @zigzag_section
+####################################################################################################
+def zigzag_section(section):
+    """Zigzag a given section by adding abrupt changes in its geometry.
+
+    This function is only used for artistic purposes as it changes the structure of the
+    original morphology.
+
+    NOTES:
+    1. Do NOT mess with the initial and lat samples of the sections.
+    2. Zigzag directions are random, BUT PERPENDICULAR to the arbor direction.
+
+    :param section:
+        A given section to zigzag.
+    """
+
+    # Get the length of the section (in terms of number of samples)
+    number_samples = len(section.samples)
+
+    # Make sure that the section has more than two samples to proceed
+    if number_samples < 3:
+        return
+
+    for i in range(1, number_samples - 2):
+
+        # Compute the normal direction
+        random_direction = Vector((random.random(), random.random(), random.random()))
+
+        # Compute the new sample position
+        section.samples[i].point += random_direction * random.uniform(-0.75, 0.75)
+

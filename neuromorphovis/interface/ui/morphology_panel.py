@@ -226,7 +226,11 @@ class MorphologyPanel(bpy.types.Panel):
 
     # Reconstruction method
     bpy.types.Scene.MorphologyReconstructionTechnique = EnumProperty(
-        items=[(nmv.enums.Skeletonization.Method.TAPERED,
+        items=[(nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG,
+                'Tapered Zigzag',
+                "The arbors of earlier sections are thicker and the sections having abrupt "
+                "alternate right and left turns (artistic)"),
+               (nmv.enums.Skeletonization.Method.TAPERED,
                 'Tapered',
                 "The arbors of earlier sections are thicker (artistic)"),
                (nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL,

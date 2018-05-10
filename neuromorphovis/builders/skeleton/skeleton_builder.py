@@ -718,7 +718,8 @@ class SkeletonBuilder:
     def draw_morphology_as_connected_sections(self,
                                               bevel_object=None,
                                               repair_morphology=False,
-                                              taper_sections=False):
+                                              taper_sections=False,
+                                              zigzag_sections=False):
         """
         Reconstructs and draws the morphology as a series of connected sections.
 
@@ -728,18 +729,15 @@ class SkeletonBuilder:
             A flag to indicate whether we need to repair the morphology or not.
         :param taper_sections:
             A flag to indicate whether to taper the sections for artistic purposes or not.
+        :param zigzag_sections:
+            A flag to indicate whether to add abrupt left and right wiggles to the sections for
+            artistic purposes or not.
         :return:
             A list of all the objects of the morphology that are already drawn.
         """
 
         # Verify the connectivity of the arbors of the morphology to the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
-
-        # Taper the sections if requested
-        if taper_sections:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.taper_section])
 
         # Primary and secondary branching
         if self.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
@@ -748,7 +746,6 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-
         else:
 
             # Label the primary and secondary sections based on radii
@@ -763,6 +760,22 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology,
                   nmv.skeleton.ops.resample_sections])
+
+        # Taper the sections if requested
+        if taper_sections:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.taper_section])
+
+        # Zigzag the sections
+        if zigzag_sections:
+
+            # Zigzagging requires further resampling
+            # Resample the sections
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_sections, 1.5])
+
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.zigzag_section])
 
         # Verify the fixed radius options
         fixed_radius = self.options.morphology.sections_fixed_radii_value \
@@ -1154,6 +1167,13 @@ class SkeletonBuilder:
         elif method == nmv.enums.Skeletonization.Method.TAPERED:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=True, taper_sections=True))
+
+        # Change the structure of the morphology for artistic purposes
+        elif method == nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True,
+                taper_sections=True, zigzag_sections=True))
+
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
         # is represented by a continuous tube
