@@ -78,7 +78,7 @@ class SomaBuilder:
         self.hooks_list = None
 
         # Set the initial soma radius to half of its mean radius
-        self.soma_radius = 0.5 * morphology.soma.mean_radius
+        self.initial_soma_radius = 0.5 * morphology.soma.mean_radius
 
         # Ensure the connection between the arbors and the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
@@ -119,7 +119,7 @@ class SomaBuilder:
 
         # Compute the extrusion radius based on the branch radius and also the soma radius
         extrusion_radius = \
-            branch.samples[0].radius * self.soma_radius / branch.samples[0].point.length
+            branch.samples[0].radius * self.initial_soma_radius / branch.samples[0].point.length
 
         # Compute the scale factor between the two radii
         scale_factor = branch.samples[0].radius / extrusion_radius
@@ -157,7 +157,7 @@ class SomaBuilder:
         direction = profile_point.normalized()
 
         # Compute the intersecting point on the soma
-        profile_point_on_soma = self.soma_radius * direction
+        profile_point_on_soma = self.initial_soma_radius * direction
 
         # Verify the extrusion connection by drawing a sphere at the connection point
         if visualize_connection:
@@ -192,8 +192,7 @@ class SomaBuilder:
     # @create_branch_extrusion_face
     ################################################################################################
     def create_branch_extrusion_face(self,
-                                     soma_sphere,
-                                     soma_radius,
+                                     initial_soma_sphere,
                                      branch,
                                      visualize_connection=False):
         """Build a connecting extrusion face for emanating the branch from the soma.
@@ -201,10 +200,8 @@ class SomaBuilder:
         This function returns the centroid of the face to be a basis for building the branch
         itself later and attaching it to the soma.
 
-        :param soma_sphere:
+        :param initial_soma_sphere:
             The ico-sphere that represent the initial shape of the soma.
-        :param soma_radius:
-            The radius of the ico-sphere that reflect the initial shape of the soma.
         :param branch:
             The branch where the extrusion will happen.
         :param visualize_connection:
@@ -218,10 +215,10 @@ class SomaBuilder:
 
         # Compute the intersecting point on the soma and the difference between that on the soma
         # and that on the branch starting point
-        connection_point_on_soma = connection_direction * soma_radius
+        connection_point_on_soma = connection_direction * self.initial_soma_radius
 
         # Compute the extrusion radius that will be applied on the soma_sphere
-        scale_factor = soma_radius / branch.samples[0].point.length
+        scale_factor = self.initial_soma_radius / branch.samples[0].point.length
         extrusion_radius = branch.samples[0].radius * scale_factor
 
         # Create a reference circle for reshaping the connection cross section to a clean shape,
@@ -250,15 +247,15 @@ class SomaBuilder:
         # Select the vertices that intersect with the extrusion sphere to prepare the face for
         # the extrusion process
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_intersecting_sphere(
-            soma_sphere, connection_point_on_soma, extrusion_radius)
+            initial_soma_sphere, connection_point_on_soma, extrusion_radius)
 
         # Make a subdivision for extra processing, if the topology is not required to be preserved
         if self.options.soma.irregular_subdivisions:
-            nmv.bmeshi.ops.subdivide_faces(soma_sphere, faces_indices, cuts=1)
+            nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, faces_indices, cuts=1)
 
         # Get the actual intersecting faces via their indices (this is for smoothing)
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_fully_intersecting_sphere(
-            soma_sphere, connection_point_on_soma, extrusion_radius)
+            initial_soma_sphere, connection_point_on_soma, extrusion_radius)
 
         # If we did not get any faces from the previous operation, then try to get the nearest face
         # This case might happen when the branch is very thin and cannot map to more than one face
@@ -267,21 +264,24 @@ class SomaBuilder:
 
             # Get the nearest face, subdivide it and use it
             nearest_face_index = nmv.bmeshi.ops.get_nearest_face_index(
-                soma_sphere, connection_point_on_soma)
+                initial_soma_sphere, connection_point_on_soma)
 
             # Make a subdivision for extra processing for the obtained face
-            faces_indices = nmv.bmeshi.ops.subdivide_faces(soma_sphere, [nearest_face_index], cuts=2)
+            faces_indices = nmv.bmeshi.ops.subdivide_faces(
+                initial_soma_sphere, [nearest_face_index], cuts=2)
 
         # Merge the selected faces into a single face that will be used for the extrusion
-        extrusion_face_index = nmv.bmeshi.ops.merge_faces_into_one_face(soma_sphere, faces_indices)
+        extrusion_face_index = nmv.bmeshi.ops.merge_faces_into_one_face(
+            initial_soma_sphere, faces_indices)
 
         # Map the face to a reference connection circle
         nmv.bmeshi.ops.convert_face_to_circle(
-            soma_sphere, extrusion_face_index, connection_point_on_soma, extrusion_radius)
+            initial_soma_sphere, extrusion_face_index, connection_point_on_soma, extrusion_radius)
 
         # Return face centroid to be used for retrieving the face later
         # we can search the nearest face w.r.t the centroid and the results is guaranteed
-        extrusion_face = nmv.bmeshi.ops.get_face_from_index(soma_sphere, extrusion_face_index)
+        extrusion_face = nmv.bmeshi.ops.get_face_from_index(
+            initial_soma_sphere, extrusion_face_index)
 
         # Store the index of the face to the branch to use it later for the extrusion
         branch.soma_face_index = extrusion_face_index
@@ -426,72 +426,86 @@ class SomaBuilder:
             A reference to the reconstructed soma.
         """
 
-        # Get thea reference to the soma from the morphology
-        soma = self.morphology.soma
+        # Log
+        nmv.logger.log_header('Building soma using Profile Point only')
 
-        # Get the profile points from the soma
-        profile_points = soma.profile_points
+        # Create a ico-sphere 'bmesh' to represent the initial shape of the soma
+        initial_soma_sphere_bmesh = nmv.bmeshi.create_ico_sphere(
+            radius=self.initial_soma_radius, subdivisions=self.options.soma.subdivision_level)
 
-        # If the topology needs to be preserved, then a high number of subdivisions is required,
-        # otherwise use the subdivision level given by the user
-        subdivisions = self.options.soma.subdivision_level
+        # NOTE: The face extrusion process requires two lists to proceed, the first keeps the
+        # centers of all the faces that will be extruded and the other keeps the valid profile
+        # points that do NOT intersect
 
-        # Create a ico-sphere bmesh to represent the starting shape of the soma
-        soma_radius = soma.mean_radius / 2.0
-        soma_bmesh_sphere = nmv.bmeshi.create_ico_sphere(
-            radius=soma_radius, subdivisions=subdivisions)
+        # Initialize an array to keep track on the centers of the extruded faces
+        faces_centers = list()
 
-        # Extrude the faces
-        faces_centers = []
-        non_intersecting_profile_points = []
-        for i, profile_point in enumerate(profile_points):
+        # Initialize a list to keep track on the valid profile points
+        valid_profile_points = list()
+
+        # Iterate on every profile point available from the soma information to validate it
+        nmv.logger.log_sub_header('Verifying profile points intersection')
+        for i, profile_point in enumerate(self.morphology.soma.profile_points):
+
+            # Check if the profile point intersects with other points in the list or not
             if nmv.skeleton.ops.profile_point_intersect_other_point(
-                    profile_point, i, profile_points, soma_radius):
-                nmv.logger.log("WARNING: profile points intersection")
+                    profile_point, i, self.morphology.soma.profile_points, self.initial_soma_radius):
+
+                # Report the intersection
+                nmv.logger.log_sub_sub_header("*WARNING: Profile point [%d] intersection" % i)
+
+                # Next point
                 continue
 
-            if profile_point.length > soma_radius:
-                non_intersecting_profile_points.append(profile_point)
-                face_center = self.create_profile_point_extrusion_face(
-                    soma_bmesh_sphere, profile_point, i)
-                faces_centers.append(face_center)
+            # Otherwise, we can consider the profile point valid and append it to the list
+            valid_profile_points.append(profile_point)
 
-        # Link the soma sphere to the scene
-        soma_sphere_object = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            soma_bmesh_sphere, '%s_soma' % self.options.morphology.label)
+            # Get the center of the face that is created for the profile point
+            face_center = self.create_profile_point_extrusion_face(
+                initial_soma_sphere_bmesh, profile_point, i)
+
+            # Append the face to the list
+            faces_centers.append(face_center)
+
+        # Link the soma sphere bmesh to the scene using a mesh object
+        initial_soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+            initial_soma_sphere_bmesh, '%s_soma' % self.options.morphology.label)
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
-        self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_object)
+        self.vertex_group = nmv.mesh.ops.create_vertex_group(initial_soma_sphere_mesh)
 
         # Create a hook list to be able to delete all the hooks after finishing the simulation
-        self.hooks_list = []
+        self.hooks_list = list()
+
+        # Attach the hooks for each profile point
         for i, face_centroid in enumerate(faces_centers):
 
             # Attach hook to an extrusion face
             self.attach_hook_to_extrusion_face_on_profile_point(
-                soma_sphere_object, non_intersecting_profile_points[i], i, face_centroid,
+                initial_soma_sphere_mesh, valid_profile_points[i], i, face_centroid,
                 self.vertex_group, self.hooks_list)
 
         # Set the time-line to zero
         bpy.context.scene.frame_set(0)
 
-        # Apply the soft body operation
-        nmv.physics.soft_body.ops.apply_soft_body_to_object(soma_sphere_object, self.vertex_group,
-            self.options.soma)
+        # Apply the soft body operation on the mesh
+        nmv.physics.soft_body.ops.apply_soft_body_to_object(
+            initial_soma_sphere_mesh, self.vertex_group, self.options.soma)
 
         # Apply the soma shader directly to the soft body object, otherwise create the soma here
         # and apply the material later.
         if apply_shader:
 
             # Create the soma material and assign it to the ico-sphere
-            soma_material = nmv.shading.create_material(name='soma',
-                color=self.options.soma.soma_color, material_type=self.options.soma.soma_material)
+            soma_material = nmv.shading.create_material(
+                name='soma', color=self.options.soma.soma_color,
+                material_type=self.options.soma.soma_material)
 
             # Apply the shader to the ico-sphere
-            nmv.shading.set_material_to_object(mesh_object=soma_sphere_object,
-                material_reference=soma_material)
+            nmv.shading.set_material_to_object(
+                mesh_object=initial_soma_sphere_mesh, material_reference=soma_material)
 
-        return soma_sphere_object
+        return initial_soma_sphere_mesh
 
     ################################################################################################
     # @build_soma_soft_body
@@ -529,7 +543,7 @@ class SomaBuilder:
 
         # Create a ico-sphere bmesh to represent the starting shape of the soma
         soma_bmesh_sphere = nmv.bmeshi.create_ico_sphere(
-            radius=self.soma_radius, subdivisions=subdivisions)
+            radius=self.initial_soma_radius, subdivisions=subdivisions)
 
         # Keep a list of all the extrusion face centroids, for later
         roots_and_faces_centroids = []
@@ -546,7 +560,7 @@ class SomaBuilder:
 
                 # Create the extrusion face, where the pulling will occur
                 extrusion_face_centroid = self.create_branch_extrusion_face(
-                    soma_bmesh_sphere, self.soma_radius, apical_dendrite_root,
+                    soma_bmesh_sphere, apical_dendrite_root,
                     visualize_connection=False)
 
                 # Update the list
@@ -566,7 +580,7 @@ class SomaBuilder:
 
                     # Create the extrusion face, where the pulling will occur
                     extrusion_face_centroid = self.create_branch_extrusion_face(
-                        soma_bmesh_sphere, self.soma_radius, dendrite_root,
+                        soma_bmesh_sphere, dendrite_root,
                         visualize_connection=False)
 
                     # Update the list
@@ -588,7 +602,7 @@ class SomaBuilder:
 
                 # Create the extrusion face, where the pulling will occur
                 extrusion_face_centroid = self.create_branch_extrusion_face(
-                    soma_bmesh_sphere, self.soma_radius, axon_root, visualize_connection=False)
+                    soma_bmesh_sphere, axon_root, visualize_connection=False)
 
                 # Update the list
                 roots_and_faces_centroids.append([axon_root, extrusion_face_centroid])
@@ -605,7 +619,7 @@ class SomaBuilder:
         for i, profile_point in enumerate(soma.profile_points):
 
             if nmv.skeleton.ops.profile_point_intersect_other_point(profile_point, i,
-                    soma.profile_points, self.soma_radius):
+                    soma.profile_points, self.initial_soma_radius):
                 nmv.logger.log("WARNING: profile points intersection")
                 continue
 
@@ -615,23 +629,23 @@ class SomaBuilder:
                 # Build towards the apical dendrite, if the apical dendrite is available
                 if apical_dendrite_root is not None:
                     if nmv.skeleton.ops.point_branch_intersect(profile_point, apical_dendrite_root,
-                            self.soma_radius):
+                            self.initial_soma_radius):
                         nmv.logger.log("WARNING: profile point intersects apical dendrite")
                         continue
             if not self.options.morphology.ignore_basal_dendrites:
 
                 for dendrite_root in dendrites_roots:
-                    if nmv.skeleton.ops.point_branch_intersect(profile_point, dendrite_root, self.soma_radius):
+                    if nmv.skeleton.ops.point_branch_intersect(profile_point, dendrite_root, self.initial_soma_radius):
                         nmv.logger.log("WARNING: profile point intersects basal dendrite")
                         continue
 
             if not self.options.morphology.ignore_axon:
 
-                if nmv.skeleton.ops.point_branch_intersect(profile_point, axon_root, self.soma_radius):
+                if nmv.skeleton.ops.point_branch_intersect(profile_point, axon_root, self.initial_soma_radius):
                     nmv.logger.log("WARNING: profile point intersects axon")
                     continue
 
-            if profile_point.length > self.soma_radius:
+            if profile_point.length > self.initial_soma_radius:
                 non_intersecting_profile_points.append(profile_point)
                 face_center = self.create_profile_point_extrusion_face(soma_bmesh_sphere,
                     profile_point, i)

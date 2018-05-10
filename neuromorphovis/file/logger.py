@@ -122,7 +122,8 @@ class Logger:
     ################################################################################################
     # @log_header
     ################################################################################################
-    def log_header(self, *args):
+    def log_header(self,
+                   *args):
         """Log a header.
 
         :param args:
@@ -131,3 +132,36 @@ class Logger:
         self.line()
         self.log(args)
         self.line()
+
+    ################################################################################################
+    # @log_sub_header
+    ################################################################################################
+    def log_sub_header(self,
+                       *args):
+        """Log a sub-header.
+
+        :param arg:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t %s' % log_string)
+
+    ################################################################################################
+    # @log_sub_sub_header
+    ################################################################################################
+    def log_sub_sub_header(self, *args):
+        """Log a sub-header.
+
+        :param arg:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t\t %s' % log_string)
