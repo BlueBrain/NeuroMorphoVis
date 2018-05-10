@@ -245,5 +245,3 @@ def build_circuit_spines(morphology,
 
 
 
-
-    return

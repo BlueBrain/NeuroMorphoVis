@@ -43,8 +43,8 @@ import neuromorphovis.utilities
 ####################################################################################################
 # @RandomSpineBuilder
 ####################################################################################################
-class RandomSpineBuilder:
-    """Building and integrating random spine on individual morphology without a BBP circuit.
+class CircuitSpineBuilder:
+    """Building and integrating accurate spines using a BBP circuit.
     """
 
     ################################################################################################
@@ -99,10 +99,11 @@ class RandomSpineBuilder:
     ################################################################################################
     def emanate_spine(self,
                       spine):
-        """Emanates a spine at a random position on the dendritic tree.
+        """Emanates a spine at an exact position on the dendritic tree.
 
         :param spine:
             A given spine object that contains all the data required to emanate the spine.
+
         :return:
             The mesh instance that correspond to the spines.
         """
@@ -121,10 +122,8 @@ class RandomSpineBuilder:
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
 
         # Rotate the spine towards the pre-synaptic point
-
         nmv.scene.ops.rotate_object_towards_target(
-            spine_object, spine.post_synaptic_position,
-            spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
+            spine_object, spine.post_synaptic_position, spine.pre_synaptic_position)
 
         # Return a reference to the spine
         return spine_object
@@ -133,34 +132,82 @@ class RandomSpineBuilder:
     # @add_spines_to_morphology
     ################################################################################################
     def add_spines_to_morphology(self):
-        """Add the spines randomly to the morphology.
+        """Builds all the spines on a spiny neuron using a BBP circuit.
 
+        :param morphology:
+            A given morphology.
+        :param blue_config:
+            BBP circuit configuration file.
+        :param gid:
+            Neuron gid.
+        :param material:
+            Spine material.
         :return:
-            A list of meshes that correspond to the spines integrated on the morphology.
+            A list of all the reconstructed spines along the neuron.
         """
 
         # Keep a list of all the spines objects
         spines_objects = []
 
-        # Load all the template spines and ignore the verbose messages of loading
-        self.load_spine_meshes()
+        # Import brain
+        import brain
+
+        # Load the circuit, silently please
+        circuit = brain.Circuit(self.morphology.blue_config)
+
+        # Get all the synapses for the corresponding gid.
+        synapses = circuit.afferent_synapses({int(self.morphology.gid)})
+
+        # Get the local to global transforms
+        local_to_global_transform = circuit.transforms({int(self.morphology.gid)})[0]
+
+        # Print(local_to_global_transform)
+        transformation_matrix = Matrix()
+        for i in range(4):
+            transformation_matrix[i][:] = local_to_global_transform[i]
+
+        # Invert the transformation matrix
+        transformation_matrix = transformation_matrix.inverted()
+
+        # Create a timer to report the performance
+        building_timer = nmv.utilities.timer.Timer()
+
+        nmv.logger.log('\t *Building spines')
+        building_timer.start()
 
         spines_list = list()
 
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology_partially(
-            *[self.morphology,
-              nmv.skeleton.ops.get_random_spines_on_section,
-              50,
-              spines_list],
-            axon_branch_level=self.options.morphology.axon_branch_order,
-            basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,
-            apical_dendrite_branch_level=self.options.morphology.apical_dendrite_branch_order)
+        # Load the synapses from the file
+        number_spines = len(synapses)
+        for i, synapse in enumerate(synapses):
 
-        nmv.logger.log('\t *Building spines')
-        building_timer = nmv.utilities.timer.Timer()
-        building_timer.start()
+            # Show progress
+            nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
+
+            """ Ignore soma synapses """
+            # If the post-synaptic section id is zero, then revoke it, and continue
+            post_section_id = synapse.post_section()
+            if post_section_id == 0:
+                continue
+
+            # Get the pre-and post-positions in the global coordinates
+            pre_position = synapse.pre_surface_position()
+            post_position = synapse.post_center_position()
+
+            # Transform the spine positions to the circuit coordinates
+            pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
+            post_synaptic_position = Vector((post_position[0], post_position[1], post_position[2]))
+
+            pre_synaptic_position = transformation_matrix * pre_synaptic_position
+            post_synaptic_position = transformation_matrix * post_synaptic_position
+
+            # Add all the spines into a list
+            # Create the spine
+            spine = nmv.skeleton.Spine()
+            spine.post_synaptic_position = post_synaptic_position
+            spine.pre_synaptic_position = pre_synaptic_position
+            spine.size = 1.0
+            spines_list.append(spine)
 
         # Load the synapses from the file
         number_spines = len(spines_list)
@@ -176,8 +223,8 @@ class RandomSpineBuilder:
             spines_objects.append(spine_object)
 
         # Done
-        nmv.utilities.time_line.show_iteration_progress(
-            'Spines', number_spines, number_spines, done=True)
+        nmv.utilities.time_line.show_iteration_progress('Spines', number_spines, number_spines,
+                                                        done=True)
 
         # Report the time
         building_timer.end()
@@ -188,4 +235,3 @@ class RandomSpineBuilder:
 
         # Return the spines objects list
         return spines_objects
-
