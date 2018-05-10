@@ -478,7 +478,7 @@ class SomaBuilder:
             soma_bmesh_sphere, '%s_soma' % self.options.morphology.label)
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
-        self.vertex_group = nmv.bmeshi.ops.create_vertex_group(soma_sphere_object)
+        self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_object)
 
         # Create a hook list to be able to delete all the hooks after finishing the simulation
         self.hooks_list = []
@@ -571,9 +571,7 @@ class SomaBuilder:
         # Keep a list of all the extrusion face centroids, for later
         roots_and_faces_centroids = []
 
-        nmv.logger.log('**************************************************************************')
-        nmv.logger.log('Building soma')
-        nmv.logger.log('**************************************************************************')
+        nmv.logger.log_header('Building soma')
 
         # Apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
@@ -637,6 +635,12 @@ class SomaBuilder:
 
                 # Report the issue
                 nmv.logger.log('\t * Axon is NOT connected to soma')
+
+
+
+
+
+
 
         """ Physics """
         # Link the soma sphere to the scene

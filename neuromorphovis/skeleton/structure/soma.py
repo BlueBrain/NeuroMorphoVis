@@ -44,9 +44,11 @@ class Soma:
         :param centroid:
             Soma centroid, normally the origin, unless specified.
         :param mean_radius:
-            Soma average radius as measured in the lab.
+            Soma average radius as measured in the lab and reported in the morphology file .
         :param profile_points:
             A list of the profile points that reflect its XY projection.
+        :param arbors_profile_points:
+            A list of profile points measured from the initial samples of the arbors.
         """
 
         # Soma center (normally origin if local coordinates are used)
@@ -62,10 +64,7 @@ class Soma:
         # The profile points of the arbors
         self.arbors_profile_points = arbors_profile_points
 
-        # The soma can take different radii based on the distance to the first sample of all the
-        # branches that are connected to it. The average of those radii should reflect the
-        # mean_radius, and typically, for better 3D profiles, we use the smallest radius.
-        # NOTE: This list is updated during the morphology verification process.
+        # Possible radii that can be assigned to the soma during its reconstruction
         self.possible_radii = []
 
         # Add the soma profile points radii to the possible_radii list
@@ -85,5 +84,6 @@ class Soma:
 
         # The largest radius
         self.largest_radius = self.possible_radii[-1]
+
 
 

@@ -315,7 +315,6 @@ class ReconstructSomaOperator(bpy.types.Operator):
     event_timer = None
     timer_limits = bpy.props.IntProperty(default=0)
 
-    # Meshy soma builder parameters
     meshy_soma_builder = None
     soma_sphere_object = None
     min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
