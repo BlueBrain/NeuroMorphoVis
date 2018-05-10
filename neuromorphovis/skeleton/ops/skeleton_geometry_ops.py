@@ -239,6 +239,26 @@ def taper_section(section):
     # Get the minimum radius of the section
     section_minimum_radius = nmv.skeleton.ops.compute_min_section_radius(section=section)
 
+    # Get the average radius of the section
+    section_average_radius = nmv.skeleton.ops.compute_average_section_radius(section=section)
+
+    # If this is not a root section, the section maximum radius must be compared to the radius of
+    # the last sample of the parent section
+    if not section.is_root():
+
+        # Get the radius of the last sample of the parent section
+        parent_section_radius = section.parent.samples[-1].radius
+
+        # If the radius of the last sample of the parent section is smaller than section maximum
+        # radius, then update the section maximum radius
+        if section_maximum_radius > parent_section_radius:
+            section_maximum_radius = parent_section_radius
+
+        # If the section maximum radius became greater than the section minimum radius, then set
+        # the minimum radius to be a little smaller than the section maximum radius
+        if section_minimum_radius > section_maximum_radius:
+            section_minimum_radius = section_maximum_radius * 0.9
+
     # Get the length of the section (in terms of number of samples)
     number_samples = len(section.samples)
 
