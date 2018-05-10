@@ -35,6 +35,9 @@ class SomaOptions:
         # Irregular subdivisions for the faces created for extruding the arbors
         self.irregular_subdivisions = False
 
+        # Extrude the arbors from the soma to cover the maximal volume
+        self.full_volume_extrusion = True
+
         # Simulation steps
         self.simulation_steps = nmv.consts.SoftBody.SIMULATION_STEPS_DEFAULT
 

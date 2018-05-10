@@ -561,26 +561,19 @@ class PiecewiseBuilder:
         since the soma will not be connected to the arbor at all.
         """
 
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            full_arbor_extrusion = False
-        else:
-            full_arbor_extrusion = True
-
         # If the soma is connected to the root arbors
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
             soma_builder_object = nmv.builders.SomaBuilder(
                 morphology=self.morphology,
                 options=self.options,
-                full_arbor_extrusion=full_arbor_extrusion,
-                preserve_topology_at_connections=True)
+                full_arbor_extrusion=False)
 
         # Otherwise, ignore
         else:
             soma_builder_object = nmv.builders.SomaBuilder(
                 morphology=self.morphology,
                 options=self.options,
-                full_arbor_extrusion=full_arbor_extrusion,
-                preserve_topology_at_connections=False)
+                full_arbor_extrusion=True)
 
         # Reconstruct the soma mesh
         self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)

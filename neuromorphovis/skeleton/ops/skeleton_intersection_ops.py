@@ -180,7 +180,7 @@ def profile_point_intersect_other_point(profile_point,
 def point_branch_intersect(point,
                            branch,
                            soma_radius,
-                           profile_point_radius=1.0):
+                           profile_point_radius=2.5):
     """
     This function checks if the given point intersects with the given branch at the soma or not.
 
