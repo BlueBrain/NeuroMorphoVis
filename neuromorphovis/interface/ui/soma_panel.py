@@ -41,6 +41,7 @@ import neuromorphovis.consts
 import neuromorphovis.enums
 import neuromorphovis.file
 import neuromorphovis.interface
+import neuromorphovis.mesh
 import neuromorphovis.rendering
 import neuromorphovis.scene
 import neuromorphovis.utilities
@@ -680,6 +681,14 @@ class ReconstructSomaProfile(bpy.types.Operator):
         # Show the progress, Done
         nmv.utilities.show_progress(
             'Simulation', self.timer_limits, self.max_simulation_limit, done=True)
+
+        # Decimate the mesh using 25%
+        nmv.logger.log_sub_header('Decimation')
+        nmv.mesh.ops.decimate_mesh_object(self.soma_sphere_object, decimation_ratio=0.25)
+
+        # Smooth the mesh again to look nice
+        nmv.logger.log_sub_header('Smoothing')
+        nmv.mesh.ops.smooth_object(self.soma_sphere_object, level=2)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')

@@ -148,7 +148,7 @@ class Logger:
         log_string = ''.join(map(str, args))
 
         # Log the string
-        self.log('\t %s' % log_string)
+        self.log('\t* %s' % log_string)
 
     ################################################################################################
     # @log_sub_sub_header
@@ -164,4 +164,4 @@ class Logger:
         log_string = ''.join(map(str, args))
 
         # Log the string
-        self.log('\t\t %s' % log_string)
+        self.log('\t\t* %s' % log_string)

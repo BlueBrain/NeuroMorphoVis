@@ -131,7 +131,7 @@ class SomaBuilder:
     # @create_profile_point_extrusion_face
     ################################################################################################
     def create_profile_point_extrusion_face(self,
-                                            soma_sphere,
+                                            initial_soma_sphere,
                                             profile_point,
                                             profile_point_index,
                                             visualize_connection=False):
@@ -141,7 +141,7 @@ class SomaBuilder:
         NOTE: This functionality helps creating more realistic somata given that the profile
         points are not intersecting.
 
-        :param soma_sphere:
+        :param initial_soma_sphere:
             The ico-sphere that represent the initial shape of the soma.
         :param profile_point:
             A given two-dimensional profile point of the soma.
@@ -172,21 +172,82 @@ class SomaBuilder:
         # Get the nearest face to the projected point on soma, subdivide it and use it for the
         # extrusion operation
         nearest_face_index = nmv.bmeshi.ops.get_nearest_face_index(
-            soma_sphere, profile_point_on_soma)
+            initial_soma_sphere, profile_point_on_soma)
 
         # Make a subdivision for extra processing
-        faces_indices = nmv.bmeshi.ops.subdivide_faces(soma_sphere, [nearest_face_index])
+        faces_indices = nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, [nearest_face_index])
 
         # Get the nearest face to the projection on soma after refinement
         nearest_face_index = nmv.bmeshi.ops.get_nearest_face_index(
-            soma_sphere, profile_point_on_soma)
+            initial_soma_sphere, profile_point_on_soma)
 
         # Return the face centroid to be used for retrieving the face later
         # We can search the nearest face w.r.t the centroid and the results is guaranteed
-        extrusion_face = nmv.bmeshi.ops.get_face_from_index(soma_sphere, nearest_face_index)
+        extrusion_face = nmv.bmeshi.ops.get_face_from_index(initial_soma_sphere, nearest_face_index)
 
         # Return the computed centroid of the extrusion face
         return extrusion_face.calc_center_median()
+
+    ################################################################################################
+    # @attach_hook_to_extrusion_face_on_profile_point
+    ################################################################################################
+    def attach_hook_to_extrusion_face_on_profile_point(self,
+                                                       initial_soma_sphere,
+                                                       profile_point,
+                                                       profile_point_index):
+        """Attach a Blender hook on the extrusion face that corresponds to a profile point.
+
+        :param initial_soma_sphere:
+            The ico-sphere that represent the initial shape of the soma.
+        :param profile_point:
+            A given two-dimensional profile point of the soma.
+        :param profile_point_index:
+            The index of the given profile point.
+        """
+
+        # search for the extrusion face by getting the nearest face in the soma
+        # sphere object to the given centroid point
+        # face_index = mesh_ops.get_index_of_nearest_face_to_point(
+        #    soma_sphere_object, extrusion_face_centroid)
+        # face = soma_sphere_object.data.polygons[face_index]
+
+
+        # Search for the extrusion face by getting the nearest face in the soma sphere object to
+        # the given profile point
+        face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+            initial_soma_sphere, profile_point)
+        face = initial_soma_sphere.data.polygons[face_index]
+
+        # use vertex
+        #vertex_index = nmv.mesh.ops.get_index_of_nearest_vertex_to_point(
+        #    initial_soma_sphere, profile_point)
+
+        # retrieve a list of all the vertices of the face
+        #vertices_indices = [vertex_index]  # face.vertices[:]
+        vertices_indices = face.vertices[:]
+        face_center = face.center
+        #face_center = initial_soma_sphere.data.vertices[vertex_index].co
+
+        # face.center
+        point_0 = face_center + face_center.normalized() * 0.01
+        point_1 = profile_point
+
+        # add the vertices to the existing vertex group
+        nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, self.vertex_group)
+
+        # create the hook and attach it to the vertices
+        hook = nmv.physics.hook.ops.add_hook_to_vertices(initial_soma_sphere, vertices_indices,
+            name='hook_%d' % profile_point_index)
+
+        # the hook should be stretched from the center of the face to the branch
+        # initial segment point
+        # set the hook positions at the different key frames
+        nmv.physics.hook.ops.locate_hook_at_keyframe(hook, point_0, 1)
+        nmv.physics.hook.ops.locate_hook_at_keyframe(hook, point_1, 50)
+
+        # add the hook to the hooks list
+        self.hooks_list.append(hook)
+
 
     ################################################################################################
     # @create_branch_extrusion_face
@@ -351,62 +412,6 @@ class SomaBuilder:
         # Return index of the extrusion face to be used later for branch extrusion
         return face_index
 
-    ################################################################################################
-    # @attach_hook_to_extrusion_face_on_profile_point
-    ################################################################################################
-    @staticmethod
-    def attach_hook_to_extrusion_face_on_profile_point(soma_sphere_object,
-                                                       profile_point,
-                                                       profile_point_index,
-                                                       extrusion_face_centroid,
-                                                       vertex_group,
-                                                       hooks_list):
-        """
-
-        :param soma_sphere_object:
-        :param profile_point:
-        :param extrusion_face_centroid:
-        :param vertex_group:
-        :param hooks_list:
-        :return:
-        """
-
-        # search for the extrusion face by getting the nearest face in the soma
-        # sphere object to the given centroid point
-        # face_index = mesh_ops.get_index_of_nearest_face_to_point(
-        #    soma_sphere_object, extrusion_face_centroid)
-        # face = soma_sphere_object.data.polygons[face_index]
-
-        # use vertex
-        vertex_index = nmv.mesh.ops.get_index_of_nearest_vertex_to_point(
-            soma_sphere_object, profile_point)
-
-        # retrieve a list of all the vertices of the face
-        vertices_indices = [vertex_index]  # face.vertices[:]
-        face_center = soma_sphere_object.data.vertices[vertex_index].co
-
-        # face.center
-        point_0 = face_center + face_center.normalized() * 0.01
-        point_1 = profile_point
-
-        # add the vertices to the existing vertex group
-        nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, vertex_group)
-
-        # create the hook and attach it to the vertices
-        hook = nmv.physics.hook.ops.add_hook_to_vertices(soma_sphere_object, vertices_indices,
-            name='hook_%d' % profile_point_index)
-
-        # the hook should be stretched from the center of the face to the branch
-        # initial segment point
-        # set the hook positions at the different key frames
-        nmv.physics.hook.ops.locate_hook_at_keyframe(hook, point_0, 1)
-        nmv.physics.hook.ops.locate_hook_at_keyframe(hook, point_1, 50)
-
-        # add the hook to the hooks list
-        hooks_list.append(hook)
-
-        # return index of the extrusion face to be used later for branch extrusion
-        return None
 
     ################################################################################################
     # @build_soma_based_on_profile_points_only
@@ -452,7 +457,7 @@ class SomaBuilder:
                     profile_point, i, self.morphology.soma.profile_points, self.initial_soma_radius):
 
                 # Report the intersection
-                nmv.logger.log_sub_sub_header("*WARNING: Profile point [%d] intersection" % i)
+                nmv.logger.log_sub_sub_header("WARNING: Profile point [%d] intersection" % i)
 
                 # Next point
                 continue
@@ -461,6 +466,7 @@ class SomaBuilder:
             valid_profile_points.append(profile_point)
 
             # Get the center of the face that is created for the profile point
+            nmv.logger.log_sub_sub_header("Profile point [%d] is valid" % i)
             face_center = self.create_profile_point_extrusion_face(
                 initial_soma_sphere_bmesh, profile_point, i)
 
@@ -468,29 +474,30 @@ class SomaBuilder:
             faces_centers.append(face_center)
 
         # Link the soma sphere bmesh to the scene using a mesh object
-        initial_soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+        soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
             initial_soma_sphere_bmesh, '%s_soma' % self.options.morphology.label)
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
-        self.vertex_group = nmv.mesh.ops.create_vertex_group(initial_soma_sphere_mesh)
+        self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_mesh)
 
         # Create a hook list to be able to delete all the hooks after finishing the simulation
         self.hooks_list = list()
 
         # Attach the hooks for each profile point
+        nmv.logger.log_sub_header('Attaching hooks')
         for i, face_centroid in enumerate(faces_centers):
 
             # Attach hook to an extrusion face
+            nmv.logger.log_sub_sub_header("Hook [%d]" % i)
             self.attach_hook_to_extrusion_face_on_profile_point(
-                initial_soma_sphere_mesh, valid_profile_points[i], i, face_centroid,
-                self.vertex_group, self.hooks_list)
+                soma_sphere_mesh, valid_profile_points[i], i)
 
         # Set the time-line to zero
         bpy.context.scene.frame_set(0)
 
         # Apply the soft body operation on the mesh
         nmv.physics.soft_body.ops.apply_soft_body_to_object(
-            initial_soma_sphere_mesh, self.vertex_group, self.options.soma)
+            soma_sphere_mesh, self.vertex_group, self.options.soma)
 
         # Apply the soma shader directly to the soft body object, otherwise create the soma here
         # and apply the material later.
@@ -498,14 +505,15 @@ class SomaBuilder:
 
             # Create the soma material and assign it to the ico-sphere
             soma_material = nmv.shading.create_material(
-                name='soma', color=self.options.soma.soma_color,
+                name='soma_material', color=self.options.soma.soma_color,
                 material_type=self.options.soma.soma_material)
 
             # Apply the shader to the ico-sphere
             nmv.shading.set_material_to_object(
-                mesh_object=initial_soma_sphere_mesh, material_reference=soma_material)
+                mesh_object=soma_sphere_mesh, material_reference=soma_material)
 
-        return initial_soma_sphere_mesh
+        # Return a reference to the reconstructed soma mesh
+        return soma_sphere_mesh
 
     ################################################################################################
     # @build_soma_soft_body
@@ -829,6 +837,14 @@ class SomaBuilder:
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)
+
+        # Decimate the mesh using 25%
+        nmv.logger.log_sub_header('Decimation')
+        nmv.mesh.ops.decimate_mesh_object(reconstructed_soma_mesh, decimation_ratio=0.25)
+
+        # Smooth the mesh again to look nice
+        nmv.logger.log_sub_header('Smoothing')
+        nmv.mesh.ops.smooth_object(reconstructed_soma_mesh, level=2)
 
         self.add_noise_to_soma_surface(reconstructed_soma_mesh)
 
