@@ -147,10 +147,10 @@ class SomaPanel(bpy.types.Panel):
     # @draw
     ################################################################################################
     def draw(self, context):
-        """
-        Draws the panel.
+        """Draws the panel
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Get a reference to the panel layout
@@ -414,11 +414,12 @@ class ReconstructSomaOperator(bpy.types.Operator):
     def modal(self,
               context,
               event):
-        """
-        Threading and non-blocking handling.
+        """Threading and non-blocking handling.
 
-        :param context: Panel context.
-        :param event: A given event for the panel.
+        :param context:
+            Panel context.
+        :param event:
+            A given event for the panel.
         """
 
         # Get a reference to the scene
@@ -460,10 +461,10 @@ class ReconstructSomaOperator(bpy.types.Operator):
     ################################################################################################
     def execute(self,
                 context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Clear the scene
@@ -504,10 +505,10 @@ class ReconstructSomaOperator(bpy.types.Operator):
     # @cancel
     ################################################################################################
     def cancel(self, context):
-        """
-        Cancel the panel processing and return to the interaction mode.
+        """Cancel the panel processing and return to the interaction mode.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Multi-threading
@@ -554,11 +555,12 @@ class RenderSomaFront(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Context.
-        :return: 'FINISHED'
+        :param context:
+            Context.
+        :return:
+            'FINISHED'
         """
 
         # Ensure that there is a valid directory where the images will be written to
@@ -605,11 +607,12 @@ class RenderSomaSide(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Context.
-        :return: 'FINISHED'
+        :param context:
+            Context.
+        :return:
+            'FINISHED'
         """
 
         # Ensure that there is a valid directory where the images will be written to
@@ -655,11 +658,12 @@ class RenderSomaTop(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Context.
-        :return: 'FINISHED'
+        :param context:
+            Context.
+        :return:
+            'FINISHED'
         """
 
         # Ensure that there is a valid directory where the images will be written to
@@ -717,8 +721,10 @@ class RenderSoma360(bpy.types.Operator):
         """
         Threading and non-blocking handling.
 
-        :param context: Panel context.
-        :param event: A given event for the panel.
+        :param context:
+            Panel context.
+        :param event:
+            A given event for the panel.
         """
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
@@ -766,10 +772,10 @@ class RenderSoma360(bpy.types.Operator):
     ################################################################################################
     def execute(self,
                 context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Ensure that there is a valid directory where the images will be written to
@@ -806,7 +812,8 @@ class RenderSoma360(bpy.types.Operator):
         """
         Cancel the panel processing and return to the interaction mode.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Multi-threading
@@ -851,8 +858,7 @@ class RenderSomaProgressive(bpy.types.Operator):
     ################################################################################################
     def load_morphology(self,
                         context_scene):
-        """
-        Loads the morphology from file.
+        """Loads the morphology from file.
 
         :param context_scene:
             The current scene in the rendering context.
@@ -916,8 +922,10 @@ class RenderSomaProgressive(bpy.types.Operator):
         """
         Threading and non-blocking handling.
 
-        :param context: Panel context.
-        :param event: A given event for the panel.
+        :param context:
+            Panel context.
+        :param event:
+            A given event for the panel.
         """
 
         # Get a reference to the scene
@@ -971,10 +979,10 @@ class RenderSomaProgressive(bpy.types.Operator):
     ################################################################################################
     def execute(self,
                 context):
-        """
-        Execute the operator.
+        """Execute the operator.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Ensure that there is a valid directory where the images will be written to
@@ -1025,10 +1033,10 @@ class RenderSomaProgressive(bpy.types.Operator):
     # @cancel
     ################################################################################################
     def cancel(self, context):
-        """
-        Cancel the panel processing and return to the interaction mode.
+        """Cancel the panel processing and return to the interaction mode.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Multi-threading
@@ -1071,8 +1079,10 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
         """
         Executes the operator.
 
-        :param context: Operator context.
-        :return: {'FINISHED'}
+        :param context:
+            Operator context.
+        :return:
+            {'FINISHED'}
         """
 
         # Ensure that there is a valid directory where the meshes will be written to
@@ -1115,8 +1125,10 @@ class SaveSomaMeshPLY(bpy.types.Operator):
         """
         Executes the operator.
 
-        :param context: Operator context.
-        :return: {'FINISHED'}
+        :param context:
+            Operator context.
+        :return:
+            {'FINISHED'}
         """
 
         # Ensure that there is a valid directory where the meshes will be written to
@@ -1160,8 +1172,10 @@ class SaveSomaMeshSTL(bpy.types.Operator):
         """
         Executes the operator.
 
-        :param context: Operator context.
-        :return: {'FINISHED'}
+        :param context:
+            Operator context.
+        :return:
+            {'FINISHED'}
         """
 
         # Ensure that there is a valid directory where the meshes will be written to
@@ -1204,8 +1218,10 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
         """
         Executes the operator.
 
-        :param context: Operator context.
-        :return: {'FINISHED'}
+        :param context:
+            Operator context.
+        :return:
+            {'FINISHED'}
         """
 
         # Ensure that there is a valid directory where the meshes will be written to
@@ -1234,8 +1250,7 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
 # @register_panel
 ####################################################################################################
 def register_panel():
-    """
-    Registers all the classes in this panel.
+    """Registers all the classes in this panel.
     """
 
     # Soma reconstruction panel
@@ -1262,8 +1277,7 @@ def register_panel():
 # @unregister_panel
 ####################################################################################################
 def unregister_panel():
-    """
-    Un-registers all the classes in this panel.
+    """Un-registers all the classes in this panel.
     """
 
     # Soma reconstruction panel
