@@ -165,7 +165,7 @@ class MeshPanel(bpy.types.Panel):
         name='Model',
         default=nmv.enums.Meshing.Surface.SMOOTH)
 
-    # Rendering view
+    # Spines
     bpy.types.Scene.Spines = EnumProperty(
         items=[(nmv.enums.Meshing.Spines.IGNORE,
                 'Ignore',
@@ -177,6 +177,28 @@ class MeshPanel(bpy.types.Panel):
                 'Integrated',
                 'The spines are integrated as part of the neuron mesh')],
                 name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
+
+    # Nucleus
+    bpy.types.Scene.Nucleus = EnumProperty(
+        items=[(nmv.enums.Meshing.Nucleus.IGNORE,
+                'Ignore',
+                'The nucleus is ignored'),
+               (nmv.enums.Meshing.Nucleus.INTEGRATED,
+                'Integrated',
+                'The nucleus is integrated')],
+        name='Nucleus',
+        default=nmv.enums.Meshing.Nucleus.IGNORE)
+
+    # Nucleus mesh quality
+    bpy.types.Scene.NucleusMeshQuality = EnumProperty(
+        items=[(nmv.enums.Meshing.Nucleus.Quality.LQ,
+                'Low',
+                'Low quality nucleus mesh'),
+               (nmv.enums.Meshing.Nucleus.Quality.HQ,
+                'High',
+                'High quality nucleus mesh')],
+        name='Nucleus Mesh Quality',
+        default=nmv.enums.Meshing.Nucleus.Quality.LQ)
 
     # Fix artifacts flag
     bpy.types.Scene.FixMorphologyArtifacts = BoolProperty(
@@ -242,6 +264,12 @@ class MeshPanel(bpy.types.Panel):
         name="Spines Color", subtype='COLOR',
         default=nmv.enums.Color.SPINES, min=0.0, max=1.0,
         description="The color of the spines")
+
+    # The color of the nucleus mesh
+    bpy.types.Scene.NucleusMeshColor = FloatVectorProperty(
+        name="Nucleus Color", subtype='COLOR',
+        default=nmv.enums.Color.NUCLEI, min=0.0, max=1.0,
+        description="The color of the nucleus")
 
     # Rendering resolution
     bpy.types.Scene.MeshRenderingResolution = EnumProperty(
@@ -410,6 +438,25 @@ class MeshPanel(bpy.types.Panel):
         nucleus_options_row = layout.row()
         nucleus_options_row.label(text='Nucleus Options:', icon='FORCE_TURBULENCE')
 
+        # Nuclei integration
+        nucleus_integration_row = layout.row()
+        nucleus_integration_row.label('Nucleus:')
+        nucleus_integration_row.prop(context.scene, 'Nucleus', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.nucleus = context.scene.Nucleus
+
+        # Add nucleus options if the nuclei are not ignored
+        if context.scene.Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
+
+            # Nuclei quality
+            nucleus_quality_row = layout.row()
+            nucleus_quality_row.label('Quality:')
+            nucleus_quality_row.prop(context.scene, 'NucleusMeshQuality', expand=True)
+
+            # Pass options from UI to system
+            nmv.interface.ui_options.mesh.nucleus_mesh_quality = context.scene.NucleusMeshQuality
+
         # Coloring parameters
         colors_row = layout.row()
         colors_row.label(text='Colors & Materials:', icon='COLOR')
@@ -484,6 +531,17 @@ class MeshPanel(bpy.types.Panel):
                 Vector((context.scene.SpinesMeshColor.r,
                         context.scene.SpinesMeshColor.g,
                         context.scene.SpinesMeshColor.b))
+
+        # Add nucleus color option if they are not ignored
+        if context.scene.Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
+
+            nucleus_color_row = layout.row()
+            nucleus_color_row.prop(context.scene, 'NucleusMeshColor')
+
+            nmv.interface.ui_options.mesh.nucleus_color = \
+                Vector((context.scene.NucleusMeshColor.r,
+                        context.scene.NucleusMeshColor.g,
+                        context.scene.NucleusMeshColor.b))
 
         # Mesh quick reconstruction options
         quick_reconstruction_row = layout.row()

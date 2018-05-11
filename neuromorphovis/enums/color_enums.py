@@ -57,4 +57,7 @@ class Color:
     ARTICULATION = Vector((1.0, 1.0, 0.0))
 
     # Spines color
-    SPINES = Vector((1, 1, 1))
+    SPINES = Vector((0.1, 0.75, 0.45))
+
+    # Nuclei color
+    NUCLEI = Vector((0.75, 0.41, 0.77))

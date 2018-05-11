@@ -81,8 +81,17 @@ class MeshOptions:
         # Spines color
         self.spines_color = nmv.enums.Color.SPINES
 
+        # Nucleus color
+        self.nucleus_color = nmv.enums.Color.NUCLEI
+
+        # Nucleus mesh quality, by default low quality
+        self.nucleus_mesh_quality = nmv.enums.Meshing.Nucleus.Quality.LQ
+
         # Ignore the spine building
         self.spine_objects = nmv.enums.Meshing.Spines.IGNORE
+
+        # Nucleus, ignore by default
+        self.nucleus = nmv.enums.Meshing.Nucleus.IGNORE
 
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
