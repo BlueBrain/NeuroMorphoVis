@@ -429,12 +429,14 @@ class MeshPanel(bpy.types.Panel):
             spines_color_row.prop(context.scene, 'SpinesMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.soma_color = Vector((context.scene.SomaMeshColor.r,
-                                                               context.scene.SomaMeshColor.g,
-                                                               context.scene.SomaMeshColor.b))
-            nmv.interface.ui_options.mesh.axon_color = Vector((context.scene.AxonMeshColor.r,
-                                                               context.scene.AxonMeshColor.g,
-                                                               context.scene.AxonMeshColor.b))
+            nmv.interface.ui_options.mesh.soma_color = \
+                Vector((context.scene.SomaMeshColor.r,
+                        context.scene.SomaMeshColor.g,
+                        context.scene.SomaMeshColor.b))
+            nmv.interface.ui_options.mesh.axon_color = \
+                Vector((context.scene.AxonMeshColor.r,
+                        context.scene.AxonMeshColor.g,
+                        context.scene.AxonMeshColor.b))
             nmv.interface.ui_options.mesh.basal_dendrites_color = \
                 Vector((context.scene.BasalDendritesMeshColor.r,
                         context.scene.BasalDendritesMeshColor.g,
@@ -447,7 +449,6 @@ class MeshPanel(bpy.types.Panel):
                 Vector((context.scene.SpinesMeshColor.r,
                         context.scene.SpinesMeshColor.g,
                         context.scene.SpinesMeshColor.b))
-
 
         # Mesh reconstruction options
         mesh_reconstruction_row = layout.row()
@@ -552,42 +553,6 @@ class MeshPanel(bpy.types.Panel):
         save_neuron_mesh_buttons_column.enabled = True
         self.shown_hidden_rows.append(save_neuron_mesh_buttons_column)
 
-        """
-        # If no given data, then disable some buttons
-        global reconstructed_neuron_mesh
-        global reconstructed_neuron_meshes
-
-        if nmv.scene.ops.is_object_in_scene(reconstructed_neuron_mesh) or \
-                not nmv.scene.ops.is_it_null(reconstructed_neuron_meshes):
-            rendering_type_row.enabled = True
-
-            if frame_resolution_row is not None:
-                frame_resolution_row.enabled = True
-
-            if scale_factor_row is not None:
-                scale_factor_row.enabled = True
-
-            if render_close_up_row is not None:
-                render_close_up_row.enabled = True
-
-            render_view_buttons_row.enabled = True
-            render_animations_buttons_row.enabled = True
-            save_neuron_mesh_buttons_column.enabled = True
-        else:
-            rendering_type_row.enabled = False
-            if frame_resolution_row is not None:
-                frame_resolution_row.enabled = False
-
-            if scale_factor_row is not None:
-                scale_factor_row.enabled = False
-
-            if render_close_up_row is not None:
-                render_close_up_row.enabled = False
-
-            render_view_buttons_row.enabled = False
-            render_animations_buttons_row.enabled = False
-            save_neuron_mesh_buttons_column.enabled = False
-        """
 
 ####################################################################################################
 # @ReconstructNeuronMesh

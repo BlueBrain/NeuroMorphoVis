@@ -77,9 +77,9 @@ class NeuronSkeletonRenderer:
             '%s/%s' % (image_directory, image_name) if image_directory is not None else image_name
 
         # Render an image
-        skeleton_camera.render_scene(bounding_box=bounding_box, camera_view=camera_view,
-            image_resolution=image_resolution, image_name=image_prefix,
-            keep_camera_in_scene=keep_camera_in_scene)
+        skeleton_camera.render_scene(
+            bounding_box=bounding_box, camera_view=camera_view, image_resolution=image_resolution,
+            image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
 
     ################################################################################################
     # @render

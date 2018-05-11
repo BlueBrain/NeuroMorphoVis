@@ -206,8 +206,7 @@ class AnalyzeMorphology(bpy.types.Operator):
     ################################################################################################
     def load_morphology(self,
                         context_scene):
-        """
-        Loads the morphology from file.
+        """Load the morphology from file.
 
         :param context_scene:
             Current scene in the rendering context.
@@ -326,6 +325,7 @@ class AnalyzeMorphology(bpy.types.Operator):
              'SECTIONS_RADII']
         ]
 
+        # Apply the analysis filters
         for analysis_filter in analysis_filters:
 
             # UI flag
@@ -362,8 +362,7 @@ class AnalyzeMorphology(bpy.types.Operator):
 # @register_panel
 ####################################################################################################
 def register_panel():
-    """
-    Registers all the classes in this panel.
+    """Registers all the classes in this panel.
     """
 
     # Morphology analysis panel
@@ -377,8 +376,7 @@ def register_panel():
 # @unregister_panel
 ####################################################################################################
 def unregister_panel():
-    """
-    Un-registers all the classes in this panel.
+    """Un-registers all the classes in this panel.
     """
 
     # Morphology analysis panel

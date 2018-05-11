@@ -141,10 +141,10 @@ class IOPanel(bpy.types.Panel):
     # @draw
     ################################################################################################
     def draw(self, context):
-        """
-        Draws the panel.
+        """Draw the panel.
 
-        :param context: Panel context.
+        :param context:
+            Panel context.
         """
 
         # Get a reference to the panel layout
@@ -222,7 +222,6 @@ class IOPanel(bpy.types.Panel):
 
         # Pass options from UI to system
         if 'Select Directory' in scene.OutputDirectory:
-
             nmv.interface.ui_options.io.output_directory = None
         else:
             nmv.interface.ui_options.io.output_directory = \

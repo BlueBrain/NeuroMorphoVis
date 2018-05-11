@@ -44,6 +44,9 @@ class Messages:
     # Invalid output path
     INVALID_OUTPUT_PATH = "Invalid output directory, update it in the Input / Output Data panel"
 
+    # Invalid view
+    INVALID_RENDERING_VIEW = "Invalid rendering view"
+
     # Spaces
     SPACES = '                                                                                     '
 
