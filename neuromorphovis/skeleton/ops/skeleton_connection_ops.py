@@ -1283,6 +1283,3 @@ def get_random_spines_on_section(current_branching_level,
             spine.pre_synaptic_position = pre_synaptic_position
             spine.size = sample_radius
             spines_list.append(spine)
-
-
-

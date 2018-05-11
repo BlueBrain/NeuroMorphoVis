@@ -71,8 +71,17 @@ class Paths:
     # Keep a reference to the current directory
     current_directory = os.path.dirname(os.path.realpath(__file__))
 
-    # The directory where the spines meshes are located
-    SPINES_MESHES_DIRECTORY = '%s/../../data/spines-meshes' % current_directory
-
     # The directory where the spines morphologies are located
     SPINES_MORPHOLOGIES_DIRECTORY = '%s/../../data/spines-morphologies' % current_directory
+
+    # The directory where the high quality spine meshes are located
+    SPINES_MESHES_HQ_DIRECTORY = '%s/../../data/spines-meshes/hq' % current_directory
+
+    # The directory where the low quality spine meshes are located
+    SPINES_MESHES_LQ_DIRECTORY = '%s/../../data/spines-meshes/lq' % current_directory
+
+    # The directory where the high quality nuclei are located
+    NUCLEI_MESHES_HQ_DIRECTORY = '%s/../../data/nuclei-meshes/hq' % current_directory
+
+    # The directory where the low quality nuclei are located
+    NUCLEI_MESHES_LQ_DIRECTORY = '%s/../../data/nuclei-meshes/lq' % current_directory
