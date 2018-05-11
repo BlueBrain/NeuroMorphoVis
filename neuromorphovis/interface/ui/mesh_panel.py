@@ -249,7 +249,7 @@ class MeshPanel(bpy.types.Panel):
                (nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW,
                 'Close Up',
                 'Renders a close up image the focuses on the soma')],
-        name='View', default=nmv.enums.Meshing.Rendering.View.WIDE_SHOT_VIEW)
+        name='View', default=nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW)
 
     # Keep cameras
     bpy.types.Scene.KeepMeshCameras = BoolProperty(

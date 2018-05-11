@@ -329,7 +329,7 @@ class MorphologyPanel(bpy.types.Panel):
                 'Close Up',
                 'Renders a close up image the focuses on the soma')],
         name='View',
-        default=nmv.enums.Skeletonization.Rendering.View.WIDE_SHOT_VIEW)
+        default=nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW)
 
     # Frame resolution
     bpy.types.Scene.MorphologyFrameResolution = IntProperty(
@@ -906,6 +906,7 @@ class RenderMorphologyFront(bpy.types.Operator):
         # Stretch the bounding box by few microns
         rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
+        # Render the morphology
         nmv.rendering.NeuronSkeletonRenderer.render(
             bounding_box=rendering_bbox,
             camera_view=nmv.enums.Camera.View.FRONT,
@@ -993,6 +994,7 @@ class RenderMorphologySide(bpy.types.Operator):
         # Stretch the bounding box by few microns
         rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
+        # Render the morphology
         nmv.rendering.NeuronSkeletonRenderer.render(
             bounding_box=rendering_bbox,
             camera_view=nmv.enums.Camera.View.SIDE,
@@ -1080,6 +1082,7 @@ class RenderMorphologyTop(bpy.types.Operator):
         # Stretch the bounding box by few microns
         rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
+        # Render the morphology
         nmv.rendering.NeuronSkeletonRenderer.render(
             bounding_box=rendering_bbox,
             camera_view=nmv.enums.Camera.View.TOP,
@@ -1145,41 +1148,41 @@ class RenderMorphology360(bpy.types.Operator):
             image_name = '%s/frame_%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
 
-            # A reference to the bounding box that will be used for the rendering
-            bounding_box = None
-            """
-            # Rendering a close up view
-            if context.scene.MorphologyRenderingView == nmv.enums.Skeletonization.Rendering.CLOSE_UP_VIEW:
+            # Compute the bounding box for a close up view
+            if context.scene.MorphologyRenderingView == \
+                    nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
 
                 # Compute the bounding box for a close up view
-                bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
                     extent=context.scene.MorphologyCloseUpDimensions)
 
-            # Render the whole morphology view
-            elif context.scene.MorphologyRenderingView == nmv.enums.Skeletonization.Rendering.FULL_VIEW:
+            # Compute the bounding box for a mid-shot view
+            elif context.scene.MorphologyRenderingView == \
+                    nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
 
-                if context.scene.RenderingExtent == \
-                        nmv.enums.Skeletonization.Rendering.FULL_MORPHOLOGY_EXTENT:
+                # Compute the bounding box for the available meshes only
+                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
 
-                    # Compute the full morphology bounding box
-                    bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                        morphology=nmv.interface.ui_morphology)
+            # Compute the bounding box for the wide-shot view that corresponds to the whole
+            # morphology
+            else:
 
-                elif context.scene.RenderingExtent == \
-                        nmv.enums.Skeletonization.Rendering.SELECTED_ARBROS_EXTENT:
+                # Compute the full morphology bounding box
+                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
+                    morphology=nmv.interface.ui_morphology)
 
-                    # Compute the bounding box for the available curves only
-                    bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+            # Compute a 360 bounding box to fit the arbors
+            bounding_box_360 = nmv.bbox.compute_360_bounding_box(rendering_bbox,
+                nmv.interface.ui_morphology.soma.centroid)
 
-                else:
-                    self.report({'ERROR'}, 'Invalid Rendering Extent')
-                    return {'FINISHED'}
-            """
+            # Stretch the bounding box by few microns
+            bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+
             # Render a frame
             nmv.rendering.NeuronSkeletonRenderer.render_at_angle(
                 morphology_objects=nmv.interface.ui_reconstructed_skeleton,
                 angle=self.timer_limits,
-                bounding_box=bounding_box,
+                bounding_box=bounding_box_360,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_resolution=context.scene.MorphologyFrameResolution,
                 image_name=image_name)
@@ -1188,7 +1191,6 @@ class RenderMorphology360(bpy.types.Operator):
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
 
             # Update the progress bar
-            #TODO FIX
             context.scene.SomaRenderingProgress = int(100 * self.timer_limits / 360.0)
 
             # Upgrade the timer limits
