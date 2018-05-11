@@ -1220,6 +1220,10 @@ def get_random_spines_on_section(current_branching_level,
     NOTE: The generated spines are totally random and does not follow any rules for growing the
     spines, they are just used for artistic purposes.
 
+    :param current_branching_level:
+        A list of ONLY one item to keep track on the current branching level recursively.
+    :param max_branching_level:
+        The maximum branching level of a neuron.
     :param section:
         A given section to generate the spines for.
     :param probability:
