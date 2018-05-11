@@ -39,6 +39,57 @@ class Meshing:
         pass
 
     ################################################################################################
+    # @Skeleton
+    ################################################################################################
+    class Skeleton:
+        """Skeletonization
+        """
+
+        # Use the original morphology skeleton
+        ORIGINAL = 'MESHING_SKELETON_ORIGINAL'
+
+        # Create a tapered morphology skeleton
+        TAPERED = 'MESHING_SKELETON_TAPERED'
+
+        # Create a zigzagged morphology skeleton
+        ZIGZAG = 'MESHING_SKELETON_ZIGZAG'
+
+        # Create a zigzagged and ta[ered morphology skeleton
+        TAPERED_ZIGZAG = 'MESHING_SKELETON_TAPERED_ZIGZAG'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Original
+            if argument == 'original':
+                return Meshing.Skeleton.ORIGINAL
+
+            # Tapered
+            elif argument == 'tapered':
+                return Meshing.Skeleton.TAPERED
+
+            # Zigzag
+            elif argument == 'zigzag':
+                return Meshing.Skeleton.ZIGZAG
+
+            # Tapered zigzag
+            elif argument == 'tapered-zigzag':
+                return Meshing.Skeleton.TAPERED_ZIGZAG
+
+            # By default use the original skeleton
+            else:
+                return Meshing.Skeleton.ORIGINAL
+
+    ################################################################################################
     # @Technique
     ################################################################################################
     class Technique:

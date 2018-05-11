@@ -287,7 +287,7 @@ def taper_section(section):
     section_step = difference / (number_samples - 1)
 
     # Set the radii based on their distance from the first sample
-    for i in range(1, len(section.samples) - 2):
+    for i in range(1, len(section.samples) - 1):
 
         # Avoid changing the second sample of the root section
         if section.is_root() and i == 1:

@@ -232,13 +232,27 @@ class PiecewiseBuilder:
             A list of all the individual meshes of the arbors.
         """
 
+        # Apply the morphology reformation filters if requested before creating the arbors
+
+        # Taper the sections if requested
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
+           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.taper_section])
+
+        # Zigzag the sections if required
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
+           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.zigzag_section])
+
         # Create a list that keeps references to the meshes of all the connected pieces of the
         # arbors of the mesh.
         arbors_objects = []
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.log('\t * Apical dendrite')
+            nmv.logger.log_sub_header('Apical dendrite')
 
             # Individual sections (tubes) of the apical dendrite
             apical_dendrite_objects = []
@@ -269,7 +283,7 @@ class PiecewiseBuilder:
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
-                nmv.logger.log('\t * Dendrite [%d]' % i)
+                nmv.logger.log_sub_header('Dendrite [%d]' % i)
 
                 basal_dendrite_objects = []
 
@@ -294,7 +308,7 @@ class PiecewiseBuilder:
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
-            nmv.logger.log('\t * Axon')
+            nmv.logger.log_sub_header('Axon')
 
             # Individual sections (tubes) of the axon
             axon_objects = []
@@ -564,16 +578,13 @@ class PiecewiseBuilder:
         # If the soma is connected to the root arbors
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
             soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology,
-                options=self.options,
-                full_arbor_extrusion=False)
+                morphology=self.morphology, options=self.options)
 
         # Otherwise, ignore
         else:
             soma_builder_object = nmv.builders.SomaBuilder(
                 morphology=self.morphology,
-                options=self.options,
-                full_arbor_extrusion=True)
+                options=self.options)
 
         # Reconstruct the soma mesh
         self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
@@ -637,11 +648,9 @@ class PiecewiseBuilder:
 
 
 
-        spines_builder = nmv.builders.RandomSpineBuilder(morphology=self.morphology,
-                                                         options=self.options)
-        spines_objects = spines_builder.add_spines_to_morphology()
-
-
+        #spines_builder = nmv.builders.RandomSpineBuilder(morphology=self.morphology,
+        #                                                 options=self.options)
+        #spines_objects = spines_builder.add_spines_to_morphology()
 
         # Integrated spines
         if self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.INTEGRATED:

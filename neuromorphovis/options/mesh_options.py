@@ -57,8 +57,11 @@ class MeshOptions:
         # Fixing morphology artifacts
         self.fix_morphology_artifacts = True
 
+        # Skeletonization technique
+        self.skeletonization = nmv.enums.Meshing.Skeleton.ORIGINAL
+
         # Meshing technique
-        self.meshing_technique = None
+        self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
 
         # Attach spines to the neuron
         self.build_spines = False

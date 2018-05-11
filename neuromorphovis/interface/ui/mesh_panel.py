@@ -70,6 +70,22 @@ class MeshPanel(bpy.types.Panel):
     shown_hidden_rows = list()
 
     # Meshing technique
+    bpy.types.Scene.SkeletonizationTechnique = EnumProperty(
+        items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
+                'Original',
+                'Use the original morphology skeleton'),
+               (nmv.enums.Meshing.Skeleton.TAPERED,
+                'Tapered',
+                'Create a tapered morphology skeleton (artistic)'),
+               (nmv.enums.Meshing.Skeleton.ZIGZAG,
+                'Zigzag',
+                'Create a zigzagged skeleton (artistic)'),
+               (nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG,
+                'Tapered Zigzag',
+                'Create a zigzagged and tapered skeleton (artistic)')],
+        name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
+
+    # Meshing technique
     bpy.types.Scene.MeshingTechnique = EnumProperty(
         items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
                 'Piecewise Watertight',
@@ -292,6 +308,13 @@ class MeshPanel(bpy.types.Panel):
 
         # Get a reference to the layout of the panel
         layout = self.layout
+
+        # Which skeleton to use
+        skeletonization_row = layout.row()
+        skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.skeletonization = context.scene.SkeletonizationTechnique
 
         # Meshing method parameters
         meshing_method_row = layout.row()
@@ -568,10 +591,10 @@ class ReconstructNeuronMesh(bpy.types.Operator):
     # @load_morphology
     ################################################################################################
     def load_morphology(self, current_scene):
-        """
-        Loads the morphology from file.
+        """Load the morphology from file.
 
-        :param current_scene: Scene.
+        :param current_scene:
+            Scene.
         """
 
         # Read the data from a given morphology file either in .h5 or .swc formats
@@ -638,8 +661,10 @@ class ReconstructNeuronMesh(bpy.types.Operator):
         """Executes the operator
 
         Keyword arguments:
-        :param context: Operator context.
-        :return: {'FINISHED'}
+        :param context:
+            Operator context.
+        :return:
+            {'FINISHED'}
         """
 
         # Clear the scene
