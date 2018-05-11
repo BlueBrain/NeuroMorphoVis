@@ -16,16 +16,4 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
-__author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
-__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = "1.0.0"
-__maintainer__  = "Marwan Abdellah"
-__email__       = "marwan.abdellah@epfl.ch"
-__status__      = "Production"
-
-from .soma import *
-from .mesh import *
-from .nucleus import *
-from .skeleton import *
-from .spine import *
+from .nuclei_reader import *

@@ -24,53 +24,53 @@ import neuromorphovis.file
 
 
 ####################################################################################################
-# @load_spine
+# @load_nucleus
 ####################################################################################################
-def load_spine(spines_directory,
-               spine_file):
-    """Load a spine mesh to the scene from a given directory and returns a reference to it.
+def load_nucleus(nuclei_directory,
+                 nucleus_file):
+    """Load a nucleus mesh to the scene from a given directory and returns a reference to it.
 
-    :param spines_directory:
-        A given directory of spines.
-    :param spine_file:
-        A given spine file.
+    :param nuclei_directory:
+        A given directory of nuclei.
+    :param nucleus_file:
+        A given nucleus file.
     :return:
         A reference to the loaded spine into the scene.
     """
 
-    # Load the spine into a blender object
-    spine_object = nmv.file.import_obj_file(spines_directory, spine_file)
+    # Load the nucleus into a blender object
+    nucleus_object = nmv.file.import_obj_file(nuclei_directory, nucleus_file)
 
     # Return a reference to it
-    return spine_object
+    return nucleus_object
 
 
 ####################################################################################################
 # @load_spines
 ####################################################################################################
-def load_spines(spines_directory):
-    """Load all the spines in a certain directory and return a list of all of them.
+def load_nuclei(nuclei_directory):
+    """Load all the nuclei in a certain directory and return a list of all of them.
 
-    :param spines_directory:
-        A given directory where the spines are located.
+    :param nuclei_directory:
+        A given directory where the nuclei are located.
     :return:
-        A list of all the loaded spines.
+        A list of all the loaded nuclei.
     """
 
-    # List all the obj files in the directory
-    spines_files = nmv.file.ops.get_files_in_directory(spines_directory, file_extension='.obj')
+    # List all the .OBJ files in the directory
+    nuclei_files = nmv.file.ops.get_files_in_directory(nuclei_directory, file_extension='.obj')
 
-    # Load the spines, one by one into a list
-    spines_objects_list = []
+    # Load the nuclei, one by one into a list
+    nuclei_objects_list = []
 
-    # Load spine by spine
-    for spine_file in spines_files:
+    # Load nucleus by nucleus
+    for nucleus_file in nuclei_files:
 
-        # Load the spine
-        spine_object = load_spine(spines_directory, spine_file)
+        # Load the nucleus
+        nucleus_object = load_nucleus(nuclei_directory, nucleus_file)
 
-        # Append the spine to the list
-        spines_objects_list.append(spine_object)
+        # Append the nucleus to the list
+        nuclei_objects_list.append(nucleus_object)
 
-    # Return the spines list
-    return spines_objects_list
+    # Return the nuclei list
+    return nuclei_objects_list

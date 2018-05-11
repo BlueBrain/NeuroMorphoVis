@@ -96,7 +96,7 @@ class MeshPanel(bpy.types.Panel):
                (nmv.enums.Meshing.Technique.UNION,
                 'Union (Watertight)',
                 'Create a mesh using the union method')],
-        name='Method',
+        name='Meshing Method',
         default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
     # Is the soma connected to the first order branches or not !
@@ -124,11 +124,11 @@ class MeshPanel(bpy.types.Panel):
     # Edges, hard or smooth
     bpy.types.Scene.MeshSmoothing = EnumProperty(
         items=[(nmv.enums.Meshing.Edges.HARD,
-                'Original',
-                'Make the edges between the segments hard'),
+                'Sharp',
+                'Make the edges between the segments sharp and hard'),
                (nmv.enums.Meshing.Edges.SMOOTH,
-                'Smooth',
-                'Make the edges between the segments soft')],
+                'Curvy',
+                'Make the edges between the segments soft and curvy')],
         name='Edges',
         default=nmv.enums.Meshing.Edges.HARD)
 
@@ -176,7 +176,37 @@ class MeshPanel(bpy.types.Panel):
                (nmv.enums.Meshing.Spines.INTEGRATED,
                 'Integrated',
                 'The spines are integrated as part of the neuron mesh')],
-                name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
+        name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
+
+    # Spine sources can be random or from a BBP circuit
+    bpy.types.Scene.SpinesSourceCircuit= EnumProperty(
+        items=[(nmv.enums.Meshing.Spines.Source.RANDOM,
+                'Random',
+                'The spines are generated randomly'),
+               (nmv.enums.Meshing.Spines.Source.CIRCUIT,
+                'Circuit',
+                'The spines are generated following a BBP circuit'),],
+        name='Spines Source', default=nmv.enums.Meshing.Spines.Source.CIRCUIT)
+
+    # Spine meshes quality
+    bpy.types.Scene.SpineMeshQuality = EnumProperty(
+        items=[(nmv.enums.Meshing.Spines.Quality.LQ,
+                'Low',
+                'Low quality nucleus mesh'),
+               (nmv.enums.Meshing.Spines.Quality.HQ,
+                'High',
+                'High quality nucleus mesh')],
+        name='Spines Quality',
+        default=nmv.enums.Meshing.Spines.Quality.LQ)
+
+    # Spine sources are only random
+    bpy.types.Scene.SpinesSourceRandom = EnumProperty(
+        items=[(nmv.enums.Meshing.Spines.Source.RANDOM,
+                'Random',
+                'The spines are generated randomly')],
+        name='Spines Source',
+        default=nmv.enums.Meshing.Spines.Source.RANDOM)
+
 
     # Nucleus
     bpy.types.Scene.Nucleus = EnumProperty(
@@ -217,6 +247,12 @@ class MeshPanel(bpy.types.Panel):
         name='Factor',
         description='Mesh tessellation level (between 0.1 and 1.0)',
         default=1.0, min=0.1, max=1.0)
+
+    # Random spines percentage
+    bpy.types.Scene.RandomSpinesPercentage = FloatProperty(
+        name='Percentage',
+        description='The percentage of the random spines along the dendrites (1 - 100)',
+        default=50, min=1.0, max=100.0)
 
     bpy.types.Scene.MeshMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,
@@ -324,14 +360,14 @@ class MeshPanel(bpy.types.Panel):
         default=0, min=0, max=100, subtype='PERCENTAGE')
 
     ################################################################################################
-    # @draw
+    # @draw_meshing_options
     ################################################################################################
-    def draw(self,
-             context):
-        """Draw the panel
+    def draw_meshing_options(self,
+                             context):
+        """Draw the options of the meshing.
 
         :param context:
-            Rendering context.
+            Panel context.
         """
 
         # Get a reference to the layout of the panel
@@ -341,20 +377,22 @@ class MeshPanel(bpy.types.Panel):
         skeleton_meshing_options_row = layout.row()
         skeleton_meshing_options_row.label(text='Skeleton Meshing Options:', icon='SURFACE_DATA')
 
-        # Which skeleton to use
+        # Which skeletonization technique to use
         skeletonization_row = layout.row()
         skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
 
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.skeletonization = context.scene.SkeletonizationTechnique
 
-        # Meshing method parameters
+        # Which meshing technique to use
         meshing_method_row = layout.row()
         meshing_method_row.prop(context.scene, 'MeshingTechnique', icon='OUTLINER_OB_EMPTY')
 
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.MeshingTechnique
 
+
+        """
         if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
             skeleton_row = layout.row()
             skeleton_row.label('Skeleton:')
@@ -362,6 +400,7 @@ class MeshPanel(bpy.types.Panel):
 
             # Pass options from UI to system
             nmv.interface.ui_options.mesh.skeleton_shape = context.scene.UnionMethodSkeleton
+        """
 
         # Surface roughness
         mesh_surface_row = layout.row()
@@ -417,22 +456,67 @@ class MeshPanel(bpy.types.Panel):
         nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
         nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
+    ################################################################################################
+    # @draw_spine_options
+    ################################################################################################
+    def draw_spine_options(self,
+                           context):
+        """Draw the spines options.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
+
         # Spines meshing options
         spines_meshing_options_row = layout.row()
         spines_meshing_options_row.label(text='Spine Options:', icon='MOD_WAVE')
 
         # Spines
         spines_row = layout.row()
-        spines_row.label('Spines:')
-        spines_row.prop(context.scene, 'Spines', expand=True)
+        spines_row.label('Source:')
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.spine_objects = context.scene.Spines
+        # If you are reading from a BBP circuit
+        if context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
+            spines_row.prop(context.scene, 'SpinesSourceCircuit', expand=True)
 
-        # Ignore the spines row if no circuit is given
+            # Pass options from UI to system
+            nmv.interface.ui_options.mesh.spines = context.scene.TessellateMesh
+
+        # Otherwise, it is only random
+        else:
+            spines_row.prop(context.scene, 'SpinesSourceRandom', expand=True)
+
+        # Spines quality
+        spines_quality_row = layout.row()
+        spines_quality_row.label('Quality:')
+        spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
+
+        # The percentage of random spines along the dendritic tree
         if context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
-            spines_row.enabled = False
-            nmv.interface.ui_options.mesh.spine_objects = nmv.enums.Meshing.Spines.IGNORE
+
+            # Tessellation parameters
+            spines_percentage_row = layout.row()
+            spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
+
+            # Pass options from UI to system
+            #nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+            #nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+
+    ################################################################################################
+    # @draw_spine_options
+    ################################################################################################
+    def draw_nucleus_options(self, context):
+        """Draw the nucleus options.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
 
         # Nuclei options
         nucleus_options_row = layout.row()
@@ -457,6 +541,19 @@ class MeshPanel(bpy.types.Panel):
             # Pass options from UI to system
             nmv.interface.ui_options.mesh.nucleus_mesh_quality = context.scene.NucleusMeshQuality
 
+    ################################################################################################
+    # @draw_color_options
+    ################################################################################################
+    def draw_color_options(self, context):
+        """Draw the coloring options.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
+
         # Coloring parameters
         colors_row = layout.row()
         colors_row.label(text='Colors & Materials:', icon='COLOR')
@@ -478,24 +575,21 @@ class MeshPanel(bpy.types.Panel):
             neuron_color_row.prop(context.scene, 'NeuronMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.soma_color = Vector((context.scene.NeuronMeshColor.r,
-                                                               context.scene.NeuronMeshColor.g,
-                                                               context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.axon_color = Vector((context.scene.NeuronMeshColor.r,
-                                                               context.scene.NeuronMeshColor.g,
-                                                               context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.basal_dendrites_color = \
-                Vector((context.scene.NeuronMeshColor.r,
-                        context.scene.NeuronMeshColor.g,
-                        context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.apical_dendrites_color = \
-                Vector((context.scene.NeuronMeshColor.r,
-                        context.scene.NeuronMeshColor.g,
-                        context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.spines_color = \
-                Vector((context.scene.NeuronMeshColor.r,
-                        context.scene.NeuronMeshColor.g,
-                        context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.soma_color = Vector((
+            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
+            context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.axon_color = Vector((
+            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
+            context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.basal_dendrites_color = Vector((
+            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
+            context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.apical_dendrites_color = Vector((
+            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
+            context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.spines_color = Vector((
+            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
+            context.scene.NeuronMeshColor.b))
 
         # Different colors
         else:
@@ -511,26 +605,21 @@ class MeshPanel(bpy.types.Panel):
             spines_color_row.prop(context.scene, 'SpinesMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.soma_color = \
-                Vector((context.scene.SomaMeshColor.r,
-                        context.scene.SomaMeshColor.g,
-                        context.scene.SomaMeshColor.b))
-            nmv.interface.ui_options.mesh.axon_color = \
-                Vector((context.scene.AxonMeshColor.r,
-                        context.scene.AxonMeshColor.g,
-                        context.scene.AxonMeshColor.b))
-            nmv.interface.ui_options.mesh.basal_dendrites_color = \
-                Vector((context.scene.BasalDendritesMeshColor.r,
-                        context.scene.BasalDendritesMeshColor.g,
-                        context.scene.BasalDendritesMeshColor.b))
-            nmv.interface.ui_options.mesh.apical_dendrites_color = \
-                Vector((context.scene.ApicalDendriteMeshColor.r,
-                        context.scene.ApicalDendriteMeshColor.g,
-                        context.scene.ApicalDendriteMeshColor.b))
-            nmv.interface.ui_options.mesh.spines_color = \
-                Vector((context.scene.SpinesMeshColor.r,
-                        context.scene.SpinesMeshColor.g,
-                        context.scene.SpinesMeshColor.b))
+            nmv.interface.ui_options.mesh.soma_color = Vector((
+            context.scene.SomaMeshColor.r, context.scene.SomaMeshColor.g,
+            context.scene.SomaMeshColor.b))
+            nmv.interface.ui_options.mesh.axon_color = Vector((
+            context.scene.AxonMeshColor.r, context.scene.AxonMeshColor.g,
+            context.scene.AxonMeshColor.b))
+            nmv.interface.ui_options.mesh.basal_dendrites_color = Vector((
+            context.scene.BasalDendritesMeshColor.r, context.scene.BasalDendritesMeshColor.g,
+            context.scene.BasalDendritesMeshColor.b))
+            nmv.interface.ui_options.mesh.apical_dendrites_color = Vector((
+            context.scene.ApicalDendriteMeshColor.r, context.scene.ApicalDendriteMeshColor.g,
+            context.scene.ApicalDendriteMeshColor.b))
+            nmv.interface.ui_options.mesh.spines_color = Vector((
+            context.scene.SpinesMeshColor.r, context.scene.SpinesMeshColor.g,
+            context.scene.SpinesMeshColor.b))
 
         # Add nucleus color option if they are not ignored
         if context.scene.Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
@@ -538,10 +627,23 @@ class MeshPanel(bpy.types.Panel):
             nucleus_color_row = layout.row()
             nucleus_color_row.prop(context.scene, 'NucleusMeshColor')
 
-            nmv.interface.ui_options.mesh.nucleus_color = \
-                Vector((context.scene.NucleusMeshColor.r,
-                        context.scene.NucleusMeshColor.g,
-                        context.scene.NucleusMeshColor.b))
+            nmv.interface.ui_options.mesh.nucleus_color = Vector((
+            context.scene.NucleusMeshColor.r, context.scene.NucleusMeshColor.g,
+            context.scene.NucleusMeshColor.b))
+
+    ################################################################################################
+    # @draw_mesh_reconstruction_button
+    ################################################################################################
+    def draw_mesh_reconstruction_button(self,
+                                        context):
+        """Draw the mesh reconstruction button.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
 
         # Mesh quick reconstruction options
         quick_reconstruction_row = layout.row()
@@ -550,6 +652,20 @@ class MeshPanel(bpy.types.Panel):
         # Mesh reconstruction options
         mesh_reconstruction_row = layout.row()
         mesh_reconstruction_row.operator('reconstruct.neuron_mesh', icon='MESH_DATA')
+
+    ################################################################################################
+    # @draw_rendering_options
+    ################################################################################################
+    def draw_rendering_options(self,
+                               context):
+        """Draw the rendering options.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
 
         # Rendering options
         quick_rendering_row = layout.row()
@@ -589,8 +705,7 @@ class MeshPanel(bpy.types.Panel):
             self.shown_hidden_rows.append(rendering_resolution_row)
 
             # Add the frame resolution option
-            if context.scene.MeshRenderingResolution == \
-                    nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+            if context.scene.MeshRenderingResolution == nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
                 # Frame resolution option (only for the close up mode)
                 frame_resolution_row = layout.row()
@@ -637,6 +752,20 @@ class MeshPanel(bpy.types.Panel):
         neuron_mesh_rendering_progress_row.enabled = False
         self.shown_hidden_rows.append(neuron_mesh_rendering_progress_row)
 
+    ################################################################################################
+    # @draw_mesh_export_options
+    ################################################################################################
+    def draw_mesh_export_options(self,
+                                 context):
+        """Draw the mesh export options.
+
+        :param context:
+            Context.
+        """
+
+        # Get a reference to the layout of the panel
+        layout = self.layout
+
         # Saving meshes parameters
         save_neuron_mesh_row = layout.row()
         save_neuron_mesh_row.label(text='Save Neuron Mesh As:', icon='MESH_UVSPHERE')
@@ -649,6 +778,38 @@ class MeshPanel(bpy.types.Panel):
         save_neuron_mesh_buttons_column.operator('save_neuron_mesh.blend', icon='OUTLINER_OB_META')
         save_neuron_mesh_buttons_column.enabled = True
         self.shown_hidden_rows.append(save_neuron_mesh_buttons_column)
+
+    ################################################################################################
+    # @draw
+    ################################################################################################
+    def draw(self,
+             context):
+        """Draw the panel
+
+        :param context:
+            Rendering context.
+        """
+
+        # Meshing options
+        self.draw_meshing_options(context)
+
+        # Spine options
+        self.draw_spine_options(context)
+
+        # Nucleus options
+        self.draw_nucleus_options(context)
+
+        # Color options
+        self.draw_color_options(context)
+
+        # Mesh reconstructioj button
+        self.draw_mesh_reconstruction_button(context)
+
+        # Rendering options
+        self.draw_rendering_options(context)
+
+        # Mesh export options
+        self.draw_mesh_export_options(context)
 
 
 ####################################################################################################
@@ -801,7 +962,8 @@ class RenderMeshFront(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self, context):
+    def execute(self,
+                context):
         """Execute the operator
 
         :param context:

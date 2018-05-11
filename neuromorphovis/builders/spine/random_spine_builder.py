@@ -98,11 +98,14 @@ class RandomSpineBuilder:
     # @emanate_spine
     ################################################################################################
     def emanate_spine(self,
-                      spine):
+                      spine,
+                      id):
         """Emanates a spine at a random position on the dendritic tree.
 
         :param spine:
             A given spine object that contains all the data required to emanate the spine.
+        :param id:
+            Spine identifier.
         :return:
             The mesh instance that correspond to the spines.
         """
@@ -112,6 +115,9 @@ class RandomSpineBuilder:
 
         # Get a copy of the template and update it
         spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+
+        # Rename the spine
+        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, id)
 
         # Scale the spine
         spine_scale = spine.size + random.uniform(0.75, 1.0)
@@ -170,7 +176,7 @@ class RandomSpineBuilder:
             nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
 
             # Emanate a spine
-            spine_object = self.emanate_spine(spine)
+            spine_object = self.emanate_spine(spine, i)
 
             # Add the object to the list
             spines_objects.append(spine_object)

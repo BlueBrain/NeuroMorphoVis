@@ -140,7 +140,7 @@ class Logger:
                        *args):
         """Log a sub-header.
 
-        :param arg:
+        :param args:
             Input arguments.
         """
 

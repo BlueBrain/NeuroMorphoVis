@@ -45,9 +45,11 @@ class MeshOptions:
         """Constructor
         """
 
+        # DATA #####################################################################################
         # This flag must be set to reconstruct a mesh
         self.reconstruct_neuron_mesh = False
 
+        # MESHING OPTIONS ##########################################################################
         # Tessellate the mesh after the reconstruction
         self.tessellate_mesh = False
 
@@ -63,41 +65,8 @@ class MeshOptions:
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
 
-        # Attach spines to the neuron
-        self.build_spines = False
-
-        # Soma color
-        self.soma_color = nmv.enums.Color.SOMA
-
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
-
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
-
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
-
-        # Spines color
-        self.spines_color = nmv.enums.Color.SPINES
-
-        # Nucleus color
-        self.nucleus_color = nmv.enums.Color.NUCLEI
-
-        # Nucleus mesh quality, by default low quality
-        self.nucleus_mesh_quality = nmv.enums.Meshing.Nucleus.Quality.LQ
-
-        # Ignore the spine building
-        self.spine_objects = nmv.enums.Meshing.Spines.IGNORE
-
-        # Nucleus, ignore by default
-        self.nucleus = nmv.enums.Meshing.Nucleus.IGNORE
-
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
-
-        # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD
 
         # Soma connection to the arbors, connected or disconnected
         self.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
@@ -117,6 +86,43 @@ class MeshOptions:
         # The shape of the skeleton that is used in the union meshing algorithm
         self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON
 
+        # SPINES OPTIONS ###########################################################################
+        # Attach spines to the neuron
+        self.build_spines = False
+
+        # Ignore the spine building
+        self.spine_objects = nmv.enums.Meshing.Spines.IGNORE
+
+        # NUCLEI OPTIONS ###########################################################################
+        # Nucleus, ignore by default
+        self.nucleus = nmv.enums.Meshing.Nucleus.IGNORE
+
+        # Nucleus mesh quality, by default low quality
+        self.nucleus_mesh_quality = nmv.enums.Meshing.Nucleus.Quality.LQ
+
+        # COLOR & MATERIALS OPTIONS ################################################################
+        # Morphology material
+        self.material = nmv.enums.Shading.LAMBERT_WARD
+
+        # Soma color
+        self.soma_color = nmv.enums.Color.SOMA
+
+        # Axon color
+        self.axon_color = nmv.enums.Color.AXONS
+
+        # Basal dendrites color
+        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Apical dendrites color
+        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
+
+        # Spines color
+        self.spines_color = nmv.enums.Color.SPINES
+
+        # Nucleus color
+        self.nucleus_color = nmv.enums.Color.NUCLEI
+
+        # MESH RENDERING ###########################################################################
         # Camera view
         self.camera_view = nmv.enums.Camera.View.FRONT
 
@@ -144,6 +150,7 @@ class MeshOptions:
         # The scale factor used to scale the morphology rendering frame, default 1.0
         self.resolution_scale_factor = 1.0
 
+        # MESH EXPORT ##############################################################################
         # Save the reconstructed mesh as a .ply file to the output directory
         self.export_ply = False
 

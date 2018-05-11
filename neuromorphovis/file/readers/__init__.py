@@ -26,4 +26,5 @@ __status__      = "Production"
 
 from .mesh import *
 from .morphology import *
+from .nuclei import *
 from .spines import *
