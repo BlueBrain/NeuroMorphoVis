@@ -26,6 +26,9 @@ class SomaOptions:
         """Constructor
         """
 
+        # Reconstruction method
+        self.method = nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY
+
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.GOAL_DEFAULT
 

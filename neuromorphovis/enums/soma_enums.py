@@ -85,4 +85,53 @@ class Soma:
             else:
                 return Soma.Representation.REALISTIC
 
+    ################################################################################################
+    # @ReconstructionMethod
+    ################################################################################################
+    class ReconstructionMethod:
+        """Soma reconstruction method enumerators
+        """
+
+        # Use the profile points only
+        PROFILE_POINTS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_PROFILE_POINTS_ONLY'
+
+        # Use the arbors
+        ARBORS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_ONLY'
+
+        # Use the arbors and the profile points
+        COMBINED = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_AND_PROFILE_POINTS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+            """Gets the enumerator from the argument directly.
+
+            :param argument:
+                Reconstruction argument.
+            :return:
+                Soma reconstruction method enumerator.
+            """
+
+            # Arbors only
+            if argument == 'arbors':
+                return Soma.ReconstructionMethod.ARBORS_ONLY
+
+            # Profile points only
+            elif argument == 'profile':
+                return Soma.ReconstructionMethod.PROFILE_POINTS_ONLY
+
+            elif argument == 'combined':
+                return Soma.ReconstructionMethod.COMBINED
+
+            # Arbors only by default
+            else:
+                return Soma.ReconstructionMethod.ARBORS_ONLY
 

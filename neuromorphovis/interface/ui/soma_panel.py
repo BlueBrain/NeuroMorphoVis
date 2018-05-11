@@ -71,6 +71,20 @@ class SomaPanel(bpy.types.Panel):
         description="The color of the reconstructed soma",
         default=(1.0, 0.0, 0.0), min=0.0, max=1.0)
 
+    # Reconstruction method
+    bpy.types.Scene.SomaReconstructionMethod = EnumProperty(
+        items=[(nmv.enums.Soma.ReconstructionMethod.COMBINED,
+                'Complex',
+                'Reconstruct a complex shape for the soma using all available data'),
+               (nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY,
+                'Arbors',
+                'Reconstruct the shape of the soma using the arbors only'),
+               (nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY,
+                'Profile',
+                'Reconstruct the shape of the soma using the profile points only')],
+        name='Method',
+        default=nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY)
+
     # The material applied to the soma mesh following to the reconstruction
     bpy.types.Scene.SomaMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,
@@ -142,6 +156,13 @@ class SomaPanel(bpy.types.Panel):
         # Get a reference to the panel layout
         layout = self.layout
 
+        reconstruction_method_row = layout.row()
+        reconstruction_method_row.label(text='Method:')
+        reconstruction_method_row.prop(context.scene, 'SomaReconstructionMethod', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.soma.method = context.scene.SomaReconstructionMethod
+
         # Color options
         colors_row = layout.row()
         colors_row.label(text='Colors & Materials:', icon='COLOR')
@@ -194,10 +215,9 @@ class SomaPanel(bpy.types.Panel):
         soma_reconstruction_row = layout.row()
         soma_reconstruction_row.label(text='Quick Reconstruction:', icon='META_DATA')
 
-        # Soma reconstruction buttons
+        # Soma reconstruction button
         soma_reconstruction_buttons_row = layout.row(align=True)
         soma_reconstruction_buttons_row.operator('reconstruct.soma', icon='FORCE_LENNARDJONES')
-        soma_reconstruction_buttons_row.operator('reconstruct.soma_profile', icon='SURFACE_NSPHERE')
 
         # Soma simulation progress bar
         soma_simulation_progress_row = layout.row()
@@ -458,196 +478,19 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
         # Build the basic profile of the some from the soft body operation, but don't run the
         # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
-        self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body()
-
-        # Use the event timer to update the UI during the soma building
-        wm = context.window_manager
-        self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
-        wm.modal_handler_add(self)
-
-        # Done
-        return {'RUNNING_MODAL'}
-
-    ################################################################################################
-    # @cancel
-    ################################################################################################
-    def cancel(self, context):
-        """
-        Cancel the panel processing and return to the interaction mode.
-
-        :param context: Panel context.
-        """
-
-        # Multi-threading
-        wm = context.window_manager
-        wm.event_timer_remove(self.event_timer)
-
-        # Build the mesh from the soft body object
-        self.soma_sphere_object = self.meshy_soma_builder.build_soma_mesh_from_soft_body_object(
-            self.soma_sphere_object)
-
-        # Keep a reference to the mesh object in case we need to save or texture it
-        nmv.interface.ui_soma_mesh = self.soma_sphere_object
-
-        # Show the progress, Done
-        nmv.utilities.show_progress(
-            'Simulation', self.timer_limits, self.max_simulation_limit, done=True)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Soma Reconstruction Done')
-
-
-####################################################################################################
-# @ReconstructSomaProfile
-####################################################################################################
-class ReconstructSomaProfile(bpy.types.Operator):
-    """Soma profile reconstruction operator"""
-
-    # Operator parameters
-    bl_idname = "reconstruct.soma_profile"
-    bl_label = "Profile"
-
-    # Timer parameters
-    event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
-
-    # Meshy soma builder parameters
-    meshy_soma_builder = None
-    soma_sphere_object = None
-    min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
-    max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
-
-    ################################################################################################
-    # @load_morphology
-    ################################################################################################
-    def load_morphology(self,
-                        scene):
-        """
-        Loads the morphology from file.
-
-        :param scene: Scene.
-        """
-
-        # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = scene.MorphologyFile
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                scene.MorphologyFile)
-
-            # Load the morphology from the file
-            loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                options=nmv.interface.ui_options)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Invalid Morphology File')
-
-        # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.blue_config = scene.CircuitFile
-            nmv.interface.ui_options.morphology.gid = scene.Gid
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = 'neuron_' + str(scene.Gid)
-
-            # Load the morphology from the circuit
-            loading_flag, morphology_object = \
-                nmv.file.readers.BBPReader.load_morphology_from_circuit(
-                    blue_config=nmv.interface.ui_options.morphology.blue_config,
-                    gid=nmv.interface.ui_options.morphology.gid)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Cannot Load Morphology from Circuit')
-
+        if bpy.context.scene.SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY:
+            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body()
+        elif bpy.context.scene.SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY:
+            self.soma_sphere_object = \
+                self.meshy_soma_builder.build_soma_based_on_profile_points_only()
+        elif bpy.context.scene.SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.COMBINED:
+            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body(
+                use_profile_points=True)
         else:
-            # Report an invalid input source
-            self.report({'ERROR'}, 'Invalid Input Source')
-
-    ################################################################################################
-    # @modal
-    ################################################################################################
-    def modal(self, context, event):
-        """
-        Threading and non-blocking handling.
-
-        :param context: Panel context.
-        :param event: A given event for the panel.
-        """
-
-        # Get a reference to the scene
-        scene = context.scene
-
-        # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > self.max_simulation_limit:
-
-            # Reset the timer limits
-            self.timer_limits = 0
-
-            # Refresh the panel context
-            self.cancel(context)
-
-            # Done
-            return {'FINISHED'}
-
-        # Timer event, where the function is executed here on a per-frame basis
-        if event.type == 'TIMER':
-            # Update the frame based on the soft body simulation
-            bpy.context.scene.frame_set(self.timer_limits)
-
-            # Update the progress shell
-            nmv.utilities.show_progress('Simulation', self.timer_limits, self.max_simulation_limit)
-
-            # Update the progress bar
-            context.scene.SomaSimulationProgress = self.timer_limits
-
-            # Upgrade the timer limits
-            self.timer_limits += 1
-
-        # Next frame
-        return {'PASS_THROUGH'}
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self, context):
-        """
-        Execute the operator.
-
-        :param context: Panel context.
-        """
-
-        # Clear the scene
-        nmv.scene.ops.clear_scene()
-
-        # Load the morphology
-        self.load_morphology(scene=context.scene)
-
-        # Construct a soma builder
-        self.meshy_soma_builder = nmv.builders.SomaBuilder(
-            nmv.interface.ui_morphology, nmv.interface.ui_options)
-
-        # Build the basic profile of the some from the soft body operation, but don't run the
-        # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
-        self.soma_sphere_object = self.meshy_soma_builder.build_soma_based_on_profile_points_only()
+            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body()
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
@@ -682,13 +525,16 @@ class ReconstructSomaProfile(bpy.types.Operator):
         nmv.utilities.show_progress(
             'Simulation', self.timer_limits, self.max_simulation_limit, done=True)
 
-        # Decimate the mesh using 25%
-        nmv.logger.log_sub_header('Decimation')
-        nmv.mesh.ops.decimate_mesh_object(self.soma_sphere_object, decimation_ratio=0.25)
+        if bpy.context.scene.SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY:
 
-        # Smooth the mesh again to look nice
-        nmv.logger.log_sub_header('Smoothing')
-        nmv.mesh.ops.smooth_object(self.soma_sphere_object, level=2)
+            # Decimate the mesh using 25%
+            nmv.logger.log_sub_header('Decimation')
+            nmv.mesh.ops.decimate_mesh_object(self.soma_sphere_object, decimation_ratio=0.25)
+
+            # Smooth the mesh again to look nice
+            nmv.logger.log_sub_header('Smoothing')
+            nmv.mesh.ops.smooth_object(self.soma_sphere_object, level=2)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -1397,7 +1243,6 @@ def register_panel():
 
     # Soma reconstruction operators
     bpy.utils.register_class(ReconstructSomaOperator)
-    bpy.utils.register_class(ReconstructSomaProfile)
 
     # Soma rendering operators
     bpy.utils.register_class(RenderSomaFront)
@@ -1426,7 +1271,6 @@ def unregister_panel():
 
     # Soma reconstruction
     bpy.utils.unregister_class(ReconstructSomaOperator)
-    bpy.utils.unregister_class(ReconstructSomaProfile)
 
     # Soma rendering
     bpy.utils.unregister_class(RenderSomaFront)

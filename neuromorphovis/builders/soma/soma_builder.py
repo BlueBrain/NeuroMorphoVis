@@ -533,7 +533,7 @@ class SomaBuilder:
     # @build_soma_soft_body
     ################################################################################################
     def build_soma_soft_body(self,
-                             use_profile_points=True,
+                             use_profile_points=False,
                              apply_shader=True):
         """Build the soma based on soft-body simulation and Hooke's law.
 
@@ -897,14 +897,6 @@ class SomaBuilder:
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)
-
-        # Decimate the mesh using 25%
-        nmv.logger.log_sub_header('Decimation')
-        nmv.mesh.ops.decimate_mesh_object(reconstructed_soma_mesh, decimation_ratio=0.25)
-
-        # Smooth the mesh again to look nice
-        nmv.logger.log_sub_header('Smoothing')
-        nmv.mesh.ops.smooth_object(reconstructed_soma_mesh, level=2)
 
         # Add noise to the soma surface to make it more realistic
         self.add_noise_to_soma_surface(reconstructed_soma_mesh)
