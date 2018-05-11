@@ -87,11 +87,14 @@ class MeshOptions:
         self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON
 
         # SPINES OPTIONS ###########################################################################
-        # Attach spines to the neuron
-        self.build_spines = False
+        # The source where the spines will be loaded from, by default ignore the spines
+        self.spines_source = nmv.enums.Meshing.Spines.Source.IGNORE
 
-        # Ignore the spine building
-        self.spine_objects = nmv.enums.Meshing.Spines.IGNORE
+        # Spines quality, by default loq quality
+        self.spines_quality = nmv.enums.Meshing.Spines.Quality.LQ
+
+        # Percentage of random spines
+        self.spines_random_percentage = nmv.consts.Meshing.RANDOM_SPINES_PERCENTAGE
 
         # NUCLEI OPTIONS ###########################################################################
         # Nucleus, ignore by default

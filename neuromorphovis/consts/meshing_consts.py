@@ -46,3 +46,6 @@ class Meshing:
 
     # Default sides of a bevel object
     BEVEL_OBJECT_SIDES = 16
+
+    # The percentages of random spines added to the neuron
+    RANDOM_SPINES_PERCENTAGE = 50.0

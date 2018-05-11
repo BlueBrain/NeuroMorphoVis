@@ -438,15 +438,6 @@ class Meshing:
         """Spines options
         """
 
-        # Ignore
-        IGNORE = 'IGNORE_SPINES'
-
-        # Integrated
-        INTEGRATED = 'INTEGRATED_SPINES'
-
-        # Disconnected
-        DISCONNECTED = 'DISCONNECTED_SPINES'
-
         ############################################################################################
         # @__init__
         ############################################################################################

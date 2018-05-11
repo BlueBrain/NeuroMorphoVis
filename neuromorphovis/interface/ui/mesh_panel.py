@@ -165,48 +165,41 @@ class MeshPanel(bpy.types.Panel):
         name='Model',
         default=nmv.enums.Meshing.Surface.SMOOTH)
 
-    # Spines
-    bpy.types.Scene.Spines = EnumProperty(
-        items=[(nmv.enums.Meshing.Spines.IGNORE,
-                'Ignore',
-                'The spines are ignored'),
-               (nmv.enums.Meshing.Spines.DISCONNECTED,
-                'Disconnected',
-                'The spines are generated but disconnected from the neuron mesh'),
-               (nmv.enums.Meshing.Spines.INTEGRATED,
-                'Integrated',
-                'The spines are integrated as part of the neuron mesh')],
-        name='Spines', default=nmv.enums.Meshing.Spines.IGNORE)
-
     # Spine sources can be random or from a BBP circuit
     bpy.types.Scene.SpinesSourceCircuit= EnumProperty(
-        items=[(nmv.enums.Meshing.Spines.Source.RANDOM,
+        items=[(nmv.enums.Meshing.Spines.Source.IGNORE,
+                'Ignore',
+                'Ignore creating the spines'),
+               (nmv.enums.Meshing.Spines.Source.RANDOM,
                 'Random',
                 'The spines are generated randomly'),
                (nmv.enums.Meshing.Spines.Source.CIRCUIT,
                 'Circuit',
                 'The spines are generated following a BBP circuit'),],
-        name='Spines Source', default=nmv.enums.Meshing.Spines.Source.CIRCUIT)
+        name='Spines Source',
+        default=nmv.enums.Meshing.Spines.Source.IGNORE)
+
+    # Spine sources are only random
+    bpy.types.Scene.SpinesSourceRandom = EnumProperty(
+        items=[(nmv.enums.Meshing.Spines.Source.IGNORE,
+                'Ignore',
+                'Ignore creating the spines'),
+               (nmv.enums.Meshing.Spines.Source.RANDOM,
+                'Random',
+                'The spines are generated randomly')],
+        name='Spines Source',
+        default=nmv.enums.Meshing.Spines.Source.IGNORE)
 
     # Spine meshes quality
     bpy.types.Scene.SpineMeshQuality = EnumProperty(
         items=[(nmv.enums.Meshing.Spines.Quality.LQ,
                 'Low',
-                'Low quality nucleus mesh'),
+                'Load low quality meshes'),
                (nmv.enums.Meshing.Spines.Quality.HQ,
                 'High',
-                'High quality nucleus mesh')],
+                'Load high quality meshes')],
         name='Spines Quality',
         default=nmv.enums.Meshing.Spines.Quality.LQ)
-
-    # Spine sources are only random
-    bpy.types.Scene.SpinesSourceRandom = EnumProperty(
-        items=[(nmv.enums.Meshing.Spines.Source.RANDOM,
-                'Random',
-                'The spines are generated randomly')],
-        name='Spines Source',
-        default=nmv.enums.Meshing.Spines.Source.RANDOM)
-
 
     # Nucleus
     bpy.types.Scene.Nucleus = EnumProperty(
@@ -483,27 +476,38 @@ class MeshPanel(bpy.types.Panel):
             spines_row.prop(context.scene, 'SpinesSourceCircuit', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines = context.scene.TessellateMesh
+            nmv.interface.ui_options.mesh.spines_source = context.scene.SpinesSourceCircuit
 
         # Otherwise, it is only random
         else:
             spines_row.prop(context.scene, 'SpinesSourceRandom', expand=True)
 
-        # Spines quality
-        spines_quality_row = layout.row()
-        spines_quality_row.label('Quality:')
-        spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
+            # Pass options from UI to system
+            nmv.interface.ui_options.mesh.spines_source = context.scene.SpinesSourceRandom
 
-        # The percentage of random spines along the dendritic tree
-        if context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
+        # If the spines are not ignored
+        if nmv.interface.ui_options.mesh.spines_source != nmv.enums.Meshing.Spines.Source.IGNORE:
 
-            # Tessellation parameters
-            spines_percentage_row = layout.row()
-            spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
+            # Spines quality
+            spines_quality_row = layout.row()
+            spines_quality_row.label('Quality:')
+            spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
 
             # Pass options from UI to system
-            #nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-            #nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+            nmv.interface.ui_options.mesh.spines_quality = context.scene.SpineMeshQuality
+
+            # Percentage in case of random spines
+            if nmv.interface.ui_options.mesh.spines_source \
+                    == nmv.enums.Meshing.Spines.Source.RANDOM:
+
+                # Random percentage
+                spines_percentage_row = layout.row()
+                spines_percentage_row.label('Percentage:')
+                spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
+
+                # Pass options from UI to system
+                nmv.interface.ui_options.mesh.spines_random_percentage = \
+                    context.scene.RandomSpinesPercentage
 
     ################################################################################################
     # @draw_spine_options
