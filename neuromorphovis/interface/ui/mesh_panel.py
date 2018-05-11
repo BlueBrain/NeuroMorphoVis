@@ -309,6 +309,10 @@ class MeshPanel(bpy.types.Panel):
         # Get a reference to the layout of the panel
         layout = self.layout
 
+        # Skeleton meshing options
+        skeleton_meshing_options_row = layout.row()
+        skeleton_meshing_options_row.label(text='Skeleton Meshing Options:', icon='SURFACE_DATA')
+
         # Which skeleton to use
         skeletonization_row = layout.row()
         skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
@@ -357,7 +361,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Mesh objects connection
         neuron_objects_connection_row = layout.row()
-        neuron_objects_connection_row.label('Mesh Objects:')
+        neuron_objects_connection_row.label('Skeleton Objects:')
         neuron_objects_connection_row.prop(context.scene, 'MeshObjectsConnection', expand=True)
 
         # Pass options from UI to system
@@ -372,6 +376,23 @@ class MeshPanel(bpy.types.Panel):
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.branching = context.scene.MeshBranching
 
+        # Tessellation parameters
+        tess_level_row = layout.row()
+        tess_level_row.prop(context.scene, 'TessellateMesh')
+        tess_level_column = tess_level_row.column()
+        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
+        if not context.scene.TessellateMesh:
+            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
+            tess_level_column.enabled = False
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+
+        # Spines meshing options
+        spines_meshing_options_row = layout.row()
+        spines_meshing_options_row.label(text='Spine Options:', icon='MOD_WAVE')
+
         # Spines
         spines_row = layout.row()
         spines_row.label('Spines:')
@@ -385,18 +406,9 @@ class MeshPanel(bpy.types.Panel):
             spines_row.enabled = False
             nmv.interface.ui_options.mesh.spine_objects = nmv.enums.Meshing.Spines.IGNORE
 
-        # Tessellation parameters
-        tess_level_row = layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
-        tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
-            tess_level_column.enabled = False
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        # Nuclei options
+        nucleus_options_row = layout.row()
+        nucleus_options_row.label(text='Nucleus Options:', icon='FORCE_TURBULENCE')
 
         # Coloring parameters
         colors_row = layout.row()
@@ -472,6 +484,10 @@ class MeshPanel(bpy.types.Panel):
                 Vector((context.scene.SpinesMeshColor.r,
                         context.scene.SpinesMeshColor.g,
                         context.scene.SpinesMeshColor.b))
+
+        # Mesh quick reconstruction options
+        quick_reconstruction_row = layout.row()
+        quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
 
         # Mesh reconstruction options
         mesh_reconstruction_row = layout.row()
@@ -585,7 +601,7 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "reconstruct.neuron_mesh"
-    bl_label = "Reconstruct"
+    bl_label = "Reconstruct Mesh"
 
     ################################################################################################
     # @load_morphology
