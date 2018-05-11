@@ -258,11 +258,11 @@ class MeshPanel(bpy.types.Panel):
         description="Use a single color for rendering all the objects of the mesh",
         default=True)
 
-    # A homogeneous color for all the objects of the mesh
+    # A homogeneous color for all the objects of the mesh (membrane and spines)
     bpy.types.Scene.NeuronMeshColor = FloatVectorProperty(
-        name="Mesh Color", subtype='COLOR',
+        name="Membrane Color", subtype='COLOR',
         default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
-        description="The homogeneous color of the reconstructed mesh")
+        description="The homogeneous color of the reconstructed mesh membrane")
 
     # The color of the reconstructed soma mesh
     bpy.types.Scene.SomaMeshColor = FloatVectorProperty(
@@ -384,7 +384,6 @@ class MeshPanel(bpy.types.Panel):
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.MeshingTechnique
 
-
         """
         if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
             skeleton_row = layout.row()
@@ -450,14 +449,14 @@ class MeshPanel(bpy.types.Panel):
         nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
     ################################################################################################
-    # @draw_spine_options
+    # @draw_spines_options
     ################################################################################################
-    def draw_spine_options(self,
-                           context):
+    def draw_spines_options(self,
+                            context):
         """Draw the spines options.
 
         :param context:
-            Context.
+            Panel context.
         """
 
         # Get a reference to the layout of the panel
@@ -494,7 +493,7 @@ class MeshPanel(bpy.types.Panel):
             spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines_quality = context.scene.SpineMeshQuality
+            nmv.interface.ui_options.mesh.spines_mesh_quality = context.scene.SpineMeshQuality
 
             # Percentage in case of random spines
             if nmv.interface.ui_options.mesh.spines_source \
@@ -516,7 +515,7 @@ class MeshPanel(bpy.types.Panel):
         """Draw the nucleus options.
 
         :param context:
-            Context.
+            Panel context.
         """
 
         # Get a reference to the layout of the panel
@@ -579,51 +578,73 @@ class MeshPanel(bpy.types.Panel):
             neuron_color_row.prop(context.scene, 'NeuronMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.soma_color = Vector((
-            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
-            context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.axon_color = Vector((
-            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
-            context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.basal_dendrites_color = Vector((
-            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
-            context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.apical_dendrites_color = Vector((
-            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
-            context.scene.NeuronMeshColor.b))
-            nmv.interface.ui_options.mesh.spines_color = Vector((
-            context.scene.NeuronMeshColor.r, context.scene.NeuronMeshColor.g,
-            context.scene.NeuronMeshColor.b))
+            nmv.interface.ui_options.mesh.soma_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
+
+            nmv.interface.ui_options.mesh.axon_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
+
+            nmv.interface.ui_options.mesh.basal_dendrites_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
+
+            nmv.interface.ui_options.mesh.apical_dendrites_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
+
+            nmv.interface.ui_options.mesh.spines_color = \
+                Vector((context.scene.NeuronMeshColor.r,
+                        context.scene.NeuronMeshColor.g,
+                        context.scene.NeuronMeshColor.b))
 
         # Different colors
         else:
             soma_color_row = layout.row()
             soma_color_row.prop(context.scene, 'SomaMeshColor')
+
             axon_color_row = layout.row()
             axon_color_row.prop(context.scene, 'AxonMeshColor')
+
             basal_dendrites_color_row = layout.row()
             basal_dendrites_color_row.prop(context.scene, 'BasalDendritesMeshColor')
+
             apical_dendrites_color_row = layout.row()
             apical_dendrites_color_row.prop(context.scene, 'ApicalDendriteMeshColor')
+
             spines_color_row = layout.row()
             spines_color_row.prop(context.scene, 'SpinesMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.soma_color = Vector((
-            context.scene.SomaMeshColor.r, context.scene.SomaMeshColor.g,
-            context.scene.SomaMeshColor.b))
-            nmv.interface.ui_options.mesh.axon_color = Vector((
-            context.scene.AxonMeshColor.r, context.scene.AxonMeshColor.g,
-            context.scene.AxonMeshColor.b))
-            nmv.interface.ui_options.mesh.basal_dendrites_color = Vector((
-            context.scene.BasalDendritesMeshColor.r, context.scene.BasalDendritesMeshColor.g,
-            context.scene.BasalDendritesMeshColor.b))
-            nmv.interface.ui_options.mesh.apical_dendrites_color = Vector((
-            context.scene.ApicalDendriteMeshColor.r, context.scene.ApicalDendriteMeshColor.g,
-            context.scene.ApicalDendriteMeshColor.b))
-            nmv.interface.ui_options.mesh.spines_color = Vector((
-            context.scene.SpinesMeshColor.r, context.scene.SpinesMeshColor.g,
-            context.scene.SpinesMeshColor.b))
+            nmv.interface.ui_options.mesh.soma_color = \
+                Vector((context.scene.SomaMeshColor.r,
+                        context.scene.SomaMeshColor.g,
+                        context.scene.SomaMeshColor.b))
+
+            nmv.interface.ui_options.mesh.axon_color = \
+                Vector((context.scene.AxonMeshColor.r,
+                        context.scene.AxonMeshColor.g,
+                        context.scene.AxonMeshColor.b))
+
+            nmv.interface.ui_options.mesh.basal_dendrites_color = \
+                Vector((context.scene.BasalDendritesMeshColor.r,
+                        context.scene.BasalDendritesMeshColor.g,
+                        context.scene.BasalDendritesMeshColor.b))
+
+            nmv.interface.ui_options.mesh.apical_dendrites_color = \
+                Vector((context.scene.ApicalDendriteMeshColor.r,
+                        context.scene.ApicalDendriteMeshColor.g,
+                        context.scene.ApicalDendriteMeshColor.b))
+
+            nmv.interface.ui_options.mesh.spines_color = \
+                Vector((context.scene.SpinesMeshColor.r,
+                        context.scene.SpinesMeshColor.g,
+                        context.scene.SpinesMeshColor.b))
 
         # Add nucleus color option if they are not ignored
         if context.scene.Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
@@ -798,7 +819,7 @@ class MeshPanel(bpy.types.Panel):
         self.draw_meshing_options(context)
 
         # Spine options
-        self.draw_spine_options(context)
+        self.draw_spines_options(context)
 
         # Nucleus options
         self.draw_nucleus_options(context)
@@ -806,7 +827,7 @@ class MeshPanel(bpy.types.Panel):
         # Color options
         self.draw_color_options(context)
 
-        # Mesh reconstructioj button
+        # Mesh reconstruction button
         self.draw_mesh_reconstruction_button(context)
 
         # Rendering options

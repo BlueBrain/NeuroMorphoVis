@@ -90,8 +90,8 @@ class MeshOptions:
         # The source where the spines will be loaded from, by default ignore the spines
         self.spines_source = nmv.enums.Meshing.Spines.Source.IGNORE
 
-        # Spines quality, by default loq quality
-        self.spines_quality = nmv.enums.Meshing.Spines.Quality.LQ
+        # Spines mesh quality, by default low quality
+        self.spines_mesh_quality = nmv.enums.Meshing.Spines.Quality.LQ
 
         # Percentage of random spines
         self.spines_random_percentage = nmv.consts.Meshing.RANDOM_SPINES_PERCENTAGE
