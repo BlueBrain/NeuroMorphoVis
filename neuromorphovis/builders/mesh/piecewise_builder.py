@@ -631,10 +631,7 @@ class PiecewiseBuilder:
         # The arbors are either connected to the soma or not
         nmv.logger.log_header('Connecting arbors to soma')
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            nmv.logger.log('\t * Arbors are getting connected to the soma')
             self.connect_arbors_to_soma()
-        else:
-            nmv.logger.log('\t * Arbors are NOT connected to the soma')
 
         # Adding surface roughness
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
@@ -647,35 +644,37 @@ class PiecewiseBuilder:
             self.decimate_neuron_mesh()
 
         # Add nucleus
-        nucleus_builder = nmv.builders.NucleusBuilder(
-            morphology=self.morphology, options=self.options)
-        nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
+        if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
 
-        #spines_builder = nmv.builders.RandomSpineBuilder(morphology=self.morphology,
-        #                                                 options=self.options)
-        #spines_objects = spines_builder.add_spines_to_morphology()
+            # Adding nucleus
+            nmv.logger.log_header('Adding nucleus')
+            nucleus_builder = nmv.builders.NucleusBuilder(
+                morphology=self.morphology, options=self.options)
+            nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
 
-        # Integrated spines
-        if self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.INTEGRATED:
-            pass
-
-        # Disconnected spines
-        elif self.options.mesh.spine_objects == nmv.enums.Meshing.Spines.DISCONNECTED:
-            nmv.logger.log_header('Adding spines')
+        # Add spines
+        if self.options.mesh.spines_source == nmv.enums.Meshing.Spines.Source.CIRCUIT:
 
             # Build the spines and return a list of them
+            nmv.logger.log_header('Adding circuit spines')
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology,
                 blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid,
                 material=self.spines_colors[0])
 
-            # Group the spine objects in a single object
-            nmv.mesh.ops.join_mesh_objects(spines_objects, 'spines')
+        # Random spines
+        elif self.options.mesh.spines_source == nmv.enums.Meshing.Spines.Source.RANDOM:
 
-        # Ignore spines
+            # Adding random spines
+            nmv.logger.log_header('Adding random spines')
+            spines_builder = nmv.builders.RandomSpineBuilder(
+                morphology=self.morphology, options=self.options)
+            spines_objects = spines_builder.add_spines_to_morphology()
+
+        # Otherwise ignore spines
         else:
-            nmv.logger.log('Spines are ignored')
+            pass
 
         # Compile a list of all the meshes in the scene, they account for the different mesh
         # objects of the neuron
@@ -690,7 +689,7 @@ class PiecewiseBuilder:
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
                 nmv.logger.log_header('Connecting neurons objects')
-                nmv.logger.log('\t * Connecting neuron: [%s_mesh]' % self.options.morphology.label)
+                nmv.logger.log_sub_header('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
 
                 # Group all the objects into a single mesh object after the decimation
                 neuron_mesh = nmv.mesh.ops.join_mesh_objects(
