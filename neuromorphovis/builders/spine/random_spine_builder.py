@@ -158,7 +158,7 @@ class RandomSpineBuilder:
         nmv.skeleton.ops.apply_operation_to_morphology_partially(
             *[self.morphology,
               nmv.skeleton.ops.get_random_spines_on_section,
-              50,
+              self.options.mesh.spines_random_percentage,
               spines_list],
             axon_branch_level=self.options.morphology.axon_branch_order,
             basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,

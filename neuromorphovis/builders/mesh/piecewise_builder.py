@@ -684,6 +684,16 @@ class PiecewiseBuilder:
                 # Add the object to the list
                 self.reconstructed_neuron_meshes.append(scene_object)
 
+                # If the meshes are merged into a single object, we must override the texture values
+                # Update the texture space of the created mesh
+                scene_object.select = True
+                bpy.context.scene.objects.active = scene_object
+                bpy.context.object.data.use_auto_texspace = False
+                bpy.context.object.data.texspace_size[0] = 5
+                bpy.context.object.data.texspace_size[1] = 5
+                bpy.context.object.data.texspace_size[2] = 5
+                scene_object.select = False
+
         # Connecting all the mesh objects together in a single object
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
@@ -696,13 +706,6 @@ class PiecewiseBuilder:
                     mesh_list=self.reconstructed_neuron_meshes,
                     name='%s_mesh' % self.options.morphology.label)
 
-                # If the meshes are merged into a single object, we must override the texture values
-                # Update the texture space of the created mesh
-                neuron_mesh.select = True
-                bpy.context.object.data.use_auto_texspace = False
-                bpy.context.object.data.texspace_size[0] = 5
-                bpy.context.object.data.texspace_size[1] = 5
-                bpy.context.object.data.texspace_size[2] = 5
 
                 # Update the reconstructed_neuron_meshes list to a single object
                 self.reconstructed_neuron_meshes = [neuron_mesh]
