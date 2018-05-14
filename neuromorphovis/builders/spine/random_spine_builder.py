@@ -164,7 +164,7 @@ class RandomSpineBuilder:
             basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,
             apical_dendrite_branch_level=self.options.morphology.apical_dendrite_branch_order)
 
-        nmv.logger.log('\t *Building spines')
+        nmv.logger.info('Cloning and integrating spines')
         building_timer = nmv.utilities.timer.Timer()
         building_timer.start()
 
@@ -183,15 +183,15 @@ class RandomSpineBuilder:
 
         # Done
         nmv.utilities.time_line.show_iteration_progress(
-            'Spines', number_spines, number_spines, done=True)
+            '\t Spines', number_spines, number_spines, done=True)
 
         # Report the time
         building_timer.end()
-        nmv.logger.log('\t Spines: [%f] seconds' % building_timer.duration())
+        nmv.logger.info('Spines: [%f] seconds' % building_timer.duration())
 
         # Delete the template spines
         nmv.scene.ops.delete_list_objects(self.spine_meshes)
 
         # Return the spines objects list
         return spines_objects
-
+    
