@@ -194,4 +194,3 @@ class RandomSpineBuilder:
 
         # Return the spines objects list
         return spines_objects
-    

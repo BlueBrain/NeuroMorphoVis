@@ -24,8 +24,4 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-from .mesh import *
-from .morphology import *
-from .nuclei import *
-from .spines import *
-from .configs import *
+from .rendere_config import *

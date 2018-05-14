@@ -149,8 +149,11 @@ class CircuitSpineBuilder:
         # Keep a list of all the spines objects
         spines_objects = []
 
-        # Import brain
-        import brain
+        # To load the circuit, 'brain' must be imported
+        try:
+            import brain
+        except ImportError:
+            raise ImportError('ERROR: Cannot import \'brain\'')
 
         # Load the circuit, silently please
         circuit = brain.Circuit(self.morphology.blue_config)
@@ -172,7 +175,7 @@ class CircuitSpineBuilder:
         # Create a timer to report the performance
         building_timer = nmv.utilities.timer.Timer()
 
-        nmv.logger.log('\t *Building spines')
+        nmv.logger.info('Integrating spines')
         building_timer.start()
 
         spines_list = list()
@@ -214,7 +217,7 @@ class CircuitSpineBuilder:
         for i, spine in enumerate(spines_list):
 
             # Show progress
-            nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
+            nmv.utilities.time_line.show_iteration_progress('\t Spines', i, number_spines)
 
             # Emanate a spine
             spine_object = self.emanate_spine(spine)
@@ -223,12 +226,12 @@ class CircuitSpineBuilder:
             spines_objects.append(spine_object)
 
         # Done
-        nmv.utilities.time_line.show_iteration_progress('Spines', number_spines, number_spines,
+        nmv.utilities.time_line.show_iteration_progress('\t Spines', number_spines, number_spines,
                                                         done=True)
 
         # Report the time
         building_timer.end()
-        nmv.logger.log('\t Spines: [%f] seconds' % building_timer.duration())
+        nmv.logger.info('Spines: [%f] seconds' % building_timer.duration())
 
         # Delete the template spines
         nmv.scene.ops.delete_list_objects(self.spine_meshes)
