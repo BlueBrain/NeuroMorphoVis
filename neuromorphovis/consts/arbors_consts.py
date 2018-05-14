@@ -51,8 +51,8 @@ class Arbors:
     APICAL_DENDRITES_PREFIX = 'ApicalDendrite'
 
     # A little distance before p0 on the root section from the soma side (for nice connection)
-    SOMA_EXTRUSION_DELTA = 0.75
+    SOMA_EXTRUSION_DELTA = 0.7
 
     # A little distance before p0 on the root section from the arbor side (for nice connection)
-    ARBOR_EXTRUSION_DELTA = 0.25
+    ARBOR_EXTRUSION_DELTA = 0.2
 

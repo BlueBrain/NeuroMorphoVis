@@ -107,7 +107,8 @@ def draw_connected_sections(section,
                             render_frame=False,
                             frame_destination=None,
                             camera=None,
-                            connect_to_soma=False):
+                            connect_to_soma=False,
+                            bridge_to_soma=False):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:
@@ -144,6 +145,8 @@ def draw_connected_sections(section,
         A given camera to render the frame.
     :param connect_to_soma:
         Connect the section to the soma origin, False by default.
+    :param bridge_to_soma:
+        Bridge the root section to the soma.
     """
 
     # Ignore the drawing if the section is None
@@ -168,7 +171,7 @@ def draw_connected_sections(section,
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
         section=section, is_continuous=is_continuous, is_last_section=is_last_section,
         fixed_radius=fixed_radius, transform=transform, process_terminals=repair_morphology,
-        connect_to_soma=connect_to_soma)
+        connect_to_soma=connect_to_soma, bridge_to_soma=bridge_to_soma)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_data)

@@ -90,7 +90,8 @@ def get_connected_sections_poly_line(section,
                                      fixed_radius=None,
                                      transform=None,
                                      process_terminals=False,
-                                     connect_to_soma=False):
+                                     connect_to_soma=False,
+                                     bridge_to_soma=False):
     """Get the poly-line list or a series of points that reflect the skeleton of a group of
     connected sections along a single arbor or neurite.
 
@@ -109,6 +110,8 @@ def get_connected_sections_poly_line(section,
     :param connect_to_soma:
         Add a set of auxiliary samples to connect the first sample of the root section to the
         center of the soma (or the origin).
+    :param bridge_to_soma:
+        Bridge the arbor to the soma surface, and do not connect it to the origin.
     :return:
         Section data in poly-line format that is suitable for drawing by Blender.
     """
@@ -121,39 +124,86 @@ def get_connected_sections_poly_line(section,
     poly_line = []
 
     # If the section is root, then connect it to the origin, if possible
-    if not section.has_parent():
+    if section.is_root():
 
-        # If the connection to the soma is required
-        if connect_to_soma:
+        # Bridge to the soma
+        if bridge_to_soma:
 
-            # In the repair mode, if the section is not logically connected to the soma, then
-            # ignore connecting the section to the soma
-            if process_terminals:
+            # The section must be logically connected to the soma after the filtration
+            if section.connected_to_soma:
 
-                # The section must be logically connected to the soma after the filtration
-                if section.connected_to_soma:
+                # Add a sample around the origin
+                direction = section.samples[0].point.normalized()
+
+                # Sample radius
+                radius = section.samples[0].radius
+
+                # Get the starting point of the bridging section (note that delta is 0.25 in
+                # case of bridging)
+                point = \
+                    section.samples[0].point - nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction
+
+                # Append the sample to the list
+                poly_line.append([(point[0], point[1], point[2], 1), radius])
+
+        # Normal connection to the soma
+        else:
+
+            # If the connection to the soma is required
+            if connect_to_soma:
+
+                # In the repair mode, if the section is not logically connected to the soma, then
+                # ignore connecting the section to the soma
+                if process_terminals:
+
+                    # The section must be logically connected to the soma after the filtration
+                    if section.connected_to_soma:
+
+                        # Add a sample around the origin
+                        direction = section.samples[0].point.normalized()
+
+                        # The initial sample must be far from the origin by one micron
+                        initial_sample = transform * Vector((0, 0, 0)) + direction
+
+                        # Sample radius
+                        radius = section.samples[0].radius
+
+                        # Compute the distance between the first sample and the origin sample
+                        distance = (section.samples[0].point - direction).length
+
+                        # Use N samples, for example 5
+                        number_samples = 5
+                        for i in range(1, number_samples):
+
+                            # Sample point
+                            point = initial_sample + (direction * distance * (i / number_samples))
+
+                            # Append the point to the poly-line data
+                            poly_line.append([(point[0], point[1], point[2], 1), radius])
+
+                        # Get the starting point of the bridging section (note that delta is 0.25 in
+                        # case of bridging)
+                        point = section.samples[0].point
+
+                        # Append the sample to the list
+                        poly_line.append([(point[0], point[1], point[2], 1), radius])
+
+                # If the original skeleton is required to be connected to the soma anyway, then we
+                # can safely connect the root section to the soma even if it's not logically
+                # connected
+                else:
 
                     # Add a sample around the origin
                     direction = section.samples[0].point.normalized()
 
-                    # The initial sample must be far from the origin by one micron
-                    initial_sample = transform * Vector((0, 0, 0)) + direction
-
                     # Sample radius
                     radius = section.samples[0].radius
 
-                    # Compute the distance between the first sample and the origin sample
-                    distance = (section.samples[0].point - direction).length
+                    # Sample coordinates
+                    point = transform * (Vector((0, 0, 0)) + (1.0 * direction))
 
-                    # Use N samples, for example 5
-                    number_samples = 5
-                    for i in range(1, number_samples):
-
-                        # Sample point
-                        point = initial_sample + (direction * distance * (i / number_samples))
-
-                        # Append the point to the poly-line data
-                        poly_line.append([(point[0], point[1], point[2], 1), radius])
+                    # Append the sample to the list
+                    poly_line.append([(point[0], point[1], point[2], 1), radius])
 
                     # Get the starting point of the bridging section (note that delta is 0.25 in
                     # case of bridging)
@@ -162,51 +212,28 @@ def get_connected_sections_poly_line(section,
                     # Append the sample to the list
                     poly_line.append([(point[0], point[1], point[2], 1), radius])
 
-            # If the original skeleton is required to be connected to the soma anyway, then we can
-            # safely connect the root section to the soma even if it's not logically connected
+            # If the connection to the soma is NOT required, add only a bridging sample
             else:
 
-                # Add a sample around the origin
-                direction = section.samples[0].point.normalized()
+                # In the repair mode, if the section is not logically connected to the soma,
+                # then ignore connecting the section to the soma
+                if process_terminals:
 
-                # Sample radius
-                radius = section.samples[0].radius
+                    # The section must be logically connected to the soma after the filtration
+                    if section.connected_to_soma:
 
-                # Sample coordinates
-                point = transform * (Vector((0, 0, 0)) + (1.0 * direction))
+                        # Add a sample around the origin
+                        direction = section.samples[0].point.normalized()
 
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
+                        # Sample radius
+                        radius = section.samples[0].radius
 
-                # Get the starting point of the bridging section (note that delta is 0.25 in
-                # case of bridging)
-                point = section.samples[0].point
+                        # Add the bridging sample
+                        point = section.samples[0].point -\
+                                (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
 
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # If the connection to the soma is NOT required, add only a bridging sample
-        else:
-
-            # In the repair mode, if the section is not logically connected to the soma,
-            # then ignore connecting the section to the soma
-            if process_terminals:
-
-                # The section must be logically connected to the soma after the filtration
-                if section.connected_to_soma:
-
-                    # Add a sample around the origin
-                    direction = section.samples[0].point.normalized()
-
-                    # Sample radius
-                    radius = section.samples[0].radius
-
-                    # Add the bridging sample
-                    point = section.samples[0].point -\
-                            (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
+                        # Append the sample to the list
+                        poly_line.append([(point[0], point[1], point[2], 1), radius])
 
     # If the section is a continuation, then do not pre-process the first samples
     if is_continuous:

@@ -33,6 +33,7 @@ import bpy
 import neuromorphovis as nmv
 import neuromorphovis.bmeshi
 import neuromorphovis.consts
+import neuromorphovis.enums
 import neuromorphovis.mesh
 import neuromorphovis.physics
 import neuromorphovis.scene
@@ -503,8 +504,9 @@ class SomaBuilder:
         point_0 = face_center + face_center.normalized() * 0.01
         point_1 = branch.samples[0].point
 
-        # if not self.full_arbor_extrusion:
-        # point_1 = point_1 - face_center.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
+        # Start with a little bit of offset for bridging the branch with the soma directly
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            point_1 = point_1 - point_1.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, self.vertex_group)

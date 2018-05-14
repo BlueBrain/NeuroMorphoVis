@@ -300,7 +300,8 @@ def taper_section(section):
 ####################################################################################################
 # @zigzag_section
 ####################################################################################################
-def zigzag_section(section):
+def zigzag_section(section,
+                   delta=0.75):
     """Zigzag a given section by adding abrupt changes in its geometry.
 
     This function is only used for artistic purposes as it changes the structure of the
@@ -312,10 +313,26 @@ def zigzag_section(section):
 
     :param section:
         A given section to zigzag.
+    :param delta:
+        The detla (distance) value.
     """
 
     # Get the length of the section (in terms of number of samples)
     number_samples = len(section.samples)
+
+    # Ignore the first few samples on the root section to have nicer connection with the soma
+    if section.is_root():
+
+        if number_samples < 5:
+            return
+
+        for i in range(3, number_samples - 2):
+
+            # Compute the normal direction
+            random_direction = Vector((random.random(), random.random(), random.random()))
+
+            # Compute the new sample position
+            section.samples[i].point += random_direction * random.uniform(-delta, delta)
 
     # Make sure that the section has more than two samples to proceed
     if number_samples < 3:
@@ -327,5 +344,5 @@ def zigzag_section(section):
         random_direction = Vector((random.random(), random.random(), random.random()))
 
         # Compute the new sample position
-        section.samples[i].point += random_direction * random.uniform(-0.75, 0.75)
+        section.samples[i].point += random_direction * random.uniform(-delta, delta)
 

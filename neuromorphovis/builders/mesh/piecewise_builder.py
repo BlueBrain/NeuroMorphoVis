@@ -188,7 +188,7 @@ class PiecewiseBuilder:
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        #nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # Primary and secondary branching
         if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
@@ -211,7 +211,8 @@ class PiecewiseBuilder:
     def build_arbors(self,
                      bevel_object,
                      caps,
-                     connect_to_soma_origin):
+                     connect_to_soma_origin,
+                     bridge_to_soma):
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
@@ -220,7 +221,7 @@ class PiecewiseBuilder:
             A given bevel object to scale the section at the different samples.
         :param caps:
             A flag to indicate whether the drawn sections are closed or not.
-        :param connect_to_soma_origin:
+        :param bridge_to_soma:
             A flag to connect (for soma disconnected more) or disconnect (for soma bridging mode)
             the arbor to the soma origin.
             If this flag is set to True, this means that the arbor will be extended to the soma
@@ -269,7 +270,8 @@ class PiecewiseBuilder:
                     repair_morphology=True,
                     caps=caps,
                     sections_objects=apical_dendrite_objects,
-                    connect_to_soma=connect_to_soma_origin)
+                    connect_to_soma=connect_to_soma_origin,
+                    bridge_to_soma=bridge_to_soma)
 
                 # Add a reference to the mesh object
                 self.morphology.apical_dendrite.mesh = apical_dendrite_objects[0]
@@ -298,7 +300,8 @@ class PiecewiseBuilder:
                     repair_morphology=True,
                     caps=caps,
                     sections_objects=basal_dendrite_objects,
-                    connect_to_soma=connect_to_soma_origin)
+                    connect_to_soma=connect_to_soma_origin,
+                    bridge_to_soma=bridge_to_soma)
 
                 # Add a reference to the mesh object
                 self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
@@ -323,7 +326,8 @@ class PiecewiseBuilder:
                 repair_morphology=True,
                 caps=caps,
                 sections_objects=axon_objects,
-                connect_to_soma=connect_to_soma_origin)
+                connect_to_soma=connect_to_soma_origin,
+                bridge_to_soma=bridge_to_soma)
 
             # Add a reference to the mesh object
             self.morphology.axon.mesh = axon_objects[0]
@@ -356,7 +360,7 @@ class PiecewiseBuilder:
 
             # There is an apical dendrite
             if self.morphology.apical_dendrite is not None:
-                nmv.logger.log('\t\t * Apical dendrite')
+                nmv.logger.detail('Apical dendrite')
                 nmv.skeleton.ops.connect_arbor_to_soma(
                     self.reconstructed_soma_mesh, self.morphology.apical_dendrite)
 
@@ -365,13 +369,13 @@ class PiecewiseBuilder:
 
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                nmv.logger.log('\t\t * Dendrite [%d]' % i)
+                nmv.logger.detail('Dendrite [%d]' % i)
                 nmv.skeleton.ops.connect_arbor_to_soma(
                     self.reconstructed_soma_mesh, basal_dendrite)
 
         # Connecting axon
         if not self.options.morphology.ignore_axon:
-            nmv.logger.log('\t\t * Axon')
+            nmv.logger.detail('Axon')
             nmv.skeleton.ops.connect_arbor_to_soma(
                 self.reconstructed_soma_mesh, self.morphology.axon)
 
@@ -383,7 +387,7 @@ class PiecewiseBuilder:
         """
 
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
-            nmv.logger.log('\t * Decimating the neuron')
+            nmv.logger.info('Decimating the neuron')
 
             # Get a list of all the mesh objects (except the spines) of the neuron
             neuron_meshes = list()
@@ -422,7 +426,6 @@ class PiecewiseBuilder:
                 nmv.mesh.ops.decimate_mesh_object(
                     mesh_object=object_mesh, decimation_ratio=self.options.mesh.tessellation_level)
 
-
     ################################################################################################
     # @build_hard_edges_arbors
     ################################################################################################
@@ -436,13 +439,16 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            bridge_to_soma = True
             connect_to_soma_origin = False
         else:
+            bridge_to_soma = False
             connect_to_soma_origin = True
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=True, connect_to_soma_origin=connect_to_soma_origin)
+            bevel_object=bevel_object, caps=True, connect_to_soma_origin=connect_to_soma_origin,
+            bridge_to_soma=bridge_to_soma)
 
         # Close the caps
         for arbor_object in arbors_meshes:
@@ -463,13 +469,16 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            bridge_to_soma = True
             connect_to_soma_origin = False
         else:
+            bridge_to_soma = False
             connect_to_soma_origin = True
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=False, connect_to_soma_origin=connect_to_soma_origin)
+            bevel_object=bevel_object, caps=False, connect_to_soma_origin=connect_to_soma_origin,
+            bridge_to_soma=bridge_to_soma)
 
         # Smooth and close the faces in one step
         for mesh in arbors_meshes:
@@ -501,7 +510,7 @@ class PiecewiseBuilder:
             if scene_object.type == 'MESH':
 
                 # Exclude the spines
-                if 'spine' in scene_object.name:
+                if 'spin' in scene_object.name:
                     continue
 
                 # Otherwise, add the object to the list
