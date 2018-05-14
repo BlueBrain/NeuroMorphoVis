@@ -530,11 +530,11 @@ class ReconstructSomaOperator(bpy.types.Operator):
                 nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY:
 
             # Decimate the mesh using 25%
-            nmv.logger.log_sub_header('Decimation')
+            nmv.logger.info('Decimation')
             nmv.mesh.ops.decimate_mesh_object(self.soma_sphere_object, decimation_ratio=0.25)
 
             # Smooth the mesh again to look nice
-            nmv.logger.log_sub_header('Smoothing')
+            nmv.logger.info('Smoothing')
             nmv.mesh.ops.smooth_object(self.soma_sphere_object, level=2)
 
         # Report the process termination in the UI

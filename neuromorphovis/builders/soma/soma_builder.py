@@ -283,7 +283,7 @@ class SomaBuilder:
         """
 
         # Log
-        nmv.logger.log_header('Building soma using Profile Point only')
+        nmv.logger.header('Building soma using Profile Point only')
 
         # Create a ico-sphere 'bmesh' to represent the initial shape of the soma
         initial_soma_sphere_bmesh = nmv.bmeshi.create_ico_sphere(
@@ -300,7 +300,7 @@ class SomaBuilder:
         valid_profile_points = list()
 
         # Iterate on every profile point available from the soma information to validate it
-        nmv.logger.log_sub_header('Verifying profile points intersection')
+        nmv.logger.info('Verifying profile points intersection')
         for i, profile_point in enumerate(self.morphology.soma.profile_points):
 
             # Check if the profile point intersects with other points in the list or not
@@ -309,7 +309,7 @@ class SomaBuilder:
                     self.initial_soma_radius):
 
                 # Report the intersection
-                nmv.logger.log_sub_sub_header("WARNING: Profile point [%d] intersection" % i)
+                nmv.logger.detail("WARNING: Profile point [%d] intersection" % i)
 
                 # Next point
                 continue
@@ -318,7 +318,7 @@ class SomaBuilder:
             valid_profile_points.append(profile_point)
 
             # Get the center of the face that is created for the profile point
-            nmv.logger.log_sub_sub_header("Profile point [%d] is valid" % i)
+            nmv.logger.detail("Profile point [%d] is valid" % i)
             face_center = self.create_profile_point_extrusion_face(
                 initial_soma_sphere_bmesh, profile_point, i)
 
@@ -336,11 +336,11 @@ class SomaBuilder:
         self.hooks_list = list()
 
         # Attach the hooks for each profile point
-        nmv.logger.log_sub_header('Attaching hooks')
+        nmv.logger.info('Attaching hooks')
         for i, face_centroid in enumerate(faces_centers):
 
             # Attach hook to an extrusion face
-            nmv.logger.log_sub_sub_header("Hook [%d]" % i)
+            nmv.logger.detail("Hook [%d]" % i)
             self.attach_hook_to_extrusion_face_on_profile_point(
                 soma_sphere_mesh, valid_profile_points[i], i)
 
@@ -551,7 +551,7 @@ class SomaBuilder:
         """
 
         # Log
-        nmv.logger.log_header('Building soma using Arbor Points only')
+        nmv.logger.header('Building soma using Arbor Points only')
 
         # Create a ico-sphere bmesh to represent the starting shape of the soma
         soma_bmesh_sphere = nmv.bmeshi.create_ico_sphere(
@@ -567,7 +567,7 @@ class SomaBuilder:
             if self.morphology.apical_dendrite is not None:
 
                 # Create the extrusion face, where the pulling will occur
-                nmv.logger.log_sub_header('Apical dendrite')
+                nmv.logger.info('Apical dendrite')
                 extrusion_face_centroid = self.create_branch_extrusion_face(
                     soma_bmesh_sphere, self.morphology.apical_dendrite, visualize_connection=False)
 
@@ -585,7 +585,7 @@ class SomaBuilder:
                 if dendrite_root.connected_to_soma:
 
                     # Which dendrite ?!!
-                    nmv.logger.log_sub_header('Dendrite [%d]' % i)
+                    nmv.logger.info('Dendrite [%d]' % i)
 
                     # Create the extrusion face, where the pulling will occur
                     extrusion_face_centroid = self.create_branch_extrusion_face(
@@ -598,7 +598,7 @@ class SomaBuilder:
                 else:
 
                     # Report the issue
-                    nmv.logger.log_sub_header('Dendrite [%d] is NOT connected to soma' % i)
+                    nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -607,7 +607,7 @@ class SomaBuilder:
             if self.morphology.axon.connected_to_soma:
 
                 # Create the extrusion face, where the pulling will occur
-                nmv.logger.log_sub_header('Axon')
+                nmv.logger.info('Axon')
                 extrusion_face_centroid = self.create_branch_extrusion_face(
                     soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
 
@@ -618,7 +618,7 @@ class SomaBuilder:
             else:
 
                 # Report the issue
-                nmv.logger.log_sub_header('Axon is NOT connected to soma')
+                nmv.logger.info('Axon is NOT connected to soma')
 
         # Profile points extrusion
         # Initialize a list to keep track on the valid profile points
@@ -633,7 +633,7 @@ class SomaBuilder:
             faces_centers = list()
 
             # Iterate on every profile point available from the soma information to validate it
-            nmv.logger.log_sub_header('Verifying profile points intersection')
+            nmv.logger.info('Verifying profile points intersection')
             for i, profile_point in enumerate(self.morphology.soma.profile_points):
 
                 # Check if the profile point intersects with other points in the list or not
@@ -642,7 +642,7 @@ class SomaBuilder:
                         self.initial_soma_radius):
 
                     # Report the intersection
-                    nmv.logger.log_sub_sub_header("WARNING: Profile point [%d] intersection" % i)
+                    nmv.logger.detail("WARNING: Profile point [%d] intersection" % i)
 
                     # Next point
                     continue
@@ -659,7 +659,7 @@ class SomaBuilder:
                                 self.initial_soma_radius):
 
                             # Report the intersection
-                            nmv.logger.log_sub_sub_header(
+                            nmv.logger.detail(
                                 "WARNING: profile point intersects apical dendrite")
 
                             # Next point
@@ -673,7 +673,7 @@ class SomaBuilder:
                             self.morphology.axon, self.initial_soma_radius):
 
                         # Report the intersection
-                        nmv.logger.log_sub_sub_header(
+                        nmv.logger.detail(
                             "WARNING: profile point intersects axon")
 
                         # Next point
@@ -691,7 +691,7 @@ class SomaBuilder:
                                 profile_point, dendrite_root, self.initial_soma_radius):
 
                             # Report the intersection
-                            nmv.logger.log_sub_sub_header(
+                            nmv.logger.detail(
                                 "WARNING: profile point intersects basal dendrite")
 
                             intersect = True
@@ -704,7 +704,7 @@ class SomaBuilder:
                 valid_profile_points.append(profile_point)
 
                 # Get the center of the face that is created for the profile point
-                nmv.logger.log_sub_sub_header("Profile point [%d] is valid" % i)
+                nmv.logger.detail("Profile point [%d] is valid" % i)
                 face_center = self.create_profile_point_extrusion_face(
                     soma_bmesh_sphere, profile_point, i)
 

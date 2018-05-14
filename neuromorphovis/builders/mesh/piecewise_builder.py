@@ -252,7 +252,7 @@ class PiecewiseBuilder:
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.log_sub_header('Apical dendrite')
+            nmv.logger.info('Apical dendrite')
 
             # Individual sections (tubes) of the apical dendrite
             apical_dendrite_objects = []
@@ -283,7 +283,7 @@ class PiecewiseBuilder:
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
-                nmv.logger.log_sub_header('Dendrite [%d]' % i)
+                nmv.logger.info('Dendrite [%d]' % i)
 
                 basal_dendrite_objects = []
 
@@ -308,7 +308,7 @@ class PiecewiseBuilder:
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
-            nmv.logger.log_sub_header('Axon')
+            nmv.logger.info('Axon')
 
             # Individual sections (tubes) of the axon
             axon_objects = []
@@ -617,7 +617,7 @@ class PiecewiseBuilder:
         # The other method creates a smoothed mesh with soft edges. In this method, we will use a
         # simplified bevel object with only 'four' vertices and smooth it later using vertices
         # smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
-        nmv.logger.log_header('Building arbors')
+        nmv.logger.header('Building arbors')
 
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
             self.build_hard_edges_arbors()
@@ -629,25 +629,25 @@ class PiecewiseBuilder:
             nmv.logger.log('ERROR')
 
         # The arbors are either connected to the soma or not
-        nmv.logger.log_header('Connecting arbors to soma')
+        nmv.logger.header('Connecting arbors to soma')
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
             self.connect_arbors_to_soma()
 
         # Adding surface roughness
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.log_header('Adding surface roughness')
+            nmv.logger.header('Adding surface roughness')
             self.add_surface_noise()
 
         # Decimation
         if 0.05 < self.options.mesh.tessellation_level < 1.0:
-            nmv.logger.log_header('Decimating the mesh')
+            nmv.logger.header('Decimating the mesh')
             self.decimate_neuron_mesh()
 
         # Add nucleus
         if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
 
             # Adding nucleus
-            nmv.logger.log_header('Adding nucleus')
+            nmv.logger.header('Adding nucleus')
             nucleus_builder = nmv.builders.NucleusBuilder(
                 morphology=self.morphology, options=self.options)
             nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
@@ -656,7 +656,7 @@ class PiecewiseBuilder:
         if self.options.mesh.spines_source == nmv.enums.Meshing.Spines.Source.CIRCUIT:
 
             # Build the spines and return a list of them
-            nmv.logger.log_header('Adding circuit spines')
+            nmv.logger.header('Adding circuit spines')
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology,
                 blue_config=self.options.morphology.blue_config,
@@ -667,7 +667,7 @@ class PiecewiseBuilder:
         elif self.options.mesh.spines_source == nmv.enums.Meshing.Spines.Source.RANDOM:
 
             # Adding random spines
-            nmv.logger.log_header('Adding random spines')
+            nmv.logger.header('Adding random spines')
             spines_builder = nmv.builders.RandomSpineBuilder(
                 morphology=self.morphology, options=self.options)
             spines_objects = spines_builder.add_spines_to_morphology()
@@ -698,8 +698,8 @@ class PiecewiseBuilder:
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
-                nmv.logger.log_header('Connecting neurons objects')
-                nmv.logger.log_sub_header('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
+                nmv.logger.header('Connecting neurons objects')
+                nmv.logger.info('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
 
                 # Group all the objects into a single mesh object after the decimation
                 neuron_mesh = nmv.mesh.ops.join_mesh_objects(
@@ -712,7 +712,7 @@ class PiecewiseBuilder:
 
         # Transform the neuron object to the global coordinates
         if self.options.mesh.global_coordinates:
-            nmv.logger.log_header('Transforming to global coordinates')
+            nmv.logger.header('Transforming to global coordinates')
 
             for mesh_object in self.reconstructed_neuron_meshes:
                 nmv.skeleton. ops.transform_to_global(
@@ -720,6 +720,6 @@ class PiecewiseBuilder:
                     blue_config=self.options.morphology.blue_config,
                     gid=self.options.morphology.gid)
 
-        nmv.logger.log_header('Done!')
+        nmv.logger.header('Done!')
 
         return self.reconstructed_neuron_meshes

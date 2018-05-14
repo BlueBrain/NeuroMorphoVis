@@ -737,7 +737,7 @@ class SkeletonBuilder:
         """
 
         # Verify the connectivity of the arbors of the morphology to the soma
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        # nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # Primary and secondary branching
         if self.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
@@ -1011,7 +1011,7 @@ class SkeletonBuilder:
               morphology_ops.verify_duplicated_samples])
         """
 
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        # nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # This list has all the created and drawn objects that compose the morphology.
         # We must keep track on those objects to delete them upon request or when we need to use

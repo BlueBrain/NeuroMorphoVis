@@ -104,7 +104,7 @@ class NucleusBuilder:
         self.load_nuclei_meshes()
 
         # Add the nucleus by selecting a random one from the loaded list
-        nmv.logger.log_sub_header('Integrating nucleus')
+        nmv.logger.info('Integrating nucleus')
 
         # Select a random nucleus from the nuclei list
         nucleus_template = random.choice(self.nuclei_meshes)

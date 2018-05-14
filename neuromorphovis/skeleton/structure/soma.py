@@ -72,9 +72,12 @@ class Soma:
             self.possible_radii.append(point.length)
 
         # Add the arbors profile points radii to the possible_radii list
+        # TODO: IGNORE NOW
+        """
         if self.arbors_profile_points is not None:
             for point in self.arbors_profile_points:
                 self.possible_radii.append(point.length)
+        """
 
         # Sort the radii in the list
         self.possible_radii = sorted(self.possible_radii)
