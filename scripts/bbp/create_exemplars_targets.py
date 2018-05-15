@@ -31,19 +31,19 @@ def parse_command_line_arguments():
     parser = argparse.ArgumentParser()
     help = 'circuit config file'
     parser.add_argument('--circuit-config',
-        action='store', dest='circuit_config', help=help)
+                        action='store', dest='circuit_config', help=help)
 
     help = 'cell target, default mc2_Column'
     parser.add_argument('--target',
-        action='store', default='mc2_Column', dest='target', help=help)
+                        action='store', default='mc2_Column', dest='target', help=help)
 
     help = 'number of samples per exemplar, if [n] then get all the neurons'
     parser.add_argument('--number-samples',
-        action='store', default='1', dest='number_samples', help=help)
+                        action='store', default='1', dest='number_samples', help=help)
 
     help = 'output path'
     parser.add_argument('--output',
-        action='store', default='.', dest='output', help=help)
+                        action='store', default='.', dest='output', help=help)
 
     # parse the arguments, and return a list of them.
     return parser.parse_args()

@@ -26,6 +26,7 @@ __status__      = "Production"
 
 
 # Internal imports
+from .consts import *
 from .neuron import *
 from .utilities import *
 from .writer import *

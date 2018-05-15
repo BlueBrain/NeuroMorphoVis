@@ -10,6 +10,7 @@ __status__      = "Production"
 import argparse
 import random
 import core.utilities
+import core.consts
 
 
 ################################################################################
@@ -33,6 +34,10 @@ def parse_command_line_arguments():
     parser.add_argument('--target',
                         action='store', default='mc2_Column', dest='target', help=help)
 
+    help = 'The mtype requested to get selected %s' % core.consts.MTYPES
+    parser.add_argument('--mtype',
+                        action='store', dest='mtype', help=help)
+
     help = 'Percentage of the target, default 100'
     parser.add_argument('--percent',
                         action='store', default=100.0, dest='percent', help=help)
@@ -54,6 +59,7 @@ def parse_command_line_arguments():
 ################################################################################
 def create_targets(circuit_config,
                    target,
+                   mtype,
                    percent,
                    output,
                    number_tags):
@@ -63,6 +69,8 @@ def create_targets(circuit_config,
         Circuit configuration.
     :param target:
         Input target.
+    :param mtype:
+        The requested morphology type.
     :param percent:
         Percentage.
     :param output:
@@ -123,62 +131,64 @@ def create_targets(circuit_config,
     print('* Filtering circuit')
     for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
-        # Position
-        position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
-
-        # Neuron orientation
-        orientation = \
-            str(neuron.orientation()).replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
-
-        # Transformation
-        transform = circuit.transforms({int(gid)})[0]
-        transform_string = ''
-        for i in [0, 1, 2, 3]:
-            for j in [0, 1, 2, 3]:
-                value = str(transform[i][j])
-                value = float(value.replace('[', '').replace(']', ''))
-                transform_string += str(value) + ' '
-        transform = transform_string
-
-        # Layer
-        layer = neuron.layer()
-
-        # Tag
-        tag = random.randint(1, number_tags)
-
-        # Mean radius of the soma
-        soma_mean_radius = morphologies[i].soma().mean_radius()
-
-        # Minimum and maximum radii of the soma
-        soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
-            morphologies[i].soma().profile_points())
-
         # Morphology type
         morphology_type = neuron.morphology_type().name()
 
-        # Morphology label
-        morphology_label = neuron.morphology_label()
+        if mtype in morphology_type:
 
-        # Column
-        column = neuron.column()
+            # Position
+            position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
 
-        # Construct the neuron structure
-        neuron = core.Neuron(
-            gid=gid,
-            morphology_type=morphology_type,
-            morphology_label=morphology_label,
-            position=position,
-            orientation=orientation,
-            transform=transform,
-            layer=layer,
-            column=column,
-            tag=tag,
-            soma_min_radius=soma_min_radius,
-            soma_mean_radius=soma_mean_radius,
-            soma_max_radius=soma_max_radius)
+            # Neuron orientation
+            orientation = \
+                str(neuron.orientation()).replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
 
-        # add the neuron data to the list
-        target_data.append(neuron)
+            # Transformation
+            transform = circuit.transforms({int(gid)})[0]
+            transform_string = ''
+            for i in [0, 1, 2, 3]:
+                for j in [0, 1, 2, 3]:
+                    value = str(transform[i][j])
+                    value = float(value.replace('[', '').replace(']', ''))
+                    transform_string += str(value) + ' '
+            transform = transform_string
+
+            # Layer
+            layer = neuron.layer()
+
+            # Tag
+            tag = random.randint(1, number_tags)
+
+            # Mean radius of the soma
+            soma_mean_radius = morphologies[i].soma().mean_radius()
+
+            # Minimum and maximum radii of the soma
+            soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
+                morphologies[i].soma().profile_points())
+
+            # Morphology label
+            morphology_label = neuron.morphology_label()
+
+            # Column
+            column = neuron.column()
+
+            # Construct the neuron structure
+            neuron = core.Neuron(
+                gid=gid,
+                morphology_type=morphology_type,
+                morphology_label=morphology_label,
+                position=position,
+                orientation=orientation,
+                transform=transform,
+                layer=layer,
+                column=column,
+                tag=tag,
+                soma_min_radius=soma_min_radius,
+                soma_mean_radius=soma_mean_radius,
+                soma_max_radius=soma_max_radius)
+
+            # add the neuron data to the list
+            target_data.append(neuron)
 
     # Sample the target randomly
     print('* Sampling target randomly')
@@ -186,7 +196,7 @@ def create_targets(circuit_config,
         int((len(target_data) * percent / 100.0)))
 
     # Construct the target name
-    target_name = '%s_%fp_random' % (target, float(percent))
+    target_name = '%s_%s_%fp_random' % (mtype, target, float(percent))
 
     # Write the NeuroRender configuration file
     print('* Writing rendering config')
@@ -211,11 +221,12 @@ def run():
     argument_list = parse_command_line_arguments()
 
     # create targets
-    create_targets(argument_list.circuit_config,
-                   argument_list.target,
-                   float(argument_list.percent),
-                   argument_list.output,
-                   int(argument_list.number_tags))
+    create_targets(circuit_config=argument_list.circuit_config,
+                   target=argument_list.target,
+                   mtype=argument_list.mtype,
+                   percent=float(argument_list.percent),
+                   output=argument_list.output,
+                   number_tags=int(argument_list.number_tags))
 
 
 ################################################################################
