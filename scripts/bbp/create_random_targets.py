@@ -182,13 +182,18 @@ def create_targets(circuit_config,
     filtered_target_data = random.sample(set(target_data),
         int((len(target_data) * percent / 100.0)))
 
-    config_file_name = 'random'
+    # Construct the target name
+    target_name = '%s_%fp_random' % (target, float(percent))
 
-    # Write the NeuroRender file
+    # Write the NeuroRender configuration file
     print('* Writing rendering config')
     core.write_neurorender_config(
-        filtered_target_data, config_file_name=config_file_name, output_path=output)
+        filtered_target_data, config_file_name=target_name, output_path=output)
 
+    print('* Writing target file')
+    core.write_target_file(
+        filtered_target_data, target_name=target_name,
+        target_file_name=target_name, output_path=output)
 
 ################################################################################
 # @run
