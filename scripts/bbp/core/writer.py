@@ -240,14 +240,29 @@ def write_neurorender_config(target,
         # Neuron GID
         data_string += tab + 'GID: ' + str(neuron.gid) + nl
 
+        # Tag
+        data_string += tab + 'TAG: ' + str(neuron.tag) + nl
+
         # Neuron morphology type
-        data_string += tab + 'MORPHOLOGY_TYPE: '+ str(neuron.mtype) + nl
+        data_string += tab + 'MORPHOLOGY_TYPE: ' + str(neuron.morphology_type) + nl
 
         # Neuron morphology label
-        data_string += tab + 'MORPHOLOGY_LABEL: ' + str(neuron.mlabel) + nl
+        data_string += tab + 'MORPHOLOGY_LABEL: ' + str(neuron.morphology_label) + nl
 
-        # Neuron X position
-        data_string += tab + 'POSITION: ' + str(neuron.position[0]) + nl
+        # Neuron position
+        data_string += tab + 'POSITION: ' + str(neuron.position) + nl
+
+        # Neuron position
+        data_string += tab + 'ORIENTATION: ' + str(neuron.orientation) + nl
+
+        # Neuron transform
+        data_string += tab + 'TRANSFORM: ' + str(neuron.transform) + nl
+
+        # Column
+        data_string += tab + 'COLUMN: ' + str(neuron.column) + nl
+
+        # Column
+        data_string += tab + 'LAYER: ' + str(neuron.layer) + nl
 
         # We are all set for this neuron, add a new line to start a new neuron
         data_string += nl

@@ -16,7 +16,7 @@ import os, sys, subprocess
 
 
 # NeuroRender imports
-import neuron
+
 # imports
 import argparse
 import random
@@ -48,7 +48,7 @@ def parse_command_line_arguments():
     parser.add_argument('--target',
                         action='store', default='mc2_Column', dest='target', help=help)
 
-    help = 'Percentage of the target, default 100%'
+    help = 'Percentage of the target, default 100'
     parser.add_argument('--percent',
                         action='store', default=100.0, dest='percent', help=help)
 
@@ -60,7 +60,7 @@ def parse_command_line_arguments():
     parser.add_argument('--output',
                         action='store', default='.', dest='output', help=help)
 
-    # parse the arguments, and return a list of them.
+    # Parse the arguments, and return a list of them.
     return parser.parse_args()
 
 
@@ -99,7 +99,7 @@ def create_targets(circuit_config,
     cell_target = experiment.cell_target(target)
 
     # Load neurons only, since it will take forever to load the morphologies
-    print('Loading the circuit from the BBPSDK')
+    print('* Loading the circuit from the BBPSDK')
     load_flags = bbp.Loading_Flags
     micro_circuit.load(cell_target, load_flags.NEURONS)
 
@@ -107,7 +107,7 @@ def create_targets(circuit_config,
     neurons = micro_circuit.neurons()
 
     # Load the circuit from Brain
-    print('Loading the circuit from Brain')
+    print('* Loading the circuit from Brain')
     circuit = brain.Circuit(circuit_config)
 
     # Get all the gids of the target
@@ -123,20 +123,34 @@ def create_targets(circuit_config,
     target_data = list()
 
     # Filtering
-    print('Filtering circuit')
+    print('* Filtering circuit')
     for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
         # Position
-        position = neuron.position()
+        position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
+
+        # Neuron orientation
+        orientation = \
+            str(neuron.orientation()).replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
+
+        # Transformation
+        transform = circuit.transforms({int(gid)})[0]
+        transform_string = ''
+        for i in [0, 1, 2, 3]:
+            for j in [0, 1, 2, 3]:
+                value = str(transform[i][j])
+                value = float(value.replace('[', '').replace(']', ''))
+                transform_string += str(value) + ' '
+        transform = transform_string
 
         # Layer
         layer = neuron.layer()
 
-        # Mean radius
-        mean_radius = morphologies[i].soma().mean_radius()
+        # Mean radius of the soma
+        soma_mean_radius = morphologies[i].soma().mean_radius()
 
-        # Minimum and maximum radii
-        min_radius, max_radius = core.utilities.get_minimum_and_maximum_radii(
+        # Minimum and maximum radii of the soma
+        soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
             morphologies[i].soma().profile_points())
 
         # Morphology type
@@ -152,24 +166,14 @@ def create_targets(circuit_config,
             gid=gid,
             morphology_type=morphology_type,
             morphology_label=morphology_label,
-            layer=layer,
             position=position,
-            orientation=0)
-
-        # Compose the neuron data
-        neuron_data = '%s %s %s %s %s %s %s %s %s %s %s %s' % \
-                      (str(gid),
-                       str(random.randint(1, number_tags)),
-                       str(position.x()),
-                       str(position.y()),
-                       str(position.z()),
-                       str(min_radius),
-                       str(mean_radius),
-                       str(max_radius),
-                       str(morphology_type),
-                       str(morphology_label),
-                       str(column),
-                       str(layer))
+            orientation=orientation,
+            transform=transform,
+            layer=layer,
+            column=column,
+            soma_min_radius=soma_min_radius,
+            soma_mean_radius=soma_mean_radius,
+            soma_max_radius=soma_max_radius)
 
         # add the neuron data to the list
         target_data.append(neuron)
@@ -181,8 +185,10 @@ def create_targets(circuit_config,
     config_file_name = 'random'
 
     # Write the NeuroRender file
+    print('* Writing rendering config')
     core.write_neurorender_config(
         filtered_target_data, config_file_name=config_file_name, output_path=output)
+
 
 ################################################################################
 # @run

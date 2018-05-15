@@ -39,10 +39,12 @@ class Neuron:
                  gid,
                  position,
                  orientation,
+                 transform=None,
                  morphology_type=None,
                  morphology_label=None,
                  layer=None,
-                 tag=None,
+                 column=None,
+                 tag=1,
                  soma_min_radius=None,
                  soma_mean_radius=None,
                  soma_max_radius=None,
@@ -66,6 +68,8 @@ class Neuron:
             Neuron position.
         :param orientation:
             Neuron Y orientation.
+        :param transform:
+            Neuron transformation.
         :param tag:
             A tag for labeling the neuron.
         :param soma_min_radius:
@@ -94,6 +98,9 @@ class Neuron:
         # Neuron layer
         self.layer = layer
 
+        # Neuron column (for meso-scale circuits)
+        self.column = column
+
         # Neuron morphology type
         self.morphology_type = morphology_type
 
@@ -117,6 +124,9 @@ class Neuron:
 
         # Neuron Y orientation
         self.orientation = orientation
+
+        # Neuron transform
+        self.transform = transform
 
         # Neuron membrane surface mesh
         self.membrane_mesh = membrane_mesh
