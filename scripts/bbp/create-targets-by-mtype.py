@@ -34,7 +34,7 @@ def parse_command_line_arguments():
     parser.add_argument('--target',
                         action='store', default='mc2_Column', dest='target', help=help)
 
-    help = 'The mtype requested to get selected %s' % core.consts.MTYPES
+    help = 'The mtype requested to get selected from %s' % core.consts.MTYPES
     parser.add_argument('--mtype',
                         action='store', dest='mtype', help=help)
 
@@ -129,7 +129,7 @@ def create_targets(circuit_config,
 
     # Filtering
     print('* Filtering circuit')
-    for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
+    for i_neuron, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
         # Morphology type
         morphology_type = neuron.morphology_type().name()
@@ -160,11 +160,11 @@ def create_targets(circuit_config,
             tag = random.randint(1, number_tags)
 
             # Mean radius of the soma
-            soma_mean_radius = morphologies[i].soma().mean_radius()
+            soma_mean_radius = morphologies[i_neuron].soma().mean_radius()
 
             # Minimum and maximum radii of the soma
             soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
-                morphologies[i].soma().profile_points())
+                morphologies[i_neuron].soma().profile_points())
 
             # Morphology label
             morphology_label = neuron.morphology_label()
