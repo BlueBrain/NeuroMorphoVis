@@ -1,8 +1,3 @@
-"""
-@ create_layer_targets.py:
-    Creates targets based on layer
-"""
-
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2017, Blue Brain Project / EPFL"
 __version__     = "0.1.0"
@@ -11,19 +6,11 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-# System imports
-import os, sys, subprocess
-
-
-# NeuroRender imports
-
-# imports
+# Imports
 import argparse
 import random
 import bbp
 import brain
-import morphology_utils
-
 import core.utilities
 
 
@@ -162,6 +149,7 @@ def create_targets(circuit_config,
         # Column
         column = neuron.column()
 
+        # Construct the neuron structure
         neuron = core.Neuron(
             gid=gid,
             morphology_type=morphology_type,
@@ -179,6 +167,7 @@ def create_targets(circuit_config,
         target_data.append(neuron)
 
     # Sample the target randomly
+    print('* Sampling target randomly')
     filtered_target_data = random.sample(set(target_data),
         int((len(target_data) * percent / 100.0)))
 
@@ -190,10 +179,12 @@ def create_targets(circuit_config,
     core.write_neurorender_config(
         filtered_target_data, config_file_name=target_name, output_path=output)
 
+    # Write the target file
     print('* Writing target file')
     core.write_target_file(
         filtered_target_data, target_name=target_name,
         target_file_name=target_name, output_path=output)
+
 
 ################################################################################
 # @run

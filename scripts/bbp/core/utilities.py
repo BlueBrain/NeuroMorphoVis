@@ -13,16 +13,19 @@ __status__      = "Production"
 # imports
 import math
 
+
 ################################################################################
 # @get_minimum_and_maximum_radii
 ################################################################################
 def get_minimum_and_maximum_radii(profile_points):
-    """
-    Get the minimum and maximum radii for a cell based on their profile points.
+    """Get the minimum and maximum radii for a cell based on their profile points.
 
-    :param profile_points: Morphology soma profile points.
-    :return: Minimum and maximum radii of the neuron.
+    :param profile_points:
+        Morphology soma profile points.
+    :return:
+        Minimum and maximum radii of the neuron.
     """
+
     min_radius = 1e32
     max_radius = -1e32
     for profile_point in profile_points:
