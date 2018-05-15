@@ -37,28 +37,28 @@ class Neuron:
     ################################################################################################
     def __init__(self,
                  gid,
-                 mtype,
-                 mlabel,
-                 layer,
                  position,
                  orientation,
-                 tag,
-                 soma_min_radius,
-                 soma_mean_radius,
-                 soma_max_radius,
-                 membrane_mesh,
-                 membrane_material,
-                 nucleus_mesh,
-                 nucleus_material,
-                 spines_mesh,
-                 spines_material):
+                 morphology_type=None,
+                 morphology_label=None,
+                 layer=None,
+                 tag=None,
+                 soma_min_radius=None,
+                 soma_mean_radius=None,
+                 soma_max_radius=None,
+                 membrane_mesh=None,
+                 membrane_material=None,
+                 nucleus_mesh=None,
+                 nucleus_material=None,
+                 spines_mesh=None,
+                 spines_material=None):
         """Constructor
 
         :param gid:
              Neuron GID.
-        :param mtype:
+        :param morphology_type:
             Neuron morphology type.
-        :param mlabel:
+        :param morphology_label:
             Neuron morphology label.
         :param layer:
             Neuron layer.
@@ -95,10 +95,10 @@ class Neuron:
         self.layer = layer
 
         # Neuron morphology type
-        self.mtype = mtype
+        self.morphology_type = morphology_type
 
         # Neuron morphology label
-        self.mlabel = mlabel
+        self.morphology_label = morphology_label
 
         # Neuron tag
         self.tag = tag
@@ -144,8 +144,8 @@ class Neuron:
         """
         print('* Neuron: \n')
         print('\t GID : [%s] ' % str(self.gid))
-        print('\t Morphology type : [%s] ' % str(self.mtype))
-        print('\t Morphology label : [%s] ' % str(self.mlabel))
+        print('\t Morphology type : [%s] ' % str(self.morphology_type))
+        print('\t Morphology label : [%s] ' % str(self.morphology_label))
         print('\t Position : [%s] ' % str(self.position))
         print('\t Orientation : [%s] ' % str(self.orientation))
         print('\t Tag : [%s] ' % str(self.tag))

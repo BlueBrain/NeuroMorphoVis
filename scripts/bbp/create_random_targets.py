@@ -72,7 +72,7 @@ def create_targets(circuit_config,
                    percent,
                    output,
                    number_tags):
-    """Create the speficied targets.
+    """Create the specified targets.
 
     :param circuit_config:
         Circuit configuration.
@@ -148,7 +148,13 @@ def create_targets(circuit_config,
         # Column
         column = neuron.column()
 
-        neuron = core.Neuron(gid=,mtype=,mlabel=,layer=,position=,orientation=)
+        neuron = core.Neuron(
+            gid=gid,
+            morphology_type=morphology_type,
+            morphology_label=morphology_label,
+            layer=layer,
+            position=position,
+            orientation=0)
 
         # Compose the neuron data
         neuron_data = '%s %s %s %s %s %s %s %s %s %s %s %s' % \
@@ -172,53 +178,11 @@ def create_targets(circuit_config,
     filtered_target_data = random.sample(set(target_data),
         int((len(target_data) * percent / 100.0)))
 
+    config_file_name = 'random'
+
     # Write the NeuroRender file
-    core.write_neurorender_config(filtered_target_data)
-
-
-
-
-
-
-
-
-
-
-    for i in range(1, ntags + 1):
-        voxelization_target_output = \
-            open("%s/Tag%d_%s-%dp.list" %
-                 (output, i, target,int(percent)), 'w')
-        default_target_output = open("%s/Tag%d_%s-%dp.target" %
-                                     (output, i, target, int(percent)), 'w')
-        default_target_output.write(
-            "Target Cell Layer%d_%s-%dp \n" % (i, target, int(percent)))
-        default_target_output.write("{\n")
-        gids_string = ''
-        for data in all_layers_data:
-            if i == data.split(' ')[1]:
-                gids_string += "a%d " % int(data.split(' ')[0])
-                voxelization_target_output.write("%s\n" % data)
-        default_target_output.write(gids_string)
-        default_target_output.write("\n}\n")
-        voxelization_target_output.close()
-        default_target_output.close()
-    voxelization_target_output = open("%s/Random_%s-%dp.list" %
-                                      (output, target, int(percent)), 'w')
-
-    default_target_output = open(
-        "%s/Random_%s-%dp.target" % (output, target, int(percent)), 'w')
-    default_target_output.write(
-        "Target Cell Random_%s-%dp \n" % (target, int(percent)))
-    default_target_output.write("{\n")
-    gids_string = ''
-    for data in all_layers_data:
-        gids_string += "a%d " % int(data.split(' ')[0])
-        voxelization_target_output.write("%s\n" % data)
-    default_target_output.write(gids_string)
-    default_target_output.write("\n}\n")
-    voxelization_target_output.close()
-    default_target_output.close()
-
+    core.write_neurorender_config(
+        filtered_target_data, config_file_name=config_file_name, output_path=output)
 
 ################################################################################
 # @run
