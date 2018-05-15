@@ -15,6 +15,24 @@ import shutil
 
 
 ################################################################################
+# @create_directory
+################################################################################
+def create_directory(path):
+    """Create a directory if it doesn't exist.
+
+    :param path:
+        Path where the folder will be created.
+    :return:
+    """
+
+    if not os.path.exists(path):
+        try:
+            os.mkdir(path)
+        except:
+            print('ERROR: cannot create directory %s' % path)
+
+
+################################################################################
 # @clean_and_create_directory
 ################################################################################
 def clean_and_create_directory(path):

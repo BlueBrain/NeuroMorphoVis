@@ -198,6 +198,9 @@ def create_targets(circuit_config,
     # Construct the target name
     target_name = '%s_%s_%fp_random' % (mtype, target, float(percent))
 
+    # Creating the output directory
+    core.writer.create_directory(output)
+
     # Write the NeuroRender configuration file
     print('* Writing rendering config')
     core.write_neurorender_config(
