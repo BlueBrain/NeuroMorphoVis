@@ -48,8 +48,7 @@ def parse_command_line_arguments():
 # @get_axon_sections
 ################################################################################
 def get_axon_sections(morphology):
-
-	return morphology.sections({brain.neuron.SectionType.axon}) 
+    return morphology.sections({brain.neuron.SectionType.axon})
 
 
 ################################################################################

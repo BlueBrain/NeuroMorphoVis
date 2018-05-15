@@ -198,3 +198,64 @@ def write_voxelization_target_file(data_list, file_name, output_path):
 
     # close the file
     target_file.close()
+
+
+
+###############################################################################
+# @write_neurorender_config
+###############################################################################
+def write_neurorender_config(target,
+                             config_file_name,
+                             output_path):
+    """Writes a configuration file for NeuroRender.
+
+    :param target:
+        Created target.
+    :param config_file_name:
+        Configuration file name.
+    :param output_path:
+        The path where the configuration file will be written.
+    """
+
+    # The path to the output configuration file
+    output_file = '%s/%s.list' % (output_path, config_file_name)
+
+    # Create the configuration file and open it for writing
+    neurorender_config_file = open(output_file, 'w')
+
+    # New line
+    nl = '\n'
+
+    # Tab as spaces to make it clear to read the file manually just in case if we need it
+    tab = '    '
+
+    # Write data to file
+    data_string = ''
+    for neuron in target:
+
+        # Add the neuron data to the output string
+        # Header
+        data_string += 'NEURON' + nl
+
+        # Neuron GID
+        data_string += tab + 'GID: ' + str(neuron.gid) + nl
+
+        # Neuron morphology type
+        data_string += tab + 'MTYPE: '+ str(neuron.mtype) + nl
+
+        # Neuron morphology label
+        data_string += tab + 'MLABEL: ' + str(neuron.mlabel) + nl
+
+        # Neuron X position
+        data_string += tab + 'POSITION: ' + str(neuron.position[0]) + nl
+
+
+        # We are all set for this neuron, add a new line to start a new neuron
+        data_string += nl
+
+    # Write the string
+    neurorender_config_file.write(data_string)
+
+    # Close the file
+    neurorender_config_file.close()
+

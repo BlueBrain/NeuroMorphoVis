@@ -10,6 +10,13 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
+# System imports
+import os, sys, subprocess
+
+
+# NeuroRender imports
+import neuron
 # imports
 import argparse
 import random
@@ -17,36 +24,41 @@ import bbp
 import brain
 import morphology_utils
 
+import core.utilities
+
 
 ################################################################################
 # @parse_command_line_arguments
 ################################################################################
 def parse_command_line_arguments():
-    """
-    Parses the input arguments to the script.
+    """Parse the input command line arguments and return a list of them.
+
     :return:
+        A list with all the parsed arguments.
     """
-    # add all the options.
+
+    # Add all the options.
     parser = argparse.ArgumentParser()
-    help = 'circuit config file'
+
+    help = 'BBP circuit configuration file'
     parser.add_argument('--circuit-config',
-        action='store', dest='circuit_config', help=help)
+                        action='store', dest='circuit_config', help=help)
 
-    help = 'cell target, default mc2_Column'
+    help = 'Cell target, default [mc2_Column]'
     parser.add_argument('--target',
-        action='store', default='mc2_Column', dest='target', help=help)
+                        action='store', default='mc2_Column', dest='target', help=help)
 
-    help = 'percentage of the target'
+    help = 'Percentage of the target, default 100%'
     parser.add_argument('--percent',
-        action='store', default=100.0, dest='percent', help=help)
+                        action='store', default=100.0, dest='percent', help=help)
 
-    help = 'number of tags'
+    help = 'Number of tags, default 1'
     parser.add_argument('--ntags',
-        action='store', default=2, dest='number_tags', help=help)
+                        action='store', default=1, dest='number_tags', help=help)
 
-    help = 'output path'
+    help = 'The output path'
     parser.add_argument('--output',
-        action='store', default='.', dest='output', help=help)
+                        action='store', default='.', dest='output', help=help)
 
     # parse the arguments, and return a list of them.
     return parser.parse_args()
@@ -55,77 +67,93 @@ def parse_command_line_arguments():
 ################################################################################
 # @create_targets
 ################################################################################
-def create_targets(circuit_config, target, percent, output, ntags):
-    """
-    Creates the targets.
+def create_targets(circuit_config,
+                   target,
+                   percent,
+                   output,
+                   number_tags):
+    """Create the speficied targets.
 
-    :param circuit_config: Circuit configuration.
-    :param target: Input target.
-    :param percent: Percentage.
-    :param output: Output path.
+    :param circuit_config:
+        Circuit configuration.
+    :param target:
+        Input target.
+    :param percent:
+        Percentage.
+    :param output:
+        Output path.
+    :param number_tags:
+        The number of tags.
     :return:
+        A Neuron list of all the cells created for the specified target.
     """
 
-    # use the blue config to open a bbp experiment.
+    # Use the BBP circuit configuration to open a bbp experiment
     experiment = bbp.Experiment()
     experiment.open(circuit_config)
 
-    # circuit
+    # Circuit
     micro_circuit = experiment.microcircuit()
 
-    # cell target
+    # Cell target
     cell_target = experiment.cell_target(target)
 
-    # load neurons only, since it will take forever to load the morphologies.
+    # Load neurons only, since it will take forever to load the morphologies
     print('Loading the circuit from the BBPSDK')
     load_flags = bbp.Loading_Flags
     micro_circuit.load(cell_target, load_flags.NEURONS)
 
-    # get the bbpsdk data
+    # Get the BBP data
     neurons = micro_circuit.neurons()
 
+    # Load the circuit from Brain
     print('Loading the circuit from Brain')
     circuit = brain.Circuit(circuit_config)
 
-    # get all the gids of the target
+    # Get all the gids of the target
     gids = circuit.gids(target)
 
-    # load the morphologies with brain (faster than BBPSDK)
+    # Load the morphologies with brain (faster than BBPSDK)
     circuit.load_morphologies(gids, circuit.Coordinates.local)
     uris = circuit.morphology_uris(gids)[0]
     brain.neuron.Morphology(uris)
     morphologies = circuit.load_morphologies(gids, circuit.Coordinates.local)
 
-    # filtering
-    target_data = []
+    # A list that will keep the data of all the neurons from the target
+    target_data = list()
+
+    # Filtering
+    print('Filtering circuit')
     for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
-        # position
+        # Position
         position = neuron.position()
 
-        # layer
+        # Layer
         layer = neuron.layer()
 
-        # mean radius
+        # Mean radius
         mean_radius = morphologies[i].soma().mean_radius()
 
-        # min and max radii
-        min_radius, max_radius = morphology_utils.get_minimum_and_maximum_radii(
+        # Minimum and maximum radii
+        min_radius, max_radius = core.utilities.get_minimum_and_maximum_radii(
             morphologies[i].soma().profile_points())
 
-        # morphology type
+        # Morphology type
         morphology_type = neuron.morphology_type().name()
 
-        # morphology label
+        # Morphology label
         morphology_label = neuron.morphology_label()
 
-        # column
+        # Column
         column = neuron.column()
 
-        # compose the neuron data
+        neuron = core.Neuron(gid=,mtype=,mlabel=,layer=,position=,orientation=)
+
+        # Compose the neuron data
         neuron_data = '%s %s %s %s %s %s %s %s %s %s %s %s' % \
                       (str(gid),
-                       str(random.randint(1, ntags)),
+                       str(random.randint(1, number_tags)),
                        str(position.x()),
                        str(position.y()),
                        str(position.z()),
@@ -138,11 +166,23 @@ def create_targets(circuit_config, target, percent, output, ntags):
                        str(layer))
 
         # add the neuron data to the list
-        target_data.append(neuron_data)
+        target_data.append(neuron)
 
-    # write all layers data
-    all_layers_data = random.sample(set(target_data),
+    # Sample the target randomly
+    filtered_target_data = random.sample(set(target_data),
         int((len(target_data) * percent / 100.0)))
+
+    # Write the NeuroRender file
+    core.write_neurorender_config(filtered_target_data)
+
+
+
+
+
+
+
+
+
 
     for i in range(1, ntags + 1):
         voxelization_target_output = \
@@ -184,9 +224,7 @@ def create_targets(circuit_config, target, percent, output, ntags):
 # @run
 ################################################################################
 def run():
-    """
-    Runs the script.
-    :return:
+    """Run the script.
     """
 
     # parse the arguments
@@ -194,8 +232,10 @@ def run():
 
     # create targets
     create_targets(argument_list.circuit_config,
-        argument_list.target, float(argument_list.percent),
-        argument_list.output, int(argument_list.number_tags))
+                   argument_list.target,
+                   float(argument_list.percent),
+                   argument_list.output,
+                   int(argument_list.number_tags))
 
 
 ################################################################################
