@@ -177,7 +177,7 @@ def create_targets(circuit_config,
             soma_mean_radius=soma_mean_radius,
             soma_max_radius=soma_max_radius)
 
-        # add the neuron data to the list
+        # Add the neuron data to the list
         target_data.append(neuron)
 
     # Sample the target randomly

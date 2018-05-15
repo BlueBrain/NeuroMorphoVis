@@ -181,13 +181,13 @@ def create_targets(circuit_config,
                 soma_mean_radius=soma_mean_radius,
                 soma_max_radius=soma_max_radius)
 
-            # add the neuron data to the list
+            # Add the neuron data to the list
             target_data.append(neuron)
 
     # Sample the target randomly
     print('* Sampling target randomly')
     filtered_target_data = random.sample(set(target_data),
-        int((len(target_data) * percent / 100.0)))
+                                         int((len(target_data) * percent / 100.0)))
 
     # Construct the target name
     target_name = '%s_mtypes_%fp_random' % (target, float(percent))
