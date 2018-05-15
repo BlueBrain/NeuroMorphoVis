@@ -126,6 +126,9 @@ def create_targets(circuit_config,
     print('* Filtering circuit')
     for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
+        # Tag
+        tag = random.randint(1, ntags)
+
         # Position
         position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
 
@@ -162,6 +165,7 @@ def create_targets(circuit_config,
         # Column
         column = neuron.column()
 
+        # Construct the neuron object
         neuron = core.Neuron(
             gid=gid,
             morphology_type=morphology_type,
@@ -171,6 +175,7 @@ def create_targets(circuit_config,
             transform=transform,
             layer=layer,
             column=column,
+            tag=tag,
             soma_min_radius=soma_min_radius,
             soma_mean_radius=soma_mean_radius,
             soma_max_radius=soma_max_radius)
