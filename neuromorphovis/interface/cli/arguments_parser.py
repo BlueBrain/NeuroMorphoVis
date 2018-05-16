@@ -26,10 +26,12 @@ __status__      = "Production"
 
 # System imports
 import argparse, os, sys
+from argparse import RawTextHelpFormatter
+
 
 # Internal imports
 sys.path.append("%s/" % os.path.dirname(os.path.realpath(__file__)))
-from .args import *
+from args import *
 
 
 ####################################################################################################
@@ -46,7 +48,9 @@ def parse_command_line_arguments():
     """
 
     # Create an argument parser, and then add the options one by one
-    parser = argparse.ArgumentParser()
+    app_help = 'NeuroMorphoVis: a collaborative framework for analysis and visualization of ' \
+               'morphological skeletons reconstructed from microscopy stacks'
+    parser = argparse.ArgumentParser(description=app_help, formatter_class=RawTextHelpFormatter)
 
     ################################################################################################
     # Blender arguments
@@ -61,7 +65,9 @@ def parse_command_line_arguments():
     # Input arguments
     ################################################################################################
     # Input source (gid, target, morphology file, or a directory containing a group of morphologies)
-    arg_help = 'Input: (gid/target/file/directory)'
+    arg_options = ['gid', 'target', 'file', 'directory']
+    arg_help = 'Input morphology sources. \n'\
+               'Options: %s' % arg_options
     parser.add_argument(Args.INPUT_SOURCE,
                         action='store', default='gid',
                         help=arg_help)
@@ -203,22 +209,25 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Section radii (default, scaled or fixed)
-    arg_help = 'The radii of the morphological sections (default/scaled/fixed), by default ' \
-               'set to default.'
+    arg_options = ['(default)', 'scaled', 'fixed']
+    arg_help = 'The radii of the morphological sections.\n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.SECTIONS_RADII,
                         action='store', default='default',
                         help=arg_help)
 
     # Section radii scale factor
-    arg_help = 'A scale factor used to scale the radii of the morphology if --sections-radii is ' \
-               'set to \'scaled\', by default 1.0.'
+    arg_help = 'A scale factor used to scale the radii of the morphology.\n' \
+               'Valid only if --sections-radii = scaled.\n' \
+               'Default is 1.0'
     parser.add_argument(Args.RADII_SCALE_FACTOR,
                         action='store', type=float, default=1.0,
                         help=arg_help)
 
     # Section fixed radius (to enlarge the thin branches)
-    arg_help = 'A fixed radius for all the sections in the morphology for visualization ' \
-               'purposes. This option is valid only if --sections-radii is set to \'fixed\'.'
+    arg_help = 'A fixed radius for all morphology sections.\n'\
+               'Valid only if --sections-radii = fixed.\n' \
+               'Default is 1.0'
     parser.add_argument(Args.FIXED_SECTION_RADIUS,
                         action='store', type=float, default=1.0,
                         help=arg_help)

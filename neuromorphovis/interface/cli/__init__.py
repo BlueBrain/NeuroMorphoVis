@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+from .args import *
 from .arguments_parser import *
 from .cli_interface import *
 from .options_parser import *

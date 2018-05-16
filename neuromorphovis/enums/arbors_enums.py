@@ -24,6 +24,9 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+import neuromorphovis as nmv
+import neuromorphovis.interface
+
 
 ####################################################################################################
 # @Soma
@@ -59,3 +62,21 @@ class Arbors:
 
         # Scale the radii of the arbors using a constant factor
         SCALED = 'ARBORS_RADII_SCALED'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Fixed radii arbors
+            if argument == 'fixed':
+                return Arbors.Radii.FIXED
+
+            # Scaled radii
+            elif argument == 'scaled':
+                return Arbors.Radii.SCALED
+
+            # By default, use the original skeleton radii as specified in the morphology
+            else:
+                return Arbors.Radii.AS_SPECIFIED
