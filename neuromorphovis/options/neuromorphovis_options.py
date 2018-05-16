@@ -107,6 +107,10 @@ class NeuroMorphoVisOptions:
         # Morphology reconstruction flag
         self.morphology.reconstruct_morphology = arguments.reconstruct_morphology_skeleton
 
+        # Morphology skeleton
+        self.morphology.skeleton = nmv.enums.Skeletonization.Skeleton.get_enum(
+            arguments.morphology_skeleton)
+
         # Morphology reconstruction method
         self.morphology.reconstruction_method = nmv.enums.Skeletonization.Method.get_enum(
            argument=arguments.morphology_reconstruction_algorithm)
@@ -296,10 +300,15 @@ class NeuroMorphoVisOptions:
         self.mesh.meshing_technique = nmv.enums.Meshing.Technique.get_enum(
             arguments.meshing_algorithm)
 
-        # Spines
-        self.mesh.build_spines = arguments.build_spines
-        if arguments.build_spines:
-            self.mesh.spine_objects = nmv.enums.Meshing.Spines.DISCONNECTED
+        # Spines (source)
+        self.mesh.spines = nmv.enums.Meshing.Spines.Source.get_enum(arguments.spines)
+
+        # Spine quality
+        self.mesh.spines_mesh_quality = \
+            nmv.enums.Meshing.Spines.Quality.get_enum(arguments.spines_quality)
+
+        # Random spines percentage
+        self.mesh.random_spines_percentage = arguments.random_spines_percentage
 
         # Edges of the meshes, either hard or smooth
         self.mesh.edges = nmv.enums.Meshing.Edges.get_enum(arguments.edges)

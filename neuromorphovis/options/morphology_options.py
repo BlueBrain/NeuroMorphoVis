@@ -47,6 +47,9 @@ class MorphologyOptions:
         # This flag must be set to reconstruct the morphology
         self.reconstruct_morphology = False
 
+        # Skeletonization algorithm, ORIGINAL by default
+        self.skeleton = nmv.enums.Skeletonization.Skeleton.ORIGINAL
+
         # The GID of a given neuron in a given circuit using a blue config
         self.gid = None
 

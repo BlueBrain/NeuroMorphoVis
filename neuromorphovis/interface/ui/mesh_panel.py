@@ -505,7 +505,7 @@ class MeshPanel(bpy.types.Panel):
                 spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
 
                 # Pass options from UI to system
-                nmv.interface.ui_options.mesh.spines_random_percentage = \
+                nmv.interface.ui_options.mesh.random_spines_percentage = \
                     context.scene.RandomSpinesPercentage
 
     ################################################################################################

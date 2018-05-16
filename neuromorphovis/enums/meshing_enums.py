@@ -54,7 +54,7 @@ class Meshing:
         # Create a zigzagged morphology skeleton
         ZIGZAG = 'MESHING_SKELETON_ZIGZAG'
 
-        # Create a zigzagged and ta[ered morphology skeleton
+        # Create a zigzagged and tapered morphology skeleton
         TAPERED_ZIGZAG = 'MESHING_SKELETON_TAPERED_ZIGZAG'
 
         ############################################################################################
@@ -466,6 +466,24 @@ class Meshing:
             def __init__(self):
                 pass
 
+            ########################################################################################
+            # @get_enum
+            ########################################################################################
+            @staticmethod
+            def get_enum(argument):
+
+                # Ignore spines
+                if argument == 'random':
+                    return Meshing.Spines.Source.RANDOM
+
+                # Circuit spines
+                elif argument == 'circuit':
+                    return Meshing.Spines.Source.CIRCUIT
+
+                # By default, ignore loading the spines
+                else:
+                    return Meshing.Spines.Source.IGNORE
+
         ############################################################################################
         # @__init__
         ############################################################################################
@@ -484,6 +502,20 @@ class Meshing:
             ########################################################################################
             def __init__(self):
                 pass
+
+            ########################################################################################
+            # @get_enum
+            ########################################################################################
+            @staticmethod
+            def get_enum(argument):
+
+                # High quality
+                if argument == 'hq':
+                    return Meshing.Spines.Quality.HQ
+
+                # By default, use low quality spines
+                else:
+                    return Meshing.Spines.Quality.LQ
 
     ################################################################################################
     # @Nucleus

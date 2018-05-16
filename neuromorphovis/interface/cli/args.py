@@ -89,6 +89,9 @@ class Args:
     # Morphology reconstruction algorithm
     MORPHOLOGY_RECONSTRUCTION_ALGORITHM = '--morphology-reconstruction-algorithm'
 
+    # Morphology skeleton
+    MORPHOLOGY_SKELETON = '--morphology-skeleton'
+
     # Soma representation
     SOMA_REPRESENTATION = '--soma-representation'
 
@@ -101,8 +104,14 @@ class Args:
     # Ignore basal dendrites
     IGNORE_BASAL_DENDRITES = '--ignore-basal-dendrites'
 
-    # Build spines
-    BUILD_SPINES = '--build-spines'
+    # Build spines (ignore, circuit or random)
+    SPINES = '--spines'
+
+    # Random spines percentage
+    RANDOM_SPINES_PERCENTAGE = '--random-spines-percentage'
+
+    # Spines quality (HQ, LQ)
+    SPINES_QUALITY = '--spines-quality'
 
     # Axon branching order
     AXON_BRANCHING_ORDER = '--axon-branching-order'

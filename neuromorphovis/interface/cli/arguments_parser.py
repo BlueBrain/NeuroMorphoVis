@@ -29,8 +29,7 @@ import argparse, os, sys
 
 # Internal imports
 sys.path.append("%s/" % os.path.dirname(os.path.realpath(__file__)))
-import args
-from args import *
+from .args import *
 
 
 ####################################################################################################
@@ -132,9 +131,15 @@ def parse_command_line_arguments():
 
     # Morphology reconstruction algorithm
     arg_help = 'Morphology reconstruction algorithm, by default \'connected-sections\''
-    parser.add_argument(Args.MORPHOLOGY_RECONSTRUCTION_ALGORITHM,
-                        action='store', default='connected-sections',
+    parser.add_argument(Args.MORPHOLOGY_SKELETON,
+                        action='store', default='original',
                         help=arg_help)
+
+    # Morphology skeleton
+    arg_help = 'Morphology skeleton: original, tapered, zigzag or tapered-zigza, by default ' \
+               '\'original\''
+    parser.add_argument(Args.MORPHOLOGY_RECONSTRUCTION_ALGORITHM, action='store',
+        default='connected-sections', help=arg_help)
 
     # Soma building using a specific approach
     arg_help = 'Soma representation (ignore/sphere/profile), profile by default.'
@@ -162,15 +167,27 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Build spines
-    arg_help = 'Build the spines. This option is valid only for a BBP circuit.'
-    parser.add_argument(Args.BUILD_SPINES,
-                        action='store_true', default=False,
+    arg_help = 'Build the spines (ignore, circuit or random), by default \'ignore\''
+    parser.add_argument(Args.SPINES,
+                        action='store', default='ignore',
+                        help=arg_help)
+
+    # Spines quality
+    arg_help = 'The quality of the spine meshes (hq or lq), by default \'lq\''
+    parser.add_argument(Args.SPINES_QUALITY,
+                        action='store', default='lq',
+                        help=arg_help)
+
+    # Random spines percentage
+    arg_help = 'The percentage of the spines that are added randomly (0-100), by default 50.'
+    parser.add_argument(Args.RANDOM_SPINES_PERCENTAGE,
+                        action='store', type=float, default=50.0,
                         help=arg_help)
 
     # Axon branching branching order
-    arg_help = 'Maximum branching order for the axon [1, infinity], by default infinity.'
+    arg_help = 'Maximum branching order for the axon [1, infinity], by default 5.'
     parser.add_argument(Args.AXON_BRANCHING_ORDER,
-                        action='store', type=int, default=10000000000,
+                        action='store', type=int, default=5,
                         help=arg_help)
 
     # Basal dendrites branching order

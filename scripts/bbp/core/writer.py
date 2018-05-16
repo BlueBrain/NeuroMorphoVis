@@ -159,7 +159,7 @@ def write_neurorender_config(target,
     """
 
     # The path to the output configuration file
-    output_file = '%s/%s.list' % (output_path, config_file_name)
+    output_file = '%s/%s.config' % (output_path, config_file_name)
 
     # Create the configuration file and open it for writing
     neurorender_config_file = open(output_file, 'w')
