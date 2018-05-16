@@ -72,7 +72,7 @@ class Args:
     OUTPUT_DIRECTORY = '--output-directory'
 
     ################################################################################################
-    # Soma arguments
+    # Soma reconstruction arguments
     ################################################################################################
     # Soma stiffness
     SOMA_STIFFNESS = '--soma-stiffness'
@@ -89,10 +89,10 @@ class Args:
     # Morphology reconstruction algorithm
     MORPHOLOGY_RECONSTRUCTION_ALGORITHM = '--morphology-reconstruction-algorithm'
 
-    # Morphology skeleton
+    # Morphology skeleton style
     MORPHOLOGY_SKELETON = '--morphology-skeleton'
 
-    # Soma representation
+    # Soma representation in the morphology
     SOMA_REPRESENTATION = '--soma-representation'
 
     # Ignore axon
@@ -103,18 +103,6 @@ class Args:
 
     # Ignore basal dendrites
     IGNORE_BASAL_DENDRITES = '--ignore-basal-dendrites'
-
-    # Build spines (ignore, circuit or random)
-    SPINES = '--spines'
-
-    # Random spines percentage
-    RANDOM_SPINES_PERCENTAGE = '--random-spines-percentage'
-
-    # Spines quality (HQ, LQ)
-    SPINES_QUALITY = '--spines-quality'
-
-    # Nucleus
-    ADD_NUCLEUS = '--add-nucleus'
 
     # Axon branching order
     AXON_BRANCHING_ORDER = '--axon-branching-order'
@@ -134,7 +122,7 @@ class Args:
     # Radii fixed section
     FIXED_SECTION_RADIUS = '--fixed-section-radius'
 
-    # Morphology bevel sides
+    # Morphology bevel object sides
     MORPHOLOGY_BEVEL_SIDES = '--bevel-sides'
 
     ################################################################################################
@@ -158,7 +146,7 @@ class Args:
     # Nucleus colors
     NUCLEUS_COLOR = '--nucleus-color'
 
-    # Articulations color
+    # Articulations color (for articulated sections method)
     ARTICULATIONS_COLOR = '--articulation-color'
 
     # Shader
@@ -172,6 +160,9 @@ class Args:
 
     # Reconstruct neuron mesh
     RECONSTRUCT_NEURON_MESH = '--reconstruct-neuron-mesh'
+
+    # Spines meshes (ignore, circuit or random)
+    SPINES = '--spines'
 
     # Neuron meshing algorithm
     NEURON_MESHING_ALGORITHM = '--meshing-algorithm'
@@ -190,6 +181,18 @@ class Args:
 
     # Export the meshes to the global coordinates
     MESH_GLOBAL_COORDINATES = '--global-coordinates'
+
+    # Random spines percentage
+    RANDOM_SPINES_PERCENTAGE = '--random-spines-percentage'
+
+    # Spines meshes quality (HQ, LQ)
+    SPINES_QUALITY = '--spines-quality'
+
+    # Nucleus
+    ADD_NUCLEUS = '--add-nucleus'
+
+    # Nucleus mesh quality (HQ, LQ)
+    NUCLEUS_QUALITY = '--nucleus-quality'
 
     ################################################################################################
     # Geometry export arguments
@@ -271,6 +274,7 @@ class Args:
 
     # The resolution of full-view (mid-shot/wide-shot) images
     FULL_VIEW_RESOLUTION = '--full-view-resolution'
+    FULL_VIEW_RESOLUTION = '--full-view-resolution'
 
     # The resolution of close-up view images
     CLOSE_UP_RESOLUTION = '--close-up-resolution'
@@ -289,3 +293,9 @@ class Args:
 
     # Job granularity
     JOB_GRANULARITY = '--job-granularity'
+
+    ################################################################################################
+    # Analysis arguments
+    ################################################################################################
+    # Analyze morphology
+    ANALYZE_MORPHOLOGY = '--analyze-morphology'

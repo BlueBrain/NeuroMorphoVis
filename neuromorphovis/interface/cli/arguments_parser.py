@@ -48,15 +48,16 @@ def parse_command_line_arguments():
     """
 
     # Create an argument parser, and then add the options one by one
-    app_help = 'NeuroMorphoVis: a collaborative framework for analysis and visualization of ' \
-               'morphological skeletons reconstructed from microscopy stacks'
+    app_help = 'NeuroMorphoVis: a collaborative framework for analysis and visualization of \n' \
+               '\tmorphological skeletons reconstructed from microscopy stacks'
     parser = argparse.ArgumentParser(description=app_help, formatter_class=RawTextHelpFormatter)
 
     ################################################################################################
     # Blender arguments
     ################################################################################################
     # Blender executable path, by default we will use the one installed on the system
-    arg_help = 'Blender executable'
+    arg_help = 'Blender executable \n' \
+               'Default: blender, system installed, sudo apt-get install blender'
     parser.add_argument(Args.BLENDER_EXECUTABLE,
                         action='store', default='blender',
                         help=arg_help)
@@ -85,19 +86,19 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Cell GID, requires a circuit configuration
-    arg_help = 'Cell GID'
+    arg_help = 'Cell GID (requires BBP circuit).'
     parser.add_argument(Args.GID,
                         action='store', default=None,
                         help=arg_help)
 
     # Cell target
-    arg_help = 'Cell target in target file'
+    arg_help = 'Cell target in target file (requires BBP circuit).'
     parser.add_argument(Args.TARGET,
                         action='store', default=None,
                         help=arg_help)
 
     # Circuit configuration
-    arg_help = 'Circuit configuration'
+    arg_help = 'BBP circuit configuration'
     parser.add_argument(Args.BLUE_CONFIG,
                         action='store', default=None,
                         help=arg_help)
@@ -115,22 +116,24 @@ def parse_command_line_arguments():
     # Soma arguments
     ################################################################################################
     # Soma stiffness
-    arg_help = 'Soma surface stiffness (0.001 - 0.999), by default 0.25.'
+    arg_help = 'Soma surface stiffness (0.001 - 0.999). \n'\
+               'Default 0.25.'
     parser.add_argument(Args.SOMA_STIFFNESS,
                         action='store', type=float, default=0.25,
                         help=arg_help)
 
     # Soma subdivision level
-    arg_help = 'Soma surface subdivision level, between (3-7), by default 4.'
+    arg_help = 'Soma surface subdivision level, between (3-7). \n' \
+               'Default 5.'
     parser.add_argument(Args.SOMA_SUBDIVISION_LEVEL,
-                        action='store', type=int, default=4,
+                        action='store', type=int, default=5,
                         help=arg_help)
 
     ################################################################################################
     # Morphology arguments
     ################################################################################################
     # Reconstruct the morphology of entire neuron
-    arg_help = 'Reconstruct the morphology skeleton for visualization or analysis, by default False'
+    arg_help = 'Reconstruct morphology skeleton for visualization or analysis.'
     parser.add_argument(Args.RECONSTRUCT_MORPHOLOGY_SKELETON,
                         action='store_true', default=False,
                         help=arg_help)
@@ -239,8 +242,8 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Morphology bevel object sides (sets the quality of the morphology)
-    arg_help = 'The number of sides of the bevel object used to reconstruct the morphology 4-64, ' \
-               'by default 16.'
+    arg_help = 'Number of sides of the bevel object used to reconstruct the morphology. \n' \
+               'Default 16 (4: low quality - 64: high quality)'
     parser.add_argument(Args.MORPHOLOGY_BEVEL_SIDES,
                         action='store', type=int, default=16,
                         help=arg_help)
@@ -257,31 +260,31 @@ def parse_command_line_arguments():
     # Axon color
     arg_help = 'Axon color'
     parser.add_argument(Args.AXON_COLOR,
-                        action='store', default='0.0_0.0_1.0',
+                        action='store', default='0.0_0.0_0.0',
                         help=arg_help)
 
     # Basal dendrites color
     arg_help = 'Basal dendrites color'
     parser.add_argument(Args.BASAL_DENDRITES_COLOR,
-                        action='store', default='0.0_1.0_0.0',
+                        action='store', default='0.0_0.0_0.0',
                         help=arg_help)
 
     # Basal dendrites color
     arg_help = 'Apical dendrite color'
     parser.add_argument(Args.APICAL_DENDRITES_COLOR,
-                        action='store', default='1.0_0.0_0.0',
+                        action='store', default='0.0_0.0_0.0',
                         help=arg_help)
 
     # Spines color
     arg_help = 'Spines color'
     parser.add_argument(Args.SPINES_COLOR,
-                        action='store', default='1.0_1.0_0.0',
+                        action='store', default='0.0_0.0_0.0',
                         help=arg_help)
 
     # Nuclues color
     arg_help = 'Nucleus color'
     parser.add_argument(Args.NUCLEUS_COLOR,
-                        action='store', default='1.0_1.0_0.0',
+                        action='store', default='1.0_1.0_1.0',
                         help=arg_help)
 
     # Articulation color, in case of using articulated sections method
@@ -301,52 +304,60 @@ def parse_command_line_arguments():
     # Meshing arguments
     ################################################################################################
     # Reconstruct the mesh of the soma only
-    arg_help = 'Reconstruct the mesh of the soma only, by default False.'
+    arg_help = 'Reconstruct the mesh of the soma only.'
     parser.add_argument(Args.RECONSTRUCT_SOMA_MESH,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Reconstruct the mesh of entire neuron
-    arg_help = 'Reconstruct the mesh of the entire neuron, by default False.'
+    arg_help = 'Reconstruct the mesh of the entire neuron.'
     parser.add_argument(Args.RECONSTRUCT_NEURON_MESH,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Meshing algorithm
-    arg_help = 'Meshing algorithm (piecewise-watertight/union/bridging), by default ' \
-               'piecewise-watertight.'
+    arg_options = ['(piecewise-watertight)', 'union', 'bridging']
+    arg_help = 'Meshing algorithm. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.NEURON_MESHING_ALGORITHM,
                         action='store', default='piecewise-watertight',
                         help=arg_help)
 
     # The edges of the reconstructed meshes
-    arg_help = 'The edges of the arbors (smooth or hard), by default set to hard. This option ' \
-               'does not apply to the morphology, only the meshes.'
+    arg_options = ['smooth', '(hard)']
+    arg_help = 'Arbors edges. \n' \
+               'This option only applies to the meshes. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.MESH_EDGES,
                         action='store', default='hard',
                         help=arg_help)
 
     # The edges of the reconstructed meshes
-    arg_help = 'The surface of the neuron mesh, whether rough or smooth.'
+    arg_options = ['rough', '(smooth)']
+    arg_help = 'The surface roughness of the neuron mesh. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.MESH_SURFACE,
                         action='store', default='smooth',
                         help=arg_help)
 
     # The branching algorithm
-    arg_help = 'Arbors branching based on (angles or radii), by default set to angles.'
+    arg_options = ['angles', '(radii)']
+    arg_help = 'Arbors branching based on angles or radii. \n' \
+               'Options : %s' % arg_options
     parser.add_argument(Args.BRANCHING_METHOD,
                         action='store', default='angles',
                         help=arg_help)
 
     # Mesh tessellation level
-    arg_help = 'Mesh tessellation factor between (0.1, 1.0), by default set to 1.0 tessellation.'
+    arg_help = 'Mesh tessellation factor between (0.1, 1.0).\n' \
+               'Default 1.0.'
     parser.add_argument(Args.MESH_TESSELLATION_LEVEL,
                         action='store', type=float, default=1.0,
                         help=arg_help)
 
     # Export the mesh at global coordinates
-    arg_help = 'Exports the mesh at global coordinates. This option is valid only for BBP ' \
-               'circuits.'
+    arg_help = 'Export the mesh at global coordinates. \n' \
+               'Valid only for BBP circuits.'
     parser.add_argument(Args.MESH_GLOBAL_COORDINATES,
                         action='store_true', default=False,
                         help=arg_help)
@@ -355,15 +366,13 @@ def parse_command_line_arguments():
     # Geometry export arguments
     ################################################################################################
     # Export the morphologies in .SWC format
-    arg_help = 'Exports the morphology to (.SWC) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the morphology to (.SWC) file. \n'
     parser.add_argument(Args.EXPORT_SWC_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the morphologies in .H5 format (after fixing the artifacts)
-    arg_help = 'Exports the morphology to (.H5) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the morphology to (.H5) file. \n'
     parser.add_argument(Args.EXPORT_H5_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
@@ -502,32 +511,32 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Close up dimensions (the view around the soma in microns)
-    arg_help = 'Close up dimensions (the view around the soma in microns), by default 20 ' \
-               'microns. This option is used only when the --rendering-view is set to ' \
-               'close-up, otherwise ignored.'
+    arg_help = 'Close up dimensions (the view around the soma in microns). \n' \
+               'Valid only when the --rendering-view = close-up. \n' \
+               'Default 20.'
     parser.add_argument(Args.CLOSE_UP_DIMENSIONS,
                         action='store', type=int, default=20,
                         help=arg_help)
 
     # Full view resolution
-    arg_help = 'The base resolution of full view images that are either wide-shot or mid-shot ' \
-               'images, by default 1024.'
+    arg_help = 'Base resolution of full view images (wide-shot or mid-shot). \n' \
+               'Default 1024.'
     parser.add_argument(Args.FULL_VIEW_RESOLUTION,
                         action='store', type=int, default=1024,
                         help=arg_help)
 
     # Full view resolution
-    arg_help = 'The base resolution of close-up images that focus on the soma, by default 512.' \
-               'This option is used only when the --rendering-view is set to close-up, ' \
-               'otherwise ignored.'
+    arg_help = 'Base resolution of close-up images. \n' \
+               'Valid only when the --rendering-view = close-up. \n' \
+               'Default 512.'
     parser.add_argument(Args.CLOSE_UP_RESOLUTION,
                         action='store', type=int, default=512,
                         help=arg_help)
 
     # Full view scale factor
-    arg_help = 'If the \'render--to-scale\' flag is set, the images are rendered to scale ' \
-               'based on the skeleton dimensions. This factos is used to scale the size of ' \
-               'the images for high resolution images, by default 1.0.'
+    arg_help = 'A factor used to scale the resolution of the image. \n' \
+               'Valid only if --render--to-scale is set. \n' \
+               'Default 1.'
     parser.add_argument(Args.RESOLUTION_SCALE_FACTOR,
                         action='store', type=float, default=1.0,
                         help=arg_help)
@@ -537,7 +546,7 @@ def parse_command_line_arguments():
     ################################################################################################
     # Execution node
     arg_options = ['(local)', 'cluster']
-    arg_help = 'Execution node. \n' \
+    arg_help = 'Execution is local or using cluster nodes. \n' \
                'Options: %s' % arg_options
     parser.add_argument(Args.EXECUTION_NODE,
                         action='store', default='local',
@@ -556,6 +565,15 @@ def parse_command_line_arguments():
                'Options: %s' % arg_options
     parser.add_argument(Args.JOB_GRANULARITY,
                         action='store', default='low',
+                        help=arg_help)
+
+    ################################################################################################
+    # Analysis and meta-data generation
+    ################################################################################################
+    # Morphology analysis
+    arg_help = 'Analyze the morphology skeleton and report the artifacts.'
+    parser.add_argument(Args.ANALYZE_MORPHOLOGY,
+                        action='store_true', default=False,
                         help=arg_help)
 
     # Parse the arguments, and return a list of them
