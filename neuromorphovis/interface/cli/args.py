@@ -113,6 +113,9 @@ class Args:
     # Spines quality (HQ, LQ)
     SPINES_QUALITY = '--spines-quality'
 
+    # Nucleus
+    ADD_NUCLEUS = '--add-nucleus'
+
     # Axon branching order
     AXON_BRANCHING_ORDER = '--axon-branching-order'
 
@@ -151,6 +154,9 @@ class Args:
 
     # Spines colors
     SPINES_COLOR = '--spines-color'
+
+    # Nucleus colors
+    NUCLEUS_COLOR = '--nucleus-color'
 
     # Articulations color
     ARTICULATIONS_COLOR = '--articulation-color'

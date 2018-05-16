@@ -16,6 +16,8 @@
 # if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301 USA.
 ####################################################################################################
+
+# Load the following configuration
 source neuromorphovis.cfg
 
 BOOL_ARGS=''
@@ -27,8 +29,6 @@ if [ "$IGNORE_BASAL_DENDRITES" == "yes" ];
     then BOOL_ARGS+=' --ignore-basal-dendrites '; fi
 if [ "$IGNORE_APICAL_DENDRITES" == "yes" ];
     then BOOL_ARGS+=' --ignore-apical-dendrites '; fi
-if [ "$BUILD_SPINES" == "yes" ];
-    then BOOL_ARGS+=' --build-spines '; fi
 if [ "$RECONSTRUCT_SOMA_MESH" == "yes" ];
     then BOOL_ARGS+=' --reconstruct-soma-mesh '; fi
 if [ "$RECONSTRUCT_NEURON_MESH" == "yes" ];
@@ -63,6 +63,8 @@ if [ "$RENDER_TO_SCALE" == "yes" ];
 # Mesh parameters
 if [ "$GLOBAL_COORDINATES" == "yes" ];
     then BOOL_ARGS+=' --global-coordinates '; fi
+if [ "$ADD_NUCLEUS" == "yes" ];
+    then BOOL_ARGS+=' --add-nucleus '; fi
 ####################################################################################################
 # Export morphology
 if [ "$EXPORT_NEURON_MORPHOLOGY_H5" == "yes" ];
@@ -93,7 +95,6 @@ if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-neuron-mesh-blend '; fi
 
 
-
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... neuromorphovis.py \n"
@@ -108,26 +109,31 @@ echo -e "\nRUNNING ... neuromorphovis.py \n"
     --morphology-directory=$MORPHOLOGY_DIRECTORY                                                    \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --morphology-reconstruction-algorithm=$MORPHOLOGY_RECONSTRUCTION_ALGORITHM                      \
-    --meshing-algorithm=$MESHING_TECHNIQUE \
+    --morphology-skeleton=$SKELETON                                                                 \
+    --meshing-algorithm=$MESHING_TECHNIQUE                                                          \
     --axon-branching-order=$MAX_AXON_BRANCHING_ORDER                                                \
     --basal-dendrites-branching-order=$MAX_BASAL_DENDRITES_BRANCHING_ORDER                          \
     --apical-dendrites-branching-order=$MAX_APICAL_DENDRITES_BRANCHING_ORDER                        \
     --soma-representation=$SOMA_REPRESENTATION                                                      \
     --soma-stiffness=$SOMA_STIFFNESS                                                                \
     --soma-subdivision-level=$SOMA_SUBDIVISION_LEVEL                                                \
-    --edges=$EDGES\
-    --surface=$SURFACE\
+    --edges=$EDGES                                                                                  \
+    --surface=$SURFACE                                                                              \
+    --spines=$SPINES                                                                                \
+    --spines-quality=SPINES_QUALITY                                                                 \
+    --random-spines-percentage=$RANDOM_SPINES_PERCENTAGE                                            \
     --soma-color=$SOMA_COLOR                                                                        \
     --axon-color=$AXON_COLOR                                                                        \
-    --apical-dendrites-color=$APICAL_DENDRITE_COLOR \
+    --apical-dendrites-color=$APICAL_DENDRITE_COLOR                                                 \
     --basal-dendrites-color=$BASAL_DENDRITES_COLOR                                                  \
-    --spines-color=$SPINES_COLOR \
-    --sections-radii=$SET_SECTION_RADII \
+    --spines-color=$SPINES_COLOR                                                                    \
+    --nucleus-color=$NUCLEUS_COLOR                                                                  \
+    --sections-radii=$SET_SECTION_RADII                                                             \
     --radii-scale-factor=$RADII_SCALE_FACTOR                                                        \
     --fixed-section-radius=$FIXED_SECTION_RADIUS                                                    \
     --bevel-sides=$SECTION_BEVEL_SIDES                                                              \
-    --camera-view=$CAMERA_VIEW                            \
-    --rendering-view=$RENDERING_VIEW \
+    --camera-view=$CAMERA_VIEW                                                                      \
+    --rendering-view=$RENDERING_VIEW                                                                \
     --full-view-resolution=$FULL_VIEW_FRAME_RESOLUTION                                              \
     --resolution-scale-factor=$FULL_VIEW_SCALE_FACTOR                                               \
     --close-up-resolution=$CLOSE_UP_FRAME_RESOLUTION                                                \

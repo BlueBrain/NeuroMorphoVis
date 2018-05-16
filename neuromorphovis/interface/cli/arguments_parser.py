@@ -190,6 +190,12 @@ def parse_command_line_arguments():
                         action='store', type=float, default=50.0,
                         help=arg_help)
 
+    # Nucleus
+    arg_help = 'Add nucleus mesh'
+    parser.add_argument(Args.ADD_NUCLEUS,
+                        action='store_true', default=False,
+                        help=arg_help)
+
     # Axon branching branching order
     arg_help = 'Maximum branching order for the axon [1, infinity], by default 5.'
     parser.add_argument(Args.AXON_BRANCHING_ORDER,
@@ -269,7 +275,13 @@ def parse_command_line_arguments():
     # Spines color
     arg_help = 'Spines color'
     parser.add_argument(Args.SPINES_COLOR,
-                        action='store', default='1.0_0.0_0.0',
+                        action='store', default='1.0_1.0_0.0',
+                        help=arg_help)
+
+    # Nuclues color
+    arg_help = 'Nucleus color'
+    parser.add_argument(Args.NUCLEUS_COLOR,
+                        action='store', default='1.0_1.0_0.0',
                         help=arg_help)
 
     # Articulation color, in case of using articulated sections method
@@ -343,67 +355,78 @@ def parse_command_line_arguments():
     # Geometry export arguments
     ################################################################################################
     # Export the morphologies in .SWC format
-    arg_help = 'Exports the morphology to (.SWC) file, by default False.'
+    arg_help = 'Exports the morphology to (.SWC) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_SWC_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the morphologies in .H5 format (after fixing the artifacts)
-    arg_help = 'Exports the morphology to (.H5) file, by default False.'
+    arg_help = 'Exports the morphology to (.H5) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_H5_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the morphology as a Blender file in .BLEND format
-    arg_help = 'Exports the morphology as a Blender file (.BLEND), by default False.'
+    arg_help = 'Exports the morphology as a Blender file (.BLEND). \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_BLEND_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the meshes in .PLY format
-    arg_help = 'Exports the neuron mesh to (.PLY) file, by default False.'
+    arg_help = 'Exports the neuron mesh to (.PLY) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_PLY_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .OBJ format
-    arg_help = 'Exports the neuron mesh to (.OBJ) file, by default False.'
+    arg_help = 'Exports the neuron mesh to (.OBJ) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_OBJ_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .STL format
-    arg_help = 'Exports the neuron mesh to (.STL) file, by default False.'
+    arg_help = 'Exports the neuron mesh to (.STL) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_STL_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .BLEND format
-    arg_help = 'Exports the neuron mesh as a Blender file (.BLEND), by default False'
+    arg_help = 'Exports the neuron mesh as a Blender file (.BLEND). \n' \
+               'Default False'
     parser.add_argument(Args.EXPORT_BLEND_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .PLY format
-    arg_help = 'Exports the soma mesh to a (.PLY) file, by default False.'
+    arg_help = 'Exports the soma mesh to a (.PLY) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_PLY_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .OBJ format
-    arg_help = 'Exports the soma mesh to a (.OBJ) file, by default False.'
+    arg_help = 'Exports the soma mesh to a (.OBJ) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_OBJ_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .STL format
-    arg_help = 'Exports the soma mesh to a (.STL) file, by default False.'
+    arg_help = 'Exports the soma mesh to a (.STL) file. \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_STL_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .BLEND format
-    arg_help = 'Exports the soma mesh to a Blender file (.BLEND), by default False.'
+    arg_help = 'Exports the soma mesh to a Blender file (.BLEND). \n' \
+               'Default False.'
     parser.add_argument(Args.EXPORT_BLEND_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
@@ -412,79 +435,77 @@ def parse_command_line_arguments():
     # Rendering arguments
     ################################################################################################
     # Render morphology
-    arg_help = 'Render a static image of the morphology skeleton, by default False'
+    arg_help = 'Render image of the morphology skeleton.'
     parser.add_argument(Args.RENDER_NEURON_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render morphology 360 sequence
-    arg_help = 'Render a 360 sequence of the morphology skeleton, by default False.'
+    arg_help = 'Render a 360 sequence of the morphology skeleton.'
     parser.add_argument(Args.RENDER_NEURON_MORPHOLOGY_360,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render morphology progressively
-    arg_help = 'Render a progressive reconstruction of the morphology skeleton, by default False.'
+    arg_help = 'Render a progressive reconstruction of the morphology skeleton.'
     parser.add_argument(Args.RENDER_NEURON_MORPHOLOGY_PROGRESSIVE,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render soma skeleton
-    arg_help = 'Render a static image of the soma skeleton (connected profile), by default False.'
+    arg_help = 'Render a static image of the soma skeleton (connected profile).'
     parser.add_argument(Args.RENDER_SOMA_SKELETON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render soma
-    arg_help = 'Render a static image of the reconstructed soma mesh, by default False.'
+    arg_help = 'Render an image of the reconstructed soma mesh.'
     parser.add_argument(Args.RENDER_SOMA_MESH,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render soma 360
-    arg_help = 'Render a 360 sequence of the reconstructed soma mesh, by default False.'
+    arg_help = 'Render a 360 sequence of the reconstructed soma mesh.'
     parser.add_argument(Args.RENDER_SOMA_MESH_360,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render soma progressively
-    arg_help = 'Render a sequence of the progressive reconstruction of the soma mesh, by default ' \
-               'False.'
+    arg_help = 'Render a sequence of the progressive reconstruction of the soma mesh.'
     parser.add_argument(Args.RENDER_SOMA_MESH_PROGRESSIVE,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render mesh
-    arg_help = 'Render a static image of the reconstructed neuron mesh, by default False.'
+    arg_help = 'Render an image of the reconstructed neuron mesh.'
     parser.add_argument(Args.RENDER_NEURON_MESH,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render morphology close up
-    arg_help = 'Render a 360 sequence of the reconstructed neuron mesh, by default False.'
+    arg_help = 'Render a 360 sequence of the reconstructed neuron mesh.'
     parser.add_argument(Args.RENDER_NEURON_MESH_360,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Render mesh to scale (i.e. resolution is equivalent to size in microns)
-    arg_help = 'Render morphology and mesh to scale (i.e. resolution is equivalent to a ' \
-               'scale factor of the largest dimension of the skeleton in microns). This option ' \
-               'is not used for soma rendering. To change the resolution of the final image, ' \
-               'update --resolution-scale-factor to a value that is greater than 1.'
+    arg_help = 'Render the skeleton to scale.'
     parser.add_argument(Args.RENDER_TO_SCALE,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Rendering view
-    arg_help = 'The rendering view of the skeleton either for the morphology or for the mesh ' \
-               '(close-up/mid-shot/wide-shot) but not for soma rendering, by default set to ' \
-               'mid-shot.'
+    arg_options = ['close-up', 'mid-shot', '(wide-shot)']
+    arg_help = 'The rendering view of the skeleton for the skeleton. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.RENDERING_VIEW,
                         action='store', default='wide-shot',
                         help=arg_help)
 
     # Rendering view
-    arg_help = 'The view or direction of the camera (front/side/top), by default set to front.'
+    arg_options = ['(front)', 'side', 'top']
+    arg_help = 'The camera direction. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.CAMERA_VIEW,
                         action='store', default='front',
                         help=arg_help)
@@ -524,19 +545,24 @@ def parse_command_line_arguments():
     # Execution arguments
     ################################################################################################
     # Execution node
-    arg_help = 'Execution node (local/cluster), by default set to local'
+    arg_options = ['(local)', 'cluster']
+    arg_help = 'Execution node. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.EXECUTION_NODE,
                         action='store', default='local',
                         help=arg_help)
 
     # Execution cores
-    arg_help = 'Number of cores required to run the jobs on the cluster, by default 256.'
+    arg_help = 'Number of execution cores on cluster. \n' \
+               'Default 256.'
     parser.add_argument(Args.NUMBER_CORES,
                         action='store', type=int, default=256,
                         help=arg_help)
 
     # Job granularity
-    arg_help = 'The granularity of the jobs running on the cluster, (high/low), by default low.'
+    arg_options = ['high', '(low)']
+    arg_help = 'The granularity of the jobs running on the cluster. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.JOB_GRANULARITY,
                         action='store', default='low',
                         help=arg_help)

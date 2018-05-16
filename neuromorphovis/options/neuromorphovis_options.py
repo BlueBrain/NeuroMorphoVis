@@ -365,6 +365,9 @@ class NeuroMorphoVisOptions:
         # Spines color
         self.mesh.spines_color = nmv.utilities.parse_color_from_argument(arguments.spines_color)
 
+        # Nucleuscolor
+        self.mesh.nucleus_color = nmv.utilities.parse_color_from_argument(arguments.nucleus_color)
+
         # Save the reconstructed mesh as a .PLY file to the meshes directory
         self.mesh.export_ply = arguments.export_neuron_mesh_ply
 

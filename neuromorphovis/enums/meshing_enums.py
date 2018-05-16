@@ -555,5 +555,19 @@ class Meshing:
             def __init__(self):
                 pass
 
+            ########################################################################################
+            # @get_enum
+            ########################################################################################
+            @staticmethod
+            def get_enum(argument):
+
+                # High quality
+                if argument == 'hq':
+                    return Meshing.Nucleus.Quality.HQ
+
+                # By default, use low quality nucleus
+                else:
+                    return Meshing.Nucleus.Quality.LQ
+
 
 
