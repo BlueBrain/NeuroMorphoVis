@@ -196,27 +196,14 @@ class NeuroMorphoVisOptions:
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = False
 
-        # Morphology material
-        self.morphology.material = arguments.shader
-
         # Camera view [FRONT, SIDE or TOP]
         self.morphology.camera_view = nmv.enums.Camera.View.get_enum(arguments.camera_view)
 
-
-        # Render a full view of the morphology
-        #self.morphology.render_full_view = arguments.render_morphology
-
-        # Render a full view of the morphology, however to scale
-        #self.morphology.render_full_view_to_scale = arguments.render_morphology_to_scale
-
         # Render a close up view of the morphology
-        #self.morphology.render_close_up_view = arguments.render_morphology_close_up
-
-        # Render a close up view of the morphology
-        #self.morphology.render_360 = arguments.render_morphology_360
+        self.morphology.render_360 = arguments.render_neuron_morphology_360
 
         # Render the progressive reconstruction of the morphology
-        #self.morphology.render_progressive = arguments.render_morphology_progressive
+        self.morphology.render_progressive = arguments.render_neuron_morphology_progressive
 
         # Full view image resolution
         self.morphology.full_view_resolution = arguments.full_view_resolution
@@ -252,7 +239,7 @@ class NeuroMorphoVisOptions:
         self.soma.soma_color = nmv.utilities.parse_color_from_argument(arguments.soma_color)
 
         # Soma material
-        self.soma.soma_material = arguments.shader
+        self.soma.soma_material = nmv.enums.Shading.get_enum(arguments.shader)
 
         # Reconstruct soma mesh
         self.soma.reconstruct_soma_mesh = arguments.reconstruct_soma_mesh

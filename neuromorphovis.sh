@@ -17,7 +17,6 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
-# Load the following configuration
 source neuromorphovis.cfg
 
 BOOL_ARGS=''
@@ -98,7 +97,6 @@ if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... neuromorphovis.py \n"
-
     python3 neuromorphovis.py                                                                       \
     --blender=$BLENDER_EXECUTABLE                                                                   \
     --input=$INPUT                                                                                  \
