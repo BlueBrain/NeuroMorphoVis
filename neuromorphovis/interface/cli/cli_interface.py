@@ -65,8 +65,8 @@ def reconstruct_soma_skeleton(morphology_object,
 ####################################################################################################
 # @proceed_morphology_reconstruction_visualization
 ####################################################################################################
-def proceed_morphology_reconstruction_visualization(cli_morphology,
-                                                    cli_options):
+def proceed_neuron_morphology_reconstruction_visualization(cli_morphology,
+                                                           cli_options):
     """Morphology reconstruction and visualization operations.
 
     :param cli_morphology:
@@ -78,25 +78,73 @@ def proceed_morphology_reconstruction_visualization(cli_morphology,
     # Clear the scene
     nmv.scene.ops.clear_scene()
 
+    cli_options.morphology.connect_to_soma = True
+
     # Skeleton builder
-    skeleton_builder = nmv.builders.SkeletonBuilder(cli_morphology, cli_options)
+    skeleton_builder = nmv.builders.SkeletonBuilder(morphology=cli_morphology, options=cli_options)
 
     # Reconstruct the reconstructed morphology skeleton
     morphology_skeleton_objects = skeleton_builder.draw_morphology_skeleton()
 
-    # Export the reconstructed morphology skeleton
-    if cli_options.morphology.reconstruct_morphology:
+    # Export to .BLEND file
+    if cli_options.morphology.export_blend:
 
-        # Export to .BLEND file
-        if cli_options.morphology.export_blend:
-
-            # Export the morphology to a .BLEND file, None indicates all components the scene
-            nmv.file.export_mesh_object(
-                None, cli_options.output.morphologies_directory, cli_morphology.label,
-                blend=cli_options.morphology.export_blend)
+        # Export the morphology to a .BLEND file, None indicates all components the scene
+        nmv.file.export_mesh_object(
+            None, cli_options.io.morphologies_directory, cli_morphology.label,
+            blend=cli_options.morphology.export_blend)
 
     # Render a static image of the reconstructed morphology skeleton
     if cli_options.morphology.render:
+
+        # A reference to the bounding box that will be used for the rendering
+        bounding_box = None
+
+        # Compute the bounding box for a close up view
+        if cli_options.morphology.rendering_view == \
+                nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+
+            # Compute the bounding box for a close up view
+            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=cli_options.morphology.close_up_dimensions)
+
+        # Compute the bounding box for a mid shot view
+        elif cli_options.morphology.rendering_view == \
+                nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+
+            # Compute the bounding box for the available meshes only
+            bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+
+        # Compute the bounding box for the wide shot view that correspond to the whole morphology
+        else:
+
+            # Compute the full morphology bounding box
+            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=cli_morphology)
+
+        # Render at a specific resolution
+        if cli_options.morphology.resolution_basis == \
+                nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION:
+
+            # Render the image
+            nmv.rendering.NeuronSkeletonRenderer.render(
+                bounding_box=bounding_box,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_resolution=cli_options.morphology.full_view_resolution,
+                image_name='MORPHOLOGY_FRONT_%s' % cli_morphology.label,
+                image_directory=cli_options.io.images_directory)
+
+        # Render at a specific scale factor
+        else:
+
+            # Render the image
+            nmv.rendering.NeuronSkeletonRenderer.render_to_scale(
+                bounding_box=bounding_box,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                image_name='MESH_FRONT_%s' % cli_morphology.label,
+                image_directory=cli_options.io.images_directory)
+
         pass
 
     # Render a 360 sequence of the reconstructed morphology skeleton
@@ -107,82 +155,13 @@ def proceed_morphology_reconstruction_visualization(cli_morphology,
     if cli_options.morphology.render_progressive:
         pass
 
-    # Render the projections of the morphology
-    if options.morphology.render_full_view:
+    # Export to .blend file
+    if cli_options.morphology.export_blend:
 
-        # Render all the views
-        for camera_view in ['FRONT']:#, 'SIDE', 'TOP']:
-
-            # Update the image prefix
-            image_prefix = '%s_morphology' % options.morphology.label
-
-            # Render the morphology
-            rendering_ops.render_full_view(
-                view_bounding_box=morphology_object.bounding_box,
-                image_name=image_prefix,
-                image_output_directory=options.output.images_directory,
-                image_base_resolution=options.morphology.full_view_resolution,
-                camera_view=camera_view)
-
-    # Render the projections of the morphology to scale
-    if options.morphology.render_full_view_to_scale:
-
-        # Render all the views
-        for camera_view in ['FRONT']:#, 'SIDE', 'TOP']:
-
-            # Update the image prefix
-            image_prefix = '%s_morphology_to_scale' % options.morphology.label
-
-            # Render the morphology
-            rendering_ops.render_full_view_to_scale(
-                view_bounding_box=morphology_object.bounding_box,
-                image_name=image_prefix,
-                image_output_directory=options.output.images_directory,
-                image_scale_factor=options.morphology.resolution_scale_factor,
-                camera_view=camera_view)
-
-    # Render a close up view of the morphology
-    if options.morphology.render_close_up_view:
-
-        # Render all the views
-        for camera_view in ['FRONT']:#, 'SIDE', 'TOP']:
-
-            # Update the image prefix
-            image_prefix = '%s_morphology' % options.morphology.label
-
-            # Render the morphology close up
-            rendering_ops.render_close_up(
-                image_name=image_prefix,
-                image_output_directory=options.output.images_directory,
-                image_base_resolution=options.morphology.close_up_resolution,
-                camera_view=camera_view,
-                close_up_dimension=options.morphology.close_up_dimensions)
-
-    # Render a 360 of the morphology
-    if options.morphology.render_360:
-
-        # Update the sequence prefix
-        sequence_prefix = '%s_morphology_360' % options.morphology.label
-
-        # Render a 360
-        rendering_ops.render_full_view_360(
-            objects_list=morphology_skeleton_objects,
-            view_bounding_box=morphology_object.bounding_box,
-            soma_center=morphology_object.soma.centroid,
-            sequence_name=sequence_prefix,
-            sequence_output_directory=options.output.sequences_directory,
-            image_base_resolution=options.morphology.full_view_resolution)
-
-    # Export the morphology
-    if options.morphology.reconstruct_morphology:
-
-        # Export to .blend file
-        if options.morphology.export_blend:
-
-            # Export the morphology to a .blend file
-            exporters.export_mesh_object(None,
-                options.output.morphologies_directory, options.morphology.label,
-                blend=options.morphology.export_blend)
+        # Export the morphology to a .blend file
+        nmv.file.export_mesh_object(None,
+            cli_options.io.morphologies_directory, cli_options.morphology.label,
+            blend=cli_options.morphology.export_blend)
 
 
 ####################################################################################################
@@ -551,7 +530,9 @@ if __name__ == "__main__":
         nmv.logger.log('ERROR: Invalid input option')
         exit(0)
 
-
+        # Reconstruct the morphology skeleton
+    proceed_neuron_morphology_reconstruction_visualization(cli_morphology=cli_morphology,
+        cli_options=cli_options)
 
     ################################################################################################
     # Soma mesh reconstruction
@@ -576,14 +557,8 @@ if __name__ == "__main__":
         proceed_neuron_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
                                                          cli_options=cli_options)
 
-    exit(0)
     ################################################################################################
     # Morphology skeleton reconstruction
     ################################################################################################
-    if arguments.render_morphology or \
-            arguments.render_morphology_to_scale or \
-            arguments.render_morphology_close_up or \
-            arguments.reconstruct_morphology_skeleton:
 
-        # Reconstruct the morphology skeleton
-        reconstruct_morphology_skeleton(cli_morphology, options=cli_options)
+

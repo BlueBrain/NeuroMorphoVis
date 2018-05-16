@@ -82,6 +82,45 @@ class NeuronSkeletonRenderer:
             image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
 
     ################################################################################################
+    # @render_to_scale
+    ################################################################################################
+    @staticmethod
+    def render_to_scale(bounding_box,
+                        camera_view=nmv.enums.Camera.View.FRONT,
+                        image_scale_factor=1.0,
+                        image_name='SKELETON',
+                        image_directory=None,
+                        keep_camera_in_scene=False):
+        """Render the reconstructed morphology to scale to a .PNG image.
+
+        :param bounding_box:
+            The bounding box of the view requested to be rendered.
+        :param camera_view:
+            The view of the camera, by default FRONT.
+        :param image_scale_factor:
+            The factor used to scale the resolution of the image the image, by default 1.
+        :param image_name:
+            The name of the image, by default 'MESH'.
+        :param image_directory:
+            The directory where the image will be rendered. If the directory is set to None,
+            then the prefix is included in @image_name.
+        :param keep_camera_in_scene:
+            Keep the camera used to do the rendering after the rendering is done.
+        """
+
+        # Create a camera
+        skeleton_camera = nmv.rendering.Camera('MeshCamera_%s' % camera_view)
+
+        # Image path prefix, i.e. w/o extension which will be added later
+        image_prefix = '%s/%s' % (
+            image_directory, image_name) if image_directory is not None else image_name
+
+        # Render an image
+        skeleton_camera.render_scene_to_scale(
+            bounding_box=bounding_box, camera_view=camera_view, scale_factor=image_scale_factor,
+            image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
+
+    ################################################################################################
     # @render
     ################################################################################################
     @staticmethod

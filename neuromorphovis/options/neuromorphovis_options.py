@@ -199,6 +199,17 @@ class NeuroMorphoVisOptions:
         # Camera view [FRONT, SIDE or TOP]
         self.morphology.camera_view = nmv.enums.Camera.View.get_enum(arguments.camera_view)
 
+        # Rendering view
+        self.morphology.rendering_view = nmv.enums.Skeletonization.Rendering.View.get_enum(
+            arguments.rendering_view)
+
+        # Resolution basis
+        self.morphology.resolution_basis = nmv.enums.Skeletonization.Rendering.Resolution.TO_SCALE if \
+            arguments.render_to_scale else nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+
+        # Render a close up view of the morphology
+        self.morphology.render = arguments.render_neuron_morphology
+
         # Render a close up view of the morphology
         self.morphology.render_360 = arguments.render_neuron_morphology_360
 

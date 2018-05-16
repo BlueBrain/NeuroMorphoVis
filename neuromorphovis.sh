@@ -47,11 +47,11 @@ if [ "$RENDER_SOMA_MESH_PROGRESSIVE" == "yes" ];
 if [ "$RENDER_SOMA_MESH_360" == "yes" ];
     then BOOL_ARGS+=' --render-soma-mesh-360 '; fi
 if [ "$RENDER_NEURON_MORPHOLOGY" == "yes" ];
-    then BOOL_ARGS+=' --render-morphology '; fi
+    then BOOL_ARGS+=' --render-neuron-morphology '; fi
 if [ "$RENDER_NEURON_MORPHOLOGY_360" == "yes" ];
-    then BOOL_ARGS+=' --render-morphology-360 '; fi
+    then BOOL_ARGS+=' --render-neuron-morphology-360 '; fi
 if [ "$RENDER_NEURON_MORPHOLOGY_PROGRESSIVE" == "yes" ];
-    then BOOL_ARGS+=' --render-morphology-progressive '; fi
+    then BOOL_ARGS+=' --render-neuron-morphology-progressive '; fi
 if [ "$RENDER_NEURON_MESH" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-mesh '; fi
 if [ "$RENDER_NEURON_MESH_360" == "yes" ];

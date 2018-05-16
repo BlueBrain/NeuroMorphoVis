@@ -369,64 +369,55 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Export the morphology as a Blender file in .BLEND format
-    arg_help = 'Exports the morphology as a Blender file (.BLEND). \n' \
-               'Default False.'
+    arg_help = 'Exports the morphology as a Blender file (.BLEND).'
     parser.add_argument(Args.EXPORT_BLEND_MORPHOLOGY,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the meshes in .PLY format
-    arg_help = 'Exports the neuron mesh to (.PLY) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the neuron mesh to (.PLY) file.'
     parser.add_argument(Args.EXPORT_PLY_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .OBJ format
-    arg_help = 'Exports the neuron mesh to (.OBJ) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the neuron mesh to (.OBJ) file.'
     parser.add_argument(Args.EXPORT_OBJ_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .STL format
-    arg_help = 'Exports the neuron mesh to (.STL) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the neuron mesh to (.STL) file.'
     parser.add_argument(Args.EXPORT_STL_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the neuron mesh in .BLEND format
-    arg_help = 'Exports the neuron mesh as a Blender file (.BLEND). \n' \
-               'Default False'
+    arg_help = 'Exports the neuron mesh as a Blender file (.BLEND).'
     parser.add_argument(Args.EXPORT_BLEND_NEURON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .PLY format
-    arg_help = 'Exports the soma mesh to a (.PLY) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the soma mesh to a (.PLY) file.'
     parser.add_argument(Args.EXPORT_PLY_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .OBJ format
-    arg_help = 'Exports the soma mesh to a (.OBJ) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the soma mesh to a (.OBJ) file.'
     parser.add_argument(Args.EXPORT_OBJ_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .STL format
-    arg_help = 'Exports the soma mesh to a (.STL) file. \n' \
-               'Default False.'
+    arg_help = 'Exports the soma mesh to a (.STL) file.'
     parser.add_argument(Args.EXPORT_STL_SOMA,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Export the soma mesh in .BLEND format
-    arg_help = 'Exports the soma mesh to a Blender file (.BLEND). \n' \
-               'Default False.'
+    arg_help = 'Exports the soma mesh to a Blender file (.BLEND).'
     parser.add_argument(Args.EXPORT_BLEND_SOMA,
                         action='store_true', default=False,
                         help=arg_help)

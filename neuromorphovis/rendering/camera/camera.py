@@ -476,6 +476,10 @@ class Camera:
             Keep the camera in the scene after rendering.
         """
 
+        # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
+        if bounding_box is None:
+            bounding_box = nmv.bbox.compute_scene_bounding_box()
+
         # Compute the location of the camera based on the bounding box
         camera_locations = self.get_camera_positions(bounding_box=bounding_box)
 

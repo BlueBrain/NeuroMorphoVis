@@ -127,6 +127,7 @@ class MorphologyOptions:
         # Morphology material
         self.material = nmv.enums.Shading.LAMBERT_WARD
 
+        # SKELETON RENDERING #######################################################################
         # Camera view
         self.camera_view = nmv.enums.Camera.View.FRONT
 
@@ -134,12 +135,12 @@ class MorphologyOptions:
         self.rendering_view = nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW
 
         # Image resolution is based on scale or to a fixed resolution
-        self.rendering_resolution = nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+        self.resolution_basis = nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
 
-        # Render a static frame of the morphology
+        # Render a static frame of the skeleton
         self.render = False
 
-        # Render a 360 sequence of the reconstructed morphology
+        # Render a 360 sequence of the reconstructed skeleton
         self.render_360 = False
 
         # Progressive rendering of the morphology reconstruction (requires breadth first drawing)

@@ -778,28 +778,6 @@ class SkeletonBuilder:
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
 
-        # Draw the axon as a set connected sections
-        if not self.options.morphology.ignore_axon:
-
-            axon_sections_objects = []
-            nmv.skeleton.ops.draw_connected_sections(
-                section=copy.deepcopy(self.morphology.axon),
-                max_branching_level=self.options.morphology.axon_branch_order,
-                name=nmv.consts.Arbors.AXON_PREFIX,
-                material_list=self.axon_materials,
-                fixed_radius=fixed_radius,
-                bevel_object=bevel_object,
-                repair_morphology=repair_morphology,
-                caps=True,
-                sections_objects=axon_sections_objects,
-                render_frame=self.options.morphology.render_progressive,
-                frame_destination=self.progressive_frames_directory,
-                camera=self.progressive_rendering_camera,
-                connect_to_soma=self.options.morphology.connect_to_soma)
-
-            # Extend the morphology objects list
-            morphology_objects.extend(axon_sections_objects)
-
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
@@ -829,24 +807,47 @@ class SkeletonBuilder:
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
 
-            apical_dendrite_sections_objects = []
-            nmv.skeleton.ops.draw_connected_sections(
-                section=copy.deepcopy(self.morphology.apical_dendrite),
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                material_list=self.apical_dendrite_materials,
-                fixed_radius=fixed_radius,
-                bevel_object=bevel_object,
-                repair_morphology=repair_morphology,
-                caps=True,
-                sections_objects=apical_dendrite_sections_objects,
-                render_frame=self.options.morphology.render_progressive,
-                frame_destination=self.progressive_frames_directory,
-                camera=self.progressive_rendering_camera,
-                connect_to_soma=self.options.morphology.connect_to_soma)
+            if self.morphology.apical_dendrite is not None:
 
-            # Extend the morphology objects list
-            morphology_objects.extend(apical_dendrite_sections_objects)
+                apical_dendrite_sections_objects = []
+                nmv.skeleton.ops.draw_connected_sections(
+                    section=copy.deepcopy(self.morphology.apical_dendrite),
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    material_list=self.apical_dendrite_materials,
+                    fixed_radius=fixed_radius,
+                    bevel_object=bevel_object,
+                    repair_morphology=repair_morphology,
+                    caps=True,
+                    sections_objects=apical_dendrite_sections_objects,
+                    render_frame=self.options.morphology.render_progressive,
+                    frame_destination=self.progressive_frames_directory,
+                    camera=self.progressive_rendering_camera,
+                    connect_to_soma=self.options.morphology.connect_to_soma)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(apical_dendrite_sections_objects)
+
+        # Draw the axon as a set connected sections
+        if not self.options.morphology.ignore_axon:
+
+            if self.morphology.axon is not None:
+
+                axon_sections_objects = []
+                nmv.skeleton.ops.draw_connected_sections(
+                    section=copy.deepcopy(self.morphology.axon),
+                    max_branching_level=self.options.morphology.axon_branch_order,
+                    name=nmv.consts.Arbors.AXON_PREFIX, material_list=self.axon_materials,
+                    fixed_radius=fixed_radius, bevel_object=bevel_object,
+                    repair_morphology=repair_morphology, caps=True,
+                    sections_objects=axon_sections_objects,
+                    render_frame=self.options.morphology.render_progressive,
+                    frame_destination=self.progressive_frames_directory,
+                    camera=self.progressive_rendering_camera,
+                    connect_to_soma=self.options.morphology.connect_to_soma)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(axon_sections_objects)
 
         # Return a reference to the list of drawn objects
         return morphology_objects
@@ -1069,6 +1070,7 @@ class SkeletonBuilder:
         else:
             nmv.logger.log('Ignoring soma representation')
 
+        """
         # If morphology progressive rendering is enabled, create the directory here and render a
         # frame following the reconstruction of each piece of the morphology.
         if self.options.morphology.render_progressive:
@@ -1103,7 +1105,7 @@ class SkeletonBuilder:
 
             # Render the image to film
             camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
-
+        """
         nmv.logger.log('**************************************************************************')
         nmv.logger.log('Building skeleton')
         nmv.logger.log('**************************************************************************')
@@ -1167,7 +1169,6 @@ class SkeletonBuilder:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=True,
                 taper_sections=True, zigzag_sections=True))
-
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
         # is represented by a continuous tube
