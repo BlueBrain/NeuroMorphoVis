@@ -217,7 +217,7 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Basal dendrites branching order
-    arg_help = 'Maximum branching order for the basal dendrites [(1, infinity). \n' \
+    arg_help = 'Maximum branching order for the basal dendrites (1, infinity). \n' \
                'Default infinity.'
     parser.add_argument(Args.BASAL_DENDRITES_BRANCHING_ORDER,
                         action='store', type=int, default=10000000000,
