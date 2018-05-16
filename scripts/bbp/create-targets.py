@@ -1,35 +1,39 @@
-"""
-@ create_layer_targets.py:
-    Creates targets based on layer
-"""
+####################################################################################################
+# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the
+# GNU Lesser General Public License version 3.0 as published by the Free Software Foundation.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library;
+# if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301 USA.
+####################################################################################################
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2017, Blue Brain Project / EPFL"
-__version__     = "0.1.0"
+__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
+__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
+__version__     = "1.0.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-# System imports
-import os, sys, subprocess
-
-
-# NeuroRender imports
-
-# imports
+# Imports
 import argparse
 import random
-import bbp
-import brain
-import morphology_utils
-
 import core.utilities
 
 
-################################################################################
+####################################################################################################
 # @parse_command_line_arguments
-################################################################################
+####################################################################################################
 def parse_command_line_arguments():
     """Parse the input command line arguments and return a list of them.
 
@@ -64,9 +68,9 @@ def parse_command_line_arguments():
     return parser.parse_args()
 
 
-################################################################################
+####################################################################################################
 # @create_targets
-################################################################################
+####################################################################################################
 def create_targets(circuit_config,
                    target,
                    percent,
@@ -87,6 +91,18 @@ def create_targets(circuit_config,
     :return:
         A Neuron list of all the cells created for the specified target.
     """
+
+    try:
+        import bbp
+    except ImportError:
+        print('ERROR: Cannot import bbp')
+        exit(0)
+
+    try:
+        import brain
+    except ImportError:
+        print('ERROR: Cannot import brain')
+        exit(0)
 
     # Use the BBP circuit configuration to open a bbp experiment
     experiment = bbp.Experiment()
@@ -124,10 +140,10 @@ def create_targets(circuit_config,
 
     # Filtering
     print('* Filtering circuit')
-    for i, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
+    for i_neuron, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
         # Tag
-        tag = random.randint(1, ntags)
+        tag = random.randint(1, number_tags)
 
         # Position
         position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
@@ -149,12 +165,15 @@ def create_targets(circuit_config,
         # Layer
         layer = neuron.layer()
 
+        # Tag
+        tag = random.randint(1, number_tags)
+
         # Mean radius of the soma
-        soma_mean_radius = morphologies[i].soma().mean_radius()
+        soma_mean_radius = morphologies[i_neuron].soma().mean_radius()
 
         # Minimum and maximum radii of the soma
         soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
-            morphologies[i].soma().profile_points())
+            morphologies[i_neuron].soma().profile_points())
 
         # Morphology type
         morphology_type = neuron.morphology_type().name()
@@ -180,24 +199,35 @@ def create_targets(circuit_config,
             soma_mean_radius=soma_mean_radius,
             soma_max_radius=soma_max_radius)
 
-        # add the neuron data to the list
+        # Add the neuron data to the list
         target_data.append(neuron)
 
     # Sample the target randomly
+    print('* Sampling target randomly')
     filtered_target_data = random.sample(set(target_data),
         int((len(target_data) * percent / 100.0)))
 
-    config_file_name = 'random'
+    # Construct the target name
+    target_name = '%s_%fp_random' % (target, float(percent))
 
-    # Write the NeuroRender file
+    # Creating the output directory
+    core.writer.create_directory(output)
+
+    # Write the NeuroRender configuration file
     print('* Writing rendering config')
     core.write_neurorender_config(
-        filtered_target_data, config_file_name=config_file_name, output_path=output)
+        filtered_target_data, config_file_name=target_name, output_path=output)
+
+    # Write the target file
+    print('* Writing target file')
+    core.write_target_file(
+        filtered_target_data, target_name=target_name,
+        target_file_name=target_name, output_path=output)
 
 
-################################################################################
+####################################################################################################
 # @run
-################################################################################
+####################################################################################################
 def run():
     """Run the script.
     """
@@ -213,8 +243,8 @@ def run():
                    int(argument_list.number_tags))
 
 
-################################################################################
+####################################################################################################
 # @__main__
-################################################################################
+####################################################################################################
 if __name__ == "__main__":
     run()

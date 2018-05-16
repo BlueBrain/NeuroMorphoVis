@@ -24,29 +24,60 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-# imports
-import math
 
-
-################################################################################
-# @get_minimum_and_maximum_radii
-################################################################################
-def get_minimum_and_maximum_radii(profile_points):
-    """Get the minimum and maximum radii for a cell based on their profile points.
-
-    :param profile_points:
-        Morphology soma profile points.
-    :return:
-        Minimum and maximum radii of the neuron.
-    """
-
-    min_radius = 1e32
-    max_radius = -1e32
-    for profile_point in profile_points:
-        x = profile_point[0]
-        y = profile_point[1]
-        z = profile_point[2]
-        radius = math.sqrt(x * x + y * y + z * z)
-        if radius < min_radius: min_radius = radius
-        if radius > max_radius: max_radius = radius
-    return min_radius, max_radius
+# Morphology types
+MTYPES = ['L1_DAC',     ### Layer 1
+          'L1_NGC-DA',
+          'L1_NGC-SA',
+          'L1_HAC',
+          'L1_DLAC',
+          'L1_SLAC',
+          'L23_PC',     ### Layer 2/3
+          'L23_MC',
+          'L23_BTC',
+          'L23_DBC',
+          'L23_BP',
+          'L23_NGC',
+          'L23_LBC',
+          'L23_NBC',
+          'L23_SBC',
+          'L23_ChC',
+          'L4_PC',      ### Layer 4
+          'L4_SP',
+          'L4_SS',
+          'L4_MC',
+          'L4_BTC',
+          'L4_DBC',
+          'L4_BP',
+          'L4_NGC',
+          'L4_LBC',
+          'L4_NBC',
+          'L4_SBC',
+          'L4_ChC',
+          'L5_TTPC1',   ### Layer 5
+          'L5_TTPC2',
+          'L5_UTPC',
+          'L5_STPC',
+          'L5_MC',
+          'L5_BTC',
+          'L5_DBC',
+          'L5_BP',
+          'L5_NGC',
+          'L5_LBC',
+          'L5_NBC',
+          'L5_SBC',
+          'L5_ChC',
+          'L6_TPC_L1',  ### Layer 6
+          'L6_TPC_L4',
+          'L6_UTPC',
+          'L6_IPC',
+          'L6_BPC',
+          'L6_MC',
+          'L6_BTC',
+          'L6_DBC',
+          'L6_BP',
+          'L6_NGC',
+          'L6_LBC',
+          'L6_NBC',
+          'L6_SBC',
+          'L6_ChC']
