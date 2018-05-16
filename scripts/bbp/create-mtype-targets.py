@@ -1,11 +1,25 @@
-"""
-@ create_exemplars_targets.py:
-    Creates exemplars targets.
-"""
+####################################################################################################
+# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the
+# GNU Lesser General Public License version 3.0 as published by the Free Software Foundation.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library;
+# if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301 USA.
+####################################################################################################
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2017, Blue Brain Project / EPFL"
-__version__     = "0.1.0"
+__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
+__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
+__version__     = "1.0.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -126,17 +140,19 @@ def create_targets(circuit_config,
     # Create a list of selected exemplars
     exemplars_list = []
 
+    # Do it per mtype
     for ntag, mtype in enumerate(core.consts.MTYPES):
 
-        # all the cells with that specific mtype
+        # All the cells with that specific mtype
         mtype_cells = []
 
-        # get all the cells with that specific mtype
+        # Get all the cells with that specific mtype
         for i_neuron, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
 
-            # fetch neuron data
+            # Fetch neuron mtype
             morphology_type = neuron.morphology_type().name()
 
+            # Filter by mtype
             if morphology_type == mtype:
 
                 # Position
