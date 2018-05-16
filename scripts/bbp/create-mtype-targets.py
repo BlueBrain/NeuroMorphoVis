@@ -1,25 +1,11 @@
-####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
-#               Marwan Abdellah <marwan.abdellah@epfl.ch>
-#
-# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
-#
-# This library is free software; you can redistribute it and/or modify it under the terms of the
-# GNU Lesser General Public License version 3.0 as published by the Free Software Foundation.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along with this library;
-# if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301 USA.
-####################################################################################################
+"""
+@ create_exemplars_targets.py:
+    Creates exemplars targets.
+"""
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
-__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = "1.0.0"
+__copyright__   = "Copyright (c) 2017, Blue Brain Project / EPFL"
+__version__     = "0.1.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -32,28 +18,29 @@ import core.utilities
 import core.consts
 
 
-####################################################################################################
+################################################################################
 # @parse_command_line_arguments
-####################################################################################################
+################################################################################
 def parse_command_line_arguments():
-    """Parse the input arguments to the script.
+    """Parses the input arguments to the script.
 
     :return:
-        Arguments list.
+        Argument list.
     """
-    # add all the options.
+
+    # Add all the options.
     parser = argparse.ArgumentParser()
-    help = 'BBP circuit config file'
+    help = 'circuit config file'
     parser.add_argument('--circuit-config',
                         action='store', dest='circuit_config', help=help)
 
-    help = 'Cell target, default [mc2_Column]'
+    help = 'cell target, default [mc2_Column]'
     parser.add_argument('--target',
                         action='store', default='mc2_Column', dest='target', help=help)
 
-    help = 'Number of samples per exemplar, default [1], if [n] then get all the neurons'
-    parser.add_argument('--number-samples',
-                        action='store', default='1', dest='number_samples', help=help)
+    help = 'percentage of the target, default 100'
+    parser.add_argument('--percent',
+                        action='store', default=100.0, dest='percent', help=help)
 
     help = 'output path'
     parser.add_argument('--output',
@@ -63,26 +50,31 @@ def parse_command_line_arguments():
     return parser.parse_args()
 
 
-####################################################################################################
+################################################################################
 # @get_morphology_exemplars
-####################################################################################################
+################################################################################
 def create_targets(circuit_config,
                    output,
                    target='mc2_Column',
-                   nsamples=1):
-    """Returns a list of exemplars where each one represent a category of the different morphologies.
+                   percent=100.0):
+    """Returns a list of exemplars where each one represent a category of the different
+    morphologies.
 
-    If the random selection flag is set, then they will be picked up randomly, otherwise, the
-    first one of each selected type will be picked.
+    If the random selection flag is set, then they will be picked up randomly, otherwise, the first
+    one of each selected type will be picked.
 
     :param circuit_config:
-        BBP circuit config.
-    :param output:
-        Output directory.
+        Circuit configuration.
     :param target:
-        Selected target.
-    :param nsamples:
-        Number of samples per exemplar.
+        Input target.
+    :param percent:
+        Percentage.
+    :param output:
+        Output path.
+    :param number_tags:
+        The number of tags.
+    :return:
+        A Neuron list of all the cells created for the specified target.
     """
 
     try:
@@ -128,16 +120,16 @@ def create_targets(circuit_config,
     brain.neuron.Morphology(uris)
     morphologies = circuit.load_morphologies(gids, circuit.Coordinates.local)
 
-    # Create a list of selected exemplars
-    exemplars_list = list()
+    # Creating the output directory
+    core.writer.create_directory(output)
 
-    # Filtering
-    print('* Filtering circuit')
-    ntags = len(core.consts.MTYPES)
+    # Create a list of selected exemplars
+    exemplars_list = []
+
     for ntag, mtype in enumerate(core.consts.MTYPES):
 
         # all the cells with that specific mtype
-        mtype_cells = list()
+        mtype_cells = []
 
         # get all the cells with that specific mtype
         for i_neuron, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
@@ -152,7 +144,7 @@ def create_targets(circuit_config,
 
                 # Neuron orientation
                 orientation = str(neuron.orientation())
-                orientation = orientation.replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
+                orientation = orientation .replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
 
                 # Transformation
                 transform = circuit.transforms({int(gid)})[0]
@@ -177,9 +169,6 @@ def create_targets(circuit_config,
                 soma_min_radius, soma_max_radius = core.utilities.get_minimum_and_maximum_radii(
                     morphologies[i_neuron].soma().profile_points())
 
-                # Morphology type
-                morphology_type = neuron.morphology_type().name()
-
                 # Morphology label
                 morphology_label = neuron.morphology_label()
 
@@ -201,21 +190,31 @@ def create_targets(circuit_config,
                     soma_mean_radius=soma_mean_radius,
                     soma_max_radius=soma_max_radius)
 
-                # Add the neuron data to the list
+                # add the neuron data to the list
                 mtype_cells.append(neuron)
 
-        # Select a random cell and add it to the exemplars list
-        if nsamples < len(mtype_cells):
-            sampled_exemplars = random.sample(mtype_cells, nsamples)
-            exemplars_list.extend(sampled_exemplars)
-        else:
-            exemplars_list.extend(mtype_cells)
+        # Random sampling
+        sampled_mtypes = random.sample(set(mtype_cells), int((len(mtype_cells) * percent / 100.0)))
 
-    # Creating the output directory
-    core.writer.create_directory(output)
+        # Construct the target name
+        target_name = '%s_%s_%fp_random' % (target, mtype, float(percent))
+
+        # Write the NeuroRender configuration file
+        print('* Writing rendering config')
+        core.write_neurorender_config(
+            sampled_mtypes, config_file_name=target_name, output_path=output)
+
+        # Write the target file
+        print('* Writing target file')
+        core.write_target_file(
+            sampled_mtypes, target_name=target_name,
+            target_file_name=target_name, output_path=output)
+
+        # Extend the exemplars list
+        exemplars_list.extend(sampled_mtypes)
 
     # Construct the target name
-    target_name = 'Exemplars_%s_%d' % (target, ntags)
+    target_name = '%s_mtypes_%fp_random' % (target, float(percent))
 
     # Write the NeuroRender configuration file
     print('* Writing rendering config')
@@ -229,29 +228,26 @@ def create_targets(circuit_config,
         target_file_name=target_name, output_path=output)
 
 
-####################################################################################################
+################################################################################
 # @run
-####################################################################################################
+################################################################################
 def run():
-    """
-    Runs the script.
-    :return:
+    """Runs the script.
     """
 
-    # Parse the arguments
+    # parse the arguments
     argument_list = parse_command_line_arguments()
 
-    if argument_list.number_samples == 'n':
-        nsamples = 100000000000
-    else:
-        nsamples = int(argument_list.number_samples)
+    # create targets
+    create_targets(
+        argument_list.circuit_config,
+        argument_list.output,
+        target=argument_list.target,
+        percent=float(argument_list.percent))
 
-    # Create targets
-    create_targets(argument_list.circuit_config, argument_list.output, nsamples=nsamples)
 
-
-####################################################################################################
+################################################################################
 # @__main__
-####################################################################################################
+################################################################################
 if __name__ == "__main__":
     run()
