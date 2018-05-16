@@ -139,80 +139,93 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Morphology reconstruction algorithm
-    arg_help = 'Morphology reconstruction algorithm, by default \'connected-sections\''
+    arg_options = ['connected-sections', '(connected-sections-repaired)', 'disconnected-sections',
+                   'disconnected-segments', 'articulated-sections']
+    arg_help = 'Morphology reconstruction algorithm. \n' \
+               'Options: %s' % arg_options
+    parser.add_argument(Args.MORPHOLOGY_RECONSTRUCTION_ALGORITHM,
+                        action='store', default='connected-sections',
+                        help=arg_help)
+
+    # Morphology skeleton
+    arg_options = ['(original)', 'tapered', 'zigzag', 'tapered-zigzag']
+    arg_help = 'Morphology skeleton style. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.MORPHOLOGY_SKELETON,
                         action='store', default='original',
                         help=arg_help)
 
-    # Morphology skeleton
-    arg_help = 'Morphology skeleton: original, tapered, zigzag or tapered-zigza, by default ' \
-               '\'original\''
-    parser.add_argument(Args.MORPHOLOGY_RECONSTRUCTION_ALGORITHM, action='store',
-        default='connected-sections', help=arg_help)
-
     # Soma building using a specific approach
-    arg_help = 'Soma representation (ignore/sphere/profile), profile by default.'
+    arg_options = ['ignore', 'sphere', '(profile)']
+    arg_help = 'Soma representation in the reconstructed morphology. \n' \
+               'Options %s' % arg_options
     parser.add_argument(Args.SOMA_REPRESENTATION,
                         action='store', default='profile',
                         help=arg_help)
 
     # Axon building
-    arg_help = 'Ignore building the axon, by default False. This is recommended for mesh ' \
-               'reconstruction as the axon takes few minutes in certain cases to be meshes.'
+    arg_help = 'Ignore reconstructing the axon.'
     parser.add_argument(Args.IGNORE_AXON,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Basal dendrites
-    arg_help = 'Ignore building basal dendrites, by default False.'
+    arg_help = 'Ignore reconstructing basal dendrites.'
     parser.add_argument(Args.IGNORE_BASAL_DENDRITES,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Apical dendrite
-    arg_help = 'Ignore building apical dendrites, by default False.'
+    arg_help = 'Ignore reconstructing apical dendrites.'
     parser.add_argument(Args.IGNORE_APICAL_DENDRITES,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Build spines
-    arg_help = 'Build the spines (ignore, circuit or random), by default \'ignore\''
+    arg_options = ['(ignore)', 'circuit', 'random']
+    arg_help = 'Build the spines and integrate them with the mesh. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.SPINES,
                         action='store', default='ignore',
                         help=arg_help)
 
     # Spines quality
-    arg_help = 'The quality of the spine meshes (hq or lq), by default \'lq\''
+    arg_options = ['(lq)', 'hq']
+    arg_help = 'The quality of the spine meshes.'
     parser.add_argument(Args.SPINES_QUALITY,
                         action='store', default='lq',
                         help=arg_help)
 
     # Random spines percentage
-    arg_help = 'The percentage of the spines that are added randomly (0-100), by default 50.'
+    arg_help = 'The percentage of the spines that are added randomly (0-100). \n' \
+               'Default 50.'
     parser.add_argument(Args.RANDOM_SPINES_PERCENTAGE,
                         action='store', type=float, default=50.0,
                         help=arg_help)
 
     # Nucleus
-    arg_help = 'Add nucleus mesh'
+    arg_help = 'Add nucleus mesh.'
     parser.add_argument(Args.ADD_NUCLEUS,
                         action='store_true', default=False,
                         help=arg_help)
 
     # Axon branching branching order
-    arg_help = 'Maximum branching order for the axon [1, infinity], by default 5.'
+    arg_help = 'Maximum branching order for the axon (1, infinity]). \n' \
+               'Default 5.'
     parser.add_argument(Args.AXON_BRANCHING_ORDER,
                         action='store', type=int, default=5,
                         help=arg_help)
 
     # Basal dendrites branching order
-    arg_help = 'Maximum branching order for the basal dendrites [1, infinity], by default infinity.'
+    arg_help = 'Maximum branching order for the basal dendrites [(1, infinity). \n' \
+               'Default infinity.'
     parser.add_argument(Args.BASAL_DENDRITES_BRANCHING_ORDER,
                         action='store', type=int, default=10000000000,
                         help=arg_help)
 
     # Apical dendrite branching order
-    arg_help = 'Maximum branching order for the apical dendrite [1, infinity]. by default infinity.'
+    arg_help = 'Maximum branching order for the apical dendrite (1, infinity).\n' \
+               'Default infinity.'
     parser.add_argument(Args.APICAL_DENDRITES_BRANCHING_ORDER,
                         action='store', type=int, default=10000000000,
                         help=arg_help)
