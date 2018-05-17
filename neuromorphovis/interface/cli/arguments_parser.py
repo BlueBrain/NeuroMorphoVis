@@ -194,34 +194,6 @@ def parse_command_line_arguments():
                                  action='store_true', default=False,
                                  help=arg_help)
 
-    # Build spines
-    arg_options = ['(ignore)', 'circuit', 'random']
-    arg_help = 'Build the spines and integrate them with the mesh. \n' \
-               'Options: %s' % arg_options
-    skeletonization.add_argument(Args.SPINES,
-                                 action='store', default='ignore',
-                                 help=arg_help)
-
-    # Spines quality
-    arg_options = ['(lq)', 'hq']
-    arg_help = 'The quality of the spine meshes.'
-    skeletonization.add_argument(Args.SPINES_QUALITY,
-                                 action='store', default='lq',
-                                 help=arg_help)
-
-    # Random spines percentage
-    arg_help = 'The percentage of the spines that are added randomly (0-100). \n' \
-               'Default 50.'
-    skeletonization.add_argument(Args.RANDOM_SPINES_PERCENTAGE,
-                                 action='store', type=float, default=50.0,
-                                 help=arg_help)
-
-    # Nucleus
-    arg_help = 'Add nucleus mesh.'
-    skeletonization.add_argument(Args.ADD_NUCLEUS,
-                                 action='store_true', default=False,
-                                 help=arg_help)
-
     # Axon branching branching order
     arg_help = 'Maximum branching order for the axon (1, infinity). \n' \
                'Default 5.'
@@ -273,6 +245,40 @@ def parse_command_line_arguments():
     skeletonization.add_argument(Args.MORPHOLOGY_BEVEL_SIDES,
                                  action='store', type=int, default=16,
                                  help=arg_help)
+
+    ################################################################################################
+    # Spines and nucleus arguments
+    ################################################################################################
+    spines_nuclues = parser.add_argument_group('Spines - Nucleus', 'Spines - Nucleus')
+
+    # Build spines
+    arg_options = ['(ignore)', 'circuit', 'random']
+    arg_help = 'Build the spines and integrate them with the mesh. \n' \
+               'Options: %s' % arg_options
+    spines_nuclues.add_argument(Args.SPINES,
+                                 action='store', default='ignore',
+                                 help=arg_help)
+
+    # Spines quality
+    arg_options = ['(lq)', 'hq']
+    arg_help = 'The quality of the spine meshes. \n' \
+               'Options: %s' % arg_options
+    spines_nuclues.add_argument(Args.SPINES_QUALITY,
+                                action='store', default='lq',
+                                help=arg_help)
+
+    # Random spines percentage
+    arg_help = 'The percentage of the spines that are added randomly (0-100). \n' \
+               'Default 50.'
+    spines_nuclues.add_argument(Args.RANDOM_SPINES_PERCENTAGE,
+                                action='store', type=float, default=50.0,
+                                help=arg_help)
+
+    # Nucleus
+    arg_help = 'Add nucleus mesh.'
+    spines_nuclues.add_argument(Args.ADD_NUCLEUS,
+                                action='store_true', default=False,
+                                help=arg_help)
 
     ################################################################################################
     # Materials and colors arguments
