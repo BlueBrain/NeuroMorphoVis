@@ -139,8 +139,11 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Morphology reconstruction algorithm
-    arg_options = ['connected-sections', '(connected-sections-repaired)', 'disconnected-sections',
-                   'disconnected-segments', 'articulated-sections']
+    arg_options = '[\'connected-sections\', \n' \
+                  '\t  \'(connected-sections-repaired)\', \n' \
+                  '\t  \'disconnected-sections\', \n' \
+                  '\t  \'disconnected-segments\', \n' \
+                  '\t  \'articulated-sections\']'
     arg_help = 'Morphology reconstruction algorithm. \n' \
                'Options: %s' % arg_options
     parser.add_argument(Args.MORPHOLOGY_RECONSTRUCTION_ALGORITHM,
@@ -210,7 +213,7 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Axon branching branching order
-    arg_help = 'Maximum branching order for the axon (1, infinity]). \n' \
+    arg_help = 'Maximum branching order for the axon (1, infinity). \n' \
                'Default 5.'
     parser.add_argument(Args.AXON_BRANCHING_ORDER,
                         action='store', type=int, default=5,
@@ -301,14 +304,24 @@ def parse_command_line_arguments():
                         help=arg_help)
 
     # Articulation color, in case of using articulated sections method
-    arg_help = 'Articulations color for the articulated sections method, by default Yellow.'
+    arg_help = 'Articulations color. \n' \
+               'Valid only for the articulated-sections. \n' \
+               'Default Yellow.'
     parser.add_argument(Args.ARTICULATIONS_COLOR,
                         action='store', default='1.0_1.0_0.0',
                         help=arg_help)
 
     # Material used to render the neuron
-    arg_help = 'The material (or shader, or shading mode) used to render the data, by default ' \
-               'lambert.'
+    arg_options = '(lambert) \n' \
+                  '\t electron-light \n' \
+                  '\t electron-dark \n' \
+                  '\t super-electron-light \n' \
+                  '\t super-electron-dark \n' \
+                  '\t shadow \n' \
+                  '\t flat \n' \
+                  '\t subsurface-scattering'
+    arg_help = 'Shading mode or material. \n' \
+               'Options: %s' % arg_options
     parser.add_argument(Args.SHADER,
                         action='store', default='lambert',
                         help=arg_help)
