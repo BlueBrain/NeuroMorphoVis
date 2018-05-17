@@ -272,8 +272,7 @@ class Args:
     # The size of a close up view in microns
     CLOSE_UP_DIMENSIONS = '--close-up-dimensions'
 
-    # The resolution of full-view (mid-shot/wide-shot) images
-    FULL_VIEW_RESOLUTION = '--full-view-resolution'
+    # The resolution of full-view (mid-shot or wide-shot) images
     FULL_VIEW_RESOLUTION = '--full-view-resolution'
 
     # The resolution of close-up view images
