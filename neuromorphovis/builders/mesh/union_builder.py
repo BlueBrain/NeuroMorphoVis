@@ -463,12 +463,8 @@ class UnionBuilder:
         # A list that keeps references to all the created meshes of the neuron
         neuron_meshes = []
 
-        preserve_topology_at_connections = \
-            True if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED \
-            else False
         soma_builder_object = nmv.builders.SomaBuilder(
-            morphology=self.morphology, options=self.options,
-            preserve_topology_at_connections=preserve_topology_at_connections)
+            morphology=self.morphology, options=self.options)
 
         # Reconstruct the mesh of the soma
         self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(
