@@ -480,7 +480,7 @@ def verify_axon_connection_to_soma(morphology):
     """
 
     # Report the verification process
-    nmv.logger.info('\t* Axon connectivity to soma')
+    nmv.logger.info('Axon connectivity to soma')
 
     # Ensure that presence of the axon in the morphology
     if morphology.axon is None:
@@ -528,18 +528,20 @@ def verify_axon_connection_to_soma(morphology):
                 soma_radius=morphology.soma.mean_radius):
 
             # Report the issue
-            nmv.logger.detail('WARNING: The axon @ section [%d] is intersecting with apical dendrite'
-                  % morphology.axon.id)
+            nmv.logger.detail(
+                'WARNING: The axon @ section [%d] is intersecting with apical dendrite'
+                % morphology.axon.id)
 
             # Find the intersection sample
             nearest_sample = find_nearest_apical_dendritic_sample_to_axon(morphology)
 
             # Report the repair
-            nmv.logger.detail('REPAIRING: The axon @ section [%d] is re-connected to section '
-                  '[%d, %s] @ sample [%s]' % (morphology.axon.id,
-                                              nearest_sample.section.id,
-                                              nearest_sample.section.get_type_string(),
-                                              str(nearest_sample.id)))
+            nmv.logger.detail(
+                'REPAIRING: The axon @ section [%d] is re-connected to section '
+                '[%d, %s] @ sample [%s]' % (morphology.axon.id,
+                                            nearest_sample.section.id,
+                                            nearest_sample.section.get_type_string(),
+                                            str(nearest_sample.id)))
 
             # Mark the axon disconnected from the soma
             morphology.axon.connected_to_soma = False
