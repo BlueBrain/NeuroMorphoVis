@@ -455,7 +455,10 @@ def parse_command_line_arguments():
     ################################################################################################
     # Geometry export arguments
     ################################################################################################
-    export_args = parser.add_argument_group('Export', 'Export')
+    export_args = parser.add_argument_group(
+        'Export Options',
+        'You can export morphology skeletons or reconstructed meshes in various \n'
+        'file formats.')
 
     # Export the morphologies in .SWC format
     arg_help = 'Exports the morphology to (.SWC) file. \n'
