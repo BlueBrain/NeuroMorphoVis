@@ -397,6 +397,79 @@ def create_lambert_ward_material(name,
 
 
 ####################################################################################################
+# @create_glossy_material
+####################################################################################################
+def create_glossy_material(name,
+                           color=nmv.consts.Color.WHITE):
+    """
+    Creates a glossy shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    if not current_scene.render.engine == 'CYCLES':
+        current_scene.render.engine = 'CYCLES'
+
+    # Import the material from the library
+    material_reference = import_shader(shader_name='glossy')
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[0] = color[0]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[1] = color[1]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[2] = color[2]
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
+# @create_glossy_material
+####################################################################################################
+def create_glossy_bumpy_material(name,
+                           color=nmv.consts.Color.WHITE):
+    """
+    Creates a glossy bumpy shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    if not current_scene.render.engine == 'CYCLES':
+        current_scene.render.engine = 'CYCLES'
+
+    # Import the material from the library
+    material_reference = import_shader(shader_name='glossy-bumpy')
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[0] = color[0]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[1] = color[1]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[2] = color[2]
+
+    # Return a reference to the material
+    return material_reference
+
+####################################################################################################
 # @create_material
 ####################################################################################################
 def create_material(name,
@@ -437,6 +510,14 @@ def create_material(name,
     # Shadow
     elif material_type == nmv.enums.Shading.SHADOW:
         return create_shadow_material(name='%s_color' % name, color=color)
+
+    # Glossy
+    elif material_type == nmv.enums.Shading.GLOSSY:
+        return create_glossy_material(name='%s_color' % name, color=color)
+
+    # Glossy bumpy
+    elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
+        return create_glossy_bumpy_material(name='%s_color' % name, color=color)
 
     # Flat
     elif material_type == nmv.enums.Shading.FLAT:

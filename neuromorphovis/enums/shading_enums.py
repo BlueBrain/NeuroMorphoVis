@@ -47,6 +47,12 @@ class Shading:
     # Toon shader
     TOON = 'TOON_SHADER'
 
+    # Glossy shader
+    GLOSSY = 'GLOSSY_SHADER'
+
+    # Glossy bympy shader
+    GLOSSY_BUMPY = 'GLOSSY_SHADER'
+
     # Electron (light) shader
     ELECTRON_LIGHT = 'ELECTRON_LIGHT_SHADER'
 
@@ -89,6 +95,10 @@ class Shading:
             return Shading.SUPER_ELECTRON_DARK
         elif shader_type == 'shadow':
             return Shading.SHADOW
+        elif shader_type == 'glossy':
+            return Shading.GLOSSY
+        elif shader_type == 'glossy-bumpy':
+            return Shading.GLOSSY_BUMPY
         elif shader_type == 'lambert':
             return Shading.LAMBERT_WARD
         else :
@@ -117,6 +127,14 @@ class Shading:
         (ELECTRON_DARK,
          'Electron Dark',
          "Use Dark Electron Shader"),
+
+        (GLOSSY,
+         'Glossy',
+         "Glossy Bumpy Shader"),
+
+        (GLOSSY_BUMPY,
+         'Glossy Bumpy',
+         "Glossy Bumpy Shader"),
 
         (SHADOW,
          'Shadow',
