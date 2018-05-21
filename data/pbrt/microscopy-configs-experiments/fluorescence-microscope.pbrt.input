@@ -1,0 +1,104 @@
+################################################################################
+# Physically-based Fluorescence Microscope Simulation 
+# Thesis Title: In Silico Brain Imaging
+# (C) Marwan Abdellah <MARWAN.ABDELLAH@EPFL.CH> (2014 - 2017)
+# (C) Blue Brain Project (BBP) / Ecole polytechnique federale de Lausanne (EPFL) 
+################################################################################
+    
+# @Frustum #####################################################################
+# For further detais, look at gluLookAt()
+# [ eyeX eyeY eyeZ ]  [ pX pY pZ ]  [ normX normY normZ ]
+LookAt X_CAMERA 0.0 Z_CAMERA  0.0 0.0 0.0  0.0 1.0 0.0 
+
+# @Camera ######################################################################
+Camera "telecentric"
+    "float screenwindow" [X_MIN_SCREEN X_MAX_SCREEN Y_MIN_SCREEN Y_MAX_SCREEN]
+    "float focaldistance" [FOCAL_DISTANCE]
+    "float lensradius" [30]
+    
+# @Film ########################################################################
+# Resolutions: [X0 / Y0][X1 / Y1][X2 / Y2][X3 / Y3][X4 / Y4]
+Film "image"
+    "integer xresolution" [X_RESOLUTION]
+    "integer yresolution" [Y_RESOLUTION]
+    "string filename" "IMAGE_NAME"
+    
+# @Sampler #####################################################################
+Sampler "lowdiscrepancy"
+    "integer pixelsamples" [4]
+
+# @Volume Integrator ###########################################################
+VolumeIntegrator "singlefluorescence"
+    "float stepsize" [STEP_SIZE]
+    
+# World
+WorldBegin
+
+    # @Light Sheet Selective-plane Illumination ################################
+    AttributeBegin
+        AreaLightSource "collimated"
+            "string units" "radiance"
+            "spectrum photons" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/light-impulses/1e2/impulse-450.spd"
+        
+        Translate X_LIGHT_OFFSET 0.0 Z_LIGHT_OFFSET
+        Rotate Y_LIGHT_ROTATION 0 1 0
+        Shape "rectangle"
+            "float x" [X_LIGHT_SIZE]
+            "float y" [Y_LIGHT_SIZE]
+    AttributeEnd
+
+    # @Binary Volume Grid ######################################################
+    AttributeBegin
+        Volume "fluorescentannotatedgrid"
+            # Structure
+            "integer ntags" [6]
+            "point p0" [P0_X P0_Y P0_Z]
+            "point p1" [P1_X P1_Y P1_Z]
+            "string prefix" "VOLUME_PREFIX"
+            
+            # color data 
+            "spectrum fex_1" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_1" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_1" [7.85]
+            "float c_1" [1e-6]
+            "float yield_1" [0.99]
+            "float gf_1" [0.0]
+
+            "spectrum fex_2" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_2" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_2" [7.85]
+            "float c_2" [1e-6]
+            "float yield_2" [0.99]
+            "float gf_2" [0.0]
+
+            "spectrum fex_3" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_3" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_3" [7.85]
+            "float c_3" [1e-6]
+            "float yield_3" [0.99]
+            "float gf_3" [0.0]
+
+            "spectrum fex_4" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_4" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_4" [7.85]
+            "float c_4" [1e-6]
+            "float yield_4" [0.5]
+            "float gf_4" [0.0]
+
+            "spectrum fex_5" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_5" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_5" [7.85]
+            "float c_5" [1e-6]
+            "float yield_5" [0.9]
+            "float gf_5" [0.0]
+            
+            "spectrum fex_6" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/excitation.spd"
+            "spectrum fem_6" "/gpfs/bbp.cscs.ch/project/proj3/data/pbrt-data/fluorophore-spectra/alexa-488/emission.spd"
+            "float epsilon_5" [7.85]
+            "float c_6" [1e-6]
+            "float yield_6" [0.9]
+            "float gf_6" [0.0]
+    AttributeEnd
+
+# World
+WorldEnd
