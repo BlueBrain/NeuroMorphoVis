@@ -26,6 +26,7 @@ __status__      = "Production"
 
 
 # Imports
+import sys
 import argparse
 import random
 import core.utilities
@@ -95,16 +96,17 @@ def create_targets(circuit_config,
     try:
         import bbp
     except ImportError:
-        print('ERROR: Cannot import bbp')
+        print('ERROR: Cannot import bbp!')
         exit(0)
 
     try:
         import brain
     except ImportError:
-        print('ERROR: Cannot import brain')
+        print('ERROR: Cannot import brain!')
         exit(0)
 
     # Use the BBP circuit configuration to open a bbp experiment
+    print('* Loading the Blue configuration')
     experiment = bbp.Experiment()
     experiment.open(circuit_config)
 
@@ -135,15 +137,19 @@ def create_targets(circuit_config,
     brain.neuron.Morphology(uris)
     morphologies = circuit.load_morphologies(gids, circuit.Coordinates.local)
 
+    # Compute the transformation once and for all
+    transforms = circuit.transforms(gids)
+
     # A list that will keep the data of all the neurons from the target
     target_data = list()
 
     # Filtering
     print('* Filtering circuit')
-    for i_neuron, gid, neuron in zip(range(len(gids) + 1), gids, neurons):
+    circuit_size = len(gids)
+    for i_neuron, gid, neuron in zip(range(circuit_size + 1), gids, neurons):
 
-        # Tag
-        tag = random.randint(1, number_tags)
+        # Progress
+        sys.stdout.write('Progress : [%d/%d]\r' % (i_neuron, circuit_size))
 
         # Position
         position = str(neuron.position()).replace('[ ', '').replace(' ]', '')
@@ -153,7 +159,7 @@ def create_targets(circuit_config,
             str(neuron.orientation()).replace('[ ', '').replace(' ]', '').replace('0 1 0 ', '')
 
         # Transformation
-        transform = circuit.transforms({int(gid)})[0]
+        transform = transforms[i_neuron]
         transform_string = ''
         for i in [0, 1, 2, 3]:
             for j in [0, 1, 2, 3]:
@@ -204,11 +210,10 @@ def create_targets(circuit_config,
 
     # Sample the target randomly
     print('* Sampling target randomly')
-    filtered_target_data = random.sample(set(target_data),
-        int((len(target_data) * percent / 100.0)))
+    sampled_target_data = random.sample(set(target_data), int((len(target_data) * percent / 100.0)))
 
     # Construct the target name
-    target_name = '%s_%fp_random' % (target, float(percent))
+    target_name = 'RANDOM_%s_%.2fp' % (target, float(percent))
 
     # Creating the output directory
     core.writer.create_directory(output)
@@ -216,13 +221,35 @@ def create_targets(circuit_config,
     # Write the NeuroRender configuration file
     print('* Writing rendering config')
     core.write_neurorender_config(
-        filtered_target_data, config_file_name=target_name, output_path=output)
+        sampled_target_data, config_file_name=target_name, output_path=output)
 
-    # Write the target file
-    print('* Writing target file')
+    # Write the principal target file
+    print('* Writing principal target file')
     core.write_target_file(
-        filtered_target_data, target_name=target_name,
-        target_file_name=target_name, output_path=output)
+        sampled_target_data, target_name=target_name, target_file_name=target_name,
+        output_path=output)
+
+    # Write the tagged target files
+    print('* Writing group target file')
+    for i_tag in range(1, number_tags + 1):
+
+        # Tag target name
+        tag_target_name = '%s_%d' % (target_name, i_tag)
+
+        # Tag target data
+        tag_target_data = list()
+
+        # Filter
+        for i_neuron in sampled_target_data:
+
+            # Add the neuron to the target
+            if int(i_neuron.tag) == i_tag:
+                tag_target_data.append(i_neuron)
+
+        # Write the output
+        core.write_target_file(
+            tag_target_data, target_name=tag_target_name, target_file_name=tag_target_name,
+            output_path=output)
 
 
 ####################################################################################################

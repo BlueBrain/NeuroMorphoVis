@@ -53,7 +53,7 @@ class SlurmConfiguration:
         self.num_cpus_per_task = 1
 
         # Running partition
-        self.partition = 'prod'
+        self.partition = 'interactive'
 
         # Required memory
         self.memory_mb = '3000'
