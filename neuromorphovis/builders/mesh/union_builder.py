@@ -211,8 +211,8 @@ class UnionBuilder:
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_sections, 1.0])
+        #nmv.skeleton.ops.apply_operation_to_morphology(
+        #    *[self.morphology, nmv.skeleton.ops.resample_sections, 1.0])
 
         # Create a list that keeps references to the meshes of all the connected pieces of the
         # arbors of the mesh.
