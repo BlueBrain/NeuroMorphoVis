@@ -253,6 +253,148 @@ def extrude_connected_sections(section,
 
 
 ####################################################################################################
+# @draw_connected_sections
+####################################################################################################
+def draw_connected_sections(section, name,
+                            poly_line_data=[],
+                            sections_objects=[],
+                            secondary_sections=[],
+                            branching_level=0,
+                            max_branching_level=nmv.consts.Math.INFINITY,
+                            material_list=None,
+                            bevel_object=None,
+                            fixed_radius=None,
+                            transform=None,
+                            repair_morphology=False,
+                            caps=False,
+                            render_frame=False,
+                            frame_destination=None,
+                            camera=None,
+                            connect_to_soma=False,
+                            bridge_to_soma=False):
+    """Draw a list of sections connected together as a poly-line.
+
+    :param section:
+        Section root.
+    :param poly_line_data:
+        A list of lists containing the data of the poly-line format.
+    :param sections_objects:
+        A list that should contain all the drawn section objects.
+    :param secondary_sections:
+        A list of the secondary sections along the arbor.
+    :param branching_level:
+        Current branching level.
+    :param max_branching_level:
+        Maximum branching level the section can grow up to, infinity.
+    :param name:
+        Section name.
+    :param material_list:
+        A list of materials for random coloring of the section.
+    :param bevel_object:
+        A given bevel object to scale the section.
+    :param fixed_radius:
+        A fixed radius for each sample in the section, or None.
+    :param transform:
+        Transform from local and circuit coordinates.
+    :param repair_morphology:
+        Apply some filters to repair the morphology during the poly-line construction.
+    :param caps:
+        A flag to close the section caps or not.
+    :param render_frame:
+        A flag to render a progressive frame.
+    :param frame_destination:
+        The directory where the frame will be dumped.
+    :param camera:
+        A given camera to render the frame.
+    :param connect_to_soma:
+        Connect the section to the soma origin, False by default.
+    :param bridge_to_soma:
+        Bridge the root section to the soma.
+    """
+
+    # Ignore the drawing if the section is None
+    if section is None:
+        return
+
+    # Increment the branching level
+    branching_level += 1
+
+    # Verify if this is the last section along the arbor or not
+    is_last_section = False
+    if branching_level >= max_branching_level or not section.has_children():
+        is_last_section = True
+
+    # Verify if this a continuous section or not
+    is_continuous = True
+    if len(poly_line_data) == 0:
+        is_continuous = False
+        secondary_sections.append(section)
+
+    # Get a list of all the poly-line that corresponds to the given section
+    section_data = nmv.skeleton.ops.get_connected_sections_poly_line(section=section,
+        is_continuous=is_continuous, is_last_section=is_last_section, fixed_radius=fixed_radius,
+        transform=transform, process_terminals=repair_morphology,
+        connect_to_soma=connect_to_soma, bridge_to_soma=bridge_to_soma)
+
+    # Extend the polyline samples for final mesh building
+    poly_line_data.extend(section_data)
+
+    # If the section does not have any children, then draw the section and clean the
+    # poly_line_data list
+    if not section.has_children() or branching_level >= max_branching_level:
+
+        # Section material
+        section_material = None
+        if material_list is not None:
+            if section.id % 2 == 0:
+                section_material = material_list[0]
+            else:
+                section_material = material_list[1]
+
+        # Section name
+        section_name = '%s_%d' % (name, section.id)
+
+        # Draw the section
+        section_object = draw_section_from_poly_line_data(data=poly_line_data,
+            name=section_name, material=section_material, bevel_object=bevel_object, caps=caps)
+
+        # Render frame for progressive rendering
+        if render_frame:
+
+            global progressive_frame_index
+
+            # The file path of the frame
+            frame_file_path = '%s/frame_%s' % (
+                frame_destination, '{0:05d}'.format(progressive_frame_index))
+
+            # Render the image to film
+            # camera_ops.render_scene_to_image(camera, frame_file_path)
+
+            # Increment the progressive frame index
+            progressive_frame_index += 1
+
+        # Add the section object to the sections_objects list
+        sections_objects.append(section_object)
+
+        # Clean the polyline samples list
+        poly_line_data[:] = []
+
+        # If no more branching is required, then exit the loop
+        return
+
+    # Iterate over the children sections and draw them, if any
+    for child in section.children:
+
+        # Draw the children sections
+        draw_connected_sections(section=child, name=name, poly_line_data=poly_line_data,
+            sections_objects=sections_objects, secondary_sections=secondary_sections,
+            branching_level=branching_level, max_branching_level=max_branching_level,
+            material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
+            transform=transform, repair_morphology=repair_morphology, caps=caps,
+            render_frame=render_frame, frame_destination=frame_destination, camera=camera,
+            connect_to_soma=connect_to_soma)
+
+####################################################################################################
 # @draw_disconnected_sections
 ####################################################################################################
 def draw_disconnected_skeleton_sections(section,
