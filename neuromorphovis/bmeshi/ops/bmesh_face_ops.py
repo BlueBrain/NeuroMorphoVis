@@ -186,6 +186,45 @@ def merge_faces_into_one_face(bmesh_object,
 
 
 ####################################################################################################
+# @rotate_face_in_object_towards_point
+####################################################################################################
+def rotate_face_in_object_towards_point(bmesh_object,
+                                        face_index,
+                                        to_point):
+    """Rotate a face in a given object towards a certain point.
+
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face that should be rotated.
+    :param to_point:
+        A point in space where the face should be oriented towards.
+    :return:
+    """
+    # Get the face from its index
+    face = nmv.bmeshi.ops.get_face_from_index(bmesh_object, face_index)
+
+    # Compute the rotation angle and axis and then the rotation matrix
+    face_center = face.calc_center_median()
+
+    # Compute the rotation difference and the rotation quaternion
+    track = to_point - face_center
+    quaternion = face.normal.rotation_difference(track)
+
+    # Compute the rotation matrix
+    rotation_matrix = Matrix.Translation(
+        face_center) * quaternion.to_matrix().to_4x4() * Matrix.Translation(-face_center)
+
+    # Rotate the object
+    matrix_object = rotation_matrix
+
+    # Iterate over all the vertices in the bmesh object
+    for vertex in face.verts[:]:
+
+        # Transform
+        vertex.co = matrix_object * vertex.co
+
+####################################################################################################
 # @rotate_face_from_center_to_point
 ####################################################################################################
 def rotate_face_from_center_to_point(bmesh_object,
@@ -273,6 +312,52 @@ def extrude_face_to_face(bmesh_object,
     # Return a reference to the extruded face
     extruded_face_dict = bmesh.ops.extrude_discrete_faces(bmesh_object, faces=[face])
     return extruded_face_dict['faces'][0]
+
+
+###################################################################################################
+# @extrude_face_to_point
+####################################################################################################
+def extrude_face_to_point(bmesh_object,
+                          face_index,
+                          point):
+    """Extrude a face in a bmesh to a given point.
+
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        Face index.
+    :param point:
+        Target point.
+    :return:
+    """
+
+    # Retrieve the face from its index
+    face = nmv.bmeshi.ops.get_face_from_index(bmesh_object, face_index)
+
+    # Rotate the face
+    rotate_face_in_object_towards_point(bmesh_object, face_index, point)
+
+    # Compute the face center
+    face_center = face.calc_center_median()
+
+    # Get delta
+    delta = point - face_center
+
+    # Get orientation
+    orientation = delta.normalized()
+
+    # Compute the extrusion delta vector
+    extrusion_delta = orientation * delta.length
+
+    # Extrude the face
+    face = nmv.bmeshi.extrude_face_to_face(bmesh_object, face)
+
+    # Translate the extruded face by the extrusion delta vector
+    bmesh.ops.translate(bmesh_object, vec=extrusion_delta, verts=face.verts)
+
+    # Return the index of the extruded face
+    return face.index
+
 
 
 ####################################################################################################

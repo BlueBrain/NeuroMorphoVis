@@ -25,33 +25,31 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
+# System imports
+import sys
 
+# Blender imports
+import core.parsing
 
+################################################################################
+# @ Main
+################################################################################
+if __name__ == "__main__":
 
+    # Get all arguments after the '--'
+    args = sys.argv
+    sys.argv = args[args.index("--") + 0:]
 
+    # Parse the command line arguments
+    args = core.parsing.parse_command_line_arguments()
 
+    # Parse the rendering configuration and return a list of neurons
+    neurons = core.parsing.parse_rendering_configuration(args.config)
 
+    # Load the neurons into the scene
 
-def load_neurons():
-    pass
+    # Setup the camera
 
-def parse_configuration_file():
-    pass
+    # Save the scene
 
-
-# Get a list of neurons
-
-# Parse into a Neuron list
-
-# Load the neurons and assign their materials
-
-# Add lights and other stuff
-
-# Add camera using nmv
-
-# Save the scene (camera)
-
-# Render the scene
-
-# optional to load blend files or ply files
-
+    # Render the scene

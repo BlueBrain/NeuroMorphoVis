@@ -100,7 +100,8 @@ def create_circle(radius=1,
     else:
 
         # Create a circle
-        bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, radius=radius, segments=vertices)
+        bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, diameter=radius, segments=vertices)
+        #bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, radius=radius, segments=vertices)
 
     # Translate it to the specified position
     bmesh.ops.translate(bmesh_circle, verts=bmesh_circle.verts[:], vec=location)
