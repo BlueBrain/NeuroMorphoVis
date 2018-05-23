@@ -105,6 +105,9 @@ class Meshing:
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
 
+        # Extrusion meshing
+        EXTRUSION = 'MESHING_TECHNIQUE_EXTRUSION'
+
         ############################################################################################
         # @__init__
         ############################################################################################
@@ -128,6 +131,10 @@ class Meshing:
             # Bridging
             elif argument == 'bridging':
                 return Meshing.Technique.BRIDGING
+
+            # Extrusion
+            elif argument == 'extrusion':
+                return Meshing.Technique.EXTRUSION
 
             # By default use piecewise-watertight
             else:

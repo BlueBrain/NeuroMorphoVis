@@ -869,3 +869,32 @@ def retrieve_face_vertices_as_list(bmesh_object,
 
     # Return the list
     return vertices_list
+
+
+def scale_face(bmesh_object,
+               face_index,
+               scale_factor):
+
+    # Get a reference to the face and its centroid
+    face = get_face_from_index(bmesh_object, face_index)
+
+    # Get face center
+    face_center = face.calc_center_median()
+
+    # A list of all the vertices of the selected face
+    vertices_list = []
+
+    # Compile the list
+    bmesh_object.faces.ensure_lookup_table()
+    face = bmesh_object.faces[face_index]
+
+    # Append the vertices to the list
+    for vertex in face.verts[:]:
+
+        # Compute the direction from the centro to the vertex
+        direction = (vertex.co - face_center).normalized()
+
+        factor = (vertex.co - face_center).length
+
+        # Compute the mapping point along that direction and set the vertex coordinates to it
+        vertex.co = face_center + direction * scale_factor

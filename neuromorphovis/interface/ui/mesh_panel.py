@@ -95,9 +95,12 @@ class MeshPanel(bpy.types.Panel):
                 'Create a mesh using the bridging method'),
                (nmv.enums.Meshing.Technique.UNION,
                 'Union (Watertight)',
-                'Create a mesh using the union method')],
+                'Create a mesh using the union method'),
+               (nmv.enums.Meshing.Technique.EXTRUSION,
+                'Extrusion (Watertight)',
+               'Create a mesh using the extrusion method (Lassere et al., 2012)')],
         name='Meshing Method',
-        default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+        default=nmv.enums.Meshing.Technique.EXTRUSION)
 
     # Is the soma connected to the first order branches or not !
     bpy.types.Scene.MeshSomaConnection = EnumProperty(
@@ -962,6 +965,16 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             # Create the mesh builder
             mesh_builder = nmv.builders.UnionBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+            # Reconstruct the mesh
+            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
+
+        # Extrusion
+        elif meshing_technique == nmv.enums.Meshing.Technique.EXTRUSION:
+
+            # Create the mesh builder
+            mesh_builder = nmv.builders.ExtrusionBuilder(morphology=nmv.interface.ui_morphology,
+                options=nmv.interface.ui_options)
 
             # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()

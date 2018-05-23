@@ -37,6 +37,7 @@ sys.path.append("%s/../modules" % os.path.dirname(os.path.realpath(__file__)))
 
 # Internal imports
 import neuromorphovis as nmv
+import neuromorphovis.bmeshi
 import neuromorphovis.consts
 import neuromorphovis.geometry
 import neuromorphovis.mesh
@@ -88,35 +89,50 @@ def draw_section_from_poly_line_data(data,
     return section_object
 
 
+
+
+def extrude_section_from_poly_line_data(data, name, bmesh_base):
+    point = Vector((data[1][0][0], data[1][0][1], data[1][0][2]))
+    face_index = nmv.bmeshi.ops.get_nearest_face_index(bmesh_base, point)
+
+    for i in range(1, len(data)):
+        point = Vector((data[i][0][0], data[i][0][1], data[i][0][2]))
+        face_index = nmv.bmeshi.ops.extrude_face_to_point(bmesh_base, face_index, point)
+        nmv.bmeshi.ops.scale_face(bmesh_base, face_index, data[i][1] * math.sqrt(2))
+    return bmesh_base
+
+
+
 ####################################################################################################
 # @draw_connected_sections
 ####################################################################################################
-def draw_connected_sections(section,
-                            name,
-                            poly_line_data=[],
-                            sections_objects=[],
-                            secondary_sections=[],
-                            branching_level=0,
-                            max_branching_level=nmv.consts.Math.INFINITY,
-                            material_list=None,
-                            bevel_object=None,
-                            fixed_radius=None,
-                            transform=None,
-                            repair_morphology=False,
-                            caps=False,
-                            render_frame=False,
-                            frame_destination=None,
-                            camera=None,
-                            connect_to_soma=False,
-                            bridge_to_soma=False):
+def extrude_connected_sections(section,
+                               name,
+                               section_objects,
+                               poly_line_data=[],
+                               secondary_sections=[],
+                               branching_level=0,
+                               max_branching_level=nmv.consts.Math.INFINITY,
+                               material_list=None,
+                               bevel_object=None,
+                               fixed_radius=None,
+                               transform=None,
+                               repair_morphology=False,
+                               caps=False,
+                               render_frame=False,
+                               frame_destination=None,
+                               camera=None,
+                               connect_to_soma=False,
+                               bridge_to_soma=False):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:
         Section root.
     :param poly_line_data:
         A list of lists containing the data of the poly-line format.
-    :param sections_objects:
-        A list that should contain all the drawn section objects.
+    :param bmesh_base:
+        A bmesh base object that will get extruded and extruded until the construction of the
+        full branch.
     :param secondary_sections:
         A list of the secondary sections along the arbor.
     :param branching_level:
@@ -171,7 +187,7 @@ def draw_connected_sections(section,
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
         section=section, is_continuous=is_continuous, is_last_section=is_last_section,
         fixed_radius=fixed_radius, transform=transform, process_terminals=repair_morphology,
-        connect_to_soma=connect_to_soma, bridge_to_soma=bridge_to_soma)
+        connect_to_soma=True, bridge_to_soma=False)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_data)
@@ -191,28 +207,20 @@ def draw_connected_sections(section,
         # Section name
         section_name = '%s_%d' % (name, section.id)
 
+        base_mesh = section_objects[0]
+        # Draw the extruded section and return a reference to it
+        base_mesh = extrude_section_from_poly_line_data(data=poly_line_data, name=section_name,
+            bmesh_base=base_mesh)
+
+        section_objects[0] = base_mesh
+
         # Draw the section
-        section_object = draw_section_from_poly_line_data(
-            data=poly_line_data, name=section_name, material=section_material,
-            bevel_object=bevel_object, caps=caps)
-
-        # Render frame for progressive rendering
-        if render_frame:
-
-            global progressive_frame_index
-
-            # The file path of the frame
-            frame_file_path = '%s/frame_%s' % (
-                frame_destination, '{0:05d}'.format(progressive_frame_index))
-
-            # Render the image to film
-            # camera_ops.render_scene_to_image(camera, frame_file_path)
-
-            # Increment the progressive frame index
-            progressive_frame_index += 1
+        #section_object = draw_section_from_poly_line_data(
+        #    data=poly_line_data, name=section_name, material=section_material,
+        #    bevel_object=bevel_object, caps=caps)
 
         # Add the section object to the sections_objects list
-        sections_objects.append(section_object)
+        #sections_objects.append(section_object)
 
         # Clean the polyline samples list
         poly_line_data[:] = []
@@ -224,11 +232,11 @@ def draw_connected_sections(section,
     for child in section.children:
 
         # Draw the children sections
-        draw_connected_sections(
+        extrude_connected_sections(
             section=child,
             name=name,
+            section_objects=section_objects,
             poly_line_data=poly_line_data,
-            sections_objects=sections_objects,
             secondary_sections=secondary_sections,
             branching_level=branching_level,
             max_branching_level=max_branching_level,
