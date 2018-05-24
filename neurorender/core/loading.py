@@ -37,6 +37,82 @@ import neuromorphovis.file
 
 
 ####################################################################################################
+# @import_obj_file
+####################################################################################################
+def load_obj_file(input_directory,
+                    input_file_name):
+    """Import an .OBJ file into the scene, and return a reference to it.
+
+    :param input_directory:
+        The directory that is supposed to have the mesh.
+    :param input_file_name:
+        The name of the mesh file.
+    :return:
+        A reference to the loaded mesh in Blender.
+    """
+
+    # File path
+    file_path = input_directory + '/' + input_file_name
+
+    # Raise a warning if the file doesn't exist
+    if not os.path.isfile(file_path):
+        print('WARNING: File [%s] does NOT exist, Skipping ...')
+        return None
+
+    print('Importing [%s]' % file_path)
+    bpy.ops.import_scene.obj(filepath=file_path)
+
+    # Change the name of the loaded object
+    # The object will be renamed based on the file name
+    object_name = input_file_name.split('.')[0]
+
+    # The mesh is the only selected object in the scene after the previous deselection operation
+    mesh_object = bpy.context.selected_objects[0]
+    mesh_object.name = object_name
+
+    # Return a reference to the object
+    return mesh_object
+
+
+####################################################################################################
+# @import_obj_file
+####################################################################################################
+def load_ply_file(input_directory,
+                  input_file_name):
+    """Import an .OBJ file into the scene, and return a reference to it.
+
+    :param input_directory:
+        The directory that is supposed to have the mesh.
+    :param input_file_name:
+        The name of the mesh file.
+    :return:
+        A reference to the loaded mesh in Blender.
+    """
+
+    # File path
+    file_path = input_directory + '/' + input_file_name
+
+    # Raise a warning if the file doesn't exist
+    if not os.path.isfile(file_path):
+        print('WARNING: File [%s] does NOT exist, Skipping ...')
+        return None
+
+    print('Importing [%s]' % file_path)
+    bpy.ops.import_mesh.ply(filepath=file_path)
+
+    # Change the name of the loaded object
+    # The object will be renamed based on the file name
+    object_name = input_file_name.split('.')[0]
+
+    # The mesh is the only selected object in the scene after the previous deselection operation
+    mesh_object = bpy.context.selected_objects[0]
+    mesh_object.name = object_name
+
+    # Return a reference to the object
+    return mesh_object
+
+
+####################################################################################################
 # @import_object_from_blend_file
 ####################################################################################################
 def load_object_from_blend_file(input_directory,
@@ -112,9 +188,12 @@ def load_neurons_membrane_meshes_into_scene(input_directory,
         # .ply neurons
         elif input_type == 'ply':
             input_file_name = 'neuron_%s.ply' % str(neuron.gid)
-            neuron.membrane_meshes = [nmv.file.import_ply_file(input_directory, input_file_name)]
+            neuron.membrane_meshes = [load_obj_file(input_directory, input_file_name)]
 
         # .obj neurons
         elif input_type == 'obj':
             input_file_name = 'neuron_%s.obj' % str(neuron.gid)
-            neuron.membrane_meshes = [nmv.file.import_ply_file(input_directory, input_file_name)]
+            neuron.membrane_meshes = [load_ply_file(input_directory, input_file_name)]
+
+        else:
+            print('ERROR: Unrecognized input type [%s]' % input_type)

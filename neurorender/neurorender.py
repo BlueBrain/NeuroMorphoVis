@@ -37,7 +37,7 @@ import parsing
 
 # NeuroMorphoVis imports
 import neuromorphovis as nmv
-import neuromorphovis.file
+import neuromorphovis.scene
 
 
 ################################################################################
@@ -55,8 +55,12 @@ if __name__ == "__main__":
     # Parse the rendering configuration and return a list of neurons
     neurons = parsing.parse_rendering_configuration(args.config)
 
+    # Clear the scene
+    nmv.scene.clear_scene()
+
     # Load the neurons into the scene
-    neuron_objects = loading.load_neurons_into_scene(neurons)
+    neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
+        args.input_directory, neurons, args.input_type)
 
     # Setup the camera
 

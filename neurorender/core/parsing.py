@@ -54,10 +54,10 @@ def parse_command_line_arguments(arguments=None):
                         action='store', dest='config', help=arg_help)
 
     arg_help = 'Input directory, where the meshes are stored'
-    parser.add_argument('--input',
-                        action='store', dest='input', help=arg_help)
+    parser.add_argument('--input-directory',
+                        action='store', dest='input_directory', help=arg_help)
 
-    arg_help = 'Input data type, blend-mesh, blend-morphology, ply-mesh, obj-mesh'
+    arg_help = 'Input data type: blend, ply, obj'
     parser.add_argument('--input-type',
                         action='store', dest='input_type', help=arg_help)
 
@@ -70,12 +70,12 @@ def parse_command_line_arguments(arguments=None):
                         action='store', default=32, dest='num_samples', help=arg_help)
 
     arg_help = 'Output directory, where the final image and scene will be stored'
-    parser.add_argument('--output',
-                        action='store', dest='output', help=arg_help)
+    parser.add_argument('--output-directory',
+                        action='store', dest='output_directory', help=arg_help)
 
     arg_help = 'Image and scene prefix'
     parser.add_argument('--prefix',
-                        action='store', default='image', dest='image_prefix', help=arg_help)
+                        action='store', default='image', dest='prefix', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()

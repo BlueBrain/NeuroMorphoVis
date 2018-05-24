@@ -27,11 +27,10 @@ RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
 MESHES_DIRECTORY='/data/neurorender-data/meshes'
 
 ## Input type
-# Use ['blend-mesh'] if the neurons are stored as meshes in .blend files
-# Use ['blend-morphology] if the neurons are stored as morphologies in .blend files
-# Use ['ply-mesh'] if the neurons are stored in .ply meshes
-# Use ['obj-mesh'] if the neurons are stored in .obj meshes.
-INPUT_TYPE='blend-mesh'
+# Use ['blend'] if the neurons are stored in .blend files
+# Use ['ply'] if the neurons are stored in .ply meshes
+# Use ['obj'] if the neurons are stored in .obj meshes.
+INPUT_TYPE='ply'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/data/neurorender-data/output'
@@ -52,9 +51,9 @@ BOOL_ARGS=''
 echo 'RENDEING'
 $BLENDER -b --verbose 0 --python neurorender.py --                                                 \
     --config=$RENDERING_CONFIGURATION                                                              \
-    --input=$MESHES_DIRECTORY                                                                      \
+    --input-directory=$MESHES_DIRECTORY                                                            \
     --input-type=$INPUT_TYPE                                                                       \
-    --output=$OUTPUT_DIRECTORY                                                                     \
+    --output-directory=$OUTPUT_DIRECTORY                                                           \
     --resolution=$IMAGE_RESOLUTION                                                                 \
     --prefix=$PREFIX                                                                               \
     --spp=$NUMBER_SAMPLES                                                                          \
