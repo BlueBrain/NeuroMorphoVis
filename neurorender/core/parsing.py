@@ -69,6 +69,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--resolution',
                         action='store', default=512, dest='resolution', help=arg_help)
 
+    arg_help = 'Projection, orthographic or perspective'
+    parser.add_argument('--projection',
+                        action='store', default='orthographic', dest='projection', help=arg_help)
+
     arg_help = 'Number of samples per pixel SPP'
     parser.add_argument('--spp',
                         action='store', default=32, dest='num_samples', help=arg_help)

@@ -38,6 +38,9 @@ OUTPUT_DIRECTORY='/data/neurorender-data/output'
 # Style file
 STYLE_FILE='/home/abdellah/.config/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
 
+# Projection, orthographic or perspective
+PROJECTION='orthographic'
+
 # Number of samples
 NUMBER_SAMPLES=32
 
@@ -59,6 +62,7 @@ $BLENDER -b --verbose 0 --python neurorender.py --                              
     --output-directory=$OUTPUT_DIRECTORY                                                           \
     --resolution=$IMAGE_RESOLUTION                                                                 \
     --style-file=$STYLE_FILE                                                                       \
+    --projection=$PROJECTION                                                                       \
     --prefix=$PREFIX                                                                               \
     --spp=$NUMBER_SAMPLES                                                                          \
     $BOOL_ARGS

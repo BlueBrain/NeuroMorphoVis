@@ -729,7 +729,7 @@ class ExtrusionBuilder:
         self.verify_and_repair_morphology()
 
         # Build the soma
-        self.reconstruct_soma_mesh()
+        # self.reconstruct_soma_mesh()
 
         # Build the arbors
         self.reconstruct_arbors_meshes()

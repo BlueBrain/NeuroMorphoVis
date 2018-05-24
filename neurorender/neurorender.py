@@ -68,8 +68,6 @@ if __name__ == "__main__":
     neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
         args.input_directory, neurons, args.input_type)
 
-
-
     # Apply the style
     styling.apply_style(neurons, styles)
 
@@ -77,7 +75,8 @@ if __name__ == "__main__":
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)
 
     # Render the scene
-    camera.render_scene(bounding_box=None,
+    camera.render_scene(
+        bounding_box=None,
         camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
         image_resolution=int(args.resolution),
         image_name='%s/%s' % (args.output_directory, args.prefix))
