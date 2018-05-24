@@ -71,6 +71,21 @@ class Shading:
     # Shadow
     SHADOW = 'SHADOW_SHADER'
 
+    # Plastic
+    PLASTIC = 'PLASTIC_SHADER'
+
+    # Cracks
+    CRACKS = 'CRACKS_SHADER'
+
+    # Grid
+    GRID = 'GRID_SHADER'
+
+    # Granular
+    GRANULAR = 'GRANULAR_SHADER'
+
+    # Wave
+    WAVE = 'WAVE_SHADER'
+
     ################################################################################################
     # get_enum
     ################################################################################################
@@ -101,6 +116,17 @@ class Shading:
             return Shading.GLOSSY_BUMPY
         elif shader_type == 'lambert':
             return Shading.LAMBERT_WARD
+        elif shader_type == 'plastic':
+            return Shading.PLASTIC
+        elif shader_type == 'cracks':
+            return Shading.CRACKS
+        elif shader_type == 'grid':
+            return Shading.GRID
+        elif shader_type == 'granular':
+            return Shading.GRANULAR
+        elif shader_type == 'wave':
+            return Shading.WAVE
+
         else :
             return Shading.LAMBERT_WARD
 
