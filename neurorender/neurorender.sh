@@ -30,7 +30,7 @@ MESHES_DIRECTORY='/data/neurorender-data/meshes'
 # Use ['blend'] if the neurons are stored in .blend files
 # Use ['ply'] if the neurons are stored in .ply meshes
 # Use ['obj'] if the neurons are stored in .obj meshes.
-INPUT_TYPE='ply'
+INPUT_TYPE='blend'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/data/neurorender-data/output'
@@ -39,7 +39,7 @@ OUTPUT_DIRECTORY='/data/neurorender-data/output'
 NUMBER_SAMPLES=32
 
 # Base image resolution
-IMAGE_RESOLUTION=1024
+IMAGE_RESOLUTION=5000
 
 # Prefix
 PREFIX='scene'

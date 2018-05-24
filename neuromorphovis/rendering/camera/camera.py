@@ -152,6 +152,10 @@ class Camera:
         # Activate the camera for rendering
         self.set_active()
 
+        # Switch the rendering engine to cycles to be able to create the material
+        if not bpy.context.scene.render.engine == 'CYCLES':
+            bpy.context.scene.render.engine = 'CYCLES'
+
         # Set the image file name
         bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
 
@@ -373,27 +377,15 @@ class Camera:
         bpy.context.scene.cycles.film_transparent = True
 
     ################################################################################################
-    # @render_scene
+    # @setup_camera_for_scene
     ################################################################################################
-    def render_scene(self,
-                     bounding_box,
-                     camera_view=nmv.enums.Camera.View.FRONT,
-                     image_resolution=512,
-                     image_name='IMAGE',
-                     keep_camera_in_scene=False):
-        """
+    def setup_camera_for_scene(self,
+                               bounding_box,
+                               camera_view=nmv.enums.Camera.View.FRONT):
 
-        :param bounding_box:
-            The bounding box of all the objects that should be rendered.
-        :param camera_view:
-            The view of the camera: TOP, FRONT, or SIDE, by default FRONT.
-        :param image_resolution:
-            The 'base' resolution of the image, by default 512.
-        :param image_name:
-            The name of the image, by default 'IMAGE'
-        :param keep_camera_in_scene:
-            Keep the camera in the scene after rendering.
-        """
+        # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
+        if bounding_box is None:
+            bounding_box = nmv.bbox.compute_scene_bounding_box()
 
         # Compute the location of the camera based on the bounding box
         camera_locations = self.get_camera_positions(bounding_box=bounding_box)
@@ -435,10 +427,39 @@ class Camera:
             # Rotate the camera
             self.rotate_camera_for_front_view()
 
+    ################################################################################################
+    # @render_scene
+    ################################################################################################
+    def render_scene(self,
+                     bounding_box,
+                     camera_view=nmv.enums.Camera.View.FRONT,
+                     image_resolution=512,
+                     image_name='IMAGE',
+                     keep_camera_in_scene=True):
+        """Render scene using an orthographic camera.
+
+        :param bounding_box:
+            The bounding box of all the objects that should be rendered.
+        :param camera_view:
+            The view of the camera: TOP, FRONT, or SIDE, by default FRONT.
+        :param image_resolution:
+            The 'base' resolution of the image, by default 512.
+        :param image_name:
+            The name of the image, by default 'IMAGE'
+        :param keep_camera_in_scene:
+            Keep the camera in the scene after rendering.
+        """
+
+        # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
+        if bounding_box is None:
+            bounding_box = nmv.bbox.compute_scene_bounding_box()
+
+        # Setup the camera
+        self.setup_camera_for_scene(bounding_box, camera_view)
+
         # Update the camera resolution
-        self.update_camera_resolution(resolution=image_resolution,
-                                      camera_view=camera_view,
-                                      bounds=bounding_box.bounds)
+        self.update_camera_resolution(resolution=image_resolution, camera_view=camera_view,
+            bounds=bounding_box.bounds)
 
         # Deselect all the object in the scene
         nmv.scene.ops.deselect_all()
@@ -461,7 +482,7 @@ class Camera:
                               scale_factor=1.0,
                               image_name='IMAGE',
                               keep_camera_in_scene=False):
-        """
+        """Render a scene to scale using orthographic projection.
 
         :param bounding_box:
             The bounding box of all the objects that should be rendered.
@@ -476,39 +497,8 @@ class Camera:
             Keep the camera in the scene after rendering.
         """
 
-        # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
-        if bounding_box is None:
-            bounding_box = nmv.bbox.compute_scene_bounding_box()
-
-        # Compute the location of the camera based on the bounding box
-        camera_locations = self.get_camera_positions(bounding_box=bounding_box)
-
-        # Front view
-        if camera_view == nmv.enums.Camera.View.FRONT:
-
-            # Add a camera along the z-axis
-            self.camera = self.create_base_camera(location=camera_locations[2])
-
-            # Rotate the camera
-            self.rotate_camera_for_front_view()
-
-        # Side view
-        elif camera_view == nmv.enums.Camera.View.SIDE:
-
-            # Add a camera along the x-axis
-            self.camera = self.create_base_camera(location=camera_locations[0])
-
-            # Rotate the camera
-            self.rotate_camera_for_side_view()
-
-        # Top view
-        elif camera_view == nmv.enums.Camera.View.TOP:
-
-            # Add a camera along the y-axis
-            self.camera = self.create_base_camera(location=camera_locations[1])
-
-            # Rotate the camera
-            self.rotate_camera_for_top_view()
+        # Setup the camera
+        self.setup_camera_for_scene(bounding_box, camera_view)
 
         # Update the camera resolution
         self.update_camera_resolution_to_scale(

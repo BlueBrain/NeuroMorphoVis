@@ -38,6 +38,7 @@ import parsing
 # NeuroMorphoVis imports
 import neuromorphovis as nmv
 import neuromorphovis.scene
+import neuromorphovis.rendering
 
 
 ################################################################################
@@ -68,3 +69,7 @@ if __name__ == "__main__":
     nmv.file.export_object_to_blend_file(None, args.output_directory, args.prefix)
 
     # Render the scene
+    camera = nmv.rendering.Camera('%s_camera' % args.prefix)
+    camera.render_scene(bounding_box=None, image_resolution=2000,
+        image_name='%s/%s' % (args.output_directory, args.prefix))
+
