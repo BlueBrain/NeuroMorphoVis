@@ -36,22 +36,17 @@ class Neuron:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 gid,
-                 mtype,
-                 mlabel,
-                 layer,
-                 position,
-                 orientation,
-                 tag,
-                 soma_min_radius,
-                 soma_mean_radius,
-                 soma_max_radius,
-                 membrane_mesh,
-                 membrane_material,
-                 nucleus_mesh,
-                 nucleus_material,
-                 spines_mesh,
-                 spines_material):
+                 gid=None,
+                 mtype=None,
+                 mlabel=None,
+                 layer=None,
+                 position=None,
+                 orientation=None,
+                 transform=None,
+                 tag=None,
+                 soma_min_radius=None,
+                 soma_mean_radius=None,
+                 soma_max_radius=None):
         """Constructor
 
         :param gid:
@@ -74,18 +69,6 @@ class Neuron:
             The mean radius of the soma.
         :param soma_max_radius:
             The maximum radius of the soma.
-        :param membrane_mesh:
-            Neuron membrane mesh.
-        :param membrane_material:
-            Neuron membrane mesh material.
-        :param nucleus_mesh:
-            Neuron nucleus mesh.
-        :param nucleus_material:
-            Neuron nucleus mesh material.
-        :param spines_mesh:
-            Neuron spine mesh.
-        :param spines_material:
-            Neuron spine mesh material.
         """
 
         # Neuron GID
@@ -118,23 +101,29 @@ class Neuron:
         # Neuron Y orientation
         self.orientation = orientation
 
-        # Neuron membrane surface mesh
-        self.membrane_mesh = membrane_mesh
+        # Neuron transformation
+        self.transform = transform
 
-        # Neuron nucleus surface mesh
-        self.nucleus_mesh = nucleus_mesh
+        # Neuron membrane surface meshes
+        self.membrane_meshes = list()
 
-        # Neuron spine mesh
-        self.spines_mesh = spines_mesh
+        # Neuron soma meshes
+        self.soma_meshes = list()
+
+        # Neuron nucleus surface meshes
+        self.nucleus_meshes = list()
+
+        # Neuron spines meshes
+        self.spines_meshes = list()
 
         # Neuron membrane material
-        self.membrane_material = membrane_material
+        self.membrane_material = None
 
         # Neuron nucleus material
-        self.nucleus_material = nucleus_material
+        self.nucleus_material = None
 
         # Neuron spines material
-        self.spines_material = spines_material
+        self.spines_material = None
 
     ################################################################################################
     # @print_data
@@ -142,17 +131,10 @@ class Neuron:
     def print_data(self):
         """Prints the data of the neuron
         """
-        print('* Neuron: \n')
-        print('\t GID : [%s] ' % str(self.gid))
-        print('\t Morphology type : [%s] ' % str(self.mtype))
-        print('\t Morphology label : [%s] ' % str(self.mlabel))
-        print('\t Position : [%s] ' % str(self.position))
-        print('\t Orientation : [%s] ' % str(self.orientation))
-        print('\t Tag : [%s] ' % str(self.tag))
-        print('\t Soma minimum radius : [%s] ' % str(self.soma_min_radius))
-        print('\t Soma mean radius : [%s] ' % str(self.soma_mean_radius))
-        print('\t Soma maximum radius : [%s] ' % str(self.soma_max_radius))
-
-
-
-
+        print('* Neuron:')
+        print('\t GID: [%s]' % str(self.gid))
+        print('\t Morphology type: [%s]' % str(self.mtype))
+        print('\t Morphology label: [%s]' % str(self.mlabel))
+        print('\t Position: [%s]' % str(self.position))
+        print('\t Orientation: [%s]' % str(self.orientation))
+        print('\t Tag: [%s]' % str(self.tag))

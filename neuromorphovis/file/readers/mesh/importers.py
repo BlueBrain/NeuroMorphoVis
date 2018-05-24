@@ -24,6 +24,10 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
+# System imports
+import os
+
 # Blender imports
 import bpy
 
@@ -47,19 +51,58 @@ def import_obj_file(input_directory,
         A reference to the loaded mesh in Blender.
     """
 
+    # File path
+    file_path = "%s/%s" % (input_directory, input_file_name)
+
+    # Issue an error message if failing
+    if not os.path.isfile(file_path):
+        nmv.logger.log('LOADING ERROR: cannot load [%s]' % file_path)
+
     # Deselect all the objects in the scene
     nmv.scene.ops.deselect_all()
 
-    # Build full obj file path
-    obj_file_path = "%s/%s" % (input_directory, input_file_name)
+    nmv.logger.log('Loading [%s]' % file_path)
+    bpy.ops.import_scene.obj(filepath=file_path)
 
-    # Try importing the mesh
-    try:
-        bpy.ops.import_scene.obj(filepath=obj_file_path)
+    # Change the name of the loaded object
+    # The object will be renamed based on the file name
+    object_name = input_file_name.split('.')[0]
+
+    # The mesh is the only selected object in the scene after the previous deselection operation
+    mesh_object = bpy.context.selected_objects[0]
+    mesh_object.name = object_name
+
+    # Return a reference to the object
+    return mesh_object
+
+
+####################################################################################################
+# @import_obj_file
+####################################################################################################
+def import_ply_file(input_directory,
+                    input_file_name):
+    """Import an .OBJ file into the scene, and return a reference to it.
+
+    :param input_directory:
+        The directory that is supposed to have the mesh.
+    :param input_file_name:
+        The name of the mesh file.
+    :return:
+        A reference to the loaded mesh in Blender.
+    """
+
+    # File path
+    file_path = "%s/%s" % (input_directory, input_file_name)
 
     # Issue an error message if failing
-    except:
-        nmv.logger.log('LOADING ERROR: cannot load [%s]' % obj_file_path)
+    if not os.path.isfile(file_path):
+        nmv.logger.log('LOADING ERROR: cannot load [%s]' % file_path)
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    nmv.logger.log('Loading [%s]' % file_path)
+    bpy.ops.import_mesh.ply(filepath=file_path)
 
     # Change the name of the loaded object
     # The object will be renamed based on the file name

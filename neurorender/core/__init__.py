@@ -25,5 +25,5 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-import neuron
-import parsing
+from .neuron import *
+from .parsing import *

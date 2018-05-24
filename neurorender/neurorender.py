@@ -26,10 +26,19 @@ __status__      = "Production"
 
 
 # System imports
-import sys
+import sys, os
+import_paths = ['core']
+for import_path in import_paths:
+    sys.path.append(('%s/%s' %(os.path.dirname(os.path.realpath(__file__)), import_path)))
 
 # Blender imports
-import core.parsing
+import loading
+import parsing
+
+# NeuroMorphoVis imports
+import neuromorphovis as nmv
+import neuromorphovis.file
+
 
 ################################################################################
 # @ Main
@@ -41,15 +50,17 @@ if __name__ == "__main__":
     sys.argv = args[args.index("--") + 0:]
 
     # Parse the command line arguments
-    args = core.parsing.parse_command_line_arguments()
+    args = parsing.parse_command_line_arguments()
 
     # Parse the rendering configuration and return a list of neurons
-    neurons = core.parsing.parse_rendering_configuration(args.config)
+    neurons = parsing.parse_rendering_configuration(args.config)
 
     # Load the neurons into the scene
+    neuron_objects = loading.load_neurons_into_scene(neurons)
 
     # Setup the camera
 
     # Save the scene
+    nmv.file.export_object_to_blend_file(None, args.output_directory, args.prefix)
 
     # Render the scene

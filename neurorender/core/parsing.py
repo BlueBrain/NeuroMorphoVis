@@ -29,6 +29,7 @@ __status__      = "Production"
 import argparse
 
 # Blender imports
+from mathutils import Vector, Matrix
 import neuron
 
 
@@ -55,6 +56,10 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Input directory, where the meshes are stored'
     parser.add_argument('--input',
                         action='store', dest='input', help=arg_help)
+
+    arg_help = 'Input data type, blend-mesh, blend-morphology, ply-mesh, obj-mesh'
+    parser.add_argument('--input-type',
+                        action='store', dest='input_type', help=arg_help)
 
     arg_help = 'Base image resolution'
     parser.add_argument('--resolution',
@@ -97,24 +102,100 @@ def parse_rendering_configuration(configuration_file):
         config_data.append(line)
     config_file_handle.close()
 
+    # A list of all the parsed neurons
+    neurons = list()
+
     # Parse the configuration
     index = 0
     while True:
 
+        # We have reached the end of the file
+        if index > len(config_data) - 1:
+            break
 
+        # Get a new line
+        line = config_data[index]
 
+        # If neuron is found
+        if 'NEURON' in line:
 
-        break
+            # Construct a new neuron object
+            neuron_object = neuron.Neuron()
 
+            # Parse neuron properties
+            while True:
 
+                # Get a new line
+                index += 1
+                line = config_data[index]
 
+                # GID
+                if 'GID' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('GID: ')
+                    neuron_object.gid = line[1]
+                elif 'TAG' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('TAG: ')
+                    neuron_object.tag = int(line[1])
+                elif 'MORPHOLOGY_TYPE' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('MORPHOLOGY_TYPE: ')
+                    neuron_object.mtype = line[1]
+                elif 'MORPHOLOGY_LABEL' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('MORPHOLOGY_LABEL: ')
+                    neuron_object.mlabel = line[1]
+                elif 'POSITION' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('POSITION: ')[1]
+                    line = line.split(' ')
+                    x = float(line[0])
+                    y = float(line[1])
+                    z = float(line[2])
+                    neuron_object.position = Vector((x, y, z))
+                elif 'ORIENTATION' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('ORIENTATION: ')
+                    neuron_object.orientation = float(line[1])
+                elif 'COLUMN' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('COLUMN: ')
+                    neuron_object.column = line[1]
+                elif 'LAYER' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('LAYER: ')
+                    neuron_object.layer = line[1]
+                elif 'TRANSFORM' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('TRANSFORM: ')[1]
+                    line = line.split(' ')
+                    t = Matrix()
+                    t[0][0:4] = float(line[0]), float(line[1]), float(line[2]), float(line[3])
+                    t[1][0:4] = float(line[4]), float(line[5]), float(line[6]), float(line[7])
+                    t[2][0:4] = float(line[8]), float(line[9]), float(line[10]), float(line[11])
+                    t[3][0:4] = float(line[12]), float(line[13]), float(line[14]), float(line[15])
+                    neuron_object.transform = t
+                elif not line.strip():
+                    # Neuron is done
+                    break
+                else:
+                    # Unrecognized parameter
+                    continue
 
-    # A list of all the parsed neurons
-    neurons = list()
+            # Add the neurons to the list
+            neurons.append(neuron_object)
 
-
-
-    neuron_item = neuron.Neuron()
-
+            # Increment the index
+            index += 1
 
     return neurons
