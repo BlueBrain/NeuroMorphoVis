@@ -105,16 +105,16 @@ class Neuron:
         self.transform = transform
 
         # Neuron membrane surface meshes
-        self.membrane_meshes = list()
+        self.membrane_meshes = None
 
         # Neuron soma meshes
-        self.soma_meshes = list()
+        self.soma_meshes = None
 
         # Neuron nucleus surface meshes
-        self.nucleus_meshes = list()
+        self.nucleus_meshes = None
 
         # Neuron spines meshes
-        self.spines_meshes = list()
+        self.spines_meshes = None
 
         # Neuron membrane material
         self.membrane_material = None

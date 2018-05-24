@@ -34,6 +34,7 @@ for import_path in import_paths:
 # Blender imports
 import loading
 import parsing
+import styling
 
 # NeuroMorphoVis imports
 import neuromorphovis as nmv
@@ -57,6 +58,9 @@ if __name__ == "__main__":
     # Parse the rendering configuration and return a list of neurons
     neurons = parsing.parse_rendering_configuration(args.config)
 
+    # Parse the style map
+    styles = parsing.parse_style_file(args.style_file)
+
     # Clear the scene
     nmv.scene.clear_scene()
 
@@ -64,14 +68,19 @@ if __name__ == "__main__":
     neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
         args.input_directory, neurons, args.input_type)
 
+
+
+    # Apply the style
+    styling.apply_style(neurons, styles)
+
     # Setup the camera
+    camera = nmv.rendering.Camera('%s_camera' % args.prefix)
+
+    # Render the scene
+    camera.render_scene(bounding_box=None,
+        camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
+        image_resolution=int(args.resolution),
+        image_name='%s/%s' % (args.output_directory, args.prefix))
 
     # Save the scene
     nmv.file.export_object_to_blend_file(None, args.output_directory, args.prefix)
-
-    # Render the scene
-    camera = nmv.rendering.Camera('%s_camera' % args.prefix)
-    camera.render_scene(bounding_box=None,
-        camera_projection=nmv.enums.Camera.Projection.PERSPECTIVE, image_resolution=2000,
-        image_name='%s/%s' % (args.output_directory, args.prefix))
-

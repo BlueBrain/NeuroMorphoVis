@@ -35,6 +35,9 @@ INPUT_TYPE='blend'
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/data/neurorender-data/output'
 
+# Style file
+STYLE_FILE='/home/abdellah/.config/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
+
 # Number of samples
 NUMBER_SAMPLES=32
 
@@ -55,6 +58,7 @@ $BLENDER -b --verbose 0 --python neurorender.py --                              
     --input-type=$INPUT_TYPE                                                                       \
     --output-directory=$OUTPUT_DIRECTORY                                                           \
     --resolution=$IMAGE_RESOLUTION                                                                 \
+    --style-file=$STYLE_FILE                                                                       \
     --prefix=$PREFIX                                                                               \
     --spp=$NUMBER_SAMPLES                                                                          \
     $BOOL_ARGS

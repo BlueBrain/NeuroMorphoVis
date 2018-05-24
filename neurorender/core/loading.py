@@ -144,9 +144,12 @@ def load_object_from_blend_file(input_directory,
     # Add the group instance to the scene
     scene = bpy.context.scene
 
+    objects = list()
+
     # link objects to current scene
     for i_object in data_dst.objects:
         if i_object is not None:
+
             if not ('soma' in i_object.name or 'cs' in i_object.name):
 
                 # Adjust the texture UV mapping
@@ -156,9 +159,10 @@ def load_object_from_blend_file(input_directory,
 
             # Append the objects to the scene
             scene.objects.link(i_object)
+            objects.append(i_object)
 
     # Return reference to the loaded objects
-    return data_dst.objects
+    return objects
 
 
 ################################################################################

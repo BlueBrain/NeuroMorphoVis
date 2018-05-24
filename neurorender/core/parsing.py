@@ -53,6 +53,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--config',
                         action='store', dest='config', help=arg_help)
 
+    arg_help = 'Sytle file'
+    parser.add_argument('--style-file',
+                        action='store', dest='style_file', help=arg_help)
+
     arg_help = 'Input directory, where the meshes are stored'
     parser.add_argument('--input-directory',
                         action='store', dest='input_directory', help=arg_help)
@@ -199,3 +203,40 @@ def parse_rendering_configuration(configuration_file):
             index += 1
 
     return neurons
+
+
+####################################################################################################
+# @parse_style_file
+####################################################################################################
+def parse_style_file(style_file):
+    """Parse a style file for coloring the neurons.
+
+    :param style_file:
+        Input style file.
+    :return:
+        A style list.
+    """
+
+    style_map = list()
+
+    # Read the configuration file
+    style_file_handle = open(style_file, 'r')
+    for line in style_file_handle:
+        if '#' in line:
+            continue
+        elif not line.strip():
+            continue
+        else:
+            line = line.replace('\n', '')
+            line = line.split(' ')
+            tag = int(line[0])
+            r = float(line[1])
+            g = float(line[2])
+            b = float(line[3])
+            alpha = float(line[4])
+            color = Vector((r, g, b))
+            shader = line[5]
+            style_map.append([tag, color, alpha, shader])
+    style_file_handle.close()
+
+    return style_map
