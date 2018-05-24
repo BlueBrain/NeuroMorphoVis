@@ -72,6 +72,6 @@ if __name__ == "__main__":
     # Render the scene
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)
     camera.render_scene(bounding_box=None,
-        camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC, image_resolution=2000,
+        camera_projection=nmv.enums.Camera.Projection.PERSPECTIVE, image_resolution=2000,
         image_name='%s/%s' % (args.output_directory, args.prefix))
 

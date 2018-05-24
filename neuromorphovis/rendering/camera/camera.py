@@ -210,9 +210,13 @@ class Camera:
 
         # Set camera location and target based on the selected view to render the image
         center = bounding_box.center
-        camera_x = bounding_box.p_max[0] + bounding_box.bounds[0] * 2
-        camera_y = bounding_box.p_max[1] + bounding_box.bounds[1] * 2
-        camera_z = bounding_box.p_max[2] + bounding_box.bounds[2] * 2
+        bounds = bounding_box.bounds
+        r = math.sqrt((0.5 * bounds[0] * 0.5 * bounds[0]) +
+                      (0.5 * bounds[1] * 0.5 * bounds[1]) +
+                      (0.5 * bounds[2] * 0.5 * bounds[2]))
+        camera_x = r / math.tan(math.radians(0.5 * fov)) * 1.25
+        camera_y = r / math.tan(math.radians(0.5 * fov)) * 1.25
+        camera_z = r / math.tan(math.radians(0.5 * fov)) * 1.25
 
         # Camera location
         camera_location_x = Vector((camera_x, center.y, center.z))
@@ -505,7 +509,7 @@ class Camera:
             bounds=bounding_box.bounds)
         if camera_projection == nmv.enums.Camera.Projection.PERSPECTIVE:
             self.camera.data.type = 'PERSP'
-            bpy.context.object.data.angle = 0.9
+            bpy.context.object.data.angle = math.radians(45.0)
         else:
             self.camera.data.type = 'ORTHO'
 
