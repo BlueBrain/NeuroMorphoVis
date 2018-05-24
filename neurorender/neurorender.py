@@ -39,6 +39,7 @@ import parsing
 import neuromorphovis as nmv
 import neuromorphovis.scene
 import neuromorphovis.rendering
+import neuromorphovis.enums
 
 
 ################################################################################
@@ -70,6 +71,7 @@ if __name__ == "__main__":
 
     # Render the scene
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)
-    camera.render_scene(bounding_box=None, image_resolution=2000,
+    camera.render_scene(bounding_box=None,
+        camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC, image_resolution=2000,
         image_name='%s/%s' % (args.output_directory, args.prefix))
 

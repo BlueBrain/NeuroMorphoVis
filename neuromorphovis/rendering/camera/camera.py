@@ -24,6 +24,10 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
+# System imports
+import math
+
 # Blender imports
 import bpy
 from mathutils import Vector
@@ -167,10 +171,12 @@ class Camera:
     ################################################################################################
     @staticmethod
     def get_camera_positions(bounding_box):
-        """
+        """Computes the camera position for an orthographic projection
 
         :param bounding_box:
+            Scene bounding box.
         :return:
+            Camera locations for the three different views.
         """
 
         # Set camera location and target based on the selected view to render the image
@@ -178,6 +184,35 @@ class Camera:
         camera_x = bounding_box.p_max[0] + bounding_box.bounds[0]
         camera_y = bounding_box.p_max[1] + bounding_box.bounds[1]
         camera_z = bounding_box.p_max[2] + bounding_box.bounds[2]
+
+        # Camera location
+        camera_location_x = Vector((camera_x, center.y, center.z))
+        camera_location_y = Vector((center.x, camera_y, center.z))
+        camera_location_z = Vector((center.x, center.y, camera_z))
+
+        # Return a vector for the camera position for XYZ locations
+        return [camera_location_x, camera_location_y, camera_location_z]
+
+    ################################################################################################
+    # @get_camera_positions_for_perspective_projection
+    ################################################################################################
+    @staticmethod
+    def get_camera_positions_for_perspective_projection(bounding_box, fov=45):
+        """Computes the camera position for a perspective projection
+
+        :param bounding_box:
+            Scene bounding box.
+        :param fov:
+            Camera field of view, by default 45 degrees.
+        :return:
+            Camera locations for the three different views.
+        """
+
+        # Set camera location and target based on the selected view to render the image
+        center = bounding_box.center
+        camera_x = bounding_box.p_max[0] + bounding_box.bounds[0] * 2
+        camera_y = bounding_box.p_max[1] + bounding_box.bounds[1] * 2
+        camera_z = bounding_box.p_max[2] + bounding_box.bounds[2] * 2
 
         # Camera location
         camera_location_x = Vector((camera_x, center.y, center.z))
@@ -381,14 +416,19 @@ class Camera:
     ################################################################################################
     def setup_camera_for_scene(self,
                                bounding_box,
-                               camera_view=nmv.enums.Camera.View.FRONT):
+                               camera_view=nmv.enums.Camera.View.FRONT,
+                               camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC):
 
         # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
         if bounding_box is None:
             bounding_box = nmv.bbox.compute_scene_bounding_box()
 
         # Compute the location of the camera based on the bounding box
-        camera_locations = self.get_camera_positions(bounding_box=bounding_box)
+        if camera_projection == nmv.enums.Camera.Projection.PERSPECTIVE:
+            camera_locations = self.get_camera_positions_for_perspective_projection(
+                bounding_box=bounding_box)
+        else:
+            camera_locations = self.get_camera_positions(bounding_box=bounding_box)
 
         # Front view (or for 360)
         if camera_view == nmv.enums.Camera.View.FRONT or \
@@ -435,6 +475,7 @@ class Camera:
                      camera_view=nmv.enums.Camera.View.FRONT,
                      image_resolution=512,
                      image_name='IMAGE',
+                     camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
                      keep_camera_in_scene=True):
         """Render scene using an orthographic camera.
 
@@ -445,7 +486,9 @@ class Camera:
         :param image_resolution:
             The 'base' resolution of the image, by default 512.
         :param image_name:
-            The name of the image, by default 'IMAGE'
+            The name of the image, by default 'IMAGE'.
+        :param camera_projection:
+            Camera projection either orthographic or perspective.
         :param keep_camera_in_scene:
             Keep the camera in the scene after rendering.
         """
@@ -455,11 +498,16 @@ class Camera:
             bounding_box = nmv.bbox.compute_scene_bounding_box()
 
         # Setup the camera
-        self.setup_camera_for_scene(bounding_box, camera_view)
+        self.setup_camera_for_scene(bounding_box, camera_view, camera_projection)
 
         # Update the camera resolution
         self.update_camera_resolution(resolution=image_resolution, camera_view=camera_view,
             bounds=bounding_box.bounds)
+        if camera_projection == nmv.enums.Camera.Projection.PERSPECTIVE:
+            self.camera.data.type = 'PERSP'
+            bpy.context.object.data.angle = 0.9
+        else:
+            self.camera.data.type = 'ORTHO'
 
         # Deselect all the object in the scene
         nmv.scene.ops.deselect_all()
