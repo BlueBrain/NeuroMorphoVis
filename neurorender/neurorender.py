@@ -27,7 +27,9 @@ __status__      = "Production"
 
 # System imports
 import sys, os
-import_paths = ['core']
+import_paths = ['core',
+                '/../neuromorphovis'
+                '/../neuromorphovis/interface/cli', ]
 for import_path in import_paths:
     sys.path.append(('%s/%s' %(os.path.dirname(os.path.realpath(__file__)), import_path)))
 
@@ -77,7 +79,8 @@ if __name__ == "__main__":
     # Render the scene
     camera.render_scene(
         bounding_box=None,
-        camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
+        camera_view=nmv.enums.Camera.View.SIDE,
+        camera_projection=nmv.enums.Camera.Projection.get_enum(args.projection),
         image_resolution=int(args.resolution),
         image_name='%s/%s' % (args.output_directory, args.prefix))
 

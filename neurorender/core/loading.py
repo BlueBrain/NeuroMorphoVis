@@ -56,7 +56,7 @@ def load_obj_file(input_directory,
 
     # Raise a warning if the file doesn't exist
     if not os.path.isfile(file_path):
-        print('WARNING: File [%s] does NOT exist, Skipping ...')
+        print('WARNING: File [%s] does NOT exist, Skipping ...' % file_path)
         return None
 
     print('Importing [%s]' % file_path)
@@ -94,7 +94,7 @@ def load_ply_file(input_directory,
 
     # Raise a warning if the file doesn't exist
     if not os.path.isfile(file_path):
-        print('WARNING: File [%s] does NOT exist, Skipping ...')
+        print('WARNING: File [%s] does NOT exist, Skipping ...' % file_path)
         return None
 
     print('Importing [%s]' % file_path)
@@ -133,7 +133,7 @@ def load_object_from_blend_file(input_directory,
 
     # Raise a warning if the file doesn't exist
     if not os.path.isfile(file_path):
-        print('WARNING: File [%s] does NOT exist, Skipping ...')
+        print('WARNING: File [%s] does NOT exist, Skipping ...' % file_path)
         return None
 
     # Append all groups from the .blend file

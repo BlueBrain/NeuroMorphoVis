@@ -96,6 +96,32 @@ class Camera:
         # 360
         FRONT_360 = 'FRONT_360_VIEW'
 
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Front
+            if argument == 'front':
+                return Camera.View.FRONT
+
+            # Side
+            elif argument == 'side':
+                return Camera.View.SIDE
+
+            # Top
+            elif argument == 'top':
+                return Camera.View.TOP
+
+            # 360 from front view
+            elif argument == '360':
+                return Camera.View.FRONT_360
+
+            # By default, use the front view
+            else:
+                return Camera.View.FRONT
+
     ################################################################################################
     # @Projection
     ################################################################################################
@@ -114,4 +140,22 @@ class Camera:
 
         # Perspective
         PERSPECTIVE = 'PERSPECTIVE_VIEW'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Orthographic
+            if argument == 'orthographic':
+                return Camera.Projection.ORTHOGRAPHIC
+
+            # Perspective
+            elif argument == 'perspective':
+                return Camera.Projection.PERSPECTIVE
+
+            # By default, use orthographic
+            else:
+                return Camera.Projection.ORTHOGRAPHIC
 

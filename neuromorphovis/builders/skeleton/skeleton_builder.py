@@ -762,12 +762,14 @@ class SkeletonBuilder:
                   nmv.skeleton.ops.resample_sections])
 
         # Taper the sections if requested
-        if taper_sections:
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
+           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
         # Zigzag the sections if required
-        if zigzag_sections:
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
+           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
 

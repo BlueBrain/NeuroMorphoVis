@@ -18,13 +18,16 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='blender'
+# BLENDER='blender'
+BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
 
 # Rendering configuration file
-RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
+# RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/targets/PCs_Slice_3x1_0.10p.config'
 
 # The input directory where the meshes exist
-MESHES_DIRECTORY='/data/neurorender-data/meshes'
+# MESHES_DIRECTORY='/data/neurorender-data/meshes'
+MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/neuromorhovis-output/meshes/'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
@@ -33,19 +36,20 @@ MESHES_DIRECTORY='/data/neurorender-data/meshes'
 INPUT_TYPE='blend'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/data/neurorender-data/output'
+# OUTPUT_DIRECTORY='/data/neurorender-data/output'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/neurorender-output'
 
 # Style file
-STYLE_FILE='/home/abdellah/.config/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
+STYLE_FILE='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
 
 # Projection, orthographic or perspective
-PROJECTION='orthographic'
+PROJECTION='perspective'
 
 # Number of samples
 NUMBER_SAMPLES=32
 
 # Base image resolution
-IMAGE_RESOLUTION=5000
+IMAGE_RESOLUTION=10000
 
 # Prefix
 PREFIX='scene'
