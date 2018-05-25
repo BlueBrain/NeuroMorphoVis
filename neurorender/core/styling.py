@@ -111,7 +111,8 @@ def apply_style(neurons,
         A style configuration.
     """
 
-    for neuron in neurons:
+    print('* Applying style')
+    for i, neuron in enumerate(neurons):
 
         if neuron.membrane_meshes is None:
             continue

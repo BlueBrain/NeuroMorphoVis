@@ -153,9 +153,10 @@ def load_object_from_blend_file(input_directory,
             if not ('soma' in i_object.name or 'cs' in i_object.name):
 
                 # Adjust the texture UV mapping
-                i_object.data.texspace_size[0] = 10.0
-                i_object.data.texspace_size[1] = 10.0
-                i_object.data.texspace_size[2] = 10.0
+                # i_object.data.texspace_size[0] = 10.0
+                # i_object.data.texspace_size[1] = 10.0
+                # i_object.data.texspace_size[2] = 10.0
+                None
 
             # Append the objects to the scene
             scene.objects.link(i_object)

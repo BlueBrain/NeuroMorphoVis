@@ -23,11 +23,11 @@ BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
 
 # Rendering configuration file
 # RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
-RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/targets/PCs_Slice_3x1_0.10p.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/l5-box/RANDOM_BOX_Slice_5.00p.config'
 
 # The input directory where the meshes exist
 # MESHES_DIRECTORY='/data/neurorender-data/meshes'
-MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/neuromorhovis-output/meshes/'
+MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/resources/l5-box/meshes'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
@@ -37,13 +37,13 @@ INPUT_TYPE='blend'
 
 # The output directory where the scene and images will be generated
 # OUTPUT_DIRECTORY='/data/neurorender-data/output'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/3x1-pcs/neurorender-output'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/resources/l5-box'
 
 # Style file
 STYLE_FILE='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
 
 # Projection, orthographic or perspective
-PROJECTION='perspective'
+PROJECTION='orthographic'
 
 # Number of samples
 NUMBER_SAMPLES=32

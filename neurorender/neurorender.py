@@ -77,6 +77,7 @@ if __name__ == "__main__":
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)
 
     # Render the scene
+    print('* Rendering')
     camera.render_scene(
         bounding_box=None,
         camera_view=nmv.enums.Camera.View.SIDE,
