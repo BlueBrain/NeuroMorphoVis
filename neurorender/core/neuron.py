@@ -44,9 +44,9 @@ class Neuron:
                  orientation=None,
                  transform=None,
                  tag=None,
-                 soma_min_radius=None,
-                 soma_mean_radius=None,
-                 soma_max_radius=None):
+                 soma_min_radius=5.0,
+                 soma_mean_radius=10.0,
+                 soma_max_radius=15.0):
         """Constructor
 
         :param gid:

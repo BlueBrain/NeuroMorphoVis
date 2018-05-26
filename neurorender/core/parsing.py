@@ -81,6 +81,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
 
+    arg_help = 'Load positions and draw spheres'
+    parser.add_argument('--use-spheres',
+                        action='store_true', default=False, dest='use_spheres',help=arg_help)
+
     arg_help = 'Image and scene prefix'
     parser.add_argument('--prefix',
                         action='store', default='image', dest='prefix', help=arg_help)
@@ -182,6 +186,21 @@ def parse_rendering_configuration(configuration_file):
                     line = line.replace('\n', '')
                     line = line.split('LAYER: ')
                     neuron_object.layer = line[1]
+                elif 'MEAN_RADIUS' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('MEAN_RADIUS: ')
+                    neuron_object.soma_mean_radius = float(line[1])
+                elif 'MIN_RADIUS' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('MIN_RADIUS: ')
+                    neuron_object.soma_min_radius = float(line[1])
+                elif 'MAX_RADIUS' in line:
+                    line = line.replace('    ', '')
+                    line = line.replace('\n', '')
+                    line = line.split('MAX_RADIUS: ')
+                    neuron_object.soma_max_radius = float(line[1])
                 elif 'TRANSFORM' in line:
                     line = line.replace('    ', '')
                     line = line.replace('\n', '')

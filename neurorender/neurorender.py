@@ -66,12 +66,16 @@ if __name__ == "__main__":
     # Clear the scene
     nmv.scene.clear_scene()
 
-    # Load the neurons into the scene
-    neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
-        args.input_directory, neurons, args.input_type)
+    if args.use_spheres:
+        # Draw the neurons as spheres to know their positions
+        neuron_objects = styling.draw_spheres(neurons, styles)
+    else:
+        # Load the neurons into the scene
+        neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
+            args.input_directory, neurons, args.input_type)
 
-    # Apply the style
-    styling.apply_style(neurons, styles)
+        # Apply the style
+        styling.apply_style(neurons, styles)
 
     # Setup the camera
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)

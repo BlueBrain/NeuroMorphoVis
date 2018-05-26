@@ -23,7 +23,7 @@ BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
 
 # Rendering configuration file
 # RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
-RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/l5-box/RANDOM_BOX_Slice_5.00p.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/l5-box/RANDOM_BOX_Slice_100.00p.config'
 
 # The input directory where the meshes exist
 # MESHES_DIRECTORY='/data/neurorender-data/meshes'
@@ -49,16 +49,21 @@ PROJECTION='orthographic'
 NUMBER_SAMPLES=32
 
 # Base image resolution
-IMAGE_RESOLUTION=10000
+IMAGE_RESOLUTION=5000
+
+# Use spheres for representative rendering
+USE_SPHERES='no'
 
 # Prefix
 PREFIX='scene'
 
 ################################################################################
 BOOL_ARGS=''
+if [ "$USE_SPHERES" == "yes" ];
+    then BOOL_ARGS+=' --use-spheres'; fi
 
 ####################################################################################################
-echo 'RENDEING'
+echo 'RENDERING ...'
 $BLENDER -b --verbose 0 --python neurorender.py --                                                 \
     --config=$RENDERING_CONFIGURATION                                                              \
     --input-directory=$MESHES_DIRECTORY                                                            \

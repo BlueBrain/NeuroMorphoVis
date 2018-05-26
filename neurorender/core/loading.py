@@ -31,16 +31,12 @@ import os
 # Blender imports
 import bpy
 
-# NeuroMorphoVis imports
-import neuromorphovis as nmv
-import neuromorphovis.file
-
 
 ####################################################################################################
 # @import_obj_file
 ####################################################################################################
 def load_obj_file(input_directory,
-                    input_file_name):
+                  input_file_name):
     """Import an .OBJ file into the scene, and return a reference to it.
 
     :param input_directory:
