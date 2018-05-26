@@ -498,7 +498,7 @@ class UnionBuilder:
             bpy.ops.object.editmode_toggle()
             bpy.ops.mesh.vert_connect_concave()
             bpy.ops.object.editmode_toggle()
-            nmv.mesh.ops.smooth_object(mesh, level=2)
+            #nmv.mesh.ops.smooth_object(mesh, level=2)
 
         return arbors_meshes
         # Close the caps to be able to bridge

@@ -35,6 +35,9 @@ from bpy.props import EnumProperty
 from bpy.props import FloatVectorProperty
 
 import neuromorphovis as nmv
+import neuromorphovis.enums
+import neuromorphovis.shading
+import neuromorphovis.scene
 
 
 ####################################################################################################
@@ -52,76 +55,16 @@ class NeuroRender(bpy.types.Panel):
     bl_context = 'objectmode'
     bl_category = 'NeuroRender'
 
-    # Number of samples per section
-    bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(
-        name="# Samples / Section",
-        description="Analyze the number of samples per section",
-        default=True)
+    bpy.types.Scene.RenderMaterial = EnumProperty(
+        items=nmv.enums.Shading.MATERIAL_ITEMS,
+        name="Material",
+        default=nmv.enums.Shading.LAMBERT_WARD)
 
-    # Number of segments per section
-    bpy.types.Scene.AnalyzeNumberSegmentsPerSection = BoolProperty(
-        name="# Segments / Section",
-        description="Analyze the number of segments per section",
-        default=True)
-
-    # Number of sections per arbor
-    bpy.types.Scene.AnalyzeNumberSectionsPerArbor = BoolProperty(
-        name="# Sections / Arbor",
-        description="Analyze the number of sections per arbor",
-        default=True)
-
-    # Branching angles
-    bpy.types.Scene.AnalyzeNumberChildrenPerSection = BoolProperty(
-        name="# Children / Section",
-        description="Analyze the number of children per section", default=True)
-
-    # Branching angles
-    bpy.types.Scene.AnalyzeBranchingAngles = BoolProperty(
-        name="Branching Angles",
-        description="Analyze the distribution of the angles at the branching points",
-        default=True)
-
-    # Branching radii
-    bpy.types.Scene.AnalyzeBranchingRadii = BoolProperty(
-        name="Branching Radii",
-        description="Analyze the distribution of the radii at the branching points",
-        default=True)
-
-    # Sections lengths
-    bpy.types.Scene.AnalyzeSectionsLength = BoolProperty(
-        name="Sections Length",
-        description="Analyze the distribution of the lengths of the sections",
-        default=True)
-
-    # Sections radii
-    bpy.types.Scene.AnalyzeSectionsRadii = BoolProperty(
-        name="Sections Radii",
-        description="Analyze the distribution of the radii of the samples along the sections",
-        default=True)
-
-    # Short sections
-    bpy.types.Scene.AnalyzeShortSections = BoolProperty(
-        name="Short Sections",
-        description="Detect the number of short sections",
-        default=True)
-
-    # Duplicate samples
-    bpy.types.Scene.AnalyzeDuplicateSamples = BoolProperty(
-        name="Duplicate Samples",
-        description="Detect the duplicate samples that are extremely close along the section",
-        default=True)
-
-    # Disconnected axons from soma
-    bpy.types.Scene.AnalyzeDisconnectedAxons = BoolProperty(
-        name="Disconnected Axons",
-        description="Detect when the axon is disconnected from the soma",
-        default=True)
-
-    # Branches with negative samples
-    bpy.types.Scene.AnalyzeBranchesWithNegativeSamples = BoolProperty(
-        name="Branches With Negative Samples",
-        description="Detect when the section is intersecting with the soma",
-        default=True)
+    # Material color
+    bpy.types.Scene.MaterialColor = FloatVectorProperty(
+        name="Material Color", subtype='COLOR',
+        default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
+        description="The color of the material")
 
     ################################################################################################
     # @draw
@@ -137,54 +80,91 @@ class NeuroRender(bpy.types.Panel):
         # Get a reference to the panel layout
         layout = self.layout
 
-        # Number of samples per section
-        number_samples_per_section_row = layout.row()
-        number_samples_per_section_row.prop(context.scene, 'AnalyzeNumberSamplesPerSection')
+        # Mesh material
+        render_material_row = layout.row()
+        render_material_row.prop(context.scene, 'RenderMaterial')
 
-        # Number of segments per section
-        number_segments_per_section_row = layout.row()
-        number_segments_per_section_row.prop(context.scene, 'AnalyzeNumberSegmentsPerSection')
+        # Material color
+        material_color_row = layout.row()
+        material_color_row .prop(context.scene, 'MaterialColor')
 
-        # Number of sections per arbor
-        number_sections_per_arbor_row = layout.row()
-        number_sections_per_arbor_row.prop(context.scene, 'AnalyzeNumberSectionsPerArbor')
+        # Rendering view
+        apply_material_button_row = layout.row()
+        apply_material_button_row.operator('apply_material.to_selected', icon='AXIS_FRONT')
 
-        # Branching angles
-        branching_angles_row = layout.row()
-        branching_angles_row.prop(context.scene, 'AnalyzeBranchingAngles')
 
-        # Branching radii
-        branching_radii_row = layout.row()
-        branching_radii_row.prop(context.scene, 'AnalyzeBranchingRadii')
 
-        # Sections lengths
-        sections_length_row = layout.row()
-        sections_length_row.prop(context.scene, 'AnalyzeSectionsLength')
+####################################################################################################
+# @RenderMeshFront
+####################################################################################################
+class ApplyMaterialToSelectedMesh(bpy.types.Operator):
+    """Applies material to selected mesh"""
 
-        # Sections radii
-        sections_radii_row = layout.row()
-        sections_radii_row.prop(context.scene, 'AnalyzeSectionsRadii')
+    # Operator parameters
+    bl_idname = "apply_material.to_selected"
+    bl_label = "Apply Material"
 
-        # Short sections
-        short_sections_row = layout.row()
-        short_sections_row.prop(context.scene, 'AnalyzeShortSections')
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator
 
-        # Duplicate samples
-        duplicate_samples_row = layout.row()
-        duplicate_samples_row.prop(context.scene, 'AnalyzeDuplicateSamples')
+        :param context:
+            Rendering Context.
+        :return:
+            'FINISHED'
+        """
 
-        # Disconnected axons
-        disconnected_axons_row = layout.row()
-        disconnected_axons_row.prop(context.scene, 'AnalyzeDisconnectedAxons')
+        # Get the selected mesh
+        selected_mesh = bpy.context.scene.objects.active
 
-        # Branches with negative samples
-        negative_samples_row = layout.row()
-        negative_samples_row.prop(context.scene, 'AnalyzeBranchesWithNegativeSamples')
+        # If no selected mesh, report it
+        if selected_mesh is None:
 
-        # Morphology analysis button
-        analyze_morphology_column = layout.column(align=True)
-        analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
+            # Report the issue in the UI
+            self.report({'INFO'}, 'No selected meshes to apply material')
 
+            # Confirm operation done
+            return {'FINISHED'}
+
+        if not (selected_mesh.type == 'MESH' or selected_mesh.type == 'CURVE'):
+
+            # Report the issue in the UI
+            self.report({'INFO'}, 'Selected object is not a mesh neither a curve')
+
+            # Confirm operation done
+            return {'FINISHED'}
+
+        # Clear all the lights
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'LAMP':
+                nmv.scene.delete_object_in_scene(scene_object)
+
+        bpy.context.object.data.use_auto_texspace = False
+        bpy.context.object.data.texspace_size[0] = 5
+        bpy.context.object.data.texspace_size[1] = 5
+        bpy.context.object.data.texspace_size[2] = 5
+
+        # Get the material color
+        material_color = Vector((context.scene.MaterialColor.r,
+                                 context.scene.MaterialColor.g,
+                                 context.scene.MaterialColor.b))
+
+        # Create the material with its properties and lights
+        material = nmv.shading.create_material(
+            name='%s_material' % selected_mesh.name, color=material_color,
+            material_type=context.scene.RenderMaterial)
+
+        # Apply the material
+        nmv.shading.set_material_to_object(selected_mesh, material)
+
+        # Report the process termination in the UI
+        self.report({'INFO'}, 'Material applied')
+
+        # Confirm operation done
+        return {'FINISHED'}
 
 
 ####################################################################################################
@@ -199,7 +179,7 @@ def register_panel():
     bpy.utils.register_class(NeuroRender)
 
     # Morphology analysis button
-    #bpy.utils.register_class(AnalyzeMorphology)
+    bpy.utils.register_class(ApplyMaterialToSelectedMesh)
 
 
 ####################################################################################################
@@ -214,4 +194,4 @@ def unregister_panel():
     bpy.utils.unregister_class(NeuroRender)
 
     # Morphology analysis button
-    #bpy.utils.unregister_class(AnalyzeMorphology)
+    bpy.utils.unregister_class(ApplyMaterialToSelectedMesh)

@@ -51,7 +51,7 @@ class Shading:
     GLOSSY = 'GLOSSY_SHADER'
 
     # Glossy bympy shader
-    GLOSSY_BUMPY = 'GLOSSY_SHADER'
+    GLOSSY_BUMPY = 'GLOSSY_BUMPY_SHADER'
 
     # Electron (light) shader
     ELECTRON_LIGHT = 'ELECTRON_LIGHT_SHADER'
@@ -156,11 +156,11 @@ class Shading:
 
         (GLOSSY,
          'Glossy',
-         "Glossy Bumpy Shader"),
+         "Use Glossy Shader"),
 
         (GLOSSY_BUMPY,
          'Glossy Bumpy',
-         "Glossy Bumpy Shader"),
+         "Use Glossy Bumpy Shader"),
 
         (SHADOW,
          'Shadow',

@@ -437,7 +437,7 @@ def create_glossy_material(name,
 # @create_glossy_material
 ####################################################################################################
 def create_glossy_bumpy_material(name,
-                           color=nmv.consts.Color.WHITE):
+                                 color=nmv.consts.Color.WHITE):
     """
     Creates a glossy bumpy shader.
 
@@ -455,6 +455,15 @@ def create_glossy_bumpy_material(name,
     # Switch the rendering engine to cycles to be able to create the material
     if not current_scene.render.engine == 'CYCLES':
         current_scene.render.engine = 'CYCLES'
+
+    bpy.ops.object.lamp_add(type='HEMI', location=(0, 0, 0))
+    lamp_reference = bpy.context.object
+    lamp_reference.name = 'DefaultLamp'
+    lamp_reference.data.name = "DefaultLamp"
+    lamp_reference.location[0] = 0
+    lamp_reference.location[1] = 5
+    lamp_reference.location[2] = 0
+    lamp_reference.rotation_euler[0] = -1.5708
 
     # Import the material from the library
     material_reference = import_shader(shader_name='glossy-bumpy')
