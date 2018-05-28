@@ -314,7 +314,7 @@ def zigzag_section(section,
     :param section:
         A given section to zigzag.
     :param delta:
-        The detla (distance) value.
+        The delta (distance) value.
     """
 
     # Get the length of the section (in terms of number of samples)
@@ -346,3 +346,20 @@ def zigzag_section(section,
         # Compute the new sample position
         section.samples[i].point += random_direction * random.uniform(-delta, delta)
 
+
+####################################################################################################
+# @filter_section_sub_threshold
+####################################################################################################
+def filter_section_sub_threshold(section,
+                                 threshold):
+    """Filters a section with a radius lower than a given threshold value.
+
+    :param section:
+         A given section to filter.
+    :param threshold:
+        Threshold radius.
+    """
+
+    for i_sample in section.samples:
+        if i_sample.radius < threshold:
+            i_sample.radius = 0.00001

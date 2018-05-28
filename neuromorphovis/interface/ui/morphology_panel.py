@@ -290,7 +290,10 @@ class MorphologyPanel(bpy.types.Panel):
                 "Set all the arbors to a fixed radius"),
                (nmv.enums.Skeletonization.ArborsRadii.SCALED,
                 'With Scale Factor',
-                "Scale all the arbors using a specified scale factor")],
+                "Scale all the arbors using a specified scale factor"),
+               (nmv.enums.Skeletonization.ArborsRadii.FILTERED,
+                'Filtered',
+                "Filter section with lower values than the threshold"), ],
         name="Sections Radii",
         default=nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED)
 
@@ -298,6 +301,12 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.FixedRadiusValue = FloatProperty(
         name="Value (micron)",
         description="The value of the radius in microns between (0.05 and 5.0) microns",
+        default=1.0, min=0.05, max=5.0)
+
+    # Threshold value for the radius
+    bpy.types.Scene.FilteredRadiusThreshold = FloatProperty(
+        name="Thresh. (micron)",
+        description="The value of the threshold radius in microns between (0.005 and 5.0) microns",
         default=1.0, min=0.05, max=5.0)
 
     # Global radius scale value
@@ -515,6 +524,9 @@ class MorphologyPanel(bpy.types.Panel):
         if current_scene.SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED:
 
             # Pass options from UI to system
+
+            nmv.interface.ui_options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+
             nmv.interface.ui_options.morphology.scale_sections_radii = False
             nmv.interface.ui_options.morphology.unify_sections_radii = False
             nmv.interface.ui_options.morphology.sections_radii_scale = 1.0
@@ -526,10 +538,14 @@ class MorphologyPanel(bpy.types.Panel):
             fixed_diameter_row.label(text='Fixed Radius Value:')
             fixed_diameter_row.prop(current_scene, 'FixedRadiusValue')
 
+            nmv.interface.ui_options.morphology.arbors_radii = \
+                nmv.enums.Skeletonization.ArborsRadii.FIXED
+
             # Pass options from UI to system
             nmv.interface.ui_options.morphology.scale_sections_radii = False
             nmv.interface.ui_options.morphology.unify_sections_radii = True
-            nmv.interface.ui_options.morphology.sections_fixed_radii_value = current_scene.FixedRadiusValue
+            nmv.interface.ui_options.morphology.sections_fixed_radii_value = \
+                current_scene.FixedRadiusValue
 
         # Scaled diameter
         elif current_scene.SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
@@ -538,11 +554,29 @@ class MorphologyPanel(bpy.types.Panel):
             scaled_diameter_row.label(text='Radius Scale Factor:')
             scaled_diameter_row.prop(current_scene, 'RadiusScaleValue')
 
+            nmv.interface.ui_options.morphology.arbors_radii = \
+                nmv.enums.Skeletonization.ArborsRadii.SCALED
+
             # Pass options from UI to system
             nmv.interface.ui_options.morphology.unify_sections_radii = False
             nmv.interface.ui_options.morphology.scale_sections_radii = True
-            nmv.interface.ui_options.morphology.sections_radii_scale = current_scene.RadiusScaleValue
+            nmv.interface.ui_options.morphology.sections_radii_scale = \
+                current_scene.RadiusScaleValue
 
+        # Filtered
+        elif current_scene.SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
+
+            filtered_diameter_row = layout.row()
+            filtered_diameter_row.label(text='Radius Threshold:')
+            filtered_diameter_row.prop(current_scene, 'FilteredRadiusThreshold')
+
+            # Pass options from UI to system
+            nmv.interface.ui_options.morphology.unify_sections_radii = False
+            nmv.interface.ui_options.morphology.scale_sections_radii = True
+            nmv.interface.ui_options.morphology.arbors_radii = \
+                nmv.enums.Skeletonization.ArborsRadii.FILTERED
+            nmv.interface.ui_options.morphology.threshold_radius = \
+                current_scene.FilteredRadiusThreshold
         else:
             nmv.logger.log('ERROR')
 
