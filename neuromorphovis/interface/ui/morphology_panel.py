@@ -305,9 +305,9 @@ class MorphologyPanel(bpy.types.Panel):
 
     # Threshold value for the radius
     bpy.types.Scene.FilteredRadiusThreshold = FloatProperty(
-        name="Thresh. (micron)",
+        name="Threshold",
         description="The value of the threshold radius in microns between (0.005 and 5.0) microns",
-        default=1.0, min=0.05, max=5.0)
+        default=1.0, min=0.005, max=5.0)
 
     # Global radius scale value
     bpy.types.Scene.RadiusScaleValue= FloatProperty(
@@ -507,6 +507,14 @@ class MorphologyPanel(bpy.types.Panel):
 
             # Pass options from UI to system
             nmv.interface.ui_options.morphology.connect_to_soma = current_scene.ConnectToSoma
+
+        if technique == nmv.enums.Skeletonization.Method.TAPERED:
+            nmv.interface.ui_options.morphology.skeleton = \
+                nmv.enums.Skeletonization.Skeleton.TAPERED
+
+        if technique == nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG:
+            nmv.interface.ui_options.morphology.skeleton = \
+                nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG
 
         # Arbor quality option
         arbor_quality_row = layout.row()

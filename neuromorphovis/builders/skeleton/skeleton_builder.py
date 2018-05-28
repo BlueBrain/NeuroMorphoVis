@@ -757,27 +757,30 @@ class SkeletonBuilder:
         # Taper the sections if requested
         if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED or \
            self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
-            print('Taper')
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
         # Zigzag the sections if required
         if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.ZIGZAG or \
            self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
-            print('Zigzag')
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
 
         # Filter the radii of the sections
         if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
-            print('Filter')
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.filter_section_sub_threshold,
                   self.options.morphology.threshold_radius])
 
-        # Verify the fixed radius options
-        fixed_radius = self.options.morphology.sections_fixed_radii_value \
-            if self.options.morphology.unify_sections_radii else None
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.fix_section_radii,
+                  self.options.morphology.sections_fixed_radii_value])
+
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.scale_section_radii,
+                  self.options.morphology.sections_radii_scale])
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
@@ -795,7 +798,7 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                     name=dendrite_prefix,
                     material_list=self.basal_dendrites_materials,
-                    fixed_radius=fixed_radius,
+                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -819,7 +822,7 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
-                    fixed_radius=fixed_radius,
+                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -842,7 +845,8 @@ class SkeletonBuilder:
                     section=copy.deepcopy(self.morphology.axon),
                     max_branching_level=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Arbors.AXON_PREFIX, material_list=self.axon_materials,
-                    fixed_radius=fixed_radius, bevel_object=bevel_object,
+                    fixed_radius=None,
+                    bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
                     sections_objects=axon_sections_objects,
                     render_frame=self.options.morphology.render_progressive,
@@ -999,14 +1003,8 @@ class SkeletonBuilder:
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology
-        bevel_object = None
-        if self.options.morphology.scale_sections_radii:
-            bevel_object = nmv.mesh.create_bezier_circle(
-                radius=self.options.morphology.sections_radii_scale,
-                vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        else:
-            bevel_object = nmv.mesh.create_bezier_circle(
-                radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
 
         # Add the bevel object to the morphology objects
         morphology_objects.append(bevel_object)

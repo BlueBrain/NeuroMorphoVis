@@ -348,6 +348,40 @@ def zigzag_section(section,
 
 
 ####################################################################################################
+# @scale_section_radii
+####################################################################################################
+def scale_section_radii(section,
+                        scale_factor):
+    """Scale the section radii.
+
+    :param section:
+        A given section.
+    :param scale_factor:
+        A scale factor that will be used to scale the section.
+    """
+
+    # Scale the radius of each section sample
+    for i_sample in section.samples:
+        i_sample.radius *= scale_factor
+
+
+####################################################################################################
+# @fix_section_radii
+####################################################################################################
+def fix_section_radii(section,
+                      fixed_radius):
+    """Fix the radius of all the samples along a given section.
+    :param section:
+        A given section to filter.
+    :param fixed_radius:
+        The radius that will be set to all the samples of the section.
+    """
+
+    # Set the radius of each section sample to the given fixed radius
+    for i_sample in section.samples:
+        i_sample.radius = fixed_radius
+
+####################################################################################################
 # @filter_section_sub_threshold
 ####################################################################################################
 def filter_section_sub_threshold(section,
@@ -360,6 +394,7 @@ def filter_section_sub_threshold(section,
         Threshold radius.
     """
 
+    # Filter each section sample based on its radius
     for i_sample in section.samples:
         if i_sample.radius < threshold:
             i_sample.radius = 0.00001
