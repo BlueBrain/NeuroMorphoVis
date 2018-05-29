@@ -530,8 +530,10 @@ def join_mesh_objects(mesh_list,
     # Select all the sections in the sections list
     for mesh_object in mesh_list:
 
-        # Select the mesh object
-        mesh_object.select = True
+        if mesh_object.type == 'MESH':
+            
+            # Select the mesh object
+            mesh_object.select = True
 
     # Set the 0th mesh to be active
     bpy.context.scene.objects.active = mesh_list[0]

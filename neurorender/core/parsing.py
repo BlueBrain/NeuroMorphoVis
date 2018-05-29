@@ -85,6 +85,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--use-spheres',
                         action='store_true', default=False, dest='use_spheres',help=arg_help)
 
+    arg_help = 'Transform neurons to local positions'
+    parser.add_argument('--transform',
+                        action='store_true', default=False, dest='transform', help=arg_help)
+
     arg_help = 'Image and scene prefix'
     parser.add_argument('--prefix',
                         action='store', default='image', dest='prefix', help=arg_help)

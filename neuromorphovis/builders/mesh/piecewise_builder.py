@@ -743,7 +743,7 @@ class PiecewiseBuilder:
             nmv.logger.header('Transforming to global coordinates')
 
             for mesh_object in self.reconstructed_neuron_meshes:
-                nmv.skeleton. ops.transform_to_global(
+                nmv.skeleton.ops.transform_to_global(
                     neuron_object=mesh_object,
                     blue_config=self.options.morphology.blue_config,
                     gid=self.options.morphology.gid)

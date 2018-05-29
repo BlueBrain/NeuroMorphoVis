@@ -167,7 +167,8 @@ def load_object_from_blend_file(input_directory,
 ################################################################################
 def load_neurons_membrane_meshes_into_scene(input_directory,
                                             neurons_list,
-                                            input_type):
+                                            input_type,
+                                            transform=False):
     """Loads the meshes of the membranes of the neurons only into the scene.
 
     :param input_directory:
@@ -189,12 +190,19 @@ def load_neurons_membrane_meshes_into_scene(input_directory,
         # .ply neurons
         elif input_type == 'ply':
             input_file_name = 'neuron_%s.ply' % str(neuron.gid)
-            neuron.membrane_meshes = [load_obj_file(input_directory, input_file_name)]
+            neuron.membrane_meshes = [load_ply_file(input_directory, input_file_name)]
 
         # .obj neurons
         elif input_type == 'obj':
             input_file_name = 'neuron_%s.obj' % str(neuron.gid)
-            neuron.membrane_meshes = [load_ply_file(input_directory, input_file_name)]
+            neuron.membrane_meshes = [load_obj_file(input_directory, input_file_name)]
 
         else:
             print('ERROR: Unrecognized input type [%s]' % input_type)
+
+    if transform:
+        print('Transforming')
+        for i_neuron in neurons_list:
+            for i_object in i_neuron.membrane_meshes:
+                for vertex in i_object.data.vertices:
+                    vertex.co = i_neuron.transform * vertex.co

@@ -23,21 +23,21 @@ BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
 
 # Rendering configuration file
 # RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
-RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/data/configs/l5-box/RANDOM_BOX_Slice_100.00p.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/l5-ttpc/configs/25/RANDOM_BOX_Slice_25.00p.config'
 
 # The input directory where the meshes exist
 # MESHES_DIRECTORY='/data/neurorender-data/meshes'
-MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/resources/l5-box/meshes'
+MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/l5-ttpc/meshes/meshes'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
 # Use ['ply'] if the neurons are stored in .ply meshes
 # Use ['obj'] if the neurons are stored in .obj meshes.
-INPUT_TYPE='blend'
+INPUT_TYPE='ply'
 
 # The output directory where the scene and images will be generated
 # OUTPUT_DIRECTORY='/data/neurorender-data/output'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/resources/l5-box'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/l5-ttpc/mesh-rendering'
 
 # Style file
 STYLE_FILE='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
@@ -54,6 +54,9 @@ IMAGE_RESOLUTION=5000
 # Use spheres for representative rendering
 USE_SPHERES='no'
 
+# Transform the neurons to their local positions
+TRANSFORM_NEURONS='no'
+
 # Prefix
 PREFIX='scene'
 
@@ -61,6 +64,8 @@ PREFIX='scene'
 BOOL_ARGS=''
 if [ "$USE_SPHERES" == "yes" ];
     then BOOL_ARGS+=' --use-spheres'; fi
+if [ "$TRANSFORM_NEURONS" == "yes" ];
+    then BOOL_ARGS+=' --transform'; fi
 
 ####################################################################################################
 echo 'RENDERING ...'

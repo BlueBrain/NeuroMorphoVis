@@ -72,7 +72,7 @@ if __name__ == "__main__":
     else:
         # Load the neurons into the scene
         neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
-            args.input_directory, neurons, args.input_type)
+            args.input_directory, neurons, args.input_type, args.transform)
 
         # Apply the style
         styling.apply_style(neurons, styles)
