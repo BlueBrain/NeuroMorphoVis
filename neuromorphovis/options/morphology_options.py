@@ -117,6 +117,9 @@ class MorphologyOptions:
         # A fixed and unified value for the radii of all the sections in the morphology
         self.sections_fixed_radii_value = 1.0
 
+        # Threshold radius, where any section with lower radius values will not drawn
+        self.threshold_radius = 100000
+
         # Number of sides of the bevel object used to scale the sections
         # This parameter controls the quality of the reconstructed morphology
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES

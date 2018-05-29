@@ -296,9 +296,9 @@ class SkeletonBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.scale_sections_radii:
+        if self.options.morphology.radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.unify_sections_radii:
+        elif self.options.morphology.radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
             sphere_radius = self.options.morphology.sections_fixed_radii_value
 
         # Create the sphere based on the largest radius
@@ -717,9 +717,7 @@ class SkeletonBuilder:
     ################################################################################################
     def draw_morphology_as_connected_sections(self,
                                               bevel_object=None,
-                                              repair_morphology=False,
-                                              taper_sections=False,
-                                              zigzag_sections=False):
+                                              repair_morphology=False):
         """
         Reconstructs and draws the morphology as a series of connected sections.
 
@@ -727,11 +725,6 @@ class SkeletonBuilder:
             A bevel object used to scale the radii of the sections.
         :param repair_morphology:
             A flag to indicate whether we need to repair the morphology or not.
-        :param taper_sections:
-            A flag to indicate whether to taper the sections for artistic purposes or not.
-        :param zigzag_sections:
-            A flag to indicate whether to add abrupt left and right wiggles to the sections for
-            artistic purposes or not.
         :return:
             A list of all the objects of the morphology that are already drawn.
         """
@@ -762,20 +755,32 @@ class SkeletonBuilder:
                   nmv.skeleton.ops.resample_sections])
 
         # Taper the sections if requested
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED or \
+           self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
         # Zigzag the sections if required
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.ZIGZAG or \
+           self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
 
-        # Verify the fixed radius options
-        fixed_radius = self.options.morphology.sections_fixed_radii_value \
-            if self.options.morphology.unify_sections_radii else None
+        # Filter the radii of the sections
+        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.filter_section_sub_threshold,
+                  self.options.morphology.threshold_radius])
+
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.fix_section_radii,
+                  self.options.morphology.sections_fixed_radii_value])
+
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.scale_section_radii,
+                  self.options.morphology.sections_radii_scale])
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
@@ -793,7 +798,7 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                     name=dendrite_prefix,
                     material_list=self.basal_dendrites_materials,
-                    fixed_radius=fixed_radius,
+                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -817,7 +822,7 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
-                    fixed_radius=fixed_radius,
+                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -840,7 +845,8 @@ class SkeletonBuilder:
                     section=copy.deepcopy(self.morphology.axon),
                     max_branching_level=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Arbors.AXON_PREFIX, material_list=self.axon_materials,
-                    fixed_radius=fixed_radius, bevel_object=bevel_object,
+                    fixed_radius=None,
+                    bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
                     sections_objects=axon_sections_objects,
                     render_frame=self.options.morphology.render_progressive,
@@ -902,13 +908,6 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
-
-        # Repair severe morphology artifacts if @repair_morphology is set
-        #if repair_morphology:
-
-        # Re-sample the morphology for disconnected skeleton
-        #resampler = disconnected_morphology_resampler.DisconnectedSkeletonResampler()
-        #resampler.resample_morphology(self.morphology)
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
@@ -996,25 +995,6 @@ class SkeletonBuilder:
         This function draws the morphological skeleton
         :return A list of all the drawn morphology objects.
         """
-        """
-        morphology_ops.apply_operation_to_morphology(
-            *[self.morphology,
-              morphology_ops.verify_number_of_samples_per_section])
-
-        morphology_ops.apply_operation_to_morphology(
-            *[self.morphology,
-              morphology_ops.verify_number_of_children])
-
-        morphology_ops.apply_operation_to_morphology(
-            *[self.morphology,
-              morphology_ops.verify_radii_at_branching_points])
-
-        morphology_ops.apply_operation_to_morphology(
-            *[self.morphology,
-              morphology_ops.verify_duplicated_samples])
-        """
-
-        # nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # This list has all the created and drawn objects that compose the morphology.
         # We must keep track on those objects to delete them upon request or when we need to use
@@ -1023,24 +1003,74 @@ class SkeletonBuilder:
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology
-        bevel_object = None
-        if self.options.morphology.scale_sections_radii:
-            bevel_object = nmv.mesh.create_bezier_circle(
-                radius=self.options.morphology.sections_radii_scale,
-                vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        else:
-            bevel_object = nmv.mesh.create_bezier_circle(radius=1.0,
-                vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
 
         # Add the bevel object to the morphology objects
         morphology_objects.append(bevel_object)
 
-        # Skeletonize based on the selected method
-        method = self.options.morphology.reconstruction_method
-
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
         self.create_skeleton_materials()
+
+        nmv.logger.header('Building skeleton')
+        method = self.options.morphology.reconstruction_method
+        # Draw the morphology as a set of disconnected tubes, where each SEGMENT is a tube
+        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+            morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
+                bevel_object=bevel_object))
+
+        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
+            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
+                bevel_object=bevel_object, repair_morphology=False))
+
+        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
+            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
+            morphology_objects.extend(self.draw_morphology_as_disconnected_sections(
+                bevel_object=bevel_object))
+
+        # Draw the morphology as a set of articulated tubes, where each SECTION is connected to
+        # the following one by a sphere
+        elif method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+            morphology_objects.extend(self.draw_morphology_as_articulated_sections(
+                bevel_object=bevel_object))
+
+        # Change the structure of the morphology for artistic purposes
+        elif method == nmv.enums.Skeletonization.Method.TAPERED:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        # Change the structure of the morphology for artistic purposes
+        elif method == nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
+        # is represented by a continuous tube
+        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=False))
+
+        # Draw the full morphology as a set of connected tubes, where each long SECTION along the
+        # arbor is represented by a continuous tube, and the roots are already connected to the
+        # origin
+        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        # By default, use the full morphology method
+        else:
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        # Hide the bevel object to avoid having it rendered
+        bevel_object.hide = True
 
         # Draw the soma as a sphere object
         if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
@@ -1071,131 +1101,6 @@ class SkeletonBuilder:
         # Otherwise, ignore the soma drawing
         else:
             nmv.logger.log('Ignoring soma representation')
-
-        """
-        # If morphology progressive rendering is enabled, create the directory here and render a
-        # frame following the reconstruction of each piece of the morphology.
-        if self.options.morphology.render_progressive:
-
-            # Create a directory where the sequence frames will be generated
-            self.progressive_frames_directory = '%s/%s_morphology_progressive' % (
-                self.options.output.sequences_directory, self.options.morphology.label)
-            nmv.file.ops.clean_and_create_directory(self.progressive_frames_directory)
-
-            # Set camera location and target based on the selected view to render the images
-            morphology_bbox = self.morphology.bounding_box
-            center = morphology_bbox.center
-            camera_z = morphology_bbox.p_max[2] + morphology_bbox.bounds[2]
-            camera_location_z = Vector((center.x, center.y, camera_z))
-
-            # Add a camera along the z-axis
-            self.progressive_rendering_camera = camera_ops.add_camera(location=camera_location_z)
-
-            # Rotate the camera
-            camera_ops.rotate_camera_for_front_view(camera=self.progressive_rendering_camera)
-
-            # Update the camera resolution.
-            camera_ops.set_camera_resolution_for_specific_view(
-                camera=self.progressive_rendering_camera,
-                resolution=self.options.morphology.full_view_resolution, view='FRONT',
-                bounds=morphology_bbox.bounds)
-
-            # Draw the first frame for the soma
-            # The file path of the frame
-            frame_file_path = '%s/frame_%s' % (
-                self.progressive_frames_directory, '{0:05d}'.format(0))
-
-            # Render the image to film
-            camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
-        """
-        nmv.logger.log('**************************************************************************')
-        nmv.logger.log('Building skeleton')
-        nmv.logger.log('**************************************************************************')
-
-        """
-        # Remove duplicate samples
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.verify_segments_length_wrt_radius])
-
-        # Remove duplicate samples
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_duplicate_samples, 0.5])
-
-        nmv.logger.log('after')
-        # Remove duplicate samples
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.verify_segments_length_wrt_radius])
-
-        # Get a list of short sections and connect them to the parents
-        short_sections_list = list()
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.verify_short_sections_and_return_them,
-              short_sections_list])
-        
-        for short_section in short_sections_list:
-            nmv.skeleton.ops.repair_short_sections_by_connection_to_child(section=short_section)
-        """
-        # Draw the morphology as a set of disconnected tubes, where each SEGMENT is a tube
-        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
-                bevel_object=bevel_object))
-
-        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=False))
-
-        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=True))
-
-        # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_sections(
-                bevel_object=bevel_object))
-
-        # Draw the morphology as a set of articulated tubes, where each SECTION is connected to
-        # the following one by a sphere
-        elif method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
-            morphology_objects.extend(self.draw_morphology_as_articulated_sections(
-                bevel_object=bevel_object))
-
-        # Change the structure of the morphology for artistic purposes
-        elif method == nmv.enums.Skeletonization.Method.TAPERED:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=True, taper_sections=True))
-
-        # Change the structure of the morphology for artistic purposes
-        elif method == nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=True,
-                taper_sections=True, zigzag_sections=True))
-
-        # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
-        # is represented by a continuous tube
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=False))
-
-        # Draw the full morphology as a set of connected tubes, where each long SECTION along the
-        # arbor is represented by a continuous tube, and the roots are already connected to the
-        # origin
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=True))
-
-        # By default, use the full morphology method
-        else:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=True))
-
-        # Hide the bevel object to avoid having it rendered
-        bevel_object.hide = True
-
-        # Delete the progressive camera if it was used during the reconstruction
-        if self.progressive_rendering_camera is not None:
-            nmv.scene.ops.delete_list_objects([self.progressive_rendering_camera])
 
         # Return the list of the drawn morphology objects
         return morphology_objects

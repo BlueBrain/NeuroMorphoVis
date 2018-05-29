@@ -191,6 +191,12 @@ class NeuroMorphoVisOptions:
             self.morphology.unify_sections_radii = False
             self.morphology.sections_radii_scale = arguments.radii_scale_factor
 
+        # Filtered
+        elif arguments.sections_radii == 'filtered':
+            self.morphology.scale_sections_radii = False
+            self.morphology.unify_sections_radii = False
+            self.morphology.sections_radii_scale = arguments.radii_scale_factor
+
         # Default as given in the morphology file
         else:
             self.morphology.scale_sections_radii = False

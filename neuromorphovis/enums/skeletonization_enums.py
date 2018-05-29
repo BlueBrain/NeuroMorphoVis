@@ -210,6 +210,9 @@ class Skeletonization:
         # Scale the radii of the arbors using a constant factor
         SCALED = 'ARBORS_RADII_SCALED'
 
+        # Filter the radii at a given threshold radius
+        FILTERED = 'ARBORS_RADII_FILTERED'
+
         ############################################################################################
         # @__init__
         ############################################################################################
@@ -233,6 +236,10 @@ class Skeletonization:
             # Fixed
             elif argument == 'fixed':
                 return Skeletonization.ArborsRadii.FIXED
+
+            # Filtered
+            elif argument == 'filtered':
+                return Skeletonization.ArborsRadii.FILTERED
 
             # By default, as specified in the morphology file
             else:
