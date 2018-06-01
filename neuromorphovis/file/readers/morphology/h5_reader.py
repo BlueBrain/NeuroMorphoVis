@@ -20,6 +20,7 @@
 from mathutils import Vector
 
 # Internal imports
+import neuromorphovis as nmv
 import neuromorphovis.file
 import neuromorphovis.skeleton
 
@@ -59,6 +60,7 @@ class H5Reader:
         # For each section, get the IDs of the children nodes, then find and append them to the
         # children lists.
         # Also find the ID of the parent node and update the parent accordingly.
+        branching_order = 0
         for i_section in sections:
             # First round
             for child_id in i_section.children_ids:

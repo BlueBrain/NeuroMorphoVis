@@ -399,3 +399,62 @@ def filter_section_sub_threshold(section,
     for i_sample in section.samples:
         if i_sample.radius < threshold:
             i_sample.radius = 0.00001
+
+
+####################################################################################################
+# @update_branching_order_section
+####################################################################################################
+def update_branching_order_section(section,
+                                   branching_order=1):
+    """Update the branching order of the section.
+
+    :param section:
+        A given section.
+    :param branching_order:
+        The current branching order.
+    """
+
+    if section is None:
+        return
+
+    if section.is_root():
+        section.branching_order = 1
+
+    # Do it recursively
+    for child_section in section.children:
+
+        # Update the bounding box via updating p_min and p_max
+        update_branching_order_section(section=child_section, branching_order=branching_order + 1)
+
+
+####################################################################################################
+# @simplify_morphology
+####################################################################################################
+def simplify_morphology(section):
+
+    # Handle only the
+    if section.is_root():
+
+        # Get the maximum radius of the section
+        section_maximum_radius = nmv.skeleton.ops.compute_max_section_radius(section=section)
+
+        # Set the section minimum radius to a very small value
+        section_minimum_radius = 0.0001
+
+        # Compute the difference
+        difference = section_maximum_radius - section_minimum_radius
+
+        # Get the length of the section (in terms of number of samples)
+        number_samples = len(section.samples)
+
+        # Compute the step of the inner samples between i = 1 and i = number_samples - 1
+        section_step = difference / (number_samples - 1)
+
+        # Set the radii based on their distance from the first sample
+        for i in range(0, len(section.samples)):
+
+            # Do it for the internal samples
+            section.samples[i].radius = section_maximum_radius - (i * section_step)
+
+        # Omit the children
+        section.children = []

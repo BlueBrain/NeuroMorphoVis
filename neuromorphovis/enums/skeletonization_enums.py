@@ -57,6 +57,9 @@ class Skeletonization:
         # Create a zigzagged and ta[ered morphology skeleton
         TAPERED_ZIGZAG = 'MESHING_SKELETON_TAPERED_ZIGZAG'
 
+        # Simplified
+        SIMPLIFIED = 'MESHING_SKELETON_SIMPLIFIED'
+
         ############################################################################################
         # @__init__
         ############################################################################################
@@ -84,6 +87,10 @@ class Skeletonization:
             # Tapered zigzag
             elif argument == 'tapered-zigzag':
                 return Skeletonization.Skeleton.TAPERED_ZIGZAG
+
+            # Tapered zigzag
+            elif argument == 'simplified':
+                return Skeletonization.Skeleton.SIMPLIFIED
 
             # By default use the original skeleton
             else:
