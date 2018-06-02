@@ -150,6 +150,19 @@ def resample_sections(section,
 
 
 ####################################################################################################
+# @resample_section_adaptively
+####################################################################################################
+def resample_section_based_on_radius(section):
+    """Resample a given section based on the radius of its last sample.
+    This function resamples a section with a resampling distance
+
+    :param section:
+    :return:
+    """
+
+    return
+
+####################################################################################################
 # @add_sample_at_section_center
 ####################################################################################################
 def add_sample_at_section_center(section):
