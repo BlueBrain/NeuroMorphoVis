@@ -338,8 +338,11 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
         # A reference to the neuron mesh object as a SINGLE item
         neuron_mesh_object = None
 
+        if len(neuron_mesh_objects) == 0:
+            print('Issue')
+
         # If the list contains a single mesh object, then export it as it is
-        if len(neuron_mesh_objects) == 1:
+        elif len(neuron_mesh_objects) == 1:
 
             # Use the first object only
             neuron_mesh_object = neuron_mesh_objects[0]

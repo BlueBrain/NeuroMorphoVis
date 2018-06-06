@@ -343,7 +343,6 @@ class PiecewiseBuilder:
         # Convert the section object (tubes) into meshes
         for arbor_object in arbors_objects:
             nmv.scene.ops.convert_object_to_mesh(arbor_object)
-            # self.arbors_meshes.append(arbor_object)
 
         # Return the list of meshes
         return arbors_objects
@@ -468,9 +467,6 @@ class PiecewiseBuilder:
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
-        # Return a reference to the arbors meshes
-        return arbors_meshes
-
     ################################################################################################
     # @build_soft_edges_arbors
     ################################################################################################
@@ -500,9 +496,6 @@ class PiecewiseBuilder:
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-        # Return a reference to the arbors meshes
-        return arbors_meshes
 
     ################################################################################################
     # @add_surface_noise
@@ -635,11 +628,11 @@ class PiecewiseBuilder:
 
         # Hard edges (less samples per branch)
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
-            self.arbors_meshes = self.build_hard_edges_arbors()
+            self.build_hard_edges_arbors()
 
         # Smooth edges (more samples per branch)
         elif self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-            self.arbors_meshes = self.build_soft_edges_arbors()
+            self.build_soft_edges_arbors()
 
         else:
             nmv.logger.log('ERROR')
@@ -695,18 +688,21 @@ class PiecewiseBuilder:
         if self.options.mesh.global_coordinates:
             nmv.logger.header('Transforming to global coordinates')
 
+            # Arbor mesh
+            for mesh_object in self.arbors_meshes:
+                print(mesh_object)
+                nmv.skeleton.ops.transform_to_global_coordinates(mesh_object=mesh_object,
+                    blue_config=self.options.morphology.blue_config,
+                    gid=self.options.morphology.gid)
+
+            return
             # Soma mesh
             nmv.skeleton.ops.transform_to_global_coordinates(
                 mesh_object=self.soma_mesh,
                 blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid)
 
-            # Arbor mesh
-            for mesh_object in self.arbors_meshes:
-                nmv.skeleton.ops.transform_to_global_coordinates(
-                    mesh_object=mesh_object,
-                    blue_config=self.options.morphology.blue_config,
-                    gid=self.options.morphology.gid)
+            return
 
     ################################################################################################
     # @reconstruct_mesh
@@ -746,8 +742,12 @@ class PiecewiseBuilder:
         # Add nucleus
         # self.add_nucleus()
 
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'MESH':
+                self.arbors_meshes.append(scene_object)
+
         # Transform to the global coordinates
-        # self.transform_to_global_coordinates()
+        self.transform_to_global_coordinates()
 
         """
         # Compile a list of all the meshes in the scene, they account for the different mesh
@@ -786,3 +786,6 @@ class PiecewiseBuilder:
         nmv.logger.header('Done!')
 
         return self.arbors_meshes
+
+    def save_mesh(self):
+        pass
