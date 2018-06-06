@@ -18,21 +18,28 @@
 
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
-__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
+__credits__     = ["Ahmet Bilgili",  "Juan Hernando", "Stefan Eilemann"]
 __version__     = "1.0.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-from .arbors_consts import *
-from .paths_consts import *
-from .color_consts import *
-from .image_consts import *
-from .math_consts import *
-from .meshing_consts import *
-from .messages_consts import *
-from .morphology_consts import *
-from .mtypes_consts import *
-from .simulation_consts import *
-from .soft_body_consts import *
-from .spines_consts import *
+
+####################################################################################################
+# @Arbors
+####################################################################################################
+class Spines:
+    """Arbors constants
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        pass
+
+    # Min scale factor for the spine
+    MIN_SCALE_FACTOR = 0.5
+
+    # Max scale factor
+    MAX_SCALE_FACTOR = 1.25

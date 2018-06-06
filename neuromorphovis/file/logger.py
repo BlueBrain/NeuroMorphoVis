@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import os
 import datetime
@@ -123,7 +124,7 @@ class Logger:
     # @header
     ################################################################################################
     def header(self,
-                   *args):
+               *args):
         """Log a header.
 
         :param args:
@@ -137,7 +138,7 @@ class Logger:
     # @info
     ################################################################################################
     def info(self,
-                       *args):
+             *args):
         """Log a sub-header.
 
         :param args:
@@ -153,10 +154,11 @@ class Logger:
     ################################################################################################
     # @detail
     ################################################################################################
-    def detail(self, *args):
+    def detail(self,
+               *args):
         """Log a sub-header.
 
-        :param arg:
+        :param args:
             Input arguments.
         """
 

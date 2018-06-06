@@ -61,7 +61,7 @@ def load_spines(spines_directory):
     spines_files = nmv.file.ops.get_files_in_directory(spines_directory, file_extension='.obj')
 
     # Load the spines, one by one into a list
-    spines_objects_list = []
+    spines_objects_list = list()
 
     # Load spine by spine
     for spine_file in spines_files:

@@ -26,3 +26,4 @@ __status__      = "Production"
 
 from .spine_builder import *
 from .random_spine_builder import *
+from .circuit_spine_builder import *

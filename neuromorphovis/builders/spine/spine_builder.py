@@ -36,6 +36,7 @@ from mathutils import Matrix
 import neuromorphovis as nmv
 import neuromorphovis.consts
 import neuromorphovis.file
+import neuromorphovis.mesh
 import neuromorphovis.scene
 import neuromorphovis.shading
 import neuromorphovis.utilities
@@ -79,7 +80,7 @@ def load_spines(spines_directory):
     spines_files = nmv.file.ops.get_files_in_directory(spines_directory, file_extension='.obj')
 
     # Load the spines, one by one into a list
-    spines_objects_list = []
+    spines_objects_list = list()
 
     # Load spine by spine
     for spine_file in spines_files:
@@ -100,7 +101,7 @@ def load_spines(spines_directory):
 def emanate_a_spine(spines_list,
                     post_synaptic_position,
                     pre_synaptic_position,
-                    id):
+                    identifier):
     """Emanate a spine at the specified position and towards the direction given by the pre and post
     synaptic positions.
 
@@ -110,7 +111,7 @@ def emanate_a_spine(spines_list,
         The post-synaptic position of the spine.
     :param pre_synaptic_position:
         The pre-synaptic position of the spine.
-    :param id :
+    :param identifier :
         The spine identifier.
     :return:
         A reference to the spine object.
@@ -120,10 +121,11 @@ def emanate_a_spine(spines_list,
     spine_template = random.choice(spines_list)
 
     # Get a copy of the template and update it
-    spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+    spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier)
 
     # Scale the spine
-    nmv.scene.ops.scale_object_uniformly(spine_object, random.uniform(0.6, 1.25))
+    nmv.scene.ops.scale_object_uniformly(spine_object,
+        random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR, nmv.consts.Spines.MAX_SCALE_FACTOR))
 
     # Translate the spine to the post synaptic position
     nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
@@ -181,7 +183,7 @@ def build_circuit_spines(morphology,
     # Get the local to global transforms
     local_to_global_transform = circuit.transforms({int(gid)})[0]
 
-    # Print(local_to_global_transform)
+    # Local_to_global_transform
     transformation_matrix = Matrix()
     for i in range(4):
         transformation_matrix[i][:] = local_to_global_transform[i]
@@ -192,7 +194,7 @@ def build_circuit_spines(morphology,
     # Create a timer to report the performance
     building_timer = nmv.utilities.timer.Timer()
 
-    nmv.logger.log('\t *Building spines')
+    nmv.logger.header('Building spines')
     building_timer.start()
 
     # Load the synapses from the file
@@ -220,15 +222,21 @@ def build_circuit_spines(morphology,
         # Emanate a spine
         spine_object = emanate_a_spine(templates_spines_list, post_position, pre_position, i)
 
-        # Add the object to the list
+        # Append the spine to spines list
         spines_objects.append(spine_object)
 
     # Done
-    nmv.utilities.time_line.show_iteration_progress('Spines', number_spines, number_spines, done=True)
+    nmv.utilities.time_line.show_iteration_progress(
+        'Spines', number_spines, number_spines, done=True)
+
+    # Link the spines to the scene in a single step
+    nmv.logger.info('Linking spines to the scene')
+    for i in spines_objects:
+        bpy.context.scene.objects.link(i)
 
     # Report the time
     building_timer.end()
-    nmv.logger.log('\t Spines: [%f] seconds' % building_timer.duration())
+    nmv.logger.info('Spines: [%f] seconds' % building_timer.duration())
 
     # Delete the template spines
     nmv.scene.ops.delete_list_objects(templates_spines_list)

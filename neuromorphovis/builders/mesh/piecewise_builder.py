@@ -635,18 +635,17 @@ class PiecewiseBuilder:
         else:
             nmv.logger.log('ERROR')
 
+    ################################################################################################
+    # @add_spines
+    ################################################################################################
     def add_spines(self):
-
-        # Add spines
-        spines_objects = None
-
-        nmv.logger.header('Adding circuit spines')
-        spines_objects = nmv.builders.build_circuit_spines(morphology=self.morphology,
-            blue_config=self.options.morphology.blue_config, gid=self.options.morphology.gid,
-            material=self.spines_colors[0])
+        """Add the spines to the neuron.
+        """
 
         if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            pass
+            spines_builder = nmv.builders.CircuitSpineBuilder(morphology=self.morphology,
+                options=self.options)
+            self.spines_mesh = spines_builder.add_spines_to_morphology()
 
         # Random spines
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
@@ -657,11 +656,40 @@ class PiecewiseBuilder:
 
         # Otherwise ignore spines
         else:
-            return
+            nmv.logger.log('Ignoring spines')
 
-        # Join the spine objects into a single mesh
-        spine_mesh_name = '%s_spines' % self.options.morphology.label
-        self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+    ################################################################################################
+    # @add_nucleus
+    ################################################################################################
+    def add_nucleus(self):
+        """Add nucleus to the neuron.
+        """
+
+        # Adding nucleus
+        if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
+            nmv.logger.header('Adding nucleus')
+            nucleus_builder = nmv.builders.NucleusBuilder(morphology=self.morphology,
+                options=self.options)
+            nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
+
+    ################################################################################################
+    # @transform_to_global_coordinates
+    ################################################################################################
+    def transform_to_global_coordinates(self):
+        """Transform the neuron membrane to the global coordinates.
+
+        NOTE: Spine transformation is already implemented by the spine builder, and therefore
+        this function applies only to the arbors and the soma.
+        """
+
+        # Transform the neuron object to the global coordinates
+        if self.options.mesh.global_coordinates:
+            nmv.logger.header('Transforming to global coordinates')
+
+            for mesh_object in self.reconstructed_neuron_meshes:
+                nmv.skeleton.ops.transform_to_global(neuron_object=mesh_object,
+                    blue_config=self.options.morphology.blue_config,
+                    gid=self.options.morphology.gid)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -698,12 +726,9 @@ class PiecewiseBuilder:
         # Adding spines
         self.add_spines()
 
-        # Adding nucleus
-        if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
-            nmv.logger.header('Adding nucleus')
-            nucleus_builder = nmv.builders.NucleusBuilder(
-                morphology=self.morphology, options=self.options)
-            nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
+        # Add nucleus
+        self.add_nucleus()
+
 
         # Compile a list of all the meshes in the scene, they account for the different mesh
         # objects of the neuron
@@ -738,15 +763,8 @@ class PiecewiseBuilder:
                 # Update the reconstructed_neuron_meshes list to a single object
                 self.reconstructed_neuron_meshes = [neuron_mesh]
 
-        # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
-            nmv.logger.header('Transforming to global coordinates')
-
-            for mesh_object in self.reconstructed_neuron_meshes:
-                nmv.skeleton.ops.transform_to_global(
-                    neuron_object=mesh_object,
-                    blue_config=self.options.morphology.blue_config,
-                    gid=self.options.morphology.gid)
+        # Transform to the global coordinates
+        self.transform_to_global_coordinates()
 
         nmv.logger.header('Done!')
 

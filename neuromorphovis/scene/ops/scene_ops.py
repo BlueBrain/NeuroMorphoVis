@@ -551,7 +551,8 @@ def convert_object_to_mesh(scene_object):
 # @duplicate_object
 ####################################################################################################
 def duplicate_object(original_object,
-                     duplicated_object_name=None):
+                     duplicated_object_name=None,
+                     link_to_scene=True):
     """
     Duplicates an object in the scene and returns a reference to the duplicated object.
 
@@ -559,6 +560,8 @@ def duplicate_object(original_object,
         The original object that will be duplicated in the scene.
     :param duplicated_object_name:
         The name of the new object.
+    :param link_to_scene:
+        Link the duplicate object to the scene.
     :return:
         A reference to the duplicated object.
     """
@@ -580,11 +583,12 @@ def duplicate_object(original_object,
         duplicated_object.name = str(duplicated_object_name)
 
     # Link it to the scene
-    bpy.context.scene.objects.link(duplicated_object)
+    if link_to_scene:
+        bpy.context.scene.objects.link(duplicated_object)
 
-    # Deselect all the objects in the scene
-    for scene_object in bpy.context.scene.objects:
-        scene_object.select = False
+        # Deselect all the objects in the scene
+        for scene_object in bpy.context.scene.objects:
+            scene_object.select = False
 
     # Return a reference to the duplicate object
     return duplicated_object

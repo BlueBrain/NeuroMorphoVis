@@ -34,6 +34,7 @@ from mathutils import Matrix
 
 import neuromorphovis as nmv
 import neuromorphovis.consts
+import neuromorphovis.mesh
 import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.scene
@@ -75,9 +76,8 @@ class CircuitSpineBuilder:
     ################################################################################################
     def load_spine_meshes(self):
         """Loads all the spine meshes from the spines directory
-
-        :return:
         """
+
         # Load all the template spines and ignore the verbose messages of loading
         nmv.utilities.disable_std_output()
         self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
@@ -90,20 +90,20 @@ class CircuitSpineBuilder:
 
         # Apply the shader
         for spine_object in self.spine_meshes:
-
-            # Apply the shader to each spine mesh
             nmv.shading.set_material_to_object(spine_object, material)
 
     ################################################################################################
     # @emanate_spine
     ################################################################################################
     def emanate_spine(self,
-                      spine):
+                      spine,
+                      index):
         """Emanates a spine at an exact position on the dendritic tree.
 
         :param spine:
             A given spine object that contains all the data required to emanate the spine.
-
+        :param index:
+            Spine index.
         :return:
             The mesh instance that correspond to the spines.
         """
@@ -112,11 +112,12 @@ class CircuitSpineBuilder:
         spine_template = random.choice(self.spine_meshes)
 
         # Get a copy of the template and update it
-        spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+        spine_object = nmv.scene.ops.duplicate_object(spine_template, index, link_to_scene=False)
 
         # Scale the spine
-        spine_scale = spine.size + random.uniform(0.75, 1.0)
-        nmv.scene.ops.scale_object_uniformly(spine_object, spine_scale)
+        nmv.scene.ops.scale_object_uniformly(
+            spine_object, random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR,
+                nmv.consts.Spines.MAX_SCALE_FACTOR))
 
         # Translate the spine to the post synaptic position
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
@@ -134,16 +135,8 @@ class CircuitSpineBuilder:
     def add_spines_to_morphology(self):
         """Builds all the spines on a spiny neuron using a BBP circuit.
 
-        :param morphology:
-            A given morphology.
-        :param blue_config:
-            BBP circuit configuration file.
-        :param gid:
-            Neuron gid.
-        :param material:
-            Spine material.
         :return:
-            A list of all the reconstructed spines along the neuron.
+            A joint mesh of the reconstructed spines.
         """
 
         # Keep a list of all the spines objects
@@ -155,8 +148,11 @@ class CircuitSpineBuilder:
         except ImportError:
             raise ImportError('ERROR: Cannot import \'brain\'')
 
+        # Load the template spine meshes
+        self.load_spine_meshes()
+
         # Load the circuit, silently please
-        circuit = brain.Circuit(self.morphology.blue_config)
+        circuit = brain.Circuit(self.options.morphology.blue_config)
 
         # Get all the synapses for the corresponding gid.
         synapses = circuit.afferent_synapses({int(self.morphology.gid)})
@@ -164,7 +160,7 @@ class CircuitSpineBuilder:
         # Get the local to global transforms
         local_to_global_transform = circuit.transforms({int(self.morphology.gid)})[0]
 
-        # Print(local_to_global_transform)
+        # Local to global
         transformation_matrix = Matrix()
         for i in range(4):
             transformation_matrix[i][:] = local_to_global_transform[i]
@@ -194,7 +190,7 @@ class CircuitSpineBuilder:
                 continue
 
             # Get the pre-and post-positions in the global coordinates
-            pre_position = synapse.pre_surface_position()
+            pre_position = synapse.pre_center_position()
             post_position = synapse.post_center_position()
 
             # Transform the spine positions to the circuit coordinates
@@ -220,14 +216,24 @@ class CircuitSpineBuilder:
             nmv.utilities.time_line.show_iteration_progress('\t Spines', i, number_spines)
 
             # Emanate a spine
-            spine_object = self.emanate_spine(spine)
+            spine_object = self.emanate_spine(spine, i)
 
             # Add the object to the list
             spines_objects.append(spine_object)
 
         # Done
-        nmv.utilities.time_line.show_iteration_progress('\t Spines', number_spines, number_spines,
-                                                        done=True)
+        nmv.utilities.time_line.show_iteration_progress(
+            '\t Spines', number_spines, number_spines, done=True)
+
+        # Link the spines to the scene in a single step
+        nmv.logger.info('Linking spines to the scene')
+        for i in spines_objects:
+            bpy.context.scene.objects.link(i)
+
+        # Merging spines into a single object
+        nmv.logger.info('Grouping spines to a single mesh')
+        spine_mesh_name = '%s_spines' % self.options.morphology.label
+        spines_mesh = nmv.mesh.ops.join_mesh_objects(spines_objects, spine_mesh_name)
 
         # Report the time
         building_timer.end()
@@ -237,4 +243,4 @@ class CircuitSpineBuilder:
         nmv.scene.ops.delete_list_objects(self.spine_meshes)
 
         # Return the spines objects list
-        return spines_objects
+        return spines_mesh

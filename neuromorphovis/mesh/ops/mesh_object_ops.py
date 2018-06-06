@@ -513,7 +513,7 @@ def intersect_mesh_objects(mesh_object1,
 # @join_mesh_objects
 ####################################################################################################
 def join_mesh_objects(mesh_list,
-                      name):
+                      name='joint'):
     """Join all the meshes into one only and rename it.
 
     :param mesh_list:
