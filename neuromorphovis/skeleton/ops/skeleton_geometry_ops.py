@@ -179,23 +179,20 @@ def compute_full_morphology_bounding_box(morphology):
 
 
 ####################################################################################################
-# @transform_to_global
+# @get_transformation_matrix
 ####################################################################################################
-def transform_to_global(neuron_object,
-                        blue_config,
-                        gid):
-    """
-    Transforms a given neuron object from the global coordinates to the local coordinates defined
-    by a given circuit. The transformation matrix is obtained based on the GID of the neuron object.
+def get_transformation_matrix(blue_config,
+                              gid):
+    """Get the transformation matrix that correspond to a given neuron with a specific GID.
 
-    :param neuron_object:
-        A given neuron object to transfer from local to global coordinates.
     :param blue_config:
-        A circuit blue configuration that contains the absolute position of the neuron object.
+        A given BBP circuit configuration.
     :param gid:
-        The neuron identifier in the circuit that is used to retrieve its position in the circuit.
-    """
+        Neuron GID.
+    :return:
+        Transformation matrix.
 
+    """
     # To load the circuit, 'brain' must be imported
     try:
         import brain
@@ -206,17 +203,70 @@ def transform_to_global(neuron_object,
     circuit = brain.Circuit(blue_config)
 
     # Get the local to global transformation
-    local_to_global_transformation = circuit.transforms({int(gid)})[0]
+    origin_to_circuit_transform = circuit.transforms({int(gid)})[0]
 
     # Initialize the transformation matrix to I
     transformation_matrix = Matrix()
 
     # Fill the matrix row by row
     for i in range(4):
-        transformation_matrix[i][:] = local_to_global_transformation[i]
+        transformation_matrix[i][:] = origin_to_circuit_transform[i]
+
+    return transformation_matrix
+
+
+####################################################################################################
+# @transform_to_local_coordinates
+####################################################################################################
+def transform_to_local_coordinates(mesh_object,
+                                   blue_config,
+                                   gid):
+    """Transforms a given mesh object to the local coordinates.
+
+    :param mesh_object:
+        A given mesh object to get transformed.
+    :param blue_config:
+        A circuit blue configuration that contains the absolute position of the mesh object.
+    :param gid:
+        The neuron identifier in the circuit that is used to retrieve its position in the circuit.
+    """
+
+    # Get the transformation matrix
+    transformation_matrix = get_transformation_matrix(blue_config=blue_config, gid=gid)
+
+    # Invert the transformation matrix
+    transformation_matrix = transformation_matrix.inverted()
 
     # Apply the transformation operation vertex by vertex
-    for vertex in neuron_object.data.vertices:
+    for vertex in mesh_object.data.vertices:
+
+        # Update the vertex coordinates
+        vertex.co = transformation_matrix * vertex.co
+
+
+####################################################################################################
+# @transform_to_global
+####################################################################################################
+def transform_to_global_coordinates(mesh_object,
+                                    blue_config,
+                                    gid):
+    """Transforms a given mesh object from the local coordinates to the global coordinates.
+
+     The transformation matrix is obtained based on the GID of the neuron object.
+
+    :param mesh_object:
+        A given neuron object to get transformed.
+    :param blue_config:
+        A circuit blue configuration that contains the absolute position of the mesh object.
+    :param gid:
+        The neuron identifier in the circuit that is used to retrieve its position in the circuit.
+    """
+
+    # Get the transformation matrix
+    transformation_matrix = get_transformation_matrix(blue_config=blue_config, gid=gid)
+
+    # Apply the transformation operation vertex by vertex
+    for vertex in mesh_object.data.vertices:
 
         # Update the vertex coordinates
         vertex.co = transformation_matrix * vertex.co

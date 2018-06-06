@@ -158,15 +158,8 @@ class CircuitSpineBuilder:
         synapses = circuit.afferent_synapses({int(self.morphology.gid)})
 
         # Get the local to global transforms
-        local_to_global_transform = circuit.transforms({int(self.morphology.gid)})[0]
-
-        # Local to global
-        transformation_matrix = Matrix()
-        for i in range(4):
-            transformation_matrix[i][:] = local_to_global_transform[i]
-
-        # Invert the transformation matrix
-        transformation_matrix = transformation_matrix.inverted()
+        global_to_local_transform = nmv.skeleton.ops.get_transformation_matrix(
+            self.options.morphology.blue_config, self.options.morphology.gid).inverted()
 
         # Create a timer to report the performance
         building_timer = nmv.utilities.timer.Timer()
@@ -197,8 +190,9 @@ class CircuitSpineBuilder:
             pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
             post_synaptic_position = Vector((post_position[0], post_position[1], post_position[2]))
 
-            pre_synaptic_position = transformation_matrix * pre_synaptic_position
-            post_synaptic_position = transformation_matrix * post_synaptic_position
+            if not self.options.mesh.global_coordinates:
+                pre_synaptic_position = global_to_local_transform * pre_synaptic_position
+                post_synaptic_position = global_to_local_transform * post_synaptic_position
 
             # Add all the spines into a list
             # Create the spine
@@ -227,8 +221,8 @@ class CircuitSpineBuilder:
 
         # Link the spines to the scene in a single step
         nmv.logger.info('Linking spines to the scene')
-        for i in spines_objects:
-            bpy.context.scene.objects.link(i)
+        for spine_object in spines_objects:
+            bpy.context.scene.objects.link(spine_object)
 
         # Merging spines into a single object
         nmv.logger.info('Grouping spines to a single mesh')

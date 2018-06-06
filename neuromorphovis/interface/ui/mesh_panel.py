@@ -479,17 +479,17 @@ class MeshPanel(bpy.types.Panel):
             spines_row.prop(context.scene, 'SpinesSourceCircuit', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines_source = context.scene.SpinesSourceCircuit
+            nmv.interface.ui_options.mesh.spines = context.scene.SpinesSourceCircuit
 
         # Otherwise, it is only random
         else:
             spines_row.prop(context.scene, 'SpinesSourceRandom', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines_source = context.scene.SpinesSourceRandom
+            nmv.interface.ui_options.mesh.spines = context.scene.SpinesSourceRandom
 
         # If the spines are not ignored
-        if nmv.interface.ui_options.mesh.spines_source != nmv.enums.Meshing.Spines.Source.IGNORE:
+        if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
 
             # Spines quality
             spines_quality_row = layout.row()
@@ -500,8 +500,7 @@ class MeshPanel(bpy.types.Panel):
             nmv.interface.ui_options.mesh.spines_mesh_quality = context.scene.SpineMeshQuality
 
             # Percentage in case of random spines
-            if nmv.interface.ui_options.mesh.spines_source \
-                    == nmv.enums.Meshing.Spines.Source.RANDOM:
+            if nmv.interface.ui_options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
 
                 # Random percentage
                 spines_percentage_row = layout.row()

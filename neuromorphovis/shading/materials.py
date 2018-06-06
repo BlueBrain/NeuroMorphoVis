@@ -556,3 +556,27 @@ def set_material_to_object(mesh_object,
 
     # Assign the material to the given object.
     mesh_object.data.materials.append(material_reference)
+
+
+####################################################################################################
+# @adjust_material_uv
+####################################################################################################
+def adjust_material_uv(mesh_object,
+                       size=1):
+    """Update the texture space of the created meshes
+
+    :param mesh_object:
+        A given mesh object.
+    :param size:
+        The texture space size of the material, by default set to 1.
+    """
+    # Select the mesh
+    mesh_object.select = True
+
+    # Set the 'auto_texspace' to False
+    bpy.context.object.data.use_auto_texspace = False
+
+    # Update the texture space size
+    bpy.context.object.data.texspace_size[0] = size
+    bpy.context.object.data.texspace_size[1] = size
+    bpy.context.object.data.texspace_size[2] = size

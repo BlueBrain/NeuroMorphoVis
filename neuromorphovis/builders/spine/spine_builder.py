@@ -121,7 +121,7 @@ def emanate_a_spine(spines_list,
     spine_template = random.choice(spines_list)
 
     # Get a copy of the template and update it
-    spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier)
+    spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier, link_to_scene=False)
 
     # Scale the spine
     nmv.scene.ops.scale_object_uniformly(spine_object,

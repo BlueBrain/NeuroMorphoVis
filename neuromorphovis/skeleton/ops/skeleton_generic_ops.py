@@ -51,16 +51,19 @@ def apply_operation_to_arbor(*args):
     # Apply the operation/filter to the first section of the arbor
     operation(*section_args)
 
-    # Apply the operation/filter to the children of the arbors
-    for child in section.children:
+    # Ensure that the section has valid children
+    if section.children is not None:
 
-        # Construct the child section arguments list, add the child and add the operation
-        section_args = [child]
-        for i in range(1, len(args)):
-            section_args.append(args[i])
+        # Apply the operation/filter to the children of the arbors
+        for child in section.children:
 
-        # Validate the rest of the skeleton of the arbor
-        apply_operation_to_arbor(*section_args)
+            # Construct the child section arguments list, add the child and add the operation
+            section_args = [child]
+            for i in range(1, len(args)):
+                section_args.append(args[i])
+
+            # Validate the rest of the skeleton of the arbor
+            apply_operation_to_arbor(*section_args)
 
 
 ####################################################################################################
@@ -105,27 +108,30 @@ def apply_operation_to_arbor_conditionally(*args):
     # Apply the operation/filter to the first section of the arbor
     operation(*section_args)
 
-    # Apply the operation/filter to the children of the arbors
-    for child in section.children:
+    # Ensure that the section has valid children
+    if section.children is not None:
 
-        # Construct the child section arguments list, add the child and add the operation
-        section_args = list()
+        # Apply the operation/filter to the children of the arbors
+        for child in section.children:
 
-        # Add the branching levels
-        section_args.append(current_branching_level)
-        section_args.append(max_branching_level)
+            # Construct the child section arguments list, add the child and add the operation
+            section_args = list()
 
-        # Add the child
-        section_args.append(child)
+            # Add the branching levels
+            section_args.append(current_branching_level)
+            section_args.append(max_branching_level)
 
-        # Add the operation
-        section_args.append(operation)
+            # Add the child
+            section_args.append(child)
 
-        for i in range(4, len(args)):
-            section_args.append(args[i])
+            # Add the operation
+            section_args.append(operation)
 
-        # Validate the rest of the skeleton of the arbor
-        apply_operation_to_arbor_conditionally(*section_args)
+            for i in range(4, len(args)):
+                section_args.append(args[i])
+
+            # Validate the rest of the skeleton of the arbor
+            apply_operation_to_arbor_conditionally(*section_args)
 
 
 ####################################################################################################

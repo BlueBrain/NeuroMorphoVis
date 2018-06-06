@@ -86,6 +86,25 @@ class Arbors:
                 return Arbors.Radii.AS_SPECIFIED
 
     ################################################################################################
+    # @Roots
+    ################################################################################################
+    class Roots:
+        """The status of the roots of the arbors
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # The arbors are connected to the soma if they are primary with no intersection
+        CONNECTED_TO_SOMA = 'ARBORS_ROOTS_CONNECTED_TO_SOMA'
+
+        # The arbors are connected to the origin (0, 0, 0) if they are primary
+        CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_CONNECTED_TO_ORIGIN'
+
+    ################################################################################################
     # @Style
     ################################################################################################
     class Style:

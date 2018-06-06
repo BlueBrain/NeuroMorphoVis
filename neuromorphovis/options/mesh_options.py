@@ -88,7 +88,7 @@ class MeshOptions:
 
         # SPINES OPTIONS ###########################################################################
         # The source where the spines will be loaded from, by default ignore the spines
-        self.spines= nmv.enums.Meshing.Spines.Source.IGNORE
+        self.spines = nmv.enums.Meshing.Spines.Source.IGNORE
 
         # Spines mesh quality, by default low quality
         self.spines_mesh_quality = nmv.enums.Meshing.Spines.Quality.LQ

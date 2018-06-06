@@ -492,6 +492,8 @@ if __name__ == "__main__":
     if not nmv.file.ops.path_exists(arguments.output_directory):
         nmv.logger.log('ERROR: Please set the output directory to a valid path')
         exit(0)
+    else:
+        print('Output: [%s]' % arguments.output_directory)
 
     # Get the options from the arguments
     cli_options = nmv.options.NeuroMorphoVisOptions()
@@ -530,7 +532,17 @@ if __name__ == "__main__":
         nmv.logger.log('ERROR: Invalid input option')
         exit(0)
 
-        # Reconstruct the morphology skeleton
+    ###############################################################################################
+    # Whole neuron mesh reconstruction
+    ################################################################################################
+    if arguments.render_neuron_mesh or arguments.render_neuron_mesh_360 or arguments.reconstruct_neuron_mesh:
+
+        # Neuron mesh reconstruction and visualization
+        proceed_neuron_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
+            cli_options=cli_options)
+    exit(0)
+
+    # Reconstruct the morphology skeleton
     proceed_neuron_morphology_reconstruction_visualization(cli_morphology=cli_morphology,
         cli_options=cli_options)
 
@@ -546,16 +558,7 @@ if __name__ == "__main__":
         proceed_soma_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
                                                        cli_options=cli_options)
 
-    ################################################################################################
-    # Whole neuron mesh reconstruction
-    ################################################################################################
-    if arguments.render_neuron_mesh or              \
-       arguments.render_neuron_mesh_360 or          \
-       arguments.reconstruct_neuron_mesh:
-
-        # Neuron mesh reconstruction and visualization
-        proceed_neuron_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
-                                                         cli_options=cli_options)
+    #
 
     ################################################################################################
     # Morphology skeleton reconstruction
