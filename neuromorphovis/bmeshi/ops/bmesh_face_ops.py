@@ -673,6 +673,48 @@ def set_face_radius(bmesh_object,
     # Compute the center of the face
     face_center = face.calc_center_median()
 
+    p_0 = face.verts[0].co
+    p_1 = face.verts[1].co
+    p_2 = face.verts[2].co
+    p_3 = face.verts[3].co
+
+    p_01 = (p_0 + p_1) * 0.5
+    p_12 = (p_1 + p_2) * 0.5
+    p_23 = (p_2 + p_3) * 0.5
+    p_30 = (p_3 + p_0) * 0.5
+
+    dir_p_01 = (p_01 - face_center).normalized()
+    dir_p_12 = (p_12 - face_center).normalized()
+    dir_p_23 = (p_23 - face_center).normalized()
+    dir_p_30 = (p_30 - face_center).normalized()
+
+    new_p_01 = face_center + dir_p_01 * radius
+    new_p_12 = face_center + dir_p_12 * radius
+    new_p_23 = face_center + dir_p_23 * radius
+    new_p_30 = face_center + dir_p_30 * radius
+
+    center_p_01_p12 = (new_p_01 + new_p_12) * 0.5
+    center_p_12_p23 = (new_p_12 + new_p_23) * 0.5
+    center_p_23_p30 = (new_p_23 + new_p_30) * 0.5
+    center_p_30_p01 = (new_p_30 + new_p_01) * 0.5
+
+    new_p_0_direction = (center_p_30_p01 - face_center).normalized()
+    new_p_1_direction = (center_p_01_p12 - face_center).normalized()
+    new_p_2_direction = (center_p_12_p23 - face_center).normalized()
+    new_p_3_direction = (center_p_23_p30 - face_center).normalized()
+
+    new_p_0 = face_center + new_p_0_direction * radius
+    new_p_1 = face_center + new_p_1_direction * radius
+    new_p_2 = face_center + new_p_2_direction * radius
+    new_p_3 = face_center + new_p_3_direction * radius
+
+    face.verts[0].co = new_p_0
+    face.verts[1].co = new_p_1
+    face.verts[2].co = new_p_2
+    face.verts[3].co = new_p_3
+
+    return
+
     # Update the radius vertex by vertex
     for vertex in face.verts[:]:
 

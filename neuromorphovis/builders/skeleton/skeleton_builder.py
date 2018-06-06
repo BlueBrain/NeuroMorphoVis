@@ -754,6 +754,11 @@ class SkeletonBuilder:
                 *[self.morphology,
                   nmv.skeleton.ops.resample_sections])
 
+        nmv.skeleton.ops.update_branching_order_section(self.morphology.axon)
+        nmv.skeleton.ops.update_branching_order_section(self.morphology.apical_dendrite)
+        for dendrite in self.morphology.dendrites:
+            nmv.skeleton.ops.update_branching_order_section(dendrite)
+
         # Taper the sections if requested
         if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED or \
            self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
@@ -765,6 +770,11 @@ class SkeletonBuilder:
            self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
+
+        #if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.SIMPLIFIED
+
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.simplify_morphology])
 
         # Filter the radii of the sections
         if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
@@ -781,6 +791,7 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.scale_section_radii,
                   self.options.morphology.sections_radii_scale])
+
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []

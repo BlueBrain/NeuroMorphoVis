@@ -282,8 +282,8 @@ class ExtrusionBuilder:
         arbors_objects = []
 
         # Apply the resampling filter on the whole morphology skeleton
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_sections, 1.0])
+        #nmv.skeleton.ops.apply_operation_to_morphology(
+        #    *[self.morphology, nmv.skeleton.ops.resample_sections, 1.0])
 
         
 
@@ -291,19 +291,15 @@ class ExtrusionBuilder:
         if not self.options.morphology.ignore_apical_dendrite:
             nmv.logger.info('Apical dendrite')
 
-            # Individual sections (tubes) of the apical dendrite
-            apical_dendrite_objects = []
-
             if self.morphology.apical_dendrite is not None:
 
                 # Create the extrusion object and move it near the first sample of the branch
-                bmesh_object = self.create_extrusion_face(self.morphology.apical_dendrite)
-
+                apical_dendrite_bmesh_object = self.create_extrusion_face(self.morphology.apical_dendrite)
 
                 # Draw the apical dendrite as a set connected sections
                 nmv.skeleton.ops.extrude_connected_sections(
                     section=copy.deepcopy(self.morphology.apical_dendrite),
-                    section_objects=[bmesh_object],
+                    section_objects=[apical_dendrite_bmesh_object],
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
@@ -313,22 +309,19 @@ class ExtrusionBuilder:
                     connect_to_soma=connect_to_soma_origin,
                     bridge_to_soma=bridge_to_soma)
 
-
-                # Add a reference to the mesh object
-                # self.morphology.apical_dendrite.mesh = apical_dendrite_objects[0]
-
                 # Link it to the scene
-                mesh_object = bpy.data.meshes.new('object')
-                bmesh_object.to_mesh(mesh_object)
+                apical_dendrite_mesh = bpy.data.meshes.new('apical_dendrite_mesh')
+                apical_dendrite_bmesh_object.to_mesh(apical_dendrite_mesh)
 
                 # Create a blender object, link it to the scene
-                mesh_object = bpy.data.objects.new('bmesh-object', mesh_object)
-                bpy.context.scene.objects.link(mesh_object)
+                apical_dendrite_mesh_object = bpy.data.objects.new('apical_dendrite', apical_dendrite_mesh)
+                bpy.context.scene.objects.link(apical_dendrite_mesh_object)
 
-                # Add the sections (tubes) of the basal dendrites to the list
-                arbors_objects.append(mesh_object)
+                # Add a reference to the mesh object
+                self.morphology.apical_dendrite.mesh = apical_dendrite_mesh_object
 
-        return list()
+                # Add the mesh object
+                arbors_objects.append(apical_dendrite_mesh_object)
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -338,57 +331,69 @@ class ExtrusionBuilder:
 
                 nmv.logger.info('Dendrite [%d]' % i)
 
-                basal_dendrite_objects = []
+                # Create the extrusion object and move it near the first sample of the branch
+                basal_dendrite_bmesh_object = self.create_extrusion_face(basal_dendrite)
 
-                # Draw the basal dendrites as a set connected sections
-                basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                nmv.skeleton.ops.draw_connected_sections(
+                # Draw the apical dendrite as a set connected sections
+                nmv.skeleton.ops.extrude_connected_sections(
                     section=copy.deepcopy(basal_dendrite),
+                    section_objects=[basal_dendrite_bmesh_object],
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    name=basal_dendrite_prefix,
+                    name=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
                     material_list=self.basal_dendrites_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
                     caps=caps,
-                    sections_objects=basal_dendrite_objects,
                     connect_to_soma=connect_to_soma_origin,
                     bridge_to_soma=bridge_to_soma)
 
+                # Link it to the scene
+                basal_dendrite_mesh = bpy.data.meshes.new('dendrite_%d_mesh' % i)
+                basal_dendrite_bmesh_object.to_mesh(basal_dendrite_mesh)
+
+                # Create a blender object, link it to the scene
+                basal_dendrite_mesh_object = bpy.data.objects.new('dendrite_%d' % i, basal_dendrite_mesh)
+                bpy.context.scene.objects.link(basal_dendrite_mesh_object)
+
                 # Add a reference to the mesh object
-                self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
+                self.morphology.dendrites[i].mesh = basal_dendrite_mesh_object
 
                 # Add the sections (tubes) of the basal dendrite to the list
-                arbors_objects.extend(basal_dendrite_objects)
+                arbors_objects.append(basal_dendrite_mesh_object)
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
             nmv.logger.info('Axon')
 
-            # Individual sections (tubes) of the axon
-            axon_objects = []
+            # Create the extrusion object and move it near the first sample of the branch
+            axon_bmesh_object = self.create_extrusion_face(self.morphology.axon)
 
-            # Draw the axon as a set connected sections
-            nmv.skeleton.ops.draw_connected_sections(
+            # Draw the apical dendrite as a set connected sections
+            nmv.skeleton.ops.extrude_connected_sections(
                 section=copy.deepcopy(self.morphology.axon),
+                section_objects=[axon_bmesh_object],
                 max_branching_level=self.options.morphology.axon_branch_order,
                 name=nmv.consts.Arbors.AXON_PREFIX,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
                 repair_morphology=True,
                 caps=caps,
-                sections_objects=axon_objects,
                 connect_to_soma=connect_to_soma_origin,
                 bridge_to_soma=bridge_to_soma)
 
+            # Link it to the scene
+            axon_mesh = bpy.data.meshes.new('axon_mesh')
+            axon_bmesh_object.to_mesh(axon_mesh)
+
+            # Create a blender object, link it to the scene
+            axon_mesh_object = bpy.data.objects.new('axon', axon_mesh)
+            bpy.context.scene.objects.link(axon_mesh_object)
+
             # Add a reference to the mesh object
-            self.morphology.axon.mesh = axon_objects[0]
+            self.morphology.axon.mesh = axon_mesh_object
 
-            # Add the sections (tubes) of the axons to the list
-            arbors_objects.extend(axon_objects)
-
-        # Convert the section object (tubes) into meshes
-        for arbor_object in arbors_objects:
-            nmv.scene.ops.convert_object_to_mesh(arbor_object)
+            # Add the mesh object
+            arbors_objects.append(axon_mesh_object)
 
         # Return the list of meshes
         return arbors_objects

@@ -95,10 +95,24 @@ def extrude_section_from_poly_line_data(data, name, bmesh_base):
     point = Vector((data[1][0][0], data[1][0][1], data[1][0][2]))
     face_index = nmv.bmeshi.ops.get_nearest_face_index(bmesh_base, point)
 
-    for i in range(1, len(data)):
+    point = Vector((data[1][0][0], data[1][0][1], data[1][0][2]))
+    radius = data[1][1]
+
+    face_index = nmv.bmeshi.ops.extrude_face_to_point(bmesh_base, face_index, point)
+
+    # set face radius
+    nmv.bmeshi.ops.set_face_radius(bmesh_base, face_index, radius)
+
+    for i in range(2, len(data)):
         point = Vector((data[i][0][0], data[i][0][1], data[i][0][2]))
+        radius = data[i][1]
+
         face_index = nmv.bmeshi.ops.extrude_face_to_point(bmesh_base, face_index, point)
-        nmv.bmeshi.ops.scale_face(bmesh_base, face_index, data[i][1] * math.sqrt(2))
+        #nmv.bmeshi.ops.scale_face(bmesh_base, face_index, radius * math.sqrt(2))
+
+        # set face radius
+        # nmv.bmeshi.ops.set_face_radius(bmesh_base, face_index, radius)
+
     return bmesh_base
 
 

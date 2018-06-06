@@ -103,6 +103,9 @@ class Section:
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
+        # The branching order of this section
+        self.branching_order = 0
+
     ################################################################################################
     # @get_type_string
     ################################################################################################
