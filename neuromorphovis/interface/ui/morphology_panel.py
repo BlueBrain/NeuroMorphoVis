@@ -95,6 +95,7 @@ class MorphologyPanel(bpy.types.Panel):
     bl_label = 'Morphology Toolbox'
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
+    bl_options = {'DEFAULT_CLOSED'}
 
     ################################################################################################
     # Panel options

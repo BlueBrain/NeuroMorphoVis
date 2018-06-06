@@ -170,7 +170,7 @@ def build_circuit_spines(morphology,
     synapses = circuit.afferent_synapses({int(gid)})
 
     # Load all the template spines and ignore the verbose messages of loading
-    templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_DIRECTORY)
+    templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
 
     # Apply the shader
     for spine_object in templates_spines_list:
@@ -207,7 +207,6 @@ def build_circuit_spines(morphology,
         post_section_id = synapse.post_section()
         if post_section_id == 0:
                 continue
-
         # Get the pre-and post-positions in the global coordinates
         pre_position = synapse.pre_surface_position()
         post_position = synapse.post_center_position()

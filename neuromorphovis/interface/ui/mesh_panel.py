@@ -64,6 +64,7 @@ class MeshPanel(bpy.types.Panel):
     bl_label = 'Mesh Toolbox'
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
+    bl_options = {'DEFAULT_CLOSED'}
 
     # Shown / Hidden rows
     # A list of rows that will be activated or deactivated based on availability of the mesh

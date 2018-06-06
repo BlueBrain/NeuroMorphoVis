@@ -34,6 +34,7 @@ from mathutils import Vector
 from bpy.props import (IntProperty, FloatProperty, StringProperty, BoolProperty, EnumProperty,
                        FloatVectorProperty)
 
+
 ####################################################################################################
 # @VolumeOptions
 ####################################################################################################
@@ -48,6 +49,7 @@ class VolumeOptions(bpy.types.Panel):
     bl_label = 'Volume Reconstruction Options'
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
+    bl_options = {'DEFAULT_CLOSED'}
 
     ################################################################################################
     # @draw

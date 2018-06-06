@@ -16,6 +16,7 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
+
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
@@ -84,3 +85,66 @@ class Arbors:
             # By default, use the original skeleton radii as specified in the morphology
             else:
                 return Arbors.Radii.AS_SPECIFIED
+
+    ################################################################################################
+    # @Style
+    ################################################################################################
+    class Style:
+        """Arbors style enumerators
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # Original as reported in the morphology
+        ORIGINAL = 'ARBORS_STYLE_ORIGINAL'
+
+        # Tapered (from thick to thin branches)
+        TAPERED = 'ARBORS_STYLE_TAPERED'
+
+        # Zigzag
+        ZIGZAG = 'ARBORS_STYLE_ZIGZAG'
+
+        # Tapered and zigzagged
+        TAPERED_ZIGZAG = 'ARBORS_STYLE_TAPER_ZIGZAG'
+
+        # Bumpy
+        BUMPY = 'ARBORS_STYLE_BUMPY'
+
+        # Bumpy and zigzagged
+        BUMPY_ZIGZAG = 'ARBORS_STYLE_BUMPY_ZIGZAG'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Fixed radii arbors
+            if argument == 'tapered':
+                return Arbors.Style.TAPERED
+
+            # Use the zigzag style
+            elif argument == 'zigzag':
+                return Arbors.Style.ZIGZAG
+
+            # Use the tapered-zigzag style
+            elif argument == 'tapered-zigzag':
+                return Arbors.Style.TAPERED_ZIGZAG
+
+            # Use the bumpy style
+            elif argument == 'bumpy':
+                return Arbors.Style.BUMPY
+
+            # Use the bumpy-zigzag style
+            elif argument == 'bumpy-zigzag':
+                return Arbors.Style.BUMPY_ZIGZAG
+
+            # By default, use the original style
+            else:
+                return Arbors.Style.ORIGINAL
+
+

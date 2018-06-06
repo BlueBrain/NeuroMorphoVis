@@ -326,7 +326,7 @@ def zigzag_section(section,
         if number_samples < 5:
             return
 
-        for i in range(3, number_samples - 2):
+        for i in range(4, number_samples - 2):
 
             # Compute the normal direction
             random_direction = Vector((random.random(), random.random(), random.random()))

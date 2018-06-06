@@ -136,6 +136,7 @@ def apply_style(neurons,
 
         # Apply the shader to the membrane object
         for membrane_mesh in neuron.membrane_meshes:
+            if membrane_mesh is None: continue
             nmv.shading.set_material_to_object(membrane_mesh, material)
 
 

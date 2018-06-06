@@ -260,6 +260,12 @@ def parse_style_file(style_file):
             r = float(line[1])
             g = float(line[2])
             b = float(line[3])
+            if r > 1.0:
+                r = r / 256.0
+            if g > 1.0:
+                g = g / 256.0
+            if b > 1.0:
+                b = b / 256.0
             alpha = float(line[4])
             color = Vector((r, g, b))
             shader = line[5]

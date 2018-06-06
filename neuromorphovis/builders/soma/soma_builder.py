@@ -625,7 +625,7 @@ class SomaBuilder:
         # Profile points extrusion
         # Initialize a list to keep track on the valid profile points
         valid_profile_points = list()
-        if use_profile_points:
+        if True: # use_profile_points:
 
             # NOTE: The face extrusion process requires two lists to proceed, the first keeps the
             # centers of all the faces that will be extruded and the other keeps the valid profile

@@ -248,9 +248,9 @@ def create_flat_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0] / 2.0
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
 
     # Return a reference to the material
     return material_reference

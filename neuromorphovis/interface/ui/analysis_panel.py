@@ -56,6 +56,7 @@ class AnalysisPanel(bpy.types.Panel):
     bl_label = 'Morphology Analysis'
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
+    bl_options = {'DEFAULT_CLOSED'}
 
     # Number of samples per section
     bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(

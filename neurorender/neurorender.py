@@ -70,6 +70,7 @@ if __name__ == "__main__":
         # Draw the neurons as spheres to know their positions
         neuron_objects = styling.draw_spheres(neurons, styles)
     else:
+        print('Importing [%d] neurons' % len(neurons))
         # Load the neurons into the scene
         neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
             args.input_directory, neurons, args.input_type, args.transform)
@@ -87,7 +88,14 @@ if __name__ == "__main__":
         camera_view=nmv.enums.Camera.View.SIDE,
         camera_projection=nmv.enums.Camera.Projection.get_enum(args.projection),
         image_resolution=int(args.resolution),
-        image_name='%s/%s' % (args.output_directory, args.prefix))
+        image_name='%s/%s_SIDE' % (args.output_directory, args.prefix))
+
+    camera.render_scene(
+        bounding_box=None,
+        camera_view=nmv.enums.Camera.View.FRONT,
+        camera_projection=nmv.enums.Camera.Projection.get_enum(args.projection),
+        image_resolution=int(args.resolution),
+        image_name='%s/%s_FRONT' % (args.output_directory, args.prefix))
 
     # Save the scene
     nmv.file.export_object_to_blend_file(None, args.output_directory, args.prefix)

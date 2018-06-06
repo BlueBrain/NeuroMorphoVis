@@ -492,9 +492,6 @@ class PiecewiseBuilder:
         for mesh in arbors_meshes:
             nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
 
-            # Delete the bevel object
-            nmv.scene.ops.delete_object_in_scene(bevel_object)
-
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
@@ -521,7 +518,7 @@ class PiecewiseBuilder:
                 if scene_object.type == 'MESH':
 
                     # Exclude the spines
-                    if 'spin' in scene_object.name:
+                    if 'spine' in scene_object.name:
                         continue
 
                     # Otherwise, add the object to the list
@@ -550,12 +547,12 @@ class PiecewiseBuilder:
                             stable_extent_center, self.morphology.soma.smallest_radius,
                             vertex.co):
                         vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
+                        vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.01))
                         vertex.select = False
                     else:
                         if 0.0 < random.uniform(0, 1.0) < 0.1:
                             vertex.select = True
-                            vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.3))
+                            vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.2))
                             vertex.select = False
                 else:
 
@@ -575,10 +572,10 @@ class PiecewiseBuilder:
             nmv.mesh.ops.deselect_all_vertices(mesh_object=neuron_mesh)
 
             # Decimate each mesh object
-            nmv.mesh.ops.decimate_mesh_object(mesh_object=neuron_mesh, decimation_ratio=0.5)
+            # nmv.mesh.ops.decimate_mesh_object(mesh_object=neuron_mesh, decimation_ratio=0.5)
 
             # Smooth each mesh object
-            nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
+            # nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
 
     ################################################################################################
     # @reconstruct_soma_mesh
@@ -642,11 +639,14 @@ class PiecewiseBuilder:
 
         # Add spines
         spines_objects = None
+
+        nmv.logger.header('Adding circuit spines')
+        spines_objects = nmv.builders.build_circuit_spines(morphology=self.morphology,
+            blue_config=self.options.morphology.blue_config, gid=self.options.morphology.gid,
+            material=self.spines_colors[0])
+
         if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            nmv.logger.header('Adding circuit spines')
-            spines_objects = nmv.builders.build_circuit_spines(
-                morphology=self.morphology, blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid, material=self.spines_colors[0])
+            pass
 
         # Random spines
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
@@ -718,9 +718,9 @@ class PiecewiseBuilder:
                 scene_object.select = True
                 bpy.context.scene.objects.active = scene_object
                 bpy.context.object.data.use_auto_texspace = False
-                bpy.context.object.data.texspace_size[0] = 5
-                bpy.context.object.data.texspace_size[1] = 5
-                bpy.context.object.data.texspace_size[2] = 5
+                bpy.context.object.data.texspace_size[0] = 1
+                bpy.context.object.data.texspace_size[1] = 1
+                bpy.context.object.data.texspace_size[2] = 1
                 scene_object.select = False
 
         # Connecting all the mesh objects together in a single object
