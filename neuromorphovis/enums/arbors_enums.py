@@ -98,6 +98,9 @@ class Arbors:
         def __init__(self):
             pass
 
+        # The arbors are disconnected from the soma
+        DISCONNECTED_FROM_SOMA = 'ARBORS_ROOTS_DISCONNECTED_FROM_SOMA'
+
         # The arbors are connected to the soma if they are primary with no intersection
         CONNECTED_TO_SOMA = 'ARBORS_ROOTS_CONNECTED_TO_SOMA'
 

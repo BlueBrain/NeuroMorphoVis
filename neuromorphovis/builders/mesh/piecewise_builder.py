@@ -115,12 +115,10 @@ class PiecewiseBuilder:
 
         # Create the materials
         for i in range(2):
-
-            # New material
             material = nmv.shading.create_material(
                 name='%s_%d' % (name, i), color=color, material_type=self.options.mesh.material)
 
-            # Append it to the list
+            # Append the material to the list
             materials.append(material)
 
         # Return a reference to the created material
@@ -135,33 +133,33 @@ class PiecewiseBuilder:
 
         # Clear all the existing materials before to make the scene clean
         for material in bpy.data.materials:
-            if 'soma_skeleton' in material.name or \
-               'axon_skeleton' in material.name or \
-               'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name or \
-               'spines' in material.name:
+            if 'soma_material' in material.name or \
+               'axon_material' in material.name or \
+               'basal_dendrites_material' in material.name or \
+               'apical_dendrite_material' in material.name or \
+               'spines_material' in material.name:
                 material.user_clear()
                 bpy.data.materials.remove(material)
 
         # Soma
         self.soma_materials = self.create_homogeneous_materials(
-            name='soma_skeleton', color=self.options.mesh.soma_color)
+            name='soma_material', color=self.options.mesh.soma_color)
 
         # Axon
         self.axon_materials = self.create_homogeneous_materials(
-            name='axon_skeleton', color=self.options.mesh.axon_color)
+            name='axon_material', color=self.options.mesh.axon_color)
 
         # Basal dendrites
         self.basal_dendrites_materials = self.create_homogeneous_materials(
-            name='basal_dendrites_skeleton', color=self.options.mesh.basal_dendrites_color)
+            name='basal_dendrites_material', color=self.options.mesh.basal_dendrites_color)
 
         # Apical dendrite
         self.apical_dendrites_materials = self.create_homogeneous_materials(
-            name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
+            name='apical_dendrite_material', color=self.options.mesh.apical_dendrites_color)
 
         # Spines
         self.spines_materials = self.create_homogeneous_materials(
-            name='spines', color=self.options.mesh.spines_color)
+            name='spines_material', color=self.options.mesh.spines_color)
 
     ################################################################################################
     # @verify_and_repair_morphology
@@ -176,8 +174,8 @@ class PiecewiseBuilder:
 
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
-        #nmv.skeleton.ops.apply_operation_to_morphology(
-        #    *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
         # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
         # sharp edges, we do NOT need to resample the morphology skeleton. However, if the smooth
@@ -185,11 +183,11 @@ class PiecewiseBuilder:
         # after applying the vertex smoothing filter. The resampling filter for the moment
         # re-samples the morphology sections at 2.5 microns, however this can be improved later
         # by adding an algorithm that re-samples the section based on its radii.
-        #if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
 
             # Apply the resampling filter on the whole morphology skeleton
-        #    nmv.skeleton.ops.apply_operation_to_morphology(
-        #        *[self.morphology, nmv.skeleton.ops.resample_sections])
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_sections])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
@@ -237,8 +235,6 @@ class PiecewiseBuilder:
         :return:
             A list of all the individual meshes of the arbors.
         """
-
-        # Apply the morphology reformation filters if requested before creating the arbors
 
         # Taper the sections if requested
         if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
@@ -289,7 +285,6 @@ class PiecewiseBuilder:
 
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                 nmv.logger.info('Dendrite [%d]' % i)
 
                 basal_dendrite_objects = []
@@ -730,11 +725,11 @@ class PiecewiseBuilder:
         # Connect the arbors to the soma
         self.connect_arbors_to_soma()
 
+        # Transform to the global coordinates
+        self.transform_to_global_coordinates()
+
         # Adding surface roughness
         self.add_surface_noise()
-
-        # Decimation
-        # self.decimate_neuron_mesh()
 
         # Adding spines
         self.add_spines()
@@ -742,12 +737,15 @@ class PiecewiseBuilder:
         # Add nucleus
         # self.add_nucleus()
 
+        # Decimation
+        # self.decimate_neuron_mesh()
+
+        # Connecting all the objects together into a single object
         for scene_object in bpy.context.scene.objects:
             if scene_object.type == 'MESH':
                 self.arbors_meshes.append(scene_object)
 
-        # Transform to the global coordinates
-        self.transform_to_global_coordinates()
+
 
         """
         # Compile a list of all the meshes in the scene, they account for the different mesh

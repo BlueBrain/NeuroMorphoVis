@@ -56,3 +56,6 @@ class Arbors:
     # A little distance before p0 on the root section from the arbor side (for nice connection)
     ARBOR_EXTRUSION_DELTA = 0.2
 
+    # The number of samples that will be used to extend a section from the root section to soma
+    N_SAMPLES_ROOT_TO_ORIGIN = 5
+
