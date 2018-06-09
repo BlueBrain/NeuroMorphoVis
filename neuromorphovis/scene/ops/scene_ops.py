@@ -25,6 +25,14 @@ __status__      = "Production"
 # System imports
 import os, sys, bpy
 
+# Blender imports
+from mathutils import Vector
+
+
+# Internal impots
+import neuromorphovis as nmv
+import neuromorphovis.bbox
+
 
 ####################################################################################################
 # @clear_default_scene
@@ -489,6 +497,57 @@ def scale_object_uniformly(scene_object,
 
     # Scale the object.
     scale_object(scene_object, x=scale_factor, y=scale_factor, z=scale_factor)
+
+
+####################################################################################################
+# @scale_mesh_object_to_fit_within_unity_cube
+####################################################################################################
+def scale_mesh_object_to_fit_within_unity_cube(scene_object,
+                                               scale_factor=1):
+    """Scale a given mesh object within a cube.
+
+    :param scene_object:
+        A given scene object.
+    :param scale_factor:
+        A scale factor to rescale the unity cube.
+    """
+
+    # Compute the bounding box of the mesh
+    mesh_bbox = nmv.bbox.get_object_bounding_box(scene_object)
+
+    # Get the largest dimension of the mesh
+    largest_dimension = mesh_bbox.bounds[0]
+    if mesh_bbox.bounds[1] > largest_dimension:
+        largest_dimension = mesh_bbox.bounds[1]
+    if mesh_bbox.bounds[2] > largest_dimension:
+        largest_dimension = mesh_bbox.bounds[2]
+
+    # Compute the scale factor
+    unified_scale_factor = scale_factor / largest_dimension
+
+    # Scale the mesh
+    nmv.scene.ops.scale_object_uniformly(scene_object, unified_scale_factor)
+
+
+####################################################################################################
+# @scale_object_uniformly
+####################################################################################################
+def center_mesh_object(scene_object):
+    """Center a given mesh object at the origin.
+
+    :param scene_object:
+        A mesh object to be centered at the origin of the scene based on its bounding box.
+    """
+
+    # Compute the object bounding box center from all the vertices of the object
+    bbox_center = Vector((0, 0, 0))
+    for vertex in scene_object.data.vertices:
+        bbox_center += vertex.co
+    bbox_center = bbox_center / len(scene_object.data.vertices)
+
+    # For each vertex in the mesh, center it
+    for vertex in scene_object.data.vertices:
+        vertex.co = vertex.co - bbox_center
 
 
 ####################################################################################################

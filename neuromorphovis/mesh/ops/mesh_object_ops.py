@@ -83,7 +83,7 @@ def shade_smooth_object(mesh_object):
     nmv.scene.ops.deselect_all()
 
     # Activate the selected object
-    nmv.scene.ops.select_object_by_name(mesh_object)
+    nmv.scene.ops.set_active_object(mesh_object)
 
     # Switch to geometry or edit mode from the object mode
     bpy.ops.object.editmode_toggle()
