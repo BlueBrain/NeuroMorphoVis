@@ -71,6 +71,32 @@ def smooth_object(mesh_object,
 
 
 ####################################################################################################
+# @triangulate_mesh
+####################################################################################################
+def triangulate_mesh(mesh_object):
+    """Convert the faces of a given mesh into triangles.
+
+    :param mesh_object:
+        A given mesh object.
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Switch to geometry or edit mode from the object mode
+    bpy.ops.object.editmode_toggle()
+
+    # Convert the face to triangles
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+
+    # Switch back to the object mode from the edit mode
+    bpy.ops.object.editmode_toggle()
+
+
+####################################################################################################
 # @shade_smooth_object
 ####################################################################################################
 def shade_smooth_object(mesh_object):
