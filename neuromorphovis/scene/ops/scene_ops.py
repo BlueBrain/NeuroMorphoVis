@@ -541,9 +541,24 @@ def center_mesh_object(scene_object):
 
     # Compute the object bounding box center from all the vertices of the object
     bbox_center = Vector((0, 0, 0))
+    p_max = Vector((-1e10, -1e10, -1e10))
+    p_min = Vector((1e10, 1e10, 1e10))
+
     for vertex in scene_object.data.vertices:
-        bbox_center += vertex.co
-    bbox_center = bbox_center / len(scene_object.data.vertices)
+        if vertex.co[0] > p_max[0]:
+            p_max[0] = vertex.co[0]
+        if vertex.co[1] > p_max[1]:
+            p_max[1] = vertex.co[1]
+        if vertex.co[2] > p_max[2]:
+            p_max[2] = vertex.co[2]
+        if vertex.co[0] < p_min[0]:
+            p_min[0] = vertex.co[0]
+        if vertex.co[1] < p_min[1]:
+            p_min[1] = vertex.co[1]
+        if vertex.co[2] < p_min[2]:
+            p_min[2] = vertex.co[2]
+    bounds = p_max - p_min
+    bbox_center = p_min + (0.5 * bounds)
 
     # For each vertex in the mesh, center it
     for vertex in scene_object.data.vertices:
