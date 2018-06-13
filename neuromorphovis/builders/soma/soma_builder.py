@@ -605,16 +605,19 @@ class SomaBuilder:
         # Axon
         if not self.options.morphology.ignore_axon:
 
-            # The axon must be connected to the soma
-            if self.morphology.axon.connected_to_soma:
+            # Ensure that the axon is present
+            if self.morphology.axon is not None:
 
-                # Create the extrusion face, where the pulling will occur
-                nmv.logger.info('Axon')
-                extrusion_face_centroid = self.create_branch_extrusion_face(
-                    soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
+                # The axon must be connected to the soma
+                if self.morphology.axon.connected_to_soma:
 
-                # Update the list
-                roots_and_faces_centroids.append([self.morphology.axon, extrusion_face_centroid])
+                    # Create the extrusion face, where the pulling will occur
+                    nmv.logger.info('Axon')
+                    extrusion_face_centroid = self.create_branch_extrusion_face(
+                        soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
+
+                    # Update the list
+                    roots_and_faces_centroids.append([self.morphology.axon, extrusion_face_centroid])
 
             # The axon is not connected to soma
             else:
@@ -670,16 +673,19 @@ class SomaBuilder:
                 # Check that the profile points are not intersecting axons
                 if not self.options.morphology.ignore_axon:
 
-                    # Check that the profile point does NOT intersect the axon
-                    if nmv.skeleton.ops.point_branch_intersect(profile_point,
-                            self.morphology.axon, self.initial_soma_radius):
+                    # Ensure the presence of the axon in the morphology
+                    if self.morphology.axon is not None:
 
-                        # Report the intersection
-                        nmv.logger.detail(
-                            "WARNING: profile point intersects axon")
+                        # Check that the profile point does NOT intersect the axon
+                        if nmv.skeleton.ops.point_branch_intersect(profile_point,
+                                self.morphology.axon, self.initial_soma_radius):
 
-                        # Next point
-                        continue
+                            # Report the intersection
+                            nmv.logger.detail(
+                                "WARNING: profile point intersects axon")
+
+                            # Next point
+                            continue
 
                 # Check that the profile points are not intersecting basal dendrites
                 if not self.options.morphology.ignore_basal_dendrites:
