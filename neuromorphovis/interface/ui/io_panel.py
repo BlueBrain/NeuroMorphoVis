@@ -65,11 +65,12 @@ class IOPanel(bpy.types.Panel):
         name="Input Source",
         default=nmv.enums.Input.H5_SWC_FILE)
     
-    # Morphology file 
+    # Morphology file
+    sample = '/abdellah-bbp-engineering/morphology-datasets/h5-morphologies/C010398B-I4_cor_-_Scale_x1.000_y1.050_z1.000_-_Clone_5.h5'
     bpy.types.Scene.MorphologyFile = StringProperty(
         name="Morphology File",
         description="Select a specific morphology to mesh",
-        default="Select Morphology", maxlen=2048,  subtype='FILE_PATH')
+        default=sample, maxlen=2048,  subtype='FILE_PATH')
     
     # Morphology directory 
     bpy.types.Scene.MorphologyDirectory = StringProperty(

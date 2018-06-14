@@ -80,6 +80,9 @@ class SkeletonBuilder:
         # A list of the colors/materials of the apical dendrite
         self.apical_dendrite_materials = None
 
+        # A list of the colors/materials of the articulation spheres
+        self.articulation_materials = None
+
         # The directory where the progressive frames will be dumped
         self.progressive_frames_directory = None
 
@@ -202,6 +205,10 @@ class SkeletonBuilder:
         self.apical_dendrite_materials = self.create_materials(
             name='apical_dendrite_skeleton', color=self.options.morphology.apical_dendrites_color)
 
+        # Apical dendrite
+        self.articulation_materials = self.create_materials(
+            name='articulation', color=self.options.morphology.articulation_color)
+
     ################################################################################################
     # @draw_soma_sphere
     ################################################################################################
@@ -296,9 +303,9 @@ class SkeletonBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
             sphere_radius = self.options.morphology.sections_fixed_radii_value
 
         # Create the sphere based on the largest radius
@@ -667,7 +674,7 @@ class SkeletonBuilder:
                 root=self.morphology.axon,
                 sphere_objects=axon_spheres_objects,
                 max_branching_level=self.options.morphology.axon_branch_order,
-                material_list=self.axon_materials)
+                material_list=self.articulation_materials)
 
             # Extend the morphology objects list
             morphology_objects.extend(axon_spheres_objects)
@@ -682,7 +689,7 @@ class SkeletonBuilder:
                     root=basal_dendrite,
                     sphere_objects=basal_dendrites_spheres_objects,
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    material_list=self.basal_dendrites_materials)
+                    material_list=self.articulation_materials)
 
             # Extend the morphology objects list
             morphology_objects.extend(basal_dendrites_spheres_objects)
@@ -694,7 +701,7 @@ class SkeletonBuilder:
                 root=self.morphology.apical_dendrite,
                 sphere_objects=apical_dendrite_spheres_objects,
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.apical_dendrite_materials)
+                material_list=self.articulation_materials)
 
             # Extend the morphology objects list
             morphology_objects.extend(apical_dendrite_spheres_objects)

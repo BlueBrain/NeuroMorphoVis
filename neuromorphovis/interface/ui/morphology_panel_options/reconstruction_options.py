@@ -25,28 +25,12 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 # Blender imports
-import bpy
-from bpy.props import EnumProperty
-from bpy.props import IntProperty
-from bpy.props import FloatProperty
-from bpy.props import BoolProperty
-from bpy.props import FloatVectorProperty
 from mathutils import Vector
 
 # Internal imports
 import neuromorphovis as nmv
-import neuromorphovis.bbox
-import neuromorphovis.builders
 import neuromorphovis.consts
 import neuromorphovis.enums
-import neuromorphovis.file
-import neuromorphovis.interface.ui
-import neuromorphovis.shading
-import neuromorphovis.scene
-import neuromorphovis.skeleton
-import neuromorphovis.rendering
-import neuromorphovis.utilities
-
 
 ####################################################################################################
 # @update_bounding_box_panel
@@ -177,7 +161,6 @@ def set_bounding_box_options(layout,
     display_bounding_box_row.prop(scene, 'DisplayBoundingBox')
 
     # if globals.objects.loaded_morphology_object is not None:
-    # TODO: Fix globals
     if scene.DisplayBoundingBox:
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
