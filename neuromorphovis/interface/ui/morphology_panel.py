@@ -151,12 +151,6 @@ class MorphologyPanel(bpy.types.Panel):
         description="Branching order for the apical dendrite",
         default=100, min=1, max=100)
 
-    # Draw bounding box
-    bpy.types.Scene.DrawBoundingBox = BoolProperty(
-        name="Draw Bounding Box",
-        description="Draws the bounding box of the morphology",
-        default=False)
-
     # Display bounding box info
     bpy.types.Scene.DisplayBoundingBox = BoolProperty(
         name="Display Bounding Box Info",
@@ -274,6 +268,20 @@ class MorphologyPanel(bpy.types.Panel):
         name="Connect to Soma",
         description="Connect the arbors to the soma",
         default=True)
+
+    # Soma connection to roots
+    bpy.types.Scene.SomaConnectionToRoot = EnumProperty(
+        items=[(nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN,
+                'Connect Connected',
+                'Connect the arbors that are physically connected to the origin of the soma'),
+               (nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN,
+                'All Connected',
+                'Connect the all the arbors to the origin of the soma even if they intersect'),
+               (nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
+                'All Disconnected',
+                'Disconnect all the arbors from the soma')],
+        name='Arbors To Soma', default=nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN)
+
 
     # Arbor quality
     bpy.types.Scene.ArborQuality = IntProperty(
@@ -434,10 +442,6 @@ class MorphologyPanel(bpy.types.Panel):
         bounding_box_row = layout.row()
         bounding_box_row.label(text='Morphology Bounding Box:', icon='BORDER_RECT')
 
-        # Draw bounding box option
-        draw_bounding_box_row = layout.row()
-        draw_bounding_box_row.prop(current_scene, 'DrawBoundingBox')
-
         # Display bounding box option
         display_bounding_box_row = layout.row()
         display_bounding_box_row.prop(current_scene, 'DisplayBoundingBox')
@@ -503,11 +507,13 @@ class MorphologyPanel(bpy.types.Panel):
             # Pass options from UI to system
             nmv.interface.ui_options.morphology.branching = current_scene.MorphologyBranching
 
-            connect_to_soma_row = layout.row()
-            connect_to_soma_row.prop(current_scene, 'ConnectToSoma')
+            # Morphology branching
+            arbor_to_soma_connection_row = layout.row()
+            arbor_to_soma_connection_row.prop(current_scene, 'SomaConnectionToRoot')
 
             # Pass options from UI to system
-            nmv.interface.ui_options.morphology.connect_to_soma = current_scene.ConnectToSoma
+            nmv.interface.ui_options.morphology.arbors_to_soma_connection = \
+                current_scene.SomaConnectionToRoot
 
         if technique == nmv.enums.Skeletonization.Method.TAPERED:
             nmv.interface.ui_options.morphology.skeleton = \
@@ -865,12 +871,6 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
-
-        # Draw the bounding box of the morphology
-        # if scene.DrawBoundingBox:
-        #    bounding_box.draw_bounding_box(globals.objects.loaded_morphology_object.bounding_box,
-        #                                   name='morphology_bounding_box')
-
 
         # Confirm operation done
         return {'FINISHED'}

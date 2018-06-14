@@ -107,6 +107,10 @@ class Arbors:
         # The arbors are connected to the origin (0, 0, 0) if they are primary
         CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_CONNECTED_TO_ORIGIN'
 
+        # All the arbors are connected to the origin even if some of them are not physically
+        # connected to the soma. This mode is used for piecewise meshing
+        ALL_CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_ALL_CONNECTED_TO_ORIGIN'
+
     ################################################################################################
     # @Style
     ################################################################################################

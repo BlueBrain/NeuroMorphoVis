@@ -71,8 +71,8 @@ class MorphologyOptions:
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeletonization.Branching.ANGLES
 
-        # Connect to soma
-        self.connect_to_soma = False
+        # The arbors connectivity to the soma
+        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA
 
         # Enable/Disable axon reconstruction
         self.ignore_axon = False

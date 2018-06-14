@@ -48,12 +48,12 @@ class IOOptions:
         # Sequences directory, where the movies will be rendered
         self.sequences_directory = None
 
-        # Meshes directory, where the produced meshes will be saved
+        # Meshes directory, where the reconstructed meshes will be saved
         self.meshes_directory = None
 
-        # Morphologies directory, where the resulting morphologies will be created
+        # Morphologies directory, where the repaired morphologies will be saved
         self.morphologies_directory = None
 
-        # Analysis directory, where the resulting reports will be generated
+        # Analysis directory, where the analysis reports will be saved
         self.analysis_directory = None
 

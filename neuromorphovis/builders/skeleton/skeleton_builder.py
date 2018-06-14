@@ -732,6 +732,9 @@ class SkeletonBuilder:
         # Verify the connectivity of the arbors of the morphology to the soma
         # nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
+        # Ensure the connection between the arbors and the soma
+        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+
         # Primary and secondary branching
         if self.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
 
@@ -754,6 +757,7 @@ class SkeletonBuilder:
                 *[self.morphology,
                   nmv.skeleton.ops.resample_sections])
 
+        # Update the branching orders
         nmv.skeleton.ops.update_branching_order_section(self.morphology.axon)
         nmv.skeleton.ops.update_branching_order_section(self.morphology.apical_dendrite)
         for dendrite in self.morphology.dendrites:
@@ -770,11 +774,11 @@ class SkeletonBuilder:
            self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
-
-        #if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.SIMPLIFIED
-
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.simplify_morphology])
+        """
+        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.SIMPLIFIED
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.simplify_morphology])
+        """
 
         # Filter the radii of the sections
         if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
@@ -817,7 +821,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    connect_to_soma=self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
 
             # Extend the morphology objects list
             morphology_objects.extend(basal_dendrites_sections_objects)
@@ -841,7 +846,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    connect_to_soma=self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(apical_dendrite_sections_objects)
@@ -863,7 +869,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    connect_to_soma=self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(axon_sections_objects)
