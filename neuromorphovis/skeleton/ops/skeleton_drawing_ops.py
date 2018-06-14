@@ -286,7 +286,7 @@ def draw_connected_sections(section, name,
                             frame_destination=None,
                             camera=None,
                             connect_to_soma=False,
-                            bridge_to_soma=False,
+                            ignore_branching_samples=False,
                             roots_connection=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA):
     """Draw a list of sections connected together as a poly-line.
 
@@ -348,8 +348,12 @@ def draw_connected_sections(section, name,
 
     # Get a list of all the poly-line that corresponds to the given section
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
-        section=section, roots_connection=roots_connection, is_continuous=is_continuous,
-        is_last_section=is_last_section, process_section_terminals=repair_morphology)
+        section=section,
+        roots_connection=roots_connection,
+        is_continuous=is_continuous,
+        is_last_section=is_last_section,
+        ignore_branching_samples=ignore_branching_samples,
+        process_section_terminals=repair_morphology)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_data)

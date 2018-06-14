@@ -813,7 +813,6 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                     name=dendrite_prefix,
                     material_list=self.basal_dendrites_materials,
-                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -821,8 +820,7 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection,
-                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection)
 
             # Extend the morphology objects list
             morphology_objects.extend(basal_dendrites_sections_objects)
@@ -838,7 +836,6 @@ class SkeletonBuilder:
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
-                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -846,8 +843,7 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection,
-                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(apical_dendrite_sections_objects)
@@ -862,15 +858,13 @@ class SkeletonBuilder:
                     section=copy.deepcopy(self.morphology.axon),
                     max_branching_level=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Arbors.AXON_PREFIX, material_list=self.axon_materials,
-                    fixed_radius=None,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
                     sections_objects=axon_sections_objects,
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection,
-                    connect_to_soma=False) #self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(axon_sections_objects)
@@ -930,27 +924,23 @@ class SkeletonBuilder:
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
 
-        # Verify the fixed radius options
-        fixed_radius = self.options.morphology.sections_fixed_radii_value \
-            if self.options.morphology.unify_sections_radii else None
-
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
             axon_sections_objects = []
-            nmv.skeleton.ops.draw_disconnected_skeleton_sections(
+            nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.axon),
                 max_branching_level=self.options.morphology.axon_branch_order,
                 name=nmv.consts.Arbors.AXON_PREFIX,
                 material_list=self.axon_materials,
-                fixed_radius=fixed_radius,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,
-                caps=False,
+                caps=True,
                 sections_objects=axon_sections_objects,
                 render_frame=self.options.morphology.render_progressive,
                 frame_destination=self.progressive_frames_directory,
                 camera=self.progressive_rendering_camera,
-                extend_to_soma_origin=self.options.morphology.connect_to_soma)
+                roots_connection=self.options.morphology.arbors_to_soma_connection,
+                ignore_branching_samples=True)
 
             # Extend the morphology objects list
             morphology_objects.extend(axon_sections_objects)
@@ -963,20 +953,20 @@ class SkeletonBuilder:
 
                 # Draw the basal dendrites as a set connected sections
                 dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                nmv.skeleton.ops.draw_disconnected_skeleton_sections(
+                nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(basal_dendrite),
                     max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                     name=dendrite_prefix,
                     material_list=self.basal_dendrites_materials,
-                    fixed_radius=fixed_radius,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
-                    caps=False,
+                    caps=True,
                     sections_objects=basal_dendrites_sections_objects,
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    extend_to_soma_origin=self.options.morphology.connect_to_soma)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    ignore_branching_samples=True)
 
             # Extend the morphology objects list
             morphology_objects.extend(basal_dendrites_sections_objects)
@@ -984,20 +974,20 @@ class SkeletonBuilder:
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
             apical_dendrite_sections_objects = []
-            nmv.skeleton.ops.draw_disconnected_skeleton_sections(
+            nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.apical_dendrite),
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                 name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                 material_list=self.apical_dendrite_materials,
-                fixed_radius=fixed_radius,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,
-                caps=False,
+                caps=True,
                 sections_objects=apical_dendrite_sections_objects,
                 render_frame=self.options.morphology.render_progressive,
                 frame_destination=self.progressive_frames_directory,
                 camera=self.progressive_rendering_camera,
-                extend_to_soma_origin=self.options.morphology.connect_to_soma)
+                roots_connection=self.options.morphology.arbors_to_soma_connection,
+                ignore_branching_samples=True)
 
             # Extend the morphology objects list
             morphology_objects.extend(apical_dendrite_sections_objects)
@@ -1024,7 +1014,8 @@ class SkeletonBuilder:
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
 
-        # Add the bevel object to the morphology objects
+        # Add the bevel object to the morphology objects because if this bevel is lost we will
+        # lose the rounded structure of the arbors
         morphology_objects.append(bevel_object)
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
@@ -1038,16 +1029,6 @@ class SkeletonBuilder:
             morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
                 bevel_object=bevel_object))
 
-        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=False))
-
-        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=True))
-
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_sections(
@@ -1058,6 +1039,20 @@ class SkeletonBuilder:
         elif method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_articulated_sections(
                 bevel_object=bevel_object))
+
+        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
+            morphology_objects.extend(
+                self.draw_morphology_as_disconnected_skeleton(
+                    bevel_object=bevel_object, repair_morphology=False))
+
+        # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
+            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
+                bevel_object=bevel_object, repair_morphology=True))
+
+
+
 
         # Change the structure of the morphology for artistic purposes
         elif method == nmv.enums.Skeletonization.Method.TAPERED:

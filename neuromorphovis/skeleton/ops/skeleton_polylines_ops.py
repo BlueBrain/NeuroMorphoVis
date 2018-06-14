@@ -171,16 +171,13 @@ def get_origin_connection_poly_line(section,
 # @get_stem_section_polyline
 ####################################################################################################
 def get_stem_section_polyline(section,
-                              ignore_branching_samples=False,
-                              disconnect_secondary_sections=False):
+                              ignore_branching_samples=False):
     """Get the poly-line representing a stem section that is neither root, nor last.
 
     :param section:
         Section structure.
     :param ignore_branching_samples:
         Ignore the first sample of the section, or the branching sample. False by default.
-    :param disconnect_secondary_sections:
-        Ignore adding the first samples of the secondary branches to construct disconnected section.
     :return:
         Section data in poly-line format that is suitable for drawing by Blender.
     """
@@ -215,7 +212,6 @@ def get_stem_section_polyline(section,
 ####################################################################################################
 def get_last_section_polyline(section,
                               ignore_branching_samples=False,
-                              disconnect_secondary_sections=False,
                               process_section_terminals=False):
     """Get the poly-line representing a last section.
 
@@ -223,8 +219,6 @@ def get_last_section_polyline(section,
         Section structure.
     :param ignore_branching_samples:
         Ignore the first sample of the section, or the branching sample. False by default.
-    :param disconnect_secondary_sections:
-        Ignore adding the first samples of the secondary branches to construct disconnected section.
     :param process_section_terminals:
         Process the last samples of the section to make them look smooth. False by default.
     :return:
@@ -273,7 +267,6 @@ def get_connected_sections_poly_line(section,
                                      is_continuous=False,
                                      is_last_section=False,
                                      ignore_branching_samples=False,
-                                     disconnect_secondary_sections=False,
                                      process_section_terminals=False):
     """Get the poly-line list or a series of points that reflect the skeleton of a group of
     connected sections along a single arbor.
@@ -289,9 +282,6 @@ def get_connected_sections_poly_line(section,
     :param ignore_branching_samples:
         Ignore adding the samples at the branching points.
         This feature is mainly added for extrusion-based meshing.
-    :param disconnect_secondary_sections:
-        Ignore adding the first samples of the secondary branches to construct disconnected section.
-        This feature is mainly added for the bridging meshing.
     :param process_section_terminals:
         Process the terminal samples that would reduce the visual quality of the arbor.
     :return:
@@ -328,7 +318,6 @@ def get_connected_sections_poly_line(section,
             # Get the samples and process the last sample to close the edge
             poly_line.extend(get_last_section_polyline(
                 section=section, ignore_branching_samples=ignore_branching_samples,
-                disconnect_secondary_sections=disconnect_secondary_sections,
                 process_section_terminals=process_section_terminals))
 
         # The root section is branching to another section
@@ -336,8 +325,7 @@ def get_connected_sections_poly_line(section,
 
             # Get the samples without any processing
             poly_line.extend(get_stem_section_polyline(
-                section=section, ignore_branching_samples=ignore_branching_samples,
-                disconnect_secondary_sections=disconnect_secondary_sections))
+                section=section, ignore_branching_samples=ignore_branching_samples))
 
     # Non-root section
     else:
@@ -351,7 +339,6 @@ def get_connected_sections_poly_line(section,
                 # Get the samples and process the last sample to close the edge
                 poly_line.extend(get_last_section_polyline(
                     section=section, ignore_branching_samples=ignore_branching_samples,
-                    disconnect_secondary_sections=disconnect_secondary_sections,
                     process_section_terminals=process_section_terminals))
 
             # A stem section
@@ -359,8 +346,7 @@ def get_connected_sections_poly_line(section,
 
                 # Normal processing for the internal sections
                 poly_line.extend(get_stem_section_polyline(
-                    section=section, ignore_branching_samples=ignore_branching_samples,
-                    disconnect_secondary_sections=disconnect_secondary_sections))
+                    section=section, ignore_branching_samples=ignore_branching_samples))
 
         # This 'secondary' section is not a continuation from a previous section, it is new
         else: # is_continuous
@@ -371,7 +357,6 @@ def get_connected_sections_poly_line(section,
                 # Get the samples and process the last sample to close the edge
                 poly_line.extend(get_last_section_polyline(
                     section=section, ignore_branching_samples=ignore_branching_samples,
-                    disconnect_secondary_sections=disconnect_secondary_sections,
                     process_section_terminals=process_section_terminals))
 
             # A stem section
@@ -379,8 +364,7 @@ def get_connected_sections_poly_line(section,
 
                 # Normal processing for the internal sections
                 poly_line.extend(get_stem_section_polyline(
-                    section=section, ignore_branching_samples=ignore_branching_samples,
-                    disconnect_secondary_sections=disconnect_secondary_sections))
+                    section=section, ignore_branching_samples=ignore_branching_samples))
 
     # Return the poly-line list
     return poly_line

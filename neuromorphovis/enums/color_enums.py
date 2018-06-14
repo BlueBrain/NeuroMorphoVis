@@ -42,16 +42,16 @@ class Color:
         pass
 
     # Soma color
-    SOMA = Vector((0.05, 0.5, 0.75))
+    SOMA = Vector((0.75, 0.45, 0.15))
 
     # Basal dendrites color
-    BASAL_DENDRITES = Vector((0.9, 0.5, 0.75))
+    BASAL_DENDRITES = Vector((0.9, 0.1, 0.075))
 
     # Apical dendrites color
-    APICAL_DENDRITES = Vector((0.0, 0.9, 0.75))
+    APICAL_DENDRITES = Vector((0.4, 0.9, 0.2))
 
     # Axons color
-    AXONS = Vector((0.0, 0.0, 1.0))
+    AXONS = Vector((0.4, 0.7, 1.0))
 
     # Articulations (connections between sections) color
     ARTICULATION = Vector((1.0, 1.0, 0.0))
