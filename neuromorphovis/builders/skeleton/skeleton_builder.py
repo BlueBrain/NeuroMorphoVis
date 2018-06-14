@@ -98,20 +98,22 @@ class SkeletonBuilder:
     def create_materials(self,
                          name,
                          color):
-        """
-        Creates just two materials of the skeleton based on the input parameters of the user.
+        """Creates two materials of the skeleton based on the input parameters of the user.
 
-        :param name: The name of the material/color.
-        :param color: The code of the given colors.
-        :return: A list of two elements (different or same colors) where we can apply later to
-        the drawn sections or segments.
+        :param name:
+            The name of the material/color.
+        :param color:
+            The code of the given colors.
+        :return:
+            A list of two elements (different or same colors) where we can apply later to the
+            drawn sections or segments.
         """
 
         # A list of the created materials
         materials_list = []
 
         # Build the materials list
-        color_vector = Vector((0.0, 0.0, 0.0))
+        color_vector = nmv.consts.Color.BLACK
 
         # Random colors
         if color.x == -1 and color.y == 0 and color.z == 0:
@@ -176,8 +178,7 @@ class SkeletonBuilder:
     # @create_skeleton_materials
     ################################################################################################
     def create_skeleton_materials(self):
-        """
-        Creates the materials of the skeleton. The created materials are stored in private
+        """Creates the materials of the skeleton. The created materials are stored in private
         variables.
         """
 
@@ -185,7 +186,8 @@ class SkeletonBuilder:
             if 'soma_skeleton' in material.name or \
                'axon_skeleton' in material.name or \
                'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name:
+               'apical_dendrite_skeleton' in material.name or \
+               'articulation' in material.name:
                     material.user_clear()
                     bpy.data.materials.remove(material)
 
@@ -213,8 +215,7 @@ class SkeletonBuilder:
     # @draw_soma_sphere
     ################################################################################################
     def draw_soma_sphere(self):
-        """
-        Draws a sphere that represents the soma.
+        """Draws a sphere that represents the soma.
         """
 
         # Get a reference to the soma
@@ -235,8 +236,7 @@ class SkeletonBuilder:
     ################################################################################################
     def get_section_poly_line(self,
                               section):
-        """
-        Gets the data of a morphological section arranged in a certain format that can be easily
+        """Gets the data of a morphological section arranged in a certain format that can be easily
         read by the poly-line drawing functions.
 
         :param section: The geometry of a morphological section.
@@ -264,13 +264,11 @@ class SkeletonBuilder:
     # @draw_section_terminal_as_sphere
     ################################################################################################
     def draw_section_terminal_as_sphere(self,
-                                        section,
-                                        color=None):
-        """
-        Draws a joint between the different sections along the arbor.
+                                        section):
+        """Draws a joint between the different sections along the arbor.
 
-        :param section: Section geometry.
-        :param color: Section color.
+        :param section:
+            Section geometry.
         """
 
         # Get the section data arranged in a poly-line format
@@ -375,17 +373,23 @@ class SkeletonBuilder:
                                               branching_level=0,
                                               max_branching_level=nmv.consts.Math.INFINITY,
                                               bevel_object=None):
-        """
-        Draw the sections in each arbor as a series of disconnected segments, where each segment is
-        represented by a tube.
+        """Draw the sections in each arbor as a series of disconnected segments, where each segment
+        is represented by a tube.
 
-        :param root: Arbor root.
-        :param name: Arbor name.
-        :param material_list: Arbor colors.
-        :param segments_objects: The drawn list of segments.
-        :param branching_level: Current branching level.
-        :param max_branching_level: Maximum branching level the section can grow up to: infinity.
-        :param bevel_object: A given bevel object to scale the arbor sections.
+        :param root:
+            Arbor root.
+        :param name:
+            Arbor name.
+        :param material_list:
+            Arbor colors.
+        :param segments_objects:
+            The drawn list of segments.
+        :param branching_level:
+            Current branching level.
+        :param max_branching_level:
+            Maximum branching level the section can grow up to: infinity.
+        :param bevel_object:
+            A given bevel object to scale the arbor sections.
         """
 
         # Ignore the drawing if the root section is None
@@ -416,8 +420,12 @@ class SkeletonBuilder:
             # Draw the children sections
             for child in root.children:
                 self.draw_section_as_disconnected_segments(
-                    child, branching_level=branching_level, max_branching_level=max_branching_level,
-                    name=name, material_list=material_list, bevel_object=bevel_object,
+                    root=child,
+                    branching_level=branching_level,
+                    max_branching_level=max_branching_level,
+                    name=name,
+                    material_list=material_list,
+                    bevel_object=bevel_object,
                     segments_objects=segments_objects)
 
     ################################################################################################
@@ -428,13 +436,16 @@ class SkeletonBuilder:
                                             name,
                                             material_list=None,
                                             bevel_object=None):
-        """
-        Draws the section as a tube object.
+        """Draws the section as a tube object.
 
-        :param section: The geometry of a morphological section.
-        :param name: The name of the section.
-        :param material_list: The color of the section.
-        :param bevel_object: A given bevel object to scale the section.
+        :param section:
+            The geometry of a morphological section.
+        :param name:
+            The name of the section.
+        :param material_list:
+            The color of the section.
+        :param bevel_object:
+            A given bevel object to scale the section.
         """
 
         # Get the section data arranged in a poly-line format
@@ -481,17 +492,23 @@ class SkeletonBuilder:
                                            branching_level=0,
                                            max_branching_level=nmv.consts.Math.INFINITY,
                                            bevel_object=None):
-        """
-        Draws the section as a continuous, yet, disconnected and independent object from the rest
+        """Draws the section as a continuous, yet, disconnected and independent object from the rest
         of the sections of the morphology.
 
-        :param root: Arbor root.
-        :param name: Arbor prefix.
-        :param material_list: Arbor colors.
-        :param sections_objects: A list of all the drawn sections in the morphology.
-        :param branching_level: Current branching level.
-        :param max_branching_level: Maximum branching level set by the user.
-        :param bevel_object: A given bevel object to scale the arbor sections.
+        :param root:
+            Arbor root.
+        :param name:
+            Arbor prefix.
+        :param material_list:
+            Arbor colors.
+        :param sections_objects:
+            A list of all the drawn sections in the morphology.
+        :param branching_level:
+            Current branching level.
+        :param max_branching_level:
+            Maximum branching level set by the user.
+        :param bevel_object:
+            A given bevel object to scale the arbor sections.
         """
 
         # Make sure that the arbor exist
@@ -516,20 +533,25 @@ class SkeletonBuilder:
 
                 # Draw the sections of all the children at the same branching level
                 self.draw_root_as_disconnected_sections(
-                    root=child, name=name, material_list=material_list,
-                    branching_level=branching_level, max_branching_level=max_branching_level,
-                    bevel_object=bevel_object, sections_objects=sections_objects)
+                    root=child,
+                    name=name,
+                    material_list=material_list,
+                    branching_level=branching_level,
+                    max_branching_level=max_branching_level,
+                    bevel_object=bevel_object,
+                    sections_objects=sections_objects)
 
     ################################################################################################
     # @draw_morphology_as_disconnected_segments
     ################################################################################################
     def draw_morphology_as_disconnected_segments(self,
                                                  bevel_object=None):
-        """
-        Draw the morphological arbors as a set of disconnected segments.
+        """Draw the morphological arbors as a set of disconnected segments.
 
-        :param bevel_object: A given bevel object to scale the samples.
-        :return A list of all the drawn objects
+        :param bevel_object:
+            A given bevel object to scale the samples.
+        :return
+            A list of all the drawn objects
         """
 
         # A list of objects (references to drawn segments) that compose the morphology
@@ -586,11 +608,12 @@ class SkeletonBuilder:
     ################################################################################################
     def draw_morphology_as_disconnected_sections(self,
                                                  bevel_object=None):
-        """
-        Draw the morphological arbors as a set of disconnected sections.
+        """Draw the morphological arbors as a set of disconnected sections.
 
-        :param bevel_object: A given bevel object to scale the samples.
-        :return A list of all the drawn objects in the morphology.
+        :param bevel_object:
+            A given bevel object to scale the samples.
+        :return
+            A list of all the drawn objects in the morphology.
         """
 
         # A list of objects (references to drawn segments) that compose the morphology
@@ -649,11 +672,12 @@ class SkeletonBuilder:
     def draw_morphology_as_articulated_sections(self,
                                                 bevel_object=None):
 
-        """
-        Reconstructs and draws the morphology as a series of articulated sections.
+        """Reconstructs and draws the morphology as a series of articulated sections.
 
-        :param bevel_object: A bevel object used to scale the radii of the sections.
-        :return: A list of all the objects of the morphology that are already drawn.
+        :param bevel_object:
+            A bevel object used to scale the radii of the sections.
+        :return:
+            A list of all the objects of the morphology that are already drawn.
         """
 
         # A list of objects (references to drawn segments) that compose the morphology
@@ -771,21 +795,16 @@ class SkeletonBuilder:
             nmv.skeleton.ops.update_branching_order_section(dendrite)
 
         # Taper the sections if requested
-        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED or \
-           self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
+        if self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED or \
+           self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
         # Zigzag the sections if required
-        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.ZIGZAG or \
-           self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.TAPERED_ZIGZAG:
+        if self.options.morphology.arbor_style == nmv.enums.Arbors.Style.ZIGZAG or \
+           self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
-        """
-        if self.options.morphology.skeleton == nmv.enums.Skeletonization.Skeleton.SIMPLIFIED
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.simplify_morphology])
-        """
 
         # Filter the radii of the sections
         if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
@@ -802,7 +821,6 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.scale_section_radii,
                   self.options.morphology.sections_radii_scale])
-
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
@@ -1056,19 +1074,6 @@ class SkeletonBuilder:
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
             morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=True))
-
-
-
-
-        # Change the structure of the morphology for artistic purposes
-        elif method == nmv.enums.Skeletonization.Method.TAPERED:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                bevel_object=bevel_object, repair_morphology=True))
-
-        # Change the structure of the morphology for artistic purposes
-        elif method == nmv.enums.Skeletonization.Method.TAPERED_ZIGZAG:
-            morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=True))
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
