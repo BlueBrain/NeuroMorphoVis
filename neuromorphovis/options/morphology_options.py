@@ -50,6 +50,9 @@ class MorphologyOptions:
         # Skeletonization algorithm, ORIGINAL by default
         self.skeleton = nmv.enums.Skeletonization.Skeleton.ORIGINAL
 
+        # Arbor style
+        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
+
         # The GID of a given neuron in a given circuit using a blue config
         self.gid = None
 

@@ -125,8 +125,14 @@ class Skeletonization:
         # Draw the skeleton using tapered arbors where the radii at the earlier sections are bigger
         TAPERED = 'SKELETONIZATION_TAPERED'
 
+        # Draw the skeleton and add zigzag effect
+        ZIGZAG = 'SKELETONIZATION_ZIGZAG'
+
         # Draw the skeleton using the tapered method and also add a zig-zag effect to the sections
         TAPERED_ZIGZAG = 'SKELETONIZATION_TAPERED_ZIGZAG'
+
+        # Draw a projected morphology skeleton
+        PROJECTED = 'SKELETONIZATION_PROJECTED'
 
         ############################################################################################
         # @__init__

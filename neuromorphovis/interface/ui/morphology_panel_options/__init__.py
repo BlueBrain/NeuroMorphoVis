@@ -24,11 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
-from .ui_data import *
-from .io_panel import *
-from .soma_panel import *
-from .analysis_panel import *
-from .mesh_panel import *
-from .morphology_panel import *
-
-from .morphology_panel_options import *
+from .skeleton_options import *
+from .reconstruction_options import *
+from .colors_options import *
+from .rendering_options import *
