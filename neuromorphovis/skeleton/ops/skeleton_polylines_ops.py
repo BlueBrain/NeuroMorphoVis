@@ -116,7 +116,8 @@ def get_soma_connection_poly_line_(section):
 ####################################################################################################
 # @get_soma_connection_poly_line
 ####################################################################################################
-def get_origin_connection_poly_line(section, ignore_physically_connectivity=False):
+def get_origin_connection_poly_line(section,
+                                    ignore_physical_connectivity=False):
     """Get an extra poly-line that accounts for the connection between the root section and soma
     origin.
 
@@ -126,7 +127,7 @@ def get_origin_connection_poly_line(section, ignore_physically_connectivity=Fals
 
     :param section:
         Section structure.
-    :param ignore_physically_connectivity:
+    :param ignore_physical_connectivity:
         Connect the arbors to the origin even if they are not connected to the soma physically.
     :return:
         Section data in poly-line format that is suitable for drawing by Blender.
@@ -136,7 +137,7 @@ def get_origin_connection_poly_line(section, ignore_physically_connectivity=Fals
     poly_line = []
 
     # The section must be PHYSICALLY connected to the soma after the filtration
-    if section.connected_to_soma or ignore_physically_connectivity:
+    if section.connected_to_soma or ignore_physical_connectivity:
 
         # Add a sample around the origin
         direction = section.samples[0].point.normalized()
@@ -170,13 +171,16 @@ def get_origin_connection_poly_line(section, ignore_physically_connectivity=Fals
 # @get_stem_section_polyline
 ####################################################################################################
 def get_stem_section_polyline(section,
-                              ignore_branching_samples):
+                              ignore_branching_samples=False,
+                              disconnect_secondary_sections=False):
     """Get the poly-line representing a stem section that is neither root, nor last.
 
     :param section:
         Section structure.
     :param ignore_branching_samples:
         Ignore the first sample of the section, or the branching sample. False by default.
+    :param disconnect_secondary_sections:
+        Ignore adding the first samples of the secondary branches to construct disconnected section.
     :return:
         Section data in poly-line format that is suitable for drawing by Blender.
     """
@@ -211,6 +215,7 @@ def get_stem_section_polyline(section,
 ####################################################################################################
 def get_last_section_polyline(section,
                               ignore_branching_samples=False,
+                              disconnect_secondary_sections=False,
                               process_section_terminals=False):
     """Get the poly-line representing a last section.
 
@@ -218,6 +223,8 @@ def get_last_section_polyline(section,
         Section structure.
     :param ignore_branching_samples:
         Ignore the first sample of the section, or the branching sample. False by default.
+    :param disconnect_secondary_sections:
+        Ignore adding the first samples of the secondary branches to construct disconnected section.
     :param process_section_terminals:
         Process the last samples of the section to make them look smooth. False by default.
     :return:
@@ -261,24 +268,36 @@ def get_last_section_polyline(section,
 ####################################################################################################
 # @get_last_section_polyline
 ####################################################################################################
-def get_connected_sections_poly_lineX(section,
-                                     roots_connection=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
+def get_connected_sections_poly_line(section,
+                                     roots_connection,
                                      is_continuous=False,
                                      is_last_section=False,
                                      ignore_branching_samples=False,
+                                     disconnect_secondary_sections=False,
                                      process_section_terminals=False):
-    """
+    """Get the poly-line list or a series of points that reflect the skeleton of a group of
+    connected sections along a single arbor.
 
     :param section:
+        The geometry of the section.
     :param roots_connection:
+        How to root sections will be connected to the soma.
     :param is_continuous:
+        Is this section a continuation from a previous one or not.
     :param is_last_section:
+        Is this section the last one along an arbor or not.
     :param ignore_branching_samples:
+        Ignore adding the samples at the branching points.
+        This feature is mainly added for extrusion-based meshing.
+    :param disconnect_secondary_sections:
+        Ignore adding the first samples of the secondary branches to construct disconnected section.
+        This feature is mainly added for the bridging meshing.
     :param process_section_terminals:
+        Process the terminal samples that would reduce the visual quality of the arbor.
     :return:
+        Section data in poly-line format that is suitable for drawing by Blender.
     """
 
-    # print(roots_connection)
     # An array containing the poly-line data of the section compatible with Blender
     poly_line = []
 
@@ -289,15 +308,15 @@ def get_connected_sections_poly_lineX(section,
         if roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA:
             poly_line.extend(get_soma_connection_poly_line_(section=section))
 
-        # If the root section is connected to the soma (soma bridging)
+        # All root sections are connected to the origin of the soma, even if not true
         elif roots_connection == nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN:
             poly_line.extend(get_origin_connection_poly_line(
-                section=section, ignore_physically_connectivity=True))
+                section=section, ignore_physical_connectivity=True))
 
         # If the root section is connected to the origin of the soma, but NOT the soma itself
         elif roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
             poly_line.extend(get_origin_connection_poly_line(
-                section=section, ignore_physically_connectivity=False))
+                section=section, ignore_physical_connectivity=False))
 
         # The root section is disconnected from the soma 'DISCONNECTED_FROM_SOMA'
         else:
@@ -308,13 +327,17 @@ def get_connected_sections_poly_lineX(section,
 
             # Get the samples and process the last sample to close the edge
             poly_line.extend(get_last_section_polyline(
-                section, ignore_branching_samples, process_section_terminals))
+                section=section, ignore_branching_samples=ignore_branching_samples,
+                disconnect_secondary_sections=disconnect_secondary_sections,
+                process_section_terminals=process_section_terminals))
 
         # The root section is branching to another section
         else:
 
             # Get the samples without any processing
-            poly_line.extend(get_stem_section_polyline(section, ignore_branching_samples))
+            poly_line.extend(get_stem_section_polyline(
+                section=section, ignore_branching_samples=ignore_branching_samples,
+                disconnect_secondary_sections=disconnect_secondary_sections))
 
     # Non-root section
     else:
@@ -327,13 +350,17 @@ def get_connected_sections_poly_lineX(section,
 
                 # Get the samples and process the last sample to close the edge
                 poly_line.extend(get_last_section_polyline(
-                    section, ignore_branching_samples, process_section_terminals))
+                    section=section, ignore_branching_samples=ignore_branching_samples,
+                    disconnect_secondary_sections=disconnect_secondary_sections,
+                    process_section_terminals=process_section_terminals))
 
             # A stem section
             else: # is_last_section
 
                 # Normal processing for the internal sections
-                poly_line.extend(get_stem_section_polyline(section, ignore_branching_samples))
+                poly_line.extend(get_stem_section_polyline(
+                    section=section, ignore_branching_samples=ignore_branching_samples,
+                    disconnect_secondary_sections=disconnect_secondary_sections))
 
         # This 'secondary' section is not a continuation from a previous section, it is new
         else: # is_continuous
@@ -342,558 +369,18 @@ def get_connected_sections_poly_lineX(section,
             if is_last_section:
 
                 # Get the samples and process the last sample to close the edge
-                poly_line.extend(get_last_section_polyline(section, ignore_branching_samples,
-                    process_section_terminals))
+                poly_line.extend(get_last_section_polyline(
+                    section=section, ignore_branching_samples=ignore_branching_samples,
+                    disconnect_secondary_sections=disconnect_secondary_sections,
+                    process_section_terminals=process_section_terminals))
 
             # A stem section
             else:  # is_last_section
 
                 # Normal processing for the internal sections
-                poly_line.extend(get_stem_section_polyline(section, ignore_branching_samples))
-
-    # Return the poly-line list
-    return poly_line
-
-
-
-
-####################################################################################################
-# @get_connected_sections_poly_line
-####################################################################################################
-def get_connected_sections_poly_line(section,
-                                     is_continuous=False,
-                                     is_last_section=False,
-                                     fixed_radius=None,
-                                     transform=None,
-                                     process_terminals=False,
-                                     connect_to_soma=False,
-                                     bridge_to_soma=False):
-    """Get the poly-line list or a series of points that reflect the skeleton of a group of
-    connected sections along a single arbor or neurite.
-
-    :param section:
-        The geometry of the section.
-    :param is_continuous:
-        Is this section a continuation from a previous one or not.
-    :param is_last_section:
-        Is this section the last one along an arbor or not.
-    :param fixed_radius:
-        Use a fixed radius with this value, or None for using the values reported in the morphology.
-    :param transform:
-       Transform the points from local to circuit coordinates, only valid for a circuit.
-    :param process_terminals:
-        Process the terminal samples that would reduce the visual quality of the arbor.
-    :param connect_to_soma:
-        Add a set of auxiliary samples to connect the first sample of the root section to the
-        center of the soma (or the origin).
-    :param bridge_to_soma:
-        Bridge the arbor to the soma surface, and do not connect it to the origin.
-    :return:
-        Section data in poly-line format that is suitable for drawing by Blender.
-    """
-
-    # Global coordinates transformation, use I if no transform is given
-    if transform is None:
-        transform = Matrix()
-
-    # An array containing the data of the section
-    poly_line = []
-
-    # If the section is root, then connect it to the origin, if possible
-    if section.is_root():
-
-        # Bridge to the soma
-        if bridge_to_soma:
-
-            # The section must be logically connected to the soma after the filtration
-            if section.connected_to_soma:
-
-                # Add a sample around the origin
-                direction = section.samples[0].point.normalized()
-
-                # Sample radius
-                radius = section.samples[0].radius
-
-                # Get the starting point of the bridging section (note that delta is 0.25 in
-                # case of bridging)
-                point = \
-                    section.samples[0].point - nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # Normal connection to the soma
-        else:
-
-            # If the connection to the soma is required
-            if connect_to_soma:
-
-                # In the repair mode, if the section is not logically connected to the soma, then
-                # ignore connecting the section to the soma
-                if process_terminals:
-
-                    # The section must be logically connected to the soma after the filtration
-                    if section.connected_to_soma:
-
-                        # Add a sample around the origin
-                        direction = section.samples[0].point.normalized()
-
-                        # The initial sample must be far from the origin by one micron
-                        initial_sample = transform * Vector((0, 0, 0)) + direction
-
-                        # Sample radius
-                        radius = section.samples[0].radius
-
-                        # Compute the distance between the first sample and the origin sample
-                        distance = (section.samples[0].point - direction).length
-
-                        # Use N samples, for example 5
-                        number_samples = 5
-                        for i in range(1, number_samples):
-
-                            # Sample point
-                            point = initial_sample + (direction * distance * (i / number_samples))
-
-                            # Append the point to the poly-line data
-                            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                        # Get the starting point of the bridging section (note that delta is 0.25 in
-                        # case of bridging)
-                        point = section.samples[0].point
-
-                        # Append the sample to the list
-                        poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # If the original skeleton is required to be connected to the soma anyway, then we
-                # can safely connect the root section to the soma even if it's not logically
-                # connected
-                else:
-
-                    # Add a sample around the origin
-                    direction = section.samples[0].point.normalized()
-
-                    # Sample radius
-                    radius = section.samples[0].radius
-
-                    # Sample coordinates
-                    point = transform * (Vector((0, 0, 0)) + (1.0 * direction))
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                    # Get the starting point of the bridging section (note that delta is 0.25 in
-                    # case of bridging)
-                    point = section.samples[0].point
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # If the connection to the soma is NOT required, add only a bridging sample
-            else:
-
-                # In the repair mode, if the section is not logically connected to the soma,
-                # then ignore connecting the section to the soma
-                if process_terminals:
-
-                    # The section must be logically connected to the soma after the filtration
-                    if section.connected_to_soma:
-
-                        # Add a sample around the origin
-                        direction = section.samples[0].point.normalized()
-
-                        # Sample radius
-                        radius = section.samples[0].radius
-
-                        # Add the bridging sample
-                        point = section.samples[0].point -\
-                                (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
-
-                        # Append the sample to the list
-                        poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # If the section is a continuation, then do not pre-process the first samples
-    if is_continuous:
-
-        # If this is the last section, handle the LAST sample carefully
-        if is_last_section:
-
-            # Normal processing of the intermediate samples (ignore first and last)
-            for i in range(0, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = transform * section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Last sample coordinates
-            point = transform * section.samples[-1].point
-
-            # Last sample radius
-            original_radius = section.samples[-1].radius
-            radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                original_radius
-
-            # Append the last sample to the list
-            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # Normal processing for the internal sections
-        else:
-
-            # Normal processing of the intermediate samples (ignore first sample only)
-            for i in range(0, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = transform * section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # This 'secondary' section is not a continuation from a previous section, it is a new section
-    else: # is_continuous
-
-        # If the section has a parent, then reduce the radius of the first sample
-        if section.has_parent():
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the internal samples
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = transform * section.samples[-1].point
-
-                # Sample radius
-                original_radius = section.samples[-1].radius
-                radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                    original_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Normal processing for the internal sections
-            else:
-
-                # Normal processing
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # For roots, just use all the samples
-        else:
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the first n - 1 samples
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = transform * section.samples[-1].point
-
-                # Sample radius
-                original_radius = section.samples[-1].radius
-                radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                    original_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # For a root, but non-terminating section, just use all the samples w/o processing
-            else:
-
-                # Add all the section samples
-                for i in range(0, len(section.samples)):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    # radius = sample.radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # Return the poly-line list
-    return poly_line
-
-
-####################################################################################################
-# @get_disconnected_skeleton_sections_poly_line
-####################################################################################################
-def get_disconnected_skeleton_sections_poly_line(section,
-                                                 is_continuous=False,
-                                                 is_last_section=False,
-                                                 fixed_radius=None,
-                                                 transform=None,
-                                                 process_terminals=False,
-                                                 extend_to_soma_origin=False):
-    """
-    Gets the poly-line list that represents a series of points that reflect that skeleton on
-    a series of connected section along a single arbor.
-
-    :param section:
-        The geometry of a morphological section.
-    :param is_continuous:
-        Is this section a continuation from a previous one or not.
-    :param is_last_section:
-        Is this section the last one along an arbor or not.
-    :param fixed_radius:
-        Use a fixed radius with this value, or None.
-    :param transform:
-        Morphology circuit to local transform.
-    :param process_terminals:
-        Process the terminal samples that would reduce the visual quality of the arbor.
-    :param extend_to_soma_origin:
-        If this flag is set to True, the first samples of the root arbors will be connected to the
-        origin of the soma, because the arbor will not be 'physically' connected to the soma mesh.
-        On the other hand, if this Flag is set to False, we will only add an auxiliary sample
-        before the initial segment of the root section to allow BRIDGING the arbor to the soma
-        later during the mesh reconstruction operation.
-    :return:
-        Section data in poly-line format that is suitable for drawing.
-    """
-
-    # Global coordinates transformation, use I if no transform is given
-    if transform is None:
-        transform = Matrix()
-
-    # An array containing the data of the section
-    poly_line = []
-
-    # If the section is root, then connect it to the origin, if possible
-    if not section.has_parent():
-
-        # Ensure that the section is LOGICALLY connected to the soma
-        if section.connected_to_soma:
-
-            # Add a sample around the origin
-            direction = section.samples[0].point.normalized()
-
-            # Sample radius
-            radius = section.samples[0].radius
-
-            # Extend the root section to the soma origin, and add few extra samples between the
-            # origin and the bridging sample to avoid vertex smoothing artifacts around the root
-            # sections
-            if extend_to_soma_origin:
-
-                # Add a sample around the origin
-                direction = section.samples[0].point.normalized()
-
-                # The initial sample must be far from the origin by one micron
-                initial_sample = transform * Vector((0, 0, 0)) + direction
-
-                # Bridging sample
-                bridging_sample = section.samples[0].point - \
-                                  (nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction)
-
-                # Sample radius
-                radius = section.samples[0].radius
-
-                # Compute the distance between the first sample and the origin sample
-                distance = (bridging_sample - initial_sample).length
-
-                # Use N samples, for example 5
-                number_samples = 5
-                for i in range(1, number_samples - 1):
-
-                    # Sample point
-                    point = initial_sample + (direction * distance * (i / number_samples))
-
-                    # Append the point to the poly-line data
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Add the bridging sample
-            point = section.samples[0].point - 0.5 * direction
-
-            # Append the sample to the list
-            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # If the section is a continuation, then do not pre-process the first samples
-    if is_continuous:
-
-        # If the primary section is disconnected, then start from the second sample
-        starting_index = 1 if process_terminals else 0
-
-        # If this is the last section, handle the LAST sample carefully
-        if is_last_section:
-
-            # Normal processing of the intermediate samples (ignore first and last)
-            for i in range(starting_index, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = transform * section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Last sample coordinates
-            point = transform * section.samples[-1].point
-
-            # Last sample radius
-            original_radius = section.samples[-1].radius
-            radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                original_radius
-
-            # Append the last sample to the list
-            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # Normal processing for the internal sections
-        else:
-
-            # Normal processing of the intermediate samples (ignore first sample only)
-            for i in range(starting_index, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = transform * section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # This 'secondary' section is not a continuation from a previous section, it is a new section
-    else: # is_continuous
-
-        # If the section has a parent, then reduce the radius of the first sample
-        if section.has_parent():
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the internal samples
-                for i in range(1, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    # radius = section.samples[i].radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = transform * section.samples[-1].point
-
-                # Sample radius
-                original_radius = section.samples[-1].radius
-                radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                    original_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Normal processing for the internal sections
-            else:
-
-                # Normal processing
-                for i in range(1, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    # radius = section.samples[i].radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # For roots, just use all the samples
-        else:
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the first n - 1 samples
-                for i in range(1, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    # radius = section.samples[i].radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = transform * section.samples[-1].point
-
-                # Sample radius
-                original_radius = section.samples[-1].radius
-                radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS if process_terminals else \
-                    original_radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # For a root, but non-terminating section, just use all the samples w/o processing
-            else:
-
-                # Remove the last sample if this is not a not terminating section and the
-                # disconnect primary flag is active
-                last_index = len(section.samples)
-                if process_terminals:
-                    last_index -= 1
-
-                # Add all the section samples
-                for i in range(0, last_index):
-
-                    # Sample coordinates
-                    point = transform * section.samples[i].point
-
-                    # Sample radius
-                    # radius = sample.radius
-                    radius = section.samples[i].radius if fixed_radius is None else fixed_radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
+                poly_line.extend(get_stem_section_polyline(
+                    section=section, ignore_branching_samples=ignore_branching_samples,
+                    disconnect_secondary_sections=disconnect_secondary_sections))
 
     # Return the poly-line list
     return poly_line
@@ -903,8 +390,7 @@ def get_disconnected_skeleton_sections_poly_line(section,
 # @get_poly_line_length
 ####################################################################################################
 def get_poly_line_length(poly_line):
-    """
-    Returns the total length of a poly-line.
+    """Return the total length of a poly-line.
     :param poly_line:
         A given poly-line array to get its total length
     :return:
@@ -939,8 +425,8 @@ def get_poly_line_length(poly_line):
 ####################################################################################################
 def get_poly_line_normalized_start_factor(distance,
                                           poly_line_length):
-    """
-    Returns what's called the 'bevel_factor_start' factor that will be used to draw the poly-line.
+    """Return what's called the 'bevel_factor_start' factor that will be used to draw the poly-line.
+
     This value is set to update the parameter bpy.context.object.data.bevel_factor_start later
     during the meshing operations to avoid any intersections between the primary and secondary
     meshes.
@@ -968,8 +454,7 @@ def get_poly_line_normalized_start_factor(distance,
 ####################################################################################################
 def poly_lines_intersect(poly_line_1,
                          poly_line_2):
-    """
-    Applies a poly-line intersection test on the given two poly-lines and return True if the two
+    """Apply a poly-line intersection test on the given two poly-lines and return True if the two
     poly-lines intersect or False if they do not.
 
     :param poly_line_1:
@@ -1022,8 +507,7 @@ def poly_lines_intersect(poly_line_1,
 ####################################################################################################
 def poly_line_intersect_mesh(poly_line,
                              mesh):
-    """
-    Applies a poly-line intersection test on the given poly-line and mesh and return True if they
+    """Apply a poly-line intersection test on the given poly-line and mesh and return True if they
     intersect or False if they do not.
 
     :param poly_line:
@@ -1067,364 +551,3 @@ def poly_line_intersect_mesh(poly_line,
 
     # Otherwise, the two poly-lines do intersect
     return True
-
-
-####################################################################################################
-# @get_pre_root_section_poly_line_samples
-####################################################################################################
-def get_pre_root_section_poly_line_samples(section,
-                                           roots_connection):
-    """
-
-    :param section:
-    :param roots_connection:
-    :return:
-    """
-
-    # A list of poly-line samples
-    poly_line_samples = list()
-
-    # If the roots are connected to the soma
-    if roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA:
-
-        # The section must be logically connected to the soma after the filtration
-        if section.connected_to_soma:
-
-            # Add a sample around the origin
-            direction = section.samples[0].point.normalized()
-
-            # Sample radius
-            radius = section.samples[0].radius
-
-            # Sample point
-            point = section.samples[0].point
-
-            # Get the starting point of the bridging section
-            point = point - nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction
-
-            # Append the sample to the list
-            poly_line_samples.append([(point[0], point[1], point[2], 1), radius])
-
-    # If the roots are connected to the origin of the soma, but NOT the soma itself
-    elif roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
-
-        # If the connection to the soma is required
-        if section.connected_to_soma:
-
-            # Add a sample around the origin
-            direction = section.samples[0].point.normalized()
-
-            # The initial sample must be far from the origin by one micron
-            initial_sample = Vector((0, 0, 0)) + (1.0 * direction)
-
-            # Sample radius
-            radius = section.samples[0].radius
-
-            # Compute the distance between the first sample and the origin sample
-            distance = (section.samples[0].point - direction).length
-
-            # Add few samples between the origin and the first sample of the root section
-            for i in range(1, nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN):
-
-                # Sample point
-                point = initial_sample + (
-                direction * distance * (i / nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN))
-
-                # Append the point to the poly-line data
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Get the starting point of the bridging section (note that delta is 0.25 in
-            # case of bridging)
-            point = section.samples[0].point
-
-            # Append the sample to the list
-            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-
-####################################################################################################
-# @get_last_section_poly_line_samples
-####################################################################################################
-def get_last_section_poly_line_samples(section,
-                                       process_section_terminals=False,
-                                       ignore_first_sample=False):
-    """
-
-    :param section:
-    :param process_section_terminals:
-    :return:
-    """
-
-    # A list of poly-line samples
-    poly_line_samples = list()
-
-    # Number of samples on the section
-    number_samples = len(section.samples)
-
-    # Get the first N - 1 samples
-    for i in range(0, number_samples - 1):
-
-        # Sample coordinates
-        point = section.samples[i].point
-
-        # Sample radius
-        radius = section.samples[i].radius
-
-        # Append the sample to the list
-        poly_line_samples.append([(point[0], point[1], point[2], 1), radius])
-
-    # Last sample coordinates
-    point = section.samples[-1].point
-
-    # Last sample radius
-    if process_section_terminals:
-        radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS
-    else:
-        radius = section.samples[-1].radius
-
-    # Append the last sample to the list
-    poly_line_samples.append([(point[0], point[1], point[2], 1), radius])
-
-    # Return the samples list
-    return poly_line_samples
-
-
-
-
-
-
-
-
-
-
-
-####################################################################################################
-# @get_connected_sections_poly_line
-####################################################################################################
-def get_primary_branch_poly_line(section,
-                                 is_continuous=False,
-                                 is_last_section=False,
-                                 process_section_terminals=False,
-                                 roots_connection=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA):
-    """Get a poly-line, represented as a list, that contains a series of points that account for
-    the connected sections branch along a single arbor.
-
-    :param section:
-        The geometry of the section.
-    :param is_continuous:
-        Is this section a continuation from a previous one or not.
-    :param is_last_section:
-        Is this section the last one along an arbor or not.
-        This flag is also used to terminate the branching at a given order.
-    :param process_section_terminals:
-        Taper the radii of section terminals to look smooth.
-    :param roots_connection:
-        Are the roots connected to the soma or disconnected from it or even connected to the origin.
-    :return:
-        Section data in poly-line format that is suitable for drawing by Blender.
-    """
-
-    # An array containing the data of the section
-    poly_line = []
-
-    # If the section is root, then connect it to the origin, if possible
-    if section.is_root():
-
-        # If the roots are connected to the soma
-        if roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA:
-
-            # The section must be logically connected to the soma after the filtration
-            if section.connected_to_soma:
-
-                # Add a sample around the origin
-                direction = section.samples[0].point.normalized()
-
-                # Sample radius
-                radius = section.samples[0].radius
-
-                # Sample point
-                point = section.samples[0].point
-
-                # Get the starting point of the bridging section
-                point = point - nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # If the roots are connected to the origin of the soma, but NOT the soma itself
-        elif roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
-
-            # If the connection to the soma is required
-            if section.connected_to_soma:
-
-                # Add a sample around the origin
-                direction = section.samples[0].point.normalized()
-
-                # The initial sample must be far from the origin by one micron
-                initial_sample = Vector((0, 0, 0)) + (1.0 * direction)
-
-                # Sample radius
-                radius = section.samples[0].radius
-
-                # Compute the distance between the first sample and the origin sample
-                distance = (section.samples[0].point - direction).length
-
-                # Add few samples between the origin and the first sample of the root section
-                for i in range(1, nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN):
-
-                    # Sample point
-                    point = initial_sample + (direction * distance *
-                                              (i / nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN))
-
-                    # Append the point to the poly-line data
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Get the starting point of the bridging section (note that delta is 0.25 in
-                # case of bridging)
-                point = section.samples[0].point
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # If the section is a continuation, then do not pre-process the first samples
-    if is_continuous:
-
-        # If this is the last section, handle the LAST sample carefully
-        if is_last_section:
-
-            # Normal processing of the intermediate samples (ignore first and last)
-            for i in range(0, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Last sample coordinates
-            point = section.samples[-1].point
-
-            # Last sample radius
-            if process_section_terminals:
-                radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS
-            else:
-                radius = section.samples[-1].radius
-
-            # Append the last sample to the list
-            poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # Normal processing for the internal sections
-        else:
-
-            # Normal processing of the intermediate samples (ignore first sample only)
-            for i in range(0, len(section.samples) - 1):
-
-                # Sample coordinates
-                point = section.samples[i].point
-
-                # Sample radius
-                radius = section.samples[i].radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # This 'secondary' section is not a continuation from a previous section, it is a new section
-    else: # is_continuous
-
-        # If the section has a parent, then reduce the radius of the first sample
-        if section.has_parent():
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the internal samples
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = section.samples[-1].point
-
-                # Last sample radius
-                if process_section_terminals:
-                    radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS
-                else:
-                    radius = section.samples[-1].radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # Normal processing for the internal sections
-            else:
-
-                # Normal processing
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-        # For roots, just use all the samples
-        else:
-
-            # If this is the last section, reduce the radius of the last sample for a clean terminal
-            if is_last_section:
-
-                # Normal processing of the first n - 1 samples
-                for i in range(0, len(section.samples) - 1):
-
-                    # Sample coordinates
-                    point = section.samples[i].point
-
-                    # Sample radius
-                    radius = section.samples[i].radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-                # Handle the last sample or the terminal point of the arbor
-                # Sample coordinates
-                point = section.samples[-1].point
-
-                # Last sample radius
-                if process_section_terminals:
-                    radius = nmv.consts.Morphology.LAST_SAMPLE_RADIUS
-                else:
-                    radius = section.samples[-1].radius
-
-                # Append the sample to the list
-                poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-            # For a root, but non-terminating section, just use all the samples w/o processing
-            else:
-
-                # Add all the section samples
-                for i in range(0, len(section.samples)):
-
-                    # Sample coordinates
-                    point = section.samples[i].point
-
-                    # Sample radius
-                    # radius = sample.radius
-                    radius = section.samples[i].radius
-
-                    # Append the sample to the list
-                    poly_line.append([(point[0], point[1], point[2], 1), radius])
-
-    # Return the poly-line list
-    return poly_line

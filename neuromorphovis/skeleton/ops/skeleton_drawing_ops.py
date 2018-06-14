@@ -347,13 +347,7 @@ def draw_connected_sections(section, name,
         secondary_sections.append(section)
 
     # Get a list of all the poly-line that corresponds to the given section
-    #section_data = nmv.skeleton.ops.get_connected_sections_poly_line(section=section,
-    #    is_continuous=is_continuous, is_last_section=is_last_section, fixed_radius=fixed_radius,
-    #    transform=transform, process_terminals=repair_morphology,
-    #    connect_to_soma=connect_to_soma, bridge_to_soma=bridge_to_soma)
-
-
-    section_data = nmv.skeleton.ops.get_connected_sections_poly_lineX(
+    section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
         section=section, roots_connection=roots_connection, is_continuous=is_continuous,
         is_last_section=is_last_section, process_section_terminals=repair_morphology)
 
