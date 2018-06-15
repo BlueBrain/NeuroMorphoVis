@@ -155,6 +155,18 @@ class MorphologyPanel(bpy.types.Panel):
         description="Each component of the arbor will be assigned a either black or white",
         default=False)
 
+    # Use single color for the all the objects in the morphology
+    bpy.types.Scene.MorphologyHomogeneousColor = BoolProperty(
+        name="Homogeneous Color",
+        description="Use a single color for rendering all the objects of the morphology",
+        default=False)
+
+    # A homogeneous color for all the objects of the morphology
+    bpy.types.Scene.NeuronMorphologyColor = FloatVectorProperty(
+        name="Membrane Color",
+        subtype='COLOR', default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
+        description="The homogeneous color of the reconstructed morphology membrane")
+
     # Soma color
     bpy.types.Scene.SomaColor = FloatVectorProperty(
         name="Soma Color",
