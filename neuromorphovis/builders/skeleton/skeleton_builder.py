@@ -650,7 +650,8 @@ class SkeletonBuilder:
     ################################################################################################
     def draw_morphology_as_connected_sections(self,
                                               bevel_object=None,
-                                              repair_morphology=False):
+                                              repair_morphology=False,
+                                              disconnect_skelecton=False):
         """Reconstruct and draw the morphology as a series of connected sections.
 
         :param bevel_object:
@@ -705,7 +706,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    ignore_branching_samples=disconnect_skelecton)
 
             # Extend the morphology objects list
             morphology_objects.extend(basal_dendrites_sections_objects)
@@ -730,7 +732,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    ignore_branching_samples=disconnect_skelecton)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(apical_dendrite_sections_objects)
@@ -753,7 +756,8 @@ class SkeletonBuilder:
                     render_frame=self.options.morphology.render_progressive,
                     frame_destination=self.progressive_frames_directory,
                     camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection)
+                    roots_connection=self.options.morphology.arbors_to_soma_connection,
+                    ignore_branching_samples=disconnect_skelecton)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(axon_sections_objects)
@@ -932,14 +936,13 @@ class SkeletonBuilder:
 
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
-            morphology_objects.extend(
-                self.draw_morphology_as_disconnected_skeleton(
-                    bevel_object=bevel_object, repair_morphology=False))
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                    bevel_object=bevel_object, repair_morphology=False, disconnect_skelecton=True))
 
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
-            morphology_objects.extend(self.draw_morphology_as_disconnected_skeleton(
-                bevel_object=bevel_object, repair_morphology=True))
+            morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True, disconnect_skelecton=True))
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
         # is represented by a continuous tube

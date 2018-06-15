@@ -69,12 +69,12 @@ def update_arbors_radii(morphology,
     """
 
     # Filter the radii of the sections
-    if morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[morphology, nmv.skeleton.ops.filter_section_sub_threshold,
-              morphology_options.threshold_radius])
+    #if morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
+    #    nmv.skeleton.ops.apply_operation_to_morphology(
+    #        *[morphology, nmv.skeleton.ops.filter_section_sub_threshold,
+    #          morphology_options.threshold_radius])
 
-    elif morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+    if morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.fix_section_radii,
               morphology_options.sections_fixed_radii_value])
