@@ -25,20 +25,9 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-# System imports
-import random
-
-# Blender imports
-import bpy
-from mathutils import Vector, Matrix
-
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.enums
-import neuromorphovis.geometry
-import neuromorphovis.mesh
-import neuromorphovis.scene
-import neuromorphovis.skeleton
 
 
 ####################################################################################################

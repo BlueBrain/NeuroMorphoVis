@@ -136,10 +136,13 @@ class Arbors:
         # Tapered and zigzagged
         TAPERED_ZIGZAG = 'ARBORS_STYLE_TAPER_ZIGZAG'
 
-        # Bumpy
+        # Projected on the XY plane @Z=0
+        PROJECTED = 'ARBORS_STYLE_PROJECTED'
+
+        # Bumpy, for meshing only
         BUMPY = 'ARBORS_STYLE_BUMPY'
 
-        # Bumpy and zigzagged
+        # Bumpy and zigzagged, for meshing only
         BUMPY_ZIGZAG = 'ARBORS_STYLE_BUMPY_ZIGZAG'
 
         ############################################################################################
@@ -159,6 +162,10 @@ class Arbors:
             # Use the tapered-zigzag style
             elif argument == 'tapered-zigzag':
                 return Arbors.Style.TAPERED_ZIGZAG
+
+            # Use the projected style
+            elif argument == 'projected':
+                return Arbors.Style.PROJECTED
 
             # Use the bumpy style
             elif argument == 'bumpy':

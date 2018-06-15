@@ -760,11 +760,11 @@ class SkeletonBuilder:
         """
 
         # Verify the connectivity of the arbors of the morphology to the soma
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)
 
         # Update the branching
         nmv.skeleton.ops.update_skeleton_branching(
-            self.morphology, self.options.morphology.branching)
+            morphology=self.morphology, branching_method=self.options.morphology.branching)
 
         # Re-sample the morphology skeleton, if the repair is required
         if repair_morphology:
@@ -777,33 +777,13 @@ class SkeletonBuilder:
         for dendrite in self.morphology.dendrites:
             nmv.skeleton.ops.update_branching_order_section(dendrite)
 
-        # Taper the sections if requested
-        if self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED or \
-           self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.taper_section])
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
-        # Zigzag the sections if required
-        if self.options.morphology.arbor_style == nmv.enums.Arbors.Style.ZIGZAG or \
-           self.options.morphology.arbor_style == nmv.enums.Arbors.Style.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.zigzag_section])
-
-        # Filter the radii of the sections
-        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.filter_section_sub_threshold,
-                  self.options.morphology.threshold_radius])
-
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.fix_section_radii,
-                  self.options.morphology.sections_fixed_radii_value])
-
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.scale_section_radii,
-                  self.options.morphology.sections_radii_scale])
+        # Update the radii of the arbors
+        nmv.skeleton.ops.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
 
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
