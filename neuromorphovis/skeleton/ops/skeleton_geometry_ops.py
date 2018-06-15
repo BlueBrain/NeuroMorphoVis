@@ -398,6 +398,24 @@ def zigzag_section(section,
 
 
 ####################################################################################################
+# @simplify_section_to_straight_line
+####################################################################################################
+def simplify_section_to_straight_line(section):
+    """Simplify the section structure into a straight line that is composed of only two samples
+    at the beginning and end of the line.
+
+    :param section:
+        A given morphology section.
+    """
+
+    # Compose a list of only two samples
+    straight_samples = [section.samples[0], section.samples[-1]]
+
+    # Update the samples list in the section
+    section.samples = straight_samples
+
+
+####################################################################################################
 # @scale_section_radii
 ####################################################################################################
 def scale_section_radii(section,

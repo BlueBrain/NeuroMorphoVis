@@ -33,6 +33,7 @@ import neuromorphovis as nmv
 import neuromorphovis.scene
 import neuromorphovis.geometry
 
+
 ####################################################################################################
 # @compute_section_centroid_from_poly_line_data
 ####################################################################################################
@@ -287,6 +288,7 @@ def draw_poly_line(poly_line_data,
     # Add the points along the poly-line
     # NOTE: add n-1 points to the array, becuase once the poly-line is created it has already one
     # point added.
+    # ('POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS')
     poly_line_strip = line_data.splines.new('POLY')
     poly_line_strip.points.add(len(poly_line_data) - 1)
 

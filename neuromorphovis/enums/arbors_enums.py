@@ -145,6 +145,9 @@ class Arbors:
         # Bumpy and zigzagged, for meshing only
         BUMPY_ZIGZAG = 'ARBORS_STYLE_BUMPY_ZIGZAG'
 
+        # Straight, only connects the first and the last two samples of a section
+        STRAIGHT = 'ARBORS_STYLE_STRAIGHT'
+
         ############################################################################################
         # @get_enum
         ############################################################################################
@@ -178,5 +181,26 @@ class Arbors:
             # By default, use the original style
             else:
                 return Arbors.Style.ORIGINAL
+
+        ############################################################################################
+        # A list of all the available styles in NeuroMorphoVis for morphology reconstruction
+        ############################################################################################
+        MORPHOLOGY_STYLE_ITEMS = [
+            (ORIGINAL,
+             'Original',
+             'Draw the arbors as described in the morphology file'),
+            (TAPERED,
+             'Tapered',
+             'Draw the sections as tapered cylinders (artistic)'),
+            (ZIGZAG,
+             'Zigzag',
+             'Draw the sections as wiggled zigzag lines (artistic)'),
+            (TAPERED_ZIGZAG,
+             'Tapered-Zigzag',
+             'Draw the sections as tapered and wiggled zigzag tubes (artistic)'),
+            (STRAIGHT,
+             'Straight',
+             'Represent each section by a single segment that connects its terminals (artistic)')
+        ]
 
 

@@ -54,6 +54,11 @@ def update_arbors_style(morphology,
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.zigzag_section])
 
+    # Straight
+    if arbor_style == nmv.enums.Arbors.Style.STRAIGHT:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, nmv.skeleton.ops.simplify_section_to_straight_line])
+
 
 ####################################################################################################
 # @update_arbors_radii

@@ -141,7 +141,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.MorphologyMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,
         name="Material",
-        default=nmv.enums.Shading.FLAT)
+        default=nmv.enums.Shading.LAMBERT_WARD)
 
     # Color arbor by part
     bpy.types.Scene.ColorArborByPart = BoolProperty(
@@ -213,18 +213,7 @@ class MorphologyPanel(bpy.types.Panel):
 
     # Arbors style
     bpy.types.Scene.ArborsStyle = EnumProperty(
-        items=[(nmv.enums.Arbors.Style.ORIGINAL,
-                'Original',
-                'Draw the arbors as described in the morphology file'),
-               (nmv.enums.Arbors.Style.TAPERED,
-                'Tapered',
-                'Draw the sections as tapered cylinders (artistic)'),
-               (nmv.enums.Arbors.Style.ZIGZAG,
-                'Zigzag',
-                'Draw the sections as wiggled zigzag lines (artistic)'),
-               (nmv.enums.Arbors.Style.TAPERED_ZIGZAG,
-                'Tapered-Zigzag',
-                'Draw the sections as tapered and wiggled zigzag tubes (artistic)')],
+        items=nmv.enums.Arbors.Style.MORPHOLOGY_STYLE_ITEMS,
         name="Skeleton Style",
         default=nmv.enums.Arbors.Style.ORIGINAL)
 
@@ -238,12 +227,6 @@ class MorphologyPanel(bpy.types.Panel):
                 'Make the branching based on the radii of the children at the branching points')],
         name='Branching Style',
         default=nmv.enums.Skeletonization.Branching.ANGLES)
-
-    # Connect to soma if the connected method is used
-    bpy.types.Scene.ConnectToSoma = BoolProperty(
-        name="Connect to Soma",
-        description="Connect the arbors to the soma",
-        default=True)
 
     # Soma connection to roots
     bpy.types.Scene.SomaConnectionToRoot = EnumProperty(
@@ -327,12 +310,14 @@ class MorphologyPanel(bpy.types.Panel):
 
     # Frame resolution
     bpy.types.Scene.MorphologyFrameResolution = IntProperty(
-        name="Resolution", default=512, min=128, max=1024 * 10,
+        name="Resolution",
+        default=512, min=128, max=1024 * 10,
         description="The resolution of the image generated from rendering the morphology")
 
     # Frame scale factor 'for rendering to scale option '
     bpy.types.Scene.MorphologyFrameScaleFactor = FloatProperty(
-        name="Scale", default=1.0, min=1.0, max=100.0,
+        name="Scale",
+        default=1.0, min=1.0, max=100.0,
         description="The scale factor for rendering a morphology to scale")
 
     # Morphology close up dimensions
@@ -366,12 +351,12 @@ class MorphologyPanel(bpy.types.Panel):
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Set the reconstruction options
-        nmv.interface.ui.morphology_panel_options.set_reconstruction_options(layout=layout,
-            scene=current_scene, options=nmv.interface.ui_options)
+        nmv.interface.ui.morphology_panel_options.set_reconstruction_options(
+            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Set the color options
-        nmv.interface.ui.morphology_panel_options.set_color_options(layout=layout,
-            scene=current_scene, options=nmv.interface.ui_options)
+        nmv.interface.ui.morphology_panel_options.set_color_options(
+            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Reconstruction button
         quick_reconstruction_row = layout.row()

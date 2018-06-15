@@ -203,8 +203,8 @@ def get_stem_section_polyline(section,
         # Append the sample to the list
         poly_line.append([(point[0], point[1], point[2], 1), radius])
 
-        # Return the poly-line list
-        return poly_line
+    # Return the poly-line list
+    return poly_line
 
 
 ####################################################################################################
@@ -342,14 +342,14 @@ def get_connected_sections_poly_line(section,
                     process_section_terminals=process_section_terminals))
 
             # A stem section
-            else: # is_last_section
+            else:  # is_last_section
 
                 # Normal processing for the internal sections
                 poly_line.extend(get_stem_section_polyline(
                     section=section, ignore_branching_samples=ignore_branching_samples))
 
         # This 'secondary' section is not a continuation from a previous section, it is new
-        else: # is_continuous
+        else:  # is_continuous
 
             # If this is the last section
             if is_last_section:
