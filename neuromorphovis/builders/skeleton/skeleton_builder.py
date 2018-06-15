@@ -157,34 +157,6 @@ class SkeletonBuilder:
         # Return a reference to the object
         return soma_sphere
 
-    ################################################################################################
-    # @get_section_poly_line
-    ################################################################################################
-    def get_section_poly_line(self,
-                              section):
-        """Gets the data of a morphological section arranged in a certain format that can be easily
-        read by the poly-line drawing functions.
-
-        :param section: The geometry of a morphological section.
-        :return: A data list that includes the samples of the sections and their corresponding
-        diameters.
-        """
-
-        # An array containing the data of the section
-        poly_line_data = None
-
-        # If we use a fixed radius, then get that radius from the user and set all the radii of
-        # the sections to it
-        if self.options.morphology.unify_sections_radii:
-            poly_line_data = nmv.skeleton.ops.get_section_poly_line(
-                section=section, fixed_radius=self.options.morphology.sections_fixed_radii_value)
-
-        # Otherwise, use the radii that are given in the morphology file
-        else:
-            poly_line_data = nmv.skeleton.ops.get_section_poly_line(section=section)
-
-        # Return the list
-        return poly_line_data
 
     ################################################################################################
     # @draw_section_terminal_as_sphere
@@ -198,7 +170,7 @@ class SkeletonBuilder:
         """
 
         # Get the section data arranged in a poly-line format
-        section_data = self.get_section_poly_line(section)
+        section_data = nmv.skeleton.ops.get_section_poly_line(section)
 
         # Access the last item
         section_terminal = section_data[-1]
@@ -215,7 +187,7 @@ class SkeletonBuilder:
         for child in section.children:
 
             # Get the first sample along the child section
-            child_data = self.get_section_poly_line(child)
+            child_data = nmv.skeleton.ops.get_section_poly_line(child)
 
             # Verify the radius of the child
             child_radius = child_data[0][1]
@@ -249,14 +221,18 @@ class SkeletonBuilder:
                                           sphere_objects=[],
                                           branching_level=0,
                                           max_branching_level=nmv.consts.Math.INFINITY):
-        """
-        Draws the terminals of a given arbor as spheres.
+        """Draws the terminals of a given arbor as spheres.
 
-        :param root: Arbor root.
-        :param material_list: Sphere material.
-        :param sphere_objects: A list of all the drawn spheres.
-        :param branching_level: Current branching level.
-        :param max_branching_level: Maximum branching level the section can grow up to: infinity.
+        :param root:
+            Arbor root.
+        :param material_list:
+            Sphere material.
+        :param sphere_objects:
+            A list of all the drawn spheres.
+        :param branching_level:
+            Current branching level.
+        :param max_branching_level:
+            Maximum branching level the section can grow up to: infinity.
         """
 
         # Ignore the drawing if the root section is None
@@ -375,7 +351,7 @@ class SkeletonBuilder:
         """
 
         # Get the section data arranged in a poly-line format
-        data = self.get_section_poly_line(section)
+        data = nmv.skeleton.ops.get_section_poly_line(section)
 
         # Use the section id to tag the section name
         section_name = '%s_%d_section' % (name, section.id)

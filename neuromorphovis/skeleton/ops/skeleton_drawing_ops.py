@@ -285,7 +285,6 @@ def draw_connected_sections(section, name,
                             render_frame=False,
                             frame_destination=None,
                             camera=None,
-                            connect_to_soma=False,
                             ignore_branching_samples=False,
                             roots_connection=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA):
     """Draw a list of sections connected together as a poly-line.
@@ -322,10 +321,10 @@ def draw_connected_sections(section, name,
         The directory where the frame will be dumped.
     :param camera:
         A given camera to render the frame.
-    :param connect_to_soma:
-        Connect the section to the soma origin, False by default.
-    :param bridge_to_soma:
-        Bridge the root section to the soma.
+    :param ignore_branching_samples:
+        Ignore fetching the branching samples from the morphology skeleton.
+    :param roots_connection:
+        How the root sections are connected to the soma.
     """
 
     # Ignore the drawing if the section is None
@@ -411,7 +410,7 @@ def draw_connected_sections(section, name,
             material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
             transform=transform, repair_morphology=repair_morphology, caps=caps,
             render_frame=render_frame, frame_destination=frame_destination, camera=camera,
-            connect_to_soma=connect_to_soma, roots_connection=roots_connection)
+                                roots_connection=roots_connection)
 
 ####################################################################################################
 # @draw_disconnected_sections
@@ -611,8 +610,7 @@ def draw_disconnected_segments(section,
     segments_objects = []
 
     # Get the poly-line format of the section
-    section_data = nmv.skeleton.ops.get_section_poly_line(
-        section=section, fixed_radius=fixed_radius, transform=transform)
+    section_data = nmv.skeleton.ops.get_section_poly_line(section=section, transform=transform)
 
     # Draw the section segment by segment
     for i in range(len(section_data) - 1):
