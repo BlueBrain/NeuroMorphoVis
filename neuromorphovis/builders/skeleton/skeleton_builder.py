@@ -23,6 +23,8 @@ __version__     = "1.0.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
+
+
 # System imports
 import random, copy
 
@@ -47,14 +49,14 @@ import neuromorphovis.skeleton
 # @SkeletonBuilder
 ####################################################################################################
 class SkeletonBuilder:
+
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
                  morphology,
                  options):
-        """
-        Constructor.
+        """Constructor.
 
         :param morphology: A given morphology.
         """
@@ -93,88 +95,6 @@ class SkeletonBuilder:
         self.progressive_frame_index = 1
 
     ################################################################################################
-    # @create_materials
-    ################################################################################################
-    def create_materials(self,
-                         name,
-                         color):
-        """Creates two materials of the skeleton based on the input parameters of the user.
-
-        :param name:
-            The name of the material/color.
-        :param color:
-            The code of the given colors.
-        :return:
-            A list of two elements (different or same colors) where we can apply later to the
-            drawn sections or segments.
-        """
-
-        # A list of the created materials
-        materials_list = []
-
-        # Build the materials list
-        color_vector = nmv.consts.Color.BLACK
-
-        # Random colors
-        if color.x == -1 and color.y == 0 and color.z == 0:
-            for i in range(2):
-                color_vector.x = random.uniform(0.0, 1.0)
-                color_vector.y = random.uniform(0.0, 1.0)
-                color_vector.z = random.uniform(0.0, 1.0)
-
-                # Create the material
-                material = nmv.shading.create_material(
-                    name='%s_random_%d' % (name, i), color=color_vector,
-                    material_type=self.options.morphology.material)
-
-                # Append the material to the materials list
-                materials_list.append(material)
-
-        # If set to black / white
-        elif color.x == 0 and color.y == -1 and color.z == 0:
-
-            # Black
-            color_vector.x = 0.0
-            color_vector.y = 0.0
-            color_vector.z = 0.0
-
-            # Create the material
-            material = nmv.shading.create_material(
-                name='%s_bw_0' % name, color=color_vector,
-                material_type=self.options.morphology.material)
-
-            # Append the material to the materials list
-            materials_list.append(material)
-
-            # White
-            color_vector.x = 1.0
-            color_vector.y = 1.0
-            color_vector.z = 1.0
-
-            # Create the material
-            material = nmv.shading.create_material(
-                name='%s_bw_1' % name, color=color_vector,
-                material_type=self.options.morphology.material)
-
-            # Append the material to the materials list
-            materials_list.append(material)
-
-        # Normal color
-        else:
-            for i in range(2):
-
-                # Create the material
-                material = nmv.shading.create_material(
-                    name='%s_color_%d' % (name, i), color=color,
-                    material_type=self.options.morphology.material)
-
-                # Append the material to the materials list
-                materials_list.append(material)
-
-        # Return the list
-        return materials_list
-
-    ################################################################################################
     # @create_skeleton_materials
     ################################################################################################
     def create_skeleton_materials(self):
@@ -182,6 +102,7 @@ class SkeletonBuilder:
         variables.
         """
 
+        # Clear all the materials that are already present in the scene
         for material in bpy.data.materials:
             if 'soma_skeleton' in material.name or \
                'axon_skeleton' in material.name or \
@@ -192,24 +113,29 @@ class SkeletonBuilder:
                     bpy.data.materials.remove(material)
 
         # Soma
-        self.soma_materials = self.create_materials(
-            name='soma_skeleton', color=self.options.morphology.soma_color)
+        self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='soma_skeleton', material_type=self.options.morphology.material,
+            color=self.options.morphology.soma_color)
 
         # Axon
-        self.axon_materials = self.create_materials(
-            name='axon_skeleton', color=self.options.morphology.axon_color)
+        self.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='axon_skeleton', material_type=self.options.morphology.material,
+            color=self.options.morphology.axon_color)
 
         # Basal dendrites
-        self.basal_dendrites_materials = self.create_materials(
-            name='basal_dendrites_skeleton', color=self.options.morphology.basal_dendrites_color)
+        self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='basal_dendrites_skeleton', material_type=self.options.morphology.material,
+            color=self.options.morphology.basal_dendrites_color)
 
         # Apical dendrite
-        self.apical_dendrite_materials = self.create_materials(
-            name='apical_dendrite_skeleton', color=self.options.morphology.apical_dendrites_color)
+        self.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='apical_dendrite_skeleton', material_type=self.options.morphology.material,
+            color=self.options.morphology.apical_dendrites_color)
 
-        # Apical dendrite
-        self.articulation_materials = self.create_materials(
-            name='articulation', color=self.options.morphology.articulation_color)
+        # Articulations for the articulated reconstruction method
+        self.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='articulation', material_type=self.options.morphology.material,
+            color=self.options.morphology.articulation_color)
 
     ################################################################################################
     # @draw_soma_sphere
@@ -759,23 +685,17 @@ class SkeletonBuilder:
             A list of all the objects of the morphology that are already drawn.
         """
 
+        # Re-sample the morphology skeleton, if the repair is required
+        if repair_morphology:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_sections])
+
         # Verify the connectivity of the arbors of the morphology to the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)
 
         # Update the branching
         nmv.skeleton.ops.update_skeleton_branching(
             morphology=self.morphology, branching_method=self.options.morphology.branching)
-
-        # Re-sample the morphology skeleton, if the repair is required
-        if repair_morphology:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections])
-
-        # Update the branching orders
-        nmv.skeleton.ops.update_branching_order_section(self.morphology.axon)
-        nmv.skeleton.ops.update_branching_order_section(self.morphology.apical_dendrite)
-        for dendrite in self.morphology.dendrites:
-            nmv.skeleton.ops.update_branching_order_section(dendrite)
 
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
@@ -791,10 +711,11 @@ class SkeletonBuilder:
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
+            # A list to keep all the drawn objects of the basal dendrites
             basal_dendrites_sections_objects = []
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
-                # Draw the basal dendrites as a set connected sections
+            # Draw each basal dendrites as a set connected sections
+            for i, basal_dendrite in enumerate(self.morphology.dendrites):
                 dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(basal_dendrite),
@@ -816,8 +737,10 @@ class SkeletonBuilder:
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
 
+            # Ensure tha existence of the apical dendrite
             if self.morphology.apical_dendrite is not None:
 
+                # Draw the apical dendrite as a set connected sections
                 apical_dendrite_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.apical_dendrite),
@@ -836,11 +759,13 @@ class SkeletonBuilder:
                 # Extend the morphology objects list
                 morphology_objects.extend(apical_dendrite_sections_objects)
 
-        # Draw the axon as a set connected sections
+        # Draw the axon
         if not self.options.morphology.ignore_axon:
 
+            # Ensure tha existence of the axon
             if self.morphology.axon is not None:
 
+                # Draw the axon as a set connected sections
                 axon_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.axon),

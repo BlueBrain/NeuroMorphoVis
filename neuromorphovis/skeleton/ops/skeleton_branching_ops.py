@@ -56,3 +56,7 @@ def update_skeleton_branching(morphology,
         # Label the primary and secondary sections based on radii
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+
+    # Update the branching orders
+    nmv.skeleton.ops.apply_operation_to_morphology(
+        *[morphology, nmv.skeleton.ops.update_branching_order_section])

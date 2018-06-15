@@ -26,6 +26,7 @@ __status__      = "Production"
 
 from .skeleton_analysis_ops import *
 from .skeleton_branching_ops import *
+from .skeleton_coloring_ops import *
 from .skeleton_connection_ops import *
 from .skeleton_drawing_ops import *
 from .skeleton_geometry_ops import *

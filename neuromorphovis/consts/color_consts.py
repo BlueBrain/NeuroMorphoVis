@@ -24,6 +24,7 @@ __maintainer__ = "Marwan Abdellah"
 __email__ = "marwan.abdellah@epfl.ch"
 __status__ = "Production"
 
+
 # Blender imports
 from mathutils import Vector
 
@@ -55,6 +56,9 @@ class Color:
 
     # Gray
     GRAY = Vector((0.5, 0.5, 0.5))
+
+    # Matt black
+    MATT_BLACK = Vector((0.1, 0.1, 0.1))
 
     # Black
     BLACK = Vector((0.0, 0.0, 0.0))

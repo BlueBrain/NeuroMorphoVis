@@ -71,10 +71,11 @@ def import_shader(shader_name):
 ####################################################################################################
 def create_shadow_material(name,
                            color=nmv.consts.Color.WHITE):
-    """
-    Creates a material with shadow. This requires creating two light sources if they don't exist
+    """Creates a material with shadow. This requires creating two light sources if they don't exist
     in the scene.
+
     This function imports the shadow-material from the materials library and updates its parameters.
+
     :param name:
         Material name.
     :param color:
@@ -138,8 +139,7 @@ def create_shadow_material(name,
 ####################################################################################################
 def create_super_electron_light_material(name,
                                          color=nmv.consts.Color.WHITE):
-    """
-    Creates a light electron shader.
+    """Creates a light electron shader.
 
     :param name:
         Material name
@@ -179,8 +179,7 @@ def create_super_electron_light_material(name,
 ####################################################################################################
 def create_super_electron_dark_material(name,
                                         color=nmv.consts.Color.WHITE):
-    """
-    Creates a light electron shader.
+    """Creates a light electron shader.
 
     :param name:
         Material name
@@ -220,8 +219,7 @@ def create_super_electron_dark_material(name,
 ####################################################################################################
 def create_flat_material(name,
                          color=nmv.consts.Color.WHITE):
-    """
-    Creates a flat shader.
+    """Creates a flat shader.
 
     :param name:
         Material name
@@ -261,8 +259,7 @@ def create_flat_material(name,
 ####################################################################################################
 def create_electron_light_material(name,
                                    color=nmv.consts.Color.WHITE):
-    """
-    Creates a light electron shader.
+    """Creates a light electron shader.
 
     :param name:
         Material name
@@ -302,8 +299,7 @@ def create_electron_light_material(name,
 ####################################################################################################
 def create_electron_dark_material(name,
                                   color=nmv.consts.Color.WHITE):
-    """
-    Creates a light electron shader.
+    """Creates a light electron shader.
 
     :param name:
         Material name
@@ -345,8 +341,7 @@ def create_lambert_ward_material(name,
                                  color=nmv.consts.Color.WHITE,
                                  specular=(1, 1, 1),
                                  alpha=0.0):
-    """
-    Creates a a texture material.
+    """Creates a a texture material.
 
     :param name:
         Material name.
@@ -359,6 +354,13 @@ def create_lambert_ward_material(name,
     :return:
         A reference to the material.
     """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Set the current rendering engine to Blender
+    if not current_scene.render.engine == 'BLENDER_RENDER':
+        current_scene.render.engine = 'BLENDER_RENDER'
 
     # If no light sources in the scene, then create two sources one towards the top and the
     # other one towards the bottom
@@ -401,8 +403,7 @@ def create_lambert_ward_material(name,
 ####################################################################################################
 def create_glossy_material(name,
                            color=nmv.consts.Color.WHITE):
-    """
-    Creates a glossy shader.
+    """Creates a glossy shader.
 
     :param name:
         Material name
@@ -438,8 +439,7 @@ def create_glossy_material(name,
 ####################################################################################################
 def create_glossy_bumpy_material(name,
                                  color=nmv.consts.Color.WHITE):
-    """
-    Creates a glossy bumpy shader.
+    """Creates a glossy bumpy shader.
 
     :param name:
         Material name
