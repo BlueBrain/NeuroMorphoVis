@@ -749,8 +749,7 @@ class SkeletonBuilder:
     def draw_morphology_as_connected_sections(self,
                                               bevel_object=None,
                                               repair_morphology=False):
-        """
-        Reconstructs and draws the morphology as a series of connected sections.
+        """Reconstruct and draw the morphology as a series of connected sections.
 
         :param bevel_object:
             A bevel object used to scale the radii of the sections.
@@ -761,32 +760,16 @@ class SkeletonBuilder:
         """
 
         # Verify the connectivity of the arbors of the morphology to the soma
-        # nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
-
-        # Ensure the connection between the arbors and the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
-        # Primary and secondary branching
-        if self.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+        # Update the branching
+        nmv.skeleton.ops.update_skeleton_branching(
+            self.morphology, self.options.morphology.branching)
 
-            # Label the primary and secondary sections based on angles
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-        else:
-
-            # Label the primary and secondary sections based on radii
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
-
-        # Resample the morphology skeleton, if the repair is required
+        # Re-sample the morphology skeleton, if the repair is required
         if repair_morphology:
-
-            # Resample the sections
             nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.resample_sections])
+                *[self.morphology, nmv.skeleton.ops.resample_sections])
 
         # Update the branching orders
         nmv.skeleton.ops.update_branching_order_section(self.morphology.axon)
@@ -1024,9 +1007,10 @@ class SkeletonBuilder:
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self):
-        """
-        This function draws the morphological skeleton
-        :return A list of all the drawn morphology objects.
+        """Reconstruct and draw the morphological skeleton using poly-lines.
+
+        :return
+            A list of all the drawn morphology objects including the soma and arbors.
         """
 
         # This list has all the created and drawn objects that compose the morphology.
@@ -1100,10 +1084,13 @@ class SkeletonBuilder:
         # Draw the soma as a sphere object
         if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
 
-            # Draw the soma
+            # Draw the soma sphere
             soma_sphere = self.draw_soma_sphere()
 
-            # Add the bevel object to the morphology objects
+            # Smooth shade the sphere to look nice
+            nmv.mesh.ops.shade_smooth_object(soma_sphere)
+
+            # Add the soma sphere to the morphology objects to keep track on it
             morphology_objects.append(soma_sphere)
 
         # Or as a reconstructed profile using the soma builder
@@ -1112,12 +1099,11 @@ class SkeletonBuilder:
             # Create a soma builder object
             soma_builder_object = nmv.builders.SomaBuilder(self.morphology, self.options)
 
-            # Reconstruct the three-dimensional profile of the soma mesh without applying the
-            # default shader to it, since we need to use the shader specified in the morphology
-            # options
+            # Reconstruct the three-dimensional profile of the soma mesh without applying the default shader to it,
+            # since we need to use the shader specified in the morphology options
             soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 
-            # Apply the shader given in the morphology options
+            # Apply the shader given in the morphology options, not the one in the soma toolbox
             nmv.shading.set_material_to_object(soma_mesh, self.soma_materials[0])
 
             # Add the soma mesh to the morphology objects

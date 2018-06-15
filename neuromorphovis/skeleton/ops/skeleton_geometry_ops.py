@@ -477,6 +477,9 @@ def update_branching_order_section(section,
         update_branching_order_section(section=child_section, branching_order=branching_order + 1)
 
 
+
+
+
 ####################################################################################################
 # @simplify_morphology
 ####################################################################################################
