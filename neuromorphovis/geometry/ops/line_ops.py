@@ -143,7 +143,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    name='line',
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
-    the line .
+    the line.
 
     :param point1:
         Starting point of the line.
@@ -288,7 +288,7 @@ def draw_poly_line(poly_line_data,
     # Add the points along the poly-line
     # NOTE: add n-1 points to the array, becuase once the poly-line is created it has already one
     # point added.
-    # ('POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS')
+    # Options: ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS']
     poly_line_strip = line_data.splines.new('POLY')
     poly_line_strip.points.add(len(poly_line_data) - 1)
 
