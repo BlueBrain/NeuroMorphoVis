@@ -664,8 +664,16 @@ class SkeletonBuilder:
 
         # Re-sample the morphology skeleton, if the repair is required
         if repair_morphology:
+
+            # Remove the samples that intersect with the soma
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+
+
+            # Resample the sections
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_sections])
+
 
         # Verify the connectivity of the arbors of the morphology to the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)
