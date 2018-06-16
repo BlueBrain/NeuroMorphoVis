@@ -305,9 +305,7 @@ class ExtrusionBuilder:
                     material_list=self.apical_dendrite_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
-                    caps=caps,
-                    connect_to_soma=connect_to_soma_origin,
-                    bridge_to_soma=bridge_to_soma)
+                    caps=caps)
 
                 # Link it to the scene
                 apical_dendrite_mesh = bpy.data.meshes.new('apical_dendrite_mesh')
@@ -343,9 +341,7 @@ class ExtrusionBuilder:
                     material_list=self.basal_dendrites_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
-                    caps=caps,
-                    connect_to_soma=connect_to_soma_origin,
-                    bridge_to_soma=bridge_to_soma)
+                    caps=caps)
 
                 # Link it to the scene
                 basal_dendrite_mesh = bpy.data.meshes.new('dendrite_%d_mesh' % i)
@@ -360,6 +356,9 @@ class ExtrusionBuilder:
 
                 # Add the sections (tubes) of the basal dendrite to the list
                 arbors_objects.append(basal_dendrite_mesh_object)
+
+        # Return the list of meshes
+        return arbors_objects
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
@@ -377,9 +376,7 @@ class ExtrusionBuilder:
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
                 repair_morphology=True,
-                caps=caps,
-                connect_to_soma=connect_to_soma_origin,
-                bridge_to_soma=bridge_to_soma)
+                caps=caps)
 
             # Link it to the scene
             axon_mesh = bpy.data.meshes.new('axon_mesh')

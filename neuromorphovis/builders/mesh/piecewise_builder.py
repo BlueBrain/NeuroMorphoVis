@@ -214,8 +214,7 @@ class PiecewiseBuilder:
     def build_arbors(self,
                      bevel_object,
                      caps,
-                     connect_to_soma_origin,
-                     bridge_to_soma):
+                     roots_connection):
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
@@ -224,7 +223,7 @@ class PiecewiseBuilder:
             A given bevel object to scale the section at the different samples.
         :param caps:
             A flag to indicate whether the drawn sections are closed or not.
-        :param bridge_to_soma:
+        :param roots_connection:
             A flag to connect (for soma disconnected more) or disconnect (for soma bridging mode)
             the arbor to the soma origin.
             If this flag is set to True, this means that the arbor will be extended to the soma
@@ -271,8 +270,7 @@ class PiecewiseBuilder:
                     repair_morphology=True,
                     caps=caps,
                     sections_objects=apical_dendrite_objects,
-                    connect_to_soma=connect_to_soma_origin,
-                    bridge_to_soma=bridge_to_soma)
+                    roots_connection=roots_connection)
 
                 # Add a reference to the mesh object
                 self.morphology.apical_dendrite.mesh = apical_dendrite_objects[0]
@@ -300,8 +298,7 @@ class PiecewiseBuilder:
                     repair_morphology=True,
                     caps=caps,
                     sections_objects=basal_dendrite_objects,
-                    connect_to_soma=connect_to_soma_origin,
-                    bridge_to_soma=bridge_to_soma)
+                    roots_connection=roots_connection)
 
                 # Add a reference to the mesh object
                 self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
@@ -326,8 +323,7 @@ class PiecewiseBuilder:
                 repair_morphology=True,
                 caps=caps,
                 sections_objects=axon_objects,
-                connect_to_soma=connect_to_soma_origin,
-                bridge_to_soma=bridge_to_soma)
+                roots_connection=roots_connection)
 
             # Add a reference to the mesh object
             self.morphology.axon.mesh = axon_objects[0]
@@ -444,16 +440,13 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            bridge_to_soma = True
-            connect_to_soma_origin = False
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
         else:
-            bridge_to_soma = False
-            connect_to_soma_origin = True
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=True, connect_to_soma_origin=connect_to_soma_origin,
-            bridge_to_soma=bridge_to_soma)
+            bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
 
         # Close the caps
         for arbor_object in arbors_meshes:
@@ -474,16 +467,13 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            bridge_to_soma = True
-            connect_to_soma_origin = False
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
         else:
-            bridge_to_soma = False
-            connect_to_soma_origin = True
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=False, connect_to_soma_origin=connect_to_soma_origin,
-            bridge_to_soma=bridge_to_soma)
+            bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
 
         # Smooth and close the faces in one step
         for mesh in arbors_meshes:

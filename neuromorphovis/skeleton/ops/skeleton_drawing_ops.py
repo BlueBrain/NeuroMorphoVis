@@ -137,8 +137,7 @@ def extrude_connected_sections(section,
                                render_frame=False,
                                frame_destination=None,
                                camera=None,
-                               connect_to_soma=False,
-                               bridge_to_soma=False):
+                               roots_connection=nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:
@@ -200,9 +199,9 @@ def extrude_connected_sections(section,
 
     # Get a list of all the poly-line that corresponds to the given section
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
-        section=section, is_continuous=is_continuous, is_last_section=is_last_section,
-        fixed_radius=fixed_radius, transform=transform, process_terminals=repair_morphology,
-        connect_to_soma=True, bridge_to_soma=False)
+        section=section, roots_connection=roots_connection, is_continuous=is_continuous,
+        is_last_section=is_last_section,
+        process_section_terminals=repair_morphology)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_data)
@@ -264,7 +263,7 @@ def extrude_connected_sections(section,
             render_frame=render_frame,
             frame_destination=frame_destination,
             camera=camera,
-            connect_to_soma=connect_to_soma)
+            roots_connection=roots_connection)
 
 
 ####################################################################################################
