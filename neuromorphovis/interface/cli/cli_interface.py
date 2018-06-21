@@ -329,154 +329,7 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
     # connected to a single mesh object.
     neuron_mesh_objects = neuron_mesh_builder.reconstruct_mesh()
 
-    # Export the neuron mesh to different file formats
-    if cli_options.mesh.reconstruct_neuron_mesh:
 
-        # Update the file prefix
-        neuron_mesh_file_name = '%s' % cli_options.morphology.label
-
-        # A reference to the neuron mesh object as a SINGLE item
-        neuron_mesh_object = None
-
-        if len(neuron_mesh_objects) == 0:
-            print('Issue')
-
-        # If the list contains a single mesh object, then export it as it is
-        elif len(neuron_mesh_objects) == 1:
-
-            # Use the first object only
-            neuron_mesh_object = neuron_mesh_objects[0]
-
-        # Otherwise, group all the objects in a single object using a joint operation
-        else:
-
-            # Join all the meshes into a single mesh object
-            neuron_mesh_object = nmv.mesh.ops.join_mesh_objects(
-                neuron_mesh_objects, cli_options.morphology.label)
-
-        # Export the neuron mesh
-        nmv.file.export_mesh_object(neuron_mesh_object,
-                                    cli_options.io.meshes_directory,
-                                    neuron_mesh_file_name,
-                                    ply=cli_options.mesh.export_ply,
-                                    obj=cli_options.mesh.export_obj,
-                                    stl=cli_options.mesh.export_stl,
-                                    blend=cli_options.mesh.export_blend)
-
-    # Render a static frame of the reconstructed mesh
-    if cli_options.mesh.render:
-
-        # A reference to the bounding box that will be used for the rendering
-        bounding_box = None
-
-        # Compute the bounding box for a close up view
-        if cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=cli_options.mesh.close_up_dimensions)
-
-        # Compute the bounding box for a mid shot view
-        elif cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=cli_morphology)
-
-        # Render at a specific resolution
-        if cli_options.mesh.resolution_basis == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=cli_options.mesh.full_view_resolution,
-                image_name='MESH_FRONT_%s' % cli_morphology.label,
-                image_directory=cli_options.io.images_directory)
-
-        # Render at a specific scale factor
-        else:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_scale_factor=cli_options.mesh.resolution_scale_factor,
-                image_name='MESH_FRONT_%s' % cli_morphology.label,
-                image_directory=cli_options.io.images_directory)
-
-    # Render a 360 sequence
-    if cli_options.mesh.render_360:
-
-        # A reference to the bounding box that will be used for the rendering
-        bounding_box = None
-
-        # Compute the bounding box for a close up view
-        if cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=cli_options.mesh.close_up_dimensions)
-
-        # Compute the bounding box for a mid shot view
-        elif cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=cli_morphology)
-
-        # Compute a 360 bounding box to fit the arbors
-        bounding_box_360 = nmv.bbox.compute_360_bounding_box(
-            bounding_box, cli_morphology.soma.centroid)
-
-        # Create a specific directory for this mesh
-        output_directory = '%s/%s_mesh_360' % (cli_options.io.sequences_directory,
-                                               cli_options.morphology.label)
-        nmv.file.ops.clean_and_create_directory(output_directory)
-
-        # Render 360
-        for i in range(360):
-
-            # Set the frame name
-            image_name = '%s/%s' % (output_directory, '{0:05d}'.format(i))
-
-            # Render at a specific resolution
-            if cli_options.mesh.resolution_basis == \
-                    nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-                # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle(
-                    mesh_objects=neuron_mesh_objects,
-                    angle=i,
-                    bounding_box=bounding_box_360,
-                    camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_resolution=cli_options.mesh.full_view_resolution,
-                    image_name=image_name)
-
-            # Render at a specific scale factor
-            else:
-
-                # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
-                    mesh_objects=neuron_mesh_objects,
-                    angle=i,
-                    bounding_box=bounding_box_360,
-                    camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_scale_factor=cli_options.mesh.resolution_scale_factor,
-                    image_name=image_name)
 
 
 ####################################################################################################
@@ -541,8 +394,8 @@ if __name__ == "__main__":
     if arguments.render_neuron_mesh or arguments.render_neuron_mesh_360 or arguments.reconstruct_neuron_mesh:
 
         # Neuron mesh reconstruction and visualization
-        proceed_neuron_mesh_reconstruction_visualization(cli_morphology=cli_morphology,
-            cli_options=cli_options)
+        proceed_neuron_mesh_reconstruction_visualization(
+            cli_morphology=cli_morphology, cli_options=cli_options)
     exit(0)
 
     # Reconstruct the morphology skeleton

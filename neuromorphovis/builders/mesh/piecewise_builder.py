@@ -32,6 +32,7 @@ import bpy
 
 # Internal modules
 import neuromorphovis as nmv
+import neuromorphovis.bbox
 import neuromorphovis.builders
 import neuromorphovis.consts
 import neuromorphovis.enums
@@ -42,6 +43,7 @@ import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
 import neuromorphovis.morphologies
+import neuromorphovis.rendering
 
 
 ####################################################################################################
@@ -673,21 +675,163 @@ class PiecewiseBuilder:
         if self.options.mesh.global_coordinates:
             nmv.logger.header('Transforming to global coordinates')
 
-            # Arbor mesh
-            for mesh_object in self.arbors_meshes:
-                print(mesh_object)
-                nmv.skeleton.ops.transform_to_global_coordinates(mesh_object=mesh_object,
-                    blue_config=self.options.morphology.blue_config,
-                    gid=self.options.morphology.gid)
+            for scene_object in bpy.context.scene.objects:
+                if scene_object.type == 'MESH':
+                    nmv.skeleton.ops.transform_to_global_coordinates(
+                        mesh_object=scene_object, blue_config=self.options.morphology.blue_config,
+                        gid=self.options.morphology.gid)
 
-            return
-            # Soma mesh
-            nmv.skeleton.ops.transform_to_global_coordinates(
-                mesh_object=self.soma_mesh,
-                blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid)
+    ################################################################################################
+    # @save_mesh
+    ################################################################################################
+    def save_mesh(self):
 
-            return
+        nmv.logger.header('Saving mesh')
+
+        # Update the file prefix
+        neuron_mesh_file_name = '%s' % self.options.morphology.label
+
+        meshes = []
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'MESH':
+
+                # Add the object to the list
+                meshes.append(scene_object)
+
+        # Get all the mesh objects in the scene
+        neuron_mesh = nmv.mesh.ops.join_mesh_objects(
+            mesh_list=meshes, name=neuron_mesh_file_name)
+
+        # Export the neuron mesh
+        nmv.file.export_mesh_object(neuron_mesh, self.options.io.meshes_directory,
+            neuron_mesh_file_name, ply=self.options.mesh.export_ply,
+            obj=self.options.mesh.export_obj, stl=self.options.mesh.export_stl,
+            blend=self.options.mesh.export_blend)
+
+    ################################################################################################
+    # @render_mesh
+    ################################################################################################
+    def render_mesh(self):
+
+        # Compute the bounding box for a close up view
+        if self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+
+            # Compute the bounding box for a close up view
+            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=self.options.mesh.close_up_dimensions)
+
+        # Compute the bounding box for a mid shot view
+        elif self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+
+            # Compute the bounding box for the available meshes only
+            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+        # Compute the bounding box for the wide shot view that correspond to the whole morphology
+        else:
+
+            # Compute the full morphology bounding box
+            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=self.morphology)
+
+        # Render at a specific resolution
+        if self.options.mesh.resolution_basis == nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+
+            # Render the image
+            nmv.rendering.NeuronMeshRenderer.render(bounding_box=bounding_box,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_resolution=self.options.mesh.full_view_resolution,
+                image_name='MESH_FRONT_%s' % self.morphology.label,
+                image_directory=self.options.io.images_directory)
+
+        # Render at a specific scale factor
+        else:
+
+            # Render the image
+            nmv.rendering.NeuronMeshRenderer.render_to_scale(bounding_box=bounding_box,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_scale_factor=self.options.mesh.resolution_scale_factor,
+                image_name='MESH_FRONT_%s' % self.morphology.label,
+                image_directory=self.options.io.images_directory)
+
+    ################################################################################################
+    # @render_mesh_360
+    ################################################################################################
+    def render_mesh_360(self):
+
+        # Update the file prefix
+        neuron_mesh_file_name = '%s' % self.options.morphology.label
+
+        meshes = []
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'MESH':
+
+                # Add the object to the list
+                meshes.append(scene_object)
+
+        # Get all the mesh objects in the scene
+        neuron_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=meshes, name=neuron_mesh_file_name)
+
+        # Render a 360 sequence
+        if self.options.mesh.render_360:
+
+            # A reference to the bounding box that will be used for the rendering
+            bounding_box = None
+
+            # Compute the bounding box for a close up view
+            if self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+
+                # Compute the bounding box for a close up view
+                bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                    extent=self.options.mesh.close_up_dimensions)
+
+            # Compute the bounding box for a mid shot view
+            elif self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+
+                # Compute the bounding box for the available meshes only
+                bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+            # Compute the bounding box for the wide shot view that correspond to the whole morphology
+            else:
+
+                # Compute the full morphology bounding box
+                bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                    morphology=self.morphology)
+
+            # Compute a 360 bounding box to fit the arbors
+            bounding_box_360 = nmv.bbox.compute_360_bounding_box(bounding_box,
+                self.morphology.soma.centroid)
+
+            # Create a specific directory for this mesh
+            output_directory = '%s/%s_mesh_360' % (
+                self.options.io.sequences_directory, self.options.morphology.label)
+            nmv.file.ops.clean_and_create_directory(output_directory)
+
+            # Render 360
+            for i in range(360):
+
+                # Set the frame name
+                image_name = '%s/%s' % (output_directory, '{0:05d}'.format(i))
+
+                # Render at a specific resolution
+                if self.options.mesh.resolution_basis == \
+                        nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+
+                    # Render the image
+                    nmv.rendering.NeuronMeshRenderer.render_at_angle(
+                        mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
+                        camera_view=nmv.enums.Camera.View.FRONT_360,
+                        image_resolution=self.options.mesh.full_view_resolution,
+                        image_name=image_name)
+
+                # Render at a specific scale factor
+                else:
+
+                    # Render the image
+                    nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
+                        mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
+                        camera_view=nmv.enums.Camera.View.FRONT_360,
+                        image_scale_factor=self.options.mesh.resolution_scale_factor,
+                        image_name=image_name)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -724,6 +868,12 @@ class PiecewiseBuilder:
         # Adding spines
         self.add_spines()
 
+        # Render a static frame for the mesh
+        self.render_mesh()
+
+        # Save the mesh to file
+        self.save_mesh()
+
         # Add nucleus
         # self.add_nucleus()
 
@@ -731,9 +881,9 @@ class PiecewiseBuilder:
         # self.decimate_neuron_mesh()
 
         # Connecting all the objects together into a single object
-        for scene_object in bpy.context.scene.objects:
-            if scene_object.type == 'MESH':
-                self.arbors_meshes.append(scene_object)
+        #for scene_object in bpy.context.scene.objects:
+        #    if scene_object.type == 'MESH':
+        #        self.arbors_meshes.append(scene_object)
 
 
 
@@ -775,5 +925,6 @@ class PiecewiseBuilder:
 
         return self.arbors_meshes
 
-    def save_mesh(self):
-        pass
+
+
+

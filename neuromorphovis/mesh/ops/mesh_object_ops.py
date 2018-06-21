@@ -550,6 +550,14 @@ def join_mesh_objects(mesh_list,
         A joint mesh.
     """
 
+    # If the input list does not contain any meshes, return None
+    if len(mesh_list) == 0:
+        return None
+
+    # If the input list contains only one mesh, return a reference to it
+    if len(mesh_list) == 1:
+        return mesh_list[1]
+
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
 
