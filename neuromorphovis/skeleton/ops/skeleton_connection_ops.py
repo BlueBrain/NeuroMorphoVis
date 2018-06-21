@@ -669,6 +669,31 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         nmv.logger.detail('NOTE: The basal dendrite [%d] @ section [%d] is connected to the soma' %
                           (i_basal_dendrite, basal_dendrite.id))
 
+    for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
+
+        # Verify if the axon intersects with the apical dendrite
+        if nmv.skeleton.ops.dendrite_intersects_apical_dendrite(
+                dendrite=basal_dendrite,
+                apical_dendrite=morphology.apical_dendrite,
+                soma_radius=morphology.soma.mean_radius):
+
+            # Mark the basal dendrite connected to the soma
+            basal_dendrite.connected_to_soma = False
+
+            continue
+
+        # Is the basal dendrite intersecting with another basal dendrite !
+        # NOTE: The intersection function returns a positive result if this input basal
+        # dendrite is intersecting with another basal dendrite with largest radius
+        if nmv.skeleton.ops.basal_dendrite_intersects_basal_dendrite(
+                dendrite=basal_dendrite, dendrites=morphology.dendrites,
+                soma_radius=morphology.soma.mean_radius):
+
+            # Mark the basal dendrite connected to the soma
+            basal_dendrite.connected_to_soma = False
+
+            continue
+
 
 ################################################################################################
 # @update_arbors_connection_to_soma
