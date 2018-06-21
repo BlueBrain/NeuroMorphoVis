@@ -350,10 +350,6 @@ def set_color_options(layout,
     color_bw_row.prop(scene, 'ColorArborBlackAndWhite')
     color_bw_row.enabled = False
 
-    # Homogeneous morphology coloring
-    homogeneous_color_row = layout.row()
-    homogeneous_color_row.prop(scene, 'MorphologyHomogeneousColor')
-
     # Assign different colors to each part of the skeleton by part
     if scene.ColorArborByPart:
         options.morphology.axon_color = Vector((-1, 0, 0))
@@ -369,6 +365,10 @@ def set_color_options(layout,
 
     # One color per component
     else:
+
+        # Homogeneous morphology coloring
+        homogeneous_color_row = layout.row()
+        homogeneous_color_row.prop(scene, 'MorphologyHomogeneousColor')
 
         # If the homogeneous color flag is set
         if scene.MorphologyHomogeneousColor:

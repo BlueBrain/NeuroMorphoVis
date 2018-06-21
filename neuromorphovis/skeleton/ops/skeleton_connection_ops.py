@@ -201,6 +201,13 @@ def label_primary_and_secondary_sections_based_on_angles(section):
     # Get the vector of the parent section based on its last two samples
     parent_vector = (section.samples[-2].point - section.samples[-1].point).normalized()
 
+    # Compute the parent vector length
+    parent_vector_length = (section.samples[-2].point - section.samples[-1].point).length
+
+    # Ensure that the parent vector is not zero
+    if parent_vector_length < 0.0001:
+        parent_vector = (section.samples[-3].point - section.samples[-1].point).normalized()
+
     # Store a reference to the primary child
     primary_child = None
 
@@ -337,6 +344,7 @@ def find_nearest_apical_dendritic_sample_to_axon(morphology,
         The nearest sample along the apical dendrite to the axon initial sample.
     """
 
+    # Ensure the presence of the apical dendrite
     if morphology.apical_dendrite is None:
 
         # If there is no apical dendrite, then return None!
