@@ -27,6 +27,7 @@ __status__      = "Production"
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.enums
+import neuromorphovis.skeleton
 
 
 ####################################################################################################

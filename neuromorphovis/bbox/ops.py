@@ -230,6 +230,7 @@ def compute_scene_bounding_box_for_meshes():
     objects = []
     for scene_object in bpy.data.objects:
         if scene_object.type in ['MESH']:
+            if 'spines' in scene_object.name: continue
             objects.append(scene_object)
 
     # Returns the bounding box of a group of objects

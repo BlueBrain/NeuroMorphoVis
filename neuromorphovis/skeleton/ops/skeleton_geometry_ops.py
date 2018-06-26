@@ -351,9 +351,8 @@ def taper_section(section):
 # @zigzag_section
 ####################################################################################################
 def zigzag_section(section,
-                   delta=0.75):
+                   delta=0.25):
     """Zigzag a given section by adding abrupt changes in its geometry.
-
     This function is only used for artistic purposes as it changes the structure of the
     original morphology.
 

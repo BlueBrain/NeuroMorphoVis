@@ -734,10 +734,12 @@ class PiecewiseBuilder:
                 morphology=self.morphology)
 
         # Render at a specific resolution
-        if self.options.mesh.resolution_basis == nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+        if self.options.mesh.resolution_basis == \
+                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
             # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(bounding_box=bounding_box,
+            nmv.rendering.NeuronMeshRenderer.render(
+                bounding_box=bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_resolution=self.options.mesh.full_view_resolution,
                 image_name='MESH_FRONT_%s' % self.morphology.label,
@@ -747,7 +749,8 @@ class PiecewiseBuilder:
         else:
 
             # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(bounding_box=bounding_box,
+            nmv.rendering.NeuronMeshRenderer.render_to_scale(
+                bounding_box=bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_scale_factor=self.options.mesh.resolution_scale_factor,
                 image_name='MESH_FRONT_%s' % self.morphology.label,

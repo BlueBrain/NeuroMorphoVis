@@ -143,6 +143,9 @@ def parse_rendering_configuration(configuration_file):
 
                 # Get a new line
                 index += 1
+
+                if index > len(config_data) - 1:
+                    break
                 line = config_data[index]
 
                 # GID

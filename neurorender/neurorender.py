@@ -43,6 +43,7 @@ import neuromorphovis as nmv
 import neuromorphovis.scene
 import neuromorphovis.rendering
 import neuromorphovis.enums
+import neuromorphovis.bbox
 
 
 ################################################################################
@@ -71,6 +72,7 @@ if __name__ == "__main__":
         neuron_objects = styling.draw_spheres(neurons, styles)
     else:
         print('Importing [%d] neurons' % len(neurons))
+
         # Load the neurons into the scene
         neuron_objects = loading.load_neurons_membrane_meshes_into_scene(
             args.input_directory, neurons, args.input_type, args.transform)
@@ -80,18 +82,19 @@ if __name__ == "__main__":
 
     # Setup the camera
     camera = nmv.rendering.Camera('%s_camera' % args.prefix)
+    bb = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
     # Render the scene
     print('* Rendering')
     camera.render_scene(
-        bounding_box=None,
+        bounding_box=bb,
         camera_view=nmv.enums.Camera.View.SIDE,
         camera_projection=nmv.enums.Camera.Projection.get_enum(args.projection),
         image_resolution=int(args.resolution),
         image_name='%s/%s_SIDE' % (args.output_directory, args.prefix))
 
     camera.render_scene(
-        bounding_box=None,
+        bounding_box=bb,
         camera_view=nmv.enums.Camera.View.FRONT,
         camera_projection=nmv.enums.Camera.Projection.get_enum(args.projection),
         image_resolution=int(args.resolution),
