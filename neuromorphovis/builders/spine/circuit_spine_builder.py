@@ -114,10 +114,11 @@ class CircuitSpineBuilder:
         # Get a copy of the template and update it
         spine_object = nmv.scene.ops.duplicate_object(spine_template, index, link_to_scene=False)
 
+        # Compute the spine extent
+        spine_extent = (spine.post_synaptic_position - spine.pre_synaptic_position).length
+
         # Scale the spine
-        nmv.scene.ops.scale_object_uniformly(
-            spine_object, random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR,
-                nmv.consts.Spines.MAX_SCALE_FACTOR))
+        nmv.scene.ops.scale_object_uniformly(spine_object, spine.size)
 
         # Translate the spine to the post synaptic position
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
@@ -170,6 +171,12 @@ class CircuitSpineBuilder:
 
         spines_list = list()
 
+        # Get a BBP morphology object loaded from the circuit
+        gids_set = circuit.gids('a' + str(self.morphology.gid))
+        loaded = circuit.load_morphologies(gids_set, circuit.Coordinates.local)
+        uris_set = circuit.morphology_uris(gids_set)
+        morphology = brain.neuron.Morphology(uris_set[0])
+
         # Load the synapses from the file
         number_spines = len(synapses)
         for i, synapse in enumerate(synapses):
@@ -177,7 +184,7 @@ class CircuitSpineBuilder:
             # Show progress
             nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
 
-            """ Ignore soma synapses """
+            # Ignore soma synapses
             # If the post-synaptic section id is zero, then revoke it, and continue
             post_section_id = synapse.post_section()
             if post_section_id == 0:
@@ -185,7 +192,7 @@ class CircuitSpineBuilder:
 
             # Get the pre-and post-positions in the global coordinates
             pre_position = synapse.pre_surface_position()
-            post_position = synapse.post_surface_position()
+            post_position = synapse.post_center_position()
 
             # Transform the spine positions to the circuit coordinates
             pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
@@ -200,7 +207,8 @@ class CircuitSpineBuilder:
             spine = nmv.skeleton.Spine()
             spine.post_synaptic_position = post_synaptic_position
             spine.pre_synaptic_position = pre_synaptic_position
-            spine.size = 1.0
+            sample = morphology.section(synapse.post_section()).samples()[synapse.post_segment()+ 1]
+            spine.size = sample[3] * 0.5
             spines_list.append(spine)
 
         # Load the synapses from the file
