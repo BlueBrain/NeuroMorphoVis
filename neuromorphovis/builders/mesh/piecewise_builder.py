@@ -672,7 +672,8 @@ class PiecewiseBuilder:
         """
 
         # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
+        #if self.options.mesh.global_coordinates:
+        if False:
             nmv.logger.header('Transforming to global coordinates')
 
             for scene_object in bpy.context.scene.objects:

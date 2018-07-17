@@ -58,7 +58,7 @@ def load_spine(spines_directory,
     """
 
     # Load the spine into a blender object
-    spine_object = nmv.file.import_obj_file( spines_directory, spine_file)
+    spine_object = nmv.file.import_obj_file(spines_directory, spine_file)
 
     # Return a reference to it
     return spine_object
@@ -118,21 +118,21 @@ def emanate_a_spine(spines_list,
     """
 
     # Select a random spine from the spines list
-    spine_template = random.choice(spines_list)
+    spine_template = spines_list[0] # random.choice(spines_list)
 
     # Get a copy of the template and update it
     spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier, link_to_scene=False)
 
     # Scale the spine
-    nmv.scene.ops.scale_object_uniformly(spine_object,
-        random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR, nmv.consts.Spines.MAX_SCALE_FACTOR))
+    #nmv.scene.ops.scale_object_uniformly(spine_object,
+    #    random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR, nmv.consts.Spines.MAX_SCALE_FACTOR))
 
     # Translate the spine to the post synaptic position
-    nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
+    # nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
 
     # Rotate the spine towards the pre-synaptic point
-    nmv.scene.ops.rotate_object_towards_target(
-        spine_object, post_synaptic_position, pre_synaptic_position)
+    #nmv.scene.ops.rotate_object_towards_target(
+    #    spine_object, post_synaptic_position, pre_synaptic_position)
 
     # Return a reference to the spine
     return spine_object
@@ -210,7 +210,7 @@ def build_circuit_spines(morphology,
         if post_section_id == 0:
                 continue
         # Get the pre-and post-positions in the global coordinates
-        pre_position = synapse.pre_surface_position()
+        pre_position = synapse.pre_center_position()
         post_position = synapse.post_center_position()
 
         # Transform the spine positions to the circuit coordinates

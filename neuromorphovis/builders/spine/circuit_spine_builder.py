@@ -39,7 +39,7 @@ import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
-
+import neuromorphovis.geometry
 
 ####################################################################################################
 # @RandomSpineBuilder
@@ -123,8 +123,9 @@ class CircuitSpineBuilder:
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
 
         # Rotate the spine towards the pre-synaptic point
+        # We assume that the normal is heading towards to -Z axis for computing the rotation
         nmv.scene.ops.rotate_object_towards_target(
-            spine_object, spine.post_synaptic_position, spine.pre_synaptic_position)
+            spine_object, Vector((0, 0, -1)), spine.pre_synaptic_position)
 
         # Return a reference to the spine
         return spine_object
@@ -183,8 +184,8 @@ class CircuitSpineBuilder:
                 continue
 
             # Get the pre-and post-positions in the global coordinates
-            pre_position = synapse.pre_center_position()
-            post_position = synapse.post_center_position()
+            pre_position = synapse.pre_surface_position()
+            post_position = synapse.post_surface_position()
 
             # Transform the spine positions to the circuit coordinates
             pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))

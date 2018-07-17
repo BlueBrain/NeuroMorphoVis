@@ -1,0 +1,12 @@
+# Blender MTL File: 'spines-modeling-2.blend'
+# Material Count: 1
+
+newmtl sample
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.050822 0.365796 0.640000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.595745
+illum 2

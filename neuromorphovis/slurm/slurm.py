@@ -128,7 +128,7 @@ def create_batch_job_config_string(slurm_config):
     b += "#SBATCH --account=%s%s" % ("proj3", sl)
 
     # Reservation
-    b += "#SBATCH --reservation=%s%s" % ("viz_team", sl)
+    # b += "#SBATCH --reservation=%s%s" % ("viz_team", sl)
 
     """ Logs """
     std_out = "%s/slurm-stdout_%s.log" % (slurm_config.logs_directory, str(slurm_config.job_number))

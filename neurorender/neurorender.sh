@@ -23,11 +23,11 @@ BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
 
 # Rendering configuration file
 # RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
-RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/mtypes/volumes/mtype-29-30/Exemplars_mc2_Column_55.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/RANDOM_BOX_mc2_Column_100.00p.config'
 
 # The input directory where the meshes exist
 # MESHES_DIRECTORY='/data/neurorender-data/meshes'
-MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/mtypes/surface-1/meshes'
+MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/surface/meshes'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
@@ -37,7 +37,7 @@ INPUT_TYPE='blend'
 
 # The output directory where the scene and images will be generated
 # OUTPUT_DIRECTORY='/data/neurorender-data/output'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/mtypes/volumes/mtype-29-30/'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/'
 
 # Style file
 STYLE_FILE='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/2.76/scripts/addons/NeuroMorphoVis/neurorender/style.config'
@@ -49,7 +49,7 @@ PROJECTION='orthographic'
 NUMBER_SAMPLES=32
 
 # Base image resolution
-IMAGE_RESOLUTION=5000
+IMAGE_RESOLUTION=10000
 
 # Use spheres for representative rendering
 USE_SPHERES='no'
