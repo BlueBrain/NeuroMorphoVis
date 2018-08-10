@@ -6,7 +6,7 @@ NeuroMorphoVis is an interactive, extensible and cross-platform framework for bu
 
 The framework is based on Blender 2.78c and is free to download and the python bindings of the HDF5 library. 
 
-The initial release of the software will be available by May 2018.
+The initial release of the software will be available following to the Approval of EPFL. If you wish to get the source code, you can write an email to marwan.abdellah@epfl.ch, CCing felix.schuermann@epfl.ch and henry.makram@epfl.ch, explaining why do you need NeuroMorphoVis for. Then we can give you access to the current repository or send you a copy of source code in a .zip file. 
 
 ![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/neuromorphp-vis-interface.png)
 
