@@ -46,8 +46,10 @@ class Sample:
                  point,
                  radius,
                  id,
+                 type,
                  morphology_id=-1,
-                 section=None):
+                 section=None,
+                 parent_id=-1):
         """Constructor
 
         :param point:
@@ -56,6 +58,8 @@ class Sample:
             Sample radius in microns.
         :param id:
             Sample index along the section from 0 to N-1 if the section has N samples.
+        :param type:
+            Sample type.
         :param morphology_id:
             Sample index as reported in the morphology file.
         :param section:
@@ -77,6 +81,12 @@ class Sample:
 
         # The section, where the sample belongs (updated after the section construction)
         self.section = section
+
+        # Sample type
+        self.type = type
+
+        # The index of the parent sample, required for the connectivity of SWC files
+        self.parent_id = parent_id
 
     ################################################################################################
     # @logger.log_data

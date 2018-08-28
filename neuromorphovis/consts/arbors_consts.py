@@ -59,3 +59,50 @@ class Arbors:
     # The number of samples that will be used to extend a section from the root section to soma
     N_SAMPLES_ROOT_TO_ORIGIN = 5
 
+    # The index of the sample index in an SWC file
+    SWC_SAMPLE_INDEX_IDX = 0
+
+    # The index of the type of a sample in an SWC file
+    SWC_SAMPLE_TYPE_IDX = 1
+
+    # The index of the x-coordinates of a sample in an SWC file
+    SWC_SAMPLE_X_COORDINATES_IDX = 2
+
+    # The index of the y-coordinates of a sample in an SWC file
+    SWC_SAMPLE_Y_COORDINATES_IDX = 3
+
+    # The index of the z-coordinates of a sample in an SWC file
+    SWC_SAMPLE_Z_COORDINATES_IDX = 4
+
+    # The index of the radius of a sample in an SWC file
+    SWC_SAMPLE_RADIUS_IDX = 5
+
+    # The index of the parent index of a sample in an SWC file
+    SWC_SAMPLE_PARENT_INDEX_IDX = 6
+
+    # The index of a sample that has no parent in an SWC file
+    SWC_NO_PARENT_SAMPLE_TYPE = -1
+
+    # The index of an undefined samples in an SWC file
+    SWC_UNDEFINED_SAMPLE_TYPE = 0
+
+    # The index of a soma sample in an SWC file
+    SWC_SOMA_SAMPLE_TYPE = 1
+
+    # the index of an axon sample in an SWC file
+    SWC_AXON_SAMPLE_TYPE = 2
+
+    # The index of a basal dendrite sample in an SWC file
+    SWC_BASAL_DENDRITE_SAMPLE_TYPE = 3
+
+    # The index of an apical dendrite sample in an SWC file
+    SWC_APICAL_DENDRITE_SAMPLE_TYPE = 4
+
+    # The index of a fork point sample (bi- or tri-furcation)
+    SWC_FORK_POINT_SAMPLE_TYPE = 5
+
+    # The index of an end point sample in an SWC file
+    SWC_END_POINT_SAMPLE_TYPE = 6
+
+    # The index of a custom sample in an SWC file
+    SWC_CUSTOM_SAMPLE_TYPE = 7

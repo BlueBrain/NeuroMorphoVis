@@ -42,7 +42,6 @@ import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
-import neuromorphovis.morphologies
 
 
 ####################################################################################################

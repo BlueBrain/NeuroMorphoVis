@@ -35,11 +35,11 @@ class Section:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 id,
-                 parent_id,
-                 children_ids,
-                 samples,
-                 type):
+                 id=-1,
+                 parent_id=-1,
+                 children_ids=[],
+                 samples=None,
+                 type=None):
         """Constructor
 
         :param id:
@@ -67,8 +67,9 @@ class Section:
         self.samples = samples
 
         # Add a reference to the section as a member variable of the sample, for accessibility !
-        for sample in self.samples:
-            sample.section = self
+        if self.samples is not None:
+            for sample in self.samples:
+                sample.section = self
 
         # Section type: AXON (2), DENDRITE (3), APICAL_DENDRITE (4), or NONE
         self.type = type

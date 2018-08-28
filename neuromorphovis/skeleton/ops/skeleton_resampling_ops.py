@@ -110,7 +110,8 @@ def resample_sections(section,
 
             # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
             auxiliary_sample = nmv.skeleton.Sample(
-                point=sample_point, radius=sample_radius, id=-1, section=section)
+                point=sample_point, radius=sample_radius, id=-1, section=section,
+                type=section.samples[i].type)
 
             # Update the samples list
             section.samples.insert(i + 1, auxiliary_sample)
@@ -131,8 +132,9 @@ def resample_sections(section,
             sample_radius = (section.samples[i + 1].radius + section.samples[i].radius) * 0.5
 
             # Add the auxiliary sample, the id of the sample is set to -1
-            auxiliary_sample = nmv.skeleton.Sample(point=sample_point,
-                radius=sample_radius, id=-1, section=section)
+            auxiliary_sample = nmv.skeleton.Sample(
+                point=sample_point, radius=sample_radius, id=-1, section=section,
+                type=section.samples[i].type)
 
             # Update the samples list
             section.samples.insert(i + 1, auxiliary_sample)
@@ -186,7 +188,8 @@ def add_sample_at_section_center(section):
 
         # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
         auxiliary_sample = nmv.skeleton.Sample(
-            point=sample_position, radius=sample_radius, id=-1, morphology_id=-1, section=section)
+            point=sample_position, radius=sample_radius, id=-1, morphology_id=-1, section=section,
+            type=section.samples[0].type)
 
         # Add the auxiliary sample to the section
         section.samples.insert(1, auxiliary_sample)
@@ -442,7 +445,8 @@ def resample_section_front(section):
 
     # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
     auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, id=-1, section=section)
+        point=sample_position, radius=sample_radius, id=-1, section=section,
+        type=section.samples[0])
 
     # Insert the auxiliary sample just after the first sample
     section.samples.insert(1, auxiliary_sample)
@@ -497,7 +501,8 @@ def resample_section_rear(section):
 
     # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
     auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, id=-1, section=section)
+        point=sample_position, radius=sample_radius, id=-1, section=section,
+        type=section.samples[0].type)
 
     # Insert the auxiliary sample just after the first sample
     section.samples.insert(1, auxiliary_sample)
@@ -573,7 +578,8 @@ def resample_section_stem(section):
 
             # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
             auxiliary_sample = nmv.skeleton.Sample(
-                point=sample_point, radius=sample_radius, id=-1, section=section)
+                point=sample_point, radius=sample_radius, id=-1, section=section,
+                type=section.samples[i].type)
 
             # Update the samples list
             section.samples.insert(i + 1, auxiliary_sample)

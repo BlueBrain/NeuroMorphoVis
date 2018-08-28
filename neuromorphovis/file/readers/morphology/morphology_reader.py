@@ -27,11 +27,11 @@ import neuromorphovis.file
 # @read_h5_morphology
 ####################################################################################################
 def read_h5_morphology(h5_file):
-    """
-    Verifies if the given path is valid or not and then loads a .h5 morphology file.
+    """Verifies if the given path is valid or not and then loads a .h5 morphology file.
+
     If the path is not valid, this function returns None.
 
-    :param file_path: Path to the morphology file.
+    :param h5_file: Path to the H5 morphology file.
     :return: A morphology object or None if the path is not valid.
     """
 
@@ -55,19 +55,30 @@ def read_h5_morphology(h5_file):
 ####################################################################################################
 # @read_swc_morphology
 ####################################################################################################
-def read_swc_morphology(file_path):
-    """
-    Verifies if the given path is valid or not and then loads a .swc morphology file.
+def read_swc_morphology(swc_file):
+    """Verifies if the given path is valid or not and then loads a .swc morphology file.
+
     If the path is not valid, this function returns None.
 
-    :param file_path: Path to the morphology file.
-    :return: A morphology object or None if the path is not valid.
+    :param swc_file:
+        Path to the SWC morphology file.
+    :return:
+        Morphology object and True (if the morphology is loaded) or False (if the something is
+        wrong).
     """
 
-    # TODO: Update loading swc morphologies
+    # If the path is valid
+    if os.path.isfile(swc_file):
+
+        # Load the .h5 morphology
+        reader = nmv.file.readers.SWCReader(swc_file=swc_file)
+        morphology_object = reader.read_file()
+
+        # Return a reference to this morphology object
+        return morphology_object
 
     # Issue an error
-    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % file_path)
+    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % swc_file)
 
     # Otherwise, return None
     return None
@@ -77,12 +88,13 @@ def read_swc_morphology(file_path):
 # @read_morphology_from_file
 ####################################################################################################
 def read_morphology_from_file(options):
-    """
-    Loads a morphology object from file. This loader mainly supports .h5 or .swc file formats.
+    """Loads a morphology object from file. This loader mainly supports .h5 or .swc file formats.
 
-    :param options: A reference to the system options.
-    :return: Morphology object and True (if the morphology is loaded) or False (if the something is
-    wrong)
+    :param options:
+        A reference to the system options.
+    :return:
+        Morphology object and True (if the morphology is loaded) or False (if the something is
+        wrong).
     """
 
     # The morphology file path is available from the system options
@@ -92,12 +104,12 @@ def read_morphology_from_file(options):
     morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
 
     # If it is a .h5 file, use the h5 loader
-    if 'h5' in morphology_extension:
+    if '.h5' in morphology_extension:
 
         # Load the .h5 file
         morphology_object = read_h5_morphology(morphology_file_path)
 
-    elif 'swc' in morphology_extension:
+    elif '.swc' in morphology_extension:
 
         # Load the .swc file
         morphology_object = read_swc_morphology(morphology_file_path)
@@ -130,9 +142,7 @@ def load_from_circuit(options):
 
     morphology_object = None
 
-    import neuromorphovis.morphologies.readers
-
-    morphology_object = neuromorphovis.file.BBPReader.load_morphology_from_circuit(
+    morphology_object = nmv.file.BBPReader.load_morphology_from_circuit(
         blue_config=options.morphology.blue_config, gid=options.morphology.gid)
 
     # If the morphology object is None, return False

@@ -16,7 +16,19 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
+# Blender imports
+from mathutils import Vector
 
+# Internal imports
+import neuromorphovis as nmv
+import neuromorphovis.consts
+import neuromorphovis.file
+import neuromorphovis.skeleton
+
+
+####################################################################################################
+# @SWCReader
+####################################################################################################
 class SWCReader:
 
     ################################################################################################
@@ -33,5 +45,533 @@ class SWCReader:
         # Set the path to the given h5 file
         self.morphology_file = swc_file
 
+        # A list of all the samples parsed from the morphology file, to be used as a lookup table
+        #  to construct the morphology skeleton directly
+        # Each sample in this list has the following structure:
+        # [0] The index of the sample
+        # [1] The type of the sample
+        # [2] Sample x-coordinates
+        # [3] Sample y-coordinates
+        # [4] Sample z-coordinates
+        # [5] Sample radius
+        # [6] The index of the parent sample
+        self.samples_list = list()
+
+    ################################################################################################
+    # @read_samples
+    ################################################################################################
+    def read_samples(self):
+        """Reads an SWC files and returns a list of all the samples in the file"""
+
+        # A list of all the data of the samples that are in the morphology file
+        samples_list = []
+
+        # Open the file, read it line by line and store the result in list.
+        morphology_file = open(self.morphology_file, 'r')
+
+        # For each line in the morphology file
+        for line in morphology_file:
+
+            # Ignore lines with comments that have '#'
+            if '#' in line:
+                continue
+
+            # Extract the data from the line
+            data = line.strip('\n').split(' ')
+
+            # If unwanted spaces exit, remove them
+            for i in data:
+                if i == '':
+                    data.remove(i)
+
+            # Get the index
+            index = int(data[nmv.consts.Arbors.SWC_SAMPLE_INDEX_IDX])
+
+            # Get the branch type
+            sample_type = int(data[nmv.consts.Arbors.SWC_SAMPLE_TYPE_IDX])
+
+            # Get the X-coordinate
+            x = float(data[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX])
+
+            # Get the Y-coordinate
+            y = float(data[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX])
+
+            # Get the Z-coordinate
+            z = float(data[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX])
+
+            # Get the sample radius
+            radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
+
+            # Get the sample parent index
+            parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
+
+            # Add the sample to the list
+            self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+
+    ################################################################################################
+    # @get_samples_list_by_type
+    ################################################################################################
+    def get_samples_list_by_type(self,
+                                 sample_type):
+        """Gets a list of samples of a specific type from the list of morphological samples that
+        was constructed after reading the SWC file.
+
+        :param sample_type:
+            The type of samples, belonging to which branch.
+        :return:
+            A list of samples that are of specific type.
+        """
+
+        # A list of samples that are similar to the given type
+        samples_list = list()
+
+        # For each sample in the given samples list
+        for sample in self.samples_list:
+
+            # If the types are matching
+            if sample[1] == sample_type:
+
+                # Append the sample to the list
+                samples_list.append(sample)
+
+        # Return the list of samples
+        return samples_list
+
+    ################################################################################################
+    # @build_connected_paths
+    ################################################################################################
+    def build_soma(self,
+                   axons_arbors,
+                   basal_dendrites_arbors,
+                   apical_dendrites_arbors):
+
+        # Get the original profile points that are found in the SWC file
+        soma_samples = self.get_samples_list_by_type(nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE)
+
+        # Get the soma profile points (contour)
+        soma_profile_points = list()
+
+        # Get the soma center and radius from the soma samples
+        soma_centroid = Vector((0.0, 0.0, 0.0))
+        soma_radius = 0.0
+
+        for sample in soma_samples:
+
+            # If the sample has no parent (-1)
+            if sample[-1] == nmv.consts.Arbors.SWC_NO_PARENT_SAMPLE_TYPE:
+
+                # Get soma centroid
+                soma_centroid = Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
+                                        sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
+                                        sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
+
+                # Get soma radius
+                soma_radius = sample[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX]
+
+            # Otherwise, this is a profile point
+            else:
+
+                # Construct the profile point
+                soma_profile_point = Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
+                                             sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
+                                             sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
+
+                # Append the profile point to the list
+                soma_profile_points.append(soma_profile_point)
+
+        # Get the arbors profiles points, that represent the root sample of each arbor
+        soma_profile_points_on_arbors = list()
+
+        # Arbor points of the axons
+        if axons_arbors is not None:
+
+            # For each arbor
+            for arbor in axons_arbors:
+
+                # Get the initial sample along the arbor
+                soma_profile_point = arbor.samples[0]
+
+                # Append this point to the list
+                soma_profile_points_on_arbors.append(soma_profile_point)
+
+        # Arbor points of the apical dendrites
+        if apical_dendrites_arbors is not None:
+
+            # For each arbor
+            for arbor in apical_dendrites_arbors:
+
+                # Get the initial sample along the arbor
+                soma_profile_point = arbor.samples[0]
+
+                # Append this point to the list
+                soma_profile_points_on_arbors.append(soma_profile_point)
+
+        # Arbor points of the basal dendrites
+        if basal_dendrites_arbors is not None:
+
+            # For each arbor
+            for arbor in basal_dendrites_arbors:
+
+                # Get the initial sample along the arbor
+                soma_profile_point = arbor.samples[0]
+
+                # Append this point to the list
+                soma_profile_points_on_arbors.append(soma_profile_point)
+
+        # Construct the soma object
+        soma_object = neuromorphovis.skeleton.Soma(
+            centroid=soma_centroid, mean_radius=soma_radius,  profile_points=soma_profile_points,
+            arbors_profile_points=soma_profile_points_on_arbors)
+
+        # Return a reference to the soma object
+        return soma_object
+
+    ################################################################################################
+    # @build_connected_paths
+    ################################################################################################
+    @staticmethod
+    def build_connected_paths(samples_list):
+        """Constructs connected paths from a given list of samples. Each path is simply represented
+        by a list of indices that can be used later to query the actual data of each sample.
+
+        :param samples_list:
+            A list of samples that are supposedly belonging to a single branch type.
+        :return:
+            A list of all the connected paths that are formed from the given list of samples.
+        """
+
+        # A list of paths
+        paths_list = list()
+
+        # Number of samples in the input list
+        number_samples = len(samples_list)
+
+        # The index of the current sample
+        current_sample_index = 0
+
+        # Proceed if we have more samples
+        while current_sample_index < number_samples - 1:
+
+            # If this is a root sample with no parent, then ignore
+            if samples_list[current_sample_index][6] == -1:
+
+                # Increment the counter, these samples are consumed
+                current_sample_index = current_sample_index + 1
+
+                # These samples belong to the soma, they should be ignored
+                continue
+
+            # Construct a path here
+            path = list()
+
+            # Get the first sample along the section
+            current_sample = samples_list[current_sample_index]
+
+            # Add the parent sample, or the starting sample along the branch
+            path.append(current_sample[6])
+
+            # Increment the section of the current sample
+            current_sample_index = current_sample_index + 1
+
+            # Process the samples again
+            for i in range(current_sample_index, number_samples):
+
+                # If the parent index matches the current sample index
+                if samples_list[i][6] == samples_list[i - 1][0]:
+
+                    # Add this sample to the list
+                    path.append(samples_list[i][0])
+
+                    # Increment the sample index
+                    current_sample_index = current_sample_index + 1
+
+                else:
+
+                    # No more samples to add to the path, so append the path to the list
+                    paths_list.append(path)
+
+                    # break the 'for' loop
+                    break
+
+        # Return a list of all the paths constructed from the list
+        return paths_list
+
+    ################################################################################################
+    # @build_disconnected_sections_from_paths
+    ################################################################################################
+    @staticmethod
+    def build_sections_from_paths(paths_list,
+                                  samples_list,
+                                  section_type):
+        """Builds a list of disconnected sections from a list of paths list, where each path can be
+        composed of more than a single section.
+
+        :param paths_list:
+            A list of paths, where each path is composed of a list of indices that map to those
+            of the samples given by the samples_list.
+        :param samples_list:
+            A list of all the samples of the morephology skeleton.
+        :param section_type:
+            The type of the section.
+        :return:
+            A list of sections, however, they are not connected and must be processed to build
+            the tree of each arbor.
+        """
+
+        # Get a list of the starting samples of each path of the given paths
+        starting_samples = list()
+
+        # For each path in the list
+        for path in paths_list:
+
+            # Append the first sample to the list
+            starting_samples.append(path[0])
+
+        # Remove the duplicated samples from the starting samples
+        starting_samples = set(starting_samples)
+
+        # Sort the starting samples
+        starting_samples = sorted(starting_samples)
+
+        # A list of all the sections
+        sections_list = list()
+
+        # An arbitrary section index
+        section_index = 1
+
+        # For each path
+        for path in paths_list:
+
+            # Construct a list that accounts for the terminal points of the path
+            sections_terminals_list = list()
+
+            # Construct another list that contains the indices of the bifurcation samples
+            bifurcation_samples = list()
+
+            # For each starting sample
+            for starting_sample_index in starting_samples:
+
+                # If this sample is along the path
+                if starting_sample_index in path:
+
+                    # And also if this sample is not the first sample along the path
+                    if not starting_sample_index == path[0]:
+
+                        # Then this sample is a bifurcation sample, add it to the list
+                        bifurcation_samples.append(starting_sample_index)
+
+            # Construct the section samples terminals, add the first sample
+            sections_terminals_list.append(path[0])
+
+            # Add the bifurcation samples
+            for bifurcation_sample_index in bifurcation_samples:
+                sections_terminals_list.append(bifurcation_sample_index)
+
+            # Add the terminal sample
+            sections_terminals_list.append(path[-1])
+
+            # Construct the rest of the section
+            for i in range(0, len(sections_terminals_list) - 1):
+
+                # The index of the starting sample of the section
+                starting_index = sections_terminals_list[i]
+
+                # The index of the ending sample of the section
+                ending_index = sections_terminals_list[i + 1]
+
+                # Get the indices of all the samples along the section
+                section_samples_list = list()
+                for j in range(starting_index - 1, ending_index):
+
+                    # Get the sample and its data
+                    sample_data = samples_list[j]
+                    sample_index = sample_data[0]
+                    sample_type = sample_data[1]
+                    sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
+                    sample_radius = sample_data[5]
+                    sample_parent_index = sample_data[6]
+
+                    # Add the samples with the specific id
+                    morphological_sample = neuromorphovis.skeleton.Sample(
+                        point=sample_point, radius=sample_radius, id=sample_index,
+                        morphology_id=0, type=sample_type, parent_id=sample_parent_index)
+                    section_samples_list.append(morphological_sample)
+
+                # Construct a skeleton section
+                skeleton_section = neuromorphovis.skeleton.Section(
+                    id=section_index, samples=section_samples_list, type=section_type)
+
+                # Add them to the section list
+                sections_list.append(skeleton_section)
+
+                # Increment the section index
+                section_index = section_index + 1
+
+        # Now, link the sections together relying on thr indices of the initial and final samples
+        for i_section in sections_list:
+            for j_section in sections_list:
+
+                # If the index of the first sample of the section is the last of another section
+                if i_section.samples[0].id == j_section.samples[-1].id:
+
+                    # Set the parent id to that of the parent section
+                    i_section.parent_id = j_section.id
+
+                    # Set the reference to the parent id to that of the parent section
+                    i_section.parent = j_section
+
+                # If the index of the last sample of the section is that of the first sample of
+                # another section
+                if i_section.samples[-1].id == j_section.samples[0].id:
+
+                    # Append the child section id to the children section IDs
+                    i_section.children_ids.append(j_section.id)
+
+                    # Append a reference to the child section as well
+                    i_section.children.append(j_section)
+
+        # Return a list of all the disconnected sections
+        return sections_list
+
+    ################################################################################################
+    # @build_multiple_arbors
+    ################################################################################################
+    @staticmethod
+    def build_arbors_from_sections(sections):
+        """
+        Returns a node, or a list of nodes where we can access the different sections of
+        a single arbor as a tree. For the axon and apical dendrites, the function returns the
+        root of a single branch. However, for the basal dendrites, the function returns a list
+        of roots, where each root reflects a single independent branch emanating from the soma.
+
+        :param sections:
+            A linear list of axons sections.
+        :return:
+            A list containing references to the root nodes of the arbors.
+        """
+
+        # A list of roots
+        roots = list()
+
+        # Iterate over the sections and get the root ones
+        for i_section in sections:
+            if i_section.parent_id == nmv.consts.Arbors.SWC_NO_PARENT_SAMPLE_TYPE:
+                roots.append(i_section)
+
+        # If the list does not contain any roots, then return None, otherwise return the entire list
+        if len(roots) == 0:
+
+            # Return None
+            return None
+
+        else:
+
+            # Return the root list
+            return roots
+
+    ################################################################################################
+    # @read_file
+    ################################################################################################
+    def build_arbors_from_samples(self,
+                                  samples_type):
+        """Builds a list of connected arbors from a list of disconnected samples for a given or
+        specific type
+
+        :param samples_type:
+        :return:
+        """
+
+        # Get a list of samples that ONLY correspond to the given type
+        samples_list = self.get_samples_list_by_type(sample_type=samples_type)
+
+        # Build connected paths (can include more than a single morphological section) from a list
+        # of disconnected samples
+        paths = self.build_connected_paths(samples_list)
+
+        # Build sections from the constructed paths
+        sections = self.build_sections_from_paths(paths, samples_list, samples_type)
+
+        # Build a list of arbors from a list of sections
+        arbors = self.build_arbors_from_sections(sections)
+
+        # Return a reference to the constructed arbors
+        return arbors
+
+    def print_section(self, section):
+
+        print('section %d' % section.id)
+        for child in section.children:
+            self.print_section(child)
+
+    ################################################################################################
+    # @read_file
+    ################################################################################################
     def read_file(self):
-        pass
+
+        # Read all the samples from the morphology file an store them into a list
+        self.read_samples()
+
+        # Build the basal dendrites
+        basal_dendrites = self.build_arbors_from_samples(
+            nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
+        if basal_dendrites is not None:
+            print(len(basal_dendrites))
+
+        # Build the axon, or axons if the morphology has more than a single axon
+        # NOTE: For consistency, if we have more than a single axon, we use the principal one and
+        # add the others later to the basal dendrites list
+        axon = None
+        axons = self.build_arbors_from_samples(nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE)
+        if axons is not None:
+            print(len(axons))
+
+            # If we have more than a single axon, use the principal one and move the others to the
+            # basal dendrites
+            if len(axons) > 1:
+
+                # Set the principal axon
+                axon = axons[0]
+
+                # Add the others to the basal dendrites
+                for i in range(1, len(axons)):
+                    basal_dendrites.append(axons[i])
+
+        # Build the apical dendrites, or apical dendrites if the morphology has more than a
+        # single apical dendrites
+        # NOTE: For consistency, if we have more than a single morphology, we use the principal one
+        # and add the others later to the basal dendrites list
+        apical_dendrite = None
+        apical_dendrites = self.build_arbors_from_samples(
+            nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
+        if apical_dendrites is not None:
+            print(len(apical_dendrites))
+
+            # If we have more than a single axon, use the principal one and move the others to the
+            # basal dendrites
+            if len(apical_dendrites) > 1:
+
+                # Set the principal axon
+                apical_dendrite = apical_dendrites[0]
+
+                # Add the others to the basal dendrites
+                for i in range(1, len(apical_dendrites)):
+                    basal_dendrites.append(apical_dendrites[i])
+
+        # Build the soma
+        soma = self.build_soma(
+            axons_arbors=axons,
+            basal_dendrites_arbors=basal_dendrites,
+            apical_dendrites_arbors=apical_dendrites)
+
+        # Update the morphology label
+        label = neuromorphovis.file.ops.get_file_name_from_path(self.morphology_file)
+
+        # Construct the morphology skeleton
+        morphology_skeleton = neuromorphovis.skeleton.Morphology(
+            soma=soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
+            label=label)
+
+        #exit(0)
+
+        # Return a reference to the reconstructed morphology skeleton
+        return morphology_skeleton

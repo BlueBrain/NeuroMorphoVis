@@ -66,7 +66,7 @@ class IOPanel(bpy.types.Panel):
         default=nmv.enums.Input.H5_SWC_FILE)
     
     # Morphology file
-    sample = '/abdellah-bbp-engineering/morphology-datasets/h5-morphologies/C010398B-I4_cor_-_Scale_x1.000_y1.050_z1.000_-_Clone_5.h5'
+    sample = '/abdellah-bbp-engineering/bbp-blender/blender-morphology-drawer/175-1-22ct.CNG.swc'
     bpy.types.Scene.MorphologyFile = StringProperty(
         name="Morphology File",
         description="Select a specific morphology to mesh",

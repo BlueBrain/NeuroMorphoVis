@@ -62,6 +62,7 @@ class H5Reader:
         # Also find the ID of the parent node and update the parent accordingly.
         branching_order = 0
         for i_section in sections:
+
             # First round
             for child_id in i_section.children_ids:
                 for j_section in sections:
@@ -416,6 +417,8 @@ class H5Reader:
 
                 # Add the section to the basal dendrites list
                 basal_dendrites_sections.append(skeleton_section)
+
+            # Apical dendrite
             elif section_type == 4:
 
                 # Add the section to the apical dendrites list
