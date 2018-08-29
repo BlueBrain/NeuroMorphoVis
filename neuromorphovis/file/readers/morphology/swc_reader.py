@@ -112,6 +112,46 @@ class SWCReader:
             self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
 
     ################################################################################################
+    # @get_nmv_sample_from_samples_list
+    ################################################################################################
+    def get_nmv_sample_from_samples_list(self,
+                                         sample_index):
+        """Gets a NeuroMorphoVis sample from the original list of samples that was parsed from
+        the SWC morphology file.
+
+        :param sample_index:
+            The index of the sample.
+        :return:
+            A NeuroMorphoVis sample object.
+        """
+
+        # Get the sample and its data
+        sample_data = self.samples_list[sample_index]
+
+        # Index of the sample
+        sample_id = sample_data[0]
+
+        # The type of the sample
+        sample_type = sample_data[1]
+
+        # The cartesian coordinates of the sample
+        sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
+
+        # Sample radius
+        sample_radius = sample_data[5]
+
+        # The index of the parent sample
+        parent_sample_id = sample_data[6]
+
+        # Construct a nmv sample object
+        nmv_sample = neuromorphovis.skeleton.Sample(
+            point=sample_point, radius=sample_radius, id=sample_id, morphology_id=0,
+            type=sample_type, parent_id=parent_sample_id)
+
+        # Return a reference to the reconstructed object
+        return nmv_sample
+
+    ################################################################################################
     # @get_samples_list_by_type
     ################################################################################################
     def get_samples_list_by_type(self,
@@ -158,6 +198,7 @@ class SWCReader:
         soma_centroid = Vector((0.0, 0.0, 0.0))
         soma_radius = 0.0
 
+        # Filter the samples
         for sample in soma_samples:
 
             # If the sample has no parent (-1)
@@ -175,9 +216,10 @@ class SWCReader:
             else:
 
                 # Construct the profile point
-                soma_profile_point = Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
-                                             sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
-                                             sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
+                soma_profile_point = \
+                    Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
+                            sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
+                            sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
 
                 # Append the profile point to the list
                 soma_profile_points.append(soma_profile_point)
@@ -229,35 +271,83 @@ class SWCReader:
         # Return a reference to the soma object
         return soma_object
 
+    ################################################################################################
+    # @get_sections_from_path
+    ################################################################################################
+    def get_sections_from_path(self,
+                               path,
+                               sections_terminals):
+        """Gets a list of sections from a given path.
 
+        :param path:
+            A given path that contains at least a single section.
+        :param sections_terminals:
+            A list of all the terminals of the sections.
 
+        :return:
+            A list of sections.
+        """
 
-    def get_sections_from_path(self, path, sections_terminals):
+        # A list of all the sections reconstructed from the path
+        sections_lists = list()
 
-
-        section_samples = list()
-
+        # Use each section terminal indices to identify the section and reconstruct it
         for section_terminals in sections_terminals:
+
+            # The index of the first sample along the section
             first_sample_index = section_terminals[0]
+
+            # The index of the last sample along the section
             last_sample_index = section_terminals[1]
 
+            # A flag to indicate whether this sample should be added to the list or not
             collect = False
+
+            # A list to contain all the samples along the section
             samples_list = list()
 
+            # Iterate over the samples in the path
             for index in path:
+
+                # Is this the first sample along the section
                 if index == first_sample_index:
-                    samples_list.append(index)
+
+                    # Get the a nmv sample based on its index
+                    nmv_sample = self.get_nmv_sample_from_samples_list(index)
+
+                    # Append the sample to the list
+                    samples_list.append(nmv_sample)
+
+                    # Turn on the collection flag to start getting the in-between samples
                     collect = True
+
+                    # Next sample
                     continue
 
+                # If the collection flag is set
                 if collect:
-                    samples_list.append(index)
 
+                    # Get the a nmv sample based on its index
+                    nmv_sample = self.get_nmv_sample_from_samples_list(index)
+
+                    # Append the sample to the list
+                    samples_list.append(nmv_sample)
+
+                # If this was the last sample
                 if index == last_sample_index:
-                    break
-            section_samples.append(samples_list)
 
-        return section_samples
+                    # Break and proceed to the next section
+                    break
+
+            # Construct an nmv section that ONLY contains the samples list, and UPDATE its other
+            # members later when all the other sections are reconstructed
+            nmv_section = neuromorphovis.skeleton.Section(samples=samples_list)
+
+            # Append this section to the sections list
+            sections_lists.append(nmv_section)
+
+        # Return a reference to the reference list
+        return sections_lists
 
     ################################################################################################
     # @build_connected_paths
@@ -383,15 +473,11 @@ class SWCReader:
         # A list of all the sections
         sections_list = list()
 
-        # An arbitrary section index
-        section_index = 1
-
-        sections_samples = list()
-
         # For each path
         for path in paths_list:
 
-            sections_terminal_samples_indices = list()
+            # A list that contains the indices of all the terminals of the sections on the path
+            sections_terminal_indices = list()
 
             # Construct a list that accounts for the fork points of the path
             fork_samples = list()
@@ -421,9 +507,6 @@ class SWCReader:
             # Add the terminal sample
             fork_samples.append(path[-1])
 
-            #print('terminal ******************************')
-            #print(fork_samples)
-
             # Construct the rest of the section
             for i_sample in range(0, len(fork_samples) - 1):
 
@@ -433,106 +516,22 @@ class SWCReader:
                 # The index of the ending sample of the section
                 ending_index = fork_samples[i_sample + 1]
 
-                section_terminal_samples_indices = [starting_index, ending_index]
-                sections_terminal_samples_indices.append(section_terminal_samples_indices)
+                sections_terminal_indices.append([starting_index, ending_index])
 
+            # Get a list of all the sections on the current path
+            path_sections_list = self.get_sections_from_path(path, sections_terminal_indices)
 
-            sections_samples.append(self.get_sections_from_path(path,
-                sections_terminal_samples_indices))
+            # Append the reconstructed sections to the sections list
+            sections_list.extend(path_sections_list)
 
-        for x in sections_samples:
-            print(x)
+        # Label the sections and set different indices to them
+        for i, section in enumerate(sections_list):
 
+            # Update the section index
+            section.id = i
 
-
-
-        exit(0)
-        print("*DS*Ds*DS*D*SD*S*")
-        for section_terminal_samples_indices in sections_terminal_samples_indices:
-
-            # The index of the first sample along the section
-            first_sample_index = section_terminal_samples_indices[0]
-
-            # The index of the last sample along the section
-            last_sample_index = section_terminal_samples_indices[1]
-
-            print('%d %d' % (first_sample_index, last_sample_index))
-
-            # Get the indices of all the samples along the section and store them in this list
-            section_samples_list = list()
-
-            # The current index is set to the first sample index
-            index = first_sample_index
-
-            # Get all the samples
-            while True:
-
-                # Get the sample and its data
-                sample_data = self.samples_list[index]
-                print(sample_data)
-                sample_index = sample_data[0]
-                sample_type = sample_data[1]
-                sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
-                sample_radius = sample_data[5]
-                sample_parent_index = sample_data[6]
-
-                # Terminate if the current index is matching the last sample index
-                if index == last_sample_index:
-                    break
-
-                # Otherwise proceed to the next sample
-                index += 1
-
-
-        exit(0)
-
-        while True:
-
-
-
-            # Get the indices of all the samples along the section and store them in this list
-            section_samples_list = list()
-            for index in range(first_sample_index, last_sample_index):
-
-                # Get the sample and its data
-                sample_data = samples_list[index]
-                sample_index = sample_data[0]
-                sample_type = sample_data[1]
-                sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
-                sample_radius = sample_data[5]
-                sample_parent_index = sample_data[6]
-
-                # Add the samples with the specific id
-                morphological_sample = neuromorphovis.skeleton.Sample(point=sample_point,
-                    radius=sample_radius, id=sample_index, morphology_id=0, type=sample_type,
-                    parent_id=sample_parent_index)
-                section_samples_list.append(morphological_sample)
-
-            # Construct a skeleton section
-            skeleton_section = neuromorphovis.skeleton.Section(
-                id=section_index, samples=section_samples_list, type=section_type)
-
-            # Add them to the section list
-            sections_list.append(skeleton_section)
-
-            # Increment the section index
-            section_index = section_index + 1
-
-        print('section indices ******************************')
-        for section in sections_terminal_samples_indices:
-            print(section)
-
-        print('sections ******************************')
-        for section in sections_list:
-
-            samples = list()
-
-            for sample in section.samples:
-                samples.append(sample.id)
-
-            print(samples)
-
-        exit(0)
+            # Update the section type
+            section.type = section_type
 
         # Now, link the sections together relying on thr indices of the initial and final samples
         for i_section in sections_list:
@@ -641,7 +640,7 @@ class SWCReader:
         # Build the basal dendrites
         basal_dendrites = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
-        exit(0)
+
         if basal_dendrites is not None:
             print(len(basal_dendrites))
 
