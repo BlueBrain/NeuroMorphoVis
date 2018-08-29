@@ -90,6 +90,12 @@ class MeshPanel(bpy.types.Panel):
     bpy.types.Scene.MeshingTechnique = EnumProperty(
         items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
                 'Piecewise Watertight',
+                'Extended piecewise watertight meshing with some flexibility to adapt the options')],
+        name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+    """
+    bpy.types.Scene.MeshingTechnique = EnumProperty(
+        items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
+                'Piecewise Watertight',
                 'Extended piecewise watertight meshing with some flexibility to adapt the options'),
                (nmv.enums.Meshing.Technique.BRIDGING,
                 'Bridging (Watertight)',
@@ -101,7 +107,8 @@ class MeshPanel(bpy.types.Panel):
                 'Extrusion (Watertight)',
                'Create a mesh using the extrusion method (Lassere et al., 2012)')],
         name='Meshing Method',
-        default=nmv.enums.Meshing.Technique.EXTRUSION)
+        default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+    """
 
     # Is the soma connected to the first order branches or not !
     bpy.types.Scene.MeshSomaConnection = EnumProperty(

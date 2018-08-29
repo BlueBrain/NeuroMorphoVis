@@ -412,6 +412,7 @@ def draw_connected_sections(section, name,
             render_frame=render_frame, frame_destination=frame_destination, camera=camera,
                                 roots_connection=roots_connection)
 
+
 ####################################################################################################
 # @draw_disconnected_sections
 ####################################################################################################

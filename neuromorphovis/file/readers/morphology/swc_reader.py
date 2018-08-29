@@ -578,12 +578,6 @@ class SWCReader:
         # Return a list of all the disconnected sections
         return sections_list
 
-    def print_section(self, section):
-        print(str(section.parent_id) + ' ' + str(section.id))
-        for child in section.children:
-            self.print_section(child)
-
-
     ################################################################################################
     # @build_multiple_arbors
     ################################################################################################
