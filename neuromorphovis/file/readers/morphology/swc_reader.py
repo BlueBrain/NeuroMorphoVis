@@ -69,6 +69,9 @@ class SWCReader:
         # Open the file, read it line by line and store the result in list.
         morphology_file = open(self.morphology_file, 'r')
 
+        # Add a dummy sample to the list at index 0 to match the indices
+        self.samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
+
         # For each line in the morphology file
         for line in morphology_file:
 
@@ -226,6 +229,36 @@ class SWCReader:
         # Return a reference to the soma object
         return soma_object
 
+
+
+
+    def get_sections_from_path(self, path, sections_terminals):
+
+
+        section_samples = list()
+
+        for section_terminals in sections_terminals:
+            first_sample_index = section_terminals[0]
+            last_sample_index = section_terminals[1]
+
+            collect = False
+            samples_list = list()
+
+            for index in path:
+                if index == first_sample_index:
+                    samples_list.append(index)
+                    collect = True
+                    continue
+
+                if collect:
+                    samples_list.append(index)
+
+                if index == last_sample_index:
+                    break
+            section_samples.append(samples_list)
+
+        return section_samples
+
     ################################################################################################
     # @build_connected_paths
     ################################################################################################
@@ -256,7 +289,7 @@ class SWCReader:
             if samples_list[current_sample_index][6] == -1:
 
                 # Increment the counter, these samples are consumed
-                current_sample_index = current_sample_index + 1
+                # current_sample_index = current_sample_index + 1
 
                 # These samples belong to the soma, they should be ignored
                 continue
@@ -269,6 +302,9 @@ class SWCReader:
 
             # Add the parent sample, or the starting sample along the branch
             path.append(current_sample[6])
+
+            # Add the current sample as well
+            path.append(current_sample[0])
 
             # Increment the section of the current sample
             current_sample_index = current_sample_index + 1
@@ -299,8 +335,8 @@ class SWCReader:
     ################################################################################################
     # @build_disconnected_sections_from_paths
     ################################################################################################
-    @staticmethod
-    def build_sections_from_paths(paths_list,
+    def build_sections_from_paths(self,
+                                  paths_list,
                                   samples_list,
                                   section_type):
         """Builds a list of disconnected sections from a list of paths list, where each path can be
@@ -321,14 +357,25 @@ class SWCReader:
         # Get a list of the starting samples of each path of the given paths
         starting_samples = list()
 
+        # Also get a list of the ending samples of each path of the given paths
+        ending_samples = list()
+
         # For each path in the list
         for path in paths_list:
+
+            print(path)
 
             # Append the first sample to the list
             starting_samples.append(path[0])
 
-        # Remove the duplicated samples from the starting samples
+            # Append the last samples to the list
+            ending_samples.append(path[-1])
+
+        print('****************************** after path')
+
+        # Remove the duplicated samples from the lists
         starting_samples = set(starting_samples)
+        ending_samples = set(ending_samples)
 
         # Sort the starting samples
         starting_samples = sorted(starting_samples)
@@ -339,11 +386,15 @@ class SWCReader:
         # An arbitrary section index
         section_index = 1
 
+        sections_samples = list()
+
         # For each path
         for path in paths_list:
 
-            # Construct a list that accounts for the terminal points of the path
-            sections_terminals_list = list()
+            sections_terminal_samples_indices = list()
+
+            # Construct a list that accounts for the fork points of the path
+            fork_samples = list()
 
             # Construct another list that contains the indices of the bifurcation samples
             bifurcation_samples = list()
@@ -361,51 +412,127 @@ class SWCReader:
                         bifurcation_samples.append(starting_sample_index)
 
             # Construct the section samples terminals, add the first sample
-            sections_terminals_list.append(path[0])
+            fork_samples.append(path[0])
 
             # Add the bifurcation samples
             for bifurcation_sample_index in bifurcation_samples:
-                sections_terminals_list.append(bifurcation_sample_index)
+                fork_samples.append(bifurcation_sample_index)
 
             # Add the terminal sample
-            sections_terminals_list.append(path[-1])
+            fork_samples.append(path[-1])
+
+            #print('terminal ******************************')
+            #print(fork_samples)
 
             # Construct the rest of the section
-            for i in range(0, len(sections_terminals_list) - 1):
+            for i_sample in range(0, len(fork_samples) - 1):
 
                 # The index of the starting sample of the section
-                starting_index = sections_terminals_list[i]
+                starting_index = fork_samples[i_sample]
 
                 # The index of the ending sample of the section
-                ending_index = sections_terminals_list[i + 1]
+                ending_index = fork_samples[i_sample + 1]
 
-                # Get the indices of all the samples along the section
-                section_samples_list = list()
-                for j in range(starting_index - 1, ending_index):
+                section_terminal_samples_indices = [starting_index, ending_index]
+                sections_terminal_samples_indices.append(section_terminal_samples_indices)
 
-                    # Get the sample and its data
-                    sample_data = samples_list[j]
-                    sample_index = sample_data[0]
-                    sample_type = sample_data[1]
-                    sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
-                    sample_radius = sample_data[5]
-                    sample_parent_index = sample_data[6]
 
-                    # Add the samples with the specific id
-                    morphological_sample = neuromorphovis.skeleton.Sample(
-                        point=sample_point, radius=sample_radius, id=sample_index,
-                        morphology_id=0, type=sample_type, parent_id=sample_parent_index)
-                    section_samples_list.append(morphological_sample)
+            sections_samples.append(self.get_sections_from_path(path,
+                sections_terminal_samples_indices))
 
-                # Construct a skeleton section
-                skeleton_section = neuromorphovis.skeleton.Section(
-                    id=section_index, samples=section_samples_list, type=section_type)
+        for x in sections_samples:
+            print(x)
 
-                # Add them to the section list
-                sections_list.append(skeleton_section)
 
-                # Increment the section index
-                section_index = section_index + 1
+
+
+        exit(0)
+        print("*DS*Ds*DS*D*SD*S*")
+        for section_terminal_samples_indices in sections_terminal_samples_indices:
+
+            # The index of the first sample along the section
+            first_sample_index = section_terminal_samples_indices[0]
+
+            # The index of the last sample along the section
+            last_sample_index = section_terminal_samples_indices[1]
+
+            print('%d %d' % (first_sample_index, last_sample_index))
+
+            # Get the indices of all the samples along the section and store them in this list
+            section_samples_list = list()
+
+            # The current index is set to the first sample index
+            index = first_sample_index
+
+            # Get all the samples
+            while True:
+
+                # Get the sample and its data
+                sample_data = self.samples_list[index]
+                print(sample_data)
+                sample_index = sample_data[0]
+                sample_type = sample_data[1]
+                sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
+                sample_radius = sample_data[5]
+                sample_parent_index = sample_data[6]
+
+                # Terminate if the current index is matching the last sample index
+                if index == last_sample_index:
+                    break
+
+                # Otherwise proceed to the next sample
+                index += 1
+
+
+        exit(0)
+
+        while True:
+
+
+
+            # Get the indices of all the samples along the section and store them in this list
+            section_samples_list = list()
+            for index in range(first_sample_index, last_sample_index):
+
+                # Get the sample and its data
+                sample_data = samples_list[index]
+                sample_index = sample_data[0]
+                sample_type = sample_data[1]
+                sample_point = Vector((sample_data[2], sample_data[3], sample_data[4]))
+                sample_radius = sample_data[5]
+                sample_parent_index = sample_data[6]
+
+                # Add the samples with the specific id
+                morphological_sample = neuromorphovis.skeleton.Sample(point=sample_point,
+                    radius=sample_radius, id=sample_index, morphology_id=0, type=sample_type,
+                    parent_id=sample_parent_index)
+                section_samples_list.append(morphological_sample)
+
+            # Construct a skeleton section
+            skeleton_section = neuromorphovis.skeleton.Section(
+                id=section_index, samples=section_samples_list, type=section_type)
+
+            # Add them to the section list
+            sections_list.append(skeleton_section)
+
+            # Increment the section index
+            section_index = section_index + 1
+
+        print('section indices ******************************')
+        for section in sections_terminal_samples_indices:
+            print(section)
+
+        print('sections ******************************')
+        for section in sections_list:
+
+            samples = list()
+
+            for sample in section.samples:
+                samples.append(sample.id)
+
+            print(samples)
+
+        exit(0)
 
         # Now, link the sections together relying on thr indices of the initial and final samples
         for i_section in sections_list:
@@ -514,6 +641,7 @@ class SWCReader:
         # Build the basal dendrites
         basal_dendrites = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
+        exit(0)
         if basal_dendrites is not None:
             print(len(basal_dendrites))
 
