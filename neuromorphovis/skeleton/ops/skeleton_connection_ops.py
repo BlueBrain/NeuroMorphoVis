@@ -779,6 +779,12 @@ def connect_arbor_to_soma(soma_mesh,
     :return:
     """
 
+    # If the arbor is not valid
+    if arbor is None:
+
+        # Return 
+        return
+
     # Verify if the arbor is connected to the soma or not
     if not arbor.connected_to_soma:
         nmv.logger.log('\t\t *WARNING: The neurite [%s: %d] is not connected to the soma' %
