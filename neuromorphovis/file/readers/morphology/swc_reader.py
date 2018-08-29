@@ -16,6 +16,9 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
+# System imports
+import copy
+
 # Blender imports
 from mathutils import Vector
 
@@ -375,13 +378,22 @@ class SWCReader:
         # Proceed if we have more samples
         while current_sample_index < number_samples - 1:
 
-            # If this is a root sample with no parent, then ignore
+            # If this is the soma sample, then ignore it
             if samples_list[current_sample_index][6] == -1:
 
-                # Increment the counter, these samples are consumed
-                # current_sample_index = current_sample_index + 1
+                # Increment the sample index
+                current_sample_index = current_sample_index + 1
 
-                # These samples belong to the soma, they should be ignored
+                # Next sample
+                continue
+
+            # If this is a root sample with no parent, then ignore
+            if samples_list[current_sample_index][6] == 1:
+
+                # Increment the sample index
+                current_sample_index = current_sample_index + 1
+
+                # Next sample
                 continue
 
             # Construct a path here
@@ -427,7 +439,6 @@ class SWCReader:
     ################################################################################################
     def build_sections_from_paths(self,
                                   paths_list,
-                                  samples_list,
                                   section_type):
         """Builds a list of disconnected sections from a list of paths list, where each path can be
         composed of more than a single section.
@@ -435,8 +446,6 @@ class SWCReader:
         :param paths_list:
             A list of paths, where each path is composed of a list of indices that map to those
             of the samples given by the samples_list.
-        :param samples_list:
-            A list of all the samples of the morephology skeleton.
         :param section_type:
             The type of the section.
         :return:
@@ -453,15 +462,11 @@ class SWCReader:
         # For each path in the list
         for path in paths_list:
 
-            print(path)
-
             # Append the first sample to the list
             starting_samples.append(path[0])
 
             # Append the last samples to the list
             ending_samples.append(path[-1])
-
-        print('****************************** after path')
 
         # Remove the duplicated samples from the lists
         starting_samples = set(starting_samples)
@@ -516,6 +521,7 @@ class SWCReader:
                 # The index of the ending sample of the section
                 ending_index = fork_samples[i_sample + 1]
 
+                # Add the indices of the section terminals to the list
                 sections_terminal_indices.append([starting_index, ending_index])
 
             # Get a list of all the sections on the current path
@@ -533,9 +539,22 @@ class SWCReader:
             # Update the section type
             section.type = section_type
 
+
         # Now, link the sections together relying on thr indices of the initial and final samples
+        sections_list_clone = copy.deepcopy(sections_list)
+
         for i_section in sections_list:
-            for j_section in sections_list:
+
+            for j_section in sections_list_clone:
+
+                if i_section.id == j_section.id:
+                    continue
+
+                # Root sections
+                if i_section.samples[0].parent_id == 1:
+
+                    i_section.parent_id = None
+                    i_section.parent = None
 
                 # If the index of the first sample of the section is the last of another section
                 if i_section.samples[0].id == j_section.samples[-1].id:
@@ -559,6 +578,12 @@ class SWCReader:
         # Return a list of all the disconnected sections
         return sections_list
 
+    def print_section(self, section):
+        print(str(section.parent_id) + ' ' + str(section.id))
+        for child in section.children:
+            self.print_section(child)
+
+
     ################################################################################################
     # @build_multiple_arbors
     ################################################################################################
@@ -581,7 +606,7 @@ class SWCReader:
 
         # Iterate over the sections and get the root ones
         for i_section in sections:
-            if i_section.parent_id == nmv.consts.Arbors.SWC_NO_PARENT_SAMPLE_TYPE:
+            if i_section.parent is None:
                 roots.append(i_section)
 
         # If the list does not contain any roots, then return None, otherwise return the entire list
@@ -615,19 +640,13 @@ class SWCReader:
         paths = self.build_connected_paths(samples_list)
 
         # Build sections from the constructed paths
-        sections = self.build_sections_from_paths(paths, samples_list, samples_type)
+        sections = self.build_sections_from_paths(paths, samples_type)
 
         # Build a list of arbors from a list of sections
         arbors = self.build_arbors_from_sections(sections)
 
         # Return a reference to the constructed arbors
         return arbors
-
-    def print_section(self, section):
-
-        print('section %d' % section.id)
-        for child in section.children:
-            self.print_section(child)
 
     ################################################################################################
     # @read_file
@@ -641,16 +660,12 @@ class SWCReader:
         basal_dendrites = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
 
-        if basal_dendrites is not None:
-            print(len(basal_dendrites))
-
         # Build the axon, or axons if the morphology has more than a single axon
         # NOTE: For consistency, if we have more than a single axon, we use the principal one and
         # add the others later to the basal dendrites list
         axon = None
         axons = self.build_arbors_from_samples(nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE)
         if axons is not None:
-            print(len(axons))
 
             # If we have more than a single axon, use the principal one and move the others to the
             # basal dendrites
@@ -671,7 +686,6 @@ class SWCReader:
         apical_dendrites = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
         if apical_dendrites is not None:
-            print(len(apical_dendrites))
 
             # If we have more than a single axon, use the principal one and move the others to the
             # basal dendrites
@@ -697,8 +711,6 @@ class SWCReader:
         morphology_skeleton = neuromorphovis.skeleton.Morphology(
             soma=soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
             label=label)
-
-        #exit(0)
 
         # Return a reference to the reconstructed morphology skeleton
         return morphology_skeleton

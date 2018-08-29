@@ -37,7 +37,7 @@ class Section:
     def __init__(self,
                  id=-1,
                  parent_id=-1,
-                 children_ids=[],
+                 children_ids=None,
                  samples=None,
                  type=None):
         """Constructor
@@ -61,7 +61,10 @@ class Section:
         self.parent_id = parent_id
 
         # A list of the indexes of the children sections
-        self.children_ids = children_ids
+        if children_ids is not None:
+            self.children_ids = children_ids
+        else:
+            self.children_ids = list()
 
         # Segments samples (points along the section)
         self.samples = samples
@@ -78,7 +81,7 @@ class Section:
         self.parent = None
 
         # A list of the children
-        self.children = []
+        self.children = list()
 
         # Is the 'root' section of any branch connected to the soma or not ?!
         # NOTE: By default for all the sections, this options is set to False, however,
@@ -188,7 +191,7 @@ class Section:
             True or False.
         """
 
-        if len(self.children_ids) > 0 or len(self.children) > 0:
+        if len(self.children) > 0:
             return True
 
         return False

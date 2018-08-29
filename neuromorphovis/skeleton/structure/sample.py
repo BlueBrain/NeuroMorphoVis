@@ -46,7 +46,7 @@ class Sample:
                  point,
                  radius,
                  id,
-                 type,
+                 type=-1,
                  morphology_id=-1,
                  section=None,
                  parent_id=-1):
@@ -87,13 +87,3 @@ class Sample:
 
         # The index of the parent sample, required for the connectivity of SWC files
         self.parent_id = parent_id
-
-    ################################################################################################
-    # @logger.log_data
-    ################################################################################################
-    def print_data(self):
-        """Print the details of the sample.
-        """
-
-        nmv.logger.log('Sample [%d]:[point=(%f, %f, %f), radius=%f]' %
-              (self.id, self.point.x(), self.point.y(), self.point.z(), self.radius))

@@ -358,7 +358,7 @@ def draw_connected_sections(section, name,
 
     # If the section does not have any children, then draw the section and clean the
     # poly_line_data list
-    if not section.has_children() or branching_level >= max_branching_level:
+    if (not section.has_children()) or (branching_level >= max_branching_level):
 
         # Section material
         section_material = None
@@ -372,8 +372,9 @@ def draw_connected_sections(section, name,
         section_name = '%s_%d' % (name, section.id)
 
         # Draw the section
-        section_object = draw_section_from_poly_line_data(data=poly_line_data,
-            name=section_name, material=section_material, bevel_object=bevel_object, caps=caps)
+        section_object = draw_section_from_poly_line_data(
+            data=poly_line_data, name=section_name, material=section_material,
+            bevel_object=bevel_object, caps=caps)
 
         # Render frame for progressive rendering
         if render_frame:

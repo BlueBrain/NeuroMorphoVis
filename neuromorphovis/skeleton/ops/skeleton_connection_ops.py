@@ -633,7 +633,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
             basal_dendrite.connected_to_soma = False
 
             # Report the issue
-            nmv.logger.detail('WARNING: The basal dendrite [%d] is disconnected [INTERNAL] from '
+            nmv.logger.detail('WARNING: The basal dendrite [%d] is disconnected [INSIDE] from '
                               'soma' % i_basal_dendrite)
 
             # Next arbor

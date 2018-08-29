@@ -40,6 +40,12 @@ def apply_operation_to_arbor(*args):
     # The section is the first argument
     section = args[0]
 
+    # If the section is None
+    if section is None:
+
+        # Simply return
+        return
+
     # The operation is the second argument
     operation = args[1]
 
