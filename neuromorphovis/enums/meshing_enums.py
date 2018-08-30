@@ -90,7 +90,7 @@ class Meshing:
 
             # Tapered zigzag
             elif argument == 'simplified':
-                return Meshing.Skeleton.Simplified
+                return Meshing.Skeleton.SIMPLIFIED
 
             # By default use the original skeleton
             else:

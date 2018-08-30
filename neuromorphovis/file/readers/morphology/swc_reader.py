@@ -66,13 +66,11 @@ class SWCReader:
     def read_samples(self):
         """Reads an SWC files and returns a list of all the samples in the file"""
 
-        # A list of all the data of the samples that are in the morphology file
-        samples_list = []
-
         # Open the file, read it line by line and store the result in list.
         morphology_file = open(self.morphology_file, 'r')
 
         # Add a dummy sample to the list at index 0 to match the indices
+        # The zeroth sample always defines the soma parameters, and it is parsed independently
         self.samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
 
         # For each line in the morphology file
@@ -288,7 +286,7 @@ class SWCReader:
             A list of all the terminals of the sections.
 
         :return:
-            A list of sections.
+            A list of sections contained within the given path.
         """
 
         # A list of all the sections reconstructed from the path
@@ -379,6 +377,7 @@ class SWCReader:
         while current_sample_index < number_samples - 1:
 
             # If this is the soma sample, then ignore it
+            # NOTE: Soma samples are indicated by -1 as a parent index
             if samples_list[current_sample_index][6] == -1:
 
                 # Increment the sample index
@@ -388,6 +387,7 @@ class SWCReader:
                 continue
 
             # If this is a root sample with no parent, then ignore
+            # NOTE: Root samples are indicated by 1 as a parent index
             if samples_list[current_sample_index][6] == 1:
 
                 # Increment the sample index
@@ -539,21 +539,26 @@ class SWCReader:
             # Update the section type
             section.type = section_type
 
-
-        # Now, link the sections together relying on thr indices of the initial and final samples
+        # Copy the sections list
         sections_list_clone = copy.deepcopy(sections_list)
 
+        # Now, link the sections together relying on thr indices of the initial and final samples
         for i_section in sections_list:
 
+            # Traversal
             for j_section in sections_list_clone:
 
+                # Ignore processing the same section twice
                 if i_section.id == j_section.id:
                     continue
 
                 # Root sections
                 if i_section.samples[0].parent_id == 1:
 
+                    # Set the parent ID to None
                     i_section.parent_id = None
+
+                    # Set the parent to None
                     i_section.parent = None
 
                 # If the index of the first sample of the section is the last of another section
@@ -583,14 +588,13 @@ class SWCReader:
     ################################################################################################
     @staticmethod
     def build_arbors_from_sections(sections):
-        """
-        Returns a node, or a list of nodes where we can access the different sections of
+        """Returns a node, or a list of nodes where we can access the different sections of
         a single arbor as a tree. For the axon and apical dendrites, the function returns the
         root of a single branch. However, for the basal dendrites, the function returns a list
         of roots, where each root reflects a single independent branch emanating from the soma.
 
         :param sections:
-            A linear list of axons sections.
+            A linear list of sections.
         :return:
             A list containing references to the root nodes of the arbors.
         """
@@ -600,7 +604,11 @@ class SWCReader:
 
         # Iterate over the sections and get the root ones
         for i_section in sections:
+
+            # If the section has no parent, it is a root then
             if i_section.parent is None:
+
+                # Append this root to the list
                 roots.append(i_section)
 
         # If the list does not contain any roots, then return None, otherwise return the entire list
@@ -618,23 +626,26 @@ class SWCReader:
     # @read_file
     ################################################################################################
     def build_arbors_from_samples(self,
-                                  samples_type):
+                                  arbor_type):
         """Builds a list of connected arbors from a list of disconnected samples for a given or
         specific type
 
-        :param samples_type:
+        :param arbor_type:
+            The type of the arbor.
+
         :return:
+            A list of trees, each representing an arbor of the morphology skeleton.
         """
 
         # Get a list of samples that ONLY correspond to the given type
-        samples_list = self.get_samples_list_by_type(sample_type=samples_type)
+        samples_list = self.get_samples_list_by_type(sample_type=arbor_type)
 
         # Build connected paths (can include more than a single morphological section) from a list
         # of disconnected samples
         paths = self.build_connected_paths(samples_list)
 
         # Build sections from the constructed paths
-        sections = self.build_sections_from_paths(paths, samples_type)
+        sections = self.build_sections_from_paths(paths, arbor_type)
 
         # Build a list of arbors from a list of sections
         arbors = self.build_arbors_from_sections(sections)
@@ -646,6 +657,12 @@ class SWCReader:
     # @read_file
     ################################################################################################
     def read_file(self):
+        """Reads an SWC morphology file and return a reference to a NeuroMorphoVis morphology
+        structure.
+
+        :return:
+            Returns a reference to a NeuroMorphoVis morphology structure that contains the skeleton.
+        """
 
         # Read all the samples from the morphology file an store them into a list
         self.read_samples()
@@ -702,9 +719,9 @@ class SWCReader:
         label = neuromorphovis.file.ops.get_file_name_from_path(self.morphology_file)
 
         # Construct the morphology skeleton
-        morphology_skeleton = neuromorphovis.skeleton.Morphology(
+        nmv_morphology = neuromorphovis.skeleton.Morphology(
             soma=soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
             label=label)
 
         # Return a reference to the reconstructed morphology skeleton
-        return morphology_skeleton
+        return nmv_morphology
