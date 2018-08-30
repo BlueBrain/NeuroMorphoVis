@@ -84,7 +84,7 @@ class SWCReader:
             if '#' in line:
                 continue
 
-            # Ignore empty line
+            # Ignore empty lines
             if not line.strip():
                 continue
 
