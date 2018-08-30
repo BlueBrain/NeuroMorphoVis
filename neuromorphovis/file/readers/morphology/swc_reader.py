@@ -84,6 +84,10 @@ class SWCReader:
             if '#' in line:
                 continue
 
+            # Ignore empty lines
+            if not line.strip():
+                continue
+
             # Extract the data from the line
             data = line.strip('\n').split(' ')
 
@@ -109,6 +113,15 @@ class SWCReader:
 
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
+
+            # Ensure that the radius zero
+            if radius < nmv.consts.Math.LITTLE_EPSILON:
+
+                # Report it
+                nmv.logger.log('WARNING: Zero radius at sample [%d]' % index)
+
+                # Updating the radius to a default value
+                radius = 0.01
 
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
@@ -251,7 +264,7 @@ class SWCReader:
             for arbor in axons_arbors:
 
                 # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0]
+                soma_profile_point = arbor.samples[0].point
 
                 # Append this point to the list
                 soma_profile_points_on_arbors.append(soma_profile_point)
@@ -263,7 +276,7 @@ class SWCReader:
             for arbor in apical_dendrites_arbors:
 
                 # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0]
+                soma_profile_point = arbor.samples[0].point
 
                 # Append this point to the list
                 soma_profile_points_on_arbors.append(soma_profile_point)
@@ -275,7 +288,7 @@ class SWCReader:
             for arbor in basal_dendrites_arbors:
 
                 # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0]
+                soma_profile_point = arbor.samples[0].point
 
                 # Append this point to the list
                 soma_profile_points_on_arbors.append(soma_profile_point)
