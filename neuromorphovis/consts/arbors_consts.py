@@ -106,3 +106,22 @@ class Arbors:
 
     # The index of a custom sample in an SWC file
     SWC_CUSTOM_SAMPLE_TYPE = 7
+
+    # The directory that stores morphology points in an .H5 file
+    H5_POINTS_DIRECTORY = '/points'
+
+    # The directory that stores morphology connectivity in an .H5 file
+    H5_STRUCTURE_DIRECTORY = '/structure'
+
+    # The directory that stores morphology perimeters in an .H5 file
+    # This is only used for glia, but not used for neurons
+    H5_PERIMETERS_DIRECTORY = '/perimeters'
+
+    # The identifier of a section of type axon in an H5 file
+    H5_AXON_SECTION_TYPE = 2
+
+    # The identifier of a section of type basal dendrite in an H5 file
+    H5_BASAL_DENDRITE_SECTION_TYPE = 3
+
+    # The identifier of a section of type apical dendrite in an H5 file
+    H5_APICAL_DENDRITE_SECTION_TYPE = 4

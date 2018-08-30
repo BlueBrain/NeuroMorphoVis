@@ -21,6 +21,7 @@ from mathutils import Vector
 
 # Internal imports
 import neuromorphovis as nmv
+import neuromorphovis.consts
 import neuromorphovis.file
 import neuromorphovis.skeleton
 
@@ -51,7 +52,7 @@ class H5Reader:
     ################################################################################################
     @staticmethod
     def build_tree(sections):
-        """Build the tree of the morphology by linking the parent node and the children ones.
+        """Builds the tree of the morphology by linking the parent node and the children ones.
 
         :param sections:
             A linear list of sections of a specific type to be converted to a tree.
@@ -257,9 +258,10 @@ class H5Reader:
     # @read_file
     ################################################################################################
     def read_file(self):
-        """Read a morphology skeleton given in .H5 file.
+        """Read a morphology skeleton given in .H5 file into a NeuroMorphoVis morphology structure.
 
         :return:
+            Returns a reference to a NeuroMorphoVis morphology as read from the file.
         """
 
         # A list of data
@@ -278,32 +280,45 @@ class H5Reader:
         except ImportError:
 
             # Report the issue
-            print('FATAL_ERROR: Cannot find a compatible h5py version!')
+            print('FATAL_ERROR: Cannot find a compatible \'h5py\' version!')
 
             # Exit the system
             exit(0)
 
         # The h5 file contains, normally, three directories: 'points, structure and perimeters'
-        points_directory = '/points'
-        structure_directory = '/structure'
-        perimeters_directory = '/perimeters'
+        # points_directory = '/points'
+        #structure_directory = '/structure'
+        #perimeters_directory = '/perimeters'
 
         # The data will be stored in three lists: points, structure and perimeters
         points_list = None
         structure_list = None
         perimeters_list = None
 
-        # Read the point list
         try:
-            points_list = data[points_directory].value
+
+            # Read the point list from the points directory
+            points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
+
         except ImportError:
+
+            # Error
             nmv.logger.log('ERROR: Cannot load the data points from [%s]' % self.morphology_file)
 
-        # Get the structure list
+            # Return None
+            return None
+
         try:
-            structure_list = data[structure_directory].value
+
+            # Get the structure list from the structures directory
+            structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
+
         except ImportError:
+
             nmv.logger.log('ERROR: Cannot load the data structure from [%s]' % self.morphology_file)
+
+            # Return None
+            return None
 
         # Get the number of points or samples in the file
         number_points = len(points_list)
@@ -332,7 +347,8 @@ class H5Reader:
             section_parent_index = int(structure_list[i_section][2])
 
             # Get the positions and radii of each sample along the section
-            section_samples = []
+            section_samples = list()
+
             i = 0
             for i_sample in range(section_first_point_index, section_last_point_index):
 
@@ -364,8 +380,8 @@ class H5Reader:
 
         # Traverse the tree and construct the arbors.
 
-        # A linear list of the axon sections
-        axon_sections = []
+        # A linear list of the sections of the axons
+        axons_sections = []
 
         # A linear list of basal dendrites sections
         basal_dendrites_sections = []
@@ -407,29 +423,31 @@ class H5Reader:
             # For glia cells the values are: 1: soma, 2: glia process, 3 glia end-foot
 
             # Axon
-            if section_type == 2:
+            if section_type == nmv.consts.Arbors.H5_AXON_SECTION_TYPE:
 
                 # Add the section to the axon list
-                axon_sections.append(skeleton_section)
+                axons_sections.append(skeleton_section)
 
             # Basal dendrite
-            elif section_type == 3:
+            elif section_type == nmv.consts.Arbors.H5_BASAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the basal dendrites list
                 basal_dendrites_sections.append(skeleton_section)
 
             # Apical dendrite
-            elif section_type == 4:
+            elif section_type == nmv.consts.Arbors.H5_APICAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the apical dendrites list
                 apical_dendrites_sections.append(skeleton_section)
+
+            # Undefined section type
             else:
 
-                # Undefined
-                print('ERROR: Unknown section type')
+                # Report an error
+                nmv.logger.log('ERROR: Unknown section type [%s] !' % str(section_type))
 
         # Build the axon tree
-        self.build_tree(axon_sections)
+        self.build_tree(axons_sections)
 
         # Build the basal dendritic tree
         self.build_tree(basal_dendrites_sections)
@@ -438,15 +456,15 @@ class H5Reader:
         self.build_tree(apical_dendrites_sections)
 
         # Build the axon arbor
-        axon = self.build_single_arbor(axon_sections)
+        axon = self.build_single_arbor(axons_sections)
 
         # Build the basal dendritic arbors
-        basal_dendrites = self.build_multiple_arbors(basal_dendrites_sections)
+        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
 
         # Build the apical dendritic tree
         # NOTE: We will use the build_multiple_arbors procedure to build the apical dendrite and
         # will verify later if more than a single arbor exists in the list
-        apical_dendrites = self.build_multiple_arbors(apical_dendrites_sections)
+        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
 
         # A reference to the apical dendrite
         apical_dendrite = None
@@ -473,15 +491,15 @@ class H5Reader:
                     basal_dendrites.append(apical_dendrites[i])
 
         # Build the soma
-        soma_object = self.build_soma(points_list, structure_list)
+        nmv_soma = self.build_soma(points_list, structure_list)
 
         # Update the morphology label
         label = neuromorphovis.file.ops.get_file_name_from_path(self.morphology_file)
 
         # Construct the morphology skeleton
-        morphology_skeleton = neuromorphovis.skeleton.Morphology(
-            soma=soma_object, axon=axon, dendrites=basal_dendrites,
-            apical_dendrite=apical_dendrite, label=label)
+        nmv_morphology = neuromorphovis.skeleton.Morphology(
+            soma=nmv_soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
+            label=label)
 
         # Return a reference to the reconstructed morphology skeleton
-        return morphology_skeleton
+        return nmv_morphology

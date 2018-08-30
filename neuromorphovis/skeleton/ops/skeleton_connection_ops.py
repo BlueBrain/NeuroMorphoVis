@@ -782,7 +782,7 @@ def connect_arbor_to_soma(soma_mesh,
     # If the arbor is not valid
     if arbor is None:
 
-        # Return 
+        # Return
         return
 
     # Verify if the arbor is connected to the soma or not
