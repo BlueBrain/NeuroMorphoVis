@@ -47,14 +47,23 @@ class H5Reader:
         # Set the path to the given h5 file
         self.morphology_file = h5_file
 
+        # A list of all the points in the morphology file
+        self.points_list = list()
+
+        # A list of all the connectivity data in the morphology file
+        self.structure_list = list()
+
+        # A list of all the perimeters that are specific to astrocyte morphologies
+        self.perimeters_list = list()
+
     ################################################################################################
     # @build_tree
     ################################################################################################
     @staticmethod
-    def build_tree(sections):
+    def build_tree(sections_list):
         """Builds the tree of the morphology by linking the parent node and the children ones.
 
-        :param sections:
+        :param sections_list:
             A linear list of sections of a specific type to be converted to a tree.
         """
 
@@ -62,85 +71,18 @@ class H5Reader:
         # children lists.
         # Also find the ID of the parent node and update the parent accordingly.
         branching_order = 0
-        for i_section in sections:
+        for i_section in sections_list:
 
             # First round
             for child_id in i_section.children_ids:
-                for j_section in sections:
+                for j_section in sections_list:
                     if child_id == j_section.id:
                         i_section.children.append(j_section)
 
             # Second round
-            for k_section in sections:
+            for k_section in sections_list:
                 if i_section.parent_id == k_section.id:
                     i_section.parent = k_section
-
-    ################################################################################################
-    # @build_single_arbor
-    ################################################################################################
-    @staticmethod
-    def build_single_arbor(sections):
-        """Build the set of sections into a single arbor tree.
-
-        NOTE: This function is mainly used for axons and apical dendrites. However,
-        and in certain cases, the morphology might have more than a single apical dendrite or
-        even more than one axon, but it is quite rare to occur.
-
-        :param sections:
-            A list of sections of the arbor.
-        :return:
-            A reference to the root node of the arbor tree.
-        """
-        # A list of roots
-        roots = list()
-
-        # Iterate over the sections and get the root ones
-        for i_section in sections:
-            if i_section.parent_id == 0:
-                roots.append(i_section)
-
-        # NOTE: If the root list does not contain any roots, then return None. If the list has a
-        # single root, then return the root object by getting the first element in the list.
-        if len(roots) == 0:
-            return None
-        elif len(roots) == 1:
-            return roots[0]
-
-    ################################################################################################
-    # @build_multiple_arbors
-    ################################################################################################
-    @staticmethod
-    def build_multiple_arbors(sections):
-        """
-        Returns a node, or a list of nodes where we can access the different sections of
-        a single arbor as a tree. For the axon and apical dendrites, the function returns the
-        root of a single branch. However, for the basal dendrites, the function returns a list
-        of roots, where each root reflects a single independent branch emanating from the soma.
-
-        :param sections:
-            A linear list of axons sections.
-        :return:
-            A list containing references to the root nodes of the arbors.
-        """
-
-        # A list of roots
-        roots = list()
-
-        # Iterate over the sections and get the root ones
-        for i_section in sections:
-            if i_section.parent_id == 0:
-                roots.append(i_section)
-
-        # If the list does not contain any roots, then return None, otherwise return the entire list
-        if len(roots) == 0:
-
-            # Return None
-            return None
-
-        else:
-
-            # Return the root list
-            return roots
 
     ################################################################################################
     # @get_arbors_profile_points
@@ -172,9 +114,9 @@ class H5Reader:
         # Return the list
         return arbor_profile_points
 
-    ####################################################################################################
+    ################################################################################################
     # @build_soma
-    ####################################################################################################
+    ################################################################################################
     def build_soma(self,
                    points_list,
                    structure_list,
@@ -204,15 +146,15 @@ class H5Reader:
         soma_section_last_point_index = structure_list[1][0]
 
         # Get the positions of each sample along the soma section
-        soma_profile_points = []
+        soma_profile_points = list()
 
         # Update the soma profile point list
         for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
 
             # Profile point
-            x = points_list[i_sample][0]
-            y = points_list[i_sample][1]
-            z = points_list[i_sample][2]
+            x = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_X_COORDINATES_IDX]
+            y = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Y_COORDINATES_IDX]
+            z = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Z_COORDINATES_IDX]
             profile_point = Vector((x, y, z))
 
             # Add the profile point to the list
@@ -232,7 +174,7 @@ class H5Reader:
         mean_soma_radius /= len(soma_profile_points)
 
         # Compute the profile points from the arbors
-        arbors_profile_points = []
+        arbors_profile_points = list()
 
         # Axon profile point
         if axon_tree is not None:
@@ -247,21 +189,21 @@ class H5Reader:
             arbors_profile_points.extend(self.get_arbors_profile_points([apical_dendrite_tree]))
 
         # Construct the soma object
-        soma_object = neuromorphovis.skeleton.Soma(
+        nmv_soma = neuromorphovis.skeleton.Soma(
             centroid=soma_centroid, mean_radius=mean_soma_radius,
             profile_points=soma_profile_points, arbors_profile_points=arbors_profile_points)
 
         # Return a reference to the soma object
-        return soma_object
+        return nmv_soma
 
     ################################################################################################
-    # @read_file
+    # @read_points_and_structures
     ################################################################################################
-    def read_file(self):
-        """Read a morphology skeleton given in .H5 file into a NeuroMorphoVis morphology structure.
+    def read_points_and_structures(self):
+        """Reads the content of the morphology file, mainly the points and the connectivity data.
 
         :return:
-            Returns a reference to a NeuroMorphoVis morphology as read from the file.
+            Returns None in case of invalid directories.
         """
 
         # A list of data
@@ -282,23 +224,13 @@ class H5Reader:
             # Report the issue
             print('FATAL_ERROR: Cannot find a compatible \'h5py\' version!')
 
-            # Exit the system
+            # Exit NMV
             exit(0)
-
-        # The h5 file contains, normally, three directories: 'points, structure and perimeters'
-        # points_directory = '/points'
-        #structure_directory = '/structure'
-        #perimeters_directory = '/perimeters'
-
-        # The data will be stored in three lists: points, structure and perimeters
-        points_list = None
-        structure_list = None
-        perimeters_list = None
 
         try:
 
             # Read the point list from the points directory
-            points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
+            self.points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
 
         except ImportError:
 
@@ -311,7 +243,7 @@ class H5Reader:
         try:
 
             # Get the structure list from the structures directory
-            structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
+            self.structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
 
         except ImportError:
 
@@ -320,125 +252,151 @@ class H5Reader:
             # Return None
             return None
 
-        # Get the number of points or samples in the file
-        number_points = len(points_list)
+        # The file has been read successfully
+        return True
 
-        # Get the number of sections in the file
-        number_sections = len(structure_list)
+    ################################################################################################
+    # @build_sections_from_points_and_structures
+    ################################################################################################
+    def build_sections_from_points_and_structures(self):
+        """Builds a list of sections from the data obtained from the .H5 files
+
+        :return:
+            A linear list of sections of the entire morphology.
+        """
 
         # Parse the sections and add them to a linear list [index, parent, type, samples]
-        parsed_sections = []
+        sections_list = list()
 
-        for i_section in range(1, number_sections - 1):
+        for i_section in range(1, len(self.structure_list) - 1):
 
             # Get the index of the starting point of the section
-            section_first_point_index = structure_list[i_section][0]
+            section_first_point_index = self.structure_list[i_section][0]
 
             # Get the index of the last point of the section
-            section_last_point_index = structure_list[i_section + 1][0]
+            section_last_point_index = self.structure_list[i_section + 1][0]
 
             # Section index
             section_index = i_section
 
             # Get section type
-            section_type = structure_list[i_section][1]
+            section_type = self.structure_list[i_section][1]
 
             # Get the section parent index
-            section_parent_index = int(structure_list[i_section][2])
+            section_parent_index = int(self.structure_list[i_section][2])
 
             # Get the positions and radii of each sample along the section
-            section_samples = list()
+            samples = list()
 
-            i = 0
+            # Sample index
+            sample_index = 0
+
+            # Reconstruct the samples
             for i_sample in range(section_first_point_index, section_last_point_index):
 
                 # Position
-                x = points_list[i_sample][0]
-                y = points_list[i_sample][1]
-                z = points_list[i_sample][2]
+                x = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_X_COORDINATES_IDX]
+                y = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Y_COORDINATES_IDX]
+                z = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Z_COORDINATES_IDX]
                 point = Vector((x, y, z))
 
                 # Radius
-                # NOTE: What is reported in our .H5 files is the diameter not the radius
-                radius = points_list[i_sample][3] / 2.0
+                # NOTE: What is reported in our .H5 files is the diameter unlike the .SWC files
+                radius = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_RADIUS_IDX] / 2.0
 
-                # Build sample
-                section_sample = neuromorphovis.skeleton.Sample(
-                    point=point, radius=radius, id=i, morphology_id=i)
+                # Build a NeuroMorphoVis sample
+                nmv_sample = neuromorphovis.skeleton.Sample(
+                    point=point, radius=radius, id=sample_index, morphology_id=sample_index)
 
                 # Add the sample to the list
-                section_samples.append(section_sample)
+                samples.append(nmv_sample)
 
                 # Next sample
-                i += 1
+                sample_index += 1
 
-            # Build a temporary section list until all the sections are parsed
-            parsed_section = [section_index, section_parent_index, section_type, section_samples]
+            # Build a section list until all the sections are parsed
+            section = [section_index, section_parent_index, section_type, samples]
 
             # Add this section to the parsed sections list
-            parsed_sections.append(parsed_section)
+            sections_list.append(section)
 
-        # Traverse the tree and construct the arbors.
+        # Return a reference to the sections list
+        return sections_list
+
+    ################################################################################################
+    # @read_file
+    ################################################################################################
+    def read_file(self):
+        """Read a morphology skeleton given in .H5 file into a NeuroMorphoVis morphology structure.
+
+        :return:
+            Returns a reference to a NeuroMorphoVis morphology as read from the file.
+        """
+
+        # Read the content of the .H5 file
+        self.read_points_and_structures()
+
+        # Build sections from the parsed points and structures from the morphology file
+        sections_list = self.build_sections_from_points_and_structures()
 
         # A linear list of the sections of the axons
-        axons_sections = []
+        axons_sections = list()
 
         # A linear list of basal dendrites sections
-        basal_dendrites_sections = []
+        basal_dendrites_sections = list()
 
         # A linear list of the apical dendrites sections
-        apical_dendrites_sections = []
+        apical_dendrites_sections = list()
 
         # Construct a tree of sections and filter them based on their type
-        for i_parsed_section in parsed_sections:
+        for i_section in sections_list:
 
             # Section ID
-            section_id = i_parsed_section[0]
+            section_id = i_section[0]
 
             # Section parent ID
-            section_parent_id = i_parsed_section[1]
+            section_parent_id = i_section[1]
 
             # Section children IDs, if exist
-            section_children_ids = []
-            for j_parsed_section in parsed_sections:
+            section_children_ids = list()
+
+            for j_section in sections_list:
 
                 # If the parent ID of another section is equivalent to the ID of this section, then
                 # it is a child
-                if section_id == j_parsed_section[1]:
-                    section_children_ids.append(j_parsed_section[0])
+                if section_id == j_section[1]:
+
+                    # Append it
+                    section_children_ids.append(j_section[0])
 
             # Section type
-            section_type = i_parsed_section[2]
+            section_type = i_section[2]
 
             # Section samples
-            section_samples = i_parsed_section[3]
+            section_samples = i_section[3]
 
             # Construct a skeleton section
-            skeleton_section = neuromorphovis.skeleton.Section(
+            nmv_section = neuromorphovis.skeleton.Section(
                 id=section_id, parent_id=section_parent_id, children_ids=section_children_ids,
                 samples=section_samples, type=section_type)
-
-            # Add the skeleton section to the corresponding list
-            # For neurons the values are: 1: soma, 2: axon, 3: basal dendrite, 4: apical dendrite
-            # For glia cells the values are: 1: soma, 2: glia process, 3 glia end-foot
 
             # Axon
             if section_type == nmv.consts.Arbors.H5_AXON_SECTION_TYPE:
 
-                # Add the section to the axon list
-                axons_sections.append(skeleton_section)
+                # Add the section to the axons list
+                axons_sections.append(nmv_section)
 
             # Basal dendrite
             elif section_type == nmv.consts.Arbors.H5_BASAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the basal dendrites list
-                basal_dendrites_sections.append(skeleton_section)
+                basal_dendrites_sections.append(nmv_section)
 
             # Apical dendrite
             elif section_type == nmv.consts.Arbors.H5_APICAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the apical dendrites list
-                apical_dendrites_sections.append(skeleton_section)
+                apical_dendrites_sections.append(nmv_section)
 
             # Undefined section type
             else:
@@ -455,51 +413,59 @@ class H5Reader:
         # Build the apical dendritic tree
         self.build_tree(apical_dendrites_sections)
 
-        # Build the axon arbor
-        axon = self.build_single_arbor(axons_sections)
-
         # Build the basal dendritic arbors
-        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
+        basal_dendrites_arbors = nmv.skeleton.ops.build_arbors_from_sections(
+            basal_dendrites_sections)
 
-        # Build the apical dendritic tree
-        # NOTE: We will use the build_multiple_arbors procedure to build the apical dendrite and
-        # will verify later if more than a single arbor exists in the list
-        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
+        # Build the axon, or axons if the morphology has more than a single axon
+        # NOTE: For consistency, if we have more than a single axon, we use the principal one and
+        # add the others later to the basal dendrites list
+        axon_arbor = None
+        axons_arbors = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
+        if axons_arbors is not None:
 
-        # A reference to the apical dendrite
-        apical_dendrite = None
+            # Set the principal axon
+            axon_arbor = axons_arbors[0]
 
-        # If the morphology contains apical dendrites
-        if apical_dendrites is not None:
+            # If we have more than a single axon, use the principal one and move the others to the
+            # basal dendrites
+            if len(axons_arbors) > 1:
 
-            # If the length of the apical dendrites list is greate than one, then set the first
-            # arbor to be the apical dendrite and append the rest of the arbors to the basal
-            # dendrites list
-            if len(apical_dendrites) == 1:
+                # Add the others to the basal dendrites
+                for i in range(1, len(axons_arbors)):
+                    basal_dendrites_arbors.append(axons_arbors[i])
 
-                # Set the first and only element in the apical dendrites list to be the apical
-                # dendrite
-                apical_dendrite = apical_dendrites[0]
+        # Build the apical dendrites, or apical dendrites if the morphology has more than a
+        # single apical dendrites
+        # NOTE: For consistency, if we have more than a single morphology, we use the principal one
+        # and add the others later to the basal dendrites list
+        apical_dendrite_arbor = None
+        apical_dendrites_arbors = nmv.skeleton.ops.build_arbors_from_sections(
+            apical_dendrites_sections)
 
-            # Otherwise, append the rest of the apical dendrites arbors to the basal dendrites list
-            else:
+        if apical_dendrites_arbors is not None:
 
-                # Set the first in the apical dendrites list to be the apical dendrite
-                apical_dendrite = apical_dendrites[0]
+            # Set the principal axon
+            apical_dendrite_arbor = apical_dendrites_arbors[0]
 
-                for i in range(1, len(apical_dendrites)):
-                    basal_dendrites.append(apical_dendrites[i])
+            # If we have more than a single axon, use the principal one and move the others to the
+            # basal dendrites
+            if len(apical_dendrites_arbors) > 1:
+
+                # Add the others to the basal dendrites
+                for i in range(1, len(apical_dendrites_arbors)):
+                    basal_dendrites_arbors.append(apical_dendrites_arbors[i])
 
         # Build the soma
-        nmv_soma = self.build_soma(points_list, structure_list)
+        nmv_soma = self.build_soma(self.points_list, self.structure_list)
 
         # Update the morphology label
         label = neuromorphovis.file.ops.get_file_name_from_path(self.morphology_file)
 
         # Construct the morphology skeleton
         nmv_morphology = neuromorphovis.skeleton.Morphology(
-            soma=nmv_soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
-            label=label)
+            soma=nmv_soma, axon=axon_arbor, dendrites=basal_dendrites_arbors,
+            apical_dendrite=apical_dendrite_arbor, label=label)
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology

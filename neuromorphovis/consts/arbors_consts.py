@@ -117,6 +117,18 @@ class Arbors:
     # This is only used for glia, but not used for neurons
     H5_PERIMETERS_DIRECTORY = '/perimeters'
 
+    # The index of the x-coordinates of a sample in an H5 file
+    H5_SAMPLE_X_COORDINATES_IDX = 0
+
+    # The index of the y-coordinates of a sample in an H5 file
+    H5_SAMPLE_Y_COORDINATES_IDX = 1
+
+    # The index of the z-coordinates of a sample in an H5 file
+    H5_SAMPLE_Z_COORDINATES_IDX = 2
+
+    # The index of the radius of a sample in an H5 file
+    H5_SAMPLE_RADIUS_IDX = 3
+
     # The identifier of a section of type axon in an H5 file
     H5_AXON_SECTION_TYPE = 2
 

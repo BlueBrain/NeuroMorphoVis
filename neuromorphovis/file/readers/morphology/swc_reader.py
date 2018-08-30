@@ -584,45 +584,6 @@ class SWCReader:
         return sections_list
 
     ################################################################################################
-    # @build_multiple_arbors
-    ################################################################################################
-    @staticmethod
-    def build_arbors_from_sections(sections):
-        """Returns a node, or a list of nodes where we can access the different sections of
-        a single arbor as a tree. For the axon and apical dendrites, the function returns the
-        root of a single branch. However, for the basal dendrites, the function returns a list
-        of roots, where each root reflects a single independent branch emanating from the soma.
-
-        :param sections:
-            A linear list of sections.
-        :return:
-            A list containing references to the root nodes of the arbors.
-        """
-
-        # A list of roots
-        roots = list()
-
-        # Iterate over the sections and get the root ones
-        for i_section in sections:
-
-            # If the section has no parent, it is a root then
-            if i_section.parent is None:
-
-                # Append this root to the list
-                roots.append(i_section)
-
-        # If the list does not contain any roots, then return None, otherwise return the entire list
-        if len(roots) == 0:
-
-            # Return None
-            return None
-
-        else:
-
-            # Return the root list
-            return roots
-
-    ################################################################################################
     # @read_file
     ################################################################################################
     def build_arbors_from_samples(self,
@@ -648,7 +609,7 @@ class SWCReader:
         sections = self.build_sections_from_paths(paths, arbor_type)
 
         # Build a list of arbors from a list of sections
-        arbors = self.build_arbors_from_sections(sections)
+        arbors = nmv.skeleton.ops.build_arbors_from_sections(sections)
 
         # Return a reference to the constructed arbors
         return arbors
@@ -668,60 +629,60 @@ class SWCReader:
         self.read_samples()
 
         # Build the basal dendrites
-        basal_dendrites = self.build_arbors_from_samples(
+        basal_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
 
         # Build the axon, or axons if the morphology has more than a single axon
         # NOTE: For consistency, if we have more than a single axon, we use the principal one and
         # add the others later to the basal dendrites list
-        axon = None
-        axons = self.build_arbors_from_samples(nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE)
-        if axons is not None:
+        axon_arbor = None
+        axons_arbors = self.build_arbors_from_samples(nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE)
+        if axons_arbors is not None:
+
+            # Set the principal axon
+            axon_arbor = axons_arbors[0]
 
             # If we have more than a single axon, use the principal one and move the others to the
             # basal dendrites
-            if len(axons) > 1:
-
-                # Set the principal axon
-                axon = axons[0]
+            if len(axons_arbors) > 1:
 
                 # Add the others to the basal dendrites
-                for i in range(1, len(axons)):
-                    basal_dendrites.append(axons[i])
+                for i in range(1, len(axons_arbors)):
+                    basal_dendrites_arbors.append(axons_arbors[i])
 
         # Build the apical dendrites, or apical dendrites if the morphology has more than a
         # single apical dendrites
         # NOTE: For consistency, if we have more than a single morphology, we use the principal one
         # and add the others later to the basal dendrites list
-        apical_dendrite = None
-        apical_dendrites = self.build_arbors_from_samples(
+        apical_dendrite_arbor = None
+        apical_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
-        if apical_dendrites is not None:
+        if apical_dendrites_arbors is not None:
+
+            # Set the principal axon
+            apical_dendrite_arbor = apical_dendrites_arbors[0]
 
             # If we have more than a single axon, use the principal one and move the others to the
             # basal dendrites
-            if len(apical_dendrites) > 1:
-
-                # Set the principal axon
-                apical_dendrite = apical_dendrites[0]
+            if len(apical_dendrites_arbors) > 1:
 
                 # Add the others to the basal dendrites
-                for i in range(1, len(apical_dendrites)):
-                    basal_dendrites.append(apical_dendrites[i])
+                for i in range(1, len(apical_dendrites_arbors)):
+                    basal_dendrites_arbors.append(apical_dendrites_arbors[i])
 
         # Build the soma
         soma = self.build_soma(
-            axons_arbors=axons,
-            basal_dendrites_arbors=basal_dendrites,
-            apical_dendrites_arbors=apical_dendrites)
+            axons_arbors=axons_arbors,
+            basal_dendrites_arbors=basal_dendrites_arbors,
+            apical_dendrites_arbors=apical_dendrites_arbors)
 
         # Update the morphology label
         label = neuromorphovis.file.ops.get_file_name_from_path(self.morphology_file)
 
         # Construct the morphology skeleton
         nmv_morphology = neuromorphovis.skeleton.Morphology(
-            soma=soma, axon=axon, dendrites=basal_dendrites, apical_dendrite=apical_dendrite,
-            label=label)
+            soma=soma, axon=axon_arbor, dendrites=basal_dendrites_arbors,
+            apical_dendrite=apical_dendrite_arbor, label=label)
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology
