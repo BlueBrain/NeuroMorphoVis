@@ -65,19 +65,16 @@ class Soma:
         self.arbors_profile_points = arbors_profile_points
 
         # Possible radii that can be assigned to the soma during its reconstruction
-        self.possible_radii = []
+        self.possible_radii = list()
 
         # Add the soma profile points radii to the possible_radii list
         for point in self.profile_points:
             self.possible_radii.append(point.length)
 
         # Add the arbors profile points radii to the possible_radii list
-        # TODO: IGNORE NOW
-        """
         if self.arbors_profile_points is not None:
             for point in self.arbors_profile_points:
                 self.possible_radii.append(point.length)
-        """
 
         # Sort the radii in the list
         self.possible_radii = sorted(self.possible_radii)
