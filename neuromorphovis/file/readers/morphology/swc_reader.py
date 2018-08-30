@@ -74,6 +74,9 @@ class SWCReader:
         # The zeroth sample always defines the soma parameters, and it is parsed independently
         self.samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
 
+        # Translation vector in case the file is not centered at the origin
+        translation = Vector((0.0, 0.0, 0.0))
+
         # For each line in the morphology file
         for line in morphology_file:
 
@@ -109,6 +112,18 @@ class SWCReader:
 
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
+
+            # If this is the soma sample, get the translation vector
+            if sample_type == 1 and parent_index == -1:
+
+                translation[0] = x
+                translation[1] = y
+                translation[2] = z
+
+            # Update the coordinates if the morphology is transformed
+            x = x - translation[0]
+            y = y - translation[1]
+            z = z - translation[2]
 
             # Add the sample to the list
             self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])

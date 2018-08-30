@@ -47,6 +47,9 @@ class Math:
     # Epsilon
     EPSILON = 0.99
 
+    # Little Epsilon
+    LITTLE_EPSILON = 1e-5
+
     # Origin
     ORIGIN = Vector((0.0, 0.0, 0.0))
 
