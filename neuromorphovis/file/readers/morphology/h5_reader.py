@@ -75,13 +75,23 @@ class H5Reader:
 
             # First round
             for child_id in i_section.children_ids:
+
+                # For each section
                 for j_section in sections_list:
+
+                    # Is it a child
                     if child_id == j_section.id:
+
+                        # Append it to the list
                         i_section.children.append(j_section)
 
             # Second round
             for k_section in sections_list:
+
+                # Is it parent
                 if i_section.parent_id == k_section.id:
+
+                    # Set it to be a parent
                     i_section.parent = k_section
 
     ################################################################################################
@@ -213,6 +223,7 @@ class H5Reader:
         try:
 
             # Import the h5py module
+            # TODO: Adjust the paths to avoid Blender's numpy implementation
             import h5py
 
             # Read the h5 file using the python module into a data array
@@ -222,7 +233,7 @@ class H5Reader:
         except ImportError:
 
             # Report the issue
-            print('FATAL_ERROR: Cannot find a compatible \'h5py\' version!')
+            nmv.logger.log('FATAL_ERROR: Cannot find a compatible \'h5py\' version!')
 
             # Exit NMV
             exit(0)

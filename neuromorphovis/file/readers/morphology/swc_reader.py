@@ -49,10 +49,11 @@ class SWCReader:
         self.morphology_file = swc_file
 
         # A list of all the samples parsed from the morphology file, to be used as a lookup table
-        #  to construct the morphology skeleton directly
+        # to construct the morphology skeleton directly
+        # http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
         # Each sample in this list has the following structure:
-        # [0] The index of the sample
-        # [1] The type of the sample
+        # [0] The index of the sample or sample number
+        # [1] The type of the sample or structure identifier
         # [2] Sample x-coordinates
         # [3] Sample y-coordinates
         # [4] Sample z-coordinates
