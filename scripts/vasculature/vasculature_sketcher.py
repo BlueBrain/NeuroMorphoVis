@@ -26,8 +26,13 @@ __status__      = "Production"
 
 
 
-# Blender import
+# Blender imports
 from mathutils import Vector
+
+# NeuroMorphoVis imports
+import neuromorphovis as nmv
+import neuromorphovis.geometry
+import neuromorphovis.mesh
 
 # Import vasculature scripts
 import vasculature_sample
@@ -43,38 +48,31 @@ class VasculatureSketcher:
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self,
-                 points_list,
-                 segments_list,
-                 sections_list,
-                 connections_list):
-        """Constructor
+    def __init__(self):
+        pass
 
-        :param points_list:
-            A list of all the points in the morphology skeleton.
-        :param segments_list:
-            A list of all the edges in the morphology skeleton.
-        :param sections_list:
-            A list of all the sections in the morphology skeleton.
-        :param connections_list:
-            A list of all the connections in the morphology skeleton.
+    ################################################################################################
+    # @sketch_section
+    ################################################################################################
+    def sketch_section(self,
+                       section):
         """
 
-        # A list of all the points in the morphology
-        self.morphology_points_list = points_list
+        :param section:
+        :return:
+        """
 
-        # A list of all the segments in the morphology
-        self.morphology_segments_list = segments_list
+        # Create a static bevel object that you can use to scale the samples along the arbors
+        # of the morphology
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='bevel')
 
-        # A list of all the sections in the morphology
-        self.morphology_sections_list = sections_list
+        # Construct the poly-line data
+        poly_line_data = list()
 
-        # A list of all the connections in the morphology
-        self.morphology_connections_list = connections_list
+        # Append the samples
+        for sample in section.samples_list:
+            poly_line_data.append([(sample.point[0], sample.point[1], sample.point[2], 1), sample.radius])
 
-        # A linear list of all the sections in the vasculature morphology
-        self.sections_list = list()
+        # Draw a polyline
+        nmv.geometry.ops.draw_poly_line(poly_line_data, bevel_object=bevel_object)
 
-        # A list of all the root sections into the skeleton that can give us access to the rest
-        # of the sections
-        self.roots = list()

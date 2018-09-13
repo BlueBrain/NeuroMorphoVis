@@ -133,6 +133,14 @@ class VasculatureSkeletonizer:
             # Add the sample to the samples list
             section_samples_list.append(sample)
 
+            #if i_segment == final_segment_index + 2:
+
+            #    # Get the first sample along the segment
+            #    sample = self.get_sample_on_segment(self.morphology_segments_list[i_segment][1])
+
+            #    # Add the sample to the samples list
+            #    section_samples_list.append(sample)
+
         # Return a reference to the samples list along the section
         return section_samples_list
 
@@ -184,6 +192,8 @@ class VasculatureSkeletonizer:
 
             # Update the children list
             self.sections_list[parent_index].update_children(self.sections_list[child_index])
+
+            self.sections_list[child_index].samples_list.insert(0, self.sections_list[parent_index].samples_list[-1])
 
             # Update the parent from None to a specific parent, otherwise it is a root
             self.sections_list[child_index].update_parents(self.sections_list[parent_index])
