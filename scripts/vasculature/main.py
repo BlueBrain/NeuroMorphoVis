@@ -25,7 +25,7 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 # System imports
-import h5py
+import os, sys, ntpath, h5py
 
 # Blender imports
 import bpy
@@ -35,6 +35,14 @@ from mathutils import Vector
 import neuromorphovis as nmv
 import neuromorphovis.mesh
 import neuromorphovis.scene
+
+# Internal imports
+project_space = ntpath.basename(os.path.dirname(os.path.realpath(__file__)))
+project_path = os.path.dirname(os.path.realpath(__file__)).replace(project_space, '')
+sys.path.append(project_path)
+
+import vasculature_loader
+import vasculature_skeletonizer
 
 
 ####################################################################################################
@@ -48,9 +56,18 @@ def reconstruct_vasculature():
     # Vasculature path
     vasculature_morphology = '/data/morphologies/vasculature/vasculature-datas-set-2.h5'
 
+    # Load the morphology
+    loader = vasculature_loader.VasculatureLoader(vasculature_morphology)
+
+    # Skeletonize the morphology
+    skeletonizer = vasculature_skeletonizer.VasculatureSkeletonizer(
+        points_list=loader.points_list, segments_list=loader.segments_list,
+        sections_list=loader.sections_list, connections_list=loader.connections_list)
+    skeletonizer.skeletonize()
+
+
     print('to be done')
 
 
-
-
+reconstruct_vasculature()
 

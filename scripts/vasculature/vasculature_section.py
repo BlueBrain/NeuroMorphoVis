@@ -29,9 +29,6 @@ __status__      = "Production"
 import bpy
 from mathutils import Vector
 
-# Import vasculature scripts
-from .vasculature_sample import *
-
 
 ####################################################################################################
 # VasculatureSection

@@ -24,10 +24,12 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+# Blender import
+from mathutils import Vector
 
 # Import vasculature scripts
-from .vasculature_sample import *
-from .vasculature_section import *
+import vasculature_sample
+import vasculature_section
 
 
 ####################################################################################################
@@ -89,18 +91,18 @@ class VasculatureSkeletonizer:
         """
 
         # The coordinates of the first sample
-        x = raw_samples_list[sample_index][0]
-        y = raw_samples_list[sample_index][1]
-        z = raw_samples_list[sample_index][2]
+        x = self.morphology_points_list[sample_index][0]
+        y = self.morphology_points_list[sample_index][1]
+        z = self.morphology_points_list[sample_index][2]
 
         # The cartesian coordinates of the sample
         point = Vector((x, y, z))
 
         # The radius of the first sample
-        radius = raw_samples_list[sample_index][3]
+        radius = self.morphology_points_list[sample_index][3]
 
         # Construct a new sample and return a reference to it
-        return VasculatureSample(sample_index, point, radius)
+        return vasculature_sample.VasculatureSample(sample_index, point, radius)
 
     ################################################################################################
     # @get_samples_on_section
@@ -142,7 +144,8 @@ class VasculatureSkeletonizer:
         """
 
         # For each section in the morphology sections list
-        for i_section in range(len(morphology_sections_list) - 1):
+        for i_section in range(len(self.morphology_sections_list) - 1):
+
             # The index of the first segment (or edge) along the section
             initial_segment_index = self.morphology_sections_list[i_section]
 
@@ -154,7 +157,7 @@ class VasculatureSkeletonizer:
                                                                final_segment_index)
 
             # Construct the section
-            section = VasculatureSection(i_section, section_samples_list)
+            section = vasculature_section.VasculatureSection(i_section, section_samples_list)
 
             # Add the section to the final list
             self.sections_list.append(section)
@@ -167,7 +170,7 @@ class VasculatureSkeletonizer:
         """
 
         # For each connection in the data
-        for i_connection in range(len(raw_connectivity_list)):
+        for i_connection in range(len(self.morphology_connections_list)):
 
             # Get the index of the parent
             parent_index = self.morphology_connections_list[i_connection][0]
@@ -176,10 +179,10 @@ class VasculatureSkeletonizer:
             child_index = self.morphology_connections_list[i_connection][1]
 
             # Update the children list
-            sections_list[parent_index].update_children(sections_list[child_index])
+            self.sections_list[parent_index].update_children(self.sections_list[child_index])
 
             # Update the parent from None to a specific parent, otherwise it is a root
-            sections_list[child_index].update_parent(sections_list[parent_index])
+            self.sections_list[child_index].update_parent(self.sections_list[parent_index])
 
         # Updating the roots
         for section in self.sections_list:
