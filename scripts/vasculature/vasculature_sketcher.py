@@ -25,69 +25,56 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-# System imports
-import h5py
 
-# Blender imports
-import bpy
+# Blender import
 from mathutils import Vector
 
+# Import vasculature scripts
+import vasculature_sample
+import vasculature_section
+
 
 ####################################################################################################
-# VasculatureLoader
+# VasculatureSketcher
 ####################################################################################################
-class VasculatureLoader:
-    """ A simple loader to load the vasculature data from h5 files. """
+class VasculatureSketcher:
+    """Vasculature sketching class."""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
-                 dataset):
+                 points_list,
+                 segments_list,
+                 sections_list,
+                 connections_list):
         """Constructor
 
-        :param dataset:
-            A path to the data set to load.
+        :param points_list:
+            A list of all the points in the morphology skeleton.
+        :param segments_list:
+            A list of all the edges in the morphology skeleton.
+        :param sections_list:
+            A list of all the sections in the morphology skeleton.
+        :param connections_list:
+            A list of all the connections in the morphology skeleton.
         """
 
-        # Section index
-        self.dataset = dataset
+        # A list of all the points in the morphology
+        self.morphology_points_list = points_list
 
-        # A list of all the points in the data set
-        self.points_list = list()
+        # A list of all the segments in the morphology
+        self.morphology_segments_list = segments_list
 
-        # A list of all the segments in the data set
-        self.segments_list = list()
+        # A list of all the sections in the morphology
+        self.morphology_sections_list = sections_list
 
-        # A list of all the sections in the data set
+        # A list of all the connections in the morphology
+        self.morphology_connections_list = connections_list
+
+        # A linear list of all the sections in the vasculature morphology
         self.sections_list = list()
 
-        # A list of all the connections in the data set
-        self.connections_list = list()
-
-        # Load the dataset directly
-        self.load_dataset_from_file()
-
-    ################################################################################################
-    # @load_dataset_from_file
-    ################################################################################################
-    def load_dataset_from_file(self):
-        """Loads the dataset from the file.
-        """
-
-        print('STATUS: Loading dataset')
-
-        # Read the h5 file using the python module into a data array
-        data = h5py.File(self.dataset, 'r')
-
-        # A list of all the samples in the data set
-        self.points_list = data['points'].value
-
-        # A list of all the edges or 'segments' in the data set
-        self.segments_list = data['edges'].value
-
-        # A list of all the sections (called structures) in the data set
-        self.sections_list = data['chains']['structure'].value
-
-        # A list of all the connections between the different sections in the data set
-        self.connections_list = data['chains']['connectivity'].value
+        # A list of all the root sections into the skeleton that can give us access to the rest
+        # of the sections
+        self.roots = list()

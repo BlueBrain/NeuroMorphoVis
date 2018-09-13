@@ -25,11 +25,6 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
-# Blender imports
-import bpy
-from mathutils import Vector
-
-
 ####################################################################################################
 # VasculatureSection
 ####################################################################################################
@@ -56,17 +51,17 @@ class VasculatureSection:
         # Segments samples (points along the section)
         self.samples_list = samples_list
 
-        # A reference to the section parent, if it exists
-        self.parent = None
+        # A reference to the section parents, if exist
+        self.parents = list()
 
-        # A list of the children
+        # A list of the children, if exist
         self.children = list()
 
     ################################################################################################
     # @update_children
     ################################################################################################
     def update_children(self, child_section):
-        """Updates the children list.
+        """Updates the children sections list.
 
         :param child_section:
             The child section that is supposed to be emanating from this section.
@@ -77,36 +72,17 @@ class VasculatureSection:
         self.children.append(child_section)
 
     ################################################################################################
-    # @update_parent
+    # @update_parents
     ################################################################################################
-    def update_parent(self, parent_section):
-        """Sets the parent section if not set, otherwise double check and raise a warning.
+    def update_parents(self, parent_section):
+        """Updates the parents section list.
 
         :param parent_section:
             The parent section with which this section is emanating from.
         """
 
-        # If the parent is set to None, then we have no concerns
-        if self.parent is None:
-
-            # Update the parent
-            self.parent = parent_section
-
-        # Otherwise, raise a warning to indicate that this section has been initialized before and
-        # something is wrong in the data set
-        else:
-
-            # Is the current parent has the same index of the given parent
-            if self.parent.index == parent_section.index:
-
-                # Warning
-                print('WARNING: Repeated parent in the connection with the same index!')
-
-            # Otherwise a new parent
-            else:
-
-                # Warning
-                print('WARNING: Another parent in the connection with a different index!')
+        # Append the section to the list
+        self.parents.append(parent_section)
 
     ################################################################################################
     # @is_root
@@ -118,7 +94,7 @@ class VasculatureSection:
             True if the section is root, and False otherwise.
         """
 
-        if self.parent is None:
+        if len(self.parents) == 0:
             return True
 
         return False
@@ -139,16 +115,16 @@ class VasculatureSection:
         return False
 
     ################################################################################################
-    # @has_parent
+    # @has_parents
     ################################################################################################
-    def has_parent(self):
-        """Check if the section has a parent section or not.
+    def has_parents(self):
+        """Check if the section has a parent sections or not.
 
         :return:
             True of False.
         """
 
-        if self.parent is None:
-            return False
+        if len(self.parents) > 0:
+            return True
 
-        return True
+        return False

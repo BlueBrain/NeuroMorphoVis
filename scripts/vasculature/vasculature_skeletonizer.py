@@ -143,6 +143,8 @@ class VasculatureSkeletonizer:
         """Builds a list of all the sections in the morphology to be able to skeletonize it
         """
 
+        print('STATUS: Build sections list')
+
         # For each section in the morphology sections list
         for i_section in range(len(self.morphology_sections_list) - 1):
 
@@ -169,6 +171,8 @@ class VasculatureSkeletonizer:
         """Use the connectivity data to build the trees of the different structures in the data.
         """
 
+        print('STATUS: Build skeletons trees')
+
         # For each connection in the data
         for i_connection in range(len(self.morphology_connections_list)):
 
@@ -182,13 +186,13 @@ class VasculatureSkeletonizer:
             self.sections_list[parent_index].update_children(self.sections_list[child_index])
 
             # Update the parent from None to a specific parent, otherwise it is a root
-            self.sections_list[child_index].update_parent(self.sections_list[parent_index])
+            self.sections_list[child_index].update_parents(self.sections_list[parent_index])
 
         # Updating the roots
         for section in self.sections_list:
 
             # If the section has no parent
-            if section.parent is None:
+            if not section.has_parents():
 
                 # Add him to the root list
                 self.roots.append(section)
