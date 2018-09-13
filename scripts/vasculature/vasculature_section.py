@@ -25,6 +25,14 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
+# Blender imports
+import bpy
+from mathutils import Vector
+
+# Import vasculature scripts
+from .vasculature_sample import *
+
+
 ####################################################################################################
 # VasculatureSection
 ####################################################################################################

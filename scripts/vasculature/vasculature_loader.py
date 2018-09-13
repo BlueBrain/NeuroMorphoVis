@@ -25,6 +25,13 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 
+# System imports
+import h5py
+
+# Blender imports
+import bpy
+from mathutils import Vector
+
 ####################################################################################################
 # VasculatureLoader
 ####################################################################################################

@@ -24,6 +24,8 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
+# Import vasculature scripts
 from .vasculature_sample import *
 from .vasculature_section import *
 
@@ -179,6 +181,14 @@ class VasculatureSkeletonizer:
             # Update the parent from None to a specific parent, otherwise it is a root
             sections_list[child_index].update_parent(sections_list[parent_index])
 
+        # Updating the roots
+        for section in self.sections_list:
+
+            # If the section has no parent
+            if section.parent is None:
+
+                # Add him to the root list
+                self.roots.append(section)
 
     ################################################################################################
     # @skeletonize
