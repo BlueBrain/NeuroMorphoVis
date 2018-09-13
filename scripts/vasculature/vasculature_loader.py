@@ -26,10 +26,10 @@ __status__      = "Production"
 
 
 ####################################################################################################
-# VasculatureSection
+# VasculatureLoader
 ####################################################################################################
 class VasculatureLoader:
-    """ A morphological section represents a series of morphological samples of vasculature. """
+    """ A simple loader to load the vasculature data from h5 files. """
 
     ################################################################################################
     # @__init__
