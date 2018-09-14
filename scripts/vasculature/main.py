@@ -55,8 +55,8 @@ def reconstruct_vasculature():
 
     # Vasculature path
     vasculature_morphology = '/data/morphologies/vasculature/vasculature-datas-set-2.h5'
-    vasculature_morphology = '/computer/data/vasculature.h5'
-    vasculature_morphology = '/data/vasculature/vasculature.h5'
+    #vasculature_morphology = '/computer/data/vasculature.h5'
+    #vasculature_morphology = '/data/vasculature/vasculature.h5'
 
     # Load the morphology
     loader = vasculature_loader.VasculatureLoader(vasculature_morphology)

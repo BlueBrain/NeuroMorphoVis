@@ -57,6 +57,9 @@ class VasculatureSection:
         # A list of the children, if exist
         self.children = list()
 
+        # Section name
+        self.name = 'section_' + str(index)
+
     ################################################################################################
     # @update_children
     ################################################################################################

@@ -48,9 +48,9 @@ class VasculatureSketcher:
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self):
-        pass
+    def __init__(self, bevel_object):
 
+        self.bevel_object = bevel_object
     ################################################################################################
     # @sketch_section
     ################################################################################################
@@ -62,17 +62,16 @@ class VasculatureSketcher:
         :return:
         """
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='bevel')
-
         # Construct the poly-line data
         poly_line_data = list()
 
         # Append the samples
         for sample in section.samples_list:
-            poly_line_data.append([(sample.point[0], sample.point[1], sample.point[2], 1), sample.radius])
+            poly_line_data.append([(sample.point[0], sample.point[1], sample.point[2], 1),
+                                   sample.radius])
 
         # Draw a polyline
-        nmv.geometry.ops.draw_poly_line(poly_line_data, bevel_object=bevel_object)
+        nmv.geometry.ops.draw_poly_line(poly_line_data,
+                                        bevel_object=self.bevel_object,
+                                        name=section.name)
 

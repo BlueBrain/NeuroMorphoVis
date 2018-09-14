@@ -70,8 +70,11 @@ class VasculatureSkeletonizer:
         # A list of all the connections in the morphology
         self.morphology_connections_list = connections_list
 
-        # A linear list of all the sections in the vasculature morphology
+        # A list of all the sections in the vasculature morphology
         self.sections_list = list()
+
+        # A list of all the auxiliary sections that were added from the connectivity data
+        self.auxiliary_sections_list = list()
 
         # A list of all the root sections into the skeleton that can give us access to the rest
         # of the sections
@@ -133,14 +136,6 @@ class VasculatureSkeletonizer:
             # Add the sample to the samples list
             section_samples_list.append(sample)
 
-            #if i_segment == final_segment_index + 2:
-
-            #    # Get the first sample along the segment
-            #    sample = self.get_sample_on_segment(self.morphology_segments_list[i_segment][1])
-
-            #    # Add the sample to the samples list
-            #    section_samples_list.append(sample)
-
         # Return a reference to the samples list along the section
         return section_samples_list
 
@@ -173,6 +168,37 @@ class VasculatureSkeletonizer:
             self.sections_list.append(section)
 
     ################################################################################################
+    # @construct_auxiliary_section
+    ################################################################################################
+    def construct_auxiliary_section(self,
+                                    parent_section,
+                                    child_section):
+        """Construct an auxiliary section that connects the parent to the child, and add it to
+        the auxiliary sections list.
+
+        :param parent_section:
+            A reference to the parent section.
+        :param child_section:
+            A reference to the child section.
+        """
+
+        # A list of samples
+        section_samples_list = list()
+
+        # Add the parent section samples
+        section_samples_list.extend(parent_section.samples_list)
+
+        # Add the child section samples
+        section_samples_list.extend(child_section.samples_list)
+
+        # Construct the section
+        section = vasculature_section.VasculatureSection(-1, section_samples_list)
+        section.name = 'section_' + str(parent_section.index) + '_' + str(child_section.index)
+
+        # Add the section to the auxiliary sections list
+        self.auxiliary_sections_list.append(section)
+
+    ################################################################################################
     # @build_skeleton_trees
     ################################################################################################
     def build_skeleton_trees(self):
@@ -191,14 +217,22 @@ class VasculatureSkeletonizer:
             child_index = self.morphology_connections_list[i_connection][1]
 
             # Update the children list
-            self.sections_list[parent_index].update_children(self.sections_list[child_index])
-
-            self.sections_list[child_index].samples_list.insert(0, self.sections_list[parent_index].samples_list[-1])
+            # self.sections_list[parent_index].update_children(self.sections_list[child_index])
 
             # Update the parent from None to a specific parent, otherwise it is a root
-            self.sections_list[child_index].update_parents(self.sections_list[parent_index])
+            # self.sections_list[child_index].update_parents(self.sections_list[parent_index])
+
+            # Get the parent section
+            parent_section = self.sections_list[parent_index]
+
+            # Get the child section
+            child_section = self.sections_list[child_index]
+
+            # Construct the connectivity section from the parent and child
+            self.construct_auxiliary_section(parent_section, child_section)
 
         # Updating the roots
+        """ 
         for section in self.sections_list:
 
             # If the section has no parent
@@ -206,6 +240,7 @@ class VasculatureSkeletonizer:
 
                 # Add him to the root list
                 self.roots.append(section)
+        """
 
     ################################################################################################
     # @skeletonize
