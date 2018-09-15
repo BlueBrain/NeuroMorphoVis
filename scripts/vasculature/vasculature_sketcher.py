@@ -137,4 +137,4 @@ class VasculatureSketcher:
             nmv.scene.clear_scene()
 
             # Draw and save the section
-            self.draw_and_save_section(section, output_diretory)
+            self.draw_and_save_section(section, output_directory)
