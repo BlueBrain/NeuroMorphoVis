@@ -50,7 +50,13 @@ class VasculatureSketcher:
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self, bevel_object):
+    def __init__(self,
+                 bevel_object):
+        """Constructor.
+
+        :param bevel_object:
+            Input bevel object.
+        """
 
         self.bevel_object = bevel_object
 
@@ -59,10 +65,12 @@ class VasculatureSketcher:
     ################################################################################################
     def sketch_section(self,
                        section):
-        """
+        """Sketches the section as a tube
 
         :param section:
+            A given vasculature section.
         :return:
+            A reference to the section polyline.
         """
 
         # Construct the poly-line data
@@ -78,17 +86,22 @@ class VasculatureSketcher:
         # Draw a polyline
         section_polyline = nmv.geometry.ops.draw_poly_line(poly_line_data,
                                                            bevel_object=bevel_object,
-                                                           name=section.name)
+                                                           name=section.name,
+                                                           caps=True)
         return section_polyline
 
     ################################################################################################
     # @sketch_section
     ################################################################################################
     def draw_and_save_section(self,
-                              section):
-        """
+                              section,
+                              output_directory):
+        """Draw and save the section.
 
-        :return:
+        :param section:
+            Input section.
+        :param output_directory:
+            Output directory
         """
 
         # Construct the section polyline
@@ -98,24 +111,30 @@ class VasculatureSketcher:
         section_mesh = nmv.scene.ops.convert_object_to_mesh(section_polyline)
 
         # Save the section mesh into file
-        nmv.file.export_object_to_ply_file(section_mesh, '/data/vasculature/meshes', section.name)
+        nmv.file.export_object_to_ply_file(section_mesh, output_directory, section.name)
 
     ################################################################################################
     # @sketch_section
     ################################################################################################
     def draw_and_save_sections(self,
-                               sections_list):
+                               sections_list,
+                               output_directory):
+        """Draws and saves the section as a ply file.
+
+        :param sections_list:
+            Input list of sections to be drawn.
+        :param output_directory:
+            Output directory.
         """
 
-        :return:
-        """
-
+        # For each section
         for i, section in enumerate(sections_list):
+
+            # Indication
             print('%d/%d' % (i, len(sections_list)))
 
             # Clear the scene
             nmv.scene.clear_scene()
 
             # Draw and save the section
-            self.draw_and_save_section(section)
-
+            self.draw_and_save_section(section, output_diretory)
