@@ -33,6 +33,8 @@ from mathutils import Vector
 import neuromorphovis as nmv
 import neuromorphovis.geometry
 import neuromorphovis.mesh
+import neuromorphovis.file
+import neuromorphovis.scene
 
 # Import vasculature scripts
 import vasculature_sample
@@ -51,6 +53,7 @@ class VasculatureSketcher:
     def __init__(self, bevel_object):
 
         self.bevel_object = bevel_object
+
     ################################################################################################
     # @sketch_section
     ################################################################################################
@@ -70,8 +73,49 @@ class VasculatureSketcher:
             poly_line_data.append([(sample.point[0], sample.point[1], sample.point[2], 1),
                                    sample.radius])
 
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='bevel')
+
         # Draw a polyline
-        nmv.geometry.ops.draw_poly_line(poly_line_data,
-                                        bevel_object=self.bevel_object,
-                                        name=section.name)
+        section_polyline = nmv.geometry.ops.draw_poly_line(poly_line_data,
+                                                           bevel_object=bevel_object,
+                                                           name=section.name)
+        return section_polyline
+
+    ################################################################################################
+    # @sketch_section
+    ################################################################################################
+    def draw_and_save_section(self,
+                              section):
+        """
+
+        :return:
+        """
+
+        # Construct the section polyline
+        section_polyline = self.sketch_section(section)
+
+        # Convert the section polyline into a mesh
+        section_mesh = nmv.scene.ops.convert_object_to_mesh(section_polyline)
+
+        # Save the section mesh into file
+        nmv.file.export_object_to_ply_file(section_mesh, '/data/vasculature/meshes', section.name)
+
+    ################################################################################################
+    # @sketch_section
+    ################################################################################################
+    def draw_and_save_sections(self,
+                               sections_list):
+        """
+
+        :return:
+        """
+
+        for i, section in enumerate(sections_list):
+            print('%d/%d' % (i, len(sections_list)))
+
+            # Clear the scene
+            nmv.scene.clear_scene()
+
+            # Draw and save the section
+            self.draw_and_save_section(section)
 
