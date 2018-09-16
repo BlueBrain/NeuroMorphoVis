@@ -81,7 +81,7 @@ class VasculatureSketcher:
             poly_line_data.append([(sample.point[0], sample.point[1], sample.point[2], 1),
                                    sample.radius])
 
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='bevel')
 
         # Draw a polyline
         section_polyline = nmv.geometry.ops.draw_poly_line(poly_line_data,
