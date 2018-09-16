@@ -118,7 +118,9 @@ class VasculatureSketcher:
     ################################################################################################
     def draw_and_save_sections(self,
                                sections_list,
-                               output_directory):
+                               output_directory,
+                               portion,
+                               max_portions):
         """Draws and saves the section as a ply file.
 
         :param sections_list:
@@ -127,14 +129,22 @@ class VasculatureSketcher:
             Output directory.
         """
 
+        portion_size = int(float(len(sections_list)) / max_portions)
+
+        start_index = portion * portion_size
+        end_index = start_index + portion_size
+
         # For each section
-        for i, section in enumerate(sections_list):
+        for i in range(start_index, end_index):
+
+            if i >= len(sections_list):
+                break
 
             # Indication
-            print('%d/%d' % (i, len(sections_list)))
+            print('%d/%d' % (i, end_index))
 
             # Clear the scene
             nmv.scene.clear_scene()
 
             # Draw and save the section
-            self.draw_and_save_section(section, output_directory)
+            self.draw_and_save_section(sections_list[i], output_directory)
