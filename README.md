@@ -9,7 +9,7 @@ The framework is based on Blender 2.78c and is free to download.
 
 The code will be available soon, following the acceptance of a recently submitted publication. 
 
-![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/neuromorphp-vis-interface.png)
+![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/neuromorphpvis-interface.png)
 
 Neuronal soma reconstruction 
 [![Neuronal soma reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
