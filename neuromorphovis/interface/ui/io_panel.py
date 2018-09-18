@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # Blender imports
 import bpy
 from bpy.props import EnumProperty
@@ -66,11 +67,10 @@ class IOPanel(bpy.types.Panel):
         default=nmv.enums.Input.H5_SWC_FILE)
     
     # Morphology file
-    sample = '/abdellah-bbp-engineering/bbp-blender/blender-morphology-drawer/175-1-22ct.CNG.swc'
     bpy.types.Scene.MorphologyFile = StringProperty(
         name="Morphology File",
         description="Select a specific morphology to mesh",
-        default=sample, maxlen=2048,  subtype='FILE_PATH')
+        default='Select File', maxlen=2048,  subtype='FILE_PATH')
     
     # Morphology directory 
     bpy.types.Scene.MorphologyDirectory = StringProperty(
