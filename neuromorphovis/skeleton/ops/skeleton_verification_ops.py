@@ -24,11 +24,13 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import math
 
 import neuromorphovis as nmv
 import neuromorphovis.skeleton
+
 
 ####################################################################################################
 # @verify_number_of_samples_per_section

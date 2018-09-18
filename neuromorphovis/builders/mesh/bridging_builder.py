@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import copy, math
 
@@ -42,6 +43,7 @@ import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
+
 
 ####################################################################################################
 # @BridgingBuilder

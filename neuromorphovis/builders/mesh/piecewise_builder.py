@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import random, copy
 
@@ -680,7 +681,7 @@ class PiecewiseBuilder:
         """
 
         # Transform the neuron object to the global coordinates
-        #if self.options.mesh.global_coordinates:
+        # TODO: FIXME if self.options.mesh.global_coordinates:
         if False:
             nmv.logger.header('Transforming to global coordinates')
 
@@ -721,6 +722,8 @@ class PiecewiseBuilder:
     # @render_mesh
     ################################################################################################
     def render_mesh(self):
+        """Renders the mesh.
+        """
 
         # Compute the bounding box for a close up view
         if self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
@@ -769,6 +772,8 @@ class PiecewiseBuilder:
     # @render_mesh_360
     ################################################################################################
     def render_mesh_360(self):
+        """Renders a 360 sequence of the mesh.
+        """
 
         # Update the file prefix
         neuron_mesh_file_name = '%s' % self.options.morphology.label
@@ -802,7 +807,7 @@ class PiecewiseBuilder:
                 # Compute the bounding box for the available meshes only
                 bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
-            # Compute the bounding box for the wide shot view that correspond to the whole morphology
+            # Compute the bounding box for the wide shot view that correspond to whole morphology
             else:
 
                 # Compute the full morphology bounding box
@@ -850,6 +855,7 @@ class PiecewiseBuilder:
     ################################################################################################
     def reconstruct_mesh(self):
         """Reconstructs the neuronal mesh as a set of piecewise-watertight meshes.
+
         The meshes are logically connected, but the different branches are intersecting,
         so they can be used perfectly for voxelization purposes, but they cannot be used for
         surface rendering with 'transparency'.

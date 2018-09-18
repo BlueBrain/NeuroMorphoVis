@@ -79,22 +79,20 @@ if "bpy" in locals():
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-
-    import neuromorphovis.neurorender.neurorender
+    # import neuromorphovis.neurorender.neurorender
 
     imp.reload(neuromorphovis.interface.ui.io_panel)
     imp.reload(neuromorphovis.interface.ui.analysis_panel)
     imp.reload(neuromorphovis.interface.ui.soma_panel)
     imp.reload(neuromorphovis.interface.ui.morphology_panel)
-    imp.reload(neuromorphovis.interface.ui.mesh_panel)
-    #imp.reload(neuromorphovis.interface.ui.volume_panel)
+    # imp.reload(neuromorphovis.interface.ui.mesh_panel)
 else:
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-    import neuromorphovis.neurorender.neurorender
+    # import neuromorphovis.neurorender.neurorender
 
 
 ####################################################################################################
@@ -110,9 +108,7 @@ def register():
     neuromorphovis.interface.ui.soma_panel.register_panel()
     neuromorphovis.interface.ui.morphology_panel.register_panel()
     neuromorphovis.interface.ui.mesh_panel.register_panel()
-    #neuromorphovis.interface.ui.volume_panel.register_panel()
-
-    neuromorphovis.neurorender.neurorender.register_panel()
+    # neuromorphovis.neurorender.neurorender.register_panel()
 
 
 ####################################################################################################
@@ -128,9 +124,7 @@ def unregister():
     neuromorphovis.interface.ui.soma_panel.unregister_panel()
     neuromorphovis.interface.ui.morphology_panel.unregister_panel()
     neuromorphovis.interface.ui.mesh_panel.unregister_panel()
-    #neuromorphovis.interface.ui.volume_panel.unregister_panel()
-
-    neuromorphovis.neurorender.neurorender.unregister_panel()
+    # neuromorphovis.neurorender.neurorender.unregister_panel()
 
 
 ####################################################################################################

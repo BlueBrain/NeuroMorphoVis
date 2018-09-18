@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import sys
 
@@ -51,6 +52,7 @@ import neuromorphovis.skeleton
 def reconstruct_soma_skeleton(morphology_object,
                               options):
     """Reconstruct the skeleton of the soma profile and render it.
+    TODO: Implement this function.
 
     :param morphology_object:
         A given morphology object.

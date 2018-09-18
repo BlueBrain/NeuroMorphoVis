@@ -90,9 +90,19 @@ def draw_section_from_poly_line_data(data,
     return section_object
 
 
+####################################################################################################
+# @extrude_section_from_poly_line_data
+####################################################################################################
+def extrude_section_from_poly_line_data(data,
+                                        name,
+                                        bmesh_base):
+    """
 
-
-def extrude_section_from_poly_line_data(data, name, bmesh_base):
+    :param data:
+    :param name:
+    :param bmesh_base:
+    :return:
+    """
     point = Vector((data[1][0][0], data[1][0][1], data[1][0][2]))
     face_index = nmv.bmeshi.ops.get_nearest_face_index(bmesh_base, point)
 
@@ -115,7 +125,6 @@ def extrude_section_from_poly_line_data(data, name, bmesh_base):
         # nmv.bmeshi.ops.set_face_radius(bmesh_base, face_index, radius)
 
     return bmesh_base
-
 
 
 ####################################################################################################

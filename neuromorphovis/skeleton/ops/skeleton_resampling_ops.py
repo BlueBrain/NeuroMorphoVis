@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import os, copy, math
 
@@ -157,7 +158,7 @@ def resample_sections(section,
 def resample_section_based_on_radius(section):
     """Resample a given section based on the radius of its last sample.
     This function resamples a section with a resampling distance
-
+    TODO: Implement this function
     :param section:
     :return:
     """

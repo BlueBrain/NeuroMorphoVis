@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # Blender imports
 import bpy
 from mathutils import Vector, Matrix
@@ -113,5 +114,5 @@ def draw_closed_circle(radius=1,
     # Rename the circle
     circle.name = name
 
-    # Retrun a reference to the created circle.
+    # Return a reference to the created circle.
     return circle

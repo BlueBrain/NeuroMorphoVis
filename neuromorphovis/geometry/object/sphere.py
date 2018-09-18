@@ -77,10 +77,9 @@ def create_uv_sphere(radius=1,
     bpy.ops.object.editmode_toggle()
 
     # Create a material and assign it to the sphere
-    #
-    #if color is not None:
-    #    sphere_material = materials.create_default_material(name='sphere_color', color=color)
-    #    materials.set_material_to_object(sphere, sphere_material)
+    if color is not None:
+        sphere_material = materials.create_default_material(name='sphere_color', color=color)
+        materials.set_material_to_object(sphere, sphere_material)
 
     # Return a reference to the created sphere object
     return sphere

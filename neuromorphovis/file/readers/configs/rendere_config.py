@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # Blender imports
 import bpy
 
@@ -88,18 +89,5 @@ def read_neurorender_config(config_file_path):
 
     # Return a reference to the object
     return mesh_object
-
-
-# after returning neurorenderer data
-
-# import the objects
-
-# setup the scene
-
-# Add the camera
-
-# render the image at the specified resolution
-
-# distribute the rendering using slurm
 
 

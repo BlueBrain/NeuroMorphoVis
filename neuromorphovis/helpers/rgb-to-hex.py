@@ -26,32 +26,65 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+# System imports
 import sys
 
+
+####################################################################################################
+# @rgb_to_hex
+####################################################################################################
 def rgb_to_hex(rgb):
+    """Converts an rgb color to a hex color.
+
+    :param rgb:
+        A given rgb color.
+    :return:
+        The hex code for a hed color
+    """
+
+    # Return the HEX code of the color
     return '#%02x%02x%02x' % rgb
-    
-args = sys.argv
-args = args.split(',')
 
-r = float(args[1])
-g = float(args[2])
-b = float(args[3])
 
-if r > 255: r = 255
-if r < 0: r = 0 
-if r < 1.0 and r > 0.0: r = r * 256
+####################################################################################################
+# __main__
+####################################################################################################
+if __name__ == "__main__":
 
-if g > 255: g = 255
-if g < 0: g = 0 
-if g < 1.0 and g > 0.0: g = g * 256
+    # Get the colors
+    args = sys.argv
+    args = args.split(',')
 
-if b > 255: b = 255
-if b < 0: r = 0 
-if b < 1.0 and b > 0.0: b = b * 256
+    r = float(args[1])
+    g = float(args[2])
+    b = float(args[3])
 
-r = int(r)
-g = int(g)
-b = int(b)
+    # Verify the range and update
+    if r > 255:
+        r = 255
+    if r < 0:
+        r = 0
+    if 1.0 > r > 0.0:
+        r = r * 256
 
-print(rgb_to_hex((r, g, b)))
+    if g > 255:
+        g = 255
+    if g < 0:
+        g = 0
+    if 1.0 > g > 0.0:
+        g = g * 256
+
+    if b > 255:
+        b = 255
+    if b < 0:
+        r = 0
+    if 1.0 > b > 0.0:
+        b = b * 256
+
+    # Get the final color values
+    r = int(r)
+    g = int(g)
+    b = int(b)
+
+    # Print the HEX value
+    print(rgb_to_hex((r, g, b)))

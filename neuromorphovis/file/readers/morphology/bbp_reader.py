@@ -16,6 +16,7 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
+
 # System imports
 import random
 
@@ -928,7 +929,6 @@ class BBPReader:
         # Create the tree representation of the morphology
         morphology = nmv.skeleton.Morphology(
             soma=soma, axon=axon, dendrites=dendrites, apical_dendrite=apical_dendrite, gid=gid)
-
 
         # Return the morphology tree skeleton
         return morphology

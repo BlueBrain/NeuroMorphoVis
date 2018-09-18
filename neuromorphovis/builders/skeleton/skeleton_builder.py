@@ -49,6 +49,8 @@ import neuromorphovis.skeleton
 # @SkeletonBuilder
 ####################################################################################################
 class SkeletonBuilder:
+    """Skeleton builder
+    """
 
     ################################################################################################
     # @__init__
@@ -157,7 +159,6 @@ class SkeletonBuilder:
 
         # Return a reference to the object
         return soma_sphere
-
 
     ################################################################################################
     # @draw_section_terminal_as_sphere
@@ -395,8 +396,8 @@ class SkeletonBuilder:
                                            branching_level=0,
                                            max_branching_level=nmv.consts.Math.INFINITY,
                                            bevel_object=None):
-        """Draws the section as a continuous, yet, disconnected and independent object from the rest
-        of the sections of the morphology.
+        """Draws the section as a continuous, yet, disconnected and independent object from the
+        rest of the sections of the morphology.
 
         :param root:
             Arbor root.
@@ -990,7 +991,8 @@ class SkeletonBuilder:
             # Create a soma builder object
             soma_builder_object = nmv.builders.SomaBuilder(self.morphology, self.options)
 
-            # Reconstruct the three-dimensional profile of the soma mesh without applying the default shader to it,
+            # Reconstruct the three-dimensional profile of the soma mesh without applying the
+            # default shader to it,
             # since we need to use the shader specified in the morphology options
             soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 

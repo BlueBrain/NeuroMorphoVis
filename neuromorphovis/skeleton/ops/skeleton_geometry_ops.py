@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import random, copy
 
@@ -34,6 +35,7 @@ from mathutils import Vector, Matrix
 import neuromorphovis as nmv
 import neuromorphovis.bbox
 import neuromorphovis.skeleton
+
 
 ####################################################################################################
 # @compute_section_bounding_box
@@ -492,9 +494,6 @@ def update_branching_order_section(section,
 
         # Update the bounding box via updating p_min and p_max
         update_branching_order_section(section=child_section, branching_order=branching_order + 1)
-
-
-
 
 
 ####################################################################################################
