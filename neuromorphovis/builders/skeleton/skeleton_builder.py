@@ -58,7 +58,8 @@ class SkeletonBuilder:
                  options):
         """Constructor.
 
-        :param morphology: A given morphology.
+        :param morphology:
+            A given morphology.
         """
 
         # Morphology

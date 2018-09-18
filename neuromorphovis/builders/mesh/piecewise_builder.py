@@ -811,7 +811,7 @@ class PiecewiseBuilder:
 
             # Compute a 360 bounding box to fit the arbors
             bounding_box_360 = nmv.bbox.compute_360_bounding_box(bounding_box,
-                self.morphology.soma.centroid)
+                                                                 self.morphology.soma.centroid)
 
             # Create a specific directory for this mesh
             output_directory = '%s/%s_mesh_360' % (
@@ -893,9 +893,9 @@ class PiecewiseBuilder:
         # self.decimate_neuron_mesh()
 
         # Connecting all the objects together into a single object
-        #for scene_object in bpy.context.scene.objects:
-        #    if scene_object.type == 'MESH':
-        #        self.arbors_meshes.append(scene_object)
+        for scene_object in bpy.context.scene.objects:
+            if scene_object.type == 'MESH':
+                self.arbors_meshes.append(scene_object)
 
 
 

@@ -24,6 +24,7 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # Blender imports
 from mathutils import Vector
 
@@ -50,11 +51,14 @@ class BoundingBox:
         """Constructor
         """
 
+        # Construct the bounding box from @p_min and @p_max
         if p_min != nmv.consts.Math.ORIGIN and max != nmv.consts.Math.ORIGIN:
             self.p_min = p_min
             self.p_max = p_max
             self.bounds = p_max - p_min
             self.center = p_min + (self.bounds / 2.0)
+
+        # Construct the bounding box from @bounds and @center
         else:
             self.bounds = bounds
             self.center = center
@@ -66,7 +70,7 @@ class BoundingBox:
     ################################################################################################
     def extend_bbox(self,
                     delta=1.0):
-        """Extend the bounding box few microns uniformly in all the directions.
+        """Extends the bounding box few microns uniformly in all the directions.
 
         :param delta:
             The value that will be used to extend the bounding box.
