@@ -9,13 +9,13 @@ The framework is based on Blender 2.78c and is free to download.
 
 The code will be available soon, following the acceptance of a recently submitted publication. 
 
-![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/neuromorphpvis-interface.png)
+![NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/soma-reconstruction.png?token=ABOF04k9F31wN5-jtWAHsiE9SPMlFOHKks5bqliCwA%3D%3D)
 
 Neuronal soma reconstruction 
-[![Neuronal soma reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
+[![Neuronal soma reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/soma-reconstruction.png?token=ABOF04k9F31wN5-jtWAHsiE9SPMlFOHKks5bqliCwA%3D%3D)](https://www.youtube.com/watch?v=v02HogkFODU)
 
 Morphology visualization 
-[![Neuronal morphology visualization](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
+[![Neuronal morphology visualization](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/morphology-reconstruction.png?token=ABOF02GEsx4wN532esd5LAyhcAvYtDbBks5bqli3wA%3D%3D)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
 
 Neuronal mesh reconstruction 
-[![Neuronal mesh reconstruction](https://github.com/marwan-abdellah/NeuroMorphoVis/blob/master/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
+[![Neuronal mesh reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/mesh-generation.png?token=ABOF01D3_z8hCR2A4nZaPPm0gdj9R1yDks5bqljHwA%3D%3D)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
