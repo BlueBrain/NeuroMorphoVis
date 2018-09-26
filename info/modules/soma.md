@@ -24,6 +24,8 @@ NeuroMorphoVis has three methods to reconstruct different three-dimensional soma
 
 + __Complex__: This is a combined method of the two previous ones.
 <p align="center">
+  <img src="images/soma-profile.png">
+  <img src="images/soma-arbors.png">
   <img src="images/soma-complex.png">
 </p>
 
