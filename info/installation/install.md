@@ -45,13 +45,15 @@ If the user wants to change the name any of these subdirectories, then the check
   <img src="images/io-3.png">
 </p>
 
+To use NeuroMorphoVis, you must have a recent version of Blender installed on your system. Open a terminal and type 
+``` blender```
 
 You can use the package manager of Ubunut to install Blender using this command
 ```
 sudo apt-get install blender
 ```
 
-If Blender is installed, you will get the following message 
+If Blender is already installed, you will get the following message 
 ```
 Reading package lists... Done
 Building dependency tree       
