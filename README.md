@@ -42,10 +42,10 @@ NeuroMorphoVis has five panels
 
 ![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
 
+### Results
+#### Neuronal soma reconstruction 
+![](images/soma-reconstruction.png "NeuroMorphoVis Panels")
 
-![## NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/neuromorphovis-interface.png?token=ABOF06dhIj1X0w9k1PaZS85B3uMm6Mrpks5bqljtwA%3D%3D)
-
-Neuronal soma reconstruction 
 [![## Neuronal soma reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/soma-reconstruction.png?token=ABOF04k9F31wN5-jtWAHsiE9SPMlFOHKks5bqliCwA%3D%3D)](https://www.youtube.com/watch?v=v02HogkFODU)
 
 Morphology visualization 
