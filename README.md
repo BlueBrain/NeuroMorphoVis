@@ -45,4 +45,4 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 
 ### Morphology Shading Styles
 The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
-![](images/morphology-shading-styles.jpeg "Morphology Shading Styles")
+![](images/morphology-shading-styles.png "Morphology Shading Styles")
