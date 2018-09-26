@@ -5,10 +5,14 @@
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, 
 visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted 
 from microscopy stacks. The framework is capable of detecting and repairing tracing artifacts, 
-allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies.
+allowing the generation of high fidelity surface meshes and high resolution volumetric models 
+for simulation and in silico imaging studies.
 
-The framework is based on Blender 2.78c and is free to download. 
+## Dependencies 
+The framework is mainly based on Blender. The current release uses the API of Blender 2.78b and 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with LGPL license. 
 
+
+## Interface
 The code will be available soon, following the acceptance of a recently submitted publication. 
 
 ![## NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/neuromorphovis-interface.png?token=ABOF06dhIj1X0w9k1PaZS85B3uMm6Mrpks5bqljtwA%3D%3D)
