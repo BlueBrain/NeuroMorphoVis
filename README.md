@@ -10,8 +10,9 @@ for simulation and in silico imaging studies.
 
 ## Dependencies 
 The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
-There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). __These dependencies are__
-+ [HDF5 Python Bindings](#applications-using-gans)
+There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
++ [HDF5 Python Bindings](https://www.h5py.org)
++ [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
    
 
 ## Interface
