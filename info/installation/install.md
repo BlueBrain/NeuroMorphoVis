@@ -48,7 +48,8 @@ If the user wants to change the name any of these subdirectories, then the check
 To use NeuroMorphoVis, you must have a recent version of Blender installed on your system. To verify this: 
 + Open a terminal and type ``` blender```. 
 + If you get this message ```command not found: blender```, then you must install blender using the package manager or by downloading it from the [Blender repository](http://download.blender.org/release/).
-+ You can use the package manager of Ubunut to install Blender using this command ``` sudo apt-get install blender ```
++ You can use the package manager of Ubunut to install Blender using this command 
+``` sudo apt-get install blender ```
 
 If Blender is already installed, you will get the following message 
 ```
