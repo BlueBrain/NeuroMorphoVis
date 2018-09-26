@@ -1,5 +1,5 @@
 # NeuroMorphoVis
-![](images/nmv-logo.png "NeuroMorphoVis")
+![](images/io-1.png "NeuroMorphoVis")
 
 
 ## Summary
