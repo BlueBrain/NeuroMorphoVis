@@ -5,7 +5,12 @@
 ## Summary
 Use the input / output panel to set the input files and the output directories where the results will be generated.    
 
-## Dependencies 
+## Input Data Options 
+The current version of NeuroMorphoVis can read morphologies stored in the following file formats:
++ The standard [.SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) file format. 
++ [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the Blue Brain Project / Human Brain Projects, but the python bindings of HDF5 library must be installed to the system to load it.   
+
+
 The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
 There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
 + [HDF5 Python Bindings](https://www.h5py.org)
