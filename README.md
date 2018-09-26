@@ -9,8 +9,10 @@ allowing the generation of high fidelity surface meshes and high resolution volu
 for simulation and in silico imaging studies.
 
 ## Dependencies 
-The framework is mainly based on Blender. The current release uses the API of Blender 2.78b and 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with LGPL license. 
-
+The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
+There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). __These dependencies are__
++ [HDF5 Python Bindings](#applications-using-gans)
+   
 
 ## Interface
 The code will be available soon, following the acceptance of a recently submitted publication. 
