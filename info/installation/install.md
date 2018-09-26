@@ -1,6 +1,28 @@
 # How to Install NeuroMorphoVis
 
-+ Download Blender from this [repository](http://download.blender.org/release/Blender2.78/).  
++ Download Blender from this [repository](http://download.blender.org/release/Blender2.78/).
++ Extract the file. 
++ Open the Blender folder 
++ Go to the addons directory 
+
+```bash
+BLENDER
+├── 2.78
+    ├── scripts 
+        ├── addons
+```
+ + Clone the NeuroMorphoVis repository using the following command 
+ 
+ ```
+ git clone 
+ ```
+ 
+ + Open Blender 
+ ```
+ cd BLENDER_DIRECTORY 
+ ./blender 
+ ```
+ 
 
 ## Summary
 Use the input / output panel to set the input files and the output directories where the results will be generated.    
