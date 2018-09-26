@@ -43,4 +43,5 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 
 ![](images/output.gif "Vanilla GAN")
 
+### Morphology Shading Styles
 ![](images/morphology-shading-styles.jpeg "Morphology Shading Styles")
