@@ -32,13 +32,13 @@ NeuroMorphoVis comes with four principal modules for
 + Building, repair and analysis of morphological skeletons,
 + Creation of piecewise-watertight polygonal surface meshes.
 
-### Panels 
-NeuroMorphoVis has five panels  
-+ Input / Output 
-+ Morphology Analysis
-+ Soma Reconstruction
-+ Morphology Reconstruction
-+ Mesh Reconstruction
+### Panels / Toolboxes
+NeuroMorphoVis has five panels   
++ Input / Output, for setting paths to input morphologies and the output directories. 
++ Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
++ Soma Toolbox, for setting the parameters for somata reconstruction.
++ Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
++ Mesh Toolbox, for setting the parameters creating meshes from the morphology skeletons.
 
 ![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
 
