@@ -1,6 +1,7 @@
 # NeuroMorphoVis
 ![](images/nmv-logo.png "NeuroMorphoVis")
 
+
 ## Summary
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, 
 visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted 
@@ -8,15 +9,18 @@ from microscopy stacks. The framework is capable of detecting and repairing trac
 allowing the generation of high fidelity surface meshes and high resolution volumetric models 
 for simulation and in silico imaging studies.
 
+
 ## Dependencies 
 The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
 There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
 + [HDF5 Python Bindings](https://www.h5py.org)
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
-   
 
-## Interface
-The code will be available soon, following the acceptance of a recently submitted publication. 
+
+## Interfaces
+
+![](images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
+
 
 ![## NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/neuromorphovis-interface.png?token=ABOF06dhIj1X0w9k1PaZS85B3uMm6Mrpks5bqljtwA%3D%3D)
 
