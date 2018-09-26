@@ -18,6 +18,7 @@ There are other optional dependecies that are specific to users from [Blue Brain
 
 
 ## Interfaces
+NeuroMorphoVis is designed as a plug-in in Blender. It comes with a flexible 
 
 ![](images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
 
