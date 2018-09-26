@@ -32,6 +32,8 @@ NeuroMorphoVis comes with four principal modules for
 + Building, repair and analysis of morphological skeletons,
 + Creation of piecewise-watertight polygonal surface meshes.
 
+![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
+
 ### Panels 
 NeuroMorphoVis has five panels  
 + Input / Output 
