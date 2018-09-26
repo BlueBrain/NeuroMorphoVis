@@ -38,7 +38,7 @@ NeuroMorphoVis has five panels
 + Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
 + Soma Toolbox, for setting the parameters for somata reconstruction.
 + Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
-+ Mesh Toolbox, for setting the parameters creating meshes from the morphology skeletons.
++ Mesh Toolbox, for setting the parameters to create meshes from morphology skeletons.
 
 ![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
 
