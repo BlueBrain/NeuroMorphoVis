@@ -39,3 +39,6 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
   publisher={Oxford University Press}
 }
 ```
+
+
+![](images/output.gif "Vanilla GAN")
