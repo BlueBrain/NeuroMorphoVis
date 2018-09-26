@@ -22,4 +22,17 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 </p>
 
 ### Output Options
-NeuroMorphoVis can be only used to load and visualize morphologies. But if the users would like create any output, for example images, videos or meshes, then they __must__ set the output directory where there artifacts will be generated. 
+NeuroMorphoVis can be only used to load and visualize morphologies. But if the users would like create any output, for example images, videos or meshes, then the __Output Directory__, where there artifacts will be generated, __must__ be set (replace __Select Directory__ by the absolute path of the output directory).
+
+#### Output Tree
+When the output directory is created, it automatically creates a list of directories, each of them will contain a specific type of output. The structure of this directory is as follows 
+```bash
+OUTPUT_DIRECTORY
+├── Images
+├── Sequences
+├── Meshes
+├── Morphologies
+├── Analysis
+```
+
+
