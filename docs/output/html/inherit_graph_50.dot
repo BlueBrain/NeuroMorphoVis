@@ -1,7 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="meshy.neuromorphovis.interface.cli.options\l_parser.OptionsParser",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmeshy_1_1neuromorphovis_1_1interface_1_1cli_1_1options__parser_1_1OptionsParser.html"];
-}
