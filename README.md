@@ -20,8 +20,10 @@ Morphology visualization
 Neuronal mesh reconstruction 
 [![## Neuronal mesh reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/mesh-generation.png?token=ABOF01D3_z8hCR2A4nZaPPm0gdj9R1yDks5bqljHwA%3D%3D)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
+![](images/mesh-generation.png "Vanilla GAN")
+
 ## Citation
-If you use this tool for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775):
+If you use NeuroMorphoVis for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775):
 
 ```
 @article{abdellah2018neuromorphovis,
