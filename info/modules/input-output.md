@@ -10,6 +10,10 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 + The standard [.SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) file format. 
 + [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the Blue Brain Project / Human Brain Projects, but the python bindings of HDF5 library must be installed to the system to load it.   
 
+The users can select to load the morphologies from 
++ Individual .SWC or .H5 files based on their absolute pathes in the file system 
++ A morphology linked to a certain neuron listed in a BBP circuit defined by its GID. 
+
 
 The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
 There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
