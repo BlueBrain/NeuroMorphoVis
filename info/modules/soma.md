@@ -1,7 +1,7 @@
-# Input / Output Panel
+# Soma Toolbox Panel
 
 ## Summary
-Use the input / output panel to set the input files and the output directories where the results will be generated.    
+This panel gives access to the parameters of the Soma Toolbox.      
 
 ## Input Data Options 
 The current version of NeuroMorphoVis can read morphologies stored in the following file formats:
