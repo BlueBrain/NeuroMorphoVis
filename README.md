@@ -1,4 +1,4 @@
-### NeuroMorphoVis
+# NeuroMorphoVis
 
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, 
 visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted 
