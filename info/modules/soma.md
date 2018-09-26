@@ -11,11 +11,10 @@ The soma reconstruction toolbox is added to allow the generation of highly plaus
 We extended the Blender-based implementation and integrated this module into NeuroMorphoVis to provide a convenient tool to validate and compare the somata obtained by segmenting a microscopic stack with the ones extracted from three-dimensional contours.
 
 ## Method 
-NeuroMorphoVis has three methods that can reconstruct different three-dimensional profiles of the soma:
-+ Profile, where 
-The current version of NeuroMorphoVis can read morphologies stored in the following file formats:
-+ The standard [.SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) file format. 
-+ [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the Blue Brain Project / Human Brain Projects, but the python bindings of HDF5 library must be installed to the system to load it.   
+NeuroMorphoVis has three methods to reconstruct different three-dimensional somata profiles:
++ __Profile__: This method uses only the profile points that are reported in the morphology files to reconstruct the soma from an ico-sphere, whose radius is set to the mean soma radius.   
++ __Arbors__: This method uses the starting points of each root arbor to deform an ico-sphere. 
++ __Complex__: This is a combined method of the two previous ones.
 
 ### Input Source
 + The users can load morphologies from individual .SWC or .H5 files based on their absolute pathes in the file system. In this case, the __Input Source__ option should be set to __H5 or SWC File__, and the path to the morphology file should be set in the __Morphology File__ text box. You can also use the button on the right of the text box to open a file dialog and select the file from a specific path.
