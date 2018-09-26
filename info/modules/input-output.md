@@ -17,8 +17,9 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 
 + The users can also load a morphology of a certain neuron reconstructed in a BBP circuit using its GID. In this case, the __Input Source__ option should be set to __BBP Circuit (GID)__, and then the path to the circuit configuration should be set in the __Circuit File__ text box (replace __Select Circuit File__ by the absolute path of the circuit, for example: /gpfs/WHATEVER_PROJECT/config.circuit) and the GID of the neuron should be set in the __GID__ field (replace __Add a GID__ by the GID of the neuron, for example: 1000).  
 
-
 <p align="center">
   <img src="images/io-2.png">
 </p>
 
+### Output Options
+NeuroMorphoVis can be only used to load and visualize morphologies. But if the users would like create any output, for example images, videos or meshes, then they __must__ set the output directory where there artifacts will be generated. 
