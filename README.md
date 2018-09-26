@@ -32,6 +32,15 @@ NeuroMorphoVis comes with four principal modules for
 + Building, repair and analysis of morphological skeletons,
 + Creation of piecewise-watertight polygonal surface meshes.
 
+### Panels 
+NeuroMorphoVis has five panels  
++ Input / Output 
++ Morphology Analysis
++ Soma Reconstruction
++ Morphology Reconstruction
++ Mesh Reconstruction
+
+
 ![## NeuroMorphoVis Interface](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/neuromorphovis-interface.png?token=ABOF06dhIj1X0w9k1PaZS85B3uMm6Mrpks5bqljtwA%3D%3D)
 
 Neuronal soma reconstruction 
@@ -43,12 +52,7 @@ Morphology visualization
 Neuronal mesh reconstruction 
 [![## Neuronal mesh reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/mesh-generation.png?token=ABOF01D3_z8hCR2A4nZaPPm0gdj9R1yDks5bqljHwA%3D%3D)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
-![](images/mesh-generation.png "Vanilla GAN")
 
-
-
-
-![](images/output.gif "Vanilla GAN")
 
 ### Morphology Shading Styles
 The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
