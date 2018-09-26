@@ -13,8 +13,20 @@ We extended the Blender-based implementation and integrated this module into Neu
 ## Method 
 NeuroMorphoVis has three methods to reconstruct different three-dimensional somata profiles:
 + __Profile__: This method uses only the profile points that are reported in the morphology files to reconstruct the soma from an ico-sphere, whose radius is set to the mean soma radius.   
+<p align="center">
+  <img src="images/soma-profile.png">
+</p>
+
 + __Arbors__: This method uses the starting points of each root arbor to deform an ico-sphere. 
+<p align="center">
+  <img src="images/soma-arbors.png">
+</p>
+
 + __Complex__: This is a combined method of the two previous ones.
+<p align="center">
+  <img src="images/soma-complex.png">
+</p>
+
 
 ### Input Source
 + The users can load morphologies from individual .SWC or .H5 files based on their absolute pathes in the file system. In this case, the __Input Source__ option should be set to __H5 or SWC File__, and the path to the morphology file should be set in the __Morphology File__ text box. You can also use the button on the right of the text box to open a file dialog and select the file from a specific path.
