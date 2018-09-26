@@ -11,7 +11,7 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 + [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the Blue Brain Project / Human Brain Projects, but the python bindings of HDF5 library must be installed to the system to load it.   
 
 The users can select to load the morphologies from 
-+ Individual .SWC or .H5 files based on their absolute pathes in the file system 
++ Individual .SWC or .H5 files based on their absolute pathes in the file system __H5 or SWC File__
 + A morphology linked to a certain neuron listed in a BBP circuit defined by its GID. 
 
 
