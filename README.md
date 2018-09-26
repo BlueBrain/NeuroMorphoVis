@@ -42,16 +42,17 @@ NeuroMorphoVis has five panels
 
 ![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
 
-### Results
-#### Neuronal soma reconstruction 
+### Videos 
+
+#### Neuronal Soma Reconstruction 
 ![](images/soma-reconstruction.png "NeuroMorphoVis Panels")
 
-[![## Neuronal soma reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/soma-reconstruction.png?token=ABOF04k9F31wN5-jtWAHsiE9SPMlFOHKks5bqliCwA%3D%3D)](https://www.youtube.com/watch?v=v02HogkFODU)
+[![## Neuronal soma reconstruction](images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
 
-Morphology visualization 
-[![## Neuronal morphology visualization](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/morphology-reconstruction.png?token=ABOF02GEsx4wN532esd5LAyhcAvYtDbBks5bqli3wA%3D%3D)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
+#### Neuronal Morphology Visualization 
+[![## Neuronal morphology visualization](images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
 
-Neuronal mesh reconstruction 
+#### Neuronal Mesh Reconstruction 
 [![## Neuronal mesh reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/mesh-generation.png?token=ABOF01D3_z8hCR2A4nZaPPm0gdj9R1yDks5bqljHwA%3D%3D)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
 
