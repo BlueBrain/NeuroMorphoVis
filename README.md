@@ -45,17 +45,13 @@ NeuroMorphoVis has five panels
 ### Videos 
 
 #### Neuronal Soma Reconstruction 
-![](images/soma-reconstruction.png "NeuroMorphoVis Panels")
-
-[![## Neuronal soma reconstruction](images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
+[![](images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
 
 #### Neuronal Morphology Visualization 
-[![## Neuronal morphology visualization](images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
+[![](images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
 
 #### Neuronal Mesh Reconstruction 
-[![## Neuronal mesh reconstruction](https://raw.githubusercontent.com/marwan-abdellah/NeuroMorphoVis/master/images/mesh-generation.png?token=ABOF01D3_z8hCR2A4nZaPPm0gdj9R1yDks5bqljHwA%3D%3D)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
-
-
+[![](images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
 ### Morphology Shading Styles
 The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
