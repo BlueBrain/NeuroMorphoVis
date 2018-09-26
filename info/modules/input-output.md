@@ -15,8 +15,6 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
   <img src="images/io-1.png">
 </p>
 
-![](images/io-1.png "Loading a neuron morphology from SWC or H5 file")
-
 + The users can also load a morphology of a certain neuron reconstructed in a BBP circuit using its GID. In this case, the __Input Source__ option should be set to __BBP Circuit (GID)__, and then the path to the circuit configuration should be set in the __Circuit File__ text box (replace __Select Circuit File__ by the absolute path of the circuit, for example: /gpfs/WHATEVER_PROJECT/config.circuit) and the GID of the neuron should be set in the __GID__ field (replace __Add a GID__ by the GID of the neuron, for example: 1000).  
 
 
