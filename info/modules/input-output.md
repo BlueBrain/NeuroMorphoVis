@@ -1,4 +1,4 @@
-# NeuroMorphoVis
+# Input / Output Panel
 ![](images/io-1.png "NeuroMorphoVis")
 
 
