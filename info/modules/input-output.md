@@ -21,6 +21,6 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 
 
 <p align="center">
-  ![](images/io-2.png "Loading a neuron morphology from a BBP circuit")
+  <img src="images/io-2.png">
 </p>
 
