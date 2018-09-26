@@ -34,6 +34,9 @@ OUTPUT_DIRECTORY
 ├── meshes
 ├── morphologies
 ├── analysis
+
+
+
 ```
 
 If the user wants to change the name any of these subdirectories, then the checkbox __Use Default Output Paths__ must be unchecked. 
@@ -41,3 +44,18 @@ If the user wants to change the name any of these subdirectories, then the check
 <p align="center">
   <img src="images/io-3.png">
 </p>
+
+
+You can use the package manager of Ubunut to install Blender using this command
+```
+sudo apt-get install blender
+```
+
+If Blender is installed, you will get the following message 
+```
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+blender is already the newest version (2.79.b+dfsg0-1).
+0 upgraded, 0 newly installed, 0 to remove and 104 not upgraded.
+```
