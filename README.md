@@ -34,7 +34,7 @@ NeuroMorphoVis comes with four principal modules for
 
 ### Panels / Toolboxes
 NeuroMorphoVis has five panels   
-+ Input / Output, for setting paths to input morphologies and the output directories. 
++ Input / Output, for setting paths to input morphologies and output directories. 
 + Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
 + Soma Toolbox, for setting the parameters for somata reconstruction.
 + Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
