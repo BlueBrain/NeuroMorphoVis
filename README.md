@@ -24,7 +24,18 @@ Neuronal mesh reconstruction
 
 ![](images/mesh-generation.png "Vanilla GAN")
 
-## Citation
+
+
+
+![](images/output.gif "Vanilla GAN")
+
+### Morphology Shading Styles
+The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
+
+![](images/morphology-shading-styles.png "Morphology Shading Styles")
+
+
+## Publication & Citation 
 If you use NeuroMorphoVis for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775):
 
 ```
@@ -39,11 +50,3 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
   publisher={Oxford University Press}
 }
 ```
-
-
-![](images/output.gif "Vanilla GAN")
-
-### Morphology Shading Styles
-The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
-
-![](images/morphology-shading-styles.png "Morphology Shading Styles")
