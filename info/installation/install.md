@@ -51,6 +51,8 @@ To use NeuroMorphoVis, you must have a recent version of Blender installed on yo
 + You can use the package manager of Ubunut to install Blender using this command 
 ``` sudo apt-get install blender ```
 
+NeuroMorphoVis is tested to work with Blender versions [2.78](http://download.blender.org/release/Blender2.78/) and [2.79](http://download.blender.org/release/Blender2.79/).
+
 If Blender is already installed, you will get the following message 
 ```
 Reading package lists... Done
