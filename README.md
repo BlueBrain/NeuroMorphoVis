@@ -18,8 +18,9 @@ There are other optional dependecies that are specific to users from [Blue Brain
 
 
 ## Interfaces
-NeuroMorphoVis is designed as a plug-in in Blender. It comes with a flexible 
+NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and also with a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production.   
 
+### GUI
 ![](images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
 
 
