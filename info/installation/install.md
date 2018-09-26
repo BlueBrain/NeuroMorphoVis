@@ -1,5 +1,7 @@
 # How to Install NeuroMorphoVis
 
++ Download Blender from this [repository](http://download.blender.org/release/Blender2.78/).  
+
 ## Summary
 Use the input / output panel to set the input files and the output directories where the results will be generated.    
 
