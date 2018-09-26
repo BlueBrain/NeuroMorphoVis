@@ -1,4 +1,4 @@
-# Input / Output Panel
+# How to Install NeuroMorphoVis
 
 ## Summary
 Use the input / output panel to set the input files and the output directories where the results will be generated.    
