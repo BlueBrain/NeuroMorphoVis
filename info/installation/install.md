@@ -8,6 +8,9 @@ Depending on your operating system, but assuming a UNIX-based one, Blender can b
 + installed as a system package, 
 + or downloaded directly from this [repository](http://download.blender.org/release/).
 
+### Installing Blender as a System Package
+
+
 
 All the different versions of Blender can be downloaded from  You can also install Blender 
 
