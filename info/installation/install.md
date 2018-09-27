@@ -36,7 +36,7 @@ $ ls $HOME/.config/blender/ -ls
 2.79
 ```
 
-If this is the first time you install Blender, it is adviced to launch Blender by typing the command ```blender ``` in your terminal to ensure its proper installation. 
+If this is the first time you install Blender, it is advised to launch Blender by typing the command ```blender ``` in your terminal to ensure its proper installation. If you see 
 
 ### Downloading Blender 
 Blender can be also downloaded for all the operating systems from this [repository](http://download.blender.org/release/). NeuroMorphoVis is tested on the following Blender versions 
