@@ -1,5 +1,9 @@
 # Soma Toolbox Panel
 
+<p align="center">
+  <img src="images/soma-panel.png">
+</p>
+
 ## Summary
 This panel gives access to the parameters of the Soma Toolbox.      
 
