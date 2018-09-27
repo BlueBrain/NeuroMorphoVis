@@ -37,6 +37,8 @@ $ ls $HOME/.config/blender/ -ls
 ```
 In this case, the user must be cautious to avoid installing NeuroMorphoVis in the wrong directory. 
 
+If this is the first time you install Blender, it is adviced to launch Blender by typing the command ```$ blender ``` in your termina.
+
 ### Downloading Blender 
 Blender can be also downloaded for all the operating systems from this [repository](http://download.blender.org/release/). NeuroMorphoVis is tested on the following Blender versions 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/)
