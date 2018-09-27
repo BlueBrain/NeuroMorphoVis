@@ -9,7 +9,7 @@ The current version of NeuroMorphoVis implements the __piecewise-watertight mesh
 ## Panel Description & Options
 
 ### Meshing Methods
-The current version of NeuroMorphoVis provides only the __Piecewise Watertight__ meshing method for reconstructing the meshes from input morphological skeletons. We have already implemented other meshing techniques but their stability is still questionable. These techniques will be integrated in NeuroMorphoVis in future releases. 
+The current version of NeuroMorphoVis provides only the __Piecewise Watertight__ meshing method for reconstructing polygonal surface meshes from input morphological skeletons. We have already implemented other meshing techniques but their stability is still questionable. These techniques will be integrated in NeuroMorphoVis in future releases. 
 
 
 
