@@ -1,4 +1,8 @@
-# Soma Toolbox Panel
+# Morphology Analysis Panel
+
+<p align="center">
+  <img src="images/morphology-analysis-panel.png">
+</p>
 
 ## Summary
 This panel gives access to the parameters of the Soma Toolbox.      
