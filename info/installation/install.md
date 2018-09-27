@@ -27,7 +27,7 @@ __NOTE__: If blender is installed as a system package, then all the addons (or p
 ```
 $HOME/.config/blender/2.XX/scripts/addons
 ```
-where XX is the major and minor versions of Blender that is installed on your machine. In certain cases, you can have multiple versions installed at the same moment, so if you list this directory ``` $ ls $HOME/.config/blender/```, you might find multiple directories that correspond to each version of Blender that is installed on your machine. For example 
+where XX is the major and minor versions of Blender that is installed on your machine. In certain cases, you can have multiple versions installed at the same moment, so if you list this directory ``` $ ls $HOME/.config/blender/```, you might find multiple directories that correspond to each version of Blender that is installed on your machine. In this case, the user must be cautious to avoid installing NeuroMorphoVis in the wrong directory. 
 ```
 $ ls $HOME/.config/blender/ -ls 
 2.76
@@ -35,7 +35,6 @@ $ ls $HOME/.config/blender/ -ls
 2.78
 2.79
 ```
-In this case, the user must be cautious to avoid installing NeuroMorphoVis in the wrong directory. 
 
 If this is the first time you install Blender, it is adviced to launch Blender by typing the command ```blender ``` in your terminal to ensure its proper installation. 
 
