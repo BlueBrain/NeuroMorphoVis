@@ -4,7 +4,12 @@ NeuroMorphoVis is designed and written as a Blender plug-in that can be loaded d
 
 ## Blender Installation 
 
-All the different versions of Blender can be downloaded from this [repository](http://download.blender.org/release/). You can also install Blender 
+Depending on your operating system, but assuming a UNIX-based one, Blender can be installed as 
++ installed as a system package, 
++ and also can be downloaded from this [repository](http://download.blender.org/release/).
+
+
+All the different versions of Blender can be downloaded from  You can also install Blender 
 
 + Download Blender from this [repository](http://download.blender.org/release/Blender2.78/).
 + Extract the file. 
