@@ -8,6 +8,9 @@ The current version of NeuroMorphoVis implements the __piecewise-watertight mesh
 
 ## Panel Description & Options
 
+Once all the meshing parameters are set, a neuronal mesh can be reconstructed by clicking on the button __Reconstruct Mesh__. Once the mesh is reconstructed, it will appear in the principal three-dimensional widget of Blender. The mesh can be then rendered and saved as a .png image by clicking on the different views buttons: __Front__, __Side__, or __Top__. We can also render a 360 movie of the reconstructed mesh by clicking on the __360__ button. Finally, the mesh can be exported to different file formats such as __.obj__, __.ply__, __.stl__ and __.blend__ meshes.
+
+
 ### Meshing Methods
 The current version of NeuroMorphoVis provides only the __Piecewise Watertight__ meshing method for reconstructing polygonal surface meshes from input morphological skeletons. We have already implemented other meshing techniques, but their stability is still questionable. These techniques will be integrated in NeuroMorphoVis in future releases. 
 
@@ -21,6 +24,51 @@ It is quite known that the reconstructed morphological skeleton comes with
 + __Zigzag__ Add an artificial zigzagged noise or wiggles that are caused by the staining procedures.
 + __Tapered Zigzag__ Taper the sections and also add wiggles with random shifts. 
 
+### Surface 
+The surface of the mesh that reflects that membrane of a neuron can be __Smooth__ or __Rough__. 
++ __Smooth__ This options is quite often used to render nice morphologies that can be used for illustrative purposes.
++ __Rough__ The roughness addedd to the surface of the mesh makes the neuron mesh more realistic as seen under the microscope. This option is used for meshes created mainly for performing in silico imaging experiments. 
+
+### Edges
+The edges can ve __Sharp__ or __Curvy__.
++ __Sharp__
++ __Curvy__ 
+
+### Soma 
++ __Connected__
++ __Disconnected__
+
+### Skeleton Objects 
++ __Connected__
++ __Disconnected__
+
+### Branching 
++ __Angles__
++ __Radii__
+
+### Tessellation 
+
+
+### Colors & Materials 
+#### Homogeneous Color 
+
++ __Soma Color__: The color of the soma mesh.
++ __Axon Color__: The color of the axon mesh.
++ __Basal Dendrites Color__: The color of the basal dendrites meshes. 
++ __Apical Dendrite Color__: The color of the apical dendrites meshes.
++ __Spines Color__: The color of the spine meshes. 
+
+### Material 
++ __Flat__
++ __Lambert Ward__
++ __Super Electron Light__
++ __Super Electron Dark__
++ __Electron Light__
++ __Electron Dark__
++ __Glossy Bumpy__
++ __Shadow__
+
+###
 
 
 ## Method 
