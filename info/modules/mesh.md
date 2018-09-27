@@ -68,6 +68,25 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Glossy Bumpy__
 + __Shadow__
 
+### Rendering Meshes 
+
+
+#### Rendering View 
+
++ __Wide Shot__
++ __Mid Shot__
++ __Close Up__
+
+#### Rendering Resolution
++ __Fixed__
++ __To Scale__
+
+#### Rendering View 
++ __Front__
++ __Side__
++ __Top__
+
+
 ### Exporting Meshes 
 The users can use the native support of Blender to export the meshes into different file formats. But since we assumed that the end user might not have any Blender experience, we have addedd four buttons to export the reconstructed meshes into the following common file formats
 + __.obj__
