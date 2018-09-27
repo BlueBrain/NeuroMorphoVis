@@ -1,5 +1,9 @@
 # Morphology Reconstruction Toolbox Panel
 
+<p align="center">
+  <img src="images/morphology-panel.png">
+</p>
+
 ## Summary
 This panel gives access to the parameters of the Soma Toolbox.      
 
