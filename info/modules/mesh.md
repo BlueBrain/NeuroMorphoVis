@@ -1,7 +1,7 @@
 # Soma Toolbox Panel
 
 ## Summary
-This panel gives access to the parameters of the __Meshing__ Toolbox.      
+This panel gives access to the parameters of the __Meshing__ Toolbox that is used to reconstruct polygonal mesh models from the input morphological skeletons.      
 
 ## Expected Output 
 The current version of NeuroMorphoVis implements the __piecewise-watertight meshing__ algorithm that is proposed by [Abdellah et al, 2017.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4). This method reconstructs a single mesh object that is composed of a set of watertight meshes, each corresponding to an individual component in the original morphology skeleton. For example, breadth-first traversal is used to connect and construct primary sections along each arbor in the form of tubes. These tubes are converted into watertight meshes that by definition have non manifold edges or vertices. The grouping of the reconstructed meshes results in the final mesh object that is not watertight per se, but rather piecewise-watertight.          
