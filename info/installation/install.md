@@ -14,6 +14,7 @@ On __Ubuntu__, Blender can be installed from the terminal as follows
 ```
 $ sudo apt-get install blender
 ```
+
 On __RedHat__, Blender can be installed from the terminal as follows
 ```
 sudo yum install blender
@@ -27,7 +28,6 @@ where XX is the major and minor versions of Blender that is installed on your ma
 ```
 $ ls $HOME/.config/blender/ -lsOn Ubuntu, Blender can be installed from the terminal as follows
 
-
 2.76
 2.77
 2.78
@@ -36,10 +36,13 @@ $ ls $HOME/.config/blender/ -lsOn Ubuntu, Blender can be installed from the term
 In this case, the user must be cautious to avoid installing NeuroMorphoVis in the wrong directory. 
 
 ### Downloading Blender 
-Blender can be also downloaded for all the operating systems from this [repository](http://download.blender.org/release/). We recommend to use on of the following versions 
+Blender can be also downloaded for all the operating systems from this [repository](http://download.blender.org/release/). NeuroMorphoVis is tested on the following Blender versions 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/)
 + [Blender 2.78](http://download.blender.org/release/Blender2.78/)
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
+
+
+
 
 All the different versions of Blender can be downloaded from  You can also install Blender 
 
