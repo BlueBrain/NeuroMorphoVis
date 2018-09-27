@@ -63,6 +63,6 @@ If the user wants to change the name any of these subdirectories, then the check
 </p>
 
 
-| Vanilla GAN                   | DAN-S                         | c               | d |  E   |               
-|:-----------------------------:|:-----------------------------:|:---------------:|:---------------:|:---------------:|
-| ![](images/morphology-1.png)  | ![](images/morphology-2.png)  | ![](images/morphology-3.png)|![](images/morphology-4.png)|![](images/morphology-5.png)
+| A | B | C | D | E | F | G |               
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| ![](images/morphology-1.png)  | ![](images/morphology-2.png)  | ![](images/morphology-3.png)|![](images/morphology-4.png)|![](images/morphology-5.png) | ![](images/morphology-6.png) | ![](images/morphology-7.png) |
