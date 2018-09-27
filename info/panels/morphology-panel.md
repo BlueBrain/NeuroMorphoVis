@@ -64,5 +64,5 @@ If the user wants to change the name any of these subdirectories, then the check
 
 
 | Vanilla GAN                   | DAN-S                         | c|                     
-|:-----------------------------:|:-----------------------------:|:-----------------------------: |
+|:-----------------------------:|:-----------------------------:|:---------------:|
 | ![](images/morphology-1.png)  | ![](images/morphology-2.png)  | ![](images/morphology-3.png)|
