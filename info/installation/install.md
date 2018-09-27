@@ -25,7 +25,9 @@ $HOME/.config/blender/2.XX/scripts/addons
 ```
 where XX is the major and minor versions of Blender that is installed on your machine. In certain cases, you can have multiple versions installed at the same moment, so if you list this directory ``` $ ls $HOME/.config/blender/```, you might find multiple directories that correspond to each version of Blender that is installed on your machine. For example 
 ```
-$ ls $HOME/.config/blender/ -ls
+$ ls $HOME/.config/blender/ -lsOn Ubuntu, Blender can be installed from the terminal as follows
+
+
 2.76
 2.77
 2.78
@@ -33,6 +35,11 @@ $ ls $HOME/.config/blender/ -ls
 ```
 In this case, the user must be cautious to avoid installing NeuroMorphoVis in the wrong directory. 
 
+### Downloading Blender 
+Blender can be also downloaded for all the operating systems from this [repository](http://download.blender.org/release/). We recommend to use on of the following versions 
++ [Blender 2.76](http://download.blender.org/release/Blender2.76/)
++ [Blender 2.78](http://download.blender.org/release/Blender2.78/)
++ [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 
 All the different versions of Blender can be downloaded from  You can also install Blender 
 
