@@ -1,5 +1,9 @@
 # Mesh Toolbox Panel
 
+<p align="center">
+  <img src="images/mesh-panel.png">
+</p>
+
 ## Summary
 This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct polygonal mesh models from input morphological skeletons.
 
