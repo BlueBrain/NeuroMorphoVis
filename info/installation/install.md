@@ -86,5 +86,5 @@ blender is already the newest version (2.79.b+dfsg0-1).
 0 upgraded, 0 newly installed, 0 to remove and 104 not upgraded.
 ```
 
-
-
+Tutorial (Python  Scripting ... )
+Users who have python programming experience can also use NeuroMorphoVis API to write their customized scripts to generate high quality images and videos of the loaded morphologies.  
