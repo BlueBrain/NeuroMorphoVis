@@ -1,4 +1,4 @@
-# Soma Toolbox Panel
+# Morphology Reconstruction Toolbox Panel
 
 ## Summary
 This panel gives access to the parameters of the Soma Toolbox.      
