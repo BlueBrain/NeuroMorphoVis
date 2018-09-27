@@ -68,7 +68,12 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Glossy Bumpy__
 + __Shadow__
 
-###
+### Exporting Meshes 
+The users can use the native support of Blender to export the meshes into different file formats. But since we assumed that the end user might not have any Blender experience, we have addedd four buttons to export the reconstructed meshes into the following common file formats
++ __.obj__
++ __.ply__
++ __.stl__
++ __.blend__
 
 
 ## Method 
