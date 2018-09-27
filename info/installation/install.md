@@ -19,6 +19,12 @@ On __RedHat__, Blender can be installed from the terminal as follows
 sudo yum install blender
 ```
 
+__NOTE__: If blender is installed as a system package, then all the addons (or plug-ins) must be loaded from the following directory
+```
+$HOME/.config/blender/2.XX/scripts/addons
+```
+where XX is the major and minor versions of Blender that is installed on your machine. 
+
 
 All the different versions of Blender can be downloaded from  You can also install Blender 
 
