@@ -9,8 +9,10 @@ Depending on your operating system, but assuming a UNIX-based one, Blender can b
 + or downloaded directly from this [repository](http://download.blender.org/release/).
 
 ### Installing Blender as a System Package
-
-
+On __Ubuntu__, Blender can be installed from the terminal as follows 
+```
+$ sudo apt-get install blender
+```
 
 All the different versions of Blender can be downloaded from  You can also install Blender 
 
