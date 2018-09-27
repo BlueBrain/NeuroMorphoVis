@@ -26,7 +26,7 @@ $HOME/.config/blender/2.XX/scripts/addons
 ```
 where XX is the major and minor versions of Blender that is installed on your machine. In certain cases, you can have multiple versions installed at the same moment, so if you list this directory ``` $ ls $HOME/.config/blender/```, you might find multiple directories that correspond to each version of Blender that is installed on your machine. For example 
 ```
-$ ls $HOME/.config/blender/ -lsOn Ubuntu, Blender can be installed from the terminal as follows
+$ ls $HOME/.config/blender/ -ls 
 
 2.76
 2.77
