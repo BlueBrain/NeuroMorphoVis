@@ -1,6 +1,6 @@
 # How to Install NeuroMorphoVis
 
-NeuroMorphoVis is designed and written as a Blender plug-in that can be loaded directly from its GUI. Therefore, a recent Blender version must be installed a priori. 
+NeuroMorphoVis is designed and written as a Blender plug-in that can be loaded directly from its GUI. A recent Blender version must be installed on your system in advance. 
 
 ## Blender Installation 
 
