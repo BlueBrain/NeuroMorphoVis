@@ -48,6 +48,21 @@ Blender can be also downloaded for all the operating systems from this [reposito
 + [Blender 2.78](http://download.blender.org/release/Blender2.78/)
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 
+#### Example 
++ Download Blender version [2.78c](http://download.blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2) into your home directory.
+```
+$ cd $HOME
+$ wget http://download.blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2
+```
+
++ Extract the tar file and change the directory name to avoid confusion
+```
+$ tar xvf blender-2.78c-linux-glibc219-x86_64.tar.bz2 
+$  mv blender-2.78c-linux-glibc219-x86_64 blender
+```
+
+
+
 
 
 
