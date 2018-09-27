@@ -61,3 +61,8 @@ If the user wants to change the name any of these subdirectories, then the check
 <p align="center">
   <img src="images/io-3.png">
 </p>
+
+
+| Vanilla GAN                   | DAN-S                         |                      
+|:-----------------------------:|:-----------------------------:|
+| ![](images/morphology-1.png)          | ![](images/morphology-2.png)        |
