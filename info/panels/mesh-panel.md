@@ -49,8 +49,8 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
 <p align="center">
 <table align="center">
   <tr>
-    <th>Sharp</th>
-    <th>Curvy</th>
+    <th> Sharp Edges </th>
+    <th> CurvyEdges </th>
   </tr>
   <tr>
     <td> <img src="images/meshing-edges-sharp.jpeg" width="400"> </td>
