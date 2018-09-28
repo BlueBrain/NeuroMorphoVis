@@ -46,8 +46,8 @@ Preserve the angles between the edges and create sharp edges.
 Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
 
 <p align="center">
-  <img src="images/meshing-by-angle.png" width="250" height="400"> 
-  <img src="images/meshing-by-radius.png" width="250" height="400">
+  <img src="images/meshing-edges-sharp.jpeg" width="250"> 
+  <img src="images/meshing-edges-curvy.jpeg" width="250">
 </p>
 
 ### Soma 
