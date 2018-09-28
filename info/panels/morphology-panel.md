@@ -44,13 +44,13 @@ In this section the user can select which components of the morphology skeletion
 
 The soma can be _ignored_ , represented symbolically by a _sphere_, or represented by an accurate _three-dimensional profile_ that can approximate its actual shape. The user can select one of the following options:
 
-+ Ignore
++ __Ignore__
 The soma is totally ignored.  
 
-+ Sphere 
++ __Sphere__ 
 The soma is symbolically represented by a sphere whose center is _usually_ set to the origin and radius is set to the mean radius reported in the morphology file.  
 
-+ Profile 
++ __Profile__ 
 The soma is usually described in the morphology file by a point, a radius and a two-dimensional contour of its projection onto a plane or a three-dimensional one extracted from a series of parallel cross sections.
 
 
