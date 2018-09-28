@@ -115,14 +115,25 @@ NeuroMorphoVis has added support to set the resolution of the rendered images ei
 
 
 #### Rendering View 
+After setting all the rendering parameters as shown in the previous steps, the users can render an image of the mesh using any of the following buttons:
 
-+ __Front__ Render the front view of the reconstructed mesh. 
-+ __Side__ Render the side view of the reconstructed mesh.
-+ __Top__ Render the top view of the reconstructed mesh. 
++ __Front__ This button renders the _front_ view of the reconstructed mesh. 
++ __Side__ This button render the _side_ view of the reconstructed mesh.
++ __Top__ This button renders the _top_ view of the reconstructed mesh. 
 
+<p align="center">
+  <img src="images/mesh-panel-rendering-view.png">
+</p>
+  
+The rendered images will be generated in the _images_ directory underneath the output directory that is set by the user in the Input / Output panel. If this path is not set, the user will get this error message __Output directory is not set, update it in the Input / Output Data panel__. In this case, the user must toggle the Input / Ouput panel and update the _Output Directory_ by replacing the _Select Directory_ in the output options by an existing path on the file system. 
 
+<p align="center">
+  <img src="images/mesh-panel-rendering-error.png">
+</p>
+ 
 ### Exporting Meshes 
 The users can use the native support of Blender to export the meshes into different file formats. But since we assumed that the end user might not have any Blender experience, we have addedd four buttons to export the reconstructed meshes into the following common file formats
+
 + __.obj__
 + __.ply__
 + __.stl__
