@@ -52,14 +52,8 @@ The edges can ve __Sharp__ or __Curvy__.
 
 
 <p align="center">
-  <img src="images/mesh-panel.png"> <img src="images/mesh-panel.png">
+  <img src="images/meshing-by-angle.png.png"> <img src="imagesmeshing-by-radius.png">
 </p>
-
-<!-- .element: style="text-align:center;" -->
-| Branching by Radii | Branching by Angles |
-|:-:|:-:|
-| <img src="images/meshing-by-angle.png" width="250"> <!-- .element: style="text-align:center;" --> |  <img src="images/meshing-by-angle.png" width="250"> <!-- .element: style="text-align:center;" --> |
-
 
 ### Tessellation 
 
