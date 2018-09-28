@@ -55,7 +55,7 @@ The edges can ve __Sharp__ or __Curvy__.
 
 | Branching by Radii | Branching by Angles |
 |:-:|:-:|
-| ![](images/meshing-by-angle.png)  | ![](images/meshing-by-radius.png)  |
+| <img src="images/meshing-by-angle.png" width="400"> |  <img src="images/meshing-by-angle.png" width="400"> |
 
 
 ### Tessellation 
