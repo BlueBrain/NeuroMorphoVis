@@ -35,7 +35,7 @@ The surface of the mesh that reflects that membrane of a neuron can be __Smooth_
 
 ### Edges
 
-Due to manual tracing artifacts, traditional morphology skeletons are normally reconstructed with sharp edges between the different samples. This issue reduces the realism of the generated meshes, in particular for close up renderings. To remove these artifacts, we introduced an option to apply a vertex smoothing filter that smooths those hard edges while preserving the geometry of the topology and connectivity of the morphology skeleton.
+Due to manual tracing artifacts, neuronal morphology skeletons are normally reconstructed with sharp edges between the different samples. This issue reduces the realism of the generated meshes, in particular for close up renderings. To remove these artifacts, we introduced an option to apply a vertex smoothing filter that smooths those hard edges while preserving the geometry of the topology and connectivity of the morphology skeleton.
 
 The edges can ve __Sharp__ or __Curvy__.
 
