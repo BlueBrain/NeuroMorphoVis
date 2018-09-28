@@ -5,7 +5,14 @@
 </p>
 
 ## Summary
-This panel gives access to the parameters of the Soma Toolbox.      
+This panel gives access to the parameters of the __Morphology Reconstruction Toolbox__. Note that the three-dimensionap profile of the soma that is reconstructed --if requested-- is based on the parameters set in the _Soma Toolbox panel_.
+
+When you toggle the _Morphology Toolbox_ tab highlighted in red above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
+
+<p align="center">
+  <img src="images/morphology-panel-detailed.png">
+</p>
+ 
 
 ## Why this Toolbox?
 Due to the fuzzy definition of the soma, the relevant information contained in generic morphology skeletons that describe the soma is usually insufficient to reconstruct a realistic representation of it. In those morphologies, the soma is merely represented by a centroid, a radius that approximates the average distance between this centroid and the initial segments of each neurite, and a projective profile that is traced along a two-dimensional plane. In certain studies, the soma is not modeled based on the reported data in the morphological skeleton, but rather represented by an implicit surface for convenience. Therefore, the reconstruction of even an approximation of the soma contour is quite challenging. Recent methods have been presented to provide a univocal definition of the somata, allowing automated characterization of neurons and accurate segmentation of three-dimensional somata profiles measured at multiple depths of fields during the tracing procedure.
