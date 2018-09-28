@@ -5,7 +5,7 @@
 </p>
 
 ## Summary
-This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct polygonal mesh models from input morphological skeletons.
+This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct polygonal mesh models from morphological skeletons.
 
 ## Expected Output 
 The current version of NeuroMorphoVis implements the __piecewise-watertight meshing__ algorithm that is proposed by [Abdellah et al, 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4). This method reconstructs a single mesh object that is composed of a set of watertight meshes, each corresponding to an individual component in the original morphology skeleton. For example, breadth-first traversal is used to connect and construct primary sections along each arbor in the form of tubes. These tubes are converted into watertight meshes that by definition have non manifold edges or vertices. The grouping of the reconstructed meshes results in the final mesh object that is not watertight per se, but rather piecewise-watertight.          
@@ -73,22 +73,44 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Shadow__
 
 ### Rendering Meshes 
+Rendering the mesh requires some work to setup the lighting and camera and locate them properly in the scene. We have added support to automate all of that with a single click. 
+
+<p align="center">
+  <img src="images/mesh-panel-rendering.png">
+</p>
 
 
 #### Rendering View 
 
+To understand the difference between the different shots, you can refer to this [artlcie](https://www.bhphotovideo.com/explora/video/tips-and-solutions/filmmaking-101-camera-shot-types). 
+
 + __Wide Shot__
+
+<p align="center">
+  <img src="images/mesh-panel-rendering-wide-shot.png">
+</p>
+
 + __Mid Shot__
-+ __Close Up__
+
+<p align="center">
+  <img src="images/mesh-panel-rendering-mid-shot.png">
+</p>
+
++ __Close Up__ If you select to render a closeup view of the mesh by clicking on the _Close Up_ button, then you can set the size of the closeup shot in the __Close Up Size__ field.    
+
+<p align="center">
+  <img src="images/mesh-panel-rendering-closeup.png">
+</p>
 
 #### Rendering Resolution
 + __Fixed__
 + __To Scale__
 
 #### Rendering View 
-+ __Front__
-+ __Side__
-+ __Top__
+
++ __Front__ Render the front view of the reconstructed mesh. 
++ __Side__ Render the side view of the reconstructed mesh.
++ __Top__ Render the top view of the reconstructed mesh. 
 
 
 ### Exporting Meshes 
