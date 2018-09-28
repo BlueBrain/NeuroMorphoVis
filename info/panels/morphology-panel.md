@@ -73,6 +73,25 @@ The soma is usually described in the morphology file by a point, a radius and a 
 
 ### Branches 
 
+The user can add arbitrarly any branch of a specific type - if exists in the original morphology file - or remove it from the reconstructed skeleton. For example, in certain cases, the axon might not be that important to visualze. The user can remove the axon from the reconstructed object by unchecking the _Build Axon_ checkbox. 
+
+<p align="center">
+  <img src="images/morphology-panel-ignore-axon.png" width=300>
+</p>
+
+The user can also select or highlight a specific branch type to visualize, for example basal dendrites. In this case the _Build Basal Dendrites_ checkbox must be checked and the _Build Axon_ and _Build Apical Dendrites_ checkboxes must be unchecked. 
+
+<p align="center">
+  <img src="images/morphology-panel-buidl-basal-dendrites.png" width=300>
+</p>
+
+The maximum branching order of each type (axon, basal dendrite or apical dendrite) can be controled from the _Branch Order_ slider that corresponds to each branch type. For example, in the image below, the maximum branching order of the axon is set to 5, while the maximum branching orders of the apical and basal dendrites are set to 100. In general, setting the maximum branching order to 100 guarantees that all the branches will be reconstructed in the scene.  
+
+<p align="center">
+  <img src="images/morphology-panel-branching-order.png" width=300>
+</p>
+
+ 
 ## Morphology Reconstruction Parameters
   
 | A | B | C | D | E | F | G |
