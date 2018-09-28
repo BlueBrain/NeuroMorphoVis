@@ -52,7 +52,7 @@ The edges can ve __Sharp__ or __Curvy__.
 
 
 <p align="center">
-  <img src="images/meshing-by-angle.png.png"> <img src="imagesmeshing-by-radius.png">
+  <img src="images/meshing-by-angle.png"> <img src="images/meshing-by-radius.png">
 </p>
 
 ### Tessellation 
