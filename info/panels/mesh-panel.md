@@ -103,11 +103,16 @@ To understand the difference between the different shots in general, you can ref
 </p>
 
 #### Rendering Resolution
-NeuroMorphoVis has added support to set the resolution of the rendered images either to a _fixed_ resolution or based on the _dimensions of the morphology skeleton_. The later option is mandatory for the images that are required for scientific articles or publications. It allows the user to rendering images _to scale_ and overlay a scale bar on the top of the image.   
+NeuroMorphoVis has added support to set the resolution of the rendered images either to a _fixed_ resolution or based on the _dimensions of the morphology skeleton_. The later option is mandatory for the images that are required for scientific articles or publications. It allows the user to rendering images _to scale_ and overlay a scale bar on the top of the image. 
 
-+ __Fixed__ The resolution of the image is normally defined by two parameters (width and height) in pixels, however, NeuroMorphoVis forces the users to define the resolution of the image using a single parameter to avoid rendering a distorted image. 
++ __Fixed__ The resolution of the image is normally defined by two parameters (width and height) in pixels, however, NeuroMorphoVis forces the users to define the resolution of the image using a single parameter to avoid rendering a distorted image.  
  
-+ __To Scale__
++ __To Scale__ Before rendering the reconstructed mesh into an image, the three-dimensional bounding box (width, height and depth) of the mesh is automatically computed and the resolution of the image is defined based on _1) the bounding box of the mesh_ and _2) the rendering view_. For example if the bounding box of the mesh is 100 x 200 x 300 and a front view is rendered, then the resolution of the image will be set automatically set to 100 x 200. If the side view of the mesh is rendered, then the resolution of the image will be set to 200 x 300 and finally if the top view is rendered, then the resolution of the image will be set to 300 x 100. If the user wants to render an image to scale, then option _To Scale_ must be selected. In this case, each pixel will correspond in the image to 1 micron, and the resolution of the image is limited to the dimensions of the morphology. To render higher resolution images, however to scale, we have addedd support to scale the resolution of the image using a scale factor that is defined by the user. When the user select the _To Scale_ option, the _Scale Factor_ slider appears below to give the user the control to select the most approriate scale factor that fits the objective ultimate objectives of the image. By default, the scale factor is set to 1. Note that increasing the scale factor will make the rendering process taking longer _O(NXM)_. A convenient range for the scale factor is 3-5.    
+
+<p align="center">
+  <img src="images/mesh-panel-rendering-to-scale.png">
+</p>
+
 
 #### Rendering View 
 
@@ -123,55 +128,3 @@ The users can use the native support of Blender to export the meshes into differ
 + __.stl__
 + __.blend__
 
-
-## Method 
-NeuroMorphoVis has three methods to reconstruct different three-dimensional somata profiles:
-+ __Profile__: This method uses only the profile points that are reported in the morphology files to reconstruct the soma from an ico-sphere, whose radius is set to the mean soma radius.   
-<p align="center">
-  <img src="images/soma-profile.png">
-</p>
-
-+ __Arbors__: This method uses the starting points of each root arbor to deform an ico-sphere. 
-<p align="center">
-  <img src="images/soma-arbors.png">
-</p>
-
-+ __Complex__: This is a combined method of the two previous ones.
-<p align="center">
-  <img src="images/soma-complex.png">
-</p>
-
-
-### Input Source
-+ The users can load morphologies from individual .SWC or .H5 files based on their absolute pathes in the file system. In this case, the __Input Source__ option should be set to __H5 or SWC File__, and the path to the morphology file should be set in the __Morphology File__ text box. You can also use the button on the right of the text box to open a file dialog and select the file from a specific path.
-
-<p align="center">
-  <img src="images/io-1.png">
-</p>
-
-+ The users can also load a morphology of a certain neuron reconstructed in a BBP circuit using its GID. In this case, the __Input Source__ option should be set to __BBP Circuit (GID)__, and then the path to the circuit configuration should be set in the __Circuit File__ text box (replace __Select Circuit File__ by the absolute path of the circuit, for example: /gpfs/WHATEVER_PROJECT/config.circuit) and the GID of the neuron should be set in the __GID__ field (replace __Add a GID__ by the GID of the neuron, for example: 1000).  
-
-<p align="center">
-  <img src="images/io-2.png">
-</p>
-
-### Output Options
-NeuroMorphoVis can be only used to load and visualize morphologies. But if the users would like create any output, for example images, videos or meshes, then the __Output Directory__, where there artifacts will be generated, __must__ be set (replace __Select Directory__ by the absolute path of the output directory).
-
-#### Output Tree
-When the output directory is created, it automatically creates a list of subdirectories, each of them will contain a specific type of output. The default structure of the out directory is as follows 
-
-```bash
-OUTPUT_DIRECTORY
-├── images
-├── sequences
-├── meshes
-├── morphologies
-├── analysis
-```
-
-If the user wants to change the name any of these subdirectories, then the checkbox __Use Default Output Paths__ must be unchecked. 
-
-<p align="center">
-  <img src="images/io-3.png">
-</p>
