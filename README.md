@@ -66,8 +66,8 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 @article{abdellah2018neuromorphovis,
   title={NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology 
   skeletons reconstructed from microscopy stacks},
-  author={Abdellah, Marwan and Hernando, Juan and Eilemann, Stefan and Lapere, Samuel and Antille, Nicolas and 
-  Markram, Henry and Sch{\"u}rmann, Felix},
+  author={Abdellah, Marwan and Hernando, Juan and Eilemann, Stefan and Lapere, Samuel and Antille, 
+  Nicolas and Markram, Henry and Sch{\"u}rmann, Felix},
   journal={Bioinformatics},
   volume={34},
   number={13},
