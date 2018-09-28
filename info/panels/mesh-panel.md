@@ -50,6 +50,18 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
   <img src="images/meshing-edges-curvy.jpeg" width="400">
 </p>
 
+<table align="center">
+  <tr>
+    <th>Sharp</th>
+    <th>Curvy</th>
+  </tr>
+  <tr>
+    <td> <img src="images/meshing-edges-sharp.jpeg" width="400"> </td>
+    <td> <img src="images/meshing-edges-curvy.jpeg" width="400"> </td>
+  </tr>
+</table>
+
+
 ### Soma 
 + __Connected__
 + __Disconnected__
