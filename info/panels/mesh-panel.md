@@ -38,13 +38,27 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Sharp__
 + __Curvy__ 
 
+<p align="center">
+  <img src="images/meshing-by-angle.png" width="250" height="400"> 
+  <img src="images/meshing-by-radius.png" width="250" height="400">
+</p>
+
 ### Soma 
 + __Connected__
 + __Disconnected__
 
+
+<p align="center">
+  <img src="images/meshing-by-angle.png" width="250" height="400"> 
+  <img src="images/meshing-by-radius.png" width="250" height="400">
+</p>
+
 ### Skeleton Objects 
 + __Connected__
 + __Disconnected__
+
+
+
 
 ### Branching 
 + __Angles__
