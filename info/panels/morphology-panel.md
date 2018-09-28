@@ -5,9 +5,14 @@
 </p>
 
 ## Summary
-This panel gives access to the parameters of the __Morphology Reconstruction Toolbox__. Note that the three-dimensionap profile of the soma that is reconstructed --if requested-- is based on the parameters set in the _Soma Toolbox panel_.
 
-When you toggle the _Morphology Toolbox_ tab highlighted in red above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
+This panel gives access to the parameters of the __Morphology Reconstruction Toolbox__. By reconstruction in the context, we mean generating a three-dimensional skeleton from a dendrogram (a tree diagram frequently used to illustrate the arrangement of the clusters produced by hierarchical clustering, for further details refer to this [link](https://en.wikipedia.org/wiki/Dendrogram)). 
+
+Note that the three-dimensionap profile of the soma that is reconstructed in this skeleton -- if requested -- is based on the parameters set in the _Soma Toolbox panel_.
+
+## Opening the Morphology Reconstruction Toolbox
+
+When you toggle (or click on) the _Morphology Toolbox_ tab highlighted in red above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
 
 <p align="center">
   <img src="images/morphology-panel-detailed.png">
