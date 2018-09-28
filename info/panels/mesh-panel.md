@@ -82,28 +82,31 @@ Rendering the mesh requires some work to setup the lighting and camera and locat
 
 #### Rendering View 
 
-To understand the difference between the different shots, you can refer to this [artlcie](https://www.bhphotovideo.com/explora/video/tips-and-solutions/filmmaking-101-camera-shot-types). 
+To understand the difference between the different shots in general, you can refer to this [artlcie](https://www.bhphotovideo.com/explora/video/tips-and-solutions/filmmaking-101-camera-shot-types). 
 
-+ __Wide Shot__
++ __Wide Shot__ The spatial extent of a wide shot image spans that of the entire morphology, even if we limit the branching order to certain level. To render a wide shot view of the mesh, the option _Wide Shot_ must be selected before clicking on any rendering button. 
 
 <p align="center">
   <img src="images/mesh-panel-rendering-wide-shot.png">
 </p>
 
-+ __Mid Shot__
++ __Mid Shot__ The spatial extent of a mid shot image is limited to the bounding box of _only_ the arbors reconstructed at a specific branching order. To render a mid shot view of the mesh, the option _Mid Shot_ must be selected before clicking on any rendering button. 
 
 <p align="center">
   <img src="images/mesh-panel-rendering-mid-shot.png">
 </p>
 
-+ __Close Up__ If you select to render a closeup view of the mesh by clicking on the _Close Up_ button, then you can set the size of the closeup shot in the __Close Up Size__ field.    
++ __Close Up__ If you select to render a closeup view of the mesh by clicking on the _Close Up_ button, then you can set the size of the closeup shot in the _Close Up Size_ field. 
 
 <p align="center">
   <img src="images/mesh-panel-rendering-closeup.png">
 </p>
 
 #### Rendering Resolution
-+ __Fixed__
+NeuroMorphoVis has added support to set the resolution of the rendered images either to a _fixed_ resolution or based on the _dimensions of the morphology skeleton_. The later option is mandatory for the images that are required for scientific articles or publications. It allows the user to rendering images _to scale_ and overlay a scale bar on the top of the image.   
+
++ __Fixed__ The resolution of the image is normally defined by two parameters (width and height) in pixels, however, NeuroMorphoVis forces the users to define the resolution of the image using a single parameter to avoid rendering a distorted image. 
+ 
 + __To Scale__
 
 #### Rendering View 
