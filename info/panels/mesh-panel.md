@@ -34,9 +34,16 @@ The surface of the mesh that reflects that membrane of a neuron can be __Smooth_
 + __Rough__ The roughness addedd to the surface of the mesh makes the neuron mesh more realistic as seen under the microscope. This option is used for meshes created mainly for performing in silico imaging experiments. 
 
 ### Edges
+
+Due to manual tracing artifacts, traditional morphology skeletons are normally reconstructed with sharp edges between the different samples. This issue reduces the realism of the generated meshes, in particular for close up renderings. To remove these artifacts, we introduced an option to apply a vertex smoothing filter that smooths those hard edges while preserving the geometry of the topology and connectivity of the morphology skeleton.
+
 The edges can ve __Sharp__ or __Curvy__.
+
 + __Sharp__
+Preserve the angles between the edges and create sharp edges. 
+
 + __Curvy__ 
+Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
 
 <p align="center">
   <img src="images/meshing-by-angle.png" width="250" height="400"> 
