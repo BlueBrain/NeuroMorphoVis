@@ -36,14 +36,13 @@ When you toggle (or click on) the _Morphology Toolbox_ tab highlighted in red ab
 
 In the following sections we will detail all the parameters shown in each section in this panel.
  
-## Morphology Skeletion Parameters
+## Morphology Skeleton Parameters
 
 In this section the user can select which components of the morphology skeletion will be reconstructed and generated in the scene.
 
 ### Soma 
 
-The soma can be _ignored_ , represented symbolically by a _sphere_, or represented by an accurate _three-dimensional profile_ that can approximate its actual shape. 
-
+The soma object can be _ignored_, represented symbolically by a _sphere_, or represented by an accurate _three-dimensional profile_ that can approximate its actual shape. 
 
 <p align="center">
   <img src="images/morphology-panel-soma.png" width=700>
@@ -72,6 +71,7 @@ The soma is usually described in the morphology file by a point, a radius and a 
   <img src="images/morphology-panel-soma-profile.png" width=300>
 </p>
 
+### Branches 
 
 ## Morphology Reconstruction Parameters
   
