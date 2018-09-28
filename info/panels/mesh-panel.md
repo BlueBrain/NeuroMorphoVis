@@ -45,11 +45,8 @@ Preserve the angles between the edges and create sharp edges.
 + __Curvy__ 
 Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
 
-<p align="center">
-  <img src="images/meshing-edges-sharp.jpeg" width="400"> 
-  <img src="images/meshing-edges-curvy.jpeg" width="400">
-</p>
 
+<p align="center">
 <table align="center">
   <tr>
     <th>Sharp</th>
@@ -60,7 +57,7 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
     <td> <img src="images/meshing-edges-curvy.jpeg" width="400"> </td>
   </tr>
 </table>
-
+</p>
 
 ### Soma 
 + __Connected__
