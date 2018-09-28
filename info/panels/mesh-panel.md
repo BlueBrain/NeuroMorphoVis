@@ -45,10 +45,8 @@ Preserve the angles between the edges.
 + __Curvy__ 
 Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
 
-<p align="center">
-  <img src="images/meshing-edges-sharp.jpeg" width="450">
-  
-  <img src="images/meshing-edges-curvy.jpeg" width="450"> 
+<p align="center">  
+  <img src="images/meshing-edges.jpeg" width="450"> 
 </p>
 
 ### Soma Connectivity to Branches
