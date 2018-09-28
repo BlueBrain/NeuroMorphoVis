@@ -46,7 +46,7 @@ Preserve the angles between the edges.
 Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
 
 <p align="center">  
-  <img src="images/meshing-edges.png" width="800"> 
+  <img src="images/meshing-edges.png" width="700"> 
 </p>
 
 ### Soma Connectivity to Branches
