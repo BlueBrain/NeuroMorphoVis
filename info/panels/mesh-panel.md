@@ -65,8 +65,8 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
 + __Disconnected__
 
 
-<p style="width:100%">
-<table>
+<p align="center">
+<table style="width=100%">
   <tr>
     <th> Connected Soma </th>
     <th> Disconnected Soma </th>
