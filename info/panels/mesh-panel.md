@@ -59,15 +59,25 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
 </table>
 </p>
 
-### Soma 
+### Soma Connectivity to Branches
+
 + __Connected__
 + __Disconnected__
 
 
-<p align="center">
-  <img src="images/meshing-by-angle.png" width="250" height="400"> 
-  <img src="images/meshing-by-radius.png" width="250" height="400">
+<p style="width:100%">
+<table>
+  <tr>
+    <th> Connected Soma </th>
+    <th> Disconnected Soma </th>
+  </tr>
+  <tr>
+    <td> <img src="images/meshing-soma-disconnected.png" width="450"> </td>
+    <td> <img src="images/meshing-soma-connected.png" width="450"> </td>
+  </tr>
+</table>
 </p>
+
 
 ### Skeleton Objects 
 + __Connected__
