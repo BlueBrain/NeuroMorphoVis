@@ -51,6 +51,10 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Radii__
 
 
+<p align="center">
+  <img src="images/mesh-panel.png"> <img src="images/mesh-panel.png">
+</p>
+
 <!-- .element: style="text-align:center;" -->
 | Branching by Radii | Branching by Angles |
 |:-:|:-:|
