@@ -42,7 +42,7 @@ In this section the user can select which components of the morphology skeletion
 
 ### Soma 
 
-The soma can be _ignored_ , represented symbolically by a _sphere_, or represented by an accurate _three-dimensional profile_ that can approximate the actual shape of the soma of the traced neuron. The user can select one of the following options:
+The soma can be _ignored_ , represented symbolically by a _sphere_, or represented by an accurate _three-dimensional profile_ that can approximate its actual shape. The user can select one of the following options:
 
 + Ignore
 The soma is totally ignored.  
