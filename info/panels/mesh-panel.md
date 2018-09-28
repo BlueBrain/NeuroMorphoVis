@@ -50,6 +50,14 @@ The edges can ve __Sharp__ or __Curvy__.
 + __Angles__
 + __Radii__
 
+
+
+
+| Branching by Radii | Branching by Angles |
+|:-:|:-:|
+| ![](images/meshing-by-angle.png)  | ![](images/meshing-by-radius.png)  |
+
+
 ### Tessellation 
 
 
@@ -130,7 +138,7 @@ This button renders the _top_ view of the reconstructed mesh.
   <img src="images/mesh-panel-rendering-view.png">
 </p>
   
-The rendered images will be generated in the _images_ directory underneath the output directory that is set by the user in the Input / Output panel. If this path is not set, the user will get this error message __Output directory is not set, update it in the Input / Output Data panel__. In this case, the user must toggle the Input / Ouput panel and update the _Output Directory_ by replacing the _Select Directory_ in the output options by an existing path on the file system. 
+The rendered images will be generated in the _images_ directory underneath the output directory that is set by the user in the Input / Output panel. If this path is not set, the user will get this error message __Output directory is not set, update it in the Input / Output Data panel__. In this case, the user must toggle the Input / Ouput panel and update the _Output Directory_ by replacing _Select Directory_ in the output options by an existing path on the file system. 
 
 <p align="center">
   <img src="images/mesh-panel-rendering-error.png">
@@ -140,7 +148,7 @@ The rendered images will be generated in the _images_ directory underneath the o
 The users can exploit the native support of Blender to export meshes into different file formats. But since we assumed that end users might not have any Blender experience, we have addedd four buttons to export the reconstructed meshes into the following common file formats:
 
 + __Wavefront (.obj)__ 
-The .obj file format is a simple data-format that represents 3D geometry alone — namely, the position of each vertex, the UV position of each texture coordinate vertex, vertex normals, and the faces that make each polygon defined as a list of vertices, and texture vertices. Further details about this file format can be found [here](https://en.wikipedia.org/wiki/PLY_(file_format)).
+The OBJ file format is a simple data-format that represents 3D geometry alone — namely, the position of each vertex, the UV position of each texture coordinate vertex, vertex normals, and the faces that make each polygon defined as a list of vertices, and texture vertices. Further details about this file format can be found [here](https://en.wikipedia.org/wiki/PLY_(file_format)).
 
 + __Stanford (.ply)__ 
 PLY is a file format known as the Polygon File Format or the Stanford Triangle Format. It was principally designed to store three-dimensional data from 3D scanners. The data storage format supports a relatively simple description of a single object as a list of nominally flat polygons. A variety of properties can be stored, including: color and transparency, surface normals, texture coordinates and data confidence values. The format permits one to have different properties for the front and back of a polygon.
@@ -156,7 +164,7 @@ The exported file can be opened _only_ in Blender and can be used for rendereing
   <img src="images/mesh-panel-export.png">
 </p>
  
-The exported meshes will be generated in the _meshes_ directory underneath the output directory that is set by the user in the Input / Output panel. If this path is not set, the user will get this error message __Output directory is not set, update it in the Input / Output Data panel__. In this case, the user must toggle the Input / Ouput panel and update the _Output Directory_ by replacing the _Select Directory_ in the output options by an existing path on the file system. 
+The exported meshes will be generated in the _meshes_ directory underneath the output directory that is set by the user in the Input / Output panel. If this path is not set, the user will get this error message __Output directory is not set, update it in the Input / Output Data panel__. In this case, the user must toggle the Input / Ouput panel and update the _Output Directory_ by replacing _Select Directory_ in the output options by an existing path on the file system. 
 
 <p align="center">
   <img src="images/mesh-panel-export-error.png">
