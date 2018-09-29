@@ -131,6 +131,26 @@ This option is the default.
 
 ## Morphology Colors and Shading Parameters
 
+<p align="center">
+  <img src="images/morphology-panel-colors-1.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-colors-2.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-colors-3.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-colors-4.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-colors-5.png" width=300>
+</p>
+
 ## Let's Reconstruct the Morphology 
 
 <p align="center">
