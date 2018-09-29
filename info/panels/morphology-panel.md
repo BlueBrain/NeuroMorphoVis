@@ -94,6 +94,84 @@ The maximum branching order of each type (axon, basal dendrite or apical dendrit
  
 ## Morphology Reconstruction Parameters
   
+### Reconstruction Method
+
+### Skeleton Style 
+
+### Branching 
+
++ __Radii__
+This option is the default. 
+
+<p align="center">
+  <img src="images/morphology-panel-branching-radii.png" width=300>
+</p>
+ 
++ __Angles__  
+
+<p align="center">
+  <img src="images/morphology-panel-branching-angles.png" width=300>
+</p>
+
+### Arbor Quality 
+
+### Sections Radii 
+<p align="center">
+  <img src="images/morphology-panel-section-radii.png" width=300>
+</p>
+
+
++ __As Specified in Morphology__
+
++ __At a Fixed Diamater__
+
++ __With Scale Factor__
+
+
+
+## Morphology Colors and Shading Parameters
+
+## Let's Reconstruct the Morphology 
+
+<p align="center">
+  <img src="images/morphology-panel-reconstruction-button.png" width=300>
+</p>
+
+## Rendering Parameters 
+
+<p align="center">
+  <img src="images/morphology-panel-render-wideshot.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-render-midshot.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-render-closeup.png" width=300>
+</p>
+
+
+## Let's Render the Morphology
+
+<p align="center">
+  <img src="images/morphology-panel-rendering-view.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-panel-rendering-animation.png" width=300>
+</p>
+
+
+
+## Morphology Export 
+
++ __Export as a Blender File__
+
+<p align="center">
+  <img src="images/morphology-panel-save-blender-format.png" width=300>
+</p>
+
 | A | B | C | D | E | F | G |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | ![](images/morphology-1.png)  | ![](images/morphology-2.png)  | ![](images/morphology-3.png)|![](images/morphology-4.png)|![](images/morphology-5.png) | ![](images/morphology-6.png) | ![](images/morphology-7.png) |
