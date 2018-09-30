@@ -1,7 +1,7 @@
 # Morphology Analysis Panel
 
 <p align="center">
-  <img src="images/morphology-analysis-panel.png">
+  <img src="images/morphology-analysis-panel-selected.png" width=300>
 </p>
 
 ## Summary
@@ -14,54 +14,32 @@ The soma reconstruction toolbox is added to allow the generation of highly plaus
 
 We extended the Blender-based implementation and integrated this module into NeuroMorphoVis to provide a convenient tool to validate and compare the somata obtained by segmenting a microscopic stack with the ones extracted from three-dimensional contours.
 
-## Method 
-NeuroMorphoVis has three methods to reconstruct different three-dimensional somata profiles:
-+ __Profile__: This method uses only the profile points that are reported in the morphology files to reconstruct the soma from an ico-sphere, whose radius is set to the mean soma radius.   
-<p align="center">
-  <img src="images/soma-profile.png">
-</p>
-
-+ __Arbors__: This method uses the starting points of each root arbor to deform an ico-sphere. 
-<p align="center">
-  <img src="images/soma-arbors.png">
-</p>
-
-+ __Complex__: This is a combined method of the two previous ones.
-<p align="center">
-  <img src="images/soma-complex.png">
-</p>
-
-
-### Input Source
-+ The users can load morphologies from individual .SWC or .H5 files based on their absolute pathes in the file system. In this case, the __Input Source__ option should be set to __H5 or SWC File__, and the path to the morphology file should be set in the __Morphology File__ text box. You can also use the button on the right of the text box to open a file dialog and select the file from a specific path.
+## Analysis 
 
 <p align="center">
-  <img src="images/io-1.png">
+  <img src="images/morphology-analysis-panel-overview.png" width=300>
 </p>
 
-+ The users can also load a morphology of a certain neuron reconstructed in a BBP circuit using its GID. In this case, the __Input Source__ option should be set to __BBP Circuit (GID)__, and then the path to the circuit configuration should be set in the __Circuit File__ text box (replace __Select Circuit File__ by the absolute path of the circuit, for example: /gpfs/WHATEVER_PROJECT/config.circuit) and the GID of the neuron should be set in the __GID__ field (replace __Add a GID__ by the GID of the neuron, for example: 1000).  
+### Analysis Options 
 
-<p align="center">
-  <img src="images/io-2.png">
-</p>
++ __Number of Samples per Section__
 
-### Output Options
-NeuroMorphoVis can be only used to load and visualize morphologies. But if the users would like create any output, for example images, videos or meshes, then the __Output Directory__, where there artifacts will be generated, __must__ be set (replace __Select Directory__ by the absolute path of the output directory).
++ __Number of Segments per Section__
 
-#### Output Tree
-When the output directory is created, it automatically creates a list of subdirectories, each of them will contain a specific type of output. The default structure of the out directory is as follows 
++ __Number of Sections per Arbor__
 
-```bash
-OUTPUT_DIRECTORY
-├── images
-├── sequences
-├── meshes
-├── morphologies
-├── analysis
-```
++ __Branching Angles__
 
-If the user wants to change the name any of these subdirectories, then the checkbox __Use Default Output Paths__ must be unchecked. 
++ __Branching Radii__
 
-<p align="center">
-  <img src="images/io-3.png">
-</p>
++ __Sections Length__
+
++ __Short Sections__
+
++ __Duplicate Samples__
+
++ __Disconnected Axons__
+
++ __Branches with Negative Samples__
+
+### Let's Analyze the Morphology

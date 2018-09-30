@@ -1,7 +1,7 @@
 # Morphology Reconstruction Toolbox Panel
 
 <p align="center">
-  <img src="images/morphology-panel.png">
+  <img src="images/morphology-panel.png" width=300>
 </p>
 
 ## Summary
