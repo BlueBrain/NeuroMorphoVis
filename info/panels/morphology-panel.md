@@ -97,16 +97,40 @@ The maximum branching order of each type (axon, basal dendrite or apical dendrit
 ### Reconstruction Method
 
 + __Connected Sections (Original)__
+This method connects the different sections that form a continuation from a parent section to a child one along a single arbor. 
 
 + __Connected Sections (Repaired)__
+This is the default reconstruction method.    
 
-+ __Articulated Sections__
+<p align="center">
+<img src="images/morphology-5.png" width=200>
+<img src="images/morphology-6.png" width=200>
+</p>
 
 + __Disconnected Sections__
+his method reconstructs each section in the morphology as a single tubed-polyline whose radius varies depending on that of each sample along the section.
+
+<p align="center">
+<img src="images/morphology-3.png" width=200>
+</p> 
+
++ __Articulated Sections__
+This method reconstructs each section in the morphology as a single tubed-polyline whose radius varies depending on that of each sample along the section. The only difference between this method and the _Disconnected Sections_ method is that the children sections are articulated with the parent section on a sphere whose radius is equiavlent to that of the sample at the branching point. This reconstruction method is similar to that used in [_Neurolucida_](https://www.mbfbioscience.com/neurolucida).  
+
+<p align="center">
+<img src="images/morphology-4.png" width=200>
+</p> 
 
 + __Disconnected Segments__
+This method reconstructs each segment in the skeleton as an independent and disconnected tapered cylinder. This approach might be slow when the morphology has complex dendritic or axonal arborizations, but it is quite useful for debugging morphologies that come with manual tracing artifacts.  
+
+<p align="center">
+  <img src="images/morphology-1.png" width=200>
+  <img src="images/morphology-2.png" width=200> 
+</p> 
 
 + __Disconnected Skeleton__
+This method is similar to the _Disconnected Sections_ one, but it does not take the branching point into considerations. Therefore, there will be gapps between the parent and children sections at the bifurcation or trifurcation points.
 
 ### Skeleton Style 
 
@@ -330,6 +354,3 @@ To export the morphology into a _.blend_ file, click on the _Blender Format (.bl
   <img src="images/morphology-panel-save-blender-format.png" width=300>
 </p>
 
-| A | B | C | D | E | F | G |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| ![](images/morphology-1.png)  | ![](images/morphology-2.png)  | ![](images/morphology-3.png)|![](images/morphology-4.png)|![](images/morphology-5.png) | ![](images/morphology-6.png) | ![](images/morphology-7.png) |
