@@ -126,12 +126,15 @@ This option is the default.
 + __At a Fixed Diamater__
 
 <p align="center">
-  <img src="images/morphology-thickness.png" width=800>
+  <img src="images/morphology-radii-thickness.png" width=800>
 </p>
 
 
 + __With Scale Factor__
 
+<p align="center">
+  <img src="images/morphology-radii-scale.png" width=800>
+</p>
 
 
 
