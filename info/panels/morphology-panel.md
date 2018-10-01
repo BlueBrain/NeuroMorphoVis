@@ -248,9 +248,13 @@ The following figure shows two close up images of the same morphology skeleton w
 
 ## Let's Reconstruct the Morphology 
 
+Once the morphology parameters are set as shown before, the user can reconstruct a morphology skeleton by clicking on the _Reconstruct Morphology_ button. 
+  
 <p align="center">
   <img src="images/morphology-panel-reconstruction-button.png" width=300>
 </p>
+
+Note that if any of the parameters are changed the user must re-click on this button again to update the morphology. 
 
 ## Rendering Parameters 
 
