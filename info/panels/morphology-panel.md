@@ -122,8 +122,15 @@ This option is the default.
 
 
 + __As Specified in Morphology__
+The morphology skeleton is reconstructed using the radii specified in the morphology file. _NeuroMorphoVis_ does not apply any pre-processing kernels to change the radii of the samples. In certain cases, some branches - for example the axons - are extremely thin to be seen in the rendering. If the user is interested to visualizae the structure of the entire skeleton in focus, the following two options can be alternatively used.   
 
 + __At a Fixed Diamater__
+The user can change the radius of all the sections of the morphology from the _Fixed Radius Value_ slider. 
+  
+<p align="center">
+  <img src="images/morphology-panel-fixed-diameter.png" width=300>
+</p>
+
 
 <p align="center">
   <img src="images/morphology-radii-thickness.png" width=800>
@@ -131,6 +138,12 @@ This option is the default.
 
 
 + __With Scale Factor__
+To preserve the respective scales of the sections across the morphology skeleton, NeuroMorphoVis has added support to scale the radii of the sections.
+The user can change the scale factor of the radii from the _Radius Scale Factor_ slider. 
+  
+<p align="center">
+  <img src="images/morphology-panel-scale-factor.png" width=300>
+</p>
 
 <p align="center">
   <img src="images/morphology-radii-scale.png" width=800>
@@ -146,8 +159,22 @@ This option is the default.
 
 ### Selecting Material 
 
++ __Lambert Ward__ 
++ __Flat__
++ __Electron Light__
++ __Electron Dark__
++ __Super Electron Light__
++ __Super Electron Dark__
++ __Glossy__
++ __Shadow__
+
+
 <p align="center">
   <img src="images/morphology-panel-colors-2.png" width=300>
+</p>
+
+<p align="center">
+  <img src="images/morphology-shaders.png" width=800>
 </p>
 
 ### Color Scheme 
@@ -165,6 +192,7 @@ This option is the default.
 </p>
 
 #### Homogeneous Color
+
 <p align="center">
   <img src="images/morphology-panel-colors-5.png" width=300>
 </p>
