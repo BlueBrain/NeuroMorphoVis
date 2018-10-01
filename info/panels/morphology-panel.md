@@ -239,6 +239,8 @@ By default, _NeuroMorphoVis_ allows the user to assign different colors to each 
   <img src="images/morphology-panel-colors-5.png" width=300>
 </p>
 
+The following figure shows two close up images of the same morphology skeleton when rendered with different colors for each component in comparison with using a homogeneous color for all the components. 
+ 
 <p align="center">
   <img src="images/morphology-panel-homo-hetero-colors.png" width=800>
 </p>
