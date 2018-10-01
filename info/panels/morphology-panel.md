@@ -233,7 +233,7 @@ Note that this shader user the Cyles renderer, so it could be quite slow if the 
 
 #### Homogeneous Color
 
-By default, the user can assign different colors to each component in the morphology. The user can apply a homogeneous color to all the components of the morphology including the soma and arbors. 
+By default, _NeuroMorphoVis_ allows the user to assign different colors to each component in the morphology, mainly: axons, apical dendrites, basal dendrites and the somata. In certain use cases, the user might want to assign the same color to all the components of the morphology. This step would require setting the HEX (or RGB) color code to each component, which might be inconvenient if the user would like to test multiple colors. Therefore, _NeuroMorphoVis_ has an option to assign a homogeneous color to all the components of the morphology with a single click. The user must check the _Use Homogeneous Color_ checkbox and click on the _Membrane Color_ panel to select the desired color.
 
 <p align="center">
   <img src="images/morphology-panel-colors-5.png" width=300>
