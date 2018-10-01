@@ -113,6 +113,10 @@ This option is the default.
   <img src="images/morphology-panel-branching-angles.png" width=300>
 </p>
 
+<p align="center">
+  <img src="images/morphology-panel-branching.png" width=800>
+</p>
+
 ### Arbor Quality 
 
 ### Sections Radii 
@@ -179,6 +183,10 @@ The user can change the scale factor of the radii from the _Radius Scale Factor_
 
 ### Color Scheme 
 
+<p align="center">
+  <img src="images/morphology-panel-coloring-schemes.png" width=800>
+</p>
+
 #### Color Arbor by Part
 
 <p align="center">
@@ -196,6 +204,11 @@ The user can change the scale factor of the radii from the _Radius Scale Factor_
 <p align="center">
   <img src="images/morphology-panel-colors-5.png" width=300>
 </p>
+
+<p align="center">
+  <img src="images/morphology-panel-homo-hetero-colors.png" width=800>
+</p>
+
 
 ## Let's Reconstruct the Morphology 
 
