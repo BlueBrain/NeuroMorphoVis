@@ -126,7 +126,7 @@ This option is the default.
 + __At a Fixed Diamater__
 
 <p align="center">
-  <img src="images/morphology-thickness.png" width=500>
+  <img src="images/morphology-thickness.png" width=800>
 </p>
 
 
