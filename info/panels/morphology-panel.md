@@ -98,6 +98,10 @@ The maximum branching order of each type (axon, basal dendrite or apical dendrit
 
 ### Skeleton Style 
 
+<p align="center">
+  <img src="images/morphology-panel-skeleton-types.png" width=800>
+</p>
+
 ### Branching 
 
 + __Radii__
