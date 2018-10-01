@@ -96,6 +96,18 @@ The maximum branching order of each type (axon, basal dendrite or apical dendrit
   
 ### Reconstruction Method
 
++ __Connected Sections (Original)__
+
++ __Connected Sections (Repaired)__
+
++ __Articulated Sections__
+
++ __Disconnected Sections__
+
++ __Disconnected Segments__
+
++ __Disconnected Skeleton__
+
 ### Skeleton Style 
 
 <p align="center">
@@ -160,7 +172,7 @@ The user can change the scale factor of the radii from the _Radius Scale Factor_
 
 
 ## Morphology Colors and Shading Parameters
-
+ 
 <p align="center">
   <img src="images/morphology-panel-colors-1.png" width=300>
 </p>
@@ -168,13 +180,29 @@ The user can change the scale factor of the radii from the _Radius Scale Factor_
 ### Selecting Material 
 
 + __Lambert Ward__ 
+For further details about lambert shading, you can refer to this [link](https://en.wikipedia.org/wiki/Lambertian_reflectance). Note that this shader uses Blender renderer.
+
 + __Flat__
+Note that this shader uses Blender renderer.
+
 + __Electron Light__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
+
 + __Electron Dark__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
+
+
 + __Super Electron Light__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
+
 + __Super Electron Dark__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
+
 + __Glossy__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
+
 + __Shadow__
+Note that this shader user the Cyles renderer, so it could be quite slow if the rendering resolution exceeds 1024.
 
 
 <p align="center">
@@ -204,6 +232,8 @@ The user can change the scale factor of the radii from the _Radius Scale Factor_
 </p>
 
 #### Homogeneous Color
+
+By default, the user can assign different colors to each component in the morphology. The user can apply a homogeneous color to all the components of the morphology including the soma and arbors. 
 
 <p align="center">
   <img src="images/morphology-panel-colors-5.png" width=300>
