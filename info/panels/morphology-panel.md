@@ -135,18 +135,27 @@ This option is the default.
   <img src="images/morphology-panel-colors-1.png" width=300>
 </p>
 
+### Selecting Material 
+
 <p align="center">
   <img src="images/morphology-panel-colors-2.png" width=300>
 </p>
+
+### Color Scheme 
+
+#### Color Arbor by Part
 
 <p align="center">
   <img src="images/morphology-panel-colors-3.png" width=300>
 </p>
 
+#### Black White 
+
 <p align="center">
   <img src="images/morphology-panel-colors-4.png" width=300>
 </p>
 
+#### Homogeneous Color
 <p align="center">
   <img src="images/morphology-panel-colors-5.png" width=300>
 </p>
@@ -159,34 +168,73 @@ This option is the default.
 
 ## Rendering Parameters 
 
+### Rendering View 
+
++ __Wide Shot__
+
 <p align="center">
   <img src="images/morphology-panel-render-wideshot.png" width=300>
 </p>
 
++ __Mid Shot__
+
 <p align="center">
   <img src="images/morphology-panel-render-midshot.png" width=300>
 </p>
+
++ __Close Up__
 
 <p align="center">
   <img src="images/morphology-panel-render-closeup.png" width=300>
 </p>
 
 
+### Resolution 
+
++ __Fixed Resolution__
+
++ __To Scale__
+
+
 ## Let's Render the Morphology
+
+### Rendering an Image
+
+After setting all the rendering parameters as shown in the previous steps, the users can render an image of the morphology using any of the following buttons:
+
++ __Front__
+This button renders the front view of the reconstructed morphology.
+
++ __Side__
+This button render the side view of the reconstructed morphology.
+
++ __Top__ 
+This button renders the top view of the reconstructed morphology.
 
 <p align="center">
   <img src="images/morphology-panel-rendering-view.png" width=300>
 </p>
 
+### Rendering a Movie
+
+NeuroMorphoVis has added support to render two types of movies: _360_ and _Progressive_ sequence. 
+
++ __360__
+The user can render a 360 movie to visualize the morphology from the different views.
+
++ __Progressive__  
+The user can render a progressive animation showing the progressive reconstruction (or the growth) of the morphology. The resulting movie depends on the method used to reconstruct the morphology. 
+
 <p align="center">
   <img src="images/morphology-panel-rendering-animation.png" width=300>
 </p>
 
-
-
 ## Morphology Export 
 
+The current version of NeuroMorphoVis supports exporting the reconstructed morphology into _.blend_ file.  
+
 + __Export as a Blender File__
+To export the morphology into a _.blend_ file, click on the _Blender Format (.blend)_ button under the _Save Morphology As_ section.
 
 <p align="center">
   <img src="images/morphology-panel-save-blender-format.png" width=300>
