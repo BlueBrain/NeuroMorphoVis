@@ -9,7 +9,7 @@ NeuroMorphoVis is an interactive, extensible and cross-platform framework for bu
 _NeuroMorphoVis_ provides four major toolboxes that can be used for 
 
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
-+ An easy context to load morphology skeletons and repair them manually. 
++ An easy context to load broken morphology skeletons and repair them manually. 
 + Sketching and building three-dimensional representations of the morphology skeletons using various methods.
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies. 
