@@ -26,7 +26,7 @@ The tool is also extensible via its powerful python API that can be imported in 
 
 ### GUI
 
-To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [page](docs/user/modules/gui/gui.md).
+To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [user guide](docs/user/modules/gui/gui.md).
 
 <figure align="center">
 <img src="docs/artifacts/interface-images/interface.png">
@@ -35,11 +35,11 @@ To make it accessible to end users with minimal programming knowledge or even wi
 
 ### Command Line Options
 
-_NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [page](docs/user/modules/cli/cli.md).
+_NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [user guide](docs/user/modules/cli/cli.md).
 
 ### Configuration Files 
 
-Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
+Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [user guide](docs/user/modules/configurations/configurations.md).
 
 ## Installation 
 
