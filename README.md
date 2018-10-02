@@ -18,7 +18,9 @@ There are other optional dependecies that are specific to users from [Blue Brain
 
 
 ## Interfaces
-NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and also with a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production.   
+_NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
+
+The tool is also extensible via its powerful python API that can be imported in Blender console and text browser. 
 
 ### GUI
 ![](docs/artifacts/interface-images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
@@ -27,7 +29,7 @@ NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a us
 _NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [page](docs/user/modules/cli/cli.md).
 
 ### Configuration Files 
-Users can easily configure _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
+Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
 
 
 ### Modules 
