@@ -50,23 +50,17 @@ TARGET=[SET TARGET]
 GID=[SET GID]
 
 # Morphology file, if INPUT is set to 'file', otherwise ignored.
-# MORPHOLOGY_FILE=SOME_MORPHOLOGY_FILE
-# MORPHOLOGY_FILE=/home/abdellah/Desktop/nmv-tests/input/C010398B-I4_cor_-_Scale_x1.000_y1.050_z1.000_-_Clone_5.h5
+MORPHOLOGY_FILE=[SET MORPHOLOGY FILE]
 
 # Morphology directory, if INPUT is set to 'directory', otherwise ignored.
-# MORPHOLOGY_DIRECTORY=/abdellah-bbp-engineering/bbp-media-projects/pcs-paper-version-3/input/sample
-# MORPHOLOGY_DIRECTORY=/computer/data/nmv-experiments/h5-samples
-# MORPHOLOGY_DIRECTORY=/data/nmv-tests/input
+MORPHOLOGY_DIRECTORY=[SET MORPHOLOGY DIRECTORY]
 
 ####################################################################################################
 ### OUTPUT PARAMETERS
 ####################################################################################################
 # Output directory
 # This is where all the results (somata, morphologies, meshes, images, etc...) will be generated
-# OUTPUT_DIRECTORY=SOME_OUTPUT_DIRECTORY
-# OUTPUT_DIRECTORY=/abdellah-bbp-engineering/bbp-media-projects/pcs-paper-version-3/output
-# OUTPUT_DIRECTORY=/computer/data/nmv-experiments/output
-OUTPUT_DIRECTORY=/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/surface-4
+OUTPUT_DIRECTORY=[SET OUTPUT DIRECTORY]
 
 ####################################################################################################
 # EXECUTION PARAMETERS
@@ -74,28 +68,28 @@ OUTPUT_DIRECTORY=/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-
 # Execution node
 # Use ['local'] for running the framework on your machine
 # Use ['cluster'] for running the framework on the BBP visualization cluster
-EXECUTION_NODE=cluster
+EXECUTION_NODE=[SELECT EXECUTION NODE]
 
 # Jobs granularity: This option is valid only for 'cluster' execution
 # Use ['high] for rendering
 # Use ['low'] for generating huge number of meshes
-JOBS_GRANULARITY=low
+JOBS_GRANULARITY=[SET GRANULARITY]
 
 # Number of cores that will be used to create the meshes if the granularity is low
-NUMBER_CORES=320
+NUMBER_CORES=[SET NUMBER OF CORES]
 
 ####################################################################################################
 # MORPHOLOGY / SOMA SKELETON PARAMETERS
 ####################################################################################################
 # Reconstruct morphology skeleton to export it later, 'yes/no'
-RECONSTRUCT_MORPHOLOGY_SKELETON=no
+RECONSTRUCT_MORPHOLOGY_SKELETON=yes
 
 # Skeleton
 # Use ['original'] for loading the original as specified in the morphology file, default
 # Use ['tapered'] for constructing a tapered skeleton
 # Use ['zigzag'] for constructing a zigzag algorithm
 # Use ['tapered-zigzag'] for constructing a tapered-zigzaged skeleton
-SKELETON=tapered-zigzag
+SKELETON=original
 
 # Soma representation
 # Use ['no'] to ignore the soma
@@ -106,7 +100,7 @@ SOMA_REPRESENTATION=profile
 # Soma stiffness, range (0.01 - 0.99), default 0.25.
 SOMA_STIFFNESS=0.1
 
-# Soma subdivision level, convenient range (3-7), default 4.
+# Soma subdivision level, convenient range (3-7), default 6.
 SOMA_SUBDIVISION_LEVEL=5
 
 # Axon building, 'yes/no'
@@ -119,7 +113,7 @@ IGNORE_BASAL_DENDRITES=no
 IGNORE_APICAL_DENDRITES=no
 
 # Maximum axon branching order
-MAX_AXON_BRANCHING_ORDER=2
+MAX_AXON_BRANCHING_ORDER=3
 
 # Maximum basal dendrites branching order
 MAX_BASAL_DENDRITES_BRANCHING_ORDER=1000
@@ -128,17 +122,17 @@ MAX_BASAL_DENDRITES_BRANCHING_ORDER=1000
 MAX_APICAL_DENDRITES_BRANCHING_ORDER=1000
 
 # Morphology reconstruction method
-# Use ['connected-sections-repaired'], where sections are connected together (after repair)
-# Use ['connected-sections'], where sections are connected together (without morphology repair)
-# Use ['disconnected-sections'], where sections are disconnected from each others
-# Use ['articulated-sections'], where sections are connected by spheres
-# Use ['disconnected-segments'], where segments are disconnected
+# Use ['connected-sections-repaired'], where sections are connected together (after repair).
+# Use ['connected-sections'], where sections are connected together (without morphology repair).
+# Use ['disconnected-sections'], where sections are disconnected from each others.
+# Use ['articulated-sections'], where sections are connected by spheres.
+# Use ['disconnected-segments'], where segments are disconnected.
 MORPHOLOGY_RECONSTRUCTION_ALGORITHM=connected-sections-repaired
 
 # Branching method
-# Use ['angles'] to connect the smallest angle branch to the parent
-# Use ['radii'] to connect the largest radius branch to the parent
-BRANCHING_METHOD=angles
+# Use ['angles'] to connect the smallest angle branch to the parent.
+# Use ['radii'] to connect the largest radius branch to the parent, default.
+BRANCHING_METHOD=radii
 
 # Sections' radii
 # Use ['default'] to use the reported radii in the morphology file
@@ -173,11 +167,11 @@ EXPORT_SOMA_MESH_BLEND=no
 ####################################################################################################
 # MESH PARAMETERS
 ####################################################################################################
-# Reconstruct soma mesh only, 'yes/no'
+# Reconstruct soma mesh ONLY, 'yes/no'
 RECONSTRUCT_SOMA_MESH=no
 
 # Reconstruct the entire neuron mesh as a piecewise object, 'yes/no'
-RECONSTRUCT_NEURON_MESH=yes
+RECONSTRUCT_NEURON_MESH=no
 
 # Meshing technique
 # Use ['piecewise-watertight'] for creating piece-wise watertight meshes
@@ -193,7 +187,7 @@ SURFACE=rough
 # Neuron edges
 # Use ['smooth'] for smooth edges
 # Use ['hard'] for hard edges
-EDGES=smooth
+EDGES=hard
 
 # Connect the soma mesh to the arbors, 'yes/no'
 CONNECT_SOMA_MESH_TO_ARBORS=no
@@ -218,14 +212,14 @@ SPINES=circuit
 # Use ['lq'] for loading low quality meshes
 SPINES_QUALITY=lq
 
-# Random spines percentage
-RANDOM_SPINES_PERCENTAGE=50
+# Random spines percentage (1-100)
+RANDOM_SPINES_PERCENTAGE=20
 
 # Add nucleus mesh, 'yes/no'
 ADD_NUCLEUS=no
 
 # export .PLY meshes, 'yes/no'
-EXPORT_NEURON_MESH_PLY=yes
+EXPORT_NEURON_MESH_PLY=no
 
 # Save .OBJ meshes, 'yes/no'
 EXPORT_NEURON_MESH_OBJ=no
@@ -234,7 +228,7 @@ EXPORT_NEURON_MESH_OBJ=no
 EXPORT_NEURON_MESH_STL=no
 
 # Save mesh .BLEND file, 'yes/no'
-EXPORT_NEURON_MESH_BLEND=yes
+EXPORT_NEURON_MESH_BLEND=no
 
 ####################################################################################################
 # MATERIALS PARAMETERS
