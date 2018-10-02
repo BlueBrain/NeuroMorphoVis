@@ -111,9 +111,19 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 ### Gallery 
 
 <p align="center">
+	<img src="docs/artifacts/renderings/dancing-neuron.jpeg" width=400>
+	<img src="docs/artifacts/renderings/scary-neuron.jpeg" width=400>
+</p>
+
+<p align="center">
 	<img src="docs/artifacts/renderings/fluorescent-neuron.jpeg" width=400>
 	<img src="docs/artifacts/renderings/golgi-staining-neuron.jpeg" width=400>
 </p>
+
+<p align="center">
+	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=800>
+</p>
+
 
 ## Known Bugs or Feature Requests
 
