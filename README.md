@@ -81,7 +81,7 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 
 <figure align="center">
 <a href="https://www.youtube.com/watch?v=v02HogkFODU">
-	<img src="docs/artifacts/interface-images/soma-reconstruction.png" width=800>
+	<img src="docs/artifacts/interface-images/soma-reconstruction.png" width=1000>
 </a>
 <figcaption>Reconstruction of three-dimensional profiles of a pyramidal cell morphology using Hooke's law and mass spring models.</figcaption>
 </figure>
