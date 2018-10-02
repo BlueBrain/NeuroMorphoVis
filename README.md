@@ -30,7 +30,7 @@ To make it accessible to end users with minimal programming knowledge or even wi
 
 <figure align="center">
 <img src="docs/artifacts/interface-images/interface.png">
-<figcaption>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D viewer of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites amd blue for the axon) and the soma (in orange) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
+<figcaption>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D view port of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites amd blue for the axon) and the soma (in orange) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
 </figure>
 
 ### Command Line Options
