@@ -13,7 +13,7 @@ The current version of NeuroMorphoVis can read morphologies stored in the follow
 
 + The standard [.SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) file format. 
 
-+ [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the Blue Brain Project / Human Brain Projects, but the python bindings of HDF5 library must be installed to the system to load it.
++ [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) file format. This format is specific to the [Blue Brain Project (BPP)](https://bluebrain.epfl.ch/) and [Human Brain Project (HBP)](https://www.humanbrainproject.eu/en/), but the python bindings of HDF5 library must be installed to the system to load it.
 
 ### Note
 
