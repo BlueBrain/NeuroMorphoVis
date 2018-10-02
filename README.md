@@ -130,7 +130,7 @@ If you use _NeuroMorphoVis_ for your research, media design or other purposes, p
 }
 ```
 
-The supplementary material of the paper is also available in this [document](docs/artifacts/papers/abdellah-et-al-2018-supplementary.pdf)
+The supplementary material of this paper is also available in this [document](docs/artifacts/papers/abdellah-et-al-2018-supplementary.pdf).
 
 The core algorithms of the soma and mesh reconstruction modules are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
 
