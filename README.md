@@ -76,6 +76,8 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 
 ## Highlights 
 
+### Features 
+
 #### Neuronal Soma Reconstruction 
 
 A demonstration of using the _Soma Reconstruction_ toolbox to reconstruct a three-dimensional profile of the soma of a pyramidal cell morphology using Hooke's law and mass spring models.
@@ -104,6 +106,13 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 <a href="https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s">
 	<img src="docs/artifacts/interface-images/mesh-generation.png">
 </a>
+</p>
+
+### Gallery 
+
+<p align="center">
+	<img src="docs/artifacts/renderings/fluorescent-neuron.jpeg" width=400>
+	<img src="docs/artifacts/renderings/golgi-staining-neuron.jpeg" width=400>
 </p>
 
 ## Known Bugs or Feature Requests
