@@ -60,7 +60,7 @@ By default, _NeuroMorphoVis_ uses Blender as a main dependency to load [SWC](htt
 
 #### H5 Morphologies 
 
-To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) morphology files, the following depencies must be installed:
+To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) morphology files, the following dependencies must be installed:
 
 + [HDF5 Python Bindings](https://www.h5py.org)
 
@@ -77,7 +77,13 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 ## Highlights 
 
 #### Neuronal Soma Reconstruction 
-[![](docs/artifacts/interface-images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
+<p>
+<a href="https://www.youtube.com/watch?v=v02HogkFODU">
+	<img src="docs/artifacts/interface-images/soma-reconstruction.png">
+</a>
+</p>
+
+[![](docs/artifacts/interface-images/soma-reconstruction.png)]()
 
 #### Neuronal Morphology Visualization 
 [![](docs/artifacts/interface-images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
