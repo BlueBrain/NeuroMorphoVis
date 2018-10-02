@@ -1,5 +1,5 @@
 # NeuroMorphoVis
-![](images/nmv-logo.png "NeuroMorphoVis")
+![](docs/artifacts/logo/neuromorphovis-logo.png "NeuroMorphoVis")
 
 
 ## Summary
@@ -21,7 +21,7 @@ There are other optional dependecies that are specific to users from [Blue Brain
 NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and also with a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production.   
 
 ### GUI
-![](images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
+![](docs/artifacts/interface-images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
 
 ### Command Line Options
 
@@ -40,7 +40,14 @@ NeuroMorphoVis has five panels
 + Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
 + Mesh Toolbox, for setting the parameters to create meshes from morphology skeletons.
 
-![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
+<p align="center">
+  <img src="docs/artifacts/interface-images/panels.png" width=300>
+</p>
+
+<p align="center">
+  <img src="docs/artifacts/interface-images/panels.png">
+</p>
+
 
 ### Installation 
 [Installation](info/installation/install.md)
@@ -48,19 +55,13 @@ NeuroMorphoVis has five panels
 ### Videos 
 
 #### Neuronal Soma Reconstruction 
-[![](images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
+[![](docs/artifacts/interface-images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
 
 #### Neuronal Morphology Visualization 
-[![](images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
+[![](docs/artifacts/interface-images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
 
 #### Neuronal Mesh Reconstruction 
-[![](images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
-
-### Morphology Shading Styles
-The users can select to visualize and render the morphologies in different styles based on a set of shaders that are customized and adapted to create high quality images for illustrative purposes or scientitifc publications. 
-
-![](images/morphology-shading-styles.png "Morphology Shading Styles")
-
+[![](docs/artifacts/interface-images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
 ## Publication & Citation 
 If you use NeuroMorphoVis for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775) using the following entry:
