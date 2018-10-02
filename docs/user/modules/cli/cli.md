@@ -1,4 +1,4 @@
-# Command Line Options
+# Command Line Options User Guide
 
 _NeuroMorphoVis_  
 
