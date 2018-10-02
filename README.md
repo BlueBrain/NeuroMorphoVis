@@ -72,7 +72,7 @@ There are other optional dependecies that are specific to users from the [Blue B
 
 ### Installation Gide 
 
-The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](info/installation/install.md).
+The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](docs/user/installation/install.md).
 
 ## Highlights 
 
