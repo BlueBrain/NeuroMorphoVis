@@ -58,10 +58,10 @@ There are other optional dependecies that are specific to users from [Blue Brain
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
 ### Installation Gide 
-The installation instruction of _NeuroMorphoVis_ are available in this [page](info/installation/install.md)
+The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](info/installation/install.md).
 
 
-### Videos 
+## Highlights 
 
 #### Neuronal Soma Reconstruction 
 [![](docs/artifacts/interface-images/soma-reconstruction.png)](https://www.youtube.com/watch?v=v02HogkFODU)
