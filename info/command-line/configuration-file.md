@@ -1,4 +1,4 @@
-# Configuration Files
+# NeuroMorphoVis Configuration Files
 
 Due to the fact that _NeuroMorphoVis_ comes with a rich command line interface (CLI), it might be difficult to   
 
@@ -24,6 +24,22 @@ However, if the configuration file exists and is valid, _NeuroMorphoVis_ will pr
 Using the configuration file [user-configuration.cfg]
 ```
 
+### Note
+Note that this configuration file is also a shell script, and you can use any shell synatx inside it, for example _$HOME_ or _$PWD_. It must be also noted that there should not be any spaces when you set the different configuration parameters. For example, the following configurations are valid
+```
+BLENDER_EXECUTABLE=/usr/bin/blender
+BLENDER_EXECUTABLE=/usr/bin/blender # This is the default Blender path
+BLENDER_EXECUTABLE='/usr/bin/blender'
+BLENDER_EXECUTABLE="/usr/bin/blender"
+``` 
+
+But the following configurations are invalid
+```
+BLENDER_EXECUTABLE= /usr/bin/blender  # Note the space between the equal sign and /usr.
+BLENDER_EXECUTABLE=[/usr/bin/blender] # You cannot use square brackets.
+BLENDER_EXECUTABLE=(/usr/bin/blender) # You cannot use normal brackets.
+BLENDER_EXECUTABLE={/usr/bin/blender} # You cannot use curly brackets.
+```
 
 ## Configuration File Structure
 The full structure of a default _NeuroMorphoVis_ configuration file is as follows: 
