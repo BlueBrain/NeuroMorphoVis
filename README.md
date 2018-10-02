@@ -76,3 +76,20 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
   publisher={Oxford University Press}
 }
 ```
+
+The methods behind somata and mesh reconstruction are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
+
+```
+@article{abdellah2017reconstruction,
+  title={Reconstruction and visualization of large-scale volumetric models of neocortical circuits 
+for physically-plausible in silico optical studies},
+  author={Abdellah, Marwan and Hernando, Juan and Antille, Nicolas and Eilemann, Stefan and 
+  Markram, Henry and Sch{\"u}rmann, Felix},
+  journal={BMC bioinformatics},
+  volume={18},
+  number={10},
+  pages={402},
+  year={2017},
+  publisher={BioMed Central}
+}
+```
