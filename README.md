@@ -121,7 +121,7 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 </p>
 
 <p align="center">
-	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=870>
+	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=855>
 </p>
 
 
