@@ -4,7 +4,7 @@
 
 ## Introduction
 
-NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies. 
+_NeuroMorphoVis_ is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and _in silico_ imaging studies. 
 
 ## Features
 
@@ -32,7 +32,7 @@ To make it accessible to end users with minimal programming knowledge or even wi
 
 <figure align="center">
 <img src="docs/artifacts/interface-images/interface.png">
-<figcaption>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D view port of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites amd blue for the axon) and the soma (in orange) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
+<figcaption>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D view port of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites and blue for the axon) and the soma (in orange) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
 </figure>
 
 ### Command Line Options
@@ -66,7 +66,7 @@ To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-doc
 
 #### BBP Circuits Morphologies 
 
-There are other optional dependecies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or cell targets, the following dependencies must be installed:
+There are other optional dependencies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or cell targets, the following dependencies must be installed:
 
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
