@@ -25,7 +25,7 @@ By default, the _Input / Output_ tab is open while the rest of the tabs are clos
 Before switching to any other tab, the user must specify in the _Input / Output_ tab the __input morphology__ and the __output directories__ where the different artifacts will be generated. This [guide](input-output.md) explains how to use the _Input / Output_ tab to select a specific morphology either from file by its full path or from a BBP circuit using its GID.
 
 ## Using the Toolboxes      
-After selecting the input morphology as shown in the previous section, the users can navigate to any of the toolboxes to process the morphology according to their specific purposes. 
+After selecting the input morphology as shown in the previous section, the users can navigate to any of the toolboxes by clicking on their respective tabs to process the morphology according to their specific purposes. 
 
 ### Morphology Analysis 
 
