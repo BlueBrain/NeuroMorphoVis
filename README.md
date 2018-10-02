@@ -25,6 +25,10 @@ NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a us
 
 ### Command Line Options
 
+### Configuration Files 
+Users can easily configure _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).  
+
+
 ### Modules 
 NeuroMorphoVis comes with four principal modules for 
 + Data handling,
