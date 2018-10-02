@@ -35,11 +35,30 @@ Before switching to any other tab, the user must specify in the _Input / Output_
 ## Using the Toolboxes      
 After selecting the input morphology as shown in the previous section, the users can navigate to any of the toolboxes by clicking on their respective tabs to process the morphology according to their specific purposes. 
 
+<p align="center">
+	<img src="images/gui-all-panels-closed.jpg" width="800">
+</p> 
+
 ### Morphology Analysis 
+
+<p align="center">
+	<img src="images/gui-morphology-analysis-panel-open.png" width="800">
+</p> 
 
 ### Soma Reconstruction 
 
+<p align="center">
+	<img src="images/gui-soma-toolbox-open.jpg" width="800">
+</p> 
+
 ### Morphology Reconstruction 
+
+<p align="center">
+	<img src="images/gui-morphology-reconstruction-toolbox-open.png" width="800">
+</p> 
 
 ### Mesh Reconstruction  
     
+<p align="center">
+	<img src="images/gui-mesh-reconstruction-panel.jpg" width="800">
+</p> 
