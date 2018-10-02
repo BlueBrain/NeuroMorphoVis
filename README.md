@@ -41,10 +41,6 @@ NeuroMorphoVis has five panels
 + Mesh Toolbox, for setting the parameters to create meshes from morphology skeletons.
 
 <p align="center">
-  <img src="docs/artifacts/interface-images/panels.png" width=300>
-</p>
-
-<p align="center">
   <img src="docs/artifacts/interface-images/panels.png">
 </p>
 
