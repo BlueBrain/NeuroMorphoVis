@@ -1,7 +1,7 @@
 # GUI User Guide
 
 ## Rationale 
-To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. This page provides a detailed guide to use NeuroMorphoVis from its GUI. 
+To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. This page provides a detailed guide to use _NeuroMorphoVis_ from its GUI. 
 
 <p align="center">
 	<img src="images/gui.png" width="800">
@@ -20,7 +20,7 @@ When the user clicks on this tab, the following panel will appear.
 	<img src="images/gui-loading-toolboxes.jpg" width="800">
 </p> 
 
-This panel the following contains five sectionsor tabs:
+This panel contains five sections or tabs:
 
 + __Input / Output__ 
 + __Morphology Analysis__
