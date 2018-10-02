@@ -27,13 +27,11 @@ The tool is also extensible via its powerful python API that can be imported in 
 ### GUI
 
 To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [page](docs/user/modules/gui/gui.md).
- 
-<p align="center">
-  <figure>
-  <img src="docs/artifacts/interface-images/interface.png">
-  <figcaption>Fig.1 - A screen shot of the NeuroMorphoVis interface.</figcaption>
-  </figure>
-</p>
+
+<figure align="center">
+<img src="docs/artifacts/interface-images/interface.png">
+<figcaption>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D viewer of Blender.</figcaption>
+</figure>
 
 ### Command Line Options
 
