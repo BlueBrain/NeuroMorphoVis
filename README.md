@@ -23,7 +23,7 @@ _NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a 
 The tool is also extensible via its powerful python API that can be imported in Blender console and text browser. 
 
 ### GUI
-To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available [here](docs/user/modules/gui/gui.md).
+To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [page](docs/user/modules/gui/gui.md).
  
 <p align="center">
   <img src="docs/artifacts/interface-images/interface.png">
