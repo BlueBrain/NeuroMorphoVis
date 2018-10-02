@@ -41,7 +41,14 @@ _NeuroMorphoVis_ has a rich command line interface that would make it easy to co
 Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
 
 ## Installation 
+
 [Installation](info/installation/install.md)
+_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The current version is compatible with the following versions
+
++ [Blender 2.76](http://download.blender.org/release/Blender2.76/): 2.76a and 2.76b
++ [Blender 2.77](http://download.blender.org/release/Blender2.77/): 2.77 and 2.77a
++ [Blender 2.78](http://download.blender.org/release/Blender2.78/): 2.78, 2.78a, 2.78b and 2.78c
++ [Blender 2.79](http://download.blender.org/release/Blender2.79/): 2.79, 2.79a, 2.79b and 2.79c 
 
 
 ## Dependencies 
