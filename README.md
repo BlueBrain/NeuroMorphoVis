@@ -24,9 +24,10 @@ NeuroMorphoVis is primarily designed as a plug-in in Blender. It comes with a us
 ![](docs/artifacts/interface-images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
 
 ### Command Line Options
+_NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [page](docs/user/modules/cli/cli.md).
 
 ### Configuration Files 
-Users can easily configure _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).  
+Users can easily configure _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
 
 
 ### Modules 
@@ -37,7 +38,7 @@ NeuroMorphoVis comes with four principal modules for
 + Creation of piecewise-watertight polygonal surface meshes.
 
 ### Panels / Toolboxes
-NeuroMorphoVis has five panels   
+NeuroMorphoVis has five panels
 + Input / Output, for setting paths to input morphologies and output directories. 
 + Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
 + Soma Toolbox, for setting the parameters for somata reconstruction.
