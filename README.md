@@ -2,12 +2,8 @@
 ![](docs/artifacts/logo/neuromorphovis-logo.png "NeuroMorphoVis")
 
 
-## Summary
-NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, 
-visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted 
-from microscopy stacks. The framework is capable of detecting and repairing tracing artifacts, 
-allowing the generation of high fidelity surface meshes and high resolution volumetric models 
-for simulation and in silico imaging studies.
+## Introduction
+NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies. 
 
 
 ## Dependencies 
@@ -70,7 +66,14 @@ NeuroMorphoVis has five panels
 #### Neuronal Mesh Reconstruction 
 [![](docs/artifacts/interface-images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
+
+## Known Bugs 
+
+Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues) for fixed and open bugs, and also to report new bugs.
+
+
 ## Publication & Citation 
+
 If you use NeuroMorphoVis for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775) using the following entry:
 
 ```
