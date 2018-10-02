@@ -1,7 +1,6 @@
 # NeuroMorphoVis Configuration Files
 
-Due to the fact that _NeuroMorphoVis_ comes with a rich command line interface (CLI), it might be difficult to   
-
+_NeuroMorphoVis_ supports configuration files.
 
 ## Usage 
 
