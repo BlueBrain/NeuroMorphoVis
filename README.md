@@ -14,7 +14,7 @@ _NeuroMorphoVis_ provides four major toolboxes that can be used for
 + An easy context to load broken morphology skeletons and repair them manually. 
 + Sketching and building three-dimensional representations of the morphology skeletons using various methods.
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata. This approach uses the physics engine of Blender based on Hooke's law and mass spring models.
-+ Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
++ Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al., 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4).
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
 + Multiple interfaces: user-friendly graphical user interface, a rich command line interface, editable configuration files and a high level python API for python scripting.
 + Importing morphologies in multiple file formats including [SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html), [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) or even from a [BBP circuit](https://portal.bluebrain.epfl.ch/resources/models/microcircuits-2/) using GIDs and cell targets. 
@@ -121,7 +121,7 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 </p>
 
 <p align="center">
-	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=855>
+	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=850>
 </p>
 
 
