@@ -17,8 +17,16 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
-source neuromorphovis.cfg
+# If no configuration file is provided, then report it and exit
+if [ $# -eq 0 ]
+	then echo "No configuration file is provided, EXITTING!"; exit
+fi
 
+# Source the input configuration file to use the parameters 
+echo "Using the configuration file $1"
+source $1
+
+#####################################################################################################
 BOOL_ARGS=''
 if [ "$RECONSTRUCT_MORPHOLOGY_SKELETON" == "yes" ];
     then BOOL_ARGS+=' --reconstruct-morphology-skeleton '; fi
@@ -93,10 +101,9 @@ if [ "$EXPORT_NEURON_MESH_STL" == "yes" ];
 if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-neuron-mesh-blend '; fi
 
-
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
-echo -e "\nRUNNING ... neuromorphovis.py \n"
+echo -e "\nRUNNING ... NeuroMorphoVis \n"
     python3 neuromorphovis.py                                                                       \
     --blender=$BLENDER_EXECUTABLE                                                                   \
     --input=$INPUT                                                                                  \
@@ -142,5 +149,5 @@ echo -e "\nRUNNING ... neuromorphovis.py \n"
     --number-cores=$NUMBER_CORES                                                                    \
     $BOOL_ARGS
 
-echo -e "\nDONE ... run.py\n"
+echo -e "\nDONE ... NeuroMorphoVis \n"
 ####################################################################################################

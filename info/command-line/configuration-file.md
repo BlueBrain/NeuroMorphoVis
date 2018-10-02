@@ -1,11 +1,21 @@
 # Configuration Files
 
-_NeuroMorphoVis_  
+Due to the fact that _NeuroMorphoVis_ comes with a rich command line interface (CLI), it might be difficult to   
 
-## Options
 
+## Usage 
+
+To use configuration files, the user should execute _NeuroMorphoVis_ via the shell script __neuromorphovis.sh__ and not via the python script __neuromorphovis.py__. The configuration file, for example _configuration-file.cfg_, is given as an input argument to the script __neuromorphovis.sh__ as follows
+
+``` 
+neuromorphovis.sh configuration-file.cfg
 ```
 
+This approach would allow the end users to store their configuration files that can be used later for their different purposes. 
+ 
+## Configuration File Structure
+The full structure of a default _NeuroMorphoVis_ configuration file is as follows: 
+```
 ####################################################################################################
 # Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
