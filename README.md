@@ -6,14 +6,15 @@
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies. 
 
 ## Features 
-_NeuroMorphoVis_ provides four major toolboxes that can be exploited for 
+_NeuroMorphoVis_ provides four major toolboxes that can be used for 
 
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
++ An easy context to load morphology skeletons and repair them manually. 
 + Sketching and building three-dimensional representations of the morphology skeletons using various methods.
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies. 
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
-
++ Multiple interfaces: user-friendly graphical user interface, a rich command line interface, editable configuration files and a high level python API for python scripting.
 
 ## Interfaces
 _NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
