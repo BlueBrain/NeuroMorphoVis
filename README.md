@@ -80,7 +80,7 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 }
 ```
 
-The core algorithms of the somata and mesh reconstruction are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
+The core algorithms of the soma and mesh reconstruction modules are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
 
 ```
 @article{abdellah2017reconstruction,
