@@ -1,9 +1,0 @@
-PROJECT_NAME = "NeuroMorphoVis"
-OUTPUT_DIRECTORY = ../output
-INPUT = ../../neuromorphovis \
-        dox
-
-FILE_PATTERNS = *.py \
-                *.dox
-RECURSIVE = YES
-
