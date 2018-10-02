@@ -45,7 +45,8 @@ Users can easily configure and use _NeuroMorphoVis_ via editable configuration f
 
 ## Installation 
 
-_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The current version is compatible with the following Blender versions
+_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
+The current version is compatible with the following Blender versions
 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/): 2.76a and 2.76b
 + [Blender 2.77](http://download.blender.org/release/Blender2.77/): 2.77 and 2.77a
@@ -54,14 +55,24 @@ _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The cur
 
 
 ### Optional Dependencies 
-The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
-There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
+
+By default, _NeuroMorphoVis_ uses Blender as a main dependency to load [SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) morphology files. This requires no further dependencies at all. 
+
+#### H5 Morphologies 
+
+To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) morphology files, the following depencies must be installed:
+
 + [HDF5 Python Bindings](https://www.h5py.org)
+
+#### BBP Circuits Morphologies 
+
+There are other optional dependecies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or target files, the following dependencies must be installed:
+
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
 ### Installation Gide 
-The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](info/installation/install.md).
 
+The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](info/installation/install.md).
 
 ## Highlights 
 
@@ -82,7 +93,7 @@ Please refer to the [github issue tracker](https://github.com/marwan-abdellah/Ne
 
 ## Publication & Citation 
 
-If you use NeuroMorphoVis for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775) using the following entry:
+If you use _NeuroMorphoVis_ for your research, media design or other purposes, please cite our paper [NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775) using the following entry:
 
 ```
 @article{abdellah2018neuromorphovis,
