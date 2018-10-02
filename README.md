@@ -20,7 +20,7 @@ _NeuroMorphoVis_ provides four major toolboxes that can be used for
 
 ## Interfaces
 
-_NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
+_NeuroMorphoVis_ is primarily designed as a plug-in in [Blender](https://www.blender.org/). It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
 
 The tool is also extensible via its powerful python API that can be imported in Blender console and text browser. 
 
