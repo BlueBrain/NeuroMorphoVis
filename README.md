@@ -153,22 +153,21 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 
 For more information on NeuroMorphoVis, comments or suggestions, please contact:
 
-__Marwan Abdellah__
-
-Scientific Visualiation Engineer
-
-Blue Brain Project
+__Marwan Abdellah__  
+Scientific Visualiation Engineer  
+Blue Brain Project  
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch) 
  
-__Samuel Lapere__
-Section Manager, Visualization
-Blue Brain Project 
+__Samuel Lapere__  
+Section Manager, Visualization  
+Blue Brain Project  
 [samuel.lapere@epfl.ch](samuel.lapere@epfl.ch) 
 
 Should you have any questions concerning press enquiriries, please contact:
-__Kate Mullins__
-Communications
-Blue Brain Project 
+
+__Kate Mullins__  
+Communications  
+Blue Brain Project  
 [kate.mullins@epfl.ch](kate.mullins@epfl.ch)
 
 
