@@ -78,12 +78,13 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 
 #### Neuronal Soma Reconstruction 
 
+The following video shows a demonstration of reconstructing a three-dimensional profiles of the soma of a pyramidal cell morphology using Hooke's law and mass spring models.
 
-<figure align="center">
+<p align="center">
 <a href="https://www.youtube.com/watch?v=v02HogkFODU">
 	<img src="docs/artifacts/interface-images/soma-reconstruction.png">
 </a>
-</figure>
+</p>
 
 
 #### Neuronal Morphology Visualization 
