@@ -33,7 +33,7 @@ By default, the _Input / Output_ tab is open while the rest of the tabs are clos
 Before switching to any other tab, the user must specify in the _Input / Output_ tab the __input morphology__ and the __output directories__ where the different artifacts will be generated. This [guide](input-output.md) explains how to use the _Input / Output_ tab to select a specific morphology either from file by its full path or from a BBP circuit using its GID.
 
 ## Using the Toolboxes      
-After selecting the input morphology as shown in the previous section, the users can navigate to any of the toolboxes by clicking on their respective tabs to process the morphology according to their specific purposes. 
+After selecting the input morphology as shown in the previous section, the users can navigate to any of the toolboxes by clicking on their respective tabs to process the morphology according to their specific purposes. It is highly recommended to close the _Input / Output_ tab before moving to the other tabs. 
 
 <p align="center">
 	<img src="images/gui-all-panels-closed.jpg" width="800">
@@ -41,24 +41,32 @@ After selecting the input morphology as shown in the previous section, the users
 
 ### Morphology Analysis 
 
+The _Morphology Analysis_ toolbox can be loaded by clicking on the _Morphology Analysis_ tab. This [guide](morphology-analysis.md) explains how to use this toolbox to analyze the morphology skeleton.      
+
 <p align="center">
 	<img src="images/gui-morphology-analysis-panel-open.png" width="800">
 </p> 
 
 ### Soma Reconstruction 
 
+The _Soma Reconstruction_ toolbox can be loaded by clicking on the _Soma Toolbox_ tab. This [guide](soma-reconstruction.md) explains how to use this toolbox to create three-dimensional profiles of the somata on a physically-plausible basis using Hooke's law and mass-spring models.
+  
 <p align="center">
 	<img src="images/gui-soma-toolbox-open.jpg" width="800">
 </p> 
 
 ### Morphology Reconstruction 
 
+The _Soma Reconstruction_ toolbox can be loaded by clicking on the _Morphology Toolbox_ tab. This [guide](morphology-reconstruction.md) explains how to use this toolbox to create and sketch three-dimensional models of the morphology.
+
 <p align="center">
 	<img src="images/gui-morphology-reconstruction-toolbox-open.png" width="800">
 </p> 
 
 ### Mesh Reconstruction  
-    
+
+The _Mesh Reconstruction_ toolbox can be loaded by clicking on the _Mesh Toolbox_ tab. This [guide](mesh-reconstruction.md) explains how to use this toolbox to create polygonal mesh models of the neuron from its morphology skeleton.
+
 <p align="center">
 	<img src="images/gui-mesh-reconstruction-panel.jpg" width="800">
 </p> 
