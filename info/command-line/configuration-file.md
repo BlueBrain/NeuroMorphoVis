@@ -11,8 +11,20 @@ To use configuration files, the user should execute _NeuroMorphoVis_ via the she
 neuromorphovis.sh configuration-file.cfg
 ```
 
-This approach would allow the end users to store their configuration files that can be used later for their different purposes. 
+If the given configuration file, for example _user-configuration.cfg_, does not exist, the user will get this error 
+
+```
+./neuromorphovis.sh: user-configuration.cfg: No such file or directory
+``` 
+
+However, if the configuration file exists and is valid, _NeuroMorphoVis_ will print the following line upon its execution
+```
+ $ ./neuromorphovis.sh user-configuration.cfg 
  
+Using the configuration file [user-configuration.cfg]
+```
+
+
 ## Configuration File Structure
 The full structure of a default _NeuroMorphoVis_ configuration file is as follows: 
 ```

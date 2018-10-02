@@ -23,7 +23,7 @@ if [ $# -eq 0 ]
 fi
 
 # Source the input configuration file to use the parameters 
-echo "Using the configuration file $1"
+echo "Using the configuration file [$1]"
 source $1
 
 #####################################################################################################
