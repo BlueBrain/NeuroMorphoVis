@@ -42,6 +42,9 @@ NeuroMorphoVis has five panels
 
 ![](images/neuromorphovis-panels.png "NeuroMorphoVis Panels")
 
+### Installation 
+[Installation](info/installation/install.md)
+
 ### Videos 
 
 #### Neuronal Soma Reconstruction 
