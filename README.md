@@ -23,7 +23,10 @@ _NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a 
 The tool is also extensible via its powerful python API that can be imported in Blender console and text browser. 
 
 ### GUI
-![](docs/artifacts/interface-images/neuromorphovis-interface.png "NeuroMorphoVis Interface")
+
+<p align="center">
+  <img src="docs/artifacts/interface-images/interface.png">
+</p>
 
 ### Command Line Options
 _NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [page](docs/user/modules/cli/cli.md).
