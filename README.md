@@ -43,8 +43,7 @@ Users can easily configure and use _NeuroMorphoVis_ via editable configuration f
 
 ## Installation 
 
-[Installation](info/installation/install.md)
-_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The current version is compatible with the following versions
+_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The current version is compatible with the following Blender versions
 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/): 2.76a and 2.76b
 + [Blender 2.77](http://download.blender.org/release/Blender2.77/): 2.77 and 2.77a
@@ -58,6 +57,8 @@ There are other optional dependecies that are specific to users from [Blue Brain
 + [HDF5 Python Bindings](https://www.h5py.org)
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
+### Installation Gide 
+The installation instruction of _NeuroMorphoVis_ are available in this [page](info/installation/install.md)
 
 
 ### Videos 
