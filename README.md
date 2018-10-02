@@ -13,7 +13,7 @@ _NeuroMorphoVis_ provides four major toolboxes that can be used for
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
 + An easy context to load broken morphology skeletons and repair them manually. 
 + Sketching and building three-dimensional representations of the morphology skeletons using various methods.
-+ Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata.
++ Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata. This approach uses the physics engine of Blender based on Hooke's law and mass spring models.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
 + Multiple interfaces: user-friendly graphical user interface, a rich command line interface, editable configuration files and a high level python API for python scripting.
@@ -77,13 +77,16 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 ## Highlights 
 
 #### Neuronal Soma Reconstruction 
+
 <p>
+<figure align="center">
 <a href="https://www.youtube.com/watch?v=v02HogkFODU">
 	<img src="docs/artifacts/interface-images/soma-reconstruction.png">
 </a>
+<figcaption>Reconstruction of three-dimensional profiles of a pyramidal cell morphology using Hooke's law and mass spring models.</figcaption>
+</figure>
 </p>
 
-[![](docs/artifacts/interface-images/soma-reconstruction.png)]()
 
 #### Neuronal Morphology Visualization 
 [![](docs/artifacts/interface-images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
