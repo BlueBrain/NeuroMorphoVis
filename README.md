@@ -67,9 +67,9 @@ NeuroMorphoVis has five panels
 [![](docs/artifacts/interface-images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
 
-## Known Bugs 
+## Known Bugs or Feature Requests
 
-Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues?utf8=%E2%9C%93&q=) for fixed and open bugs, and also to report new bugs.
+Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues?utf8=%E2%9C%93&q=) for fixed and open bugs, and also to report new bugs and to request new features that you need in your research.
 
 
 ## Publication & Citation 
