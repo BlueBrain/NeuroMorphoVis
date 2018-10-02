@@ -29,7 +29,10 @@ The tool is also extensible via its powerful python API that can be imported in 
 To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [page](docs/user/modules/gui/gui.md).
  
 <p align="center">
+  <figure>
   <img src="docs/artifacts/interface-images/interface.png">
+  <figcaption>Fig.1 - A screen shot of the NeuroMorphoVis interface.</figcaption>
+  </figure>
 </p>
 
 ### Command Line Options
@@ -51,7 +54,7 @@ _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). The cur
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/): 2.79, 2.79a, 2.79b and 2.79c 
 
 
-## Dependencies 
+### Optional Dependencies 
 The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
 There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
 + [HDF5 Python Bindings](https://www.h5py.org)
