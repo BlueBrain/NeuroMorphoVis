@@ -29,28 +29,25 @@ _NeuroMorphoVis_
 ####################################################################################################
 # Blender executable
 # By default, we will use the system-installed Blender, otherwise you can use a custom version
-# BLENDER_EXECUTABLE=blender
-BLENDER_EXECUTABLE=/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender
-# BLENDER_EXECUTABLE=/Applications/blender-2.78c-OSX_10.6-x86_64/blender.app/Contents/MacOS/blender
+# You can also point to a specific Blender version, for example $HOME/blender-2.79/blender
+BLENDER_EXECUTABLE=blender
 
 # Input source
 # Use ['file'] for loading .H5 or .SWC morphology files
 # Use ['directory'] for loading a directory contains .H5 or .SWC morphology files
 # Use ['gid'] for loading a single neuron in a BBP circuit (works only on BBP clusters)
 # Use ['target'] for loading a target (group of GIDs) in a BBP circuit (works only on BBP clusters)
-INPUT=target
+INPUT=[SELECT INPUT SOURCE]
 
 # Blue config
 # A BBP circuit config required only if INPUT is set to 'target' or 'gid', otherwise ignored.
-# BLUE_CONFIG=SOME_BLUE_CONFIG
-BLUE_CONFIG=/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/circuit-config
+BLUE_CONFIG=[SET BLUE CONFIG FILE]
 
 # A BBP cell target (or group of GIDs), if INPUT is set to 'target', otherwise ignored.
-# TARGET=SOME_TARGET
-TARGET=RANDOM_BOX_mc2_Column_100.00p
+TARGET=[SET TARGET]
 
 # A BBP neuron GID, if INPUT is set to 'gid', otherwise ignored.
-GID=79013
+GID=[SET GID]
 
 # Morphology file, if INPUT is set to 'file', otherwise ignored.
 # MORPHOLOGY_FILE=SOME_MORPHOLOGY_FILE
