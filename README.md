@@ -78,7 +78,7 @@ The installation instructions of _NeuroMorphoVis_ are available in this [install
 
 #### Neuronal Soma Reconstruction 
 
-The following video shows a demonstration of reconstructing a three-dimensional profiles of the soma of a pyramidal cell morphology using Hooke's law and mass spring models.
+A demonstration of using the _Soma Reconstruction_ toolbox to reconstruct a three-dimensional profile of the soma of a pyramidal cell morphology using Hooke's law and mass spring models.
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=v02HogkFODU">
@@ -86,13 +86,25 @@ The following video shows a demonstration of reconstructing a three-dimensional 
 </a>
 </p>
 
-
 #### Neuronal Morphology Visualization 
-[![](docs/artifacts/interface-images/morphology-reconstruction.png)](https://www.youtube.com/watch?v=74PGirMx3ks&t=102s)
+
+Using the _Morphology Reconstruction_ toolbox to create a three-dimensional model of a morphology skeleton.
+
+<p align="center">
+<a href="https://www.youtube.com/watch?v=74PGirMx3ks&t=102s">
+	<img src="docs/artifacts/interface-images/morphology-reconstruction.png">
+</a>
+</p>
 
 #### Neuronal Mesh Reconstruction 
-[![](docs/artifacts/interface-images/mesh-generation.png)](https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s)
 
+Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh model of a given morphology skeleton. 
+  
+<p align="center">
+<a href="https://www.youtube.com/watch?v=oxCKwrZSV98&t=130s">
+	<img src="docs/artifacts/interface-images/mesh-generation.png">
+</a>
+</p>
 
 ## Known Bugs or Feature Requests
 
