@@ -65,9 +65,9 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 ```
 @article{abdellah2018neuromorphovis,
   title={NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology 
-  skeletons reconstructed from microscopy stacks},
+  		 skeletons reconstructed from microscopy stacks},
   author={Abdellah, Marwan and Hernando, Juan and Eilemann, Stefan and Lapere, Samuel and Antille, 
-  Nicolas and Markram, Henry and Sch{\"u}rmann, Felix},
+  		  Nicolas and Markram, Henry and Sch{\"u}rmann, Felix},
   journal={Bioinformatics},
   volume={34},
   number={13},
@@ -77,14 +77,14 @@ If you use NeuroMorphoVis for your research, media design or other purposes, ple
 }
 ```
 
-The methods behind somata and mesh reconstruction are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
+The core algorithms of the somata and mesh reconstruction are described in this paper [Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)
 
 ```
 @article{abdellah2017reconstruction,
   title={Reconstruction and visualization of large-scale volumetric models of neocortical circuits 
-for physically-plausible in silico optical studies},
+  		 for physically-plausible in silico optical studies},
   author={Abdellah, Marwan and Hernando, Juan and Antille, Nicolas and Eilemann, Stefan and 
-  Markram, Henry and Sch{\"u}rmann, Felix},
+  		  Markram, Henry and Sch{\"u}rmann, Felix},
   journal={BMC bioinformatics},
   volume={18},
   number={10},
