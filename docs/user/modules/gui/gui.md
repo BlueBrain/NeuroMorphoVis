@@ -4,6 +4,28 @@
   <img src="images/soma-panel.png">
 </p>
 
+
+
+### Modules 
+NeuroMorphoVis comes with four principal modules for 
++ Data handling,
++ Simulation of three-dimensional somata profiles,
++ Building, repair and analysis of morphological skeletons,
++ Creation of piecewise-watertight polygonal surface meshes.
+
+### Panels / Toolboxes
+NeuroMorphoVis has five panels
++ Input / Output, for setting paths to input morphologies and output directories. 
++ Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
++ Soma Toolbox, for setting the parameters for somata reconstruction.
++ Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
++ Mesh Toolbox, for setting the parameters to create meshes from morphology skeletons.
+
+<p align="center">
+  <img src="docs/artifacts/interface-images/panels.png">
+</p>
+
+
 ## Summary
 This panel gives access to the parameters of the Soma Toolbox.      
 

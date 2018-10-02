@@ -3,9 +3,11 @@
 
 
 ## Introduction
+
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies. 
 
-## Features 
+## Features
+
 _NeuroMorphoVis_ provides four major toolboxes that can be used for 
 
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
@@ -17,11 +19,13 @@ _NeuroMorphoVis_ provides four major toolboxes that can be used for
 + Multiple interfaces: user-friendly graphical user interface, a rich command line interface, editable configuration files and a high level python API for python scripting.
 
 ## Interfaces
+
 _NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
 
 The tool is also extensible via its powerful python API that can be imported in Blender console and text browser. 
 
 ### GUI
+
 To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [page](docs/user/modules/gui/gui.md).
  
 <p align="center">
@@ -29,38 +33,14 @@ To make it accessible to end users with minimal programming knowledge or even wi
 </p>
 
 ### Command Line Options
+
 _NeuroMorphoVis_ has a rich command line interface that would make it easy to connect it to a web interface or use it to accomplish multiple tasks in an automated way. A list of all the command line options and their description are available in this [page](docs/user/modules/cli/cli.md).
 
 ### Configuration Files 
+
 Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
 
-
-
-
-
-
-
-### Modules 
-NeuroMorphoVis comes with four principal modules for 
-+ Data handling,
-+ Simulation of three-dimensional somata profiles,
-+ Building, repair and analysis of morphological skeletons,
-+ Creation of piecewise-watertight polygonal surface meshes.
-
-### Panels / Toolboxes
-NeuroMorphoVis has five panels
-+ Input / Output, for setting paths to input morphologies and output directories. 
-+ Morphology Analysis, for selecting the filters that will be applied on the morphology skeleton to analyze it.
-+ Soma Toolbox, for setting the parameters for somata reconstruction.
-+ Morphology Toolbox, for setting parameters that control the shape of the reconstructed morphology skeleton for visualization and visual analytics.
-+ Mesh Toolbox, for setting the parameters to create meshes from morphology skeletons.
-
-<p align="center">
-  <img src="docs/artifacts/interface-images/panels.png">
-</p>
-
-
-### Installation 
+## Installation 
 [Installation](info/installation/install.md)
 
 
