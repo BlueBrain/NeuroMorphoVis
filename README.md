@@ -69,7 +69,7 @@ NeuroMorphoVis has five panels
 
 ## Known Bugs 
 
-Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues) for fixed and open bugs, and also to report new bugs.
+Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues?utf8=%E2%9C%93&q=) for fixed and open bugs, and also to report new bugs.
 
 
 ## Publication & Citation 
