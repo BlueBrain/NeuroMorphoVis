@@ -108,7 +108,7 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 
 ## Known Bugs or Feature Requests
 
-Please refer to the [github issue tracker](https://github.com/marwan-abdellah/NeuroMorphoVis/issues?utf8=%E2%9C%93&q=) for fixed and open bugs, and also to report new bugs and to request new features that you need in your research.
+Please refer to the [github issue tracker](https://github.com/BlueBrain/NeuroMorphoVis/issues?utf8=%E2%9C%93&q=) for fixed and open bugs, and also to report new bugs and to request new features that you need in your research.
 
 
 ## Publication & Citation 
