@@ -66,7 +66,7 @@ To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-doc
 
 #### BBP Circuits Morphologies 
 
-There are other optional dependecies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or target files, the following dependencies must be installed:
+There are other optional dependecies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or cell targets, the following dependencies must be installed:
 
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
