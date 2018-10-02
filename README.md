@@ -5,14 +5,6 @@
 ## Introduction
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and in silico imaging studies. 
 
-
-## Dependencies 
-The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
-There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
-+ [HDF5 Python Bindings](https://www.h5py.org)
-+ [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
-
-
 ## Interfaces
 _NeuroMorphoVis_ is primarily designed as a plug-in in Blender. It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
 
@@ -30,6 +22,20 @@ _NeuroMorphoVis_ has a rich command line interface that would make it easy to co
 
 ### Configuration Files 
 Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [page](docs/user/modules/configurations/configurations.md).
+
+
+## Features 
+_NeuroMorphoVis_ provides four major toolboxes that can be exploited for 
+
++ Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
++ Sketching and building three-dimensional representations of the morphology skeletons using various methods.
++  
++ Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata.
++ Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies. 
++ Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
+
+
+
 
 
 ### Modules 
@@ -54,6 +60,15 @@ NeuroMorphoVis has five panels
 
 ### Installation 
 [Installation](info/installation/install.md)
+
+
+## Dependencies 
+The framework is mainly based on Blender. The current release uses the API of Blender 2.78b or 2.78c. Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
+There are other optional dependecies that are specific to users from [Blue Brain Project](https://github.com/BlueBrain). These dependencies are:
++ [HDF5 Python Bindings](https://www.h5py.org)
++ [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
+
+
 
 ### Videos 
 
