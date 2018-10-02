@@ -154,7 +154,9 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 For more information on NeuroMorphoVis, comments or suggestions, please contact:
 
 __Marwan Abdellah__
+
 Scientific Visualiation Engineer
+
 Blue Brain Project
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch) 
  
