@@ -1,0 +1,2 @@
+class Panel(object):
+    pass
