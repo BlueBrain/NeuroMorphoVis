@@ -46,4 +46,3 @@ _NeuroMorphoVis_ should run on all systems that support OpenGL 2.1 and above, wi
 + For Windows users, in case of problems try installing the latest drivers from the graphics card manufacturer website.
 
 + These requirements are valid for Blender 2.77 up to 2.79b. However, Blender 2.76 and earlier still supports Windows XP and OpenGL 1.4 graphics cards. Blender 2.8 requires OpenGL 3.3 or above.
-
