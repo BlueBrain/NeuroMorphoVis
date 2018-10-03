@@ -30,11 +30,14 @@ There are other optional dependencies that are specific to users from the [Blue 
 
 + [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
 
+## NeuroMorphoVis Installation
 
-## Blender Installation 
-<p align="left">
-  <img src="images/blender-logo.png">
-</p>
+The [Blue Brain Project](https://bluebrain.epfl.ch/) distributes _NeuroMorphoVis_ in three different ways that you can choose from, to better suit the needs of the end users.
+
++ _NeuroMorphoVis_ can be downloaded as an archive file that comprises a binary package for Blender __including the add-on__ for all the supported platforms. The add-on is already installed in the add-ons directory of Blender and can be immediately loaded when Blender is launched. This approach is easy and convenient for external users who are dealing only with standard morphology files (for example SWC files). 
+
++ 
+
 
 Depending on your operating system, but assuming a UNIX-based one, Blender can be  
 + installed as a system package, 
