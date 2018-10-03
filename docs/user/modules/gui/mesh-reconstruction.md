@@ -5,7 +5,7 @@
 </p>
 
 ## Summary
-This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct [polygonal mesh models](https://en.wikipedia.org/wiki/Polygon_mesh) --a collection of vertices, edges and faces that defines the shape of a polyhedral object in the three-dimensional space-- that reflect the membrane surface of the neurons from their morphological skeletons.
+This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct [polygonal mesh models](https://en.wikipedia.org/wiki/Polygon_mesh) - a collection of vertices, edges and faces that defines the shape of a polyhedral object in the three-dimensional space - that reflect the membrane surface of the neurons from their morphological skeletons.
 
 ## Expected Output 
 The current version of NeuroMorphoVis implements the __piecewise-watertight meshing__ algorithm that is proposed by [Abdellah et al, 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4). This method reconstructs a single mesh object that is composed of a set of watertight meshes, each corresponding to an individual component in the original morphology skeleton. For example, breadth-first traversal is used to connect and construct primary sections along each arbor in the form of tubes. These tubes are converted into watertight meshes that by definition have non manifold edges or vertices. The grouping of the reconstructed meshes results in the final mesh object that is not watertight per se, but rather piecewise-watertight.          
@@ -190,3 +190,11 @@ The exported meshes will be generated in the _meshes_ directory underneath the o
   <img src="images/mesh-panel-export-error.png">
 </p>
  
+ 
+## References 
+
+1. __Abdellah, Marwan, et al.__ "NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks." Bioinformatics 34.13 (2018): i574-i582.
+
+2. __Abdellah, Marwan, et al.__ "Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies." BMC bioinformatics 18.10 (2017): 402.
+
+3. __Lasserre, Sebastien, et al.__ "A neuron membrane mesh representation for visualization of electrophysiological simulations." IEEE Transactions on Visualization and Computer Graphics 18.2 (2012): 214-227.
