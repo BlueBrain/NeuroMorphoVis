@@ -43,3 +43,5 @@ The [Blue Brain Project](https://bluebrain.epfl.ch/) distributes _NeuroMorphoVis
 ### Notes
 
 + We do not recommend compiling Blender from source. This step might be cumbersome. 
+
++ If the users are not familiar with Blender installation, this [page](https://docs.blender.org/manual/en/latest/getting_started/installing/introduction.html#download-blender) can help them installing Blender easily. 
