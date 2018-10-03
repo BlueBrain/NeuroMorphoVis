@@ -45,3 +45,14 @@ The [Blue Brain Project](https://bluebrain.epfl.ch/) distributes _NeuroMorphoVis
 + We do not recommend compiling Blender from source. This step might be cumbersome. 
 
 + If the users are not familiar with Blender installation, this [page](https://docs.blender.org/manual/en/latest/getting_started/installing/introduction.html#download-blender) can help them installing Blender easily. 
+
+### Installing NeuroMorphoVis 
+
+We have prepared a little guide to install _NeuroMorphoVis_ on the following platforms 
+
++ on [Linux](install-linux.md)
+
++ on [Mac](install-macosx.md)
+
++ on [Windows](install-windows.md)
+
