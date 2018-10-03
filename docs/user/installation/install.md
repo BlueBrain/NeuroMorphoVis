@@ -1,6 +1,20 @@
 # How to Install NeuroMorphoVis
 
-NeuroMorphoVis is designed and written as a Blender _plug-in_ that can be loaded directly from its GUI. A recent Blender version must be installed properly on your system to be able to use NeuroMorphoVis. 
+NeuroMorphoVis is designed and written as a Blender _add-on_ or _plug-in_. This add-on can be loaded from its GUI or even called in its python console relying on its API. Therefore, a recent Blender version must be installed properly on your system to be able to use _NeuroMorphoVis_. 
+
+## Supported Platforms 
+
+_NeuroMorphoVis_ has been depolyed and tested on the following platforms:
+ 
++ Linux (Ubunut 16.04, Ubuntu 17.04, Ubunut 18.04 and RedHat) 
+
++ Mac (OS X 10.11, macOS 10.12, macOS 10.13 and macOS 10.14)
+
++ Windows (Windows 7, Windows 8 and Windows 10)
+
+## NeuroMorphoVis Requirements 
+
+https://www.blender.org/download/requirements/ 
 
 ## Blender Installation 
 <p align="left">
