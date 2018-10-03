@@ -56,3 +56,6 @@ We have prepared a little guide to install _NeuroMorphoVis_ on the following pla
 
 + on [Windows](install-windows.md)
 
+## Loading NeuroMorphoVis
+
+To verify the installation procedure, the users can load _NeuroMorphoVis_ from the user interface and visualize a sample neuronal morphology that is available in the data directory on the repository. The procedure is described in this [page](loading.md).     
