@@ -360,7 +360,7 @@ def remove_samples_within_extent(section,
     if len(section.samples) < 2:
 
         # Report the error
-        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has less than THREE samples, cannot be re-sampled' %
+        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has less than THREE samples, not re-sampled' %
               (section.get_type_string(), section.id))
 
         # Return
@@ -370,7 +370,7 @@ def remove_samples_within_extent(section,
     if len(section.samples) == 2:
 
         # Report the error
-        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only TWO samples, cannot be re-sampled' %
+        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has TWO samples, cannot be re-sampled' %
               (section.get_type_string(), section.id))
 
         # Return
@@ -402,7 +402,6 @@ def remove_samples_within_extent(section,
 
     # Return the number of removed samples
     return number_of_removed_samples
-
 
 
 ####################################################################################################
