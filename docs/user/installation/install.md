@@ -34,9 +34,13 @@ There are other optional dependencies that are specific to users from the [Blue 
 
 The [Blue Brain Project](https://bluebrain.epfl.ch/) distributes _NeuroMorphoVis_ in three different ways that you can choose from, to better suit the needs of the end users.
 
-+ _NeuroMorphoVis_ can be downloaded as an archive file that comprises a binary package for Blender __including the add-on__ for all the supported platforms. The add-on is already installed in the add-ons directory of Blender and can be immediately loaded when Blender is launched. This approach is easy and convenient for external users who are dealing only with standard morphology files (for example SWC files). 
++ _NeuroMorphoVis_ can be downloaded as an archive file that comprises a binary package for Blender __including the add-on__ for all the supported platforms. The add-on is already installed in the add-ons directory of Blender and can be immediately loaded when Blender is launched. This approach is easy and convenient for external users who are dealing only with standard morphology files (for example SWC files). Loading H5 files requires an additional step to install the python binding of the HDF5 library. Moreover, using loading morphologies in BBP circuits would require a further step for installing Brion. 
 
-+ 
++ Users can download Blender as an archive from this [repository](http://download.blender.org/release/). Then _NeuroMorphoVis_ can be downloaded as an archive or cloned from this [repository](https://github.com/BlueBrain/NeuroMorphoVis) and manually added to the add-on directory of Blender. Similarly, loading H5 files requires an additional step to install the python binding of the HDF5 library and loading morphologies in BBP circuits would also require a further step for installing Brion. 
+
++ Users can installed Blender as a system package (depending on the operating system) and follow the rest of the steps mentioned in the previous approach.
+
+
 
 
 Depending on your operating system, but assuming a UNIX-based one, Blender can be  
