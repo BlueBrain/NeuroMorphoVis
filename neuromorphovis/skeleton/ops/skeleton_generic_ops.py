@@ -196,10 +196,10 @@ def apply_operation_to_morphology(*args):
 ####################################################################################################
 # @apply_operation_to_morphology_partially
 ####################################################################################################
-def apply_operation_to_morphology_partially(*args,
-                                            axon_branch_level,
+def apply_operation_to_morphology_partially(axon_branch_level,
                                             basal_dendrites_branch_level,
-                                            apical_dendrite_branch_level):
+                                            apical_dendrite_branch_level,
+                                            *args):
     """Apply a given function/filter/operation to a given morphology object including ONLY the
     arbors that are below certain branching level recursively.
 
