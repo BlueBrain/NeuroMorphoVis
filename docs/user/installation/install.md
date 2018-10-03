@@ -1,10 +1,10 @@
 # How to Install NeuroMorphoVis
-_NeuroMorphoVis_ is designed and written as a Blender _add-on_ or _plug-in_. This add-on can be loaded from the GUI or even called in Blender's python console relying on its API. Therefore, a recent Blender version must be installed properly on your system to be able to use _NeuroMorphoVis_. 
+_NeuroMorphoVis_ is designed and written as a Blender _add-on_ or _plug-in_. This add-on can be loaded from the GUI or even called in Blender's python console relying on its API. Therefore, a recent version of Blender must be installed properly on your system to be able to use _NeuroMorphoVis_. 
 
 
 ## Supported Platforms 
 
-_NeuroMorphoVis_ has been depolyed and tested on the following platforms:
+_NeuroMorphoVis_ supports more or less the same platforms supported by Blender, but it has been depolyed and tested on the following platforms:
  
 + Linux ([Ubunut 16.04](http://releases.ubuntu.com/16.04.5/), [Ubuntu 17.04](http://old-releases.ubuntu.com/releases/17.04/), [Ubunut 18.04](http://releases.ubuntu.com/18.04/) and [RedHat](https://www.redhat.com/en)) 
 
