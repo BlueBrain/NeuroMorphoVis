@@ -53,3 +53,15 @@ This kernel identifies if any of the branches have negative samples that interse
 ### Let's Analyze the Morphology
 
 After selecting all the analysis filters that are neccessary, the user can generate the analysis files by clicking on the _Analyze Morphology_ button at the end of the _Morphology Analysis_ panel. 
+
+## Extensions
+
+We are currently extending this module by adding further analysis filters. The next release will have the following options:
+
++ Segments Length 
++ Total Arbor Length
++ Total Morphology Length
++ Number of Bifurcations 
++ Number of Trifucations 
++ Sections Volumes
++ Arbor Volumes 
