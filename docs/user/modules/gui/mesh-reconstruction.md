@@ -1,11 +1,11 @@
 # Mesh Toolbox Panel
 
 <p align="center">
-  <img src="images/panels-mesh-closed.jpg" width=400>
+  <img src="images/panels-mesh-closed.jpg" width=300>
 </p>
 
 <p align="center">
-  <img src="images/panels-mesh-open.jpg" width=400>
+  <img src="images/panels-mesh-open.jpg" width=300>
 </p>
 
 ## Function
