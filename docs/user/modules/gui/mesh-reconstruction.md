@@ -1,10 +1,14 @@
 # Mesh Toolbox Panel
 
 <p align="center">
-  <img src="images/mesh-panel.png">
+  <img src="images/panels-mesh-closed.jpg" width=400>
 </p>
 
-## Summary
+<p align="center">
+  <img src="images/panels-mesh-open.jpg" width=400>
+</p>
+
+## Function
 This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct [polygonal mesh models](https://en.wikipedia.org/wiki/Polygon_mesh) - a collection of vertices, edges and faces that defines the shape of a polyhedral object in the three-dimensional space - that reflect the membrane surface of the neurons from their morphological skeletons.
 
 ## Expected Output 
