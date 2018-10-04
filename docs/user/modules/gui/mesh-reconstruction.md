@@ -33,12 +33,12 @@ This version of _NeuroMorphoVis_ provides access uniquely to the __Piecewise Wat
 
 ### Skeleton 
 
++ __Original__ Use the original skeleton exactly as given in the input morphology file. 
 
-It is quite known that the reconstructed morphological skeleton comes with 
++ __Tapered__ Taper the sections. The radii of the sections are gradually decreasing, where the radius of the first sample along the section is set to be larger than that of the last sample. This style modifies the radii of the morphology skeleton, but it does not change its structure.   
 
-+ __Original__ Use the original skeleton of the morphology as given in the input morphology. 
-+ __Tapered__ Taper the sections by making the radius each section gradually descreasing. 
-+ __Zigzag__ Add an artificial zigzagged noise or wiggles that are caused by the staining procedures.
++ __Zigzag__ Add an artificial zigzagged noise (random shifts of the locations of the samples) or wiggles similar to that caused by the staining procedures.
+
 + __Tapered Zigzag__ Taper the sections and also add wiggles with random shifts. 
 
 ### Surface 
