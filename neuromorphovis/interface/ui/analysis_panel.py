@@ -27,6 +27,7 @@ __status__      = "Production"
 
 # Blender imports
 import bpy
+from bpy.app.handlers import persistent
 from mathutils import Vector
 from bpy.props import IntProperty
 from bpy.props import FloatProperty
@@ -41,6 +42,19 @@ import neuromorphovis.enums
 import neuromorphovis.file
 import neuromorphovis.interface
 import neuromorphovis.skeleton
+
+from bpy.types import PropertyGroup, Panel, Scene
+
+def UpdatedFunction(self, context):
+    print("In update func...")
+    ui_tex = bpy.data.textures.new("Sample", "IMAGE")
+    image = bpy.data.images.load('/home/abdellah/Desktop/isbc-poster/golgi-staining-neuron.jpeg')
+    ui_tex.image = image
+    return
+
+class MyPropertyGroup(PropertyGroup):
+    custom_String = StringProperty(name ="My String", update = UpdatedFunction)
+    custom_Boolean = BoolProperty(update = UpdatedFunction)
 
 
 ####################################################################################################
@@ -59,11 +73,14 @@ class AnalysisPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
+    bpy.types.Scene.XXX = StringProperty(name="Hola", update = UpdatedFunction)
+
     # Number of samples per section
     bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(
         name="# Samples / Section",
         description="Analyze the number of samples per section",
-        default=True)
+        default=True,
+        update=UpdatedFunction)
 
     # Number of segments per section
     bpy.types.Scene.AnalyzeNumberSegmentsPerSection = BoolProperty(
@@ -130,6 +147,34 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
+    file_path = StringProperty(name="File", subtype="FILE_PATH")
+
+
+    # ui_tex = D.textures.new("MP", "IMAGE")
+    #image = bpy.data.images.load('/home/abdellah/Desktop/hbp.png')
+    # ui_tex.image = image
+    #print('zz')
+
+    #bpy.data.textures['Tex'].image = image
+
+    def __init__(self):
+        #ui_tex = bpy.data.textures.new("MP", "IMAGE")
+        #image = bpy.data.images.load('/home/abdellah/Desktop/hbp.png')
+        #ui_tex.image = image
+
+        pass
+
+    @classmethod
+    def register(cls):
+
+        print('HOLOOOOA')
+        import bpy
+        ui_tex = bpy.data.textures.new("Sample", "IMAGE")
+        # image = bpy.data.images.load('/home/abdellah/Desktop/isbc-poster/golgi-staining-neuron.jpeg')
+        # ui_tex.image = image
+
+
+
     ################################################################################################
     # @draw
     ################################################################################################
@@ -141,8 +186,12 @@ class AnalysisPanel(bpy.types.Panel):
             Rendering context
         """
 
+
         # Get a reference to the panel layout
         layout = self.layout
+
+        morphology_file_row = layout.row()
+        morphology_file_row.prop(context.scene, 'XXX')
 
         # Number of samples per section
         number_samples_per_section_row = layout.row()
@@ -192,6 +241,46 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
+        scene = bpy.context.scene
+
+        row = layout.row()
+        row.prop(scene.my_prop_grp, 'custom_Boolean', text="Hola")
+
+
+        #layout.template_preview(bpy.data.textures['Sample'])
+
+        '''
+        obj = context.object
+        box = layout.box
+        ob = context.object
+
+
+        img = bpy.data.images.load("/home/abdellah/Desktop/hbp.png")
+
+        row = layout.row(align=True)
+        row.operator('bpy.ops.Object.empty_draw_type', image=img)
+
+        # row with image opener
+        row = layout.row(align=True)
+        layout.template_ID(ob, "data", open="image.open", unlink="image.unlink")
+
+        # row  with offset
+        row = layout.row(align=True)
+
+        row.prop(ob, "empty_image_offset", text="Offset X", index=0)
+        row.prop(ob, "empty_image_offset", text="Offset Y", index=1)
+
+        row = layout.row(align=True)
+
+        # row with transparancy
+
+        row.prop(ob, "color", text="Transparency", index=3, slider=True)
+
+        # row with size
+        row = layout.row(align=True)
+        layout.prop(ob, "empty_draw_size", text="Size")
+        '''
+
 
 ####################################################################################################
 # @SaveSomaMeshBlend
@@ -213,7 +302,9 @@ class AnalyzeMorphology(bpy.types.Operator):
         :param context_scene:
             Current scene in the rendering context.
         """
-
+#ui_tex = bpy.data.textures.new("MP", "IMAGE")
+        #image = bpy.data.images.load('/home/abdellah/Desktop/hbp.png')
+        #ui_tex.image = image
         # Read the data from a given morphology file either in .h5 or .swc formats
         if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
 
@@ -234,7 +325,7 @@ class AnalyzeMorphology(bpy.types.Operator):
                 # Update the morphology
                 nmv.interface.ui_morphology = morphology_object
 
-            # Otherwise, report an ERROR
+            # Otherwise, report an ERRORScene.my_prop_grp = bpy.props.PointerProperty(type=MyPropertyGroup)
             else:
                 self.report({'ERROR'}, 'Invalid Morphology File')
 
@@ -274,7 +365,9 @@ class AnalyzeMorphology(bpy.types.Operator):
     def execute(self,
                 context):
         """Execute the operator.
-
+#ui_tex = bpy.data.textures.new("MP", "IMAGE")
+        #image = bpy.data.images.load('/home/abdellah/Desktop/hbp.png')
+        #ui_tex.image = image
         :param context:
             Rendering context
         :return:
@@ -360,6 +453,8 @@ class AnalyzeMorphology(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+
 ####################################################################################################
 # @register_panel
 ####################################################################################################
@@ -367,11 +462,15 @@ def register_panel():
     """Registers all the classes in this panel.
     """
 
+    bpy.utils.register_class(MyPropertyGroup)
+
     # Morphology analysis panel
     bpy.utils.register_class(AnalysisPanel)
 
     # Morphology analysis button
     bpy.utils.register_class(AnalyzeMorphology)
+
+    Scene.my_prop_grp = bpy.props.PointerProperty(type=MyPropertyGroup)
 
 
 ####################################################################################################
@@ -386,3 +485,4 @@ def unregister_panel():
 
     # Morphology analysis button
     bpy.utils.unregister_class(AnalyzeMorphology)
+
