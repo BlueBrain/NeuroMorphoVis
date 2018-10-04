@@ -43,20 +43,22 @@ This version of _NeuroMorphoVis_ provides access uniquely to the __Piecewise Wat
 
 ### Surface 
 The surface of the mesh that reflects that membrane of a neuron can be __Smooth__ or __Rough__. 
+
 + __Smooth__ This options is quite often used to render nice morphologies that can be used for illustrative purposes.
-+ __Rough__ The roughness addedd to the surface of the mesh makes the neuron mesh more realistic as seen under the microscope. This option is used for meshes created mainly for performing in silico imaging experiments. 
+
++ __Rough__ The roughness addedd to the surface of the mesh makes the neuron mesh more realistic as seen under the microscope. 
 
 ### Edges
 
 Due to manual tracing artifacts, neuronal morphology skeletons are normally reconstructed with sharp edges between the different samples. This issue reduces the realism of the generated meshes, in particular when the meshes are used to create close up renderings. To remove these artifacts, we introduced an option to apply a vertex smoothing filter that smooths the hard edges while preserving the geometry and topology the morphology skeleton.
 
-The edges can be _Sharp_ or _Curvy_.
+The edges can be __Sharp__ or __Curvy__.
 
 + __Sharp__
 Preserve the angles between the edges. 
 
 + __Curvy__ 
-Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy and realistic.
+Apply vertex smoothing filter to the reconstructed mesh to make the edges look curvy, sexy and more realistic.
 
 <p align="center">  
   <img src="images/meshing-edges.png" width="700"> 
