@@ -16,7 +16,7 @@ When all the meshing parameters are set, a neuronal mesh can be reconstructed by
 
 ## Opening the Mesh Toolbox
 
-When you toggle (or click on) the __Mesh Toolbox__ tab as highlighted below, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
+When you toggle (or click on) the __Mesh Toolbox__ tab highlighted below, the following panel, or a similar one depending on the version of _NeuroMorphoVis_, will appear.
 
 <p align="center">
   <img src="images/panels-mesh-closed.jpg" width=300>
