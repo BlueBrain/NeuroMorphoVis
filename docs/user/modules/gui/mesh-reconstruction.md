@@ -9,7 +9,14 @@
 This panel gives access to the parameters of the __Meshing__ toolbox. This toolbox is used to reconstruct [polygonal mesh models](https://en.wikipedia.org/wiki/Polygon_mesh) - a collection of vertices, edges and faces that defines the shape of a polyhedral object in the three-dimensional space - that reflect the membrane surface of the neurons from their morphological skeletons.
 
 ## Expected Output 
-The current version of NeuroMorphoVis implements the __piecewise-watertight meshing__ algorithm that is proposed by [Abdellah et al, 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4). This method reconstructs a single mesh object that is composed of a set of watertight meshes, each corresponding to an individual component in the original morphology skeleton. For example, breadth-first traversal is used to connect and construct primary sections along each arbor in the form of tubes. These tubes are converted into watertight meshes that by definition have non manifold edges or vertices. The grouping of the reconstructed meshes results in the final mesh object that is not watertight per se, but rather piecewise-watertight.          
+The current version of NeuroMorphoVis implements the __piecewise-watertight meshing__ algorithm that is proposed by [Abdellah et al, 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4). This method reconstructs a single mesh object that is composed of a set of watertight meshes, each corresponding to an individual component in the original morphology skeleton. For example, breadth-first traversal is used to connect and construct primary sections along each arbor in the form of tubes. These tubes are converted into watertight meshes that by definition have non manifold edges or vertices. The grouping of the reconstructed meshes results in the final mesh object that is not watertight per se, but rather piecewise-watertight.  
+
+## Panel Description 
+When all the meshing parameters are set, a neuronal mesh can be reconstructed by clicking on the button __Reconstruct Mesh__. Once the mesh is reconstructed, it will appear in the principal three-dimensional view port of Blender. The mesh can be then rendered to image by clicking on the different views buttons: __Front__, __Side__, or __Top__. We can also render a 360 movie of the reconstructed mesh by clicking on the __360__ button. Finally, the mesh can be exported to different file formats such as __.obj__, __.ply__, __.stl__ and __.blend__ meshes.        
+
+## Opening the Mesh Toolbox
+
+When you toggle (or click on) the __Mesh Toolbox__ tab as highlighted below, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
 
 <p align="center">
   <img src="images/panels-mesh-closed.jpg" width=300>
@@ -19,13 +26,10 @@ The current version of NeuroMorphoVis implements the __piecewise-watertight mesh
   <img src="images/panels-mesh-open.jpg" width=300>
 </p>
 
-## Panel Description & Options
-
-Once all the meshing parameters are set, a neuronal mesh can be reconstructed by clicking on the button __Reconstruct Mesh__. Once the mesh is reconstructed, it will appear in the principal three-dimensional widget of Blender. The mesh can be then rendered and saved as a .png image by clicking on the different views buttons: __Front__, __Side__, or __Top__. We can also render a 360 movie of the reconstructed mesh by clicking on the __360__ button. Finally, the mesh can be exported to different file formats such as __.obj__, __.ply__, __.stl__ and __.blend__ meshes.
-
+## Panel Options 
 
 ### Meshing Methods
-The current version of NeuroMorphoVis provides only the __Piecewise Watertight__ meshing method for reconstructing polygonal surface meshes from input morphological skeletons. We have already implemented other meshing techniques, but their stability is still questionable. These techniques will be integrated in NeuroMorphoVis in future releases. 
+This version of _NeuroMorphoVis_ provides access uniquely to the __Piecewise Watertight__ meshing method ([Abdellah et al, 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4)) for reconstructing polygonal surface meshes from input morphological skeletons. We have already implemented other meshing techniques, but their stability is still questionable. These techniques will be exposed to the interface of _NeuroMorphoVis_ in future releases. 
 
 ### Skeleton 
 
