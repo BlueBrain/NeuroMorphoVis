@@ -64,11 +64,16 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
   <img src="images/meshing-edges.png" width="700"> 
 </p>
 
-### Soma Connectivity to Branches
+### Soma Connectivity to Root Branches
 
+By default, all the root sections are connected to the origin of the soma. If a three-dimensional profile of the soma is reconstructed, the mesh objects of the root branches will overlap with the extrusions of the soma mesh. This overlapping might not be perfect leading in some visual artifacts. Therefore, we have added an option to connect the mesh objects of the root branches to the soma.  
+ 
++ __Disconnected__ 
+The root branches are not connected to the soma mesh, but rather extended to the origin of the soma.
 
-+ __Connected__
-+ __Disconnected__
++ __Connected__ 
+The root branches are connected to the soma mesh. 
+
 
 <p align="center">
   <img src="images/meshing-soma-disconnected.png" width="300">
@@ -77,16 +82,20 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
 
 
 ### Skeleton Objects 
-+ __Connected__
+
 + __Disconnected__
+The mesh objects of the neurites and the soma are still independent where the user can select each individually. 
 
-
-
++ __Connected__
+All the objects are connected and grouped in a single object. 
 
 ### Branching 
-+ __Angles__
-+ __Radii__
 
++ __Angles__ 
+The continuty between the branches is decided based on the angles between the parent section and the children. 
+
++ __Radii__
+The continuty between the branches is decided based on the radii of the last sample of the parent section and the first samples of the children ones. 
 
 <p align="center">
   <img src="images/meshing-by-angle.png" width="250" height="400"> 
@@ -95,9 +104,12 @@ Apply vertex smoothing filter to the reconstructed mesh to make the edges look c
 
 ### Tessellation 
 
+This option gives control over the tesseleation level of the mesh allowing the end user to create high quality meshes for close up renderings and small-sized meshes to maximize the number of meshes you can load in a rendering context.
 
 ### Colors & Materials 
+
 #### Homogeneous Color 
+If the Homogeneous Color checkbox is selected, a single color will be applied to the entire mesh. Otherwise, the user can control the color of each component of the mesh. 
 
 + __Soma Color__: The color of the soma mesh.
 + __Axon Color__: The color of the axon mesh.
