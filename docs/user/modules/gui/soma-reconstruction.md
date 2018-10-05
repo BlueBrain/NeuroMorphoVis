@@ -112,20 +112,51 @@ This version of _NeuroMorphoVis_ has integrated the following materials (or shad
 
 + __Flat__
 
+<p align="center">
+  <img src="images/soma-material-flat.png" width=200>
+</p>
+
 + __Lambert Ward__
+
+<p align="center">
+  <img src="images/soma-material-lambert.png" width=200>
+</p>
 
 + __Super Electron Light__
 
+<p align="center">
+  <img src="images/soma-material-super-electron-light.png" width=200>
+</p>
+
 + __Super Electron Dark__
+
+<p align="center">
+  <img src="images/soma-material-super-electron-dark.png" width=200>
+</p>
 
 + __Electron Light__
 
+<p align="center">
+  <img src="images/soma-material-electron-light.png" width=200>
+</p>
+
 + __Electron Dark__
+
+<p align="center">
+  <img src="images/soma-material-electron-dark.png" width=200>
+</p>
 
 + __Glossy Bumpy__
 
+<p align="center">
+  <img src="images/soma-material-glossy.png" width=200>
+</p>
+
 + __Shadow__
 
+<p align="center">
+  <img src="images/soma-material-shadow.png" width=200>
+</p>
 
 ## Let's Reconstruct a 3D Soma Profile
 
