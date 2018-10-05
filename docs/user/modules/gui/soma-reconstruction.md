@@ -54,9 +54,33 @@ This version of _NeuroMorphoVis_ has implemented three different methods to reco
 
 ### Soft Body Parameters 
 
+Soft body simulation is used in general for simulating soft deformable objects. It was designed primarily for adding secondary motion to animation, like jiggle for body parts of a moving character. It also works for simulating more general soft objects that bend, deform and react to forces like gravity and wind, or collide with other objects. The simulation works by combining existing animation on the object with forces acting on it. There are exterior forces like gravity or force fields and interior forces that hold the vertices together. This way you can simulate the shapes that an object would take on in reality if it had volume, was filled with something, and was acted on by real forces.
+_NeuroMorphoVis_ uses soft body simulation to deform an initial ico-sphere into an object that can reflect or approximate a three-dimensional profile of the soma. Further details about soft body simulation can be found in this [link](https://docs.blender.org/manual/ja/dev/physics/soft_body/introduction.html#typical-scenarios-for-using-soft-bodies).
+
 ### Stiffness 
 
+The __Stiffness__ slider controls the spring stiffness of the soft body object. A low value creates very weak springs (more flexible "attachment" to the goal), a high value creates a strong spring (a stiffer "attachment" to the goal). This parameter can take values between 0.001 and 1.0. 
+
+
+#### Notes 
+
++ We have gone through many trial and error iterations to test some other parameters of the soft body object to yield a plausible shape. However, the user does not have control to any of them. These values are as follows:
+
+	+ __Garvity__ 0.0
+	+ __Goal Max__ 0.1
+	+ __Goal Min__ 0.7
+	+ __Goal Default__ 0.5
+ 
++ Soft bodies work especially well if the objects have an even vertex distribution. You need enough vertices for good collisions. You change the deformation (via the stiffness slider) if you add more vertices in a certain region.
+
 ### Subdivisions 
+
+This parameter control the number of vertices of the initial soft body object used in the simulation. It defines how many recursions are used to create the sphere. At level 1 the ico sphere is an icosahedron, a solid with 20 equilateral triangular faces. Each increase in the number of subdivisions splits each triangular face into four triangles. Further details about the ico-spheres can be found in this [link]
+(https://docs.blender.org/manual/en/dev/modeling/meshes/primitives.html#icosphere).
+
+#### Notes 
+
++ Subdividing an icosphere raises the vertex count very quickly even with few iterations (10 times creates 5,242,880 triangles), Adding such a dense mesh is a sure way to cause the program to crash. Therefore, we have limited the range of the __Subdividions__ from 3 to 7. 
 
 ### Irregular Subdivision 
 
