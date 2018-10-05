@@ -64,8 +64,7 @@ class AnalysisPanel(bpy.types.Panel):
     bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(
         name="# Samples / Section",
         description="Analyze the number of samples per section",
-        default=True,
-        update=UpdatedFunction)
+        default=True)
 
     # Number of segments per section
     bpy.types.Scene.AnalyzeNumberSegmentsPerSection = BoolProperty(
@@ -370,8 +369,6 @@ class AnalyzeMorphology(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel.
     """
-
-    bpy.utils.register_class(MyPropertyGroup)
 
     # Morphology analysis panel
     bpy.utils.register_class(AnalysisPanel)
