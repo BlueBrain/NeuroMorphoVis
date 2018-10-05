@@ -14,6 +14,18 @@ The __Soma Reconstruction Toolbox__ is added to allow the generation of highly p
 
 We extended the Blender-based implementation and integrated this module into _NeuroMorphoVis_ to provide a convenient tool to validate and compare the somata obtained by segmenting a microscopic stack with the ones extracted from three-dimensional contours.
 
+## Opening the Soma Toolbox
+
+<p align="center">
+  <img src="images/panels-soma-closed.jpg" width=300>
+</p>
+
+When you toggle (or click on) the _Soma Toolbox_ tab highlighted above, the following panel, or a similar one depending on the version of _NeuroMorphoVis_, will appear.
+
+<p align="center">
+  <img src="images/panels-soma-open.jpg" width=300>
+</p>
+
 ## Method 
 NeuroMorphoVis has three methods to reconstruct different three-dimensional somata profiles:
 + __Profile__: This method uses only the profile points that are reported in the morphology files to reconstruct the soma from an ico-sphere, whose radius is set to the mean soma radius.   
