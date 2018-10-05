@@ -1,6 +1,6 @@
 # Command Line Options User Guide
 
-_NeuroMorphoVis_  
+_NeuroMorphoVis_ can be executed in the background mode from the command line usign the ```neuromorphovis.py``` script. 
 
 ## Options
 
