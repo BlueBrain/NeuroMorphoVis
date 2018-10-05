@@ -233,3 +233,14 @@ The STL file describes a raw, unstructured triangulated surface by the unit norm
 
 + __Blender Format (.blend)__ 
 The exported file can be opened _only_ in Blender and can be used for rendereing purposes. 
+
+
+## References 
+
+1. __Abdellah, Marwan, et al.__ "NeuroMorphoVis: a collaborative framework for analysis and visualization of neuronal morphology skeletons reconstructed from microscopy stacks." Bioinformatics 34.13 (2018): i574-i582.
+
+2. __Abdellah, Marwan, et al.__ "Reconstruction and visualization of large-scale volumetric models of neocortical circuits for physically-plausible in silico optical studies." BMC bioinformatics 18.10 (2017): 402.
+
+3. __Brito, Juan, et al.__ "Neuronize: a tool for building realistic neuronal cell morphologies." Frontiers in neuroanatomy 7 (2013): 15.
+
+4. __Lasserre, Sebastien, et al.__ "A neuron membrane mesh representation for visualization of electrophysiological simulations." IEEE Transactions on Visualization and Computer Graphics 18.2 (2012): 214-227.
