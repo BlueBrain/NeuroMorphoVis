@@ -143,7 +143,7 @@ This version of _NeuroMorphoVis_ has integrated the following materials (or shad
 + __Electron Dark__
 
 <p align="center">
-  <img src="images/soma-material-electron-dark.png" width=200>
+  <img src="images/soma-material-electron-dark.png" width="200">
 </p>
 
 + __Glossy Bumpy__
