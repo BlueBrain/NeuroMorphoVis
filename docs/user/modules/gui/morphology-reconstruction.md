@@ -24,7 +24,7 @@ Neuronal branches are, in general, classified based on their types into
  
 ### Important Note
 
-Note that the three-dimensionap profile of the soma that is reconstructed in this skeleton -- if requested -- is based on the parameters set in the _Soma Toolbox panel_.
+Note that the three-dimensionap profile of the soma that is reconstructed in this skeleton -- if requested -- is based on the parameters set in the __Soma Toolbox panel__.
 
 ### Why this Toolbox?
 
@@ -49,7 +49,7 @@ There are various packages that have been developed to analyze and visualize dif
   <img src="images/panels-morphology-closed.jpg" width=300>
 </p>
 
-When you toggle (or click on) the _Morphology Toolbox_ tab highlighted above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
+When you toggle (or click on) the __Morphology Toolbox__ tab highlighted above, the following panel, or a similar one depending on the version of _NeuroMorphoVis_, will appear.
 
 <p align="center">
   <img src="images/morphology-panel-detailed.png" width=300>
