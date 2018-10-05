@@ -91,7 +91,11 @@ This parameter defines the RGB color that will be applied to the soma in the sel
 
 #### Material 
 
-This version of _NeuroMorphoVis_ has integrated the following shaders (or materials):
+<p align="center">
+  <img src="images/soma-materials.png" width=300>
+</p>
+
+This version of _NeuroMorphoVis_ has integrated the following materials (or shaders):
 
 + __Flat__
 
@@ -108,6 +112,8 @@ This version of _NeuroMorphoVis_ has integrated the following shaders (or materi
 + __Glossy Bumpy__
 
 + __Shadow__
+
+
 
 ## Let's Reconstruct a 3D Soma Profile
 
