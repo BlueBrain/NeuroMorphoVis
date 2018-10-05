@@ -62,7 +62,7 @@ A binary package of the current version of _NeuroMorphoVis_ is available for the
 
 + __Ubuntu__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
-+ __Redhat__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __Red Hat__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
 + __maxOSX__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
