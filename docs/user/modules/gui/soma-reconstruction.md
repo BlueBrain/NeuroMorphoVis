@@ -208,9 +208,15 @@ Normally, the extent of the reconstructed soma mesh cannot exceed 20-30 microns.
 
 ## Rendering Animations 
 
+The users can render animations to visualize the dynamics of the reconstructed soma mesh and analyze it from all the views. _NeuroMorphoVis_ supports two types of animations: __360__ and __progressive reconstruction__ sequences. 
+
+<p align="center">
+  <img src="images/soma-rendering-movies.png" width=300>
+</p>
+
 ### 360 Sequences
 
-The users can render a __360__ sequence of the reconstructed soma mesh to verify its structure from all the views. This animation is created by clicking on the __360__ button shown below. The sequence (a set of frames ordered from 00000.png to 00360.png) will be generated in a directory with the same name of the morphology in the __sequences__ folder under the __Output Directory__ that must be set in the __Input / Output__ panel. For example, if the morphology file name is ```C031097B-I4.CNG.swc``` or ```C031097B-I4.CNG.h5```, then the output directory will be named ```C031097B-I4.CNG_soma_mesh_360```. 
+The users can render a __360__ sequence of the reconstructed soma mesh to verify its structure from all the views. This animation is created by clicking on the __360__ button shown above. The sequence (a set of frames ordered from 00000.png to 00360.png) will be generated in a directory with the same name of the morphology in the __sequences__ folder under the __Output Directory__ that must be set in the __Input / Output__ panel. For example, if the morphology file name is ```C031097B-I4.CNG.swc``` or ```C031097B-I4.CNG.h5```, then the output directory will be named ```C031097B-I4.CNG_soma_mesh_360```. After compositing the frames, this 360 movie is created. 
 
 <p align="center">
   <img src="images/soma-360.gif" width=300>
@@ -224,7 +230,7 @@ The users can render a __360__ sequence of the reconstructed soma mesh to verify
 
 ### Progressive Reconstruction Sequences
 
-The users can render the progressive reconstruction of the soma mesh to analyze the deformation and extrusion processes that occur to an initial ico sphere to yield the reconstructed soma mesh. This animation is created by clicking on the __Progressive__ button shown below. The sequence (a set of frames ordered from 00000.png to 00100.png) will be generated in a directory with the same name of the morphology in the __sequences__ folder under the __Output Directory__ that must be set in the __Input / Output__ panel. For example, if the morphology file name is ```C031097B-I4.CNG.swc``` or ```C031097B-I4.CNG.h5```, then the output directory will be named ```C031097B-I4.CNG_soma_mesh_progressive```.
+The users can render the progressive reconstruction of the soma mesh to analyze the deformation and extrusion processes that occur to an initial ico sphere to yield the reconstructed soma mesh. This animation is created by clicking on the __Progressive__ button shown above. The sequence (a set of frames ordered from 00000.png to 00100.png) will be generated in a directory with the same name of the morphology in the __sequences__ folder under the __Output Directory__ that must be set in the __Input / Output__ panel. For example, if the morphology file name is ```C031097B-I4.CNG.swc``` or ```C031097B-I4.CNG.h5```, then the output directory will be named ```C031097B-I4.CNG_soma_mesh_progressive```. After compositing the frames, this progressive reconstruction movie is created.
 
 <p align="center">
   <img src="images/soma-progressive.gif" width=300>
@@ -235,10 +241,6 @@ The users can render the progressive reconstruction of the soma mesh to analyze 
 + If the __Output Directory__ is not set, the user will get the following error: __Output Directory is not set, update it in the Input / Output Data panel__.
 
 + If the __Output Directory__ is not valid (wrong directory), the user will get the following error: __Output Directory is not valid, update it in the Input / Output Data panel__. 
-
-<p align="center">
-  <img src="images/soma-rendering-movies.png" width=300>
-</p>
 
 ## Exporting the Soma Mesh
 
