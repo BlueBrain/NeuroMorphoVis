@@ -44,7 +44,7 @@ _NeuroMorphoVis_ has a rich command line interface that would make it easy to co
 
 Users can easily configure and use _NeuroMorphoVis_ via editable configuration files. Instructions to write and use configurations files are available in this [user guide](docs/user/modules/configurations/configurations.md).
 
-## Installation 
+## Download 
 
 _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
 The current version is compatible with the following Blender versions
@@ -54,6 +54,7 @@ The current version is compatible with the following Blender versions
 + [Blender 2.78](http://download.blender.org/release/Blender2.78/): 2.78, 2.78a, 2.78b and 2.78c
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/): 2.79, 2.79a, 2.79b and 2.79c 
 
+_NeuroMorphoVis_ can be downloaded as a binary archive that can be easily extracted and used without installing any further dependencies. The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective operating system.    
 
 ### Optional Dependencies 
 
