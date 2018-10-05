@@ -60,7 +60,7 @@ _NeuroMorphoVis_ can be downloaded as a __binary archive__ that can be easily ex
 
 A binary package of the current version of _NeuroMorphoVis_ is available for the followign platforms:
 
-+ __Ubunut__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __Ubuntu__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
 + __Redhat__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
