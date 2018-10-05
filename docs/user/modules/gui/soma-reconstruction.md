@@ -131,6 +131,16 @@ Orthographic
 
 This parameter defines the resolution of the rendered image of the soma mesh. This image have the same resolution in width and height and that's why the __Frame Resolution__ slider has only a single value.  
 
+### View Dimensions 
+
+## Rendering Images 
+
+## Rendering Movies 
+
+### 360
+
+### Progressive Reconstruction 
+
 ## Exporting the Soma Mesh
 
 Finally, the users can export the reconstructed surface mesh of the soma. The users can exploit the native support of Blender to export meshes into different file formats. But since we assumed that end users might not have any Blender experience, we have addedd four buttons to export the reconstructed soma meshes into the following common file formats:
