@@ -167,6 +167,9 @@ This version of _NeuroMorphoVis_ has integrated the following materials (or shad
   <img src="images/soma-material-shadow.png" width=200>
 </p>
 
+##### Note
+Since we keep updating the materials on a regular basis, this materials list could be different from the existing one in the current version of _NeuroMorphoVis_. 
+
 ## Let's Reconstruct a 3D Soma Profile
 
 Once the soma parameters are set as shown previously, the users can reconstruct the soma mesh by clicking on the __Soma__ button shown below. The progress of the reconstruction will appear in the __Soma Simulation Progress__ bar. 
