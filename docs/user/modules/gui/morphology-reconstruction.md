@@ -1,10 +1,10 @@
 # Morphology Reconstruction Toolbox Panel
 
 <p align="center">
-  <img src="images/morphology-panel.png" width=300>
+  <img src="images/gui-morphology-reconstruction-toolbox-open.png" width=800>
 </p>
 
-## Summary
+## Introduction
 
 This panel gives access to the parameters of the __Morphology Reconstruction Toolbox__. By reconstruction in the context, we mean generating a three-dimensional skeleton from a dendrogram (a tree diagram frequently used to illustrate the arrangement of the clusters produced by hierarchical clustering, for further details refer to this [link](https://en.wikipedia.org/wiki/Dendrogram)). 
 
@@ -26,12 +26,33 @@ Neuronal branches are, in general, classified based on their types into
 
 Note that the three-dimensionap profile of the soma that is reconstructed in this skeleton -- if requested -- is based on the parameters set in the _Soma Toolbox panel_.
 
+### Why this Toolbox?
+
+There are various packages that have been developed to analyze and visualize different formats of neuronal morphology skeletons. Free and open source packags are quite limited in their functionality and some of them require installing multiple software dependencies that might make them cumbersome and hard to use. Non-free or proprietary solutions might not be affordable in certain cases and they are only focused on morphology visualizatin. _NeuroMorphoVis_ close the gap and presents a free framework for advanced visualiztion of the morphologies, visual analysis, mesh generation of neuronal membranes and high quality rendering for scientific publications, all integrated in a single tool.      
+
+#### Morphology Analysis Tools 
+
++ [MATLAB-based Morphology Analyzer](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3928584/) by J. Ledderose et al, 2014
+
+#### Morphology Visualization Tools
+
++ [HBP Morphology Viewer](https://neuroinformatics.nl/HBP/morphology-viewer/) by [HBP](https://www.humanbrainproject.eu/en/) - Online repository can be found [here](https://github.com/rbakker/HBP-morphology-viewer). 
+
++ [NeuronLand: NLMorphologyViewer](http://neuronland.org/NL.html) A simple user interface built on top of the technology developed for the NLMorphologyConverter. Provides a 3D interactive view of neuron morphology data.
+
++ [Web-based neuron morphology viewer](https://www.frontiersin.org/10.3389/conf.fninf.2016.20.00079/event_abstract) by R. Bakker and P. Tiesinga, 2013.
+ 
+
 ## Opening the Morphology Toolbox Panel
 
-When you toggle (or click on) the _Morphology Toolbox_ tab highlighted in red above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
+<p align="center">
+  <img src="images/panels-morphology-closed.jpg" width=300>
+</p>
+
+When you toggle (or click on) the _Morphology Toolbox_ tab highlighted above, the following panel, or a similar one depending on the version of NeuroMorphoVis, will appear.
 
 <p align="center">
-  <img src="images/morphology-panel-detailed.png">
+  <img src="images/morphology-panel-detailed.png" width=300>
 </p>
 
 In the following sections we will detail all the parameters shown in each section in this panel.
