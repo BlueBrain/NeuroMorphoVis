@@ -61,6 +61,9 @@ _NeuroMorphoVis_ uses soft body simulation to deform an initial ico-sphere into 
 
 The __Stiffness__ slider controls the spring stiffness of the soft body object. A low value creates very weak springs (more flexible "attachment" to the goal), a high value creates a strong spring (a stiffer "attachment" to the goal). This parameter can take values between 0.001 and 1.0. 
 
+<p align="center">
+  <img src="images/soma-soft-body-stiffness.png" width=300>
+</p>
 
 #### Notes 
 
@@ -78,6 +81,12 @@ The __Stiffness__ slider controls the spring stiffness of the soft body object. 
 This parameter control the number of vertices of the initial soft body object used in the simulation. It defines how many recursions are used to create the sphere. At level 1 the ico sphere is an icosahedron, a solid with 20 equilateral triangular faces. Each increase in the number of subdivisions splits each triangular face into four triangles. Further details about the ico-spheres can be found in this [link]
 (https://docs.blender.org/manual/en/dev/modeling/meshes/primitives.html#icosphere).
 
+<p align="center">
+  <img src="images/soma-soft-body-subdivisions.png" width=300>
+</p>
+
+
+
 #### Notes 
 
 + Subdividing an icosphere raises the vertex count very quickly even with few iterations (10 times creates 5,242,880 triangles), Adding such a dense mesh is a sure way to cause the program to crash. Therefore, we have limited the range of the __Subdividions__ from 3 to 7. 
@@ -89,11 +98,15 @@ This parameter control the number of vertices of the initial soft body object us
 #### Soma Base Color 
 This parameter defines the RGB color that will be applied to the soma in the selected shader (or material). Certain shaders use a mix of two colors to look nice, in this case this parmeter defines the __base__ or the dominating color of the shader.  
 
+<p align="center">
+  <img src="images/soma-color.png" width=300>
+</p>
+
 #### Material 
 
 <p align="center">
   <img src="images/soma-materials.png" width=300>
-</p>
+</p> 
 
 This version of _NeuroMorphoVis_ has integrated the following materials (or shaders):
 
@@ -114,13 +127,12 @@ This version of _NeuroMorphoVis_ has integrated the following materials (or shad
 + __Shadow__
 
 
-
 ## Let's Reconstruct a 3D Soma Profile
 
-Once the soma parameters are set as shown before, the user can reconstruct a soma mesh by clicking on the __Reconstruct Soma__ button. 
+Once the soma parameters are set as shown before, the user can reconstruct a soma mesh by clicking on the __Soma__ button shown below. The progress of the reconstruction will appear in the __Soma Simulation Progress__ bar. 
   
 <p align="center">
-  <img src="images/morphology-panel-reconstruction-button.png" width=300>
+  <img src="images/soma-reconstruction-button.png" width=300>
 </p>
 
 Note that if any of the parameters is changed, the user must __click__ on this button again to get the soma mesh updated even if this update was only affecting the color of the soma. 
@@ -141,7 +153,15 @@ This parameter defines the resolution of the rendered image of the soma mesh. Th
 
 ## Rendering Images 
 
-## Rendering Movies 
+<p align="center">
+  <img src="images/soma-rendering-images-views.png" width=300>
+</p>
+
+## Rendering Animations 
+
+<p align="center">
+  <img src="images/soma-rendering-movies.png" width=300>
+</p>
 
 ### 360
 
