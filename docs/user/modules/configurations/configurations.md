@@ -1,6 +1,6 @@
 # NeuroMorphoVis Configuration Files
 
-_NeuroMorphoVis_ supports configuration files.
+_NeuroMorphoVis_ also supports configuration files.
 
 ## Usage 
 
