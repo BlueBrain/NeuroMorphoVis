@@ -1,7 +1,7 @@
 # Soma Toolbox Panel
 
 <p align="center">
-  <img src="images/soma-panel.png">
+  <img src="images/gui-soma-reconstruction-toolbox-panel.jpg" width=800>
 </p>
 
 ## Summary
