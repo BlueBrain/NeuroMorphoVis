@@ -47,30 +47,26 @@ Users can easily configure and use _NeuroMorphoVis_ via editable configuration f
 ## Download 
 
 _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
-The current version is compatible with the following Blender versions
+The current version is compatible with the following Blender versions:
 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/): 2.76a and 2.76b
 + [Blender 2.77](http://download.blender.org/release/Blender2.77/): 2.77 and 2.77a
 + [Blender 2.78](http://download.blender.org/release/Blender2.78/): 2.78, 2.78a, 2.78b and 2.78c
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/): 2.79, 2.79a, 2.79b and 2.79c 
 
-_NeuroMorphoVis_ can be downloaded as a binary archive that can be easily extracted and used without installing any further dependencies. The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective operating system.    
+_NeuroMorphoVis_ can be downloaded as a __binary archive__ that can be easily extracted and used without installing any further dependencies. The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective operating system.    
 
-### Optional Dependencies 
+### Supported Platforms 
 
-By default, _NeuroMorphoVis_ uses Blender as a main dependency to load [SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html) morphology files. This requires no further dependencies at all. 
+A binary package of the current version of _NeuroMorphoVis_ is available for the followign platforms:
 
-#### H5 Morphologies 
++ __Ubunut__
 
-To load [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) morphology files, the following dependencies must be installed:
++ __Redhat__
 
-+ [HDF5 Python Bindings](https://www.h5py.org)
++ __maxOSX__
 
-#### BBP Circuits Morphologies 
-
-There are other optional dependencies that are specific to users from the [Blue Brain Project](https://github.com/BlueBrain). To load circuit morphologies specified by GIDs or cell targets, the following dependencies must be installed:
-
-+ [Blue Brain Brion](https://github.com/BlueBrain/Brion) 
++ __Windows__
 
 ### Installation Gide 
 
