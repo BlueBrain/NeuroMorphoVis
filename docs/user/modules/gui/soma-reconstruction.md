@@ -83,18 +83,14 @@ This parameter defines the resolution of the rendered image of the soma mesh. Th
 Finally, the users can export the reconstructed surface mesh of the soma. The users can exploit the native support of Blender to export meshes into different file formats. But since we assumed that end users might not have any Blender experience, we have addedd four buttons to export the reconstructed soma meshes into the following common file formats:
 
 + __Wavefront (.obj)__ 
-
 The OBJ file format is a simple data-format that represents 3D geometry alone — namely, the position of each vertex, the UV position of each texture coordinate vertex, vertex normals, and the faces that make each polygon defined as a list of vertices, and texture vertices. Further details about this file format can be found [here](https://en.wikipedia.org/wiki/PLY_(file_format)).
 
 + __Stanford (.ply)__ 
-
 PLY is a file format known as the Polygon File Format or the Stanford Triangle Format. It was principally designed to store three-dimensional data from 3D scanners. The data storage format supports a relatively simple description of a single object as a list of nominally flat polygons. A variety of properties can be stored, including: color and transparency, surface normals, texture coordinates and data confidence values. The format permits one to have different properties for the front and back of a polygon.
 Further details about this file format can be found [here](https://en.wikipedia.org/wiki/STL_(file_format)). 
 
 + __Stereolithography CAD (.stl)__ 
-
 The STL file describes a raw, unstructured triangulated surface by the unit normal and vertices (ordered by the right-hand rule) of the triangles using a three-dimensional Cartesian coordinate system. Further details about this file format can be found [here](https://en.wikipedia.org/wiki/STL_(file_format)). 
 
 + __Blender Format (.blend)__ 
-
 The exported file can be opened _only_ in Blender and can be used for rendereing purposes. 
