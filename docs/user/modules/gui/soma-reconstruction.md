@@ -93,7 +93,16 @@ This parameter control the number of vertices of the initial soft body object us
 
 ### Irregular Subdivision 
 
+If this parameter is set (or checked), the extrusions of the soft body object towards the neurites will be more smooth. It is recommended to use the irregular subdivisions when the number of subdivisions defined previously is less than 5, otherwise the reconstruction time of the soma mesh might not be convenient.   
+ 
+<p align="center">
+  <img src="images/soma-irregular-subdivisions.png" width=300>
+</p>
+
+
 ### Colors & Materials 
+
+The users can assign multiple material from a given palette to create nice and high quality images of the reconstructed soma. They can also control the color of the resulting mesh.  
 
 #### Soma Base Color 
 This parameter defines the RGB color that will be applied to the soma in the selected shader (or material). Certain shaders use a mix of two colors to look nice, in this case this parmeter defines the __base__ or the dominating color of the shader.  
@@ -160,27 +169,33 @@ This version of _NeuroMorphoVis_ has integrated the following materials (or shad
 
 ## Let's Reconstruct a 3D Soma Profile
 
-Once the soma parameters are set as shown before, the user can reconstruct a soma mesh by clicking on the __Soma__ button shown below. The progress of the reconstruction will appear in the __Soma Simulation Progress__ bar. 
+Once the soma parameters are set as shown previously, the users can reconstruct the soma mesh by clicking on the __Soma__ button shown below. The progress of the reconstruction will appear in the __Soma Simulation Progress__ bar. 
   
 <p align="center">
   <img src="images/soma-reconstruction-button.png" width=300>
 </p>
 
-Note that if any of the parameters is changed, the user must __click__ on this button again to get the soma mesh updated even if this update was only affecting the color of the soma. 
+Note that if any of the parameters is changed, the users must __click__ on this button again to get the soma mesh updated, even if this update was only affecting the color of the soma. 
 
 ## Render the Soma 
 
-Rendering the mesh requires some work to setup the lighting and camera and locate them properly in the scene. We have added support to automate all of that with a single click.
-
-Normally, the extent of the reconstructed soma mesh cannot exceed 20-30 microns. However, the user can control the dimensions of the view in case a close up on a given part of the soma mesh is wanted. 
-
-Orthographic 
+Rendering the soma mesh requires some work to setup the lighting and camera and locate them properly in the scene. We have added support to automate all of that with a single click.
 
 ### Frame Resolution 
 
 This parameter defines the resolution of the rendered image of the soma mesh. This image have the same resolution in width and height and that's why the __Frame Resolution__ slider has only a single value.  
 
+<p align="center">
+  <img src="images/soma-panel-frame-resolution.png" width=300>
+</p>
+
 ### View Dimensions 
+
+Normally, the extent of the reconstructed soma mesh cannot exceed 20-30 microns. However, the user can control the dimensions of the view in case a close up on a given part of the soma mesh is wanted. 
+
+<p align="center">
+  <img src="images/soma-panel-view-dimensions.png" width=300>
+</p>
 
 ## Rendering Images 
 
@@ -190,13 +205,17 @@ This parameter defines the resolution of the rendered image of the soma mesh. Th
 
 ## Rendering Animations 
 
+### 360
+
+The users can render a 360 sequence of the reconstructed soma mesh to verify its structure from all the views. This animation is created by clicking on the __360__ button shown below.    
+
+### Progressive Reconstruction 
+
+The users can render the progressive reconstruction of the soma mesh to analyze the deformation and extrusion processes that occur to an initial ico sphere to yield the reconstructed soma mesh. This animation is created by clicking on the __Progressive__ button shown below.   
+
 <p align="center">
   <img src="images/soma-rendering-movies.png" width=300>
 </p>
-
-### 360
-
-### Progressive Reconstruction 
 
 ## Exporting the Soma Mesh
 
