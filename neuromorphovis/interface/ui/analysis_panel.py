@@ -27,7 +27,6 @@ __status__      = "Production"
 
 # Blender imports
 import bpy
-from bpy.app.handlers import persistent
 from mathutils import Vector
 from bpy.props import IntProperty
 from bpy.props import FloatProperty
