@@ -68,9 +68,9 @@ A binary package of the current version of _NeuroMorphoVis_ is available for the
 
 + __Windows__
 
-### Installation Gide 
+## Installation 
 
-The installation instructions of _NeuroMorphoVis_ are available in this [installation guide](docs/user/installation/install.md).
+The end users are recommended to download the archives from the links provided in the previous section. But if the users are willing to contribute and extend _NeuroMorphoVis_, we recommend to install it as described in this [installation guide](docs/user/installation/install.md).
 
 ## Highlights 
 
