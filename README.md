@@ -166,6 +166,20 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 }
 ```
 
+The applications of _NeuroMorhoVis_ are deomnstrated in the thesis [In silico Brain Imaging: Physically-plausible Methods for Visualizing Neocortical Microcircuitry](https://infoscience.epfl.ch/record/232444?ln=en)
+
+```
+@phdthesis{Abdellah:232444,
+  title = {In Silico Brain Imaging Physically-plausible Methods for  Visualizing Neocortical Microcircuitry},
+  author = {Abdellah, Marwan},
+  publisher = {EPFL},
+  address = {Lausanne},
+  pages = {400},
+  year = {2017}
+}
+
+```
+
 ## Acknowledgement
 _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Project](https://bluebrain.epfl.ch/page-52063.html), [Ecole Polytechnique Federale de Lausanne (EPFL)](https://www.epfl.ch/) as part of [Marwan Abdellah's](http://marwan-abdellah.com/) [PhD (In silico Brain Imaging: Physically-plausible Methods for Visualizing Neocortical Microcircuitry)](https://infoscience.epfl.ch/record/232444?ln=en). Financial support was provided by competitive research funding from [King Abdullah University of Science and Technology (KAUST)](https://www.kaust.edu.sa/en).
 
