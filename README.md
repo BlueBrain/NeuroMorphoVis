@@ -169,7 +169,7 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 The applications of _NeuroMorhoVis_ are deomnstrated in the thesis [In silico Brain Imaging: Physically-plausible Methods for Visualizing Neocortical Microcircuitry](https://infoscience.epfl.ch/record/232444?ln=en)
 
 ```
-@phdthesis{Abdellah:232444,
+@phdthesis{abdellah2017insilico:232444,
   title = {In Silico Brain Imaging Physically-plausible Methods for  Visualizing Neocortical Microcircuitry},
   author = {Abdellah, Marwan},
   publisher = {EPFL},
