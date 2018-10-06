@@ -170,7 +170,8 @@ The applications of _NeuroMorhoVis_ are deomnstrated in the thesis [In silico Br
 
 ```
 @phdthesis{abdellah2017insilico:232444,
-  title = {In Silico Brain Imaging Physically-plausible Methods for  Visualizing Neocortical Microcircuitry},
+  title = {In Silico Brain Imaging Physically-plausible Methods for Visualizing 
+  Neocortical Microcircuitry},
   author = {Abdellah, Marwan},
   publisher = {EPFL},
   address = {Lausanne},
