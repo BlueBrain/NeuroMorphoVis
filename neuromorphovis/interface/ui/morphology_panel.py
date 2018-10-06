@@ -400,72 +400,6 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
     ################################################################################################
     # @load_morphology
     ################################################################################################
-    def load_morphology(self, current_scene):
-        """Load the morphology from file.
-
-        :param current_scene:
-            Scene.
-        """
-
-        # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = current_scene.MorphologyFile
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                current_scene.MorphologyFile)
-
-            # Load the morphology from the file
-            loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                options=nmv.interface.ui_options)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Invalid Morphology File')
-
-        # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.blue_config = current_scene.CircuitFile
-            nmv.interface.ui_options.morphology.gid = current_scene.Gid
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = 'neuron_' + str(current_scene.Gid)
-
-            # Load the morphology from the circuit
-            loading_flag, morphology_object = \
-                nmv.file.readers.BBPReader.load_morphology_from_circuit(
-                    blue_config=nmv.interface.ui_options.morphology.blue_config,
-                    gid=nmv.interface.ui_options.morphology.gid)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-
-                self.report({'ERROR'}, 'Cannot Load Morphology from Circuit')
-
-        else:
-
-            # Report an invalid input source
-            self.report({'ERROR'}, 'Invalid Input Source')
-
-    ################################################################################################
-    # @load_morphology
-    ################################################################################################
     def execute(self,
                 context):
         """Execute the operator.
@@ -479,8 +413,8 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
-        # Load the morphology
-        self.load_morphology(current_scene=context.scene)
+        # Load the morphology file
+        nmv.interface.ui.load_morphology(self, context.scene)
 
         # Create a skeletonizer object to build the morphology skeleton
         builder = nmv.builders.SkeletonBuilder(nmv.interface.ui_morphology, nmv.interface.ui_options)

@@ -343,73 +343,6 @@ class ReconstructSomaOperator(bpy.types.Operator):
     max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
 
     ################################################################################################
-    # @load_morphology
-    ################################################################################################
-    def load_morphology(self,
-                        scene):
-        """Loads the morphology.
-
-        :param scene:
-            Scene.
-        """
-
-        # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = scene.MorphologyFile
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                scene.MorphologyFile)
-
-            # Load the morphology from the file
-            loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                options=nmv.interface.ui_options)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Invalid Morphology File')
-
-        # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.blue_config = scene.CircuitFile
-            nmv.interface.ui_options.morphology.gid = scene.Gid
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = 'neuron_' + str(scene.Gid)
-
-            # Load the morphology from the circuit
-            loading_flag, morphology_object = \
-                nmv.file.readers.BBPReader.load_morphology_from_circuit(
-                    blue_config=nmv.interface.ui_options.morphology.blue_config,
-                    gid=nmv.interface.ui_options.morphology.gid)
-
-            # Verify the loading operation
-            if loading_flag:
-
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-
-                self.report({'ERROR'}, 'Cannot Load Morphology from Circuit')
-
-        else:
-
-            # Report an invalid input source
-            self.report({'ERROR'}, 'Invalid Input Source')
-
-    ################################################################################################
     # @modal
     ################################################################################################
     def modal(self,
@@ -471,8 +404,8 @@ class ReconstructSomaOperator(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
-        # Load the morphology
-        self.load_morphology(scene=context.scene)
+        # Load the morphology file
+        nmv.interface.ui.load_morphology(self, context.scene)
 
         # Create a some builder
         self.meshy_soma_builder = nmv.builders.SomaBuilder(
@@ -853,66 +786,6 @@ class RenderSomaProgressive(bpy.types.Operator):
     soma_sphere_object = None
     min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
     max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
-
-    ################################################################################################
-    # @load_morphology
-    ################################################################################################
-    def load_morphology(self,
-                        context_scene):
-        """Loads the morphology from file.
-
-        :param context_scene:
-            The current scene in the rendering context.
-        """
-
-        # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                context_scene.MorphologyFile)
-
-            # Load the morphology from the file
-            loading_flag, morphology_object = nmv.file.read_morphology_from_file(
-                options=nmv.interface.ui_options)
-
-            # Verify the loading operation
-            if loading_flag:
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Invalid Morphology File')
-
-        # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
-            # Pass options from UI to system
-            nmv.interface.ui_options.morphology.blue_config = context_scene.CircuitFile
-            nmv.interface.ui_options.morphology.gid = context_scene.Gid
-
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
-
-            # Load the morphology from the circuit
-            loading_flag, morphology_object = nmv.file.load_from_circuit(
-                options=nmv.interface.ui_options)
-
-            # Verify the loading operation
-            if loading_flag:
-                # Update the morphology
-                nmv.interface.ui_morphology = morphology_object
-
-            # Otherwise, report an ERROR
-            else:
-                self.report({'ERROR'}, 'Cannot Load Morphology from Circuit')
-
-        else:
-            # Report an invalid input source
-            self.report({'ERROR'}, 'Invalid Input Source')
 
     ################################################################################################
     # @modal
