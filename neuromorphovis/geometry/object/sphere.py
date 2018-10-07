@@ -29,6 +29,7 @@ import bpy
 
 # Internal imports
 import neuromorphovis as nmv
+import neuromorphovis.shading
 import neuromorphovis.scene
 
 
@@ -68,7 +69,7 @@ def create_uv_sphere(radius=1,
     # Update the sphere name
     sphere.name = name
 
-    # Smoothing the soma via shade smoothing
+    # Smoothing via shade smoothing
     nmv.scene.ops.deselect_all()
     nmv.scene.ops.select_object_by_name(sphere)
     bpy.ops.object.editmode_toggle()
@@ -78,8 +79,8 @@ def create_uv_sphere(radius=1,
 
     # Create a material and assign it to the sphere
     if color is not None:
-        sphere_material = materials.create_default_material(name='sphere_color', color=color)
-        materials.set_material_to_object(sphere, sphere_material)
+        sphere_material = nmv.shading.create_lambert_ward_material(name='sphere_color', color=color)
+        nmv.shading.set_material_to_object(sphere, sphere_material)
 
     # Return a reference to the created sphere object
     return sphere
@@ -118,7 +119,7 @@ def create_ico_sphere(radius=1,
     # Update the sphere name
     sphere.name = name
 
-    # Smoothing the soma via shade smoothing
+    # Smoothing via shade smoothing
     nmv.scene.ops.deselect_all()
     nmv.scene.ops.select_object_by_name(sphere)
     bpy.ops.object.editmode_toggle()

@@ -200,13 +200,7 @@ class MorphologyPanel(bpy.types.Panel):
 
     # Reconstruction method
     bpy.types.Scene.MorphologyReconstructionTechnique = EnumProperty(
-        items=[(nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL,
-                'Disconnected Skeleton (Original)',
-                "The skeleton is disconnected at the branching points"),
-               (nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED,
-                'Disconnected Skeleton (Resampled)',
-                "The skeleton is disconnected at the branching points and resampled"),
-               (nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS,
+        items=[(nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS,
                 'Disconnected Segments',
                 "Each segment is an independent object (this approach is time consuming)"),
                (nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS,
