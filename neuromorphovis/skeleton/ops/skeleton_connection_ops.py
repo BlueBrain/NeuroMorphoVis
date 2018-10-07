@@ -620,6 +620,12 @@ def verify_basal_dendrites_connection_to_soma(morphology):
     # Get the distance between the soma origin and most far profile point
     maximum_arbor_distance = morphology.soma.largest_radius
 
+    # If the morphology has no basal dendrites
+    if morphology.dendrites is None:
+
+        # Return
+        return
+
     # Verify dendrite by dendrite
     for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
 

@@ -53,14 +53,19 @@ class SWCReader:
         # to construct the morphology skeleton directly
         # http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
         # Each sample in this list has the following structure:
-        # [0] The index of the sample or sample number
-        # [1] The type of the sample or structure identifier
-        # [2] Sample x-coordinates
-        # [3] Sample y-coordinates
-        # [4] Sample z-coordinates
-        # [5] Sample radius
-        # [6] The index of the parent sample
+        #       [0] The index of the sample or sample number
+        #       [1] The type of the sample or structure identifier
+        #       [2] Sample x-coordinates
+        #       [3] Sample y-coordinates
+        #       [4] Sample z-coordinates
+        #       [5] Sample radius
+        #       [6] The index of the parent sample
         self.samples_list = list()
+
+        # A list of the indices of the terminals of the sections
+        # This list is only updated once during the morphology loading, and then used to build the
+        # sections later in an accelerated way
+        self.sections_terminal_samples_indices = list()
 
     ################################################################################################
     # @read_samples
@@ -122,7 +127,9 @@ class SWCReader:
             if x < nmv.consts.Math.LITTLE_EPSILON and \
                y < nmv.consts.Math.LITTLE_EPSILON and \
                z < nmv.consts.Math.LITTLE_EPSILON:
-                x = 0.01; y = 0.01; z = 0.01
+                x = 0.01
+                y = 0.01
+                z = 0.01
 
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
@@ -139,6 +146,21 @@ class SWCReader:
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
 
+            # Append the indices of the terminal samples
+            if (index - parent_index != 1) or (index == 2 and parent_index == 1):
+
+                # Ignore the soma sample that is defined by index 1 and parent of -1
+                if parent_index != -1:
+
+                    # Add the sample index
+                    self.sections_terminal_samples_indices.append(index)
+
+                    # Ignore the soma sample
+                    if parent_index != 1:
+
+                        # Add the parent sample index
+                        self.sections_terminal_samples_indices.append(parent_index)
+
             # If this is the soma sample, get the translation vector
             if sample_type == 1 and parent_index == -1:
 
@@ -153,6 +175,12 @@ class SWCReader:
 
             # Add the sample to the list
             self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+
+        # Filter the repeated entries and arrange the sections_terminal_samples_indices list
+        self.sections_terminal_samples_indices = \
+            sorted(list(set(self.sections_terminal_samples_indices)))
+
+        print(self.sections_terminal_samples_indices)
 
     ################################################################################################
     # @get_nmv_sample_from_samples_list
@@ -209,7 +237,7 @@ class SWCReader:
         """
 
         # A list of samples that are similar to the given type
-        samples_list = list()
+        selected_samples_list = list()
 
         # For each sample in the given samples list
         for sample in self.samples_list:
@@ -218,10 +246,10 @@ class SWCReader:
             if sample[1] == sample_type:
 
                 # Append the sample to the list
-                samples_list.append(sample)
+                selected_samples_list.append(sample)
 
         # Return the list of samples
-        return samples_list
+        return selected_samples_list
 
     ################################################################################################
     # @build_connected_paths
