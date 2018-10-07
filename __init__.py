@@ -32,13 +32,13 @@ bl_info = {
     # The name of your add-on. This is shown in the add-on tab in Blender's user preferences
     "name" : "NeuroMorphoVis",
     # The author of this add-on
-    "author" : "Marwan Abdellah",
+    "author" : __author__,
     # A tuple, containing the add-on version
     "version" : tuple(__version__.split('.')),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
-    "blender" : (2, 7, 1),
+    "blender" : (2, 7, 9),
     # This is where users should look for this add-on.
     "location" : "View 3D",
     # Description
@@ -57,11 +57,11 @@ bl_info = {
     'support': 'COMMUNITY',
     # Optional: specifies the wiki URL for an add-on. 
     # This will appear in this add-on listing as "Documentation".
-    'wiki_url': 'bbp.epfl.ch',
-    # Optional: specifies the bug-tracker URL for an add-on.
-    # This will appear in the listing as "Report a Bug".
-    'tracker_url': 'bbp.epfl.ch'
+    'wiki_url': 'https://github.com/BlueBrain/NeuroMorphoVis',
+    # Bug tracker: specifies the bug-tracker URL for an add-on.
+    'tracker_url': 'https://github.com/BlueBrain/NeuroMorphoVis/issues?utf8=%E2%9C%93&q='
 }
+
 
 # System imports
 import sys, os, imp
@@ -69,32 +69,27 @@ import sys, os, imp
 # Append the modules path to the system paths to be able to load the internal python modules
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-# A quick hack to solve MAC loading issues
-import sys
-sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages')
-
 if "bpy" in locals():
-
 
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-    # import neuromorphovis.neurorender.neurorender
 
     imp.reload(neuromorphovis.interface.ui.io_panel)
     imp.reload(neuromorphovis.interface.ui.analysis_panel)
     imp.reload(neuromorphovis.interface.ui.soma_panel)
     imp.reload(neuromorphovis.interface.ui.morphology_panel)
     imp.reload(neuromorphovis.interface.ui.mesh_panel)
+
 else:
+
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-    # import neuromorphovis.neurorender.neurorender
 
 
 ####################################################################################################
@@ -110,7 +105,6 @@ def register():
     neuromorphovis.interface.ui.soma_panel.register_panel()
     neuromorphovis.interface.ui.morphology_panel.register_panel()
     neuromorphovis.interface.ui.mesh_panel.register_panel()
-    # neuromorphovis.neurorender.neurorender.register_panel()
 
 
 ####################################################################################################
@@ -126,7 +120,6 @@ def unregister():
     neuromorphovis.interface.ui.soma_panel.unregister_panel()
     neuromorphovis.interface.ui.morphology_panel.unregister_panel()
     neuromorphovis.interface.ui.mesh_panel.unregister_panel()
-    # neuromorphovis.neurorender.neurorender.unregister_panel()
 
 
 ####################################################################################################

@@ -33,11 +33,8 @@ import bpy
 
 # Internal imports
 import neuromorphovis as nmv
-import neuromorphovis.consts
 import neuromorphovis.enums
-import neuromorphovis.file
 import neuromorphovis.interface
-import neuromorphovis.skeleton
 
 
 ####################################################################################################
@@ -45,7 +42,7 @@ import neuromorphovis.skeleton
 ####################################################################################################
 def load_morphology(panel_object,
                     context_scene):
-    """Load the morphology from file.
+    """Load a given morphology from file.
 
     :param panel_object:
         An object of a UI panel.
