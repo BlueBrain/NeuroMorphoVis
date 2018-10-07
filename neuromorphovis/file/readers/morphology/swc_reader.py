@@ -67,6 +67,142 @@ class SWCReader:
         # sections later in an accelerated way
         self.sections_terminal_samples_indices = list()
 
+        # A list of continuous paths extracted from the morphology file
+        self.paths = list()
+
+    ################################################################################################
+    # @build_connected_paths_from_samples
+    ################################################################################################
+    def build_connected_paths_from_samples(self):
+        """Construct a list of connected paths from the samples.
+        """
+
+        # Since we have the soma index equal to 1, then start from index number 2
+        index = 2
+
+        # A temporary list to append the indices of each path
+        path = list()
+
+        # Process the entire samples list
+        while True:
+
+            # Iterate over two samples to verify their connectivity
+            sample_i = self.samples_list[index]
+            sample_j = self.samples_list[index + 1]
+
+            # If the two samples are connected
+            if sample_j[-1] == sample_i[0]:
+
+                # Add the first sample to the path
+                path.append(sample_i[0])
+
+            # Otherwise
+            else:
+
+                # Append the last sample to the path
+                path.append(sample_i[0])
+
+                # Append the path to the paths list
+                self.paths.append(path)
+
+                # Clear the path list to search for a new path
+                path = list()
+
+            # Increment the path
+            index = index + 1
+
+            # If processing the list is break
+            if index > len(self.samples_list) - 2:
+
+                # Append the last path
+                self.paths.append(path)
+
+                # Then break
+                break
+
+        # Add the starting points and mark the terminals
+        for path in self.paths:
+
+            # Get the index of the first sample along the path
+            first_sample_index = path[0]
+
+            # Then add the parent sample index at the beginning of the path
+            path.insert(0, self.samples_list[first_sample_index][-1])
+
+            # Marking the terminals by adding the indices of the first and last samples
+            self.sections_terminal_samples_indices.append(path[0])
+            self.sections_terminal_samples_indices.append(path[-1])
+
+        # Sort the sections_terminal_samples_indices list
+        self.sections_terminal_samples_indices = sorted(self.sections_terminal_samples_indices)
+
+        # Filter the repeated entries in the sections_terminal_samples_indices list
+        self.sections_terminal_samples_indices = list(set(self.sections_terminal_samples_indices))
+
+    def build_sections_from_pathsX(self):
+
+        for path in self.paths:
+
+            print(path)
+
+            # Get an index to the first sample
+            first_sample_index = path[0]
+
+            # Get an index to the last sample
+            last_sample_index = path[-1]
+
+            # A list of all the samples located along the path
+            samples_located_along_path = list()
+
+            # Get the list
+            for sample_index in self.sections_terminal_samples_indices:
+
+                # If the sample index exists in the path
+                if sample_index in path:
+
+                    # Append it to the list
+                    samples_located_along_path.append(sample_index)
+
+            # Order the list
+            samples_located_along_path = sorted(samples_located_along_path)
+
+            print(samples_located_along_path)
+
+            # Build the sections
+            for i in range(0, len(samples_located_along_path) - 1):
+
+                section_indices = list()
+
+                # Get the first index along the section
+                first_sample = samples_located_along_path[i]
+
+                # Get the last index along the section
+                last_sample = samples_located_along_path[i + 1]
+
+                first_sample_index = path.index(first_sample)
+
+                last_sample_index = path.index(last_sample)
+
+                for j in range(first_sample_index, last_sample_index + 1):
+
+                    section_indices.append(path[j])
+
+                print(section_indices)
+
+            print('')
+
+
+
+
+
+
+
+
+            #print(path)
+
+
+
+
     ################################################################################################
     # @read_samples
     ################################################################################################
@@ -146,21 +282,6 @@ class SWCReader:
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
 
-            # Append the indices of the terminal samples
-            if (index - parent_index != 1) or (index == 2 and parent_index == 1):
-
-                # Ignore the soma sample that is defined by index 1 and parent of -1
-                if parent_index != -1:
-
-                    # Add the sample index
-                    self.sections_terminal_samples_indices.append(index)
-
-                    # Ignore the soma sample
-                    if parent_index != 1:
-
-                        # Add the parent sample index
-                        self.sections_terminal_samples_indices.append(parent_index)
-
             # If this is the soma sample, get the translation vector
             if sample_type == 1 and parent_index == -1:
 
@@ -176,11 +297,10 @@ class SWCReader:
             # Add the sample to the list
             self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
 
-        # Filter the repeated entries and arrange the sections_terminal_samples_indices list
-        self.sections_terminal_samples_indices = \
-            sorted(list(set(self.sections_terminal_samples_indices)))
+        # Construct the connected paths from the samples list
+        self.build_connected_paths_from_samples()
 
-        print(self.sections_terminal_samples_indices)
+        self.build_sections_from_pathsX()
 
     ################################################################################################
     # @get_nmv_sample_from_samples_list
