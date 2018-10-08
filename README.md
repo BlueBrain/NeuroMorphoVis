@@ -80,10 +80,10 @@ _NeuroMorphoVis_ can be used from the GUI of Blender. This is the easiest and mo
 The user guide of the GUI is available in this [link](docs/user/modules/gui/gui.md). In the following section, we provde a few video tutorials to show how to use the interface seamlessly. 
 
 ### Command Line Interface 
-The user guide of the command line interface is available in this [link](docs/user/modules/gui/cli.md). 
+The user guide of the command line interface is available in this [link](docs/user/modules/cli/cli.md). 
 
 ### Configuration Files 
-The configuration file user guide is available in this [link](docs/user/modules/gui/configurations.md). 
+The configuration file user guide is available in this [link](docs/user/modules/configurations/configurations.md). 
 
 ### Python API 
 
