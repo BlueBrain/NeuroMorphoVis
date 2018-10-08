@@ -1,18 +1,18 @@
 ####################################################################################################
-# Copyright (c) 2016-2018 : Blue Brain Project / Ecole Polytechnique Federale de Lausanne (EPFL)
-# Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
-# This library is free software; you can redistribute it and/or modify it under the terms of the
-# GNU Lesser General Public License version 3.0 as published by the Free Software Foundation.
-# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU  Lesser General Public License for more details.
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
 #
-# You should have received a copy of the GNU Lesser General Public License along with this library;
-# if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301 USA.
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
 __author__      = "Marwan Abdellah"
