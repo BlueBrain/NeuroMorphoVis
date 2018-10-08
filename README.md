@@ -195,7 +195,7 @@ _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Proje
 
 * The SWC morphology samples are available from [NeuroMorpho.Org](http://neuromorpho.org/). NeuroMorpho.Org is a centrally curated inventory or repository of digitally reconstructed neurons associated with peer-reviewed publications.
 
-* The H5 morphology samples are available with permissions from the Blue Brain Project](https://bluebrain.epfl.ch/page-52063.html), [Ecole Polytechnique Federale de Lausanne (EPFL)](https://www.epfl.ch/). 
+* The H5 morphology samples are available with permissions from the [Blue Brain Project](https://bluebrain.epfl.ch/page-52063.html), [Ecole Polytechnique Federale de Lausanne (EPFL)](https://www.epfl.ch/). 
 
 ## Contact
 
