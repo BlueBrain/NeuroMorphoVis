@@ -557,6 +557,12 @@ class SWCReader:
             # basal dendrites
             if len(axons_arbors) > 1:
 
+                # If the basal dendrites list is empty
+                if basal_dendrites_arbors is None:
+
+                    # Create a list to be able to append the other arbors
+                    basal_dendrites_arbors = list()
+
                 # Add the others to the basal dendrites
                 for i in range(1, len(axons_arbors)):
                     basal_dendrites_arbors.append(axons_arbors[i])
@@ -576,6 +582,12 @@ class SWCReader:
             # If we have more than a single axon, use the principal one and move the others to the
             # basal dendrites
             if len(apical_dendrites_arbors) > 1:
+
+                # If the basal dendrites list is empty
+                if basal_dendrites_arbors is None:
+
+                    # Create a list to be able to append the other arbors
+                    basal_dendrites_arbors = list()
 
                 # Add the others to the basal dendrites
                 for i in range(1, len(apical_dendrites_arbors)):

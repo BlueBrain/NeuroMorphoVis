@@ -286,33 +286,36 @@ class PiecewiseBuilder:
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                nmv.logger.info('Dendrite [%d]' % i)
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
 
-                basal_dendrite_objects = []
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.info('Dendrite [%d]' % i)
 
-                # Draw the basal dendrites as a set connected sections
-                basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(basal_dendrite),
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    name=basal_dendrite_prefix,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=True,
-                    caps=caps,
-                    sections_objects=basal_dendrite_objects,
-                    roots_connection=roots_connection)
+                    basal_dendrite_objects = []
 
-                # Ensure that basal dendrite objects were reconstructed
-                if len(basal_dendrite_objects) > 0:
+                    # Draw the basal dendrites as a set connected sections
+                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    nmv.skeleton.ops.draw_connected_sections(
+                        section=copy.deepcopy(basal_dendrite),
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        name=basal_dendrite_prefix,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        repair_morphology=True,
+                        caps=caps,
+                        sections_objects=basal_dendrite_objects,
+                        roots_connection=roots_connection)
 
-                    # Add a reference to the mesh object
-                    self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
+                    # Ensure that basal dendrite objects were reconstructed
+                    if len(basal_dendrite_objects) > 0:
 
-                    # Add the sections (tubes) of the basal dendrite to the list
-                    arbors_objects.extend(basal_dendrite_objects)
+                        # Add a reference to the mesh object
+                        self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
+
+                        # Add the sections (tubes) of the basal dendrite to the list
+                        arbors_objects.extend(basal_dendrite_objects)
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
@@ -377,11 +380,14 @@ class PiecewiseBuilder:
             # Connecting basal dendrites
             if not self.options.morphology.ignore_basal_dendrites:
 
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    nmv.logger.detail('Dendrite [%d]' % i)
-                    nmv.skeleton.ops.connect_arbor_to_soma(
-                        self.soma_mesh, basal_dendrite)
+                # Ensure tha existence of basal dendrites
+                if self.morphology.dendrites is not None:
+
+                    # Do it dendrite by dendrite
+                    for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                        nmv.logger.detail('Dendrite [%d]' % i)
+                        nmv.skeleton.ops.connect_arbor_to_soma(
+                            self.soma_mesh, basal_dendrite)
 
             # Connecting axon
             if not self.options.morphology.ignore_axon:

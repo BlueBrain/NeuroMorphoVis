@@ -477,18 +477,23 @@ class SkeletonBuilder:
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            basal_dendrites_segments_objects = []
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                self.draw_section_as_disconnected_segments(
-                    basal_dendrite, name=dendrite_name,
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    segments_objects=basal_dendrites_segments_objects)
 
-            # Extend the morphology objects list
-            morphology_objects.extend(basal_dendrites_segments_objects)
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                basal_dendrites_segments_objects = []
+
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    self.draw_section_as_disconnected_segments(
+                        basal_dendrite, name=dendrite_name,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        segments_objects=basal_dendrites_segments_objects)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_segments_objects)
 
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
@@ -553,19 +558,24 @@ class SkeletonBuilder:
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            basal_dendrites_sections_objects = []
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                self.draw_root_as_disconnected_sections(
-                    basal_dendrite,
-                    name=dendrite_prefix,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    sections_objects=basal_dendrites_sections_objects)
 
-            # Extend the morphology objects list
-            morphology_objects.extend(basal_dendrites_sections_objects)
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                basal_dendrites_sections_objects = []
+
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    self.draw_root_as_disconnected_sections(
+                        basal_dendrite,
+                        name=dendrite_prefix,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        sections_objects=basal_dendrites_sections_objects)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_sections_objects)
 
         # Return a reference to the list of drawn objects
         return morphology_objects
@@ -609,18 +619,22 @@ class SkeletonBuilder:
 
         # Draw the basal dendrites joints
         if not self.options.morphology.ignore_basal_dendrites:
-            basal_dendrites_spheres_objects = []
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
-                # Draw the basal dendrites as a set connected sections
-                self.draw_section_terminals_as_spheres(
-                    root=basal_dendrite,
-                    sphere_objects=basal_dendrites_spheres_objects,
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    material_list=self.articulation_materials)
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
 
-            # Extend the morphology objects list
-            morphology_objects.extend(basal_dendrites_spheres_objects)
+                basal_dendrites_spheres_objects = []
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # Draw the basal dendrites as a set connected sections
+                    self.draw_section_terminals_as_spheres(
+                        root=basal_dendrite,
+                        sphere_objects=basal_dendrites_spheres_objects,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        material_list=self.articulation_materials)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_spheres_objects)
 
         # Draw the apical dendrite joints
         if not self.options.morphology.ignore_apical_dendrite:
@@ -696,29 +710,33 @@ class SkeletonBuilder:
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
-            # A list to keep all the drawn objects of the basal dendrites
-            basal_dendrites_sections_objects = []
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
 
-            # Draw each basal dendrites as a set connected sections
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(basal_dendrite),
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    name=dendrite_prefix,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=repair_morphology,
-                    caps=True,
-                    sections_objects=basal_dendrites_sections_objects,
-                    render_frame=self.options.morphology.render_progressive,
-                    frame_destination=self.progressive_frames_directory,
-                    camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection,
-                    ignore_branching_samples=disconnect_skelecton)
+                # A list to keep all the drawn objects of the basal dendrites
+                basal_dendrites_sections_objects = []
 
-            # Extend the morphology objects list
-            morphology_objects.extend(basal_dendrites_sections_objects)
+                # Draw each basal dendrites as a set connected sections
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    nmv.skeleton.ops.draw_connected_sections(
+                        section=copy.deepcopy(basal_dendrite),
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        name=dendrite_prefix,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        repair_morphology=repair_morphology,
+                        caps=True,
+                        sections_objects=basal_dendrites_sections_objects,
+                        render_frame=self.options.morphology.render_progressive,
+                        frame_destination=self.progressive_frames_directory,
+                        camera=self.progressive_rendering_camera,
+                        roots_connection=self.options.morphology.arbors_to_soma_connection,
+                        ignore_branching_samples=disconnect_skelecton)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_sections_objects)
 
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
@@ -849,28 +867,32 @@ class SkeletonBuilder:
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
-            basal_dendrites_sections_objects = []
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
 
-                # Draw the basal dendrites as a set connected sections
-                dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(basal_dendrite),
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    name=dendrite_prefix,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=repair_morphology,
-                    caps=True,
-                    sections_objects=basal_dendrites_sections_objects,
-                    render_frame=self.options.morphology.render_progressive,
-                    frame_destination=self.progressive_frames_directory,
-                    camera=self.progressive_rendering_camera,
-                    roots_connection=self.options.morphology.arbors_to_soma_connection,
-                    ignore_branching_samples=True)
+                basal_dendrites_sections_objects = []
 
-            # Extend the morphology objects list
-            morphology_objects.extend(basal_dendrites_sections_objects)
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # Draw the basal dendrites as a set connected sections
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    nmv.skeleton.ops.draw_connected_sections(
+                        section=copy.deepcopy(basal_dendrite),
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        name=dendrite_prefix,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        repair_morphology=repair_morphology,
+                        caps=True,
+                        sections_objects=basal_dendrites_sections_objects,
+                        render_frame=self.options.morphology.render_progressive,
+                        frame_destination=self.progressive_frames_directory,
+                        camera=self.progressive_rendering_camera,
+                        roots_connection=self.options.morphology.arbors_to_soma_connection,
+                        ignore_branching_samples=True)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_sections_objects)
 
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:

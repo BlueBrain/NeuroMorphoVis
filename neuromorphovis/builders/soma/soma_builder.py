@@ -581,27 +581,30 @@ class SomaBuilder:
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
-            # Build towards the dendrites, if possible
-            for i, dendrite_root in enumerate(self.morphology.dendrites):
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
 
-                # The dendrite must be connected to the soma
-                if dendrite_root.connected_to_soma:
+                # Build towards the dendrites, if possible
+                for i, dendrite_root in enumerate(self.morphology.dendrites):
 
-                    # Which dendrite ?!!
-                    nmv.logger.info('Dendrite [%d]' % i)
+                    # The dendrite must be connected to the soma
+                    if dendrite_root.connected_to_soma:
 
-                    # Create the extrusion face, where the pulling will occur
-                    extrusion_face_centroid = self.create_branch_extrusion_face(
-                        soma_bmesh_sphere, dendrite_root, visualize_connection=False)
+                        # Which dendrite ?!!
+                        nmv.logger.info('Dendrite [%d]' % i)
 
-                    # Update the list
-                    roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
+                        # Create the extrusion face, where the pulling will occur
+                        extrusion_face_centroid = self.create_branch_extrusion_face(
+                            soma_bmesh_sphere, dendrite_root, visualize_connection=False)
 
-                # This basal dendrite is not connected to soma
-                else:
+                        # Update the list
+                        roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
 
-                    # Report the issue
-                    nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
+                    # This basal dendrite is not connected to soma
+                    else:
+
+                        # Report the issue
+                        nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -691,23 +694,26 @@ class SomaBuilder:
                 # Check that the profile points are not intersecting basal dendrites
                 if not self.options.morphology.ignore_basal_dendrites:
 
-                    # Do it dendrite by dendrite
-                    intersect = False
-                    for dendrite_root in self.morphology.dendrites:
+                    # Ensure tha existence of basal dendrites
+                    if self.morphology.dendrites is not None:
 
-                        # Check that the profile point does NOT intersect the basal dendrite
-                        if nmv.skeleton.ops.point_branch_intersect(
-                                profile_point, dendrite_root, self.initial_soma_radius):
+                        # Do it dendrite by dendrite
+                        intersect = False
+                        for dendrite_root in self.morphology.dendrites:
 
-                            # Report the intersection
-                            nmv.logger.detail(
-                                "WARNING: profile point intersects basal dendrite")
+                            # Check that the profile point does NOT intersect the basal dendrite
+                            if nmv.skeleton.ops.point_branch_intersect(
+                                    profile_point, dendrite_root, self.initial_soma_radius):
 
-                            intersect = True
+                                # Report the intersection
+                                nmv.logger.detail(
+                                    "WARNING: profile point intersects basal dendrite")
 
-                    # If there is an intersection, next point
-                    if intersect:
-                        continue
+                                intersect = True
+
+                        # If there is an intersection, next point
+                        if intersect:
+                            continue
 
                 # Otherwise, we can consider the profile point valid and append it to the list
                 valid_profile_points.append(profile_point)
