@@ -60,7 +60,7 @@ _NeuroMorphoVis_ can be downloaded as a __binary archive__ that can be easily ex
 
 A binary package of the current version of _NeuroMorphoVis_ is available for the followign platforms:
 
-+ __Ubuntu__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __Ubuntu__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
 
 + __Red Hat__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
 
