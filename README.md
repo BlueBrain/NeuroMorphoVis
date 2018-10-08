@@ -72,6 +72,24 @@ A binary package of the current version of _NeuroMorphoVis_ __is shipped with Bl
 
 To test the software, a set of sample morphology files (in SWC and H5 formats) are available to download from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/sample-morphologies.zip).
 
+## How to Use
+
+_NeuroMorphoVis_ can be used from the GUI of Blender. This is the easiest and most recommended approach to use. For systems without an X server, _NeuroMorphoVis_ can be executed in the background mode (similar to ```blender -b```) using the command line interface. For batch processing of multiple morphology files, the editable configuration files are provided. The python API can be also used to write plugins for high quality media production. 
+
+### GUI
+The user guide of the GUI is available in this [link](docs/user/modules/gui/gui.md). In the following section, we provde a few video tutorials to show how to use the interface seamlessly. 
+
+### Command Line Interface 
+The user guide of the command line interface is available in this [link](docs/user/modules/gui/cli.md). 
+
+### Configuration Files 
+The configuration file user guide is available in this [link](docs/user/modules/gui/configurations.md). 
+
+### Python API 
+
+We are currently writing a detailed documentation to use the python API. If you are interested to collaborate with us to extend _NeuroMorphoVis_ to fit your applications, please contact us [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch)   
+
+
 ## Installation 
 
 The end users are recommended to download the archives from the links provided in the previous section. But if the users are willing to contribute and extend _NeuroMorphoVis_, we recommend to install it as described in this [installation guide](docs/user/installation/install.md).
