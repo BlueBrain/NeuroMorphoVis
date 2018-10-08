@@ -70,7 +70,7 @@ A binary package of the current version of _NeuroMorphoVis_ __is shipped with Bl
 
 ### Sample Morphologies 
 
-To test the software, a set of sample morphology files (in SWC and H5 formats) are available to download from this [link[(https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/sample-morphologies.zip).
+To test the software, a set of sample morphology files (in SWC and H5 formats) are available to download from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/sample-morphologies.zip).
 
 ## Installation 
 
