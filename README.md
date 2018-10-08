@@ -64,7 +64,7 @@ A binary package of the current version of _NeuroMorphoVis_ __is shipped with Bl
 
 + __Red Hat__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
 
-+ __macOSX__ The link of Release 1.0.0 will be provided Tuesday 09.10.2018. Stay tuned.
++ __Mac OS__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-blender-2.79-macOS-10.6.zip).
 
 + __Windows__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79-windows64.zip).
 
