@@ -68,6 +68,9 @@ A binary package of the current version of _NeuroMorphoVis_ __is shipped with Bl
 
 + __Windows__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79-windows64.zip).
 
+### Sample Morphologies 
+
+To test the software, a set of sample morphology files (in SWC and H5 formats) are available to download from this [link[(https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/sample-morphologies.zip).
 
 ## Installation 
 
