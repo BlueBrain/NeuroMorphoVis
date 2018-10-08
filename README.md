@@ -54,7 +54,7 @@ The current version is compatible with the following Blender versions:
 + [Blender 2.78](http://download.blender.org/release/Blender2.78/): 2.78, 2.78a, 2.78b and 2.78c
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/): 2.79, 2.79a, 2.79b and 2.79c 
 
-_NeuroMorphoVis_ can be downloaded as a __binary archive__ that can be easily extracted and used without installing any further dependencies. The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective operating system.    
+_NeuroMorphoVis_ can be downloaded as a __binary archive within Blender__ that can be easily extracted and used without installing any further dependencies. The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective operating system.    
 
 ### Supported Platforms 
 
