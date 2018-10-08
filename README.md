@@ -87,8 +87,7 @@ The configuration file user guide is available in this [link](docs/user/modules/
 
 ### Python API 
 
-We are currently writing a detailed documentation to use the python API. If you are interested to collaborate with us to extend _NeuroMorphoVis_ to fit your applications, please contact us [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch)   
-
+We are currently writing a detailed documentation to use the python API. If you are interested to collaborate with us to extend _NeuroMorphoVis_ to fit your applications, please contact [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch).
 
 ## Installation 
 
