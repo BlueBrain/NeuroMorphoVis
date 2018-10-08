@@ -58,15 +58,16 @@ _NeuroMorphoVis_ can be downloaded as a __binary archive__ that can be easily ex
 
 ### Supported Platforms 
 
-A binary package of the current version of _NeuroMorphoVis_ is available for the followign platforms:
+A binary package of the current version of _NeuroMorphoVis_ __is shipped with Blender version 2.79__ for the followign platforms:
 
 + __Ubuntu__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
 
-+ __Red Hat__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __Red Hat__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
 
-+ __macOSX__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __macOSX__ The link of Release 1.0.0 will be provided Tuesday 09.10.2018. Stay tuned.
 
-+ __Windows__ The link of Release 1.0.0 will be provided Monday 08.10.2018. Stay tuned.
++ __Windows__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79-windows64.zip).
+
 
 ## Installation 
 
