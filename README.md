@@ -193,6 +193,8 @@ _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Proje
 
 * [Blender](https://www.blender.org/) (C) is copyright to Blender Foundation. The Blender Foundation is a non-profit organization responsible for the development of Blender. Blender is released under the GNU Public License, as Free Software, and therefore can be distributed by anyone freely. 
 
+* [Slurm](slurm.schedmd.com), is a free and open-source job scheduler for Linux and Unix-like kernels, used by many of the world's supercomputers and computer clusters. Slurm is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.
+
 * The SWC morphology samples are available from [NeuroMorpho.Org](http://neuromorpho.org/). NeuroMorpho.Org is a centrally curated inventory or repository of digitally reconstructed neurons associated with peer-reviewed publications.
 
 * The H5 morphology samples are available with permissions from the [Blue Brain Project](https://bluebrain.epfl.ch/page-52063.html), [Ecole Polytechnique Federale de Lausanne (EPFL)](https://www.epfl.ch/). 
