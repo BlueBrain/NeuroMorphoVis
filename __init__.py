@@ -84,7 +84,7 @@ if "bpy" in locals():
     imp.reload(neuromorphovis.interface.ui.mesh_panel)
 
 else:
-
+    import neuromorphovis
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
