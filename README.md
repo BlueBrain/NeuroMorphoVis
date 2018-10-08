@@ -222,4 +222,6 @@ Communications
 Blue Brain Project  
 [kate.mullins@epfl.ch](kate.mullins@epfl.ch)
 
-
+<p align="center">
+	<img src="docs/artifacts/logo/epfl-logo.jpg" width=200>
+</p>
