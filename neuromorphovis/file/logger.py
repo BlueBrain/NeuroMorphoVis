@@ -25,7 +25,7 @@ __status__      = "Production"
 
 
 # System imports
-import os
+import os, platform
 import datetime
 
 
@@ -53,7 +53,16 @@ class Logger:
 
         # Use the current working directory if no path is given
         if path is None:
-            self.path = os.getcwd()
+
+            # MAC
+            if str(platform.system()) == "Darwin":
+                self.path = os.getenv("HOME")
+            elif str(platform.system()) == "Windows":
+                self.path = os.path.dirname(os.path.realpath(__file__))
+            else:
+                self.path = os.getenv("HOME")
+        else:
+            self.path = path
 
         # Print to the standard output stream
         self.print_stdout = print_stdout
