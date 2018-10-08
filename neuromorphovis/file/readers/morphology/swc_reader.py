@@ -53,14 +53,152 @@ class SWCReader:
         # to construct the morphology skeleton directly
         # http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
         # Each sample in this list has the following structure:
-        # [0] The index of the sample or sample number
-        # [1] The type of the sample or structure identifier
-        # [2] Sample x-coordinates
-        # [3] Sample y-coordinates
-        # [4] Sample z-coordinates
-        # [5] Sample radius
-        # [6] The index of the parent sample
+        #       [0] The index of the sample or sample number
+        #       [1] The type of the sample or structure identifier
+        #       [2] Sample x-coordinates
+        #       [3] Sample y-coordinates
+        #       [4] Sample z-coordinates
+        #       [5] Sample radius
+        #       [6] The index of the parent sample
         self.samples_list = list()
+
+        # A list of the indices of the terminals of the sections
+        # This list is only updated once during the morphology loading, and then used to build the
+        # sections later in an accelerated way
+        self.sections_terminal_samples_indices = list()
+
+        # A list of the indices of each 'disconnected' section in the morphology
+        self.sections_samples_indices_list = list()
+
+        # A list of continuous paths extracted from the morphology file
+        self.paths = list()
+
+    ################################################################################################
+    # @build_connected_paths_from_samples
+    ################################################################################################
+    def build_connected_paths_from_samples(self):
+        """Construct a list of connected paths from the samples.
+        """
+
+        # Since we have the soma index equal to 1, then start from index number 2
+        index = 2
+
+        # A temporary list to append the indices of each path
+        path = list()
+
+        # Process the entire samples list
+        while True:
+
+            # Iterate over two samples to verify their connectivity
+            sample_i = self.samples_list[index]
+            sample_j = self.samples_list[index + 1]
+
+            # If the two samples are connected
+            if sample_j[-1] == sample_i[0]:
+
+                # Add the first sample to the path
+                path.append(sample_i[0])
+
+            # Otherwise
+            else:
+
+                # Append the last sample to the path
+                path.append(sample_i[0])
+
+                # Append the path to the paths list
+                self.paths.append(path)
+
+                # Clear the path list to search for a new path
+                path = list()
+
+            # Increment the path
+            index = index + 1
+
+            # If processing the list is break
+            if index > len(self.samples_list) - 2:
+
+                # Append the last path
+                self.paths.append(path)
+
+                # Then break
+                break
+
+        # Add the starting points and mark the terminals
+        for path in self.paths:
+
+            # Get the index of the first sample along the path
+            first_sample_index = path[0]
+
+            # Then add the parent sample index at the beginning of the path
+            path.insert(0, self.samples_list[first_sample_index][-1])
+
+            # Marking the terminals by adding the indices of the first and last samples
+            self.sections_terminal_samples_indices.append(path[0])
+            self.sections_terminal_samples_indices.append(path[-1])
+
+        # Sort the sections_terminal_samples_indices list
+        self.sections_terminal_samples_indices = sorted(self.sections_terminal_samples_indices)
+
+        # Filter the repeated entries in the sections_terminal_samples_indices list
+        self.sections_terminal_samples_indices = list(set(self.sections_terminal_samples_indices))
+
+    ################################################################################################
+    # @build_sections_from_paths
+    ################################################################################################
+    def build_sections_from_paths(self):
+
+        for path in self.paths:
+
+            print(path)
+
+            # A list of all the samples located along the path
+            samples_located_along_path = list()
+
+            # Get the list
+            for sample_index in self.sections_terminal_samples_indices:
+
+                # If the sample index exists in the path
+                if sample_index in path:
+
+                    # Append it to the list
+                    samples_located_along_path.append(sample_index)
+
+            # Order the list
+            samples_located_along_path = sorted(samples_located_along_path)
+
+            print(samples_located_along_path)
+
+            # Build the sections
+            for i in range(0, len(samples_located_along_path) - 1):
+
+                section_indices = list()
+
+                # Get the first index along the section
+                first_sample = samples_located_along_path[i]
+
+                # Get the last index along the section
+                last_sample = samples_located_along_path[i + 1]
+
+                first_sample_index = path.index(first_sample)
+
+                last_sample_index = path.index(last_sample)
+
+                for j in range(first_sample_index, last_sample_index + 1):
+
+                    section_indices.append(path[j])
+
+                print(section_indices)
+
+                self.sections_samples_indices_list.append(section_indices)
+
+            print('')
+
+
+
+
+
+
+
 
     ################################################################################################
     # @read_samples
@@ -122,7 +260,9 @@ class SWCReader:
             if x < nmv.consts.Math.LITTLE_EPSILON and \
                y < nmv.consts.Math.LITTLE_EPSILON and \
                z < nmv.consts.Math.LITTLE_EPSILON:
-                x = 0.01; y = 0.01; z = 0.01
+                x = 0.01
+                y = 0.01
+                z = 0.01
 
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
@@ -153,6 +293,11 @@ class SWCReader:
 
             # Add the sample to the list
             self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+
+        # Construct the connected paths from the samples list
+        self.build_connected_paths_from_samples()
+
+        self.build_sections_from_paths()
 
     ################################################################################################
     # @get_nmv_sample_from_samples_list
@@ -209,7 +354,7 @@ class SWCReader:
         """
 
         # A list of samples that are similar to the given type
-        samples_list = list()
+        selected_samples_list = list()
 
         # For each sample in the given samples list
         for sample in self.samples_list:
@@ -218,10 +363,10 @@ class SWCReader:
             if sample[1] == sample_type:
 
                 # Append the sample to the list
-                samples_list.append(sample)
+                selected_samples_list.append(sample)
 
         # Return the list of samples
-        return samples_list
+        return selected_samples_list
 
     ################################################################################################
     # @build_connected_paths
@@ -315,262 +460,53 @@ class SWCReader:
         return soma_object
 
     ################################################################################################
-    # @get_sections_from_path
+    # @get_sections_of_specific_type
     ################################################################################################
-    def get_sections_from_path(self,
-                               path,
-                               sections_terminals):
-        """Gets a list of sections from a given path.
-
-        :param path:
-            A given path that contains at least a single section.
-        :param sections_terminals:
-            A list of all the terminals of the sections.
-
-        :return:
-            A list of sections contained within the given path.
+    def get_sections_of_specific_type(self,
+                                      arbor_type):
         """
 
-        # A list of all the sections reconstructed from the path
-        sections_lists = list()
+        :param arbor_type:
+        :return:
+        """
 
-        # Use each section terminal indices to identify the section and reconstruct it
-        for section_terminals in sections_terminals:
+        sections_list = list()
 
-            # The index of the first sample along the section
-            first_sample_index = section_terminals[0]
+        # A list that only contains the arbors of the requested type
+        arbor_sections_samples_indices_list = list()
 
-            # The index of the last sample along the section
-            last_sample_index = section_terminals[1]
+        # For each section
+        for section_samples_indices in self.sections_samples_indices_list:
 
-            # A flag to indicate whether this sample should be added to the list or not
-            collect = False
+            # Get the last sample along this
+            last_sample = self.samples_list[section_samples_indices[-1]]
 
-            # A list to contain all the samples along the section
+            # If the type is matching
+            if last_sample[2] == arbor_type:
+
+                # Append to the list
+                arbor_sections_samples_indices_list.append(section_samples_indices)
+
+        # For each section
+        for arbor_section in arbor_sections_samples_indices_list:
+
+            # Construct the samples list
             samples_list = list()
 
-            # Iterate over the samples in the path
-            for index in path:
+            # For each sample in the section
+            for arbor_sample_index in arbor_section:
 
-                # Is this the first sample along the section
-                if index == first_sample_index:
+                # Get the a nmv sample based on its index
+                nmv_sample = self.get_nmv_sample_from_samples_list(arbor_sample_index)
 
-                    # Get the a nmv sample based on its index
-                    nmv_sample = self.get_nmv_sample_from_samples_list(index)
-
-                    # Append the sample to the list
-                    samples_list.append(nmv_sample)
-
-                    # Turn on the collection flag to start getting the in-between samples
-                    collect = True
-
-                    # Next sample
-                    continue
-
-                # If the collection flag is set
-                if collect:
-
-                    # Get the a nmv sample based on its index
-                    nmv_sample = self.get_nmv_sample_from_samples_list(index)
-
-                    # Append the sample to the list
-                    samples_list.append(nmv_sample)
-
-                # If this was the last sample
-                if index == last_sample_index:
-
-                    # Break and proceed to the next section
-                    break
+                samples_list.append(nmv_sample)
 
             # Construct an nmv section that ONLY contains the samples list, and UPDATE its other
             # members later when all the other sections are reconstructed
             nmv_section = neuromorphovis.skeleton.Section(samples=samples_list)
 
-            # Append this section to the sections list
-            sections_lists.append(nmv_section)
-
-        # Return a reference to the reference list
-        return sections_lists
-
-    ################################################################################################
-    # @build_connected_paths
-    ################################################################################################
-    @staticmethod
-    def build_connected_paths(samples_list):
-        """Constructs connected paths from a given list of samples. Each path is simply represented
-        by a list of indices that can be used later to query the actual data of each sample.
-
-        :param samples_list:
-            A list of samples that are supposedly belonging to a single branch type.
-        :return:
-            A list of all the connected paths that are formed from the given list of samples.
-        """
-
-        # A list of paths
-        paths_list = list()
-
-        # Number of samples in the input list
-        number_samples = len(samples_list)
-
-        # The index of the current sample
-        current_sample_index = 0
-
-        # Proceed if we have more samples
-        while current_sample_index < number_samples - 1:
-
-            # If this is the soma sample, then ignore it
-            # NOTE: Soma samples are indicated by -1 as a parent index
-            if samples_list[current_sample_index][6] == -1:
-
-                # Increment the sample index
-                current_sample_index = current_sample_index + 1
-
-                # Next sample
-                continue
-
-            # If this is a root sample with no parent, then ignore
-            # NOTE: Root samples are indicated by 1 as a parent index
-            if samples_list[current_sample_index][6] == 1:
-
-                # Increment the sample index
-                current_sample_index = current_sample_index + 1
-
-                # Next sample
-                continue
-
-            # Construct a path here
-            path = list()
-
-            # Get the first sample along the section
-            current_sample = samples_list[current_sample_index]
-
-            # Add the parent sample, or the starting sample along the branch
-            path.append(current_sample[6])
-
-            # Add the current sample as well
-            path.append(current_sample[0])
-
-            # Increment the section of the current sample
-            current_sample_index = current_sample_index + 1
-
-            # Process the samples again
-            for i in range(current_sample_index, number_samples):
-
-                # If the parent index matches the current sample index
-                if samples_list[i][6] == samples_list[i - 1][0]:
-
-                    # Add this sample to the list
-                    path.append(samples_list[i][0])
-
-                    # Increment the sample index
-                    current_sample_index = current_sample_index + 1
-
-                else:
-
-                    # No more samples to add to the path, so append the path to the list
-                    paths_list.append(path)
-
-                    # break the 'for' loop
-                    break
-
-        # Return a list of all the paths constructed from the list
-        return paths_list
-
-    ################################################################################################
-    # @build_disconnected_sections_from_paths
-    ################################################################################################
-    def build_sections_from_paths(self,
-                                  paths_list,
-                                  section_type):
-        """Builds a list of disconnected sections from a list of paths list, where each path can be
-        composed of more than a single section.
-
-        :param paths_list:
-            A list of paths, where each path is composed of a list of indices that map to those
-            of the samples given by the samples_list.
-        :param section_type:
-            The type of the section.
-        :return:
-            A list of sections, however, they are not connected and must be processed to build
-            the tree of each arbor.
-        """
-
-        # Get a list of the starting samples of each path of the given paths
-        starting_samples = list()
-
-        # Also get a list of the ending samples of each path of the given paths
-        ending_samples = list()
-
-        # For each path in the list
-        for path in paths_list:
-
-            # Append the first sample to the list
-            starting_samples.append(path[0])
-
-            # Append the last samples to the list
-            ending_samples.append(path[-1])
-
-        # Remove the duplicated samples from the lists
-        starting_samples = set(starting_samples)
-        ending_samples = set(ending_samples)
-
-        # Sort the starting samples
-        starting_samples = sorted(starting_samples)
-
-        # A list of all the sections
-        sections_list = list()
-
-        # For each path
-        for path in paths_list:
-
-            # A list that contains the indices of all the terminals of the sections on the path
-            sections_terminal_indices = list()
-
-            # Construct a list that accounts for the fork points of the path
-            fork_samples = list()
-
-            # Construct another list that contains the indices of the bifurcation samples
-            bifurcation_samples = list()
-
-            # For each starting sample
-            for starting_sample_index in starting_samples:
-
-                # If this sample is along the path
-                if starting_sample_index in path:
-
-                    # And also if this sample is not the first sample along the path
-                    if not starting_sample_index == path[0]:
-
-                        # Then this sample is a bifurcation sample, add it to the list
-                        bifurcation_samples.append(starting_sample_index)
-
-            # Construct the section samples terminals, add the first sample
-            fork_samples.append(path[0])
-
-            # Add the bifurcation samples
-            for bifurcation_sample_index in bifurcation_samples:
-                fork_samples.append(bifurcation_sample_index)
-
-            # Add the terminal sample
-            fork_samples.append(path[-1])
-
-            # Construct the rest of the section
-            for i_sample in range(0, len(fork_samples) - 1):
-
-                # The index of the starting sample of the section
-                starting_index = fork_samples[i_sample]
-
-                # The index of the ending sample of the section
-                ending_index = fork_samples[i_sample + 1]
-
-                # Add the indices of the section terminals to the list
-                sections_terminal_indices.append([starting_index, ending_index])
-
-            # Get a list of all the sections on the current path
-            path_sections_list = self.get_sections_from_path(path, sections_terminal_indices)
-
             # Append the reconstructed sections to the sections list
-            sections_list.extend(path_sections_list)
+            sections_list.append(nmv_section)
 
         # Label the sections and set different indices to them
         for i, section in enumerate(sections_list):
@@ -592,6 +528,7 @@ class SWCReader:
 
                 # Ignore processing the same section twice
                 if i_section.id == j_section.id:
+
                     continue
 
                 # Root sections
@@ -615,7 +552,6 @@ class SWCReader:
                 # If the index of the last sample of the section is that of the first sample of
                 # another section
                 if i_section.samples[-1].id == j_section.samples[0].id:
-
                     # Append the child section id to the children section IDs
                     i_section.children_ids.append(j_section.id)
 
@@ -640,15 +576,8 @@ class SWCReader:
             A list of trees, each representing an arbor of the morphology skeleton.
         """
 
-        # Get a list of samples that ONLY correspond to the given type
-        samples_list = self.get_samples_list_by_type(sample_type=arbor_type)
-
-        # Build connected paths (can include more than a single morphological section) from a list
-        # of disconnected samples
-        paths = self.build_connected_paths(samples_list)
-
-        # Build sections from the constructed paths
-        sections = self.build_sections_from_paths(paths, arbor_type)
+        # Get the sections that are specific to the arbor
+        sections = self.get_sections_of_specific_type(arbor_type)
 
         # Build a list of arbors from a list of sections
         arbors = nmv.skeleton.ops.build_arbors_from_sections(sections)

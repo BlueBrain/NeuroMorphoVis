@@ -196,9 +196,10 @@ class Morphology:
 
         # Compute basal dendrites bounding boxes
         basal_dendrites_bounding_boxes = []
-        for dendrite in self.dendrites:
-            basal_dendrite_bounding_box = nmv.skeleton.ops.compute_arbor_bounding_box(dendrite)
-            basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
+        if self.dendrites is not None:
+            for dendrite in self.dendrites:
+                basal_dendrite_bounding_box = nmv.skeleton.ops.compute_arbor_bounding_box(dendrite)
+                basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
 
         # Compute apical dendrite bounding box
         apical_dendrite_bounding_box = None
