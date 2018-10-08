@@ -46,7 +46,7 @@ Users can easily configure and use _NeuroMorphoVis_ via editable configuration f
 
 ## Download 
 
-_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender comes with an LGPL license. 
+_NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from this [page](http://download.blender.org/release/). Blender is released under the GNU General Public License ([GPL](https://www.blender.org/about/license/), or “free software”).. 
 The current version is compatible with the following Blender versions:
 
 + [Blender 2.76](http://download.blender.org/release/Blender2.76/): 2.76a and 2.76b
