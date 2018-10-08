@@ -32,9 +32,9 @@ bl_info = {
     # The name of your add-on. This is shown in the add-on tab in Blender's user preferences
     "name" : "NeuroMorphoVis",
     # The author of this add-on
-    "author" : __author__,
+    "author" : "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version" : tuple(__version__.split('.')),
+    "version" : (1, 0, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
