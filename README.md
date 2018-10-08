@@ -12,7 +12,7 @@ _NeuroMorphoVis_ provides four major toolboxes that can be used for
 
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
 + An easy context to load broken morphology skeletons and repair them manually. 
-+ Sketching and building three-dimensional representations of the morphology skeletons using various methods.
++ Sketching and building three-dimensional representations of the morphology skeletons using various methods for visual analytics. 
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata. This approach uses the physics engine of Blender based on Hooke's law and mass spring models.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al., 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4).
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
