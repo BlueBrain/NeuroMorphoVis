@@ -647,6 +647,7 @@ def draw_disconnected_segments(section,
             poly_line_data=segment_data, name=segment_name, material=segment_material,
             bevel_object=bevel_object)
 
+        """
         # Render frame for progressive rendering
         if render_frame:
             global progressive_frame_index
@@ -660,6 +661,7 @@ def draw_disconnected_segments(section,
 
             # Increment the progressive frame index
             progressive_frame_index += 1
+        """
 
         # Add the created segments to the list
         segments_objects.append(created_segments)

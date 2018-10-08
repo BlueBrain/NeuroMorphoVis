@@ -146,10 +146,11 @@ class SWCReader:
     # @build_sections_from_paths
     ################################################################################################
     def build_sections_from_paths(self):
+        """Builds a list of sections from the paths reconstructed during the reading of the
+        morphology.
+        """
 
         for path in self.paths:
-
-            print(path)
 
             # A list of all the samples located along the path
             samples_located_along_path = list()
@@ -165,8 +166,6 @@ class SWCReader:
 
             # Order the list
             samples_located_along_path = sorted(samples_located_along_path)
-
-            print(samples_located_along_path)
 
             # Build the sections
             for i in range(0, len(samples_located_along_path) - 1):
@@ -187,18 +186,7 @@ class SWCReader:
 
                     section_indices.append(path[j])
 
-                print(section_indices)
-
                 self.sections_samples_indices_list.append(section_indices)
-
-            print('')
-
-
-
-
-
-
-
 
     ################################################################################################
     # @read_samples
@@ -256,31 +244,14 @@ class SWCReader:
             # Get the Z-coordinate
             z = float(data[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX])
 
-            # Handle samples that are located at the origin
-            if x < nmv.consts.Math.LITTLE_EPSILON and \
-               y < nmv.consts.Math.LITTLE_EPSILON and \
-               z < nmv.consts.Math.LITTLE_EPSILON:
-                x = 0.01
-                y = 0.01
-                z = 0.01
-
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
-
-            # Handle samples with Zero radii
-            if radius < nmv.consts.Math.LITTLE_EPSILON:
-
-                # Report the issue
-                nmv.logger.log('WARNING: Sample [%d] has a radius of [%f]' % (index, radius))
-
-                # Update the radius
-                radius = 0.1
 
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
 
             # If this is the soma sample, get the translation vector
-            if sample_type == 1 and parent_index == -1:
+            if parent_index == -1:
 
                 translation[0] = x
                 translation[1] = y
@@ -464,10 +435,12 @@ class SWCReader:
     ################################################################################################
     def get_sections_of_specific_type(self,
                                       arbor_type):
-        """
+        """Returns a list of sections of specific type.
 
         :param arbor_type:
+            The type of the requested sections.
         :return:
+            A list of all the sections that have specific type.
         """
 
         sections_list = list()
@@ -478,11 +451,11 @@ class SWCReader:
         # For each section
         for section_samples_indices in self.sections_samples_indices_list:
 
-            # Get the last sample along this
+            # Get the last sample along this section
             last_sample = self.samples_list[section_samples_indices[-1]]
 
             # If the type is matching
-            if last_sample[2] == arbor_type:
+            if str(last_sample[1]) == str(arbor_type):
 
                 # Append to the list
                 arbor_sections_samples_indices_list.append(section_samples_indices)
@@ -495,6 +468,10 @@ class SWCReader:
 
             # For each sample in the section
             for arbor_sample_index in arbor_section:
+
+                # Ignore the soma sample
+                if self.samples_list[arbor_sample_index][0] == 1:
+                    continue
 
                 # Get the a nmv sample based on its index
                 nmv_sample = self.get_nmv_sample_from_samples_list(arbor_sample_index)
@@ -515,48 +492,11 @@ class SWCReader:
             section.id = i
 
             # Update the section type
-            section.type = section_type
+            section.type = arbor_type
 
-        # Copy the sections list
-        sections_list_clone = copy.deepcopy(sections_list)
-
-        # Now, link the sections together relying on thr indices of the initial and final samples
-        for i_section in sections_list:
-
-            # Traversal
-            for j_section in sections_list_clone:
-
-                # Ignore processing the same section twice
-                if i_section.id == j_section.id:
-
-                    continue
-
-                # Root sections
-                if i_section.samples[0].parent_id == 1:
-
-                    # Set the parent ID to None
-                    i_section.parent_id = None
-
-                    # Set the parent to None
-                    i_section.parent = None
-
-                # If the index of the first sample of the section is the last of another section
-                if i_section.samples[0].id == j_section.samples[-1].id:
-
-                    # Set the parent id to that of the parent section
-                    i_section.parent_id = j_section.id
-
-                    # Set the reference to the parent id to that of the parent section
-                    i_section.parent = j_section
-
-                # If the index of the last sample of the section is that of the first sample of
-                # another section
-                if i_section.samples[-1].id == j_section.samples[0].id:
-                    # Append the child section id to the children section IDs
-                    i_section.children_ids.append(j_section.id)
-
-                    # Append a reference to the child section as well
-                    i_section.children.append(j_section)
+        # Updates the sections parenting
+        for section in sections_list:
+            nmv.skeleton.ops.update_section_parenting(section, sections_list)
 
         # Return a list of all the disconnected sections
         return sections_list
