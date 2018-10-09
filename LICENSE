@@ -1,8 +1,6 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2018, Ecole Polytechnique Federale de Lausanne (EPFL) / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
-#
-# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -15,13 +13,12 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-NeuroMorphoVis
-
 NeuroMorphoVis is an interactive, extensible and cross-platform framework for building, visualizing
 and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy
 stacks.
 
-The framework is capable of detecting and repairing tracing artifacts, allowing the generation of
-high fidelity surface meshes and high resolution volumetric models for simulation and in silico
-imaging studies.
+NeuroMorphoVis is licensed under the GPL license.
+
+
+
 
