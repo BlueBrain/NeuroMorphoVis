@@ -15,14 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-__author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2017, Blue Brain Project / EPFL"
-__version__     = "1.0.0"
-__maintainer__  = "Marwan Abdellah"
-__email__       = "marwan.abdellah@epfl.ch"
-__status__      = "Production"
-
-
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.consts

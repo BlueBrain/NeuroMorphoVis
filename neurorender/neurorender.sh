@@ -17,16 +17,13 @@
 ####################################################################################################
 
 # Blender executable
-# BLENDER='blender'
-BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/blender/blender'
+BLENDER='blender'
 
 # Rendering configuration file
-# RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
-RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/RANDOM_BOX_mc2_Column_100.00p.config'
+RENDERING_CONFIGURATION='/data/neurorender-data/sample.config'
 
 # The input directory where the meshes exist
-# MESHES_DIRECTORY='/data/neurorender-data/meshes'
-MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/tissue-models/box-50/surface/meshes'
+MESHES_DIRECTORY='/data/neurorender-data/meshes'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files

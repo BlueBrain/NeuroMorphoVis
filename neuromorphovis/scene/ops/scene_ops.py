@@ -15,14 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-__author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016-2018, Blue Brain Project / EPFL"
-__version__     = "0.1.0"
-__maintainer__  = "Marwan Abdellah"
-__email__       = "marwan.abdellah@epfl.ch"
-__status__      = "Production"
-
-
 # System imports
 import os, sys, bpy
 

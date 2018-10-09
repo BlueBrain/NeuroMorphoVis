@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 from .h5_reader import *
 from .swc_reader import *
 from .bbp_reader import *
