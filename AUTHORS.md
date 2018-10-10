@@ -24,5 +24,6 @@ The following people have contributed to NeuroMorphoVis:
     Danny Dyer (EPFL)
     Alan Garner (EPFL)
 
-
-
+<p align="center">
+	<img src="docs/artifacts/logo/epfl-logo.jpg" width=200>
+</p>
