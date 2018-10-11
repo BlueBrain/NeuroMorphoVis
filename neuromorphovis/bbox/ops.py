@@ -100,7 +100,7 @@ def get_object_bounding_box(scene_object):
 # @confirm_object_bounding_box
 ####################################################################################################
 def confirm_object_bounding_box(scene_object):
-    """Return the bounding box of the given object.
+    """Return the bounding box of the given object that is already existing in the scene.
 
     :param scene_object:
         An object existing in the scene.
@@ -184,7 +184,7 @@ def get_objects_bounding_box(objects):
 # @compute_scene_bounding_box_for_curves
 ####################################################################################################
 def compute_scene_bounding_box_for_curves():
-    """Compute the bounding box of all the curves in the scene.
+    """Compute the bounding box of all the 'curves' in the scene.
 
     NOTE: This function considers only 'CURVE' type and ignores the cameras for example.
 
