@@ -4,7 +4,7 @@
 
 
 [![Say Thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/marwan-abdellah)
-[![GitHub Stars](https://img.shields.io/github/stars/k4m4/terminals-are-sexy.svg)](https://github.com/BlueBrain/NeuroMorphoVis/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/k4m4/NeuroMorphoVis.svg)](https://github.com/BlueBrain/NeuroMorphoVis/stargazers)
 
 
 
