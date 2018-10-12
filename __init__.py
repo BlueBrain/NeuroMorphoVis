@@ -90,6 +90,25 @@ else:
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
 
+import bpy
+from addon_utils import check, paths, enable
+def get_all_addons(display=False):
+    """
+    Prints the addon state based on the user preferences.
+    """
+    import sys
+    paths_list = paths()
+    addon_list = []
+    for path in paths_list:
+        bpy.utils._sys_path_ensure(path)
+        for mod_name, mod_path in bpy.path.module_names(path):
+            is_enabled, is_loaded = check(mod_name)
+            addon_list.append(mod_name)
+            if display:  #for example
+                print("%s default:%s loaded:%s " % (mod_name, is_enabled, is_loaded))
+    return(addon_list)
+get_all_addons(True)
+
 
 ####################################################################################################
 # @register
@@ -120,13 +139,18 @@ def unregister():
     neuromorphovis.interface.ui.morphology_panel.unregister_panel()
     neuromorphovis.interface.ui.mesh_panel.unregister_panel()
 
-
+print('HOLA')
 ####################################################################################################
 # __main__
 ####################################################################################################
 if __name__ == "__main__":
 
     register()
+
+    is_enabled, is_loaded = check(neuromorphovis)
+    if not is_enabled:
+        print("%s enabled" % neuromorphovis)
+        enable('neuromorphovis')
 
 
 
