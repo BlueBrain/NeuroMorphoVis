@@ -102,6 +102,30 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect the number of short sections",
         default=True)
 
+    # Sections volumes
+    bpy.types.Scene.SectionsVolumes = BoolProperty(
+        name="Sections Volumes",
+        description="Compute the distribution of sections volumes",
+        default=True)
+
+    # Segments volumes
+    bpy.types.Scene.SegmentsVolumes = BoolProperty(
+        name="Segments Volumes",
+        description="Compute the distribution of sections volumes",
+        default=True)
+
+    # Sections surface areas
+    bpy.types.Scene.SectionsSurfaceAreas = BoolProperty(
+        name="Sections Surface Areas",
+        description="Compute the distribution of sections volumes",
+        default=True)
+
+    # Segments surface areas
+    bpy.types.Scene.SegmentsSurfaceAreas = BoolProperty(
+        name="Segments Surface Areas",
+        description="Compute the distribution of sections volumes",
+        default=True)
+
     # Duplicate samples
     bpy.types.Scene.AnalyzeDuplicateSamples = BoolProperty(
         name="Duplicate Samples",
@@ -119,6 +143,8 @@ class AnalysisPanel(bpy.types.Panel):
         name="Branches With Negative Samples",
         description="Detect when the section is intersecting with the soma",
         default=True)
+
+    bpy.types.Scene.AxonTotalLength = FloatProperty(min=-1e10, max=1e10, subtype='FACTOR')
 
     file_path = StringProperty(name="File", subtype="FILE_PATH")
 
@@ -164,6 +190,26 @@ class AnalysisPanel(bpy.types.Panel):
         sections_radii_row = layout.row()
         sections_radii_row.prop(context.scene, 'AnalyzeSectionsRadii')
 
+
+
+
+        # Segments surface area
+        segments_surface_area_row = layout.row()
+        segments_surface_area_row.prop(context.scene, 'SegmentsSurfaceAreas')
+
+        # Sections surface area
+        sections_surface_area_row = layout.row()
+        sections_surface_area_row.prop(context.scene, 'SectionsSurfaceAreas')
+
+        # Segments volumes
+        segments_volume_row = layout.row()
+        segments_volume_row.prop(context.scene, 'SegmentsVolumes')
+
+        # Sections volumes
+        sections_volume_row = layout.row()
+        sections_volume_row.prop(context.scene, 'SectionsVolumes')
+
+
         # Short sections
         short_sections_row = layout.row()
         short_sections_row.prop(context.scene, 'AnalyzeShortSections')
@@ -184,6 +230,17 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
+
+        axon_column = layout.column(align=True)
+        axon_column.label(text='Axon:')
+        axon_column.prop(context.scene, 'AxonTotalLength')
+        axon_column.prop(context.scene, 'AxonTotalLength')
+        axon_column.prop(context.scene, 'AxonTotalLength')
+        axon_column.enabled = False
+
+        row = layout.row()
+        row.label(text='Total Length')
+        row.prop(context.scene, 'AxonTotalLength')
 
 ####################################################################################################
 # @SaveSomaMeshBlend
