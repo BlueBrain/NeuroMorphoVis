@@ -5,6 +5,7 @@
 
 [![Say Thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/marwan-abdellah)
 [![GitHub Stars](https://img.shields.io/github/stars/BlueBrain/NeuroMorphoVis.svg)](https://github.com/BlueBrain/NeuroMorphoVis/stargazers)
+[![Download Paper](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/marwan-abdellah)
 
 
 
