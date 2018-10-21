@@ -135,7 +135,7 @@ class AnalysisPanel(bpy.types.Panel):
     # Disconnected axons from soma
     bpy.types.Scene.AnalyzeDisconnectedAxons = BoolProperty(
         name="Disconnected Axons",
-        description="Detect when the axon is disconnected from the soma",
+        description="De[tect when the axon is disconnected from the soma",
         default=True)
 
     # Branches with negative samples
@@ -144,7 +144,13 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
-    bpy.types.Scene.AxonTotalLength = FloatProperty(min=-1e10, max=1e10, subtype='FACTOR')
+    setattr(bpy.types.Scene, 'SceneVariable',
+            FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'}))
+
+    bpy.types.Scene.AxonTotalLength = \
+        FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
+
+    FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
 
     file_path = StringProperty(name="File", subtype="FILE_PATH")
 
@@ -230,17 +236,43 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
+        box = layout.box()
+        row = box.column()
+        row.label(text="Axon")
+        row.label(text=" - Total Length: 102.0")
+        row.label(text=" - Total Surface Area")
+        row.label(text=" - Total Volume: 10")
+        row.label(text=" - Average Section Length: 10")
 
-        axon_column = layout.column(align=True)
-        axon_column.label(text='Axon:')
+        bounding_box_p_row = layout.row()
+        bounding_box_p_min_row = bounding_box_p_row.column(align=True)
+        bounding_box_p_min_row.label(text='Axon:')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
+        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
+        bounding_box_p_min_row.enabled = False
+
+        """
+        
+        axon_column = layout.box()
+        axon_column.prop(context.scene, 'AnalyzeBranchesWithNegativeSamples')
+        x_row = axon_column.row(align=True)
+        x_row.label(text='Total Length')
+        x_row.prop(context.scene, 'AxonTotalLength')
         axon_column.prop(context.scene, 'AxonTotalLength')
         axon_column.prop(context.scene, 'AxonTotalLength')
-        axon_column.prop(context.scene, 'AxonTotalLength')
-        axon_column.enabled = False
+        # axon_column.enabled = False
 
         row = layout.row()
         row.label(text='Total Length')
         row.prop(context.scene, 'AxonTotalLength')
+        """
 
 ####################################################################################################
 # @SaveSomaMeshBlend
