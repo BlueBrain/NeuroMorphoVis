@@ -33,6 +33,43 @@ import neuromorphovis.interface
 import neuromorphovis.skeleton
 
 
+class Feature:
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self,
+                 variable,
+                 name,
+                 subtype='None'):
+        """Constructor
+
+        :param variable:
+            Feature variable name.
+        :param name:
+            Feature name.
+        :param subtype:
+            Feature subtype.
+        """
+
+        self.variable = variable
+        self.name = name
+        self.subtype = subtype
+
+
+
+features_list = [
+    Feature(variable='TotalLength', name='Total Length', subtype='DISTANCE'),
+    Feature(variable='Length', name='Length', subtype='DISTANCE'),
+]
+
+
+
+
+
+
+
+
 ####################################################################################################
 # @AnalysisPanel
 ####################################################################################################
@@ -144,13 +181,26 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
-    setattr(bpy.types.Scene, 'SceneVariable',
-            FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'}))
 
-    bpy.types.Scene.AxonTotalLength = \
-        FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
 
-    FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
+
+
+    for feature in features_list:
+        setattr(bpy.types.Scene, feature.variable,
+                FloatProperty(name=feature.name, min=-1e10, max=1e10, subtype=feature.subtype))
+
+    #bpy.types.Scene.AxonTotalLength = \
+    #    FloatProperty(name="", min=-1e10, max=1e10, subtype='NONE', options={'ANIMATABLE'})
+
+    #FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
+
+    # bpy.types.Scene.BBoxPMinX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
+
+
+
+
+
+
 
     file_path = StringProperty(name="File", subtype="FILE_PATH")
 
@@ -215,7 +265,6 @@ class AnalysisPanel(bpy.types.Panel):
         sections_volume_row = layout.row()
         sections_volume_row.prop(context.scene, 'SectionsVolumes')
 
-
         # Short sections
         short_sections_row = layout.row()
         short_sections_row.prop(context.scene, 'AnalyzeShortSections')
@@ -247,16 +296,11 @@ class AnalysisPanel(bpy.types.Panel):
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Axon:')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinX')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinY')
-        bounding_box_p_min_row.prop(context.scene, 'BBoxPMinZ')
+
+        for feature in features_list:
+            bounding_box_p_min_row.prop(context.scene, feature.variable)
         bounding_box_p_min_row.enabled = False
+
 
         """
         
@@ -296,6 +340,8 @@ class AnalyzeMorphology(bpy.types.Operator):
         :return:
             'FINISHED'
         """
+
+        # context.scene.A = 25.4
 
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
