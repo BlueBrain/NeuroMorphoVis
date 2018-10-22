@@ -883,10 +883,10 @@ class PiecewiseBuilder:
         self.add_spines()
 
         # Render a static frame for the mesh
-        self.render_mesh()
+        # self.render_mesh()
 
         # Save the mesh to file
-        self.save_mesh()
+        # self.save_mesh()
 
         # Add nucleus
         # self.add_nucleus()

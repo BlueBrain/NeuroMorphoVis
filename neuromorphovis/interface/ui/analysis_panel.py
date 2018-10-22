@@ -33,6 +33,9 @@ import neuromorphovis.interface
 import neuromorphovis.skeleton
 
 
+
+
+
 class Feature:
 
     ################################################################################################
@@ -41,29 +44,59 @@ class Feature:
     def __init__(self,
                  variable,
                  name,
-                 subtype='None'):
+                 type='Float',
+                 unit='NONE'):
         """Constructor
 
         :param variable:
             Feature variable name.
         :param name:
             Feature name.
-        :param subtype:
-            Feature subtype.
+        :param unit:
+            Feature unit.
         """
 
         self.variable = variable
         self.name = name
-        self.subtype = subtype
+        self.type = type
+        self.unit = unit
 
 
 
-features_list = [
-    Feature(variable='TotalLength', name='Total Length', subtype='DISTANCE'),
-    Feature(variable='Length', name='Length', subtype='DISTANCE'),
+morphology_features_list = [
+    Feature(variable='MorphologyNeuritesLength', name='Neurites Length', unit='LENGTH'),
+    Feature(variable='MorphologyNeuritesSurfaceArea', name='Neurites Surface Area', unit='AREA'),
+    Feature(variable='MorphologyNeuritesVolume', name='Neurites Volume', unit='VOLUME'),
+
+]
+
+neurite_features_list = [
+    Feature(variable='TotalLength', name='Total Length', unit='NONE'),
+    Feature(variable='Length', name='Length', unit='LENGTH'),
+    Feature(variable='AvgLengthPerSection', name='Avg. Length / Section', unit='LENGTH'),
+    Feature(variable='AvgLengthPerSegment', name='Avg. Length / Segment', unit='LENGTH'),
+    Feature(variable='SurfaceArea', name='Surface Area', unit='AREA'),
+    Feature(variable='AvgSurfaceAreaPerSection', name='Avg. Surface Area / Section', unit='AREA'),
+    Feature(variable='AvgSurfaceAreaPerSegment', name='Avg. Surface Area / Segment', unit='AREA'),
+    Feature(variable='Volume', name='Volume', unit='VOLUME'),
+    Feature(variable='AvgVolumePerSection', name='Avg. Volume / Section', unit='VOLUME'),
+    Feature(variable='AvgVolumePerSegment', name='Avg. Volume / Segment', unit='VOLUME'),
+    Feature(variable='NumberBifurcations', name='# Bifurcations', type='Int'),
+    Feature(variable='NumberTrifurcations', name='# Trifurcations', type='Int'),
+    Feature(variable='NumberSections', name='# Sections', type='Int'),
+    Feature(variable='NumberSections', name='# Segments', type='Int'),
 ]
 
 
+
+soma_features_list = [
+    Feature(variable='SomaMinRadius', name='Min. Radius', unit='LENGTH'),
+    Feature(variable='SomaMaxRadius', name='Max. Radius', unit='LENGTH'),
+    Feature(variable='SomaAvgRadius', name='Avg. Radius', unit='LENGTH'),
+    Feature(variable='SomaSurfaceArea', name='Surface Area', unit='AREA'),
+    Feature(variable='SomaVolume', name='Volume', unit='VOLUME')
+
+]
 
 
 
@@ -181,13 +214,18 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
+    for neurite in ['Axon', 'ApicalDendrite', 'BasalDendrite0']:
+        for feature in neurite_features_list:
+            if feature.type == 'Int':
+                setattr(bpy.types.Scene, '%s%s' % (neurite, feature.variable),
+                        IntProperty(name=feature.name, min=0, max=1))
+            elif feature.type == 'Float':
+                setattr(bpy.types.Scene, '%s%s' % (neurite, feature.variable),
+                        FloatProperty(name=feature.name,
+                                      min=-1e10, max=1e10, unit=feature.unit))
+            else:
+                pass
 
-
-
-
-    for feature in features_list:
-        setattr(bpy.types.Scene, feature.variable,
-                FloatProperty(name=feature.name, min=-1e10, max=1e10, subtype=feature.subtype))
 
     #bpy.types.Scene.AxonTotalLength = \
     #    FloatProperty(name="", min=-1e10, max=1e10, subtype='NONE', options={'ANIMATABLE'})
@@ -287,20 +325,20 @@ class AnalysisPanel(bpy.types.Panel):
 
         box = layout.box()
         row = box.column()
-        row.label(text="Axon")
-        row.label(text=" - Total Length: 102.0")
-        row.label(text=" - Total Surface Area")
-        row.label(text=" - Total Volume: 10")
-        row.label(text=" - Average Section Length: 10")
 
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Axon:')
-
-        for feature in features_list:
-            bounding_box_p_min_row.prop(context.scene, feature.variable)
+        for feature in neurite_features_list:
+            bounding_box_p_min_row.prop(context.scene, 'Axon%s' % feature.variable)
         bounding_box_p_min_row.enabled = False
 
+        bounding_box_p_row = layout.row()
+        bounding_box_p_min_row = bounding_box_p_row.column(align=True)
+        bounding_box_p_min_row.label(text='Apical Dendrite:')
+        for feature in neurite_features_list:
+            bounding_box_p_min_row.prop(context.scene, 'ApicalDendrite%s' % feature.variable)
+        bounding_box_p_min_row.enabled = False
 
         """
         

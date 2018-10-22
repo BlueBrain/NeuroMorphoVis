@@ -84,7 +84,7 @@ class Section:
         # A reference to the reconstructed mesh that represents the section.
         # NOTE: This reference will be used to link the mesh to the soma if the arbor is connected
         # to the soma relying on the value of the connected_to_soma variable.
-        # It is only used for specific meshing algorithms 
+        # It is only used for specific meshing algorithms
         self.mesh = None
 
         # The index of the face that is supposed to connect the soma with the root section of a
