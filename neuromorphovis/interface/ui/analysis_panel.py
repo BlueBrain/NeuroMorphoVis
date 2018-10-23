@@ -207,6 +207,8 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
+
+
     for neurite in ['Axon', 'ApicalDendrite', 'BasalDendrite0']:
         for entry in nmv.analysis.per_neurite:
             entry.create_blender_entry(neurite=neurite)

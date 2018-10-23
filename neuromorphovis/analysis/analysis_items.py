@@ -80,26 +80,43 @@ per_neurite = [
     # Number of bifurcations along the neurite
     AnalysisItem(variable='NumberBifurcations',
                  name='# Bifurcations',
+                 description='Number of bifurcations along the neurite',
                  format='INT'),
 
     # Number of trifurcations along the neurite
     AnalysisItem(variable='NumberTrifurcations',
                  name='# Trifurcations',
+                 description='Number of trifurcations along the neurite',
+                 format='INT'),
+
+    # Number of orphan sections
+    AnalysisItem(variable='NumberOrphanSections',
+                 name='# Orphan Sections',
+                 description='Number of sections with a single child only at the branching points',
                  format='INT'),
 
     # Number of sections along the neurite
     AnalysisItem(variable='NumberSections',
+                 description='Number of sections along the neurite',
                  name='# Sections',
+                 format='INT'),
+
+    # Number of short sections along the neurite
+    AnalysisItem(variable='NumberShortSections',
+                 name='# Short Sections',
+                 description='Sections with large radii compared to their length',
                  format='INT'),
 
     # Number of samples along the neurite
     AnalysisItem(variable='NumberSamples',
                  name='# Samples',
+                 description='Number of samples along the neurite',
                  format='INT'),
 
     # Average number of samples per section
     AnalysisItem(variable='AvgNumberSamplesPerSection',
                  name='# Samples / Section (Avg.)',
+                 description='Average number of samples per section',
                  format='INT'),
 
 ]
