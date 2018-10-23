@@ -265,7 +265,7 @@ def compute_number_of_segments_per_section(section):
 
 
 ####################################################################################################
-# @compute_number_of_samples_per_section
+# @analyze_number_of_samples_per_section
 ####################################################################################################
 def analyze_number_of_samples_per_section(section,
                                           analysis_data_list):

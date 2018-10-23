@@ -49,3 +49,34 @@ def compute_segments_length(section,
 
         # Append it to the list
         segments_length_list.append(segment_length)
+
+
+####################################################################################################
+# @compute_segments_length
+####################################################################################################
+def compute_segments_length_with_annotations(section,
+                                             segments_length_list):
+    """Computes the length of each segment along the given section and annotate the result with the
+    data of the segments for extended analysis. The results are appends the to the given list.
+
+    :param section:
+        A given section to be analyzed.
+    :param segments_length_list:
+        The list where the computed lengths will be appended to.
+    """
+
+    # Iterate over each segment in the section
+    for i in range(len(section.samples) - 1):
+
+        # Retrieve the points along each segment on the section
+        point_0 = section.samples[i].point
+        point_1 = section.samples[i + 1].point
+
+        # Compute the segment length
+        segment_length = (point_1 - point_0).length
+
+        #
+
+
+        # Append it to the list
+        segments_length_list.append(segment_length)

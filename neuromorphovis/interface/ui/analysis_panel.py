@@ -209,8 +209,8 @@ class AnalysisPanel(bpy.types.Panel):
 
 
 
-    for neurite in ['Axon', 'ApicalDendrite', 'BasalDendrite0']:
-        for entry in nmv.analysis.per_neurite:
+    for neurite in ['Axon']:
+        for entry in nmv.analysis.sample_per_neurite:
             entry.create_blender_entry(neurite=neurite)
 
 
@@ -308,18 +308,19 @@ class AnalysisPanel(bpy.types.Panel):
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Axon:')
 
-        for feature in nmv.analysis.per_neurite:
+        for feature in nmv.analysis.sample_per_neurite:
             bounding_box_p_min_row.prop(context.scene, 'Axon%s' % feature.variable)
         bounding_box_p_min_row.enabled = False
 
+        """
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Apical Dendrite:')
-        for feature in nmv.analysis.per_neurite:
+        for feature in nmv.analysis.sample_per_neurite:
             bounding_box_p_min_row.prop(context.scene, 'ApicalDendrite%s' % feature.variable)
         bounding_box_p_min_row.enabled = False
 
-        """
+        
         
         axon_column = layout.box()
         axon_column.prop(context.scene, 'AnalyzeBranchesWithNegativeSamples')
@@ -435,6 +436,20 @@ class AnalyzeMorphology(bpy.types.Operator):
                                                      nmv.interface.ui_morphology.label,
                                                      filter_prefix)
                 nmv.file.write_list_string_to_file(analysis_data, report_file)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return {'FINISHED'}
 

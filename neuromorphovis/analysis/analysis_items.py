@@ -146,3 +146,13 @@ per_soma = [
 
 
 ]
+
+
+
+sample_per_neurite = [
+
+    AnalysisItem(variable='NumberSamples',
+                 name='# Samples',
+                 description='Number of samples along the neurite',
+                 format='INT'),
+]
