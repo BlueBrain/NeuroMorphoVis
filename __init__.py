@@ -18,7 +18,7 @@
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = "1.0.0"
+__version__     = "1.1.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -33,7 +33,7 @@ bl_info = {
     # The author of this add-on
     "author" : "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version" : (1, 0, 0),
+    "version" : (1, 1, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
@@ -41,9 +41,8 @@ bl_info = {
     # This is where users should look for this add-on.
     "location" : "View 3D",
     # Description
-    "description": "This add-on is used to reconstruct surface meshes from three-dimensional "
-    "neuronal morphologies and vasculature. The Add-on was developed for internal use by the "
-    " Blue Brain Project at EPFL.",
+    "description": "Morphology reconstruction, analysis and visualization to mesh reconstruction. "
+                   "The Add-on was developed by the Blue Brain Project at EPFL.",
     # Add-on category; shown on the left side of Blender's add-on list to make filtering simpler.
     # This must be one of the categories as listed in Blender's add-on tab; if it's not, it will
     # create a new category for your add-on (which may be good or bad.)
@@ -70,12 +69,14 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 if "bpy" in locals():
 
+    # Import the modules
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
 
+    # Reloading the modules
     imp.reload(neuromorphovis.interface.ui.io_panel)
     imp.reload(neuromorphovis.interface.ui.analysis_panel)
     imp.reload(neuromorphovis.interface.ui.soma_panel)
@@ -84,30 +85,12 @@ if "bpy" in locals():
 
 else:
 
+    # Import the modules
     import neuromorphovis.interface.ui.io_panel
     import neuromorphovis.interface.ui.analysis_panel
     import neuromorphovis.interface.ui.soma_panel
     import neuromorphovis.interface.ui.morphology_panel
     import neuromorphovis.interface.ui.mesh_panel
-
-import bpy
-from addon_utils import check, paths, enable
-def get_all_addons(display=False):
-    """
-    Prints the addon state based on the user preferences.
-    """
-    import sys
-    paths_list = paths()
-    addon_list = []
-    for path in paths_list:
-        bpy.utils._sys_path_ensure(path)
-        for mod_name, mod_path in bpy.path.module_names(path):
-            is_enabled, is_loaded = check(mod_name)
-            addon_list.append(mod_name)
-            if display:  #for example
-                print("%s default:%s loaded:%s " % (mod_name, is_enabled, is_loaded))
-    return(addon_list)
-get_all_addons(True)
 
 
 ####################################################################################################
@@ -139,18 +122,15 @@ def unregister():
     neuromorphovis.interface.ui.morphology_panel.unregister_panel()
     neuromorphovis.interface.ui.mesh_panel.unregister_panel()
 
-print('HOLA')
+
 ####################################################################################################
 # __main__
 ####################################################################################################
 if __name__ == "__main__":
 
+    # Register the add-on
     register()
 
-    is_enabled, is_loaded = check(neuromorphovis)
-    if not is_enabled:
-        print("%s enabled" % neuromorphovis)
-        enable('neuromorphovis')
 
 
 

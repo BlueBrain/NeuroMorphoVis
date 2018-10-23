@@ -27,6 +27,7 @@ from bpy.props import FloatVectorProperty
 
 import neuromorphovis as nmv
 import neuromorphovis.consts
+import neuromorphovis.analysis
 import neuromorphovis.enums
 import neuromorphovis.file
 import neuromorphovis.interface
@@ -35,8 +36,8 @@ import neuromorphovis.skeleton
 
 
 
-
-class Feature:
+"""
+class FeatureEntry:
 
     ################################################################################################
     # @__init__
@@ -46,15 +47,7 @@ class Feature:
                  name,
                  type='Float',
                  unit='NONE'):
-        """Constructor
 
-        :param variable:
-            Feature variable name.
-        :param name:
-            Feature name.
-        :param unit:
-            Feature unit.
-        """
 
         self.variable = variable
         self.name = name
@@ -99,7 +92,7 @@ soma_features_list = [
 ]
 
 
-
+"""
 
 
 
@@ -215,25 +208,8 @@ class AnalysisPanel(bpy.types.Panel):
         default=True)
 
     for neurite in ['Axon', 'ApicalDendrite', 'BasalDendrite0']:
-        for feature in neurite_features_list:
-            if feature.type == 'Int':
-                setattr(bpy.types.Scene, '%s%s' % (neurite, feature.variable),
-                        IntProperty(name=feature.name, min=0, max=1))
-            elif feature.type == 'Float':
-                setattr(bpy.types.Scene, '%s%s' % (neurite, feature.variable),
-                        FloatProperty(name=feature.name,
-                                      min=-1e10, max=1e10, unit=feature.unit))
-            else:
-                pass
-
-
-    #bpy.types.Scene.AxonTotalLength = \
-    #    FloatProperty(name="", min=-1e10, max=1e10, subtype='NONE', options={'ANIMATABLE'})
-
-    #FloatProperty(name="", min=-1e10, max=1e10, subtype='FACTOR', options={'ANIMATABLE'})
-
-    # bpy.types.Scene.BBoxPMinX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-
+        for entry in nmv.analysis.per_neurite:
+            entry.create_blender_entry(neurite=neurite)
 
 
 
@@ -329,14 +305,15 @@ class AnalysisPanel(bpy.types.Panel):
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Axon:')
-        for feature in neurite_features_list:
+
+        for feature in nmv.analysis.per_neurite:
             bounding_box_p_min_row.prop(context.scene, 'Axon%s' % feature.variable)
         bounding_box_p_min_row.enabled = False
 
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
         bounding_box_p_min_row.label(text='Apical Dendrite:')
-        for feature in neurite_features_list:
+        for feature in nmv.analysis.per_neurite:
             bounding_box_p_min_row.prop(context.scene, 'ApicalDendrite%s' % feature.variable)
         bounding_box_p_min_row.enabled = False
 
