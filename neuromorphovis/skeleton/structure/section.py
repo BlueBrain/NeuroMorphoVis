@@ -145,6 +145,25 @@ class Section:
             return 'UnknownBranch'
 
     ################################################################################################
+    # @get_type_label
+    ################################################################################################
+    def get_type_label(self):
+        """Returns the label of the section.
+
+        :return:
+            A string that reflects the type of the arbor and can be used to label UI components.
+        """
+
+        if str(self.type) == '2':
+            return 'Axon'
+        elif str(self.type) == '3':
+            return 'Basal Dendrite'
+        elif str(self.type) == '4':
+            return 'Apical Dendrite'
+        else:
+            return 'Unknown Branch'
+
+    ################################################################################################
     # @is_axon
     ################################################################################################
     def is_axon(self):

@@ -17,45 +17,11 @@
 
 # Blender imports
 import bpy
+from bpy.props import BoolProperty
 
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.analysis
-
-
-####################################################################################################
-# @register_morphology_ui_entries
-####################################################################################################
-def register_morphology_ui_entries(morphology):
-    """Registers the analysis entries that correspond to the available morphology neurites.
-
-    :param morphology:
-        Loaded morphology.
-    """
-
-    # Apical dendrite
-    if morphology.apical_dendrite is not None:
-
-        # Register each entry
-        for entry in nmv.analysis.per_arbor:
-            entry.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
-
-    # Basal dendrites
-    if morphology.dendrites is not None:
-
-        # For each basal dendrite
-        for i, basal_dendrite in enumerate(morphology.dendrites):
-
-            # Register each entry
-            for entry in nmv.analysis.per_arbor:
-                entry.register_ui_entry(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i))
-
-    # Axon
-    if morphology.axon is not None:
-
-        # Register each entry
-        for entry in nmv.analysis.per_arbor:
-            entry.register_ui_entry(arbor_prefix=morphology.axon.get_type_prefix())
 
 
 ####################################################################################################
@@ -72,6 +38,71 @@ def get_arbor_label_with_spaces_from_prefix(arbor_prefix):
         return 'Axon'
     else:
         return 'ERROR'
+
+
+####################################################################################################
+# @register_arbor_checkbox
+####################################################################################################
+def register_arbor_checkbox(arbor_prefix,
+                            description):
+    """Register
+
+    :param arbor_prefix:
+    :param description:
+    :return:
+    """
+    setattr(bpy.types.Scene, '%s' % arbor_prefix,
+            BoolProperty(name=get_arbor_label_with_spaces_from_prefix(arbor_prefix),
+                         description=description, default=False))
+
+
+####################################################################################################
+# @register_morphology_ui_entries
+####################################################################################################
+def register_morphology_ui_entries(morphology):
+    """Registers the analysis entries that correspond to the available morphology neurites.
+
+    :param morphology:
+        Loaded morphology.
+    """
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+
+        # Register the checkbox
+        register_arbor_checkbox(arbor_prefix=morphology.apical_dendrite.get_type_prefix(),
+                                description='Show the analysis data of %s' %
+                                            morphology.apical_dendrite.get_type_label())
+        # Register each entry
+        for entry in nmv.analysis.per_arbor:
+            entry.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
+
+    # Basal dendrites
+    if morphology.dendrites is not None:
+
+        # For each basal dendrite
+        for i, basal_dendrite in enumerate(morphology.dendrites):
+
+            # Register the checkbox
+            register_arbor_checkbox(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i),
+                                    description='Show the analysis data of %s %d' %
+                                                (basal_dendrite.get_type_label(), i))
+
+            # Register each entry
+            for entry in nmv.analysis.per_arbor:
+                entry.register_ui_entry(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i))
+
+    # Axon
+    if morphology.axon is not None:
+
+        # Register the checkbox
+        register_arbor_checkbox(arbor_prefix=morphology.axon.get_type_prefix(),
+                                description='Show the analysis data of %s' %
+                                            morphology.axon.get_type_label())
+
+        # Register each entry
+        for entry in nmv.analysis.per_arbor:
+            entry.register_ui_entry(arbor_prefix=morphology.axon.get_type_prefix())
 
 
 ####################################################################################################
@@ -94,19 +125,23 @@ def add_analysis_group_to_panel(arbor_prefix,
     outline = layout.column()
 
     # Add a label that identifies the arbor
-    outline.label(text='%s:' % get_arbor_label_with_spaces_from_prefix(arbor_prefix))
+    # outline.label(text='%s:' % get_arbor_label_with_spaces_from_prefix(arbor_prefix))
 
-    # Create a sub-column that aligns the analysis data from the original outline
-    analysis_area = outline.column(align=True)
+    outline.prop(context.scene, arbor_prefix)
 
-    # Update the analysis area with all the filters
-    for item in nmv.analysis.per_arbor:
+    if getattr(context.scene, arbor_prefix):
 
-        # Update the UI entry s
-        item.update_ui_entry(arbor_prefix, analysis_area, context)
+        # Create a sub-column that aligns the analysis data from the original outline
+        analysis_area = outline.column(align=True)
 
-    # Disable editing the analysis area
-    analysis_area.enabled = False
+        # Update the analysis area with all the filters
+        for item in nmv.analysis.per_arbor:
+
+            # Update the UI entry s
+            item.update_ui_entry(arbor_prefix, analysis_area, context)
+
+        # Disable editing the analysis area
+        analysis_area.enabled = False
 
 
 ####################################################################################################

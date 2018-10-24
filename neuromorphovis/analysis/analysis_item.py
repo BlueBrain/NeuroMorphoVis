@@ -93,12 +93,14 @@ class AnalysisItem:
         # Float entry
         if self.data_format == 'FLOAT':
             setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
-                    FloatProperty(name=self.name, description=self.description, unit=self.unit))
+                    FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
+                                  min=0, max=1e32))
 
         # Int entry
         elif self.data_format == 'INT':
             setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
-                    IntProperty(name=self.name, description=self.description))
+                    IntProperty(name=self.name, description=self.description, subtype='FACTOR',
+                                min=0, max=1e32))
 
     ################################################################################################
     # @apply_filter
