@@ -40,7 +40,7 @@ def apply_analysis_filters(morphology,
         if morphology.apical_dendrite is not None:
 
             # For each entry in the analysis list
-            for entry in nmv.analysis.sample_per_neurite:
+            for entry in nmv.analysis.per_arbor:
 
                 # Apply the filter function
                 entry.apply_filter(
@@ -54,7 +54,7 @@ def apply_analysis_filters(morphology,
             for i, basal_dendrite in enumerate(morphology.dendrites):
 
                 # For each entry in the analysis list
-                for feature in nmv.analysis.sample_per_neurite:
+                for feature in nmv.analysis.per_arbor:
 
                     # Apply the filter function
                     feature.apply_filter(
@@ -66,7 +66,7 @@ def apply_analysis_filters(morphology,
         if morphology.axon is not None:
 
             # For each entry in the analysis list
-            for entry in nmv.analysis.sample_per_neurite:
+            for entry in nmv.analysis.per_arbor:
 
                 # Apply the filter function
                 entry.apply_filter(

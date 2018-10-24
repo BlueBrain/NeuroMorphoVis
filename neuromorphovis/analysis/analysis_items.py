@@ -15,228 +15,45 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import neuromorphovis as nmv
-import neuromorphovis.analysis
 from neuromorphovis.analysis import AnalysisItem
+from neuromorphovis.analysis import arbor_analysis_ops
+
+####################################################################################################
+# Apply each item in this list on the morphology
+####################################################################################################
+per_morphology = [
+
+]
 
 
 ####################################################################################################
-# Analysis items per neurite
+# Apply each item in this list on each arbor or neurite in the morphology
 ####################################################################################################
-per_neurite = [
+per_arbor = [
 
-    # Neurite total length
-    AnalysisItem(variable='Length',
-                 name='Length',
+    ################################################################################################
+    # Length
+    ################################################################################################
+    # Total neurite length
+    AnalysisItem(variable='TotalLength',
+                 name='Total Length',
+                 filter_function=arbor_analysis_ops.compute_arbor_total_length,
                  description='Total length of the neurite',
                  data_format='FLOAT',
                  unit='LENGTH'),
 
-    # Average section length
-    AnalysisItem(variable='AvgSectionLength',
-                 name='Section Length (Avg.)',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Average segment length
-    AnalysisItem(variable='AvgSegmentLength',
-                 name='Segment Length (Avg.)',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Neurite total surface area
-    AnalysisItem(variable='SurfaceArea',
-                 name='Surface Area',
-                 data_format='FLOAT',
-                 unit='AREA'),
-
-    # Average section surface area
-    AnalysisItem(variable='AvgSectionSurfaceArea',
-                 name='Section Surface Area (Avg.)',
-                 data_format='FLOAT',
-                 unit='AREA'),
-
-    # Average segment surface area
-    AnalysisItem(variable='AvgSegmentSurfaceArea',
-                 name='Segment Surface Area (Avg.)',
-                 data_format='FLOAT',
-                 unit='AREA'),
-
-    # Neurite total volume
-    AnalysisItem(variable='Volume',
-                 name='Volume',
-                 data_format='FLOAT',
-                 unit='VOLUME'),
-
-    # Average section volume
-    AnalysisItem(variable='AvgSectionVolume',
-                 name='Section Volume (Avg.)',
-                 data_format='FLOAT',
-                 unit='VOLUME'),
-
-    # Average segment volume
-    AnalysisItem(variable='AvgSegmentVolume',
-                 name='Segment Volume (Avg.)',
-                 data_format='FLOAT',
-                 unit='VOLUME'),
-
-    # Number of bifurcations along the neurite
-    AnalysisItem(variable='NumberBifurcations',
-                 name='# Bifurcations',
-                 description='Number of bifurcations along the neurite',
-                 data_format='INT'),
-
-    # Number of trifurcations along the neurite
-    AnalysisItem(variable='NumberTrifurcations',
-                 name='# Trifurcations',
-                 description='Number of trifurcations along the neurite',
-                 data_format='INT'),
-
-    # Number of orphan sections
-    AnalysisItem(variable='NumberOrphanSections',
-                 name='# Orphan Sections',
-                 description='Number of sections with a single child only at the branching points',
-                 data_format='INT'),
-
-    # Number of sections along the neurite
-    AnalysisItem(variable='NumberSections',
-                 description='Number of sections along the neurite',
-                 name='# Sections',
-                 data_format='INT'),
-
-    # Number of short sections along the neurite
-    AnalysisItem(variable='NumberShortSections',
-                 name='# Short Sections',
-                 description='Sections with large radii compared to their length',
-                 data_format='INT'),
-
-    # Number of samples along the neurite
-    AnalysisItem(variable='NumberSamples',
-                 name='# Samples',
-                 description='Number of samples along the neurite',
-                 data_format='INT'),
-
-    # Average number of samples per section
-    AnalysisItem(variable='AvgNumberSamplesPerSection',
-                 name='# Samples / Section (Avg.)',
-                 description='Average number of samples per section',
-                 data_format='INT'),
-
-]
-
-
-####################################################################################################
-# Analysis items per neurite
-####################################################################################################
-per_soma = [
-
-    # Soma surface area
-    AnalysisItem(variable='SurfaceArea',
-                 name='Surface Area',
-                 data_format='FLOAT',
-                 unit='AREA'),
-
-    # Soma volume
-    AnalysisItem(variable='Volume',
-                 name='Volume',
-                 data_format='FLOAT',
-                 unit='Volume'),
-
-    # Number of profile samples
-    AnalysisItem(variable='NumberProfileSamples',
-                 name='# Profile Samples',
-                 data_format='INT'),
-
-
-]
-
-
-filters = [
-
-    # number samples on arbor
-
-    # min number of samples per section
-    # avg number of samples per section
-    # max number of samples per section
-
-]
-
-import neuromorphovis.consts
-import neuromorphovis.analysis
-
-
-
-x = [
-    # Minimum section length
-    AnalysisItem(variable='MinSectionLength',
-                 name='Min. Section Length ',
-                 description='The length of the shortest section along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Maximum section length
-    AnalysisItem(variable='MaxSectionLength',
-                 name='Max. Section Length ',
-                 description='The length of the longest section along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Average section length
-    AnalysisItem(variable='AvgSectionLength',
-                 name='Avg. Section Length ',
-                 description='Average length of the sections along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Minimum segment length
-    AnalysisItem(variable='MinSegmentLength',
-                 name='Min. Segment Length ',
-                 description='The length of the shortest segment along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Maximum segment length
-    AnalysisItem(variable='MaxSegmentLength',
-                 name='Max. Segment Length ',
-                 description='The length of the longest segment along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Average segment length
-    AnalysisItem(variable='AvgSegmentLength',
-                 name='Avg. Segment Length ',
-                 description='Average length of the segment along this neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Zero-length segments
-    AnalysisItem(variable='ZeroLengthSegments',
-                 name='0-length Segments',
-                 description='The total number of zero-length segments along this neurite',
-                 data_format='INT'),
-
     ################################################################################################
-    # Surface Area
+    # Area
     ################################################################################################
-
-
-    AnalysisItem(variable='NumberSamples',
-                 name='# Samples',
-                 description='Total number of samples along this neurite',
-                 data_format='INT'),
-    AnalysisItem(variable='MinSamplesPerSection',
-                 name='Min. # Samples / Section',
-                 description='The minimum number of samples along a section of this neurite',
-                 data_format='INT'),
-    AnalysisItem(variable='MaxSamplesPerSection',
-                 name='Max. # Samples / Section',
-                 description='The maximum number of samples along a section of this neurite',
-                 data_format='INT'),
-    AnalysisItem(variable='AvgSamplesPerSection',
-                 name='Avg. # Samples / Section',
-                 description='The average number of samples along a section of this neurite',
-                 data_format='INT'),
+    # Total neurite surface area
+    AnalysisItem(variable='TotalSurfaceArea',
+                 name='Total Surface Area',
+                 filter_function=arbor_analysis_ops.compute_arbor_total_surface_area,
+                 description='Total surface area of the neurite',
+                 data_format='FLOAT',
+                 unit='AREA'),
 ]
+
 
 
 

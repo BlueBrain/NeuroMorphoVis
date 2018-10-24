@@ -18,6 +18,7 @@
 # Blender imports
 import bpy
 
+# Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.analysis
 
@@ -36,7 +37,7 @@ def register_morphology_ui_entries(morphology):
     if morphology.apical_dendrite is not None:
 
         # Register each entry
-        for entry in nmv.analysis.sample_per_neurite:
+        for entry in nmv.analysis.per_arbor:
             entry.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
 
     # Basal dendrites
@@ -46,14 +47,14 @@ def register_morphology_ui_entries(morphology):
         for i, basal_dendrite in enumerate(morphology.dendrites):
 
             # Register each entry
-            for entry in nmv.analysis.sample_per_neurite:
+            for entry in nmv.analysis.per_arbor:
                 entry.register_ui_entry(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i))
 
     # Axon
     if morphology.axon is not None:
 
         # Register each entry
-        for entry in nmv.analysis.sample_per_neurite:
+        for entry in nmv.analysis.per_arbor:
             entry.register_ui_entry(arbor_prefix=morphology.axon.get_type_prefix())
 
 
@@ -99,7 +100,7 @@ def add_analysis_group_to_panel(arbor_prefix,
     analysis_area = outline.column(align=True)
 
     # Update the analysis area with all the filters
-    for item in nmv.analysis.sample_per_neurite:
+    for item in nmv.analysis.per_arbor:
 
         # Update the UI entry s
         item.update_ui_entry(arbor_prefix, analysis_area, context)

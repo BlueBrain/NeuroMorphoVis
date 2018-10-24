@@ -20,10 +20,10 @@ import math
 
 # Internal imports
 import neuromorphovis as nmv
-import neuromorphovis.analysis
+from neuromorphovis.analysis import AnalysisItem
+from neuromorphovis.analysis import *
 import neuromorphovis.skeleton
 
-from neuromorphovis.analysis import AnalysisItem
 
 
 ####################################################################################################
@@ -106,8 +106,6 @@ def compute_arbor_total_surface_area(arbor):
 
 
 
-
-
 ####################################################################################################
 # @compute_segments_length
 ####################################################################################################
@@ -140,27 +138,3 @@ def compute_segments_length_with_annotations(section,
 
 
 
-sample_per_neurite = [
-
-    ################################################################################################
-    # Length
-    ################################################################################################
-    # Total neurite length
-    AnalysisItem(variable='TotalLength',
-                 name='Total Length',
-                 filter_function=compute_arbor_total_length,
-                 description='Total length of the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    ################################################################################################
-    # Area
-    ################################################################################################
-    # Total neurite surface area
-    AnalysisItem(variable='TotalSurfaceArea',
-                 name='Total Surface Area',
-                 filter_function=compute_arbor_total_surface_area,
-                 description='Total surface area of the neurite',
-                 data_format='FLOAT',
-                 unit='AREA'),
-]
