@@ -33,7 +33,7 @@ import neuromorphovis.file
 import neuromorphovis.interface
 import neuromorphovis.skeleton
 
-
+from neuromorphovis.analysis import AnalysisItem
 
 
 """
@@ -211,7 +211,7 @@ class AnalysisPanel(bpy.types.Panel):
 
     for neurite in ['Axon']:
         for entry in nmv.analysis.sample_per_neurite:
-            entry.create_blender_entry(neurite=neurite)
+            entry.register_ui_entry(neurite=neurite)
 
 
 
@@ -306,11 +306,16 @@ class AnalysisPanel(bpy.types.Panel):
 
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
-        bounding_box_p_min_row.label(text='Axon:')
 
+
+
+
+        neurite_group = layout.column()
+        neurite_group.label(text='Axon:')
+        neurite_group_data = neurite_group.column(align=True)
         for feature in nmv.analysis.sample_per_neurite:
-            bounding_box_p_min_row.prop(context.scene, 'Axon%s' % feature.variable)
-        bounding_box_p_min_row.enabled = False
+            neurite_group_data.prop(context.scene, 'Axon%s' % feature.variable)
+        neurite_group_data .enabled = False
 
         """
         bounding_box_p_row = layout.row()
@@ -359,8 +364,8 @@ class AnalyzeMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
-        # context.scene.A = 25.4
 
+        """
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
@@ -375,9 +380,13 @@ class AnalyzeMorphology(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):
             nmv.file.ops.clean_and_create_directory(
                 nmv.interface.ui_options.io.analysis_directory)
+        """
 
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
+
+        for feature in nmv.analysis.sample_per_neurite:
+            feature.apply_filter(nmv.interface.ui_morphology.axon, context)
 
         # All set of filter we support
         analysis_filters = [
@@ -407,6 +416,7 @@ class AnalyzeMorphology(bpy.types.Operator):
              'SECTIONS_RADII']
         ]
 
+        return  {'FINISHED'}
         # Apply the analysis filters
         for analysis_filter in analysis_filters:
 

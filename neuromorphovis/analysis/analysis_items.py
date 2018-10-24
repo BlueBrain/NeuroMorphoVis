@@ -15,8 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
+import neuromorphovis as nmv
+import neuromorphovis.analysis
 from neuromorphovis.analysis import AnalysisItem
+
 
 ####################################################################################################
 # Analysis items per neurite
@@ -26,6 +28,7 @@ per_neurite = [
     # Neurite total length
     AnalysisItem(variable='Length',
                  name='Length',
+                 description='Total length of the neurite',
                  format='FLOAT',
                  unit='LENGTH'),
 
@@ -148,11 +151,94 @@ per_soma = [
 ]
 
 
+filters = [
 
-sample_per_neurite = [
+    # number samples on arbor
+
+    # min number of samples per section
+    # avg number of samples per section
+    # max number of samples per section
+
+]
+
+import neuromorphovis.consts
+import neuromorphovis.analysis
+
+
+
+x = [
+    # Minimum section length
+    AnalysisItem(variable='MinSectionLength',
+                 name='Min. Section Length ',
+                 description='The length of the shortest section along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Maximum section length
+    AnalysisItem(variable='MaxSectionLength',
+                 name='Max. Section Length ',
+                 description='The length of the longest section along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Average section length
+    AnalysisItem(variable='AvgSectionLength',
+                 name='Avg. Section Length ',
+                 description='Average length of the sections along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Minimum segment length
+    AnalysisItem(variable='MinSegmentLength',
+                 name='Min. Segment Length ',
+                 description='The length of the shortest segment along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Maximum segment length
+    AnalysisItem(variable='MaxSegmentLength',
+                 name='Max. Segment Length ',
+                 description='The length of the longest segment along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Average segment length
+    AnalysisItem(variable='AvgSegmentLength',
+                 name='Avg. Segment Length ',
+                 description='Average length of the segment along this neurite',
+                 format='FLOAT',
+                 unit='LENGTH'),
+
+    # Zero-length segments
+    AnalysisItem(variable='ZeroLengthSegments',
+                 name='0-length Segments',
+                 description='The total number of zero-length segments along this neurite',
+                 format='INT'),
+
+    ################################################################################################
+    # Surface Area
+    ################################################################################################
+
 
     AnalysisItem(variable='NumberSamples',
                  name='# Samples',
-                 description='Number of samples along the neurite',
+                 description='Total number of samples along this neurite',
+                 format='INT'),
+    AnalysisItem(variable='MinSamplesPerSection',
+                 name='Min. # Samples / Section',
+                 description='The minimum number of samples along a section of this neurite',
+                 format='INT'),
+    AnalysisItem(variable='MaxSamplesPerSection',
+                 name='Max. # Samples / Section',
+                 description='The maximum number of samples along a section of this neurite',
+                 format='INT'),
+    AnalysisItem(variable='AvgSamplesPerSection',
+                 name='Avg. # Samples / Section',
+                 description='The average number of samples along a section of this neurite',
                  format='INT'),
 ]
+
+
+
+
+
