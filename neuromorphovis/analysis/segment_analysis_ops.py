@@ -24,17 +24,16 @@ import neuromorphovis.skeleton
 
 
 ####################################################################################################
-# @compute_segments_length
+# @compute_segments_lengths
 ####################################################################################################
-def compute_segments_length(section,
-                            segments_length_list):
-    """Computes the length of each segment along the given section and appends the results to
-    the given list.
+def compute_segments_lengths(section,
+                             segments_lengths):
+    """Computes the lengths of all the segments along a given neurite or arbor.
 
-    :param section:
-        A given section to be analyzed.
-    :param segments_length_list:
-        The list where the computed lengths will be appended to.
+     :param section:
+        A given section to compute its length.
+    :param segments_lengths:
+        A list to collect the resulting data.
     """
 
     # Iterate over each segment in the section
@@ -48,7 +47,8 @@ def compute_segments_length(section,
         segment_length = (point_1 - point_0).length
 
         # Append it to the list
-        segments_length_list.append(segment_length)
+        segments_lengths.append(segment_length)
+
 
 
 ####################################################################################################

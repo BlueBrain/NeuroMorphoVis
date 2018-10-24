@@ -96,7 +96,7 @@ def compute_section_length(section):
 ####################################################################################################
 def compute_sections_lengths(section,
                              sections_lengths):
-    """Computes the lengths of all the section along a given neurite or arbor.
+    """Computes the lengths of all the sections along a given neurite or arbor.
 
     :param section:
         A given section to compute its length.

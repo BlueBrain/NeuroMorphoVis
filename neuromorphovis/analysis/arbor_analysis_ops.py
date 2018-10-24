@@ -26,6 +26,130 @@ import neuromorphovis.skeleton
 
 
 ####################################################################################################
+# @compute_arbor_total_number_samples
+####################################################################################################
+def compute_arbor_total_number_samples(arbor):
+    """Computes the total number of samples along the given arbor.
+
+    Note that we use the number of segments to account for the number of samples to avoid
+    double-counting the branching points.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Total Number of samples of the arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_segments_per_section,
+          sections_number_samples])
+
+    # Total number of samples
+    total_number_samples = 0
+
+    # Iterate and sum up
+    for section_number_samples in sections_number_samples:
+
+        # Add to the total number of samples
+        total_number_samples += section_number_samples
+
+    # Add the root sample that is not considered a bifurcation point
+    total_number_samples += 1
+
+    # Return the total number of samples of the given arbor
+    return total_number_samples
+
+
+####################################################################################################
+# @compute_minimum_samples_count_of_arbor
+####################################################################################################
+def compute_minimum_samples_count_of_arbor(arbor):
+    """Computes the least number of samples found on a section that belongs to the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Least number of samples of a section along the arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_samples_per_section,
+          sections_number_samples])
+
+    # Return the minimum number of samples
+    return min(sections_number_samples)
+
+
+####################################################################################################
+# @compute_maximum_samples_count_of_arbor
+####################################################################################################
+def compute_maximum_samples_count_of_arbor(arbor):
+    """Computes the largest number of samples found on a section that belongs to the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Largest number of samples of a section along the arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_samples_per_section,
+          sections_number_samples])
+
+    # Return the minimum number of samples
+    return max(sections_number_samples)
+
+
+####################################################################################################
+# @compute_average_number_samples_per_section_of_arbor
+####################################################################################################
+def compute_average_number_samples_per_section_of_arbor(arbor):
+    """Computes the average number of samples per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Average number of samples per section along the gievn arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_samples_per_section,
+          sections_number_samples])
+
+    # Total number of samples
+    total_number_samples = 0
+
+    # Iterate and sum up
+    for section_number_samples in sections_number_samples:
+
+        # Add to the total number of samples
+        total_number_samples += section_number_samples
+
+    # Return the average number of samples per section
+    return int(total_number_samples * 1.0 / len(sections_number_samples))
+
+
+####################################################################################################
 # @compute_arbor_total_length
 ####################################################################################################
 def compute_arbor_total_length(arbor):
@@ -57,6 +181,97 @@ def compute_arbor_total_length(arbor):
 
     # Return the total section length
     return arbor_total_length
+
+
+####################################################################################################
+# @compute_segments_lengths_of_arbor
+####################################################################################################
+def compute_segments_lengths_of_arbor(arbor):
+    """Computes an array that contains the lengths of all the segments along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the lengths of all the segments along the arbor.
+    """
+
+    # A list that will contains the lengths of all the segments along the arbor
+    segments_lengths = list()
+
+    # Compute the length of each segment individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_lengths,
+          segments_lengths])
+
+    # Return the list
+    return segments_lengths
+
+
+####################################################################################################
+# @compute_minimum_segment_length_of_arbor
+####################################################################################################
+def compute_minimum_segment_length_of_arbor(arbor):
+    """Computes the minimum segment length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum segment length of the given arbor
+    """
+
+    # Get all the segments lengths
+    segments_lengths = compute_segments_lengths_of_arbor(arbor)
+
+    # Return the minimum
+    return min(segments_lengths)
+
+
+####################################################################################################
+# @compute_maximum_segment_length_of_arbor
+####################################################################################################
+def compute_maximum_segment_length_of_arbor(arbor):
+    """Computes the maximum segment length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum segment length of the given arbor
+    """
+
+    # Get all the segments lengths
+    segments_lengths = compute_segments_lengths_of_arbor(arbor)
+
+    # Return the maximum
+    return max(segments_lengths)
+
+
+####################################################################################################
+# @compute_average_segment_length_of_arbor
+####################################################################################################
+def compute_average_segment_length_of_arbor(arbor):
+    """Computes the average segment length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average segment length of the given arbor
+    """
+
+    # Get all the segments lengths
+    segments_lengths = compute_segments_lengths_of_arbor(arbor)
+
+    # Total length
+    total_length = 0.0
+
+    # Iterate and sum up all the segments lengths
+    for length in segments_lengths:
+
+        # Add to the arbor length
+        total_length += length
+
+    # Return the average segment length by normalizing the total one
+    return total_length / len(segments_lengths)
 
 
 ####################################################################################################

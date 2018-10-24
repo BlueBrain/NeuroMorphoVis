@@ -45,15 +45,16 @@ def get_arbor_label_with_spaces_from_prefix(arbor_prefix):
 ####################################################################################################
 def register_arbor_checkbox(arbor_prefix,
                             description):
-    """Register
+    """Register each arbor checkbox.
 
     :param arbor_prefix:
+        The prefix 'in string format' that is used to tag or identify the arbor.
     :param description:
-    :return:
+        The tooltip description of the checkbox.
     """
     setattr(bpy.types.Scene, '%s' % arbor_prefix,
             BoolProperty(name=get_arbor_label_with_spaces_from_prefix(arbor_prefix),
-                         description=description, default=False))
+                         description=description, default=True))
 
 
 ####################################################################################################
