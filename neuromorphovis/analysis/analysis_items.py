@@ -18,6 +18,11 @@
 from neuromorphovis.analysis import AnalysisItem
 from neuromorphovis.analysis import arbor_analysis_ops
 
+item = [
+    [],
+]
+
+
 ####################################################################################################
 # Apply each item in this list on the morphology
 ####################################################################################################
@@ -121,6 +126,13 @@ per_arbor = [
                  description='The average length of the segments along the neurite',
                  data_format='FLOAT',
                  unit='LENGTH'),
+
+    # Number of zero-length segments
+    AnalysisItem(variable='NumberZeroLengthSegments',
+                 name='Zero-length Segments',
+                 filter_function=arbor_analysis_ops.compute_number_zero_length_segments_of_arbor,
+                 description='The number of zero-length segments along the neurite',
+                 data_format='INT'),
 
     ################################################################################################
     # Area

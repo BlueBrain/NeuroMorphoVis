@@ -37,7 +37,7 @@ def compute_arbor_total_number_samples(arbor):
     :param arbor:
         A given arbor to analyze.
     :return
-        Total Number of samples of the arbor.
+        Total number of samples of the arbor.
     """
 
     # A list that will contain the number of samples per section
@@ -217,7 +217,7 @@ def compute_minimum_segment_length_of_arbor(arbor):
     :param arbor:
         A given arbor to analyze.
     :return:
-        The minimum segment length of the given arbor
+        The minimum segment length of the given arbor.
     """
 
     # Get all the segments lengths
@@ -236,7 +236,7 @@ def compute_maximum_segment_length_of_arbor(arbor):
     :param arbor:
         A given arbor to analyze.
     :return:
-        The maximum segment length of the given arbor
+        The maximum segment length of the given arbor.
     """
 
     # Get all the segments lengths
@@ -255,7 +255,7 @@ def compute_average_segment_length_of_arbor(arbor):
     :param arbor:
         A given arbor to analyze.
     :return:
-        The average segment length of the given arbor
+        The average segment length of the given arbor.
     """
 
     # Get all the segments lengths
@@ -272,6 +272,37 @@ def compute_average_segment_length_of_arbor(arbor):
 
     # Return the average segment length by normalizing the total one
     return total_length / len(segments_lengths)
+
+
+####################################################################################################
+# @compute_number_zero_length_segments_of_arbor
+####################################################################################################
+def compute_number_zero_length_segments_of_arbor(arbor):
+    """Computes the number of zero-length segments of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The number of zero-length segments of the given arbor.
+    """
+
+    # Get all the segments lengths
+    segments_lengths = compute_segments_lengths_of_arbor(arbor)
+
+    # Number of zero-length segments
+    zero_length_segments = 0
+
+    # Check the length of each segment
+    for segment_length in segments_lengths:
+
+        # If the segment length is zero
+        if segment_length < 1e-5:
+
+            # Increment the count
+            zero_length_segments += 1
+
+    # Return the number of zero-length segments
+    return zero_length_segments
 
 
 ####################################################################################################
