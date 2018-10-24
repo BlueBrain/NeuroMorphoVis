@@ -42,6 +42,30 @@ per_arbor = [
                  data_format='FLOAT',
                  unit='LENGTH'),
 
+    # Min. section length
+    AnalysisItem(variable='MinSectionLength',
+                 name='Min. Section Length',
+                 filter_function=arbor_analysis_ops.compute_minimum_section_length_of_arbor,
+                 description='The length of the shortest section along the neurite',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    # Max. section length
+    AnalysisItem(variable='MaxSectionLength',
+                 name='Max. Section Length',
+                 filter_function=arbor_analysis_ops.compute_maximum_section_length_of_arbor,
+                 description='The length of the longest section along the neurite',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    # Avg. section length
+    AnalysisItem(variable='AvgSectionLength',
+                 name='Avg. Section Length',
+                 filter_function=arbor_analysis_ops.compute_average_section_length_of_arbor,
+                 description='The average section length along the neurite',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
     ################################################################################################
     # Area
     ################################################################################################
@@ -52,6 +76,17 @@ per_arbor = [
                  description='Total surface area of the neurite',
                  data_format='FLOAT',
                  unit='AREA'),
+
+    ################################################################################################
+    # Volume
+    ################################################################################################
+    # Total neurite volume
+    AnalysisItem(variable='TotalVolume',
+                 name='Total Volume',
+                 filter_function=arbor_analysis_ops.compute_arbor_total_volume,
+                 description='Total volume of the neurite',
+                 data_format='FLOAT',
+                 unit='VOLUME'),
 ]
 
 

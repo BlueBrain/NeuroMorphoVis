@@ -24,7 +24,7 @@ import math
 ####################################################################################################
 def compute_number_of_samples_per_section(section,
                                           analysis_data):
-    """Compute the number of samples of a given section.
+    """Computes the number of samples of a given section.
 
     :param section:
         A given section to get analyzed.
@@ -40,7 +40,7 @@ def compute_number_of_samples_per_section(section,
 ####################################################################################################
 def compute_number_of_segments_per_section(section,
                                            analysis_data):
-    """Compute the number of segments of a given section.
+    """Computes the number of segments of a given section.
 
     :param section:
         A given section to get analyzed.
@@ -157,12 +157,12 @@ def compute_section_surface_area_from_segments(section):
 
 
 ####################################################################################################
-# @compute_sections_lengths
+# @compute_sections_surface_areas_from_segments
 ####################################################################################################
 def compute_sections_surface_areas_from_segments(section,
                                                  sections_surface_areas):
 
-    """Computes the surface areas of all the section along a given neurite or arbor.
+    """Computes the surface areas of all the sections along a given neurite or arbor.
 
     :param section:
         A given section to compute its surface area.
@@ -175,3 +175,64 @@ def compute_sections_surface_areas_from_segments(section,
 
     # Append the computed surface area to the list
     sections_surface_areas.append(section_surface_area)
+
+
+####################################################################################################
+# @compute_section_volume_from_segments
+####################################################################################################
+def compute_section_volume_from_segments(section):
+    """Computes the volume of a section from its segments.
+
+    This approach assumes that each segment is approximated by a tapered cylinder and uses the
+    formula reported in this link: https://keisan.casio.com/exec/system/1223372110.
+
+    :param section:
+        A given section to compute its volume.
+    :return:
+        Section total volume in cube microns.
+    """
+
+    # Section volume
+    section_volume = 0.0
+
+    # If the section has less than two samples, then report the error
+    if len(section.samples) < 2:
+
+        # Return 0
+        return section_volume
+
+    # Integrate the volume between each two successive samples
+    for i in range(len(section.samples) - 1):
+
+        # Retrieve the data of the samples along each segment on the section
+        p0 = section.samples[i].point
+        p1 = section.samples[i + 1].point
+        r0 = section.samples[i].radius
+        r1 = section.samples[i + 1].radius
+
+        # Compute the segment volume and append to the total section volume
+        section_volume += (1.0 / 3.0) * math.pi * (p0 - p1).length * (r0 * r0 + r0 * r1 + r1 * r1)
+
+    # Return the section volume
+    return section_volume
+
+
+####################################################################################################
+# @compute_sections_volumes_from_segments
+####################################################################################################
+def compute_sections_volumes_from_segments(section,
+                                           sections_volumes):
+
+    """Computes the volumes of all the sections along a given neurite or arbor.
+
+    :param section:
+        A given section to compute its surface area.
+    :param sections_volumes:
+        A list to collect the resulting data.
+    """
+
+    # Compute section surface area
+    section_volume = compute_section_volume_from_segments(section=section)
+
+    # Append the computed surface area to the list
+    sections_volumes.append(section_volume)

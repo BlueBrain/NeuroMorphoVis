@@ -25,7 +25,6 @@ from neuromorphovis.analysis import *
 import neuromorphovis.skeleton
 
 
-
 ####################################################################################################
 # @compute_arbor_total_length
 ####################################################################################################
@@ -61,6 +60,97 @@ def compute_arbor_total_length(arbor):
 
 
 ####################################################################################################
+# @compute_sections_lengths_of_arbor
+####################################################################################################
+def compute_sections_lengths_of_arbor(arbor):
+    """Computes an array that contains the lengths of all the sections along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the lengths of all the sections along the arbor.
+    """
+
+    # A list that will contains the lengths of all the sections along the arbor
+    sections_lengths = list()
+
+    # Compute the length of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_lengths,
+          sections_lengths])
+
+    # Return the list
+    return sections_lengths
+
+
+####################################################################################################
+# @compute_minimum_section_length_of_arbor
+####################################################################################################
+def compute_minimum_section_length_of_arbor(arbor):
+    """Computes the minimum section length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum section length of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_lengths = compute_sections_lengths_of_arbor(arbor)
+
+    # Return the minimum
+    return min(sections_lengths)
+
+
+####################################################################################################
+# @compute_maximum_section_length_of_arbor
+####################################################################################################
+def compute_maximum_section_length_of_arbor(arbor):
+    """Computes the maximum section length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum section length of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_lengths = compute_sections_lengths_of_arbor(arbor)
+
+    # Return the minimum
+    return max(sections_lengths)
+
+
+####################################################################################################
+# @compute_average_section_length_of_arbor
+####################################################################################################
+def compute_average_section_length_of_arbor(arbor):
+    """Computes the average section length along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average section length of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_lengths = compute_sections_lengths_of_arbor(arbor)
+
+    # Total arbor length
+    arbor_total_length = 0.0
+
+    # Iterate and sum up all the sections lengths
+    for length in sections_lengths:
+
+        # Add to the arbor length
+        arbor_total_length += length
+
+    # Return the average section length by normalizing the total one
+    return arbor_total_length / len(sections_lengths)
+
+
+####################################################################################################
 # @compute_arbor_total_surface_area
 ####################################################################################################
 def compute_arbor_total_surface_area(arbor):
@@ -72,7 +162,7 @@ def compute_arbor_total_surface_area(arbor):
         The total surface area of the arbor in um squared.
     """
 
-    # A list that will contains the surface areas of all the sections along the arbor
+    # A list that will contain the surface areas of all the sections along the arbor
     sections_surface_areas = list()
 
     # Compute the surface area of each section individually
@@ -87,12 +177,45 @@ def compute_arbor_total_surface_area(arbor):
     # Iterate and sum up all the sections surface areas
     for surface_area in sections_surface_areas:
 
-        # Add to the arbor length
+        # Add to the arbor surface area
         arbor_total_surface_area += surface_area
 
     # Return the total section surface area
     return arbor_total_surface_area
 
+
+####################################################################################################
+# @compute_arbor_total_volume
+####################################################################################################
+def compute_arbor_total_volume(arbor):
+    """Computes the total volume of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The total volume of the arbor in um cube.
+    """
+
+    # A list that will contain the volumes of all the sections along the arbor
+    sections_volumes = list()
+
+    # Compute the volumes of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_volumes_from_segments,
+          sections_volumes])
+
+    # Total arbor length
+    arbor_total_volume = 0.0
+
+    # Iterate and sum up all the sections volumes
+    for volume in sections_volumes:
+
+        # Add to the arbor volume
+        arbor_total_volume += volume
+
+    # Return the total section volume
+    return arbor_total_volume
 
 
 
