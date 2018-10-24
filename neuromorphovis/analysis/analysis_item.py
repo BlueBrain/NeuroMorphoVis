@@ -40,9 +40,9 @@ class AnalysisItem:
     def __init__(self,
                  variable,
                  name,
-                 filter=None,
+                 filter_function=None,
                  description='',
-                 format='FLOAT',
+                 data_format='FLOAT',
                  unit='NONE'):
         """Constructor
 
@@ -51,11 +51,11 @@ class AnalysisItem:
             Blender by changing context.scene.[the variable]
         :param name:
             The name of the entry as appears in the GUI.
-        :param filter:
+        :param filter_function:
             The filter function that will be applied on the arbor when the morphology is analyzed.
         :param description:
             A little description of the entry to appear as a tooltip in the GUI.
-        :param format:
+        :param data_format:
             The format of the entry. This could be one of the following options:
             'INT', 'FLOAT'
         :param unit:
@@ -70,13 +70,13 @@ class AnalysisItem:
         self.name = name
 
         # Analysis filter
-        self.filter = filter
+        self.filter_function = filter_function
 
         # Entry description
         self.description = description
 
         # Entry format
-        self.format = format
+        self.data_format = data_format
 
         # Entry unit
         self.unit = unit
@@ -96,12 +96,12 @@ class AnalysisItem:
         """
 
         # Float entry
-        if self.format == 'FLOAT':
+        if self.data_format == 'FLOAT':
             setattr(bpy.types.Scene, '%s%s' % (str(neurite), self.variable),
                     FloatProperty(name=self.name, description=self.description, unit=self.unit))
 
         # Int entry
-        elif self.format == 'INT':
+        elif self.data_format == 'INT':
             setattr(bpy.types.Scene, '%s%s' % (str(neurite), self.variable),
                     IntProperty(name=self.name, description=self.description))
 
@@ -110,11 +110,18 @@ class AnalysisItem:
     ################################################################################################
     def apply_filter(self,
                      neurite,
+                     arbor_name,
                      context):
 
         # Get the result
-        self.result = self.filter(neurite)
+        self.result = self.filter_function(neurite)
+
+        # TODO: Warning if self.result is None !
+        # TODO: Get the arbor type from the input neurite
 
         # Update the user interface
-        setattr(context.scene, '%s%s' % ('Axon', self.variable), self.result)
+        setattr(context.scene, '%s%s' % (arbor_name, self.variable), self.result)
+
+    def update_ui(self, arbor_name, group, context):
+        group.prop(context.scene, '%s%s' % (arbor_name, self.variable))
 

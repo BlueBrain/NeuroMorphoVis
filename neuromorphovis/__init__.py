@@ -34,4 +34,5 @@ def kill(option=0):
     :param option:
         Optional arguments for handling the killing operation to avoid Blender crashes.
     """
-    sys.exit(0)
+
+    sys.exit(option)

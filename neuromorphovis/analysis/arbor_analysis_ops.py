@@ -98,8 +98,8 @@ sample_per_neurite = [
     # Total neurite length
     AnalysisItem(variable='TotalLength',
                  name='Total Length',
-                 filter=compute_arbor_total_length,
+                 filter_function=compute_arbor_total_length,
                  description='Total length of the neurite',
-                 format='FLOAT',
+                 data_format='FLOAT',
                  unit='LENGTH'),
 ]

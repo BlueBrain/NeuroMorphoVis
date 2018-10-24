@@ -33,66 +33,9 @@ import neuromorphovis.file
 import neuromorphovis.interface
 import neuromorphovis.skeleton
 
-from neuromorphovis.analysis import AnalysisItem
 
-
-"""
-class FeatureEntry:
-
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self,
-                 variable,
-                 name,
-                 type='Float',
-                 unit='NONE'):
-
-
-        self.variable = variable
-        self.name = name
-        self.type = type
-        self.unit = unit
-
-
-
-morphology_features_list = [
-    Feature(variable='MorphologyNeuritesLength', name='Neurites Length', unit='LENGTH'),
-    Feature(variable='MorphologyNeuritesSurfaceArea', name='Neurites Surface Area', unit='AREA'),
-    Feature(variable='MorphologyNeuritesVolume', name='Neurites Volume', unit='VOLUME'),
-
-]
-
-neurite_features_list = [
-    Feature(variable='TotalLength', name='Total Length', unit='NONE'),
-    Feature(variable='Length', name='Length', unit='LENGTH'),
-    Feature(variable='AvgLengthPerSection', name='Avg. Length / Section', unit='LENGTH'),
-    Feature(variable='AvgLengthPerSegment', name='Avg. Length / Segment', unit='LENGTH'),
-    Feature(variable='SurfaceArea', name='Surface Area', unit='AREA'),
-    Feature(variable='AvgSurfaceAreaPerSection', name='Avg. Surface Area / Section', unit='AREA'),
-    Feature(variable='AvgSurfaceAreaPerSegment', name='Avg. Surface Area / Segment', unit='AREA'),
-    Feature(variable='Volume', name='Volume', unit='VOLUME'),
-    Feature(variable='AvgVolumePerSection', name='Avg. Volume / Section', unit='VOLUME'),
-    Feature(variable='AvgVolumePerSegment', name='Avg. Volume / Segment', unit='VOLUME'),
-    Feature(variable='NumberBifurcations', name='# Bifurcations', type='Int'),
-    Feature(variable='NumberTrifurcations', name='# Trifurcations', type='Int'),
-    Feature(variable='NumberSections', name='# Sections', type='Int'),
-    Feature(variable='NumberSections', name='# Segments', type='Int'),
-]
-
-
-
-soma_features_list = [
-    Feature(variable='SomaMinRadius', name='Min. Radius', unit='LENGTH'),
-    Feature(variable='SomaMaxRadius', name='Max. Radius', unit='LENGTH'),
-    Feature(variable='SomaAvgRadius', name='Avg. Radius', unit='LENGTH'),
-    Feature(variable='SomaSurfaceArea', name='Surface Area', unit='AREA'),
-    Feature(variable='SomaVolume', name='Volume', unit='VOLUME')
-
-]
-
-
-"""
+# A global flag to indicate that the morphology has been loaded and analyzed
+morphology_analyzed = False
 
 
 
@@ -111,6 +54,11 @@ class AnalysisPanel(bpy.types.Panel):
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
+
+
+    #
+    bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
+
 
     # Number of samples per section
     bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(
@@ -207,19 +155,6 @@ class AnalysisPanel(bpy.types.Panel):
         description="Detect when the section is intersecting with the soma",
         default=True)
 
-
-
-    for neurite in ['Axon']:
-        for entry in nmv.analysis.sample_per_neurite:
-            entry.register_ui_entry(neurite=neurite)
-
-
-
-
-
-
-    file_path = StringProperty(name="File", subtype="FILE_PATH")
-
     ################################################################################################
     # @draw
     ################################################################################################
@@ -261,9 +196,6 @@ class AnalysisPanel(bpy.types.Panel):
         # Sections radii
         sections_radii_row = layout.row()
         sections_radii_row.prop(context.scene, 'AnalyzeSectionsRadii')
-
-
-
 
         # Segments surface area
         segments_surface_area_row = layout.row()
@@ -307,39 +239,48 @@ class AnalysisPanel(bpy.types.Panel):
         bounding_box_p_row = layout.row()
         bounding_box_p_min_row = bounding_box_p_row.column(align=True)
 
+        # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
+        # components based on its neurites count
+        if context.scene.MorphologyAnalyzed:
 
+            # Basals
+            if nmv.interface.ui_morphology.dendrites is not None:
 
+                for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
 
-        neurite_group = layout.column()
-        neurite_group.label(text='Axon:')
-        neurite_group_data = neurite_group.column(align=True)
-        for feature in nmv.analysis.sample_per_neurite:
-            neurite_group_data.prop(context.scene, 'Axon%s' % feature.variable)
-        neurite_group_data .enabled = False
+                    arbor_name = 'BasalDendrite%d' % i
 
-        """
-        bounding_box_p_row = layout.row()
-        bounding_box_p_min_row = bounding_box_p_row.column(align=True)
-        bounding_box_p_min_row.label(text='Apical Dendrite:')
-        for feature in nmv.analysis.sample_per_neurite:
-            bounding_box_p_min_row.prop(context.scene, 'ApicalDendrite%s' % feature.variable)
-        bounding_box_p_min_row.enabled = False
+                    group = layout.column()
+                    group.label(text='%s:' % (arbor_name))
+                    neurite_group_data = group.column(align=True)
+                    for feature in nmv.analysis.sample_per_neurite:
+                        feature.update_ui(arbor_name, neurite_group_data, context)
+                    neurite_group_data.enabled = False
 
-        
-        
-        axon_column = layout.box()
-        axon_column.prop(context.scene, 'AnalyzeBranchesWithNegativeSamples')
-        x_row = axon_column.row(align=True)
-        x_row.label(text='Total Length')
-        x_row.prop(context.scene, 'AxonTotalLength')
-        axon_column.prop(context.scene, 'AxonTotalLength')
-        axon_column.prop(context.scene, 'AxonTotalLength')
-        # axon_column.enabled = False
+            # Apical
+            if nmv.interface.ui_morphology.axon is not None:
 
-        row = layout.row()
-        row.label(text='Total Length')
-        row.prop(context.scene, 'AxonTotalLength')
-        """
+                arbor_name = 'Axon'
+
+                group = layout.column()
+                group.label(text='%s:' % (arbor_name))
+                neurite_group_data = group.column(align=True)
+                for feature in nmv.analysis.sample_per_neurite:
+                    feature.update_ui(arbor_name, neurite_group_data, context)
+                neurite_group_data.enabled = False
+
+            # Axon
+            if nmv.interface.ui_morphology.apical_dendrite is not None:
+
+                arbor_name = 'ApicalDendrite'
+
+                group = layout.column()
+                group.label(text='%s:' % (arbor_name))
+                neurite_group_data = group.column(align=True)
+                for feature in nmv.analysis.sample_per_neurite:
+                    feature.update_ui(arbor_name, neurite_group_data, context)
+                neurite_group_data.enabled = False
+
 
 ####################################################################################################
 # @SaveSomaMeshBlend
@@ -385,8 +326,58 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
-        for feature in nmv.analysis.sample_per_neurite:
-            feature.apply_filter(nmv.interface.ui_morphology.axon, context)
+        # Basals
+        if nmv.interface.ui_morphology.dendrites is not None:
+
+            for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
+
+                arbor = 'BasalDendrite%d' % i
+                for entry in nmv.analysis.sample_per_neurite:
+                    entry.register_ui_entry(neurite=arbor)
+
+        # Apical
+        if nmv.interface.ui_morphology.axon is not None:
+
+            arbor = 'Axon'
+            for entry in nmv.analysis.sample_per_neurite:
+                entry.register_ui_entry(neurite=arbor)
+
+
+        # Axon
+        if nmv.interface.ui_morphology.apical_dendrite is not None:
+
+            arbor = 'ApicalDendrite'
+            for entry in nmv.analysis.sample_per_neurite:
+                entry.register_ui_entry(neurite=arbor)
+
+        # Basals
+        if nmv.interface.ui_morphology.dendrites is not None:
+
+            for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
+
+                arbor_name = 'BasalDendrite%d' % i
+
+                for feature in nmv.analysis.sample_per_neurite:
+                    feature.apply_filter(neurite=basal_dendrite, arbor_name=arbor_name, context=context)
+
+        # Apical
+        if nmv.interface.ui_morphology.axon is not None:
+
+            arbor_name = 'Axon'
+            for feature in nmv.analysis.sample_per_neurite:
+                feature.apply_filter(neurite=nmv.interface.ui_morphology.axon, arbor_name=arbor_name, context=context)
+
+        # Axon
+        if nmv.interface.ui_morphology.apical_dendrite is not None:
+
+            arbor_name = 'ApicalDendrite'
+            for feature in nmv.analysis.sample_per_neurite:
+                feature.apply_filter(neurite=nmv.interface.ui_morphology.apical_dendrite, arbor_name=arbor_name, context=context)
+
+        # Update the analysis flag
+        context.scene.MorphologyAnalyzed = True
+
+
 
         # All set of filter we support
         analysis_filters = [
