@@ -234,33 +234,14 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
-
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its neurites count
         if context.scene.MorphologyAnalyzed:
 
-            # Basals
-            if nmv.interface.ui_morphology.dendrites is not None:
+            # If the morphology is analyzed, then add the results to the analysis panel
+            nmv.interface.add_analysis_output_to_panel(
+                morphology=nmv.interface.ui_morphology, layout=layout, context=context)
 
-                for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
-
-                    arbor_name = 'BasalDendrite%d' % i
-
-                    nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
-
-            # Apical
-            if nmv.interface.ui_morphology.axon is not None:
-
-                arbor_name = 'Axon'
-
-                nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
-
-            # Axon
-            if nmv.interface.ui_morphology.apical_dendrite is not None:
-
-                arbor_name = 'ApicalDendrite'
-
-                nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
 
 
 ####################################################################################################
@@ -307,58 +288,12 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
-        # Basals
-        if nmv.interface.ui_morphology.dendrites is not None:
+        # After loading the morphology, register the components entries
+        nmv.interface.register_morphology_ui_entries(nmv.interface.ui_morphology)
 
-            for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
-
-                arbor = 'BasalDendrite%d' % i
-                for entry in nmv.analysis.sample_per_neurite:
-                    entry.register_ui_entry(arbor=arbor)
-
-        # Apical
-        if nmv.interface.ui_morphology.axon is not None:
-
-            arbor = 'Axon'
-            for entry in nmv.analysis.sample_per_neurite:
-                entry.register_ui_entry(arbor=arbor)
-
-
-        # Axon
-        if nmv.interface.ui_morphology.apical_dendrite is not None:
-
-            arbor = 'ApicalDendrite'
-            for entry in nmv.analysis.sample_per_neurite:
-                entry.register_ui_entry(arbor=arbor)
-
-        # Basals
-        if nmv.interface.ui_morphology.dendrites is not None:
-
-            for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
-
-                arbor_prefix = 'BasalDendrite%d' % i
-
-                for feature in nmv.analysis.sample_per_neurite:
-                    feature.apply_filter(arbor=basal_dendrite, arbor_prefix=arbor_prefix, context=context)
-
-        # Apical
-        if nmv.interface.ui_morphology.axon is not None:
-
-            arbor_prefix = 'Axon'
-            for feature in nmv.analysis.sample_per_neurite:
-                feature.apply_filter(arbor=nmv.interface.ui_morphology.axon, arbor_prefix=arbor_prefix, context=context)
-
-        # Axon
-        if nmv.interface.ui_morphology.apical_dendrite is not None:
-
-            arbor_prefix = 'ApicalDendrite'
-            for feature in nmv.analysis.sample_per_neurite:
-                feature.apply_filter(arbor=nmv.interface.ui_morphology.apical_dendrite, arbor_prefix=arbor_prefix, context=context)
-
-        # Update the analysis flag
-        context.scene.MorphologyAnalyzed = True
-
-
+        # Apply the analysis filters and update the DONE flag if everything goes well
+        context.scene.MorphologyAnalyzed = nmv.analysis.apply_analysis_filters(
+            nmv.interface.ui_morphology, context=context)
 
         # All set of filter we support
         analysis_filters = [

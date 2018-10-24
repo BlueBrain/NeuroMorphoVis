@@ -19,15 +19,59 @@
 import bpy
 
 import neuromorphovis as nmv
-import neuromorphovis.consts
 import neuromorphovis.analysis
-import neuromorphovis.enums
-import neuromorphovis.file
-import neuromorphovis.interface
-import neuromorphovis.skeleton
 
 
-def add_analysis_group_to_panel(arbor_prefix, layout, context):
+####################################################################################################
+# @register_morphology_ui_entries
+####################################################################################################
+def register_morphology_ui_entries(morphology):
+    """Registers the analysis entries that correspond to the available morphology neurites.
+
+    :param morphology:
+        Loaded morphology.
+    """
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+
+        # Register each entry
+        for entry in nmv.analysis.sample_per_neurite:
+            entry.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
+
+    # Basal dendrites
+    if morphology.dendrites is not None:
+
+        # For each basal dendrite
+        for i, basal_dendrite in enumerate(morphology.dendrites):
+
+            # Register each entry
+            for entry in nmv.analysis.sample_per_neurite:
+                entry.register_ui_entry(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i))
+
+    # Axon
+    if morphology.axon is not None:
+
+        # Register each entry
+        for entry in nmv.analysis.sample_per_neurite:
+            entry.register_ui_entry(arbor_prefix=morphology.axon.get_type_prefix())
+
+
+####################################################################################################
+# @add_analysis_group_to_panel
+####################################################################################################
+def add_analysis_group_to_panel(arbor_prefix,
+                                layout,
+                                context):
+    """Adds the results of analysis of each arbor to the UI.
+
+    :param arbor_prefix:
+        The prefix 'in string format' that is used to tag or identify the arbor.
+    :param layout:
+        UI panel layout.
+    :param context:
+        Blender context.
+    """
 
     # Create a column outline in the panel
     outline = layout.column()
@@ -46,3 +90,48 @@ def add_analysis_group_to_panel(arbor_prefix, layout, context):
 
     # Disable editing the analysis area
     analysis_area.enabled = False
+
+
+####################################################################################################
+# @add_analysis_output_to_panel
+####################################################################################################
+def add_analysis_output_to_panel(morphology,
+                                 layout,
+                                 context):
+    """Adds the results of the morphology analysis to the UI.
+
+    :param morphology:
+        Loaded morphology.
+    :param layout:
+        UI panel layout.
+    :param context:
+        Blender context.
+    """
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+
+        # Add the analysis results to the panel
+        add_analysis_group_to_panel(
+            arbor_prefix=morphology.apical_dendrite.get_type_prefix(), layout=layout,
+            context=context)
+
+    # Basal dendrites
+    if morphology.dendrites is not None:
+
+        # For each basal dendrite
+        for i, basal_dendrite in enumerate(morphology.dendrites):
+
+            # Add the analysis results to the panel
+            add_analysis_group_to_panel(
+                arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i), layout=layout,
+                context=context)
+
+    # Axon
+    if morphology.axon is not None:
+
+        # Add the analysis results to the panel
+        add_analysis_group_to_panel(
+            arbor_prefix=morphology.axon.get_type_prefix(), layout=layout, context=context)
+
+

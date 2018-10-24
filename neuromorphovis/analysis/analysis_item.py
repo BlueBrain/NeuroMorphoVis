@@ -83,21 +83,21 @@ class AnalysisItem:
     # @create_blender_entry
     ################################################################################################
     def register_ui_entry(self,
-                          arbor):
+                          arbor_prefix):
         """Registers this entry for this analysis item in Blender and add it to the UI.
         
-        :param arbor:
-            A specific arbor.
+        :param arbor_prefix:
+             The prefix 'in string format' that is used to tag or identify the arbor.
         """
 
         # Float entry
         if self.data_format == 'FLOAT':
-            setattr(bpy.types.Scene, '%s%s' % (str(arbor), self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
                     FloatProperty(name=self.name, description=self.description, unit=self.unit))
 
         # Int entry
         elif self.data_format == 'INT':
-            setattr(bpy.types.Scene, '%s%s' % (str(arbor), self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
                     IntProperty(name=self.name, description=self.description))
 
     ################################################################################################
@@ -121,7 +121,7 @@ class AnalysisItem:
         # Get the result
         self.result = self.filter_function(arbor)
 
-        # Update the context
+        # Update the context, but make sure that the result is not None and the context exists
         if context is not None or self.result is not None:
 
             # Update the scene parameter
@@ -155,6 +155,7 @@ class AnalysisItem:
         :param arbor_prefix:
             The prefix 'in string format' that is used to tag or identify the arbor.
         :param ui_layout:
+            The layout of the panel in the UI.
         :param context:
             The UI context from the panel.
         """

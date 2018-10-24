@@ -15,9 +15,70 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .segment_analysis_ops import *
-from .section_analysis_ops import *
-from .arbor_analysis_ops import *
+import neuromorphovis as nmv
+import neuromorphovis.analysis
+
+
+####################################################################################################
+# @apply_analysis_filters
+####################################################################################################
+def apply_analysis_filters(morphology,
+                           context):
+    """Applies the analysis filters one by one on the morphology
+
+    :param morphology:
+        Loaded morphology.
+    :param context:
+        Blender context.
+    :return
+        True if the analysis filters are applied without any issues, False otherwise.
+   """
+
+    try:
+
+        # Axon
+        if morphology.apical_dendrite is not None:
+
+            # For each entry in the analysis list
+            for entry in nmv.analysis.sample_per_neurite:
+
+                # Apply the filter function
+                entry.apply_filter(
+                    arbor=morphology.apical_dendrite,
+                    arbor_prefix=morphology.apical_dendrite.get_type_prefix(), context=context)
+
+        # Basal dendrites
+        if morphology.dendrites is not None:
+
+            # For each basal dendrite
+            for i, basal_dendrite in enumerate(morphology.dendrites):
+
+                # For each entry in the analysis list
+                for feature in nmv.analysis.sample_per_neurite:
+
+                    # Apply the filter function
+                    feature.apply_filter(
+                        arbor=basal_dendrite,
+                        arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i),
+                        context=context)
+
+        # Apical
+        if morphology.axon is not None:
+
+            # For each entry in the analysis list
+            for entry in nmv.analysis.sample_per_neurite:
+
+                # Apply the filter function
+                entry.apply_filter(
+                    arbor=morphology.axon,
+                    arbor_prefix=morphology.axon.get_type_prefix(), context=context)
+
+        # Return true to update the flags
+        return True
+
+    # Issue
+    except ValueError:
+        return False
 
 
 
