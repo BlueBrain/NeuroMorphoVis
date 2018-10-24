@@ -15,9 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import sys, os
-
 # Blender imports
 import bpy
 
@@ -76,8 +73,7 @@ def load_morphology(panel_object,
         nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
 
         # Load the morphology from the circuit
-        loading_flag, morphology_object = \
-            nmv.file.readers.BBPReader.load_morphology_from_circuit(
+        loading_flag, morphology_object = nmv.file.readers.BBPReader.load_morphology_from_circuit(
                 blue_config=nmv.interface.ui_options.morphology.blue_config,
                 gid=nmv.interface.ui_options.morphology.gid)
 

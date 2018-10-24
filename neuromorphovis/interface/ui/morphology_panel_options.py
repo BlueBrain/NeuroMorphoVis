@@ -23,10 +23,12 @@ import neuromorphovis as nmv
 import neuromorphovis.consts
 import neuromorphovis.enums
 
+
 ####################################################################################################
 # @update_bounding_box_panel
 ####################################################################################################
-def update_bounding_box_panel(current_scene, bbox):
+def update_bounding_box_panel(current_scene,
+                              bbox):
     """Update the bounding box panel
 
     :param current_scene:

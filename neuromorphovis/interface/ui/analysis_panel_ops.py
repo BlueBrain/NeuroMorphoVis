@@ -15,12 +15,34 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .common import *
-from .ui_data import *
-from .io_panel import *
-from .soma_panel import *
-from .analysis_panel import *
-from .analysis_panel_ops import *
-from .mesh_panel import *
-from .morphology_panel import *
-from .morphology_panel_options import *
+# Blender imports
+import bpy
+
+import neuromorphovis as nmv
+import neuromorphovis.consts
+import neuromorphovis.analysis
+import neuromorphovis.enums
+import neuromorphovis.file
+import neuromorphovis.interface
+import neuromorphovis.skeleton
+
+
+def add_analysis_group_to_panel(arbor_prefix, layout, context):
+
+    # Create a column outline in the panel
+    outline = layout.column()
+
+    # Add a label that identifies the arbor
+    outline.label(text='%s:' % arbor_prefix)
+
+    # Create a sub-column that aligns the analysis data from the original outline
+    analysis_area = outline.column(align=True)
+
+    # Update the analysis area with all the filters
+    for item in nmv.analysis.sample_per_neurite:
+
+        # Update the UI entry s
+        item.update_ui_entry(arbor_prefix, analysis_area, context)
+
+    # Disable editing the analysis area
+    analysis_area.enabled = False

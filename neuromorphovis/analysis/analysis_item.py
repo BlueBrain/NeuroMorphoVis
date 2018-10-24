@@ -17,13 +17,8 @@
 
 # Blender imports
 import bpy
-from mathutils import Vector
 from bpy.props import IntProperty
 from bpy.props import FloatProperty
-from bpy.props import StringProperty
-from bpy.props import BoolProperty
-from bpy.props import EnumProperty
-from bpy.props import FloatVectorProperty
 
 
 ####################################################################################################
@@ -88,40 +83,82 @@ class AnalysisItem:
     # @create_blender_entry
     ################################################################################################
     def register_ui_entry(self,
-                          neurite):
+                          arbor):
         """Registers this entry for this analysis item in Blender and add it to the UI.
         
-        :param neurite:
-            A specific neurite.
+        :param arbor:
+            A specific arbor.
         """
 
         # Float entry
         if self.data_format == 'FLOAT':
-            setattr(bpy.types.Scene, '%s%s' % (str(neurite), self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (str(arbor), self.variable),
                     FloatProperty(name=self.name, description=self.description, unit=self.unit))
 
         # Int entry
         elif self.data_format == 'INT':
-            setattr(bpy.types.Scene, '%s%s' % (str(neurite), self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (str(arbor), self.variable),
                     IntProperty(name=self.name, description=self.description))
 
     ################################################################################################
     # @apply_filter
     ################################################################################################
     def apply_filter(self,
-                     neurite,
-                     arbor_name,
-                     context):
+                     arbor,
+                     arbor_prefix,
+                     context=None):
+        """Applies the analysis filter to the given arbor and update the corresponding
+        scene parameter.
+
+        :param arbor:
+            A given arbor to get the filter applied on it.
+        :param arbor_prefix:
+            The prefix 'in string format' that is used to tag or identify the arbor.
+        :param context:
+            Blender context.
+        """
 
         # Get the result
-        self.result = self.filter_function(neurite)
+        self.result = self.filter_function(arbor)
 
-        # TODO: Warning if self.result is None !
-        # TODO: Get the arbor type from the input neurite
+        # Update the context
+        if context is not None or self.result is not None:
 
-        # Update the user interface
-        setattr(context.scene, '%s%s' % (arbor_name, self.variable), self.result)
+            # Update the scene parameter
+            setattr(context.scene, '%s%s' % (arbor_prefix, self.variable), self.result)
 
-    def update_ui(self, arbor_name, group, context):
-        group.prop(context.scene, '%s%s' % (arbor_name, self.variable))
+    ################################################################################################
+    # @apply_filter_and_return_result
+    ################################################################################################
+    def apply_filter_and_return_result(self,
+                                       arbor):
+        """Applies the filter and then returns the result corresponding to the filter.
+
+        :param arbor:
+            A given arbor to get the filter applied to it.
+        :return:
+            The results of applying the filter function on the arbor.
+        """
+
+        # Apply the filter
+        return self.apply_filter(arbor)
+
+    ################################################################################################
+    # @update_ui_entry
+    ################################################################################################
+    def update_ui_entry(self,
+                        arbor_prefix,
+                        ui_layout,
+                        context):
+        """Updates the UI entry that corresponds to the filter.
+
+        :param arbor_prefix:
+            The prefix 'in string format' that is used to tag or identify the arbor.
+        :param ui_layout:
+        :param context:
+            The UI context from the panel.
+        """
+
+        # Update the corresponding UI layout
+        ui_layout.prop(context.scene, '%s%s' % (arbor_prefix, self.variable))
 

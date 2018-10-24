@@ -81,7 +81,8 @@ class AnalysisPanel(bpy.types.Panel):
     # Branching angles
     bpy.types.Scene.AnalyzeNumberChildrenPerSection = BoolProperty(
         name="# Children / Section",
-        description="Analyze the number of children per section", default=True)
+        description="Analyze the number of children per section",
+        default=True)
 
     # Branching angles
     bpy.types.Scene.AnalyzeBranchingAngles = BoolProperty(
@@ -233,11 +234,6 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
-        box = layout.box()
-        row = box.column()
-
-        bounding_box_p_row = layout.row()
-        bounding_box_p_min_row = bounding_box_p_row.column(align=True)
 
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its neurites count
@@ -250,36 +246,21 @@ class AnalysisPanel(bpy.types.Panel):
 
                     arbor_name = 'BasalDendrite%d' % i
 
-                    group = layout.column()
-                    group.label(text='%s:' % (arbor_name))
-                    neurite_group_data = group.column(align=True)
-                    for feature in nmv.analysis.sample_per_neurite:
-                        feature.update_ui(arbor_name, neurite_group_data, context)
-                    neurite_group_data.enabled = False
+                    nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
 
             # Apical
             if nmv.interface.ui_morphology.axon is not None:
 
                 arbor_name = 'Axon'
 
-                group = layout.column()
-                group.label(text='%s:' % (arbor_name))
-                neurite_group_data = group.column(align=True)
-                for feature in nmv.analysis.sample_per_neurite:
-                    feature.update_ui(arbor_name, neurite_group_data, context)
-                neurite_group_data.enabled = False
+                nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
 
             # Axon
             if nmv.interface.ui_morphology.apical_dendrite is not None:
 
                 arbor_name = 'ApicalDendrite'
 
-                group = layout.column()
-                group.label(text='%s:' % (arbor_name))
-                neurite_group_data = group.column(align=True)
-                for feature in nmv.analysis.sample_per_neurite:
-                    feature.update_ui(arbor_name, neurite_group_data, context)
-                neurite_group_data.enabled = False
+                nmv.interface.add_analysis_group_to_panel(arbor_name, layout, context)
 
 
 ####################################################################################################
@@ -333,14 +314,14 @@ class AnalyzeMorphology(bpy.types.Operator):
 
                 arbor = 'BasalDendrite%d' % i
                 for entry in nmv.analysis.sample_per_neurite:
-                    entry.register_ui_entry(neurite=arbor)
+                    entry.register_ui_entry(arbor=arbor)
 
         # Apical
         if nmv.interface.ui_morphology.axon is not None:
 
             arbor = 'Axon'
             for entry in nmv.analysis.sample_per_neurite:
-                entry.register_ui_entry(neurite=arbor)
+                entry.register_ui_entry(arbor=arbor)
 
 
         # Axon
@@ -348,31 +329,31 @@ class AnalyzeMorphology(bpy.types.Operator):
 
             arbor = 'ApicalDendrite'
             for entry in nmv.analysis.sample_per_neurite:
-                entry.register_ui_entry(neurite=arbor)
+                entry.register_ui_entry(arbor=arbor)
 
         # Basals
         if nmv.interface.ui_morphology.dendrites is not None:
 
             for i, basal_dendrite in enumerate(nmv.interface.ui_morphology.dendrites):
 
-                arbor_name = 'BasalDendrite%d' % i
+                arbor_prefix = 'BasalDendrite%d' % i
 
                 for feature in nmv.analysis.sample_per_neurite:
-                    feature.apply_filter(neurite=basal_dendrite, arbor_name=arbor_name, context=context)
+                    feature.apply_filter(arbor=basal_dendrite, arbor_prefix=arbor_prefix, context=context)
 
         # Apical
         if nmv.interface.ui_morphology.axon is not None:
 
-            arbor_name = 'Axon'
+            arbor_prefix = 'Axon'
             for feature in nmv.analysis.sample_per_neurite:
-                feature.apply_filter(neurite=nmv.interface.ui_morphology.axon, arbor_name=arbor_name, context=context)
+                feature.apply_filter(arbor=nmv.interface.ui_morphology.axon, arbor_prefix=arbor_prefix, context=context)
 
         # Axon
         if nmv.interface.ui_morphology.apical_dendrite is not None:
 
-            arbor_name = 'ApicalDendrite'
+            arbor_prefix = 'ApicalDendrite'
             for feature in nmv.analysis.sample_per_neurite:
-                feature.apply_filter(neurite=nmv.interface.ui_morphology.apical_dendrite, arbor_name=arbor_name, context=context)
+                feature.apply_filter(arbor=nmv.interface.ui_morphology.apical_dendrite, arbor_prefix=arbor_prefix, context=context)
 
         # Update the analysis flag
         context.scene.MorphologyAnalyzed = True

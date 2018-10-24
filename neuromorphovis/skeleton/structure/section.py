@@ -122,6 +122,29 @@ class Section:
             return 'UNKNOWN_BRANCH_TYPE'
 
     ################################################################################################
+    # @get_type_prefix
+    ################################################################################################
+    def get_type_prefix(self):
+        """Returns a string prefix that is used to register UI components.
+
+        These components are accessible from the following calls:
+            * bpy.context.Scene.Axon[SOME_VARIABLE] for axons
+            * bpy.context.Scene.BasalDendrite[NUMBER][SOME_VARIABLE] for basal dendrites
+            * bpy.context.Scene.ApicalDendrite[SOME_VARIABLE] for apical dendrites
+        :return:
+            String that reflects the type of the section, or which arbor it belongs to.
+        """
+
+        if str(self.type) == '2':
+            return 'Axon'
+        elif str(self.type) == '3':
+            return 'BasalDendrite'
+        elif str(self.type) == '4':
+            return 'ApicalDendrite'
+        else:
+            return 'UnknownBranch'
+
+    ################################################################################################
     # @is_axon
     ################################################################################################
     def is_axon(self):
