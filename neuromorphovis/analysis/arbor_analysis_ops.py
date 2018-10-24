@@ -27,7 +27,7 @@ from neuromorphovis.analysis import AnalysisItem
 
 
 ####################################################################################################
-# @compute_segments_length
+# @compute_arbor_total_length
 ####################################################################################################
 def compute_arbor_total_length(arbor):
     """Computes the total length of the given arbor.
@@ -61,6 +61,54 @@ def compute_arbor_total_length(arbor):
 
 
 ####################################################################################################
+# @compute_arbor_total_surface_area
+####################################################################################################
+def compute_arbor_total_surface_area(arbor):
+    """Computes the total surface area of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The total surface area of the arbor in um squared.
+    """
+
+    # A list that will contains the surface areas of all the sections along the arbor
+    sections_surface_areas = list()
+
+    # Compute the surface area of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_surface_areas_from_segments,
+          sections_surface_areas])
+
+    # Total arbor length
+    arbor_total_surface_area = 0.0
+
+    # Iterate and sum up all the sections surface areas
+    for surface_area in sections_surface_areas:
+
+        # Add to the arbor length
+        arbor_total_surface_area += surface_area
+
+    # Return the total section surface area
+    return arbor_total_surface_area
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################################################
 # @compute_segments_length
 ####################################################################################################
 def compute_segments_length_with_annotations(section,
@@ -90,6 +138,8 @@ def compute_segments_length_with_annotations(section,
         # Append it to the list
         segments_length_list.append(segment_length)
 
+
+
 sample_per_neurite = [
 
     ################################################################################################
@@ -102,4 +152,15 @@ sample_per_neurite = [
                  description='Total length of the neurite',
                  data_format='FLOAT',
                  unit='LENGTH'),
+
+    ################################################################################################
+    # Area
+    ################################################################################################
+    # Total neurite surface area
+    AnalysisItem(variable='TotalSurfaceArea',
+                 name='Total Surface Area',
+                 filter_function=compute_arbor_total_surface_area,
+                 description='Total surface area of the neurite',
+                 data_format='FLOAT',
+                 unit='AREA'),
 ]

@@ -267,7 +267,6 @@ class AnalyzeMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
-
         """
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:

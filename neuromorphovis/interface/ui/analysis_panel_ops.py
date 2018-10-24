@@ -58,6 +58,22 @@ def register_morphology_ui_entries(morphology):
 
 
 ####################################################################################################
+# @get_arbor_label_with_spaces_from_prefix
+####################################################################################################
+def get_arbor_label_with_spaces_from_prefix(arbor_prefix):
+
+    if 'ApicalDendrite' in arbor_prefix:
+        return 'Apical Dendrite'
+    elif 'BasalDendrite' in arbor_prefix:
+        i = arbor_prefix.split('BasalDendrite')[1]
+        return 'Basal Dendrite %s' % i
+    elif 'Axon' in arbor_prefix:
+        return 'Axon'
+    else:
+        return 'ERROR'
+
+
+####################################################################################################
 # @add_analysis_group_to_panel
 ####################################################################################################
 def add_analysis_group_to_panel(arbor_prefix,
@@ -77,7 +93,7 @@ def add_analysis_group_to_panel(arbor_prefix,
     outline = layout.column()
 
     # Add a label that identifies the arbor
-    outline.label(text='%s:' % arbor_prefix)
+    outline.label(text='%s:' % get_arbor_label_with_spaces_from_prefix(arbor_prefix))
 
     # Create a sub-column that aligns the analysis data from the original outline
     analysis_area = outline.column(align=True)
