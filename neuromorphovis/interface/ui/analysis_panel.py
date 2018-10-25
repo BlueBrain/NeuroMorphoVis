@@ -50,10 +50,8 @@ class AnalysisPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
-
-    # TODO: Update the documentation
+    # Register a variable that indicates that the morphology is analyzed to be able to update the UI
     bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
-
 
     # Number of samples per section
     bpy.types.Scene.AnalyzeNumberSamplesPerSection = BoolProperty(

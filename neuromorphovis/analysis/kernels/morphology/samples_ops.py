@@ -20,9 +20,9 @@ import neuromorphovis.analysis
 
 
 ####################################################################################################
-# @compute_total_number_samples
+# @kernel_total_number_samples
 ####################################################################################################
-def analyse_total_number_samples(morphology):
+def kernel_total_number_samples(morphology):
     """Analyse the total number of samples of the given morphology.
 
     This analysis accounts for the number of samples of each individual arbor or neurite of the
@@ -60,9 +60,9 @@ def analyse_total_number_samples(morphology):
 
 
 ####################################################################################################
-# @analyze_minimum_number_samples_per_section
+# @kernel_minimum_number_samples_per_section
 ####################################################################################################
-def analyze_minimum_number_samples_per_section(morphology):
+def kernel_minimum_number_samples_per_section(morphology):
     """Analyses the minimum number of samples per section of the given morphology.
 
     :param morphology:
@@ -100,9 +100,9 @@ def analyze_minimum_number_samples_per_section(morphology):
 
 
 ####################################################################################################
-# @analyze_maximum_number_samples_per_section
+# @kernel_maximum_number_samples_per_section
 ####################################################################################################
-def analyze_maximum_number_samples_per_section(morphology):
+def kernel_maximum_number_samples_per_section(morphology):
     """Analyses the maximum number of samples per section of the given morphology.
 
     :param morphology:
@@ -142,9 +142,9 @@ def analyze_maximum_number_samples_per_section(morphology):
 
 
 ####################################################################################################
-# @analyze_average_number_samples_per_section
+# @kernel_average_number_samples_per_section
 ####################################################################################################
-def analyze_average_number_samples_per_section(morphology):
+def kernel_average_number_samples_per_section(morphology):
     """Analyses the average number of samples per section of the given morphology.
 
     :param morphology:
