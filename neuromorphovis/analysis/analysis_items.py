@@ -23,7 +23,7 @@ from neuromorphovis.analysis.kernels.morphology import *
 ####################################################################################################
 # A list of all the analysis items (or kernels) that will applied on the morphology skeleton
 ####################################################################################################
-items = [
+ui_analysis_items = [
 
     ################################################################################################
     # Samples-related items

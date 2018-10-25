@@ -27,57 +27,80 @@ import neuromorphovis.analysis
 ####################################################################################################
 # @get_arbor_label_with_spaces_from_prefix
 ####################################################################################################
-def get_arbor_label_with_spaces_from_prefix(arbor_prefix):
+def get_label_from_prefix(prefix):
+    """Gets a nice label for the UI of a component from a given prefix.
 
-    if 'ApicalDendrite' in arbor_prefix:
+    Examples:
+    * Prefix: 'ApicalDendrite' -> Label: 'Apical Dendrite'
+    * Prefix: 'BasalDendrite0' -> Label: 'Basal Dendrite 0'
+
+    :param prefix:
+        Component prefix.
+    :return:
+        Component label that can be used to tag a UI element.
+    """
+
+    if 'ApicalDendrite' in prefix:
         return 'Apical Dendrite'
-    elif 'BasalDendrite' in arbor_prefix:
-        i = arbor_prefix.split('BasalDendrite')[1]
+    elif 'BasalDendrite' in prefix:
+        i = prefix.split('BasalDendrite')[1]
         return 'Basal Dendrite %s' % i
-    elif 'Axon' in arbor_prefix:
+    elif 'Axon' in prefix:
         return 'Axon'
-    elif 'Morphology' in arbor_prefix:
+    elif 'Morphology' in prefix:
         return 'Morphology'
     else:
         return 'ERROR'
 
 
 ####################################################################################################
-# @register_arbor_checkbox
+# @register_group_checkbox
 ####################################################################################################
-def register_arbor_checkbox(arbor_prefix,
+def register_group_checkbox(prefix,
                             description):
-    """Register each arbor checkbox.
+    """For each arbor or neurite in the morphology, there will be a checkbox to show and hide the
+    analysis data group.
 
-    :param arbor_prefix:
+    This feature is added to reduce any clutter if the number of analysis entries are huge.
+    Note that the morphology group will be check by default, in contrast to the arbors.
+
+    :param prefix:
         The prefix 'in string format' that is used to tag or identify the arbor.
     :param description:
         The tooltip description of the checkbox.
     """
-    setattr(bpy.types.Scene, '%s' % arbor_prefix,
-            BoolProperty(name=get_arbor_label_with_spaces_from_prefix(arbor_prefix),
-                         description=description, default=True))
+
+    # By default show the morphology analysis group (set its checkbox)
+    if 'Morphology' in prefix:
+        setattr(bpy.types.Scene, '%s' % prefix,
+                BoolProperty(name='Morphology', description=description, default=True))
+
+    # By default hide the arbors analysis groups (unset their checkboxes)
+    else:
+        setattr(bpy.types.Scene, '%s' % prefix,
+                BoolProperty(name=get_label_from_prefix(prefix), description=description,
+                             default=False))
 
 
 ####################################################################################################
-# @register_morphology_ui_entries
+# @register_analysis_groups
 ####################################################################################################
-def register_morphology_ui_entries(morphology):
-    """Registers the analysis entries that correspond to the available morphology neurites.
+def register_analysis_groups(morphology):
+    """Registers the analysis groups of the morphology.
 
     :param morphology:
         Loaded morphology.
     """
 
-    # Register the checkbox
-    register_arbor_checkbox(arbor_prefix='Morphology',
-                            description='Show the analysis data of %s' % 'morphology')
+    # Register the checkbox of the 'Morphology' group
+    register_group_checkbox(prefix='Morphology',
+                            description='Show the analysis data of the entire morphology')
 
     # Apical dendrite
     if morphology.apical_dendrite is not None:
 
-        # Register the checkbox
-        register_arbor_checkbox(arbor_prefix=morphology.apical_dendrite.get_type_prefix(),
+        # Register the group checkbox of the 'Apical Dendrite'
+        register_group_checkbox(prefix=morphology.apical_dendrite.get_type_prefix(),
                                 description='Show the analysis data of %s' %
                                             morphology.apical_dendrite.get_type_label())
     # Basal dendrites
@@ -86,17 +109,18 @@ def register_morphology_ui_entries(morphology):
         # For each basal dendrite
         for i, basal_dendrite in enumerate(morphology.dendrites):
 
-            # Register the checkbox
-            register_arbor_checkbox(arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i),
+            # Register the group checkbox of the 'Basal Dendrite i'
+            register_group_checkbox(prefix='%s%i' % (basal_dendrite.get_type_prefix(), i),
                                     description='Show the analysis data of %s %d' %
                                                 (basal_dendrite.get_type_label(), i))
     # Axon
     if morphology.axon is not None:
 
-        # Register the checkbox
-        register_arbor_checkbox(arbor_prefix=morphology.axon.get_type_prefix(),
+        # Register the group checkbox of the 'Axon'
+        register_group_checkbox(prefix=morphology.axon.get_type_prefix(),
                                 description='Show the analysis data of %s' %
                                             morphology.axon.get_type_label())
+
 
 ####################################################################################################
 # @add_analysis_group_to_panel
@@ -106,7 +130,7 @@ def add_analysis_group_to_panel(prefix,
                                 context):
     """Adds the results of analysis of each arbor to the UI.
 
-    :param arbor_prefix:
+    :param prefix:
         The prefix 'in string format' that is used to tag or identify the arbor.
     :param layout:
         UI panel layout.
@@ -117,15 +141,17 @@ def add_analysis_group_to_panel(prefix,
     # Create a column outline in the panel
     outline = layout.column()
 
+    # Add the checkbox that was registered before to show/hide the group @register_group_checkbox
     outline.prop(context.scene, prefix)
 
+    # If the checkbox is checked
     if getattr(context.scene, prefix):
 
         # Create a sub-column that aligns the analysis data from the original outline
         analysis_area = outline.column(align=True)
 
         # Update the analysis area with all the filters
-        for item in nmv.analysis.items:
+        for item in nmv.analysis.ui_analysis_items:
 
             analysis_area.prop(context.scene, '%s%s' % (prefix, item.variable))
 
@@ -134,9 +160,9 @@ def add_analysis_group_to_panel(prefix,
 
 
 ####################################################################################################
-# @add_analysis_output_to_panel
+# @add_analysis_groups_to_panel
 ####################################################################################################
-def add_analysis_output_to_panel(morphology,
+def add_analysis_groups_to_panel(morphology,
                                  layout,
                                  context):
     """Adds the results of the morphology analysis to the UI.
@@ -177,3 +203,35 @@ def add_analysis_output_to_panel(morphology,
         add_analysis_group_to_panel(
             prefix=morphology.axon.get_type_prefix(), layout=layout, context=context)
 
+
+####################################################################################################
+# @analyze_morphology
+####################################################################################################
+def analyze_morphology(morphology,
+                       context):
+    """
+
+    :param morphology:
+    :param context:
+    :return:
+    """
+
+    try:
+
+        register_analysis_groups(morphology=morphology)
+
+        # Register the morphology variables to be able to show and update them on the UI
+        for item in nmv.analysis.ui_analysis_items:
+            item.register_analysis_variables(morphology=morphology)
+
+        # Apply the analysis filters and update the results
+        for item in nmv.analysis.ui_analysis_items:
+            item.apply_analysis_kernel(morphology=morphology, context=context)
+
+        # Morphology is analyzed
+        return True
+
+    except ValueError:
+
+        # Something went wrong
+        return False

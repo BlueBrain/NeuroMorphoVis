@@ -132,8 +132,6 @@ def kernel_maximum_number_samples_per_section(morphology):
     if analysis_result.axon_result is not None:
         all_arbors_results.append(analysis_result.axon_result)
 
-    print(all_arbors_results)
-
     # Update the morphology result
     analysis_result.morphology_result = max(all_arbors_results)
 
