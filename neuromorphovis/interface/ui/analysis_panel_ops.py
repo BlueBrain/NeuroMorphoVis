@@ -75,8 +75,8 @@ def register_morphology_ui_entries(morphology):
                                 description='Show the analysis data of %s' %
                                             morphology.apical_dendrite.get_type_label())
         # Register each entry
-        for entry in nmv.analysis.per_arbor:
-            entry.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
+        for item in nmv.analysis.items:
+            item.register_ui_entry(arbor_prefix=morphology.apical_dendrite.get_type_prefix())
 
     # Basal dendrites
     if morphology.dendrites is not None:
@@ -109,7 +109,7 @@ def register_morphology_ui_entries(morphology):
 ####################################################################################################
 # @add_analysis_group_to_panel
 ####################################################################################################
-def add_analysis_group_to_panel(arbor_prefix,
+def add_analysis_group_to_panel(arbor,
                                 layout,
                                 context):
     """Adds the results of analysis of each arbor to the UI.
@@ -125,21 +125,24 @@ def add_analysis_group_to_panel(arbor_prefix,
     # Create a column outline in the panel
     outline = layout.column()
 
+    arbor_prefix = arbor.get_type_prefix()
     # Add a label that identifies the arbor
     # outline.label(text='%s:' % get_arbor_label_with_spaces_from_prefix(arbor_prefix))
 
-    outline.prop(context.scene, arbor_prefix)
+    # outline.prop(context.scene, arbor_prefix)
 
-    if getattr(context.scene, arbor_prefix):
+    if True: # getattr(context.scene, arbor_prefix):
 
         # Create a sub-column that aligns the analysis data from the original outline
         analysis_area = outline.column(align=True)
 
         # Update the analysis area with all the filters
-        for item in nmv.analysis.per_arbor:
+        for item in nmv.analysis.items:
 
             # Update the UI entry s
-            item.update_ui_entry(arbor_prefix, analysis_area, context)
+            # item.update_ui_entry(arbor_prefix, analysis_area, context)
+
+            layout.prop(context.scene, '%s%s' % (arbor.get_type_prefix(), item.variable))
 
         # Disable editing the analysis area
         analysis_area.enabled = False
@@ -166,9 +169,9 @@ def add_analysis_output_to_panel(morphology,
 
         # Add the analysis results to the panel
         add_analysis_group_to_panel(
-            arbor_prefix=morphology.apical_dendrite.get_type_prefix(), layout=layout,
-            context=context)
+            arbor=morphology.apical_dendrite, layout=layout,context=context)
 
+    """
     # Basal dendrites
     if morphology.dendrites is not None:
 
@@ -179,12 +182,51 @@ def add_analysis_output_to_panel(morphology,
             add_analysis_group_to_panel(
                 arbor_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i), layout=layout,
                 context=context)
-
+    """
     # Axon
     if morphology.axon is not None:
 
         # Add the analysis results to the panel
         add_analysis_group_to_panel(
-            arbor_prefix=morphology.axon.get_type_prefix(), layout=layout, context=context)
+            arbor=morphology.axon, layout=layout, context=context)
 
 
+
+
+
+
+def add_analysis_result_to_panel(layout,
+                                 context):
+
+    # morphology
+
+
+    # apical dendrite
+
+    # Create a column outline in the panel
+    outline = layout.column()
+
+    # Add a label that identifies the arbor
+    # outline.label(text='%s:' % get_arbor_label_with_spaces_from_prefix(arbor_prefix))
+
+    # Create a sub-column that aligns the analysis data from the original outline
+    analysis_area = outline.column(align=True)
+
+    # Update the analysis area with all the filters
+    for item in nmv.analysis.items:
+
+        # Get the result
+
+        # update the ui entry
+
+
+        # Update the UI entry s
+        item.update_ui_entry('ApicalDendrite', analysis_area, context)
+
+    # basal dendrites
+
+    # axon
+
+
+
+    return

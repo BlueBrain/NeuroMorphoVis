@@ -57,5 +57,8 @@ def analyse_total_number_samples(morphology):
     if analysis_result.axon_result is not None:
         analysis_result.morphology_result += analysis_result.axon_result
 
+    print(analysis_result.apical_dendrite_result)
+    print(analysis_result.axon_result)
+
     # Return the analysis result of the entire morphology
     return analysis_result

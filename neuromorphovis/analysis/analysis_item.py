@@ -35,27 +35,27 @@ class AnalysisItem:
     def __init__(self,
                  variable,
                  name,
-                 filter_function=None,
+                 kernel=None,
                  description='',
                  data_format='FLOAT',
                  unit='NONE'):
         """Constructor
 
         :param variable:
-            The name of the variable name of the analysis entry. This entry can be then updated from
-            Blender by changing context.scene.[the variable]
+            The name of the variable name of the analysis item. This entry can be then updated from
+            Blender by changing context.scene.[variable].
         :param name:
             The name of the entry as appears in the GUI.
-        :param filter_function:
-            The filter function that will be applied on the arbor when the morphology is analyzed.
+        :param kernel:
+            The kernel function that will be applied on the morphology when analyzed.
         :param description:
             A little description of the entry to appear as a tooltip in the GUI.
         :param data_format:
             The format of the entry. This could be one of the following options:
-            'INT', 'FLOAT'
+                'INT', 'FLOAT'.
         :param unit:
             The unit of the entry. This could be one of the following options:
-            ‘NONE’, ‘LENGTH’, ‘AREA’, ‘VOLUME’, ‘ROTATION’, ‘TIME’, ‘VELOCITY’, ‘ACCELERATION’
+                ‘NONE’, ‘LENGTH’, ‘AREA’, ‘VOLUME’, ‘ROTATION’, ‘TIME’, ‘VELOCITY’, ‘ACCELERATION’.
         """
 
         # Scene variable for registration
@@ -65,7 +65,7 @@ class AnalysisItem:
         self.name = name
 
         # Analysis filter
-        self.filter_function = filter_function
+        self.kernel = kernel
 
         # Entry description
         self.description = description
@@ -76,102 +76,128 @@ class AnalysisItem:
         # Entry unit
         self.unit = unit
 
-        # Filter result
+        # Analysis result for the entire morphology of type @MorphologyAnalysisResult
         self.result = None
 
-
-        self.result_apical_dendrite = None
-
-        self.result_basal_dendrites = None
-
-        self.result_axon = None
-
-        self.result_morphology = None
-
     ################################################################################################
-    # @create_blender_entry
+    # @register_variable
     ################################################################################################
-    def register_ui_entry(self,
-                          arbor_prefix):
+    def register_variable(self,
+                          variable_prefix):
         """Registers this entry for this analysis item in Blender and add it to the UI.
-        
-        :param arbor_prefix:
-             The prefix 'in string format' that is used to tag or identify the arbor.
+
+        :param variable_prefix:
+             The prefix 'in string format' that is used to tag or identify the analysis component.
         """
 
         # Float entry
         if self.data_format == 'FLOAT':
-            setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
                     FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
                                   min=0, max=1e32, precision=5))
 
         # Int entry
         elif self.data_format == 'INT':
-            setattr(bpy.types.Scene, '%s%s' % (arbor_prefix, self.variable),
+            setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
                     IntProperty(name=self.name, description=self.description, subtype='FACTOR'))
 
     ################################################################################################
-    # @apply_filter
+    # @register_morphology_variables
     ################################################################################################
-    def apply_filter(self,
-                     arbor,
-                     arbor_prefix,
-                     context=None):
-        """Applies the analysis filter to the given arbor and update the corresponding
-        scene parameter.
+    def register_analysis_variables(self,
+                                      morphology):
 
-        :param arbor:
-            A given arbor to get the filter applied on it.
-        :param arbor_prefix:
-            The prefix 'in string format' that is used to tag or identify the arbor.
-        :param context:
-            Blender context.
+        # Apical dendrite
+        if morphology.apical_dendrite is not None:
+            self.register_variable(variable_prefix=morphology.apical_dendrite.get_type_prefix())
+
+        # Basal dendrites
+        if morphology.dendrites is not None:
+
+            # For each basal dendrite
+            for i, basal_dendrite in enumerate(morphology.dendrites):
+                self.register_variable(
+                    variable_prefix='%s%i' % (basal_dendrite.get_type_prefix(), i))
+
+        # Axon
+        if morphology.axon is not None:
+            self.register_variable(variable_prefix=morphology.axon.get_type_prefix())
+
+    ################################################################################################
+    # @update_analysis_variable
+    ################################################################################################
+    def update_analysis_variable(self,
+                                 arbor,
+                                 result,
+                                 context):
         """
 
-        # Get the result
-        self.result = self.filter_function(arbor)
-
-        # self.result_morphology, self.result_apical_dendrite, self.result_basal_dendrites, self.result_axon = self.filter(morphology)
+        :param arbor:
+        :param result:
+        :param context:
+        :return:
+        """
 
         # Update the context, but make sure that the result is not None and the context exists
-        if context is not None or self.result is not None:
+        if context is not None or result is not None:
 
             # Update the scene parameter
-            setattr(context.scene, '%s%s' % (arbor_prefix, self.variable), self.result)
+            setattr(context.scene, '%s%s' % (arbor.get_type_prefix(), self.variable), result)
 
     ################################################################################################
-    # @apply_filter_and_return_result
+    # @update_analysis_variables
     ################################################################################################
-    def apply_filter_and_return_result(self,
-                                       arbor):
-        """Applies the filter and then returns the result corresponding to the filter.
-
-        :param arbor:
-            A given arbor to get the filter applied to it.
-        :return:
-            The results of applying the filter function on the arbor.
+    def update_analysis_variables(self,
+                                  morphology,
+                                  context):
         """
 
-        # Apply the filter
-        return self.apply_filter(arbor)
-
-    ################################################################################################
-    # @update_ui_entry
-    ################################################################################################
-    def update_ui_entry(self,
-                        arbor_prefix,
-                        ui_layout,
-                        context):
-        """Updates the UI entry that corresponds to the filter.
-
-        :param arbor_prefix:
-            The prefix 'in string format' that is used to tag or identify the arbor.
-        :param ui_layout:
-            The layout of the panel in the UI.
+        :param morphology:
         :param context:
-            The UI context from the panel.
+        :return:
         """
 
-        # Update the corresponding UI layout
-        ui_layout.prop(context.scene, '%s%s' % (arbor_prefix, self.variable))
+        # Apical dendrite
+        if morphology.apical_dendrite is not None:
 
+            # Get the apical dendrite result
+            result = self.result.apical_dendrite_result
+
+            # Update the corresponding analysis variable
+            self.update_analysis_variable(
+                arbor=morphology.apical_dendrite, result=result, context=context)
+
+        # Basal dendrites
+        if morphology.dendrites is not None:
+
+            # For each basal dendrite
+            for i, basal_dendrite in enumerate(morphology.dendrites):
+
+                # Get the result of this basal dendrite
+                result = self.result.basal_dendrites_result[i]
+
+                # Update the corresponding analysis variable
+                self.update_analysis_variable(arbor=basal_dendrite, result=result, context=context)
+
+        # Axon
+        if morphology.axon is not None:
+
+            # Get the axon result
+            result = self.result.axon_result
+
+            # Update the corresponding analysis variable
+            self.update_analysis_variable(
+                arbor=morphology.axon, result=result, context=context)
+
+    ################################################################################################
+    # @apply_analysis_kernel
+    ################################################################################################
+    def apply_analysis_kernel(self,
+                              morphology,
+                              context):
+
+        # Get the result
+        self.result = self.kernel(morphology)
+
+        # Update the variables
+        self.update_analysis_variables(morphology=morphology, context=context)
