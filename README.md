@@ -6,8 +6,6 @@
 [![Say Thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/marwan-abdellah)
 [![GitHub Stars](https://img.shields.io/github/stars/BlueBrain/NeuroMorphoVis.svg)](https://github.com/BlueBrain/NeuroMorphoVis/stargazers)
 
-
-
 ## Introduction
 
 _NeuroMorphoVis_ is an interactive, extensible and cross-platform framework for building, visualizing and analyzing digital reconstructions of neuronal morphology skeletons extracted from microscopy stacks. The framework is capable of detecting and repairing several tracing artifacts, allowing the generation of high fidelity surface meshes and high resolution volumetric models for simulation and _in silico_ studies. 
