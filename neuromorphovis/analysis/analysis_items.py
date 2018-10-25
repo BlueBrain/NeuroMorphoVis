@@ -15,150 +15,55 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from neuromorphovis.analysis import AnalysisItem
-from neuromorphovis.analysis import arbor_analysis_ops
-
-item = [
-    [],
-]
+# Internal imports
+from neuromorphovis.analysis.structs import AnalysisItem
+from neuromorphovis.analysis.kernels.morphology import *
 
 
 ####################################################################################################
-# Apply each item in this list on the morphology
+# A list of all the analysis items (or kernels) that will applied on the morphology skeleton
 ####################################################################################################
-per_morphology = [
-
-]
-
-
-####################################################################################################
-# Apply each item in this list on each arbor or neurite in the morphology
-####################################################################################################
-per_arbor = [
+ui_analysis_items = [
 
     ################################################################################################
-    # Samples
+    # Samples-related items
     ################################################################################################
     # Total number of samples
     AnalysisItem(variable='TotalNumberSamples',
                  name='Total # of Samples',
-                 filter_function=arbor_analysis_ops.compute_arbor_total_number_samples,
-                 description='Total number of samples of the neurite',
+                 kernel=kernel_total_number_samples,
+                 description='The total number of samples',
                  data_format='INT'),
 
-    # Min. section sample count
-    AnalysisItem(variable='MinSectionSampleCount',
+    # Minimum number of samples per section
+    AnalysisItem(variable='MinNumberSamplePerSection',
                  name='Min. # Samples / Section',
-                 filter_function=arbor_analysis_ops.compute_minimum_samples_count_of_arbor,
-                 description='The largest number of samples of a section along the neurite',
+                 kernel=kernel_minimum_number_samples_per_section,
+                 description='The least number of samples per section',
                  data_format='INT'),
 
-    # Max. section sample count
-    AnalysisItem(variable='MaxSectionSampleCount',
+    # Maximum number of samples per section
+    AnalysisItem(variable='MaxNumberSamplePerSection',
                  name='Max. # Samples / Section',
-                 filter_function=arbor_analysis_ops.compute_maximum_samples_count_of_arbor,
-                 description='The least number of samples of a section along the neurite',
+                 kernel=kernel_maximum_number_samples_per_section,
+                 description='The largest number of samples per section',
                  data_format='INT'),
 
-    # Average. number of samples per section
-    AnalysisItem(variable='AvgNumberSamplesPerSection',
+    # Average number of samples per section
+    AnalysisItem(variable='AvgNumberSamplePerSection',
                  name='Avg. # Samples / Section',
-                 filter_function=
-                 arbor_analysis_ops.compute_average_number_samples_per_section_of_arbor,
-                 description='The average number of samples per section along the neurite',
+                 kernel=kernel_average_number_samples_per_section,
+                 description='The Average number of samples per  section',
                  data_format='INT'),
 
     ################################################################################################
-    # Length
+    # Length-related items
     ################################################################################################
-    # Total neurite length
     AnalysisItem(variable='TotalLength',
                  name='Total Length',
-                 filter_function=arbor_analysis_ops.compute_arbor_total_length,
-                 description='Total length of the neurite',
+                 kernel=kernel_total_length,
+                 description='Total length',
                  data_format='FLOAT',
                  unit='LENGTH'),
-
-    # Min. section length
-    AnalysisItem(variable='MinSectionLength',
-                 name='Min. Section Length',
-                 filter_function=arbor_analysis_ops.compute_minimum_section_length_of_arbor,
-                 description='The length of the shortest section along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Max. section length
-    AnalysisItem(variable='MaxSectionLength',
-                 name='Max. Section Length',
-                 filter_function=arbor_analysis_ops.compute_maximum_section_length_of_arbor,
-                 description='The length of the longest section along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Avg. section length
-    AnalysisItem(variable='AvgSectionLength',
-                 name='Avg. Section Length',
-                 filter_function=arbor_analysis_ops.compute_average_section_length_of_arbor,
-                 description='The average section length along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Min. segment length
-    AnalysisItem(variable='MinSegmentLength',
-                 name='Min. Segment Length',
-                 filter_function=arbor_analysis_ops.compute_minimum_segment_length_of_arbor,
-                 description='The length of the shortest segment along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Max. segment length
-    AnalysisItem(variable='MaxSegmentLength',
-                 name='Max. Segment Length',
-                 filter_function=arbor_analysis_ops.compute_maximum_segment_length_of_arbor,
-                 description='The length of the longest segment along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Avg. segment length
-    AnalysisItem(variable='AvgSegmentLength',
-                 name='Avg. Segment Length',
-                 filter_function=arbor_analysis_ops.compute_average_segment_length_of_arbor,
-                 description='The average length of the segments along the neurite',
-                 data_format='FLOAT',
-                 unit='LENGTH'),
-
-    # Number of zero-length segments
-    AnalysisItem(variable='NumberZeroLengthSegments',
-                 name='Zero-length Segments',
-                 filter_function=arbor_analysis_ops.compute_number_zero_length_segments_of_arbor,
-                 description='The number of zero-length segments along the neurite',
-                 data_format='INT'),
-
-    ################################################################################################
-    # Area
-    ################################################################################################
-    # Total neurite surface area
-    AnalysisItem(variable='TotalSurfaceArea',
-                 name='Total Surface Area',
-                 filter_function=arbor_analysis_ops.compute_arbor_total_surface_area,
-                 description='Total surface area of the neurite',
-                 data_format='FLOAT',
-                 unit='AREA'),
-
-    ################################################################################################
-    # Volume
-    ################################################################################################
-    # Total neurite volume
-    AnalysisItem(variable='TotalVolume',
-                 name='Total Volume',
-                 filter_function=arbor_analysis_ops.compute_arbor_total_volume,
-                 description='Total volume of the neurite',
-                 data_format='FLOAT',
-                 unit='VOLUME'),
 ]
-
-
-
-
-
 

@@ -15,51 +15,44 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import math
-
-# Internal imports
 import neuromorphovis as nmv
-from neuromorphovis.analysis import AnalysisItem
-from neuromorphovis.analysis import *
+import neuromorphovis.analysis
 import neuromorphovis.skeleton
 
 
 ####################################################################################################
-# @compute_morphology_total_number_samples
+# @compute_arbor_total_volume
 ####################################################################################################
-def compute_morphology_total_number_samples(morphology):
-    """Computes the total number of samples of the morphology.
+def compute_arbor_total_volume(arbor):
+    """Computes the total volume of the given arbor.
 
-    Note that we use the number of segments to account for the number of samples to avoid
-    double-counting the branching points.
-
-    :param morphology:
-        A given morphology to analyze.
-    :return
-        Total number of samples of the morphology.
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The total volume of the arbor in um cube.
     """
 
-    # A list that will contain the number of samples per section
-    sections_number_samples = list()
+    # A list that will contain the volumes of all the sections along the arbor
+    sections_volumes = list()
 
-    # Compute the number of segments of each section individually
+    # Compute the volumes of each section individually
     nmv.skeleton.ops.apply_operation_to_arbor(
         *[arbor,
-          nmv.analysis.compute_number_of_segments_per_section,
-          sections_number_samples])
+          nmv.analysis.compute_sections_volumes_from_segments,
+          sections_volumes])
 
-    # Total number of samples
-    total_number_samples = 0
+    # Total arbor length
+    arbor_total_volume = 0.0
 
-    # Iterate and sum up
-    for section_number_samples in sections_number_samples:
+    # Iterate and sum up all the sections volumes
+    for volume in sections_volumes:
 
-        # Add to the total number of samples
-        total_number_samples += section_number_samples
+        # Add to the arbor volume
+        arbor_total_volume += volume
 
-    # Add the root sample that is not considered a bifurcation point
-    total_number_samples += 1
+    # Return the total section volume
+    return arbor_total_volume
 
-    # Return the total number of samples of the given arbor
-    return total_number_samples
+
+
+

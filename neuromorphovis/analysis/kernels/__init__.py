@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .kernels import *
-from .structs import *
-from .analysis_items import *
+from .arbor import *
+from .morphology import *
+from .section import *
+from .functional import *
