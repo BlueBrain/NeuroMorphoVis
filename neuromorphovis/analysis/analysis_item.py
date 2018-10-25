@@ -79,6 +79,15 @@ class AnalysisItem:
         # Filter result
         self.result = None
 
+
+        self.result_apical_dendrite = None
+
+        self.result_basal_dendrites = None
+
+        self.result_axon = None
+
+        self.result_morphology = None
+
     ################################################################################################
     # @create_blender_entry
     ################################################################################################
@@ -121,6 +130,8 @@ class AnalysisItem:
 
         # Get the result
         self.result = self.filter_function(arbor)
+
+        # self.result_morphology, self.result_apical_dendrite, self.result_basal_dendrites, self.result_axon = self.filter(morphology)
 
         # Update the context, but make sure that the result is not None and the context exists
         if context is not None or self.result is not None:

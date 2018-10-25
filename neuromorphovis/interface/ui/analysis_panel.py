@@ -56,7 +56,7 @@ class AnalysisPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
 
-    #
+    # TODO: Update the documentation
     bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
 
 
@@ -150,11 +150,13 @@ class AnalysisPanel(bpy.types.Panel):
         description="De[tect when the axon is disconnected from the soma",
         default=True)
 
+    """
     # Branches with negative samples
     bpy.types.Scene.AnalyzeBranchesWithNegativeSamples = BoolProperty(
         name="Branches With Negative Samples",
         description="Detect when the section is intersecting with the soma",
         default=True)
+    """
 
     ################################################################################################
     # @draw
@@ -234,6 +236,7 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column = layout.column(align=True)
         analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
 
+        """
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its neurites count
         if context.scene.MorphologyAnalyzed:
@@ -241,8 +244,7 @@ class AnalysisPanel(bpy.types.Panel):
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_output_to_panel(
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)
-
-
+        """
 
 ####################################################################################################
 # @SaveSomaMeshBlend
@@ -287,12 +289,16 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
+        result = nmv.analysis.analyse_total_number_samples(morphology=nmv.interface.ui_morphology)
+        print(result.axon_result)
+        print(result.apical_dendrite_result)
+        print(result.morphology_result)
         # After loading the morphology, register the components entries
-        nmv.interface.register_morphology_ui_entries(nmv.interface.ui_morphology)
+        # nmv.interface.register_morphology_ui_entries(nmv.interface.ui_morphology)
 
         # Apply the analysis filters and update the DONE flag if everything goes well
-        context.scene.MorphologyAnalyzed = nmv.analysis.apply_analysis_filters(
-            nmv.interface.ui_morphology, context=context)
+        # context.scene.MorphologyAnalyzed = nmv.analysis.apply_analysis_filters(
+        #    nmv.interface.ui_morphology, context=context)
 
         # All set of filter we support
         analysis_filters = [

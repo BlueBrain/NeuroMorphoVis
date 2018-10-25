@@ -34,6 +34,10 @@ def apply_analysis_filters(morphology,
         True if the analysis filters are applied without any issues, False otherwise.
    """
 
+
+    #for entry in entries:
+    #    apply filter
+
     try:
 
         # Axon

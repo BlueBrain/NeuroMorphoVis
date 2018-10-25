@@ -15,51 +15,47 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import math
-
 # Internal imports
 import neuromorphovis as nmv
 from neuromorphovis.analysis import AnalysisItem
 from neuromorphovis.analysis import *
-import neuromorphovis.skeleton
 
 
 ####################################################################################################
-# @compute_morphology_total_number_samples
+# @compute_total_number_samples
 ####################################################################################################
-def compute_morphology_total_number_samples(morphology):
-    """Computes the total number of samples of the morphology.
+def analyse_total_number_samples(morphology):
+    """Analyse the total number of samples of the given morphology.
 
-    Note that we use the number of segments to account for the number of samples to avoid
-    double-counting the branching points.
+    This analysis accounts for the number of samples of each individual arbor or neurite of the
+    morphology and the total number of samples of the entire morphology.
 
     :param morphology:
-        A given morphology to analyze.
-    :return
-        Total number of samples of the morphology.
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
     """
 
-    # A list that will contain the number of samples per section
-    sections_number_samples = list()
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_arbor_total_number_samples])
 
-    # Compute the number of segments of each section individually
-    nmv.skeleton.ops.apply_operation_to_arbor(
-        *[arbor,
-          nmv.analysis.compute_number_of_segments_per_section,
-          sections_number_samples])
+    # Get the total number of samples of the morphology from that of each individual arbor
+    analysis_result.morphology_result = 0
 
-    # Total number of samples
-    total_number_samples = 0
+    # Apical dendrite
+    if analysis_result.apical_dendrite_result is not None:
+        analysis_result.morphology_result += analysis_result.apical_dendrite_result
 
-    # Iterate and sum up
-    for section_number_samples in sections_number_samples:
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            analysis_result.morphology_result += basal_dendrite_result
 
-        # Add to the total number of samples
-        total_number_samples += section_number_samples
+    # Axon
+    if analysis_result.axon_result is not None:
+        analysis_result.morphology_result += analysis_result.axon_result
 
-    # Add the root sample that is not considered a bifurcation point
-    total_number_samples += 1
-
-    # Return the total number of samples of the given arbor
-    return total_number_samples
+    # Return the analysis result of the entire morphology
+    return analysis_result
