@@ -105,7 +105,10 @@ class AnalysisItem:
     # @register_morphology_variables
     ################################################################################################
     def register_analysis_variables(self,
-                                      morphology):
+                                    morphology):
+
+        # Morphology
+        self.register_variable(variable_prefix='Morphology')
 
         # Apical dendrite
         if morphology.apical_dendrite is not None:
@@ -127,12 +130,12 @@ class AnalysisItem:
     # @update_analysis_variable
     ################################################################################################
     def update_analysis_variable(self,
-                                 arbor,
+                                 prefix,
                                  result,
                                  context):
         """
 
-        :param arbor:
+        :param prefix:
         :param result:
         :param context:
         :return:
@@ -142,7 +145,7 @@ class AnalysisItem:
         if context is not None or result is not None:
 
             # Update the scene parameter
-            setattr(context.scene, '%s%s' % (arbor.get_type_prefix(), self.variable), result)
+            setattr(context.scene, '%s%s' % (prefix, self.variable), result)
 
     ################################################################################################
     # @update_analysis_variables
@@ -157,6 +160,10 @@ class AnalysisItem:
         :return:
         """
 
+        # Morphology
+        self.update_analysis_variable(
+            prefix='Morphology', result=self.result.morphology_result, context=context)
+
         # Apical dendrite
         if morphology.apical_dendrite is not None:
 
@@ -165,7 +172,7 @@ class AnalysisItem:
 
             # Update the corresponding analysis variable
             self.update_analysis_variable(
-                arbor=morphology.apical_dendrite, result=result, context=context)
+                prefix=morphology.apical_dendrite.get_type_prefix(), result=result, context=context)
 
         # Basal dendrites
         if morphology.dendrites is not None:
@@ -177,7 +184,9 @@ class AnalysisItem:
                 result = self.result.basal_dendrites_result[i]
 
                 # Update the corresponding analysis variable
-                self.update_analysis_variable(arbor=basal_dendrite, result=result, context=context)
+                self.update_analysis_variable(
+                    prefix='%s%d' % (basal_dendrite.get_type_prefix(), i), result=result,
+                    context=context)
 
         # Axon
         if morphology.axon is not None:
@@ -187,7 +196,7 @@ class AnalysisItem:
 
             # Update the corresponding analysis variable
             self.update_analysis_variable(
-                arbor=morphology.axon, result=result, context=context)
+                prefix=morphology.axon.get_type_prefix(), result=result, context=context)
 
     ################################################################################################
     # @apply_analysis_kernel
@@ -196,7 +205,7 @@ class AnalysisItem:
                               morphology,
                               context):
 
-        # Get the result
+        # Get the result from applying the kernel on the entire morphology skeleton
         self.result = self.kernel(morphology)
 
         # Update the variables

@@ -288,6 +288,8 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
+        nmv.interface.register_morphology_ui_entries(morphology=nmv.interface.ui_morphology)
+
         # Register the morphology variables to be able to show and update them on the UI
         for item in nmv.analysis.items:
             item.register_analysis_variables(morphology=nmv.interface.ui_morphology)
