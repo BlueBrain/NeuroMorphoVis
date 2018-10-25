@@ -59,10 +59,35 @@ ui_analysis_items = [
     ################################################################################################
     # Length-related items
     ################################################################################################
+    # Total length
     AnalysisItem(variable='TotalLength',
                  name='Total Length',
                  kernel=kernel_total_length,
                  description='Total length',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    # Minimum section length
+    AnalysisItem(variable='MinSectionLength',
+                 name='Min. Section Length',
+                 kernel=kernel_minimum_section_length,
+                 description='The length of the shortest section',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    # Maximum section length
+    AnalysisItem(variable='MaxSectionLength',
+                 name='Max. Section Length',
+                 kernel=kernel_maximum_section_length,
+                 description='The length of the shortest section',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    # Average section length
+    AnalysisItem(variable='AvgSectionLength',
+                 name='Avg. Section Length',
+                 kernel=kernel_average_section_length,
+                 description='Average section length',
                  data_format='FLOAT',
                  unit='LENGTH'),
 ]

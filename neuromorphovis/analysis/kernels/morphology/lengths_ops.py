@@ -21,7 +21,7 @@ import neuromorphovis.analysis
 
 
 ####################################################################################################
-# @kernel_total_number_samples
+# @kernel_total_length
 ####################################################################################################
 def kernel_total_length(morphology):
     """Analyse the total length of aspects the given morphology.
@@ -37,21 +37,80 @@ def kernel_total_length(morphology):
         *[morphology,
           nmv.analysis.compute_total_length_of_arbor])
 
-    # Aggregate result of the entire morphology will be computed later
-    analysis_result.morphology_result = 0
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
 
-    # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        analysis_result.morphology_result += analysis_result.apical_dendrite_result
+    # Return the analysis result of the entire morphology
+    return analysis_result
 
-    # Basal dendrites
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            analysis_result.morphology_result += basal_dendrite_result
 
-    # Axon
-    if analysis_result.axon_result is not None:
-        analysis_result.morphology_result += analysis_result.axon_result
+####################################################################################################
+# @kernel_minimum_section_length
+####################################################################################################
+def kernel_minimum_section_length(morphology):
+    """Find the min section length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_minimum_section_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_maximum_section_length
+####################################################################################################
+def kernel_maximum_section_length(morphology):
+    """Find the max section length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_maximum_section_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_average_section_length
+####################################################################################################
+def kernel_average_section_length(morphology):
+    """Find the average section length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_average_section_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result

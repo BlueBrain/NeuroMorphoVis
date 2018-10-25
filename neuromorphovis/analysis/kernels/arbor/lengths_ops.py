@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.analysis
 import neuromorphovis.skeleton

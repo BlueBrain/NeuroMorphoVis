@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.analysis
 
@@ -39,21 +40,8 @@ def kernel_total_number_samples(morphology):
         *[morphology,
           nmv.analysis.compute_total_number_samples_of_arbor])
 
-    # Aggregate result of the entire morphology will be computed later
-    analysis_result.morphology_result = 0
-
-    # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        analysis_result.morphology_result += analysis_result.apical_dendrite_result
-
-    # Basal dendrites
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            analysis_result.morphology_result += basal_dendrite_result
-
-    # Axon
-    if analysis_result.axon_result is not None:
-        analysis_result.morphology_result += analysis_result.axon_result
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result
@@ -76,24 +64,8 @@ def kernel_minimum_number_samples_per_section(morphology):
         *[morphology,
           nmv.analysis.compute_minimum_samples_count_of_arbor])
 
-    # A list that will contain the results of all the arbors
-    all_arbors_results = list()
-
-    # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
-
-    # Basal dendrites
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            all_arbors_results.append(basal_dendrite_result)
-
-    # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
-
-    # Update the morphology result
-    analysis_result.morphology_result = min(all_arbors_results)
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result
@@ -116,24 +88,8 @@ def kernel_maximum_number_samples_per_section(morphology):
         *[morphology,
           nmv.analysis.compute_maximum_samples_count_of_arbor])
 
-    # A list that will contain the results of all the arbors
-    all_arbors_results = list()
-
-    # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
-
-    # Basal dendrites
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            all_arbors_results.append(basal_dendrite_result)
-
-    # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
-
-    # Update the morphology result
-    analysis_result.morphology_result = max(all_arbors_results)
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result
@@ -156,27 +112,8 @@ def kernel_average_number_samples_per_section(morphology):
         *[morphology,
           nmv.analysis.compute_average_number_samples_per_section_of_arbor])
 
-    # A list that will contain the results of all the arbors
-    all_arbors_results = list()
-
-    # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
-
-    # Basal dendrites
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            all_arbors_results.append(basal_dendrite_result)
-
-    # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
-
-    # Update the morphology result
-    analysis_result.morphology_result = 0
-    for result in all_arbors_results:
-        analysis_result.morphology_result += result
-    analysis_result.morphology_result /= len(all_arbors_results)
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result
