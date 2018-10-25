@@ -127,7 +127,6 @@ def add_analysis_group_to_panel(prefix,
         # Update the analysis area with all the filters
         for item in nmv.analysis.items:
 
-
             analysis_area.prop(context.scene, '%s%s' % (prefix, item.variable))
 
         # Disable editing the analysis area
@@ -150,7 +149,7 @@ def add_analysis_output_to_panel(morphology,
         Blender context.
     """
 
-    # Add the analysis results to the panel
+    # Morphology
     add_analysis_group_to_panel(prefix='Morphology', layout=layout, context=context)
 
     # Apical dendrite

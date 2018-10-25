@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .kernels import *
-from .structs import *
-from .analysis_kernels import *
+from .area_ops import *
+from .lengths_ops import *
+from .samples_ops import *
+from .volume_ops import *

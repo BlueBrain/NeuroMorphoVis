@@ -15,6 +15,5 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .kernels import *
-from .structs import *
-from .analysis_kernels import *
+from .analysis_item import *
+from .analysis_result import *

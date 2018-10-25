@@ -34,11 +34,6 @@ import neuromorphovis.interface
 import neuromorphovis.skeleton
 
 
-# A global flag to indicate that the morphology has been loaded and analyzed
-morphology_analyzed = False
-
-
-
 ####################################################################################################
 # @AnalysisPanel
 ####################################################################################################
