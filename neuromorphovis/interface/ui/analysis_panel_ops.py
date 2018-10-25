@@ -209,15 +209,18 @@ def add_analysis_groups_to_panel(morphology,
 ####################################################################################################
 def analyze_morphology(morphology,
                        context):
-    """
+    """Registers the different analysis components and then analyze the morphology.
 
     :param morphology:
+        A given morphology to analyse.
     :param context:
+        A bpy.context.
     :return:
+        True if the morphology is analyzed, and False if not.
     """
 
     try:
-
+        # Register the different analysis groups
         register_analysis_groups(morphology=morphology)
 
         # Register the morphology variables to be able to show and update them on the UI
@@ -233,5 +236,5 @@ def analyze_morphology(morphology,
 
     except ValueError:
 
-        # Something went wrong
+        # Morphology could not be analyzed
         return False

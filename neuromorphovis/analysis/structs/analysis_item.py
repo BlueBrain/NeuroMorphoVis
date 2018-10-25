@@ -90,22 +90,42 @@ class AnalysisItem:
              The prefix 'in string format' that is used to tag or identify the analysis component.
         """
 
+        # Append a little detail to the description to indicate if this is morphology or arbor
+        if 'Morphology' in variable_prefix:
+            description = '%s %s' % (self.description, 'of the entire morphology')
+        elif 'Dendrite' in variable_prefix:
+            description = '%s %s' % (self.description, 'of the dendrite')
+        elif 'Axon' in variable_prefix:
+            description = '%s %s' % (self.description, 'of the axon')
+        else:
+            pass
+
         # Float entry
         if self.data_format == 'FLOAT':
             setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
-                    FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
+                    FloatProperty(name=self.name, description=description, subtype='FACTOR',
                                   min=0, max=1e32, precision=5))
 
         # Int entry
         elif self.data_format == 'INT':
             setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
-                    IntProperty(name=self.name, description=self.description, subtype='FACTOR'))
+                    IntProperty(name=self.name, description=description, subtype='FACTOR'))
+
+        # Otherwise, ignore
+        else:
+            pass
 
     ################################################################################################
     # @register_morphology_variables
     ################################################################################################
     def register_analysis_variables(self,
                                     morphology):
+        """Registers each analysis variable in the group.
+
+        :param morphology:
+            A given morphology to analyze.
+        :return:
+        """
 
         # Morphology
         self.register_variable(variable_prefix='Morphology')
@@ -133,12 +153,14 @@ class AnalysisItem:
                                  prefix,
                                  result,
                                  context):
-        """
+        """Updates each analysis variable in the group.
 
         :param prefix:
+            The prefix 'in string format' that is used to tag or identify the analysis component.
         :param result:
+            The final results that should be assigned to the variable.
         :param context:
-        :return:
+            Blender context.
         """
 
         # Update the context, but make sure that the result is not None and the context exists
@@ -153,11 +175,12 @@ class AnalysisItem:
     def update_analysis_variables(self,
                                   morphology,
                                   context):
-        """
+        """Updates the analysis variables after the analysis is finished.
 
         :param morphology:
+            A given morphology to analyze.
         :param context:
-        :return:
+            Blender context.
         """
 
         # Morphology
@@ -204,9 +227,18 @@ class AnalysisItem:
     def apply_analysis_kernel(self,
                               morphology,
                               context):
+        """Applies the analysis kernels on the entire morphology.
 
-        # Get the result from applying the kernel on the entire morphology skeleton
-        self.result = self.kernel(morphology)
+        :param morphology:
+            A given morphology to analyze.
+        :param context:
+            Blender context.
+        """
 
-        # Update the variables
-        self.update_analysis_variables(morphology=morphology, context=context)
+        if self.kernel is not None:
+
+            # Get the result from applying the kernel on the entire morphology skeleton
+            self.result = self.kernel(morphology)
+
+            # Update the variables
+            self.update_analysis_variables(morphology=morphology, context=context)
