@@ -14,3 +14,103 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
+
+# Internal imports
+import neuromorphovis as nmv
+import neuromorphovis.analysis
+
+
+####################################################################################################
+# @kernel_total_volume
+####################################################################################################
+def kernel_total_volume(morphology):
+    """Analyse the total volume of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_arbor_total_volume])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_minimum_section_volume
+####################################################################################################
+def kernel_minimum_section_volume(morphology):
+    """Find the minimum section volume of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_minimum_section_volume])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_maximum_section_volume
+####################################################################################################
+def kernel_maximum_section_volume(morphology):
+    """Find the maximum section volume of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_maximum_section_volume])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_average_section_volume
+####################################################################################################
+def kernel_average_section_volume(morphology):
+    """Find the average section volume of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_average_section_volume])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result

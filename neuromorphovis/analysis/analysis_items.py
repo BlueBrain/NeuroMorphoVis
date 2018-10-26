@@ -59,7 +59,6 @@ ui_analysis_items = [
     ################################################################################################
     # Length-related items
     ################################################################################################
-    # Total length
     AnalysisItem(variable='TotalLength',
                  name='Total Length',
                  kernel=kernel_total_length,
@@ -67,28 +66,87 @@ ui_analysis_items = [
                  data_format='FLOAT',
                  unit='LENGTH'),
 
-    # Minimum section length
     AnalysisItem(variable='MinSectionLength',
                  name='Min. Section Length',
                  kernel=kernel_minimum_section_length,
-                 description='The length of the shortest section',
+                 description='The maximum section length',
                  data_format='FLOAT',
                  unit='LENGTH'),
 
-    # Maximum section length
     AnalysisItem(variable='MaxSectionLength',
                  name='Max. Section Length',
                  kernel=kernel_maximum_section_length,
-                 description='The length of the shortest section',
+                 description='The minimum section length',
                  data_format='FLOAT',
                  unit='LENGTH'),
 
-    # Average section length
     AnalysisItem(variable='AvgSectionLength',
                  name='Avg. Section Length',
                  kernel=kernel_average_section_length,
                  description='Average section length',
                  data_format='FLOAT',
                  unit='LENGTH'),
+
+    ################################################################################################
+    # Area-related items
+    ################################################################################################
+    AnalysisItem(variable='TotalSurfaceArea',
+                 name='Total Surface Area',
+                 kernel=kernel_total_surface_area,
+                 description='Total surface area',
+                 data_format='FLOAT',
+                 unit='AREA'),
+
+    AnalysisItem(variable='MinSectionSurfaceArea',
+                 name='Min. Section Surface Area',
+                 kernel=kernel_minimum_section_surface_area,
+                 description='The minimum section surface area',
+                 data_format='FLOAT',
+                 unit='AREA'),
+
+    AnalysisItem(variable='MaxSectionSurfaceArea',
+                 name='Max. Section Surface Area',
+                 kernel=kernel_maximum_section_surface_area,
+                 description='The maximum section surface area',
+                 data_format='FLOAT',
+                 unit='AREA'),
+
+    AnalysisItem(variable='AvgSurfaceAreaPerSection',
+                 name='Avg. Section Surface Area',
+                 kernel=kernel_average_section_surface_area,
+                 description='The average section surface area',
+                 data_format='FLOAT',
+                 unit='AREA'),
+
+    ################################################################################################
+    # Volume-related items
+    ################################################################################################
+    AnalysisItem(variable='TotalVolume',
+                 name='Total Surface Area',
+                 kernel=kernel_total_volume,
+                 description='the total volume',
+                 data_format='FLOAT',
+                 unit='VOLUME'),
+
+    AnalysisItem(variable='MinSectionVolume',
+                 name='Min. Section Volume',
+                 kernel=kernel_minimum_section_volume,
+                 description='The minimum section volume',
+                 data_format='FLOAT',
+                 unit='VOLUME'),
+
+    AnalysisItem(variable='MaxSectionVolume',
+                 name='Max. Section Volume',
+                 kernel=kernel_maximum_section_volume,
+                 description='The maximum section volume',
+                 data_format='FLOAT',
+                 unit='VOLUME'),
+
+    AnalysisItem(variable='AvgSectionVolume',
+                 name='Avg. Section Volume',
+                 kernel=kernel_average_section_volume,
+                 description='The average section volume',
+                 data_format='FLOAT',
+                 unit='VOLUME'),
 ]
 
