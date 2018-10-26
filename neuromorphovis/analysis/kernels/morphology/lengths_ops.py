@@ -24,7 +24,7 @@ import neuromorphovis.analysis
 # @kernel_total_length
 ####################################################################################################
 def kernel_total_length(morphology):
-    """Analyse the total length of aspects the given morphology.
+    """Analyse the total length aspects the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
