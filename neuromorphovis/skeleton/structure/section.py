@@ -74,6 +74,9 @@ class Section:
         # A list of the children
         self.children = list()
 
+        # The branching order of this section
+        self.branching_order = 0
+
         # Is the 'root' section of any branch connected to the soma or not ?!
         # NOTE: By default for all the sections, this options is set to False, however,
         # for the root sections, the branch is checked if it is connected to the soma or not. If
@@ -99,8 +102,7 @@ class Section:
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
-        # The branching order of this section
-        self.branching_order = 0
+
 
     ################################################################################################
     # @get_type_string
