@@ -35,16 +35,9 @@ def kernel_total_number_samples(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_total_number_samples_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_number_samples_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -59,16 +52,9 @@ def kernel_minimum_number_samples_per_section(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_minimum_samples_count_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_minimum_samples_count_of_arbor,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -83,16 +69,9 @@ def kernel_maximum_number_samples_per_section(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_maximum_samples_count_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_samples_count_of_arbor,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -107,13 +86,7 @@ def kernel_average_number_samples_per_section(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_average_number_samples_per_section_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_number_samples_per_section_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)

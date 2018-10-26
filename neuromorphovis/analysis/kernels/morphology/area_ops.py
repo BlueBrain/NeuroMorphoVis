@@ -32,16 +32,9 @@ def kernel_total_surface_area(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_arbor_total_surface_area])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_arbor_total_surface_area,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -56,16 +49,9 @@ def kernel_minimum_section_surface_area(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_minimum_section_surface_area])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_minimum_section_surface_area,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -80,16 +66,9 @@ def kernel_maximum_section_surface_area(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_maximum_section_surface_area])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_section_surface_area,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -104,13 +83,6 @@ def kernel_average_section_surface_area(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_average_section_surface_area])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_average_section_surface_area,
+                                      nmv.analysis.compute_average_analysis_result_of_morphology)

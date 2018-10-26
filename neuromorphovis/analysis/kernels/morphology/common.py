@@ -15,6 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import neuromorphovis as nmv
+import neuromorphovis.analysis
+
 
 ####################################################################################################
 # @compute_total_analysis_result_of_morphology
@@ -145,3 +149,33 @@ def compute_average_analysis_result_of_morphology(analysis_result):
     for result in all_arbors_results:
         analysis_result.morphology_result += result
     analysis_result.morphology_result /= len(all_arbors_results)
+
+
+####################################################################################################
+# @invoke_kernel
+####################################################################################################
+def invoke_kernel(morphology,
+                  kernel,
+                  aggregation_function):
+    """Invoke the analysis kernel on the morphology and return the analysis result.
+
+    :param morphology:
+        A given morphology skeleton to analyze.
+    :param kernel:
+        Analysis kernel that will be applied on the morphology.
+    :param aggregation_function:
+        The function that will be aggregate the entire morphology analysis result from the
+        individual arbors, for example minimum, maximum, average or total.
+    :return:
+        The analysis results as an @AnalysisResult structure.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology, kernel])
+
+    # Update the aggregate morphology result from the arbors
+    aggregation_function(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result

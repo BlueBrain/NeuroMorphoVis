@@ -20,6 +20,7 @@ import neuromorphovis as nmv
 import neuromorphovis.analysis
 
 
+
 ####################################################################################################
 # @kernel_total_length
 ####################################################################################################
@@ -32,16 +33,9 @@ def kernel_total_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_total_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_length_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -56,16 +50,9 @@ def kernel_minimum_section_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_minimum_section_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_minimum_section_length_of_arbor,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -80,16 +67,9 @@ def kernel_maximum_section_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_maximum_section_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_section_length_of_arbor,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -104,16 +84,9 @@ def kernel_average_section_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_average_section_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_average_section_length_of_arbor,
+                                      nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -128,16 +101,9 @@ def kernel_minimum_segment_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_minimum_segment_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_minimum_segment_length_of_arbor,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -152,16 +118,9 @@ def kernel_maximum_segment_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_maximum_segment_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_segment_length_of_arbor,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -176,16 +135,9 @@ def kernel_average_segment_length(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_average_segment_length_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_average_segment_length_of_arbor,
+                                      nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -200,16 +152,9 @@ def kernel_zero_length_segments(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_number_zero_length_segments_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_number_zero_length_segments_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -224,13 +169,6 @@ def kernel_short_sections(morphology):
         The result of the analysis operation.
     """
 
-    # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology,
-          nmv.analysis.compute_number_of_short_sections_of_arbor])
-
-    # Update the morphology result from the arbors
-    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
-
-    # Return the analysis result of the entire morphology
-    return analysis_result
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_number_of_short_sections_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
