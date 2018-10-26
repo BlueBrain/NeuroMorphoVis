@@ -30,7 +30,7 @@ ui_analysis_items = [
     ################################################################################################
     # Total number of samples
     AnalysisItem(variable='TotalNumberSamples',
-                 name='Total # of Samples',
+                 name='Total # Samples',
                  kernel=kernel_total_number_samples,
                  description='The total number of samples',
                  data_format='INT'),
@@ -86,6 +86,41 @@ ui_analysis_items = [
                  description='Average section length',
                  data_format='FLOAT',
                  unit='LENGTH'),
+
+    AnalysisItem(variable='ShortSections',
+                 name='Short Sections',
+                 kernel=kernel_short_sections,
+                 description='The total number of short sections '
+                             '(length is smaller than the sum of the terminal samples radii)',
+                 data_format='INT'),
+
+    AnalysisItem(variable='MinSegmentLength',
+                 name='Min. Segment Length ',
+                 kernel=kernel_minimum_segment_length,
+                 description='The minimum segment length',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    AnalysisItem(variable='MaxSegmentLength',
+                 name='Max. Segment Length ',
+                 kernel=kernel_maximum_segment_length,
+
+                 description='The maximum segment length',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    AnalysisItem(variable='AvgSegmentLength',
+                 name='Avg. Segment Length ',
+                 kernel=kernel_average_segment_length,
+                 description='The average segment length',
+                 data_format='FLOAT',
+                 unit='LENGTH'),
+
+    AnalysisItem(variable='ZeroLengthSegments',
+                 name='Zero-length Segments',
+                 kernel=kernel_zero_length_segments,
+                 description='The total number of zero-length segments (or duplicate samples)',
+                 data_format='INT'),
 
     ################################################################################################
     # Area-related items

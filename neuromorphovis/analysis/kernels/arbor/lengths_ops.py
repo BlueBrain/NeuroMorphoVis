@@ -266,3 +266,28 @@ def compute_average_section_length_of_arbor(arbor):
 
     # Return the average section length by normalizing the total one
     return arbor_total_length / len(sections_lengths)
+
+
+####################################################################################################
+# @compute_number_of_short_sections_of_arbor
+####################################################################################################
+def compute_number_of_short_sections_of_arbor(arbor):
+    """Computes an array that contains the lengths of all the sections along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the lengths of all the sections along the arbor.
+    """
+
+    # A list that will contains the lengths of all the sections along the arbor
+    short_sections = list()
+
+    # Compute the length of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.identify_short_sections,
+          short_sections])
+
+    # Return the number of short sections
+    return len(short_sections)

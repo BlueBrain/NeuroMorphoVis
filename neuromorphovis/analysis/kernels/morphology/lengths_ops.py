@@ -48,7 +48,7 @@ def kernel_total_length(morphology):
 # @kernel_minimum_section_length
 ####################################################################################################
 def kernel_minimum_section_length(morphology):
-    """Find the min section length of the given morphology.
+    """Find the minimum section length of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -72,7 +72,7 @@ def kernel_minimum_section_length(morphology):
 # @kernel_maximum_section_length
 ####################################################################################################
 def kernel_maximum_section_length(morphology):
-    """Find the max section length of the given morphology.
+    """Find the maximum section length of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -111,6 +111,126 @@ def kernel_average_section_length(morphology):
 
     # Update the morphology result from the arbors
     nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_minimum_segment_length
+####################################################################################################
+def kernel_minimum_segment_length(morphology):
+    """Find the minimum segment length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_minimum_segment_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_minimum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_maximum_segment_length
+####################################################################################################
+def kernel_maximum_segment_length(morphology):
+    """Find the maximum segment length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_maximum_segment_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_maximum_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_average_segment_length
+####################################################################################################
+def kernel_average_segment_length(morphology):
+    """Find the average segment length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_average_segment_length_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_average_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_average_segment_length
+####################################################################################################
+def kernel_zero_length_segments(morphology):
+    """Find the number of zero-length segments of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_number_zero_length_segments_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
+
+    # Return the analysis result of the entire morphology
+    return analysis_result
+
+
+####################################################################################################
+# @kernel_average_segment_length
+####################################################################################################
+def kernel_short_sections(morphology):
+    """Find the number of the short sections of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Apply the analysis operation to the morphology
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
+        *[morphology,
+          nmv.analysis.compute_number_of_short_sections_of_arbor])
+
+    # Update the morphology result from the arbors
+    nmv.analysis.compute_total_analysis_result_of_morphology(analysis_result)
 
     # Return the analysis result of the entire morphology
     return analysis_result

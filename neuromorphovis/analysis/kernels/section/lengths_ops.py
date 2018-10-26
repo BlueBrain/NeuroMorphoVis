@@ -101,3 +101,35 @@ def compute_sections_lengths(section,
 
     # Append the length to the list
     sections_lengths.append(section_length)
+
+
+####################################################################################################
+# @identify_short_sections
+####################################################################################################
+def identify_short_sections(section,
+                            short_sections):
+    """Analyze the short sections, which have their length shorter than the sum of their
+    initial and final diameters.
+
+    :param section:
+        A given section to get analyzed.
+    :param short_sections:
+        A list to collect the resulting analysis data.
+    """
+
+    # Only applies if the section has more than two samples
+    if len(section.samples) > 1:
+
+        # Compute the sum of the diameters of the first and last samples
+        diameters_sum = (section.samples[0].radius + section.samples[-1].radius) * 2
+
+        # Compute section length
+        section_length = compute_section_length(section=section)
+
+        # If the sum is smaller than the section length, then report it as an issue
+        if section_length < diameters_sum:
+
+            # Update the list
+            analysis_string = 'Section[%s : %d] : Length[Current : %f, Minimal : %f]' % (
+                section.get_type_string(), section.id, section_length, diameters_sum)
+            short_sections.append(analysis_string)
