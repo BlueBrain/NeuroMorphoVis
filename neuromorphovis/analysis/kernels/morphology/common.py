@@ -171,8 +171,7 @@ def invoke_kernel(morphology,
     """
 
     # Apply the analysis operation to the morphology
-    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(
-        *[morphology, kernel])
+    analysis_result = nmv.analysis.apply_analysis_operation_to_morphology(*[morphology, kernel])
 
     # Update the aggregate morphology result from the arbors
     aggregation_function(analysis_result)
