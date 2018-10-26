@@ -164,7 +164,7 @@ def invoke_kernel(morphology,
     :param kernel:
         Analysis kernel that will be applied on the morphology.
     :param aggregation_function:
-        The function that will be aggregate the entire morphology analysis result from the
+        The function that will aggregate the entire morphology analysis result from the
         individual arbors, for example minimum, maximum, average or total.
     :return:
         The analysis results as an @AnalysisResult structure.
