@@ -46,3 +46,17 @@ def compute_number_of_segments_per_section(section,
     """
 
     analysis_data.append(len(section.samples) - 1)
+
+
+
+class SampleAnalysisInfo:
+    def __init__(self):
+        self.radius = 0
+        self.branching_order = 0
+        self.distance_from_soma = 0
+
+
+# axon : data[SampleAnalysisInfo]
+# apical : data[SampleAnalysisInfo]
+# basal0 : data[SampleAnalysisInfo]
+# basal1: data[SampleAnalysisInfo]
