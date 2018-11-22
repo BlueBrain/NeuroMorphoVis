@@ -33,6 +33,7 @@ import neuromorphovis.mesh
 import neuromorphovis.scene
 import neuromorphovis.shading
 import neuromorphovis.skeleton
+import neuromorphovis.bmeshi
 
 
 ####################################################################################################
@@ -129,6 +130,22 @@ class SkeletonBuilder:
         self.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='articulation', material_type=self.options.morphology.material,
             color=self.options.morphology.articulation_color)
+
+    def draw_section_samples_as_spheres(self,
+                                        section):
+        """
+
+        :param section:
+        :return:
+        """
+        output = list()
+        for sample in section.samples:
+            #print(sample)
+            # xsphere = nmv.bmeshi.create_ico_sphere(radius=sample.radius, location=sample.point, subdivisions=2)
+            xsphere = nmv.bmeshi.create_uv_sphere(radius=sample.radius, location=sample.point)
+            #sphere = nmv.mesh.create_ico_sphere(radius=sample.radius, location=sample.point, subdivisions=2)
+            output.append(xsphere)
+        return output
 
     ################################################################################################
     # @draw_soma_sphere
@@ -255,6 +272,57 @@ class SkeletonBuilder:
                 self.draw_section_terminals_as_spheres(child, sphere_objects=sphere_objects,
                     material_list=material_list, branching_level=branching_level,
                     max_branching_level=max_branching_level)
+
+
+    def draw_sections_as_spheres(self,
+                                root,
+                                name,
+                                material_list=[],
+                                segments_objects=[],
+                                branching_level=0,
+                                max_branching_level=nmv.consts.Math.INFINITY,
+                                bevel_object=None):
+        """
+
+        :param root:
+        :param name:
+        :param material_list:
+        :param segments_objects:
+        :param branching_level:
+        :param max_branching_level:
+        :param bevel_object:
+        :return:
+        """
+
+        # Ignore the drawing if the root section is None
+        if root is None:
+            return
+
+        # Increment the branching level
+        branching_level += 1
+
+        # Stop drawing at the maximum branching level
+        if branching_level > max_branching_level:
+            return
+
+        # Make sure that the arbor exist
+        if root is not None:
+            section_name = '%s_%d' % (name, root.id)
+            drawn_spheres = self.draw_section_samples_as_spheres(root)
+
+            # Add the drawn segments to the 'segments_objects'
+            segments_objects.extend(drawn_spheres)
+
+            # Draw the children sections
+            for child in root.children:
+                self.draw_sections_as_spheres(
+                    root=child,
+                    branching_level=branching_level,
+                    max_branching_level=max_branching_level,
+                    name=name,
+                    material_list=material_list,
+                    bevel_object=bevel_object,
+                    segments_objects=segments_objects)
 
     ################################################################################################
     # @draw_section_as_disconnected_segments
@@ -434,6 +502,71 @@ class SkeletonBuilder:
                     max_branching_level=max_branching_level,
                     bevel_object=bevel_object,
                     sections_objects=sections_objects)
+
+    def draw_morphology_as_spheres(self, bevel_object):
+
+        # A list of objects (references to drawn segments) that compose the morphology
+        morphology_objects = []
+
+        # Draw the axon
+        if not self.options.morphology.ignore_axon:
+            axon_segments_objects = []
+            self.draw_sections_as_spheres(
+                self.morphology.axon,
+                name=nmv.consts.Arbors.AXON_PREFIX,
+                max_branching_level=self.options.morphology.axon_branch_order,
+                material_list=self.axon_materials,
+                bevel_object=bevel_object,
+                segments_objects=axon_segments_objects)
+
+            # Extend the morphology objects list
+            morphology_objects.extend(axon_segments_objects)
+
+        # Draw the basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                basal_dendrites_segments_objects = []
+
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    self.draw_sections_as_spheres(
+                        basal_dendrite, name=dendrite_name,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        material_list=self.basal_dendrites_materials,
+                        bevel_object=bevel_object,
+                        segments_objects=basal_dendrites_segments_objects)
+
+                # Extend the morphology objects list
+                morphology_objects.extend(basal_dendrites_segments_objects)
+
+        # Draw the apical dendrite
+        if not self.options.morphology.ignore_apical_dendrite:
+            apical_dendrite_segments_objects = []
+            self.draw_sections_as_spheres(
+                self.morphology.apical_dendrite,
+                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                material_list=self.apical_dendrite_materials,
+                bevel_object=bevel_object,
+                segments_objects=apical_dendrite_segments_objects)
+
+            # Extend the morphology objects list
+            morphology_objects.extend(apical_dendrite_segments_objects)
+
+
+
+        # convert the objects to something and add them to the scene
+        for item in morphology_objects:
+            soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+                item, '%s_sample' % self.options.morphology.label)
+            nmv.mesh.shade_smooth_object(soma_sphere_mesh)
+
+
+        # Return a reference to the list of drawn objects
+        return morphology_objects
 
     ################################################################################################
     # @draw_morphology_as_disconnected_segments
@@ -938,8 +1071,11 @@ class SkeletonBuilder:
 
         nmv.logger.header('Building skeleton')
         method = self.options.morphology.reconstruction_method
+
+        if False:
+            morphology_objects.extend(self.draw_morphology_as_spheres(bevel_object=bevel_object))
         # Draw the morphology as a set of disconnected tubes, where each SEGMENT is a tube
-        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
                 bevel_object=bevel_object))
 
@@ -984,6 +1120,14 @@ class SkeletonBuilder:
 
         # Hide the bevel object to avoid having it rendered
         bevel_object.hide = True
+
+
+
+
+
+        self.export_to_swc_file(morphology_objects)
+
+
 
         # Draw the soma as a sphere object
         if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:

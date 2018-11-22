@@ -24,6 +24,38 @@ import neuromorphovis.utilities
 
 
 ####################################################################################################
+# @create_uv_sphere
+####################################################################################################
+def create_uv_sphere(radius=1,
+                     location=(0, 0, 0),
+                     subdivisions=10):
+    """Create a uv sphere bmesh object and returns a reference to that object.
+
+    :param radius:
+        The radius of the sphere.
+    :param location:
+        The location of the sphere, by default the origin.
+    :param subdivisions:
+        The number of the subdivisions of the sphere, by default 1.
+    :return:
+        A reference to the created ico-sphere.
+    """
+
+    # Create a new bmesh object
+    bmesh_uv_sphere = bmesh.new()
+
+    # Create a uv-sphere
+    bmesh.ops.create_uvsphere(bmesh_uv_sphere, u_segments=subdivisions, v_segments=subdivisions, diameter=radius)
+    # bmesh.ops.create_icosphere(bmesh_uv_sphere, subdivisions=subdivisions, diameter=radius)
+
+    # Translate it to the specified position
+    bmesh.ops.translate(bmesh_uv_sphere, verts=bmesh_uv_sphere.verts[:], vec=location)
+
+    # Return a reference to the bmesh
+    return bmesh_uv_sphere
+
+
+####################################################################################################
 # @create_ico_sphere
 ####################################################################################################
 def create_ico_sphere(radius=1,
