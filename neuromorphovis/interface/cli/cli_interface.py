@@ -21,6 +21,15 @@ import sys
 # Blender imports
 import bpy
 
+import os
+print(os.path.dirname(os.path.realpath(__file__)))
+
+
+# Append the internal modules into the system paths to avoid Blender importing conflicts
+import_paths = ['neuromorphovis']
+for import_path in import_paths:
+    sys.path.append(('%s/../../..' % (os.path.dirname(os.path.realpath(__file__)))))
+
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.bbox
@@ -34,7 +43,7 @@ import neuromorphovis.options
 import neuromorphovis.rendering
 import neuromorphovis.scene
 import neuromorphovis.skeleton
-
+print("NMV Loaded!")
 
 ####################################################################################################
 # @reconstruct_soma_skeleton

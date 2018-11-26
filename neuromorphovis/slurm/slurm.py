@@ -129,8 +129,10 @@ def create_batch_job_config_string(slurm_config):
 
     # Load the modules
     b += '# Loading modules %s' % sl
+    b += 'module purge %s' % sl
+
     for module in slurm_config.modules:
-        b+= 'module load %s \n' % module
+        b += 'module load %s \n' % module
 
     """ System variables """
     #  slurm profile
@@ -375,7 +377,6 @@ def run_gid_jobs_on_cluster(arguments,
     """
 
     for gid in gids:
-
         # Create the batch jobs for the all the GIDs in the target
         create_batch_job_script_for_gid(arguments=arguments, gid=gid)
 
@@ -400,7 +401,6 @@ def run_morphology_files_jobs_on_cluster(arguments,
     """
 
     for morphology_file in morphology_files:
-
         # Create the batch jobs for the all the GIDs in the target
         create_batch_job_script_for_morphology_file(
             arguments=arguments, morphology_file=morphology_file)
@@ -410,4 +410,3 @@ def run_morphology_files_jobs_on_cluster(arguments,
     slurm_jobs_directory = '%s/%s' % (arguments.output_directory,
                                       paths_consts.Paths.SLURM_JOBS_FOLDER)
     submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=slurm_jobs_directory)
-
