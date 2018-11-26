@@ -184,4 +184,3 @@ ui_analysis_items = [
                  data_format='FLOAT',
                  unit='VOLUME'),
 ]
-

@@ -1121,14 +1121,6 @@ class SkeletonBuilder:
         # Hide the bevel object to avoid having it rendered
         bevel_object.hide = True
 
-
-
-
-
-        self.export_to_swc_file(morphology_objects)
-
-
-
         # Draw the soma as a sphere object
         if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
 

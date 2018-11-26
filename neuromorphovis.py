@@ -149,6 +149,9 @@ def run_cluster_neuromorphovis(arguments):
         # Create a GID-set and load the morphologies from these GIDs
         gids = bbp_circuit.gids(arguments.target)
 
+        print('HOLLLA')
+        print(gids)
+
         # Run the jobs on the cluster
         slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=gids)
 

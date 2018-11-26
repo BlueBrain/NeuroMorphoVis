@@ -151,8 +151,8 @@ def proceed_neuron_morphology_reconstruction_visualization(cli_morphology,
     if cli_options.morphology.export_blend:
 
         # Export the morphology to a .blend file
-        nmv.file.export_mesh_object(None,
-            cli_options.io.morphologies_directory, cli_options.morphology.label,
+        nmv.file.export_mesh_object(
+            None, cli_options.io.morphologies_directory, cli_options.morphology.label,
             blend=cli_options.morphology.export_blend)
 
 
@@ -322,8 +322,6 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
     neuron_mesh_objects = neuron_mesh_builder.reconstruct_mesh()
 
 
-
-
 ####################################################################################################
 # @ Run the main function if invoked from the command line.
 ####################################################################################################
@@ -388,11 +386,11 @@ if __name__ == "__main__":
         # Neuron mesh reconstruction and visualization
         proceed_neuron_mesh_reconstruction_visualization(
             cli_morphology=cli_morphology, cli_options=cli_options)
-    exit(0)
+
 
     # Reconstruct the morphology skeleton
-    proceed_neuron_morphology_reconstruction_visualization(cli_morphology=cli_morphology,
-        cli_options=cli_options)
+    proceed_neuron_morphology_reconstruction_visualization(
+        cli_morphology=cli_morphology, cli_options=cli_options)
 
     ################################################################################################
     # Soma mesh reconstruction
