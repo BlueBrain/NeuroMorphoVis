@@ -103,7 +103,7 @@ if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... NeuroMorphoVis \n"
-    python neuromorphovis.py                                                                     \
+    python2.7 neuromorphovis.py                                                                     \
     --blender=$BLENDER_EXECUTABLE                                                                   \
     --input=$INPUT                                                                                  \
     --blue-config=$BLUE_CONFIG                                                                      \

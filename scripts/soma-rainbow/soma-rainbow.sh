@@ -20,10 +20,10 @@
 BLENDER='blender'
 
 # Rendering configuration file
-RENDERING_CONFIGURATION='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/targets/RANDOM_BOX_mc2_Column_50.00p.config'
+RENDERING_CONFIGURATION='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/targets/RANDOM_BOX_mc2_Column_100.00p.config'
 
 # The input directory where the meshes exist
-MESHES_DIRECTORY='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/meshes/meshes'
+MESHES_DIRECTORY='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/meshes2/meshes'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
