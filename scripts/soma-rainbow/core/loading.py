@@ -174,17 +174,17 @@ def load_neurons_membrane_meshes_into_scene(input_directory,
 
         # .blend neurons
         if input_type == 'blend':
-            input_file_name = 'SOMA_MESH_neuron_%s.blend' % str(neuron.gid)
+            input_file_name = 'neuron_%s.blend' % str(neuron.gid)
             neuron.membrane_meshes = load_object_from_blend_file(input_directory, input_file_name)
 
         # .ply neurons
         elif input_type == 'ply':
-            input_file_name = 'SOMA_MESH_neuron_%s.ply' % str(neuron.gid)
+            input_file_name = 'neuron_%s.ply' % str(neuron.gid)
             neuron.membrane_meshes = [load_ply_file(input_directory, input_file_name)]
 
         # .obj neurons
         elif input_type == 'obj':
-            input_file_name = 'SOMA_MESH_neuron_%s.obj' % str(neuron.gid)
+            input_file_name = 'neuron_%s.obj' % str(neuron.gid)
             neuron.membrane_meshes = [load_obj_file(input_directory, input_file_name)]
 
         else:
