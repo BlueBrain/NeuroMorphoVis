@@ -804,8 +804,6 @@ class BBPReader:
             The root after integrating the input sections.
         """
 
-        print(root.children)
-
         # Get section parent and update the root
         parent = BBPReader.get_section_from_id(sections, root.parent_id)
         root.parent = parent
