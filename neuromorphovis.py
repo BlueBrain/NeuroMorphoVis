@@ -38,6 +38,27 @@ import file_ops
 import slurm
 
 
+def construct_shell_command_based_on_options(arguments):
+    """Build the shell command that is needed to run NeuroMorphoVis.
+
+    :param arguments:
+        Command line arguments.
+    :return:
+        A list of shell commands for execution
+    """
+
+    # Retrieve the path to the CLIs
+    current_path = os.path.dirname(os.path.realpath(__file__))
+    cli_interface_path = "%s//neuromorphovis/interface/cli/" %  current_path
+    cli_soma_reconstruction = '%s/cli_soma_reconstruction.py' % cli_interface_path
+    cli_morphology_reconstruction = '%s/cli_morphology_reconstruction.py' % cli_interface_path
+    cli_morphology_analysis = '%s/cli_morphology_analysis.py' % cli_interface_path
+    cli_mesh_reconstruction = '%s/cli_mesh_reconstruction.py' % cli_interface_path
+
+
+    return shell_command
+
+
 ####################################################################################################
 # @run_local_neuromorphovis
 ####################################################################################################
@@ -48,9 +69,13 @@ def run_local_neuromorphovis(arguments):
         Command line arguments.
     """
 
-    # Retrieve the path to the interface
+    # Retrieve the path to the CLIs
     current_path = os.path.dirname(os.path.realpath(__file__))
     cli_interface = '%s/neuromorphovis/interface/cli/cli_interface.py' % current_path
+
+
+    cli_soma_reconstruction = '%s/neuromorphovis/interface/cli/cli_soma_reconstruction.py' % \
+                              current_path
 
     # Target and GID options are only available on the BBP visualization clusters
     if arguments.input == 'target' or arguments.input == 'gid':
@@ -212,6 +237,6 @@ if __name__ == "__main__":
     if arguments.execution_node == 'local':
         run_local_neuromorphovis(arguments=arguments)
 
-    # BBP CLUSTER EXECUTION: Create the SLURM scripts and run them on the cluster
+    # BBP CLUSTER EXECUTION: Create the SLURM scripts and run them on the cluster (only @ BBP)
     else:
         run_cluster_neuromorphovis(arguments=arguments)
