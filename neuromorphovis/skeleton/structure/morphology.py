@@ -104,29 +104,6 @@ class Morphology:
         # Update the bounding boxes
         self.compute_bounding_box()
 
-        # Fix the morphology artifacts
-        # self.fix_artifacts()
-
-        # analyzer = morphology_analyzer.MorphologyAnalyzer(self)
-
-        # Analyze the morphology to figure out the issues
-        # analyzer.analyze()
-
-        # analyzer.remove_doubles()
-
-        # Repair the issues we can repair
-        # analyzer.repair()
-
-        # Re-analyze the morphology skeleton to ensure that we do not have artifacts
-        #analyzer.analyze()
-
-
-
-        #repairer = \
-        #    morphology_repairer_for_piecewise_meshing.MorphologyRepairerForPiecewiseMeshing(self)
-
-        #repairer.repair()
-
     ################################################################################################
     # @has_axon
     ################################################################################################

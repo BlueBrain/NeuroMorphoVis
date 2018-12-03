@@ -17,13 +17,13 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='blender'
+BLENDER='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/neuromorphovis-blender-2.79b-linux-x86_64/blender'
 
 # Rendering configuration file
-RENDERING_CONFIGURATION='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/targets/RANDOM_BOX_mc2_Column_100.00p.config'
+RENDERING_CONFIGURATION='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/targets/RANDOM_BOX_mc2_Column_50.00p.config'
 
 # The input directory where the meshes exist
-MESHES_DIRECTORY='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/meshes2/meshes'
+MESHES_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/neurons-meshes/morphologies'
 
 ## Input type
 # Use ['blend'] if the neurons are stored in .blend files
@@ -32,10 +32,10 @@ MESHES_DIRECTORY='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-ra
 INPUT_TYPE='blend'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/rendering'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/rendering'
 
 # Style file
-STYLE_FILE='/gpfss/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/styles/style.config'
+STYLE_FILE='/gpfs/bbp.cscs.ch/project/proj3/research/nmv/projects/soma-rainbow/styles/style.config'
 
 # Projection, orthographic or perspective
 PROJECTION='orthographic'
