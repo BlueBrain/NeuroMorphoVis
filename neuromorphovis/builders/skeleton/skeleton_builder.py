@@ -1072,10 +1072,10 @@ class SkeletonBuilder:
         nmv.logger.header('Building skeleton')
         method = self.options.morphology.reconstruction_method
 
-        if False:
-            morphology_objects.extend(self.draw_morphology_as_spheres(bevel_object=bevel_object))
+        #if False:
+        #    morphology_objects.extend(self.draw_morphology_as_spheres(bevel_object=bevel_object))
         # Draw the morphology as a set of disconnected tubes, where each SEGMENT is a tube
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
                 bevel_object=bevel_object))
 

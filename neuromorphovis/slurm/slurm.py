@@ -36,14 +36,14 @@ import slurm_configuration
 def squeue():
     """Return a list of all the current jobs on the cluster.
 
+    :
     :return:
         A list of all the current jobs on the cluster.
     """
 
     # Get the current processes running on the cluster
-    result = subprocess.check_output(['squeue'])
-    result = str(result)
-    return result.split("\\n")
+    result = str(subprocess.check_output(['squeue']))
+    return result.splitlines()  # Works only with python3.5
 
 
 ####################################################################################################
@@ -59,9 +59,9 @@ def get_current_number_jobs_for_user(user_name):
         The current number of jobs running on the cluster for a specific user identified by his
         user name.
     """
-
     number_jobs = 0
     jobs = squeue()
+
     for job in jobs:
         if user_name in job:
             number_jobs += 1
@@ -377,6 +377,7 @@ def run_gid_jobs_on_cluster(arguments,
     """
 
     for gid in gids:
+
         # Create the batch jobs for the all the GIDs in the target
         create_batch_job_script_for_gid(arguments=arguments, gid=gid)
 

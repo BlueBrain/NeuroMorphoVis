@@ -398,8 +398,8 @@ if __name__ == "__main__":
 
 
     # Reconstruct the morphology skeleton
-    proceed_neuron_morphology_reconstruction_visualization(
-        cli_morphology=cli_morphology, cli_options=cli_options)
+    # proceed_neuron_morphology_reconstruction_visualization(
+    #    cli_morphology=cli_morphology, cli_options=cli_options)
 
     ################################################################################################
     # Soma mesh reconstruction
