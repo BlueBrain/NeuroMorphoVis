@@ -642,6 +642,7 @@ class BBPReader:
     ################################################################################################
     # @get_apical_dendrite_starting_radius
     ################################################################################################
+    @staticmethod
     def get_apical_dendrite_starting_radius(bbp_apical_dendrite):
         """Return the radius of the first point on the apical_dendrite.
 
@@ -738,7 +739,6 @@ class BBPReader:
             section_id = bbp_morphology_section.id()
 
             # Get the parent section ID
-            parent_section_id = None
             if bbp_morphology_section.parent() is None:
                 parent_section_id = None
             else:
@@ -770,8 +770,9 @@ class BBPReader:
                 children_ids.append(child.id())
 
             # Build section
-            section = nmv.skeleton.Section(id=section_id, parent_id=parent_section_id,
-                children_ids=children_ids, samples=samples, type=section_type)
+            section = nmv.skeleton.Section(
+                id=section_id, parent_id=parent_section_id, children_ids=children_ids, samples=samples,
+                type=section_type)
 
             # Set the parenting
             if parent_section_id is None:
@@ -808,7 +809,7 @@ class BBPReader:
         root.parent = parent
 
         # Get section children and update the root
-        if root.has_children():
+        if len(root.children_ids) > 0:
 
             # Do it child by child
             for child_id in root.children_ids:

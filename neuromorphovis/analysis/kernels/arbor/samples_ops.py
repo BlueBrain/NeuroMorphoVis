@@ -142,3 +142,14 @@ def compute_average_number_samples_per_section_of_arbor(arbor):
 
     # Return the average number of samples per section
     return int(total_number_samples * 1.0 / len(sections_number_samples))
+
+def compute_distribution_number_samples_per_section_of_arbor(arbor):
+
+    # A list that will contain the number of samples per section
+    data_list = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_distribution_number_of_samples_per_section,
+          data_list])

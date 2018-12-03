@@ -244,6 +244,8 @@ class SWCReader:
 
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
+            if radius < 0.00001:
+                radius = 0.5
 
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])

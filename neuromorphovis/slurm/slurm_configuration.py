@@ -44,10 +44,10 @@ class SlurmConfiguration:
         self.num_cpus_per_task = 1
 
         # Running partition
-        self.partition = 'prod'
+        self.partition = 'prod_small'
 
         # Required memory
-        self.memory_mb = '3000'
+        self.memory_mb = '2000'
 
         # Session time
         self.session_time = '1:00:00'
@@ -56,10 +56,7 @@ class SlurmConfiguration:
         self.profile = '. /etc/profile'
 
         # Modules
-        # self.modules = ['nix/python/3.6-full',
-        #                 'nix/blender/2.79-nantille',
-        #                 'nix/viz/brion-py3/3.0-dev2017.10']
-        self.modules = ['BBP/viz/latest']
+        self.modules = []
 
         # Execution directory where the scripts will run
         self.execution_directory = ''

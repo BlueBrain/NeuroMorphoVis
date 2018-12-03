@@ -21,6 +21,15 @@ import sys
 # Blender imports
 import bpy
 
+import os
+print(os.path.dirname(os.path.realpath(__file__)))
+
+
+# Append the internal modules into the system paths to avoid Blender importing conflicts
+import_paths = ['neuromorphovis']
+for import_path in import_paths:
+    sys.path.append(('%s/../../..' % (os.path.dirname(os.path.realpath(__file__)))))
+
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.bbox
@@ -34,7 +43,7 @@ import neuromorphovis.options
 import neuromorphovis.rendering
 import neuromorphovis.scene
 import neuromorphovis.skeleton
-
+print("NMV Loaded!")
 
 ####################################################################################################
 # @reconstruct_soma_skeleton
@@ -151,8 +160,8 @@ def proceed_neuron_morphology_reconstruction_visualization(cli_morphology,
     if cli_options.morphology.export_blend:
 
         # Export the morphology to a .blend file
-        nmv.file.export_mesh_object(None,
-            cli_options.io.morphologies_directory, cli_options.morphology.label,
+        nmv.file.export_mesh_object(
+            None, cli_options.io.morphologies_directory, cli_options.morphology.label,
             blend=cli_options.morphology.export_blend)
 
 
@@ -322,8 +331,6 @@ def proceed_neuron_mesh_reconstruction_visualization(cli_morphology,
     neuron_mesh_objects = neuron_mesh_builder.reconstruct_mesh()
 
 
-
-
 ####################################################################################################
 # @ Run the main function if invoked from the command line.
 ####################################################################################################
@@ -388,11 +395,11 @@ if __name__ == "__main__":
         # Neuron mesh reconstruction and visualization
         proceed_neuron_mesh_reconstruction_visualization(
             cli_morphology=cli_morphology, cli_options=cli_options)
-    exit(0)
+
 
     # Reconstruct the morphology skeleton
-    proceed_neuron_morphology_reconstruction_visualization(cli_morphology=cli_morphology,
-        cli_options=cli_options)
+    # proceed_neuron_morphology_reconstruction_visualization(
+    #    cli_morphology=cli_morphology, cli_options=cli_options)
 
     ################################################################################################
     # Soma mesh reconstruction

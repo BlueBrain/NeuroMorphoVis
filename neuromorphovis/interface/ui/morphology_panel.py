@@ -69,7 +69,7 @@ class MorphologyPanel(bpy.types.Panel):
                 'Profile',
                 'Reconstruct a 3D profile of the soma')],
         name='Soma',
-        default=nmv.enums.Soma.Representation.REALISTIC)
+        default=nmv.enums.Soma.Representation.SPHERE)
 
     # Build axon
     bpy.types.Scene.BuildAxon = BoolProperty(

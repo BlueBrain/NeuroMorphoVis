@@ -886,7 +886,7 @@ class PiecewiseBuilder:
         # self.render_mesh()
 
         # Save the mesh to file
-        # self.save_mesh()
+        self.save_mesh()
 
         # Add nucleus
         # self.add_nucleus()
