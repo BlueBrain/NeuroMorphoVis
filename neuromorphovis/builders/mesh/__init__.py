@@ -19,3 +19,4 @@ from .bridging_builder import *
 from .extrusion_builder import *
 from .piecewise_builder import *
 from .union_builder import *
+from .skinning_builder import *

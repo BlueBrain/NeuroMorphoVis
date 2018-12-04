@@ -81,8 +81,13 @@ class MeshPanel(bpy.types.Panel):
     bpy.types.Scene.MeshingTechnique = EnumProperty(
         items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
                 'Piecewise Watertight',
-                'Extended piecewise watertight meshing with some flexibility to adapt the options')],
+                'Extended piecewise watertight meshing with some flexibility to adapt the options'),
+               (nmv.enums.Meshing.Technique.SKINNING,
+                'Skinning',
+                'Skinning'),
+               ],
         name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+
 
     """
     bpy.types.Scene.MeshingTechnique = EnumProperty(
@@ -910,6 +915,16 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
             # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
+
+        elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
+
+            # Create the mesh builder
+            mesh_builder = nmv.builders.SkinningBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+            # Reconstruct the mesh
+            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
+
 
         else:
 

@@ -66,7 +66,7 @@ class MorphologyOptions:
         self.branching = nmv.enums.Skeletonization.Branching.ANGLES
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA
+        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
         self.ignore_axon = False
