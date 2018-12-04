@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy
+import random, copy, sys
 
 # Blender imports
 import bpy
@@ -39,7 +39,7 @@ import neuromorphovis.utilities
 # @ExtrusionBuilder
 ####################################################################################################
 class SkinningBuilder:
-    """Mesh builder that creates watertight meshes using skinning and extrusion"""
+    """Mesh builder that creates accurate and nice meshes using skinning and extrusion"""
 
     ################################################################################################
     # @__init__
@@ -81,6 +81,10 @@ class SkinningBuilder:
 
         # A reference to the reconstructed spines mesh
         self.spines_mesh = None
+
+        # A magic scaling factor for accurate adjustments of the radius of the branches
+        # Note that the 1.4 is sqrt(2) for the smoothing factor
+        self.radius_scaling_factor = 3 * 1.41421356237
 
         # A list of all the meshes that are reconstructed on a piecewise basis and correspond to
         # the different components of the neuron including soma, arbors and the spines as well
@@ -169,14 +173,14 @@ class SkinningBuilder:
             *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
         # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to resample the morphology skeleton. However, if the smooth
+        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
         # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The resampling filter for the moment
+        # after applying the vertex smoothing filter. The re-sampling filter for the moment
         # re-samples the morphology sections at 2.5 microns, however this can be improved later
         # by adding an algorithm that re-samples the section based on its radii.
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
 
-            # Apply the resampling filter on the whole morphology skeleton
+            # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_sections])
 
@@ -199,158 +203,277 @@ class SkinningBuilder:
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
-    def select_vertex(self, vertex_idx):
-        bpy.ops.object.mode_set(mode='OBJECT')
+    ################################################################################################
+    # @select_vertex
+    ################################################################################################
+    @staticmethod
+    def select_vertex(vertex_idx):
+        """Selects a vertex along a morphology path using its index during the skinning process.
+
+        :param vertex_idx:
+            The index of the vertex that needs to be selected.
+        """
+
+        # Set the current mode to the object mode
+        # bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Select the active object (that is supposed to be the arbor being created)
         obj = bpy.context.active_object
-        bpy.ops.object.mode_set(mode='EDIT')
+
+        # Switch to the edit mode
+        # bpy.ops.object.mode_set(mode='EDIT')
+
+        # Switch to the vertex mode
         bpy.ops.mesh.select_mode(type="VERT")
+
+        # Deselect all the vertices
         bpy.ops.mesh.select_all(action='DESELECT')
+
+        # Switch back to the object mode
         bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Select the vertex
         obj.data.vertices[vertex_idx].select = True
+
+        # Switch to the edit mode
         bpy.ops.object.mode_set(mode='EDIT')
 
+    ################################################################################################
+    # @select_vertex
+    ################################################################################################
+    def update_section_samples_radii(self,
+                                     section):
+        """Update the radii of the samples along a given section.
 
-    def get_radius2(self, vertex_idx):
-        bpy.ops.object.mode_set(mode='OBJECT')
-        obj = bpy.context.active_object
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_mode(type="VERT")
-        bpy.ops.mesh.select_all(action='DESELECT')
-        bpy.ops.object.mode_set(mode='OBJECT')
-        obj.data.vertices[vertex_idx].select = True
-        bpy.ops.object.mode_set(mode='EDIT')
-        return obj.data.vertices[vertex_idx]
+        :param section:
+            A given section to update the radii of its samples.
+        """
 
-    def create_root_point_mesh(self, arbor):
-        create_root_point_mesh = nmv.mesh.create_plane()
+        # Make sure to include the first sample of the root section
+        if section.is_root():
+            starting_index = 0
+        else:
+            starting_index = 1
+
+        # Sample by sample along the section
+        for i in range(starting_index, len(section.samples)):
+
+            print('Updating Radii [%d]' % section.samples[i].arbor_idx, end='\r')
+
+            # Select the vertex at the given sample
+            self.select_vertex(section.samples[i].arbor_idx)
+
+            # Radius scale factor
+            radius = section.samples[i].radius * self.radius_scaling_factor
+
+            # Resize the radius of the selected vertex
+            bpy.ops.transform.skin_resize(value=(radius, radius, radius),
+                                          constraint_axis=(False, False, False),
+                                          constraint_orientation='GLOBAL',
+                                          mirror=False,
+                                          proportional='ENABLED',
+                                          proportional_edit_falloff='SMOOTH', proportional_size=1)
+
+    ################################################################################################
+    # @update_arbor_samples_radii
+    ################################################################################################
+    def update_arbor_samples_radii(self,
+                                   root):
+        """Updates the radii of the samples of the entire arbor to match reality from the
+        temporary ones that were given before.
+
+        :param root:
+            The root section of the arbor.
+        """
+
+        # Set the radius of a given section
+        self.update_section_samples_radii(root)
+
+        # Update the radii of the samples of the children recursively
+        for child in root.children:
+            self.update_arbor_samples_radii(child)
+
+    ################################################################################################
+    # @extrude_section
+    ################################################################################################
+    def extrude_section(self,
+                        section):
+        """Extrudes the section along its samples starting from the first one to the last one.
+
+        Note that the mesh to be extruded is already selected and there is no need to pass it.
+
+        :param section:
+            A given section to extrude a mesh around it.
+        """
+
+        for i in range(len(section.samples) - 1):
+
+            print('Extrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
+            point_0 = section.samples[i].point
+            point_1 = section.samples[i + 1].point
+
+            # Select the vertex that we need to start the extrusion process from
+            self.select_vertex(section.samples[i].arbor_idx)
+
+            # Extrude
+            bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
+                                             TRANSFORM_OT_translate={"value": point_1 - point_0})
+
+    ################################################################################################
+    # @create_root_point_mesh
+    ################################################################################################
+    def extrude_arbor(self,
+                      root):
+        """Extrude the given arbor section by section recursively.
+
+        :param root:
+            The root of a given section.
+        """
+
+        # Extrude the section
+        self.extrude_section(root)
+
+        # Extrude the children sections recursively
+        for child in root.children:
+            self.extrude_arbor(child)
+
+    ################################################################################################
+    # @create_root_point_mesh
+    ################################################################################################
+    @staticmethod
+    def create_root_point_mesh():
+        """Creates a point mesh at the origin.
+
+        :return:
+            Return a reference to the created mesh.
+        """
+
+        # Create a plane mesh
+        root_point_mesh = nmv.mesh.create_plane()
+
+        # Switch to the edit mode
         bpy.ops.object.editmode_toggle()
+
+        # Merge the plan into a point at the center
         bpy.ops.mesh.merge(type='CENTER')
+
+        # Switch back to the object mode
         bpy.ops.object.editmode_toggle()
+
+        # Add a skin modifier
         bpy.ops.object.modifier_add(type='SKIN')
+
+        # Update the Skin modifiers parameters
         bpy.context.object.modifiers["Skin"].use_x_symmetry = False
         bpy.context.object.modifiers["Skin"].use_y_symmetry = False
         bpy.context.object.modifiers["Skin"].use_z_symmetry = False
         bpy.context.object.modifiers["Skin"].use_smooth_shade = False
-        # bpy.context.object.modifiers["Skin"].branch_smoothing = 1
 
+        # Return a reference to the root point mesh
+        return root_point_mesh
 
-        # translate it to the first root point
-        #nmv.mesh.ops.transform_mesh()
-        # bpy.ops.transform.translate(value=arbor.samples[0].point)
+    ################################################################################################
+    # @update_samples_indices_per_arbor
+    ################################################################################################
+    def update_samples_indices_per_arbor(self,
+                                         section,
+                                         index):
+        """Updates the global indices of all the samples along the given section.
 
-        return create_root_point_mesh
+        Note: This global index of the sample w.r.t to the arbor it belongs to.
 
-    import math
-    def extrude_section(self, section, arbor_mesh):
+        :param section:
+            A given section to update the indices of its samples.
+        :param index:
+            A list that contains a single value that account for the index of the arbor.
+            Note that we use this list as a trick to update the index value.
+        """
 
-        for i in range(len(section.samples) - 1):
-            print(section.samples[i].arbor_idx)
-            point_0 = section.samples[i].point
-            point_1 = section.samples[i + 1].point
-            segment_value = point_1 - point_0
-            self.select_vertex(section.samples[i].arbor_idx)
-            bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
-                                             TRANSFORM_OT_translate={
-                                                 "value": segment_value})
-
-
-
-
-            radius_scale = section.samples[i+1].radius / section.samples[i].radius
-            #bpy.ops.transform.skin_resize(value=(radius_scale, radius_scale, radius_scale),
-            #                              constraint_axis=(False, False, False),
-            #                              constraint_orientation='GLOBAL', mirror=False,
-            #                              proportional='DISABLED',
-            #                              proportional_edit_falloff='SMOOTH', proportional_size=1)
-
-
-
-    def set_radius(self, section, arbor_mesh):
-        for i in range(1, len(section.samples)):
-            self.select_vertex(section.samples[i].arbor_idx)
-            radius = section.samples[i].radius * 3 * 1.41421356237
-            bpy.ops.transform.skin_resize(value=(radius, radius, radius),
-                                          constraint_axis=(False, False, False),
-                                          constraint_orientation='GLOBAL', mirror=False,
-                                          proportional='ENABLED',
-                                          proportional_edit_falloff='SMOOTH', proportional_size=1)
-            print(section.samples[i].arbor_idx)
-
-
-    def set_arbor_radius(self, root, arbor_mesh):
-
-        self.set_radius(root, arbor_mesh)
-        for child in root.children:
-            self.set_arbor_radius(child, arbor_mesh)
-
-    def extrude_arbor(self, root, arbor_mesh):
-
-        self.extrude_section(root, arbor_mesh)
-
-        for child in root.children:
-            self.extrude_arbor(child, arbor_mesh)
-
-
-    def update_sample_indices(self, section, index):
-
+        # If the given section is root
         if section.is_root():
+
+            # Update the arbor index of the first sample
             section.samples[0].arbor_idx = index[0]
+
+            # Increment the index value
             index[0] += 1
+
         else:
+
+            # The index of the root is basically the same as the index of the last sample of the
+            # parent arbor
             section.samples[0].arbor_idx = section.parent.samples[-1].arbor_idx
 
+        # Update the indices of the rest of the samples along the section
         for i in range(1, len(section.samples)):
+
+            # Set the arbor index of the current sample
             section.samples[i].arbor_idx = index[0]
+
+            # Increment the index
             index[0] += 1
 
+        # Update the children sections recursively
         for child in section.children:
-            self.update_sample_indices(child, index)
+            self.update_samples_indices_per_arbor(child, index)
 
+    ################################################################################################
+    # @create_arbor_mesh
+    ################################################################################################
+    def create_arbor_mesh(self,
+                          arbor):
+        """Creates a mesh of the given arbor recursively.
 
+        :param arbor:
+            A given arbor.
+        :return:
+            A reference to the created mesh object.
+        """
 
+        # Initially, this index is set to one and incremented later
+        samples_global_arbor_index = [0]
+        self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index)
 
-    def create_arbor_mesh(self, arbor):
+        # Create an initial proxy mesh at the origin
+        arbor_mesh = self.create_root_point_mesh()
 
+        arbor_mesh.location = arbor.samples[0].point
 
-        # updating the indices
-        arbor_idx = [1]
-        self.update_sample_indices(arbor, arbor_idx)
-
-
-        arbor_mesh = self.create_root_point_mesh(arbor)
-
+        # Toggle from the object mode to the edit mode
         bpy.ops.object.editmode_toggle()
 
-
-        segment_value = arbor.samples[0].point
+        """
+        # Extrude the created mesh (already selected) to the first sample along the arbor (root)
         bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
-                                         TRANSFORM_OT_translate={
-                                             "value": segment_value})
+                                         TRANSFORM_OT_translate={"value": arbor.samples[0].point})
 
+        # Select the first vertex to update its radius
         self.select_vertex(0)
-        radius_scale = 3 * 1.41421356237
-        bpy.ops.transform.skin_resize(value=(radius_scale, radius_scale, radius_scale),
+        bpy.ops.transform.skin_resize(value=(self.radius_scaling_factor,
+                                             self.radius_scaling_factor,
+                                             self.radius_scaling_factor),
                                       constraint_axis=(False, False, False),
                                       constraint_orientation='GLOBAL', mirror=False,
                                       proportional='ENABLED',
                                       proportional_edit_falloff='SMOOTH', proportional_size=1)
+        """
 
-        '''
-        radius_scale = arbor.samples[0].radius * 2 * 1.41421356237
-        bpy.ops.transform.skin_resize(value=(radius_scale, radius_scale, radius_scale),
-                                      constraint_axis=(False, False, False),
-                                     constraint_orientation='GLOBAL', mirror=False,
-                                      proportional='DISABLED',
-                                      proportional_edit_falloff='SMOOTH', proportional_size=1)
-        '''
-        self.extrude_arbor(root=arbor, arbor_mesh=arbor_mesh)
-        self.set_arbor_radius(root=arbor, arbor_mesh=arbor_mesh)
+        # Extrude arbor mesh using the skinning method using a temporary radius
+        self.extrude_arbor(root=arbor)
+        print("\nExtrusion Done \n")
 
+        # Update the radii of the arbor at each sample
+        self.update_arbor_samples_radii(root=arbor)
+        print("\nUpdating Radii Done \n")
+
+        # Toggle back to the object mode
         bpy.ops.object.editmode_toggle()
+
+        # Apply the skinning modifier
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
+
+        # Return a reference to the arbor mesh
         return arbor_mesh
-
-
-
 
     ################################################################################################
     # @build_arbors
