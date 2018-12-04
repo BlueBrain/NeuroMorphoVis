@@ -38,25 +38,86 @@ import file_ops
 import slurm
 
 
-def construct_shell_command_based_on_options(arguments):
-    """Build the shell command that is needed to run NeuroMorphoVis.
+####################################################################################################
+# @create_shell_commands
+####################################################################################################
+def create_shell_commands_for_local_execution(arguments,
+                                              arguments_string):
+    """Creates a list of all the shell commands that are needed to run the different tasks set
+    in the configuration file.
 
+    Notes:
+        # -b : Blender background mode
+        # --verbose : Turn off all the verbose messages
+        # -- : Separate the framework arguments from those given to Blender
     :param arguments:
-        Command line arguments.
+        Input arguments.
+    :param arguments_string:
+        A string that will be given to each CLI command.
     :return:
-        A list of shell commands for execution
+        A list of commands to be appended to the SLURM scripts or directly executed on a local node.
     """
+
+    shell_commands = list()
 
     # Retrieve the path to the CLIs
     current_path = os.path.dirname(os.path.realpath(__file__))
-    cli_interface_path = "%s//neuromorphovis/interface/cli/" %  current_path
-    cli_soma_reconstruction = '%s/cli_soma_reconstruction.py' % cli_interface_path
-    cli_morphology_reconstruction = '%s/cli_morphology_reconstruction.py' % cli_interface_path
-    cli_morphology_analysis = '%s/cli_morphology_analysis.py' % cli_interface_path
-    cli_mesh_reconstruction = '%s/cli_mesh_reconstruction.py' % cli_interface_path
+    cli_interface_path = "%s/neuromorphovis/interface/cli/" % current_path
+    cli_soma_reconstruction = '%s/soma_reconstruction.py' % cli_interface_path
+    cli_morphology_reconstruction = '%s/neuron_morphology_reconstruction.py' % cli_interface_path
+    cli_morphology_analysis = '%s/morphology_analysis.py' % cli_interface_path
+    cli_mesh_reconstruction = '%s/neuron_mesh_reconstruction.py' % cli_interface_path
 
+    # Morphology analysis task
+    if arguments.analyze_morphology:
 
-    return shell_command
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_morphology_analysis, arguments_string))
+
+    # Morphology reconstruction task: call the @cli_morphology_reconstruction interface
+    if arguments.reconstruct_morphology_skeleton or         \
+       arguments.render_neuron_morphology or                \
+       arguments.render_neuron_morphology_360 or            \
+       arguments.render_neuron_morphology_progressive or    \
+       arguments.export_morphology_swc or                   \
+       arguments.export_morphology_h5 or                    \
+       arguments.export_morphology_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_morphology_reconstruction, arguments_string))
+
+    # Soma-related task: call the @cli_soma_reconstruction interface
+    if arguments.reconstruct_soma_mesh or                   \
+       arguments.render_soma_mesh or                        \
+       arguments.render_soma_mesh_360 or                    \
+       arguments.render_soma_mesh_progressive or            \
+       arguments.render_soma_skeleton or                    \
+       arguments.export_soma_mesh_ply or                    \
+       arguments.export_soma_mesh_obj or                    \
+       arguments.export_soma_mesh_stl or                    \
+       arguments.export_soma_mesh_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_soma_reconstruction, arguments_string))
+
+    # Neuron mesh reconstruction related task: call the @cli_mesh_reconstruction interface
+    if arguments.reconstruct_neuron_mesh or                 \
+       arguments.render_neuron_mesh or                      \
+       arguments.render_neuron_mesh_360 or                  \
+       arguments.export_neuron_mesh_ply or                  \
+       arguments.export_neuron_mesh_obj or                  \
+       arguments.export_neuron_mesh_stl or                  \
+       arguments.export_neuron_mesh_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_mesh_reconstruction, arguments_string))
+
+    # Return a list of commands
+    return shell_commands
 
 
 ####################################################################################################
@@ -68,14 +129,6 @@ def run_local_neuromorphovis(arguments):
     :param arguments:
         Command line arguments.
     """
-
-    # Retrieve the path to the CLIs
-    current_path = os.path.dirname(os.path.realpath(__file__))
-    cli_interface = '%s/neuromorphovis/interface/cli/cli_interface.py' % current_path
-
-
-    cli_soma_reconstruction = '%s/neuromorphovis/interface/cli/cli_soma_reconstruction.py' % \
-                              current_path
 
     # Target and GID options are only available on the BBP visualization clusters
     if arguments.input == 'target' or arguments.input == 'gid':
@@ -93,24 +146,20 @@ def run_local_neuromorphovis(arguments):
         # arguments as they were received without any change.
 
         # Construct the shell command to run the workflow
-        # -b : Blender background mode
-        # --verbose : Turn off all the verbose messages
-        # -- : Separate the framework arguments from those given to Blender
-        shell_command = '%s -b --verbose 0 --python %s -- %s ' % (
-            arguments.blender, cli_interface, arguments_string)
+        shell_commands = create_shell_commands_for_local_execution(arguments, arguments_string)
 
         # Run NeuroMorphoVis from Blender in the background mode
-        print('RUNNING: ' + shell_command)
-        subprocess.call(shell_command, shell=True)
+        for shell_command in shell_commands:
+            print('RUNNING: ' + shell_command)
+            subprocess.call(shell_command, shell=True)
 
     # Load a directory morphology files (.H5 or .SWC)
     elif arguments.input == 'directory':
 
         # Get all the morphology files in this directory
         # TODO: Verify the installation of H5Py before running the workflow
-        # TODO: Add the support to load .SWC files
-        morphology_files = \
-            file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
+        # TODO: Add the support to load .SWC files from a directory at the same time
+        morphology_files = file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
 
         # If the directory is empty, give an error message
         if len(morphology_files) == 0:
@@ -122,18 +171,16 @@ def run_local_neuromorphovis(arguments):
 
             # Get the argument string for an individual file
             arguments_string = arguments_parser.get_arguments_string_for_individual_file(
-                arguments=arguments, morphology_file = morphology_file)
+                arguments=arguments, morphology_file=morphology_file)
 
             # Construct the shell command to run the workflow
-            # -b : Blender background mode
-            # --verbose : Turn off all the verbose messages
-            # -- : Separate the framework arguments from those given to Blender
-            shell_command = '%s -b --verbose 0 --python %s -- %s ' % (
-                arguments.blender, cli_interface, arguments_string)
+            # Construct the shell command to run the workflow
+            shell_commands = create_shell_commands_for_local_execution(arguments, arguments_string)
 
             # Run NeuroMorphoVis from Blender in the background mode
-            print('RUNNING: ' + shell_command)
-            subprocess.call(shell_command, shell=True)
+            for shell_command in shell_commands:
+                print('RUNNING: ' + shell_command)
+                subprocess.call(shell_command, shell=True)
 
     else:
         print('ERROR: Input data source, use \'file, gid, target or directory\'')
