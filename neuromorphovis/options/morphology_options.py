@@ -66,7 +66,7 @@ class MorphologyOptions:
         self.branching = nmv.enums.Skeletonization.Branching.ANGLES
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA
+        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
         self.ignore_axon = False
@@ -113,6 +113,9 @@ class MorphologyOptions:
 
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000
+
+        # Global coordinates
+        self.global_coordinates = False
 
         # Number of sides of the bevel object used to scale the sections
         # This parameter controls the quality of the reconstructed morphology

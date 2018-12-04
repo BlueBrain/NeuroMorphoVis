@@ -106,6 +106,9 @@ class Meshing:
         # Extrusion meshing
         EXTRUSION = 'MESHING_TECHNIQUE_EXTRUSION'
 
+        # Skinning
+        SKINNING = 'MESHING_TECHNIQUE_SKINNING'
+
         ############################################################################################
         # @__init__
         ############################################################################################

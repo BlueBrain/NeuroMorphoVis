@@ -443,6 +443,14 @@ def parse_command_line_arguments():
         action='store_true', default=False,
         help=arg_help)
 
+    # Export the mesh at global coordinates
+    arg_help = 'Connect the arbors to the soma body. \n' \
+               'For nice looking meshes.'
+    meshing_args.add_argument(
+        Args.CONNECT_SOMA_ARBORS,
+        action='store_true', default=False,
+        help=arg_help)
+
     ################################################################################################
     # Geometry export arguments
     ################################################################################################
@@ -843,6 +851,83 @@ def get_arguments_string_for_individual_gid(arguments,
 
 
 ####################################################################################################
+# @create_shell_commands
+####################################################################################################
+def create_shell_commands(arguments,
+                          arguments_string):
+    """Creates a list of all the shell commands that are needed to run the different tasks set
+    in the configuration file.
+
+    :param arguments:
+        Input arguments.
+    :param arguments_string:
+        A string that will be given to each CLI command.
+    :return:
+        A list of commands to be appended to the SLURM scripts or directly executed on a local node.
+    """
+
+    shell_commands = list()
+
+    # Retrieve the path to the CLIs
+    cli_interface_path = os.path.dirname(os.path.realpath(__file__))
+    cli_soma_reconstruction = '%s/soma_reconstruction.py' % cli_interface_path
+    cli_morphology_reconstruction = '%s/neuron_morphology_reconstruction.py' % cli_interface_path
+    cli_morphology_analysis = '%s/morphology_analysis.py' % cli_interface_path
+    cli_mesh_reconstruction = '%s/neuron_mesh_reconstruction.py' % cli_interface_path
+
+    # Morphology analysis task
+    if arguments.analyze_morphology:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_morphology_analysis, arguments_string))
+
+    # Morphology reconstruction task: call the @cli_morphology_reconstruction interface
+    if arguments.reconstruct_morphology_skeleton or         \
+       arguments.render_neuron_morphology or                \
+       arguments.render_neuron_morphology_360 or            \
+       arguments.render_neuron_morphology_progressive or    \
+       arguments.export_morphology_swc or                   \
+       arguments.export_morphology_h5 or                    \
+       arguments.export_morphology_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_morphology_reconstruction, arguments_string))
+
+    # Soma-related task: call the @cli_soma_reconstruction interface
+    if arguments.reconstruct_soma_mesh or                   \
+       arguments.render_soma_mesh or                        \
+       arguments.render_soma_mesh_360 or                    \
+       arguments.render_soma_mesh_progressive or            \
+       arguments.render_soma_skeleton or                    \
+       arguments.export_soma_mesh_ply or                    \
+       arguments.export_soma_mesh_obj or                    \
+       arguments.export_soma_mesh_stl or                    \
+       arguments.export_soma_mesh_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_soma_reconstruction, arguments_string))
+
+    # Neuron mesh reconstruction related task: call the @cli_mesh_reconstruction interface
+    if arguments.reconstruct_neuron_mesh or                 \
+       arguments.render_neuron_mesh or                      \
+       arguments.render_neuron_mesh_360 or                  \
+       arguments.export_neuron_mesh_ply or                  \
+       arguments.export_neuron_mesh_obj or                  \
+       arguments.export_neuron_mesh_stl or                  \
+       arguments.export_neuron_mesh_blend:
+
+        # Add this command to the list
+        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
+                              (arguments.blender, cli_mesh_reconstruction, arguments_string))
+
+    # Return a list of commands
+    return shell_commands
+
+
+####################################################################################################
 # @create_executable_for_single_morphology_file
 ####################################################################################################
 def create_executable_for_single_morphology_file(arguments,
@@ -860,15 +945,8 @@ def create_executable_for_single_morphology_file(arguments,
     # Format a string with blender arguments
     arguments_string = get_arguments_string_for_individual_file(arguments, morphology_file)
 
-    # Retrieve the path to the CLI interface
-    cli_interface = '%s/cli_interface.py' % os.path.dirname(os.path.realpath(__file__))
-
-    # Setup the shell command
-    shell_command = '%s -b --verbose 0 --python %s -- %s' % \
-                    (arguments.blender, cli_interface, arguments_string)
-
-    # Return the shell command
-    return shell_command
+    # Create the shell commands and return it
+    return create_shell_commands(arguments=arguments, arguments_string=arguments_string)
 
 
 ####################################################################################################
@@ -890,12 +968,8 @@ def create_executable_for_single_gid(arguments,
     # Format a string with blender arguments
     arguments_string = get_arguments_string_for_individual_gid(arguments, gid)
 
-    # Retrieve the path to the interface
-    cli_interface = '%s/cli_interface.py' % os.path.dirname(os.path.realpath(__file__))
+    # Create the shell commands and return it
+    return create_shell_commands(arguments=arguments, arguments_string=arguments_string)
 
-    # Setup the shell command
-    shell_command = '%s -b --verbose 0 --python %s -- %s' % (
-        arguments.blender, cli_interface, arguments_string)
 
-    # Return the shell command
-    return shell_command
+

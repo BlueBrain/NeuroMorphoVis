@@ -1042,6 +1042,29 @@ class SkeletonBuilder:
         return morphology_objects
 
     ################################################################################################
+    # @transform_to_global_coordinates
+    ################################################################################################
+    def transform_soma_to_global_coordinates(self, soma_mesh):
+        """Transform the soma to the global coordinates.
+        """
+
+        # Transform the neuron object to the global coordinates
+        if self.options.morphology.global_coordinates:
+            nmv.logger.header('Transforming soma to global coordinates')
+            nmv.skeleton.ops.transform_to_global_coordinates(
+                mesh_object=soma_mesh, blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid)
+
+    def transform_arbors_to_global_coordinates(self,
+                                               arbors):
+        if self.options.morphology.global_coordinates:
+            nmv.logger.header('Transforming arbors to global coordinates')
+
+            nmv.skeleton.ops.transform_morphology_to_global_coordinates(
+                soma_mesh=None, arbors_list=arbors, blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid)
+
+    ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self):
@@ -1153,6 +1176,18 @@ class SkeletonBuilder:
         # Otherwise, ignore the soma drawing
         else:
             nmv.logger.log('Ignoring soma representation')
+
+        # Transform the arbors to the global coordinates if required for a circuit
+        if self.options.morphology.global_coordinates and           \
+                self.options.morphology.blue_config is not None and \
+                self.options.morphology.gid is not None:
+
+            # Transforming
+            nmv.logger.log('Transforming morphology to global coordinates ')
+            nmv.skeleton.ops.transform_morphology_to_global_coordinates(
+                morphology_objects=morphology_objects,
+                blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid)
 
         # Return the list of the drawn morphology objects
         return morphology_objects

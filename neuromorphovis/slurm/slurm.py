@@ -192,7 +192,11 @@ def create_batch_job_script_for_gid(arguments,
     batch_job_config_string = create_batch_job_config_string(slurm_config)
 
     # Setup the shell command
-    shell_command = arguments_parser.create_executable_for_single_gid(arguments, gid)
+    shell_commands = arguments_parser.create_executable_for_single_gid(arguments, gid)
+
+    shell_command = ''
+    for command in shell_commands:
+        shell_command += command + '\n'
 
     # Add the command to the batch job config string
     batch_job_config_string += shell_command
@@ -240,7 +244,13 @@ def create_batch_job_script_for_multiple_gids(arguments,
     # Setup the shell command
     shell_command = ""
     for gid in gids:
-        shell_command += arguments_parser.create_executable_for_single_gid(arguments, gid) + '\n'
+
+        # Get all the shell commands that are given for a specific GID
+        shell_commands = arguments_parser.create_executable_for_single_gid(arguments, gid) + '\n'
+
+        shell_command = ''
+        for command in shell_commands:
+            shell_command += command + '\n'
 
     # Add the command to the batch job config string
     batch_job_config_string += shell_command
@@ -282,8 +292,12 @@ def create_batch_job_script_for_morphology_file(arguments,
     batch_job_config_string = create_batch_job_config_string(slurm_config)
 
     # Setup the shell command
-    shell_command = arguments_parser.create_executable_for_single_morphology_file(
+    shell_commands = arguments_parser.create_executable_for_single_morphology_file(
         arguments, morphology_file)
+
+    shell_command = ''
+    for command in shell_commands:
+        shell_command += command + '\n'
 
     # Add the command to the batch job config string
     batch_job_config_string += shell_command

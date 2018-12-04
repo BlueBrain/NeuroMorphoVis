@@ -87,7 +87,7 @@ class Logger:
 
         # Print the log message to stdout
         if self.print_stdout:
-            print(log_string)
+            print(log_string.replace('(\'', '').replace('\',)', ''))
 
         # Open the log file in the append mode.
         log_file = open(self.log_file_path, 'a')
@@ -129,6 +129,7 @@ class Logger:
         :param args:
             Input arguments.
         """
+        print("\n")  # Add a new line
         self.line()
         self.log(args)
         self.line()
