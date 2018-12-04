@@ -266,13 +266,13 @@ class SkinningBuilder:
 
 
     def set_radius(self, section, arbor_mesh):
-        for i in range(len(section.samples) - 1):
+        for i in range(1, len(section.samples)):
             self.select_vertex(section.samples[i].arbor_idx)
-            radius = section.samples[i].radius
+            radius = section.samples[i].radius * 3 * 1.41421356237
             bpy.ops.transform.skin_resize(value=(radius, radius, radius),
                                           constraint_axis=(False, False, False),
                                           constraint_orientation='GLOBAL', mirror=False,
-                                          proportional='DISABLED',
+                                          proportional='ENABLED',
                                           proportional_edit_falloff='SMOOTH', proportional_size=1)
             print(section.samples[i].arbor_idx)
 
@@ -280,7 +280,6 @@ class SkinningBuilder:
     def set_arbor_radius(self, root, arbor_mesh):
 
         self.set_radius(root, arbor_mesh)
-
         for child in root.children:
             self.set_arbor_radius(child, arbor_mesh)
 
@@ -329,11 +328,11 @@ class SkinningBuilder:
                                              "value": segment_value})
 
         self.select_vertex(0)
-        radius_scale = 4 * 1.41421356237
+        radius_scale = 3 * 1.41421356237
         bpy.ops.transform.skin_resize(value=(radius_scale, radius_scale, radius_scale),
                                       constraint_axis=(False, False, False),
                                       constraint_orientation='GLOBAL', mirror=False,
-                                      proportional='DISABLED',
+                                      proportional='ENABLED',
                                       proportional_edit_falloff='SMOOTH', proportional_size=1)
 
         '''
