@@ -178,9 +178,9 @@ class PiecewiseBuilder:
             *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
         # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to resample the morphology skeleton. However, if the smooth
+        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
         # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The resampling filter for the moment
+        # after applying the vertex smoothing filter. The re-sampling filter for the moment
         # re-samples the morphology sections at 2.5 microns, however this can be improved later
         # by adding an algorithm that re-samples the section based on its radii.
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:

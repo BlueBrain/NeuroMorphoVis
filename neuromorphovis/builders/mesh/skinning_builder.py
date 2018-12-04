@@ -345,9 +345,7 @@ class SkinningBuilder:
                                       proportional_edit_falloff='SMOOTH', proportional_size=1)
         '''
         self.extrude_arbor(root=arbor, arbor_mesh=arbor_mesh)
-
-
-        # self.set_arbor_radius(root=arbor, arbor_mesh=arbor_mesh)
+        self.set_arbor_radius(root=arbor, arbor_mesh=arbor_mesh)
 
         bpy.ops.object.editmode_toggle()
         return arbor_mesh
