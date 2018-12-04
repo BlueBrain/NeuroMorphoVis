@@ -47,7 +47,7 @@ class SlurmConfiguration:
         self.partition = 'prod_small'
 
         # Required memory
-        self.memory_mb = '2000'
+        self.memory_mb = '4000'
 
         # Session time
         self.session_time = '1:00:00'

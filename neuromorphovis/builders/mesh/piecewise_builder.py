@@ -86,6 +86,14 @@ class PiecewiseBuilder:
         # A reference to the reconstructed spines mesh (spines are grouped in a single mesh)
         self.spines_mesh = None
 
+        # A mesh of the reconstructed nucleus
+        self.nucleus_mesh = None
+
+        # A reference to the reconstructed neuron mesh
+        # NOTE: After the generation of the individual meshes of each component of the neuron,
+        # these components are joint together into a single mesh and assigned to this variable
+        self.neuron_mesh = None
+
     ################################################################################################
     # @create_materials
     ################################################################################################
@@ -364,8 +372,8 @@ class PiecewiseBuilder:
                 # There is an apical dendrite
                 if self.morphology.apical_dendrite is not None:
                     nmv.logger.detail('Apical dendrite')
-                    nmv.skeleton.ops.connect_arbor_to_soma(
-                        self.soma_mesh, self.morphology.apical_dendrite)
+                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh,
+                                                           self.morphology.apical_dendrite)
 
             # Connecting basal dendrites
             if not self.options.morphology.ignore_basal_dendrites:
@@ -376,14 +384,43 @@ class PiecewiseBuilder:
                     # Do it dendrite by dendrite
                     for i, basal_dendrite in enumerate(self.morphology.dendrites):
                         nmv.logger.detail('Dendrite [%d]' % i)
-                        nmv.skeleton.ops.connect_arbor_to_soma(
-                            self.soma_mesh, basal_dendrite)
+                        nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
 
             # Connecting axon
             if not self.options.morphology.ignore_axon:
-                nmv.logger.detail('Axon')
-                nmv.skeleton.ops.connect_arbor_to_soma(
-                    self.soma_mesh, self.morphology.axon)
+
+                # Ensure tha existence of the axon
+                if self.morphology.axon is not None:
+
+                    nmv.logger.detail('Axon')
+                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
+
+    ################################################################################################
+    # @adjust_texture_mapping
+    ################################################################################################
+    @staticmethod
+    def adjust_texture_mapping(list_meshes,
+                               texspace_size):
+        """
+
+        :param list_meshes:
+        :param texspace_size:
+        :return:
+        """
+
+        # Do it mesh by mesh
+        for i, mesh_object in enumerate(list_meshes):
+
+            # Update the texture space of the created meshes
+            mesh_object.select = True
+            bpy.context.object.data.use_auto_texspace = False
+            bpy.context.object.data.texspace_size[0] = texspace_size
+            bpy.context.object.data.texspace_size[1] = texspace_size
+            bpy.context.object.data.texspace_size[2] = texspace_size
+
+            # Show the progress
+            nmv.utilities.show_progress(
+                '\t * Decimating the mesh', float(i), float(len(list_meshes)))
 
     ################################################################################################
     # @decimate_neuron_mesh
@@ -662,9 +699,9 @@ class PiecewiseBuilder:
         # Adding nucleus
         if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
             nmv.logger.header('Adding nucleus')
-            nucleus_builder = nmv.builders.NucleusBuilder(morphology=self.morphology,
-                options=self.options)
-            nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
+            nucleus_builder = nmv.builders.NucleusBuilder(
+                morphology=self.morphology, options=self.options)
+            self.nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
 
     ################################################################################################
     # @transform_to_global_coordinates
@@ -677,174 +714,30 @@ class PiecewiseBuilder:
         """
 
         # Transform the neuron object to the global coordinates
-        # TODO: FIXME if self.options.mesh.global_coordinates:
-        if False:
+        if self.options.mesh.global_coordinates:
             nmv.logger.header('Transforming to global coordinates')
-
-            for scene_object in bpy.context.scene.objects:
-                if scene_object.type == 'MESH':
-                    nmv.skeleton.ops.transform_to_global_coordinates(
-                        mesh_object=scene_object, blue_config=self.options.morphology.blue_config,
-                        gid=self.options.morphology.gid)
+            nmv.skeleton.ops.transform_to_global_coordinates(
+                mesh_object=self.neuron_mesh, blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid)
 
     ################################################################################################
-    # @save_mesh
+    # @joint_neuron_meshes_into_single_mesh
     ################################################################################################
-    def save_mesh(self):
-
-        nmv.logger.header('Saving mesh')
-
-        # Update the file prefix
-        neuron_mesh_file_name = '%s' % self.options.morphology.label
-
-        meshes = []
-        for scene_object in bpy.context.scene.objects:
-            if scene_object.type == 'MESH':
-
-                # Add the object to the list
-                meshes.append(scene_object)
-
-        # Get all the mesh objects in the scene
-        neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-            mesh_list=meshes, name=neuron_mesh_file_name)
-
-        # Export the neuron mesh
-        nmv.file.export_mesh_object(neuron_mesh, self.options.io.meshes_directory,
-            neuron_mesh_file_name, ply=self.options.mesh.export_ply,
-            obj=self.options.mesh.export_obj, stl=self.options.mesh.export_stl,
-            blend=self.options.mesh.export_blend)
-
-    ################################################################################################
-    # @render_mesh
-    ################################################################################################
-    def render_mesh(self):
-        """Renders the mesh.
+    def join_neuron_meshes_into_single_mesh(self):
+        """Join the individual mesh objects of the neuron into a single mesh object.
         """
 
-        # Compute the bounding box for a close up view
-        if self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+        # A list of the individual mesh objects
+        individual_mesh_objects = list()
 
-            # Compute the bounding box for a close up view
-            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=self.options.mesh.close_up_dimensions)
-
-        # Compute the bounding box for a mid shot view
-        elif self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=self.morphology)
-
-        # Render at a specific resolution
-        if self.options.mesh.resolution_basis == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=self.options.mesh.full_view_resolution,
-                image_name='MESH_FRONT_%s' % self.morphology.label,
-                image_directory=self.options.io.images_directory)
-
-        # Render at a specific scale factor
-        else:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_scale_factor=self.options.mesh.resolution_scale_factor,
-                image_name='MESH_FRONT_%s' % self.morphology.label,
-                image_directory=self.options.io.images_directory)
-
-    ################################################################################################
-    # @render_mesh_360
-    ################################################################################################
-    def render_mesh_360(self):
-        """Renders a 360 sequence of the mesh.
-        """
-
-        # Update the file prefix
-        neuron_mesh_file_name = '%s' % self.options.morphology.label
-
-        meshes = []
+        # Connecting all the objects together into a single object
         for scene_object in bpy.context.scene.objects:
             if scene_object.type == 'MESH':
+                individual_mesh_objects.append(scene_object)
 
-                # Add the object to the list
-                meshes.append(scene_object)
-
-        # Get all the mesh objects in the scene
-        neuron_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=meshes, name=neuron_mesh_file_name)
-
-        # Render a 360 sequence
-        if self.options.mesh.render_360:
-
-            # A reference to the bounding box that will be used for the rendering
-            bounding_box = None
-
-            # Compute the bounding box for a close up view
-            if self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-                # Compute the bounding box for a close up view
-                bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=self.options.mesh.close_up_dimensions)
-
-            # Compute the bounding box for a mid shot view
-            elif self.options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-                # Compute the bounding box for the available meshes only
-                bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-            # Compute the bounding box for the wide shot view that correspond to whole morphology
-            else:
-
-                # Compute the full morphology bounding box
-                bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                    morphology=self.morphology)
-
-            # Compute a 360 bounding box to fit the arbors
-            bounding_box_360 = nmv.bbox.compute_360_bounding_box(bounding_box,
-                                                                 self.morphology.soma.centroid)
-
-            # Create a specific directory for this mesh
-            output_directory = '%s/%s_mesh_360' % (
-                self.options.io.sequences_directory, self.options.morphology.label)
-            nmv.file.ops.clean_and_create_directory(output_directory)
-
-            # Render 360
-            for i in range(360):
-
-                # Set the frame name
-                image_name = '%s/%s' % (output_directory, '{0:05d}'.format(i))
-
-                # Render at a specific resolution
-                if self.options.mesh.resolution_basis == \
-                        nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-                    # Render the image
-                    nmv.rendering.NeuronMeshRenderer.render_at_angle(
-                        mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
-                        camera_view=nmv.enums.Camera.View.FRONT_360,
-                        image_resolution=self.options.mesh.full_view_resolution,
-                        image_name=image_name)
-
-                # Render at a specific scale factor
-                else:
-
-                    # Render the image
-                    nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
-                        mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
-                        camera_view=nmv.enums.Camera.View.FRONT_360,
-                        image_scale_factor=self.options.mesh.resolution_scale_factor,
-                        image_name=image_name)
+        # Joint all the objects
+        self.neuron_mesh = nmv.mesh.ops.join_mesh_objects(
+            mesh_list=individual_mesh_objects, name=self.options.morphology.label)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -873,20 +766,8 @@ class PiecewiseBuilder:
         # Connect the arbors to the soma
         self.connect_arbors_to_soma()
 
-        # Transform to the global coordinates
-        self.transform_to_global_coordinates()
-
         # Adding surface roughness
-        self.add_surface_noise()
-
-        # Adding spines
-        self.add_spines()
-
-        # Render a static frame for the mesh
-        # self.render_mesh()
-
-        # Save the mesh to file
-        self.save_mesh()
+        # self.add_surface_noise()
 
         # Add nucleus
         # self.add_nucleus()
@@ -894,10 +775,25 @@ class PiecewiseBuilder:
         # Decimation
         # self.decimate_neuron_mesh()
 
-        # Connecting all the objects together into a single object
-        for scene_object in bpy.context.scene.objects:
-            if scene_object.type == 'MESH':
-                self.arbors_meshes.append(scene_object)
+        # Adding spines
+        self.add_spines()
+
+        # Group the objects of the neuron together
+        self.join_neuron_meshes_into_single_mesh()
+
+        # Transform to the global coordinates
+        self.transform_to_global_coordinates()
+
+        # Adjust the texture coordinates of the mesh
+
+        # Report
+        nmv.logger.header('Mesh Reconstruction Done!')
+
+        # Return a reference to the neuron mesh
+        return self.neuron_mesh
+
+
+
 
 
 
@@ -935,9 +831,7 @@ class PiecewiseBuilder:
                 # Update the arbors_meshes list to a single object
                 self.arbors_meshes = [neuron_mesh]
         """
-        nmv.logger.header('Done!')
 
-        return self.arbors_meshes
 
 
 

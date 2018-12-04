@@ -61,8 +61,7 @@ def create_shell_commands_for_local_execution(arguments,
     shell_commands = list()
 
     # Retrieve the path to the CLIs
-    current_path = os.path.dirname(os.path.realpath(__file__))
-    cli_interface_path = "%s/neuromorphovis/interface/cli/" % current_path
+    cli_interface_path = os.path.dirname(os.path.realpath(__file__))
     cli_soma_reconstruction = '%s/soma_reconstruction.py' % cli_interface_path
     cli_morphology_reconstruction = '%s/neuron_morphology_reconstruction.py' % cli_interface_path
     cli_morphology_analysis = '%s/morphology_analysis.py' % cli_interface_path

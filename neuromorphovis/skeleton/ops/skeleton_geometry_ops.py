@@ -265,6 +265,32 @@ def transform_to_global_coordinates(mesh_object,
 
 
 ####################################################################################################
+# @transform_morphology_to_global_coordinates
+####################################################################################################
+def transform_morphology_to_global_coordinates(morphology_objects,
+                                               blue_config,
+                                               gid):
+    """Transforms a given morphology, including the soma and the arbors.
+
+    :param morphology_objects:
+        A list of all the objects of the morphology including the arbors and the soma.
+    :param blue_config:
+        A circuit blue configuration that contains the absolute position of the mesh object.
+    :param gid:
+        The neuron identifier in the circuit that is used to retrieve its position in the circuit.
+    """
+
+    # Get the transformation matrix
+    transformation_matrix = get_transformation_matrix(blue_config=blue_config, gid=gid)
+
+    # Arbors transformation
+    for morphology_object in morphology_objects:
+
+        # Update the arbors transformation
+        morphology_object.matrix_world = transformation_matrix * morphology_object .matrix_world
+
+
+####################################################################################################
 # @taper_section
 ####################################################################################################
 def taper_section(section):

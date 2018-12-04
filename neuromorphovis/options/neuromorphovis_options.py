@@ -149,6 +149,9 @@ class NeuroMorphoVisOptions:
         # Apical dendrite branching level, if exists
         self.morphology.apical_dendrite_branch_order = arguments.apical_dendrites_branching_order
 
+        # Export the reconstructed morphology to the global coordinates of the circuit
+        self.morphology.global_coordinates = arguments.global_coordinates
+
         # Morphology material
         self.morphology.material = nmv.enums.Shading.get_enum(arguments.shader)
 
@@ -364,7 +367,7 @@ class NeuroMorphoVisOptions:
         # Spines color
         self.mesh.spines_color = nmv.utilities.parse_color_from_argument(arguments.spines_color)
 
-        # Nucleuscolor
+        # Nucleus color
         self.mesh.nucleus_color = nmv.utilities.parse_color_from_argument(arguments.nucleus_color)
 
         # Save the reconstructed mesh as a .PLY file to the meshes directory
@@ -381,5 +384,9 @@ class NeuroMorphoVisOptions:
 
         # Export the reconstructed mesh to the global coordinates of the circuit
         self.mesh.global_coordinates = arguments.global_coordinates
+
+        # Connect the arbors to the soma to form a single mesh
+        self.mesh.soma_connection = nmv.enums.Meshing.SomaConnection.CONNECTED if \
+            arguments.connect_soma_arbors else nmv.enums.Meshing.SomaConnection.DISCONNECTED
 
 

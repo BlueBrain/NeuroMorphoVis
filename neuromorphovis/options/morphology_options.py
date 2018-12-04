@@ -114,6 +114,9 @@ class MorphologyOptions:
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000
 
+        # Global coordinates
+        self.global_coordinates = False
+
         # Number of sides of the bevel object used to scale the sections
         # This parameter controls the quality of the reconstructed morphology
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES

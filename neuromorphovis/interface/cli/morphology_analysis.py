@@ -22,8 +22,6 @@ import sys
 import bpy
 
 import os
-print(os.path.dirname(os.path.realpath(__file__)))
-
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['neuromorphovis']

@@ -185,6 +185,9 @@ class Args:
     # Nucleus mesh quality (HQ, LQ)
     NUCLEUS_QUALITY = '--nucleus-quality'
 
+    # Connect the soma to the arbors
+    CONNECT_SOMA_ARBORS = '--connect-soma-arbors'
+
     ################################################################################################
     # Geometry export arguments
     ################################################################################################
