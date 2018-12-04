@@ -129,6 +129,7 @@ class Logger:
         :param args:
             Input arguments.
         """
+        print("\n")  # Add a new line
         self.line()
         self.log(args)
         self.line()

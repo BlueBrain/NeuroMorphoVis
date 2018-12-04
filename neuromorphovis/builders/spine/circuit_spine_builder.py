@@ -137,6 +137,8 @@ class CircuitSpineBuilder:
         # Keep a list of all the spines objects
         spines_objects = []
 
+        spines_positions = []
+
         # To load the circuit, 'brain' must be imported
         try:
             import brain
@@ -200,7 +202,7 @@ class CircuitSpineBuilder:
             spine = nmv.skeleton.Spine()
             spine.post_synaptic_position = post_synaptic_position
             spine.pre_synaptic_position = pre_synaptic_position
-            sample = morphology.section(synapse.post_section()).samples()[synapse.post_segment()+ 1]
+            sample = morphology.section(synapse.post_section()).samples()[synapse.post_segment() + 1]
             spine.size = sample[3] * 0.5
             spines_list.append(spine)
 
@@ -225,6 +227,9 @@ class CircuitSpineBuilder:
         nmv.logger.info('Linking spines to the scene')
         for spine_object in spines_objects:
             bpy.context.scene.objects.link(spine_object)
+
+        # TODO: adjust
+        return spines_objects, spines_list
 
         # Merging spines into a single object
         nmv.logger.info('Grouping spines to a single mesh')

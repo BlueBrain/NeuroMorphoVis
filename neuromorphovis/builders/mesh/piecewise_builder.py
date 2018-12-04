@@ -86,6 +86,8 @@ class PiecewiseBuilder:
         # A reference to the reconstructed spines mesh (spines are grouped in a single mesh)
         self.spines_mesh = None
 
+        self.spines_list = None
+
         # A mesh of the reconstructed nucleus
         self.nucleus_mesh = None
 
@@ -540,27 +542,6 @@ class PiecewiseBuilder:
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
             nmv.logger.header('Adding surface roughness')
 
-            # Join all the mesh objects (except the spines) of the neuron into a single mesh object
-            nmv.logger.info('Joining meshes')
-            neuron_meshes = list()
-            for scene_object in bpy.context.scene.objects:
-
-                # Only for meshes
-                if scene_object.type == 'MESH':
-
-                    # Exclude the spines
-                    if 'spine' in scene_object.name:
-                        continue
-
-                    # Otherwise, add the object to the list
-                    else:
-                        neuron_meshes.append(scene_object)
-
-            # Join all the objects into a single neuron mesh
-            neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-                mesh_list=neuron_meshes,
-                name='%s_mesh_proxy' % self.options.morphology.label)
-
             # The soma is already reconstructed with high number of subdivisions for accuracy,
             # and the arbors are reconstructed with minimal number of samples that is sufficient to
             # make them smooth. Therefore, we must add the noise around the soma and its connections
@@ -570,8 +551,8 @@ class PiecewiseBuilder:
 
             # Apply the noise addition filter
             nmv.logger.info('Adding noise')
-            for i in range(len(neuron_mesh.data.vertices)):
-                vertex = neuron_mesh.data.vertices[i]
+            for i in range(len(self.neuron_mesh.data.vertices)):
+                vertex = self.neuron_mesh.data.vertices[i]
                 if nmv.geometry.ops.is_point_inside_sphere(
                         stable_extent_center, stable_extent_radius, vertex.co):
                     if nmv.geometry.ops.is_point_inside_sphere(
@@ -587,11 +568,11 @@ class PiecewiseBuilder:
                             vertex.select = False
                 else:
 
-                    value = random.uniform(-0.1, 0.1)
+                    value = random.uniform(-0.25, 0.1)
                     if 0.0 < random.uniform(0, 1.0) < 0.045:
                         value += random.uniform(0.05, 0.1)
                     elif 0.045 < random.uniform(0, 1.0) < 0.06:
-                        value += random.uniform(0.2, 0.4)
+                        value += random.uniform(0.2, 0.5)
                     vertex.select = True
                     vertex.co = vertex.co + (vertex.normal * value)
                     vertex.select = False
@@ -600,13 +581,13 @@ class PiecewiseBuilder:
             nmv.logger.info('Smoothing')
 
             # Deselect all the vertices
-            nmv.mesh.ops.deselect_all_vertices(mesh_object=neuron_mesh)
+            nmv.mesh.ops.deselect_all_vertices(mesh_object=self.neuron_mesh)
 
             # Decimate each mesh object
-            # nmv.mesh.ops.decimate_mesh_object(mesh_object=neuron_mesh, decimation_ratio=0.5)
+            nmv.mesh.ops.decimate_mesh_object(mesh_object=self.neuron_mesh, decimation_ratio=0.25)
 
             # Smooth each mesh object
-            # nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
+            nmv.mesh.ops.smooth_object(mesh_object=self.neuron_mesh, level=1)
 
     ################################################################################################
     # @reconstruct_soma_mesh
@@ -676,7 +657,7 @@ class PiecewiseBuilder:
         if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
             spines_builder = nmv.builders.CircuitSpineBuilder(
                 morphology=self.morphology, options=self.options)
-            self.spines_mesh = spines_builder.add_spines_to_morphology()
+            self.spines_mesh, self.spines_list = spines_builder.add_spines_to_morphology()
 
         # Random spines
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
@@ -775,14 +756,45 @@ class PiecewiseBuilder:
         # Decimation
         # self.decimate_neuron_mesh()
 
-        # Adding spines
-        self.add_spines()
+
 
         # Group the objects of the neuron together
         self.join_neuron_meshes_into_single_mesh()
 
+        # Adding spines
+        # self.add_spines()
+
+        self.add_surface_noise()
+
+        """
+        # Adding noise finally based on the spines
+        for i, spine in enumerate(self.spines_list):
+            print(i)
+
+            spine_post_position = spine.post_synaptic_position
+            spine_pre_position = spine.pre_synaptic_position
+
+            # get the nearest vertex to the spine
+            vertex_index = nmv.mesh.ops.get_index_of_nearest_vertex_to_point(self.neuron_mesh,
+                                                                             spine_post_position)
+
+            vertex = self.neuron_mesh.data.vertices[vertex_index]
+            vertex.co = vertex.co + vertex.normal * 4.0
+            # pull the nearest vertex to the spine towards the pre-synaptic neuron
+        """
+
+
+
+
+        # Group the objects of the neuron together
+        # self.join_neuron_meshes_into_single_mesh()
+
+
+
+
+
         # Transform to the global coordinates
-        self.transform_to_global_coordinates()
+        # self.transform_to_global_coordinates()
 
         # Adjust the texture coordinates of the mesh
 
