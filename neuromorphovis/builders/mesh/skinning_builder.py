@@ -258,7 +258,7 @@ class SkinningBuilder:
         # Sample by sample along the section
         for i in range(starting_index, len(section.samples)):
 
-            print('Updating Radii [%d]' % section.samples[i].arbor_idx, end='\r')
+            print('\t\tUpdating Radii [%d]' % section.samples[i].arbor_idx, end='\r')
 
             # Select the vertex at the given sample
             self.select_vertex(section.samples[i].arbor_idx)
@@ -308,7 +308,7 @@ class SkinningBuilder:
 
         for i in range(len(section.samples) - 1):
 
-            print('Extrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
+            print('\t\tExtrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
             point_0 = section.samples[i].point
             point_1 = section.samples[i + 1].point
 
@@ -460,17 +460,27 @@ class SkinningBuilder:
 
         # Extrude arbor mesh using the skinning method using a temporary radius
         self.extrude_arbor(root=arbor)
-        print("\nExtrusion Done \n")
+        print("\n\t\tExtrusion Done")
 
         # Update the radii of the arbor at each sample
         self.update_arbor_samples_radii(root=arbor)
-        print("\nUpdating Radii Done \n")
+        print("\n\t\tUpdating Radii Done")
 
         # Toggle back to the object mode
         bpy.ops.object.editmode_toggle()
 
         # Apply the skinning modifier
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
+
+        # Remove the first face of the mesh for the connectivity
+        # TODO: Check if this arbor will be connected to the soma or not (pre-processing step)
+        nmv.mesh.ops.remove_first_face_of_quad_mesh_object(arbor_mesh)
+
+        # Smooth the arbor
+        nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+
+        # Shade smooth the object
+        nmv.mesh.shade_smooth_object(mesh_object=arbor_mesh)
 
         # Return a reference to the arbor mesh
         return arbor_mesh
@@ -483,18 +493,6 @@ class SkinningBuilder:
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
 
-        :param bevel_object:
-            A given bevel object to scale the section at the different samples.
-        :param caps:
-            A flag to indicate whether the drawn sections are closed or not.
-        :param bridge_to_soma:
-            A flag to connect (for soma disconnected more) or disconnect (for soma bridging mode)
-            the arbor to the soma origin.
-            If this flag is set to True, this means that the arbor will be extended to the soma
-            origin and the branch will not be physically connected to the soma as a single mesh.
-            If the flag is set to False, the arbor will only have a bridging connection that
-            would allow us later to connect it to the nearest face on the soma create a
-            watertight mesh.
         :return:
             A list of all the individual meshes of the arbors.
         """
@@ -521,26 +519,9 @@ class SkinningBuilder:
         if not self.options.morphology.ignore_apical_dendrite:
             nmv.logger.info('Apical dendrite')
 
+            # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
-                self.create_arbor_mesh(self.morphology.apical_dendrite)
-                return
-
-                '''
-                # Link it to the scene
-                apical_dendrite_mesh = bpy.data.meshes.new('apical_dendrite_mesh')
-                apical_dendrite_bmesh_object.to_mesh(apical_dendrite_mesh)
-
-                # Create a blender object, link it to the scene
-                apical_dendrite_mesh_object = bpy.data.objects.new('apical_dendrite', apical_dendrite_mesh)
-                bpy.context.scene.objects.link(apical_dendrite_mesh_object)
-
-                # Add a reference to the mesh object
-                self.morphology.apical_dendrite.mesh = apical_dendrite_mesh_object
-
-                # Add the mesh object
-                arbors_objects.append(apical_dendrite_mesh_object)
-                '''
-
+                arbors_objects.append(self.create_arbor_mesh(self.morphology.apical_dendrite))
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -548,76 +529,16 @@ class SkinningBuilder:
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
+                # Create the basal dendrite meshes
                 nmv.logger.info('Dendrite [%d]' % i)
-
-                self.create_arbor_mesh(basal_dendrite)
-                return
-
-
-                '''
-                # Create the extrusion object and move it near the first sample of the branch
-                basal_dendrite_bmesh_object = self.create_extrusion_face(basal_dendrite)
-
-                # Draw the apical dendrite as a set connected sections
-                nmv.skeleton.ops.extrude_connected_sections(
-                    section=copy.deepcopy(basal_dendrite),
-                    section_objects=[basal_dendrite_bmesh_object],
-                    max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                    name=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                    material_list=self.basal_dendrites_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=True,
-                    caps=caps)
-
-                # Link it to the scene
-                basal_dendrite_mesh = bpy.data.meshes.new('dendrite_%d_mesh' % i)
-                basal_dendrite_bmesh_object.to_mesh(basal_dendrite_mesh)
-
-                # Create a blender object, link it to the scene
-                basal_dendrite_mesh_object = bpy.data.objects.new('dendrite_%d' % i, basal_dendrite_mesh)
-                bpy.context.scene.objects.link(basal_dendrite_mesh_object)
-
-                # Add a reference to the mesh object
-                self.morphology.dendrites[i].mesh = basal_dendrite_mesh_object
-
-                # Add the sections (tubes) of the basal dendrite to the list
-                arbors_objects.append(basal_dendrite_mesh_object)
-                '''
-
-        # Return the list of meshes
-        return arbors_objects
+                arbors_objects.append(self.create_arbor_mesh(basal_dendrite))
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
             nmv.logger.info('Axon')
 
-            # Create the extrusion object and move it near the first sample of the branch
-            axon_bmesh_object = self.create_extrusion_face(self.morphology.axon)
-
-            # Draw the apical dendrite as a set connected sections
-            nmv.skeleton.ops.extrude_connected_sections(
-                section=copy.deepcopy(self.morphology.axon),
-                section_objects=[axon_bmesh_object],
-                max_branching_level=self.options.morphology.axon_branch_order,
-                name=nmv.consts.Arbors.AXON_PREFIX,
-                material_list=self.axon_materials,
-                bevel_object=bevel_object,
-                repair_morphology=True,
-                caps=caps)
-
-            # Link it to the scene
-            axon_mesh = bpy.data.meshes.new('axon_mesh')
-            axon_bmesh_object.to_mesh(axon_mesh)
-
-            # Create a blender object, link it to the scene
-            axon_mesh_object = bpy.data.objects.new('axon', axon_mesh)
-            bpy.context.scene.objects.link(axon_mesh_object)
-
-            # Add a reference to the mesh object
-            self.morphology.axon.mesh = axon_mesh_object
-
-            # Add the mesh object
-            arbors_objects.append(axon_mesh_object)
+            # Create the axon mesh
+            arbors_objects.append(self.create_arbor_mesh(self.morphology.axon))
 
         # Return the list of meshes
         return arbors_objects

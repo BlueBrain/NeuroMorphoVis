@@ -499,3 +499,32 @@ def close_caps_for_n_vertices(mesh_object,
 
     # Switch back to the edit more
     bpy.ops.object.editmode_toggle()
+
+
+####################################################################################################
+# @remove_first_face_of_quad_mesh_object
+####################################################################################################
+def remove_first_face_of_quad_mesh_object(mesh_object):
+    """Close the first face of the given mesh object.
+
+    :param mesh_object:
+        A quad mesh object.
+    """
+
+    # Deselect all the vertices of the mesh object
+    nmv.mesh.ops.deselect_all_vertices(mesh_object)
+
+    # Select the first and last four vertices
+    vertices_indices = [0, 1, 2, 3]
+
+    # Select the vertices
+    nmv.mesh.ops.select_vertices(mesh_object, vertices_indices)
+
+    # Switch to edit mode
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the face
+    bpy.ops.mesh.delete(type='FACE')
+
+    # Switch back to the edit more
+    bpy.ops.object.editmode_toggle()

@@ -43,7 +43,7 @@ import neuromorphovis.scene
 ####################################################################################################
 # @analyze_morphology
 ####################################################################################################
-def analyze_morphology(cli_morphology,
+def analyze_morphologyx(cli_morphology,
                        cli_options):
     """Morphology analysis operations.
 
