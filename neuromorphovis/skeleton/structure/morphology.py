@@ -104,6 +104,10 @@ class Morphology:
         # Update the bounding boxes
         self.compute_bounding_box()
 
+        # Update the branching order
+        self.update_branching_order()
+
+
     ################################################################################################
     # @has_axon
     ################################################################################################
@@ -129,10 +133,10 @@ class Morphology:
         :return: True or False.
         """
 
-        if self.dendrites is None or len(self.dendrites) == 0:
+        if self.dendrites is None:
             return False
 
-        return False
+        return True
 
     ################################################################################################
     # @apical_dendrite
@@ -310,7 +314,7 @@ class Morphology:
 
         # Fix the first sections
         #self.fix_arbor_first_section(arbor)
-        None
+        pass
 
     ################################################################################################
     # @fix_artifacts
@@ -331,5 +335,44 @@ class Morphology:
         # Fix the basal dendrites
         for basal_dendrite in self.dendrites:
             self.fix_arbor(basal_dendrite)
+
+    ################################################################################################
+    # @set_section_branching_order
+    ################################################################################################
+    def set_section_branching_order(self,
+                                    section,
+                                    order=1):
+        """Sets the branching order of the section and its children recursively.
+
+        :param section:
+            A given section.
+        :param order:
+            Section branching order.
+        """
+
+        # Set the branching order of the section
+        section.branching_order = order
+
+        # Set the branching order of the children
+        for child in section.children:
+            self.set_section_branching_order(section=child, order=order + 1)
+
+    ################################################################################################
+    # @update_branching_order
+    ################################################################################################
+    def update_branching_order(self):
+
+        # Apical dendrite
+        if self.has_apical_dendrite():
+            self.set_section_branching_order(self.apical_dendrite)
+
+        # Axon
+        if self.has_axon():
+            self.set_section_branching_order(self.axon)
+
+        # Basal dendrites
+        if self.has_dendrites():
+            for dendrite in self.dendrites:
+                self.set_section_branching_order(dendrite)
 
 

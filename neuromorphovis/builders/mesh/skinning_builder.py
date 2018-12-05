@@ -349,7 +349,7 @@ class SkinningBuilder:
             return
 
         # Extrude the section
-        self.extrude_section(root)
+        self.extrude_section(root) 
 
         # Extrude the children sections recursively
         for child in root.children:
@@ -359,15 +359,17 @@ class SkinningBuilder:
     # @create_root_point_mesh
     ################################################################################################
     @staticmethod
-    def create_root_point_mesh():
+    def create_root_point_mesh(name):
         """Creates a point mesh at the origin.
 
+        :param name:
+            The name of the mesh.
         :return:
             Return a reference to the created mesh.
         """
 
         # Create a plane mesh
-        root_point_mesh = nmv.mesh.create_plane()
+        root_point_mesh = nmv.mesh.create_plane(name=name)
 
         # Switch to the edit mode
         bpy.ops.object.editmode_toggle()
@@ -406,8 +408,11 @@ class SkinningBuilder:
         :param index:
             A list that contains a single value that account for the index of the arbor.
             Note that we use this list as a trick to update the index value.
+        :param max_branching_order:
+            The maximum branching order of the arbor requested by the user.
         """
 
+        # If the order goes beyond the maximum requested by the user, ignore the remaining samples
         if section.branching_order > max_branching_order:
             return
 
@@ -444,13 +449,16 @@ class SkinningBuilder:
     ################################################################################################
     def create_arbor_mesh(self,
                           arbor,
-                          max_branching_order):
+                          max_branching_order,
+                          arbor_name):
         """Creates a mesh of the given arbor recursively.
 
         :param arbor:
             A given arbor.
         :param max_branching_order:
             The maximum branching order of the arbor.
+        :param arbor_name:
+            The name of the arbor.
         :return:
             A reference to the created mesh object.
         """
@@ -460,7 +468,7 @@ class SkinningBuilder:
         self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index, max_branching_order)
 
         # Create an initial proxy mesh at the origin
-        arbor_mesh = self.create_root_point_mesh()
+        arbor_mesh = self.create_root_point_mesh(arbor_name)
 
         arbor_mesh.location = arbor.samples[0].point
 
@@ -485,11 +493,11 @@ class SkinningBuilder:
 
         # Extrude arbor mesh using the skinning method using a temporary radius
         self.extrude_arbor(root=arbor, max_branching_order=max_branching_order)
-        print("\n\t\tExtrusion Done")
+        print("")
 
         # Update the radii of the arbor at each sample
         self.update_arbor_samples_radii(root=arbor, max_branching_order=max_branching_order)
-        print("\n\t\tUpdating Radii Done")
+        print("")
 
         # Toggle back to the object mode
         bpy.ops.object.editmode_toggle()
@@ -507,6 +515,12 @@ class SkinningBuilder:
         # Shade smooth the object
         nmv.mesh.shade_smooth_object(mesh_object=arbor_mesh)
 
+        # Add back the face we removed before the smoothing to be able to bridge
+        nmv.mesh.close_open_faces(mesh_object=arbor_mesh)
+
+        # Add a reference of the reconstructed arbor mesh to the root section of the arbor
+        arbor.mesh = arbor_mesh
+
         # Return a reference to the arbor mesh
         return arbor_mesh
 
@@ -521,6 +535,9 @@ class SkinningBuilder:
         :return:
             A list of all the individual meshes of the arbors.
         """
+
+        # Header
+        nmv.logger.header('Building Arbors')
 
         # Apply the morphology reformation filters if requested before creating the arbors
 
@@ -547,8 +564,9 @@ class SkinningBuilder:
             # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
                 arbors_objects.append(self.create_arbor_mesh(
-                    self.morphology.apical_dendrite,
-                    self.options.morphology.apical_dendrite_branch_order))
+                    arbor=self.morphology.apical_dendrite,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                    arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX))
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -559,7 +577,9 @@ class SkinningBuilder:
                 # Create the basal dendrite meshes
                 nmv.logger.info('Dendrite [%d]' % i)
                 arbors_objects.append(self.create_arbor_mesh(
-                    basal_dendrite, self.options.morphology.basal_dendrites_branch_order))
+                    arbor=basal_dendrite,
+                    max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                    arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)))
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
@@ -567,7 +587,9 @@ class SkinningBuilder:
 
             # Create the axon mesh
             arbors_objects.append(self.create_arbor_mesh(
-                self.morphology.axon, self.options.morphology.axon_branch_order))
+                arbor=self.morphology.axon,
+                max_branching_order=self.options.morphology.axon_branch_order,
+                arbor_name=nmv.consts.Arbors.AXON_PREFIX))
 
         # Return the list of meshes
         return arbors_objects
@@ -890,27 +912,6 @@ class SkinningBuilder:
         spine_mesh_name = '%s_spines' % self.options.morphology.label
         self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
-    def set_section_branching_order(self, section, order):
-        section.branching_order = order
-        order = order + 1
-        for child in section.children:
-            self.set_section_branching_order(child, order)
-
-
-    def update_branching_order(self):
-        order = 0
-        self.set_section_branching_order(self.morphology.apical_dendrite, 1)
-
-        order = 0
-        self.set_section_branching_order(self.morphology.axon, 1)
-
-        for dendrite in self.morphology.dendrites:
-            order = 0
-            self.set_section_branching_order(dendrite, 1)
-
-        pass
-
-
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -930,30 +931,19 @@ class SkinningBuilder:
 
 
 
-        # Update the branching order
-        self.update_branching_order()
-
-
-
-
         # Build the soma
-        # self.reconstruct_soma_mesh()
+        self.reconstruct_soma_mesh()
 
         # Build the arbors
         # self.reconstruct_arbors_meshes()
         self.build_arbors()
 
-
-
-
-
-
+        # Connect the arbors to the soma
+        self.connect_arbors_to_soma()
 
         print('Skinning...')
         return self.reconstructed_neuron_meshes
 
-        # Connect the arbors to the soma
-        self.connect_arbors_to_soma()
 
         # Adding surface roughness
         self.add_surface_noise()
