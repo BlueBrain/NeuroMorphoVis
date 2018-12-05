@@ -82,6 +82,10 @@ class SkinningBuilder:
         # A reference to the reconstructed spines mesh
         self.spines_mesh = None
 
+        # A parameter to track the current branching order on each arbor
+        # NOTE: This parameter must get reset when you start working on a new arbor
+        self.branching_order = 0
+
         # A magic scaling factor for accurate adjustments of the radius of the branches
         # Note that the 1.4 is sqrt(2) for the smoothing factor
         self.radius_scaling_factor = 3 * 1.41421356237
@@ -278,20 +282,27 @@ class SkinningBuilder:
     # @update_arbor_samples_radii
     ################################################################################################
     def update_arbor_samples_radii(self,
-                                   root):
+                                   root,
+                                   max_branching_order):
         """Updates the radii of the samples of the entire arbor to match reality from the
         temporary ones that were given before.
 
         :param root:
             The root section of the arbor.
+        :param max_branching_order:
+            The maximum branching order set by the user to terminate the recursive call.
         """
+
+        # Do not proceed if the branching order limit is hit
+        if root.branching_order > max_branching_order:
+            return
 
         # Set the radius of a given section
         self.update_section_samples_radii(root)
 
         # Update the radii of the samples of the children recursively
         for child in root.children:
-            self.update_arbor_samples_radii(child)
+            self.update_arbor_samples_radii(child, max_branching_order)
 
     ################################################################################################
     # @extrude_section
@@ -323,19 +334,26 @@ class SkinningBuilder:
     # @create_root_point_mesh
     ################################################################################################
     def extrude_arbor(self,
-                      root):
+                      root,
+                      max_branching_order):
         """Extrude the given arbor section by section recursively.
 
         :param root:
             The root of a given section.
+        :param max_branching_order:
+            The maximum branching order set by the user to terminate the recursive call.
         """
+
+        # Do not proceed if the branching order limit is hit
+        if root.branching_order > max_branching_order:
+            return
 
         # Extrude the section
         self.extrude_section(root)
 
         # Extrude the children sections recursively
         for child in root.children:
-            self.extrude_arbor(child)
+            self.extrude_arbor(child, max_branching_order)
 
     ################################################################################################
     # @create_root_point_mesh
@@ -377,7 +395,8 @@ class SkinningBuilder:
     ################################################################################################
     def update_samples_indices_per_arbor(self,
                                          section,
-                                         index):
+                                         index,
+                                         max_branching_order):
         """Updates the global indices of all the samples along the given section.
 
         Note: This global index of the sample w.r.t to the arbor it belongs to.
@@ -388,6 +407,9 @@ class SkinningBuilder:
             A list that contains a single value that account for the index of the arbor.
             Note that we use this list as a trick to update the index value.
         """
+
+        if section.branching_order > max_branching_order:
+            return
 
         # If the given section is root
         if section.is_root():
@@ -415,24 +437,27 @@ class SkinningBuilder:
 
         # Update the children sections recursively
         for child in section.children:
-            self.update_samples_indices_per_arbor(child, index)
+            self.update_samples_indices_per_arbor(child, index, max_branching_order)
 
     ################################################################################################
     # @create_arbor_mesh
     ################################################################################################
     def create_arbor_mesh(self,
-                          arbor):
+                          arbor,
+                          max_branching_order):
         """Creates a mesh of the given arbor recursively.
 
         :param arbor:
             A given arbor.
+        :param max_branching_order:
+            The maximum branching order of the arbor.
         :return:
             A reference to the created mesh object.
         """
 
         # Initially, this index is set to one and incremented later
         samples_global_arbor_index = [0]
-        self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index)
+        self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index, max_branching_order)
 
         # Create an initial proxy mesh at the origin
         arbor_mesh = self.create_root_point_mesh()
@@ -459,11 +484,11 @@ class SkinningBuilder:
         """
 
         # Extrude arbor mesh using the skinning method using a temporary radius
-        self.extrude_arbor(root=arbor)
+        self.extrude_arbor(root=arbor, max_branching_order=max_branching_order)
         print("\n\t\tExtrusion Done")
 
         # Update the radii of the arbor at each sample
-        self.update_arbor_samples_radii(root=arbor)
+        self.update_arbor_samples_radii(root=arbor, max_branching_order=max_branching_order)
         print("\n\t\tUpdating Radii Done")
 
         # Toggle back to the object mode
@@ -521,7 +546,9 @@ class SkinningBuilder:
 
             # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
-                arbors_objects.append(self.create_arbor_mesh(self.morphology.apical_dendrite))
+                arbors_objects.append(self.create_arbor_mesh(
+                    self.morphology.apical_dendrite,
+                    self.options.morphology.apical_dendrite_branch_order))
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -531,14 +558,16 @@ class SkinningBuilder:
 
                 # Create the basal dendrite meshes
                 nmv.logger.info('Dendrite [%d]' % i)
-                arbors_objects.append(self.create_arbor_mesh(basal_dendrite))
+                arbors_objects.append(self.create_arbor_mesh(
+                    basal_dendrite, self.options.morphology.basal_dendrites_branch_order))
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
             nmv.logger.info('Axon')
 
             # Create the axon mesh
-            arbors_objects.append(self.create_arbor_mesh(self.morphology.axon))
+            arbors_objects.append(self.create_arbor_mesh(
+                self.morphology.axon, self.options.morphology.axon_branch_order))
 
         # Return the list of meshes
         return arbors_objects
@@ -861,6 +890,27 @@ class SkinningBuilder:
         spine_mesh_name = '%s_spines' % self.options.morphology.label
         self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
+    def set_section_branching_order(self, section, order):
+        section.branching_order = order
+        order = order + 1
+        for child in section.children:
+            self.set_section_branching_order(child, order)
+
+
+    def update_branching_order(self):
+        order = 0
+        self.set_section_branching_order(self.morphology.apical_dendrite, 1)
+
+        order = 0
+        self.set_section_branching_order(self.morphology.axon, 1)
+
+        for dendrite in self.morphology.dendrites:
+            order = 0
+            self.set_section_branching_order(dendrite, 1)
+
+        pass
+
+
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -878,12 +928,25 @@ class SkinningBuilder:
         # Verify and repair the morphology
         self.verify_and_repair_morphology()
 
+
+
+        # Update the branching order
+        self.update_branching_order()
+
+
+
+
         # Build the soma
         # self.reconstruct_soma_mesh()
 
         # Build the arbors
         # self.reconstruct_arbors_meshes()
         self.build_arbors()
+
+
+
+
+
 
 
         print('Skinning...')
