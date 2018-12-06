@@ -762,7 +762,7 @@ class PiecewiseBuilder:
         self.join_neuron_meshes_into_single_mesh()
 
         # Adding spines
-        # self.add_spines()
+        self.add_spines()
 
         self.add_surface_noise()
 

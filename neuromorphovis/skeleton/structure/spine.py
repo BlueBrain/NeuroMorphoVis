@@ -45,3 +45,6 @@ class Spine:
         # Spine size (initially 1 micron)
         self.size = 1.0
 
+        # The radius of the post-synaptic branch
+        self.post_synaptic_radius = 1.0
+

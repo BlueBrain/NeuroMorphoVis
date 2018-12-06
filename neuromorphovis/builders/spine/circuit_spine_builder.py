@@ -64,6 +64,9 @@ class CircuitSpineBuilder:
         # A list containing all the spines meshes
         self.spine_meshes = None
 
+        # Protrusion mesh
+        self.protrusion_mesh = None
+
     ################################################################################################
     # @load_spine_meshes
     ################################################################################################
@@ -76,6 +79,9 @@ class CircuitSpineBuilder:
         self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
         nmv.utilities.enable_std_output()
 
+        self.protrusion_mesh = \
+            nmv.file.import_obj_file(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY, 'tip.obj')
+
         # Create the material
         material = nmv.shading.create_material(
             name='%spine_material', color=self.options.mesh.spines_color,
@@ -84,6 +90,42 @@ class CircuitSpineBuilder:
         # Apply the shader
         for spine_object in self.spine_meshes:
             nmv.shading.set_material_to_object(spine_object, material)
+
+        nmv.shading.set_material_to_object(self.protrusion_mesh, material)
+
+    ################################################################################################
+    # @emanate_protrusion
+    ################################################################################################
+    def emanate_protrusion(self,
+                           spine,
+                           index):
+        """Emanates a protrusion of a spine at an exact position on the dendritic tree.
+
+        :param spine:
+            A given spine object that contains all the data required to emanate the spine.
+        :param index:
+            Spine index.
+        :return:
+            The mesh instance that correspond to the spines.
+        """
+
+        # Get a protrusion object
+        protrusion_object = nmv.scene.ops.duplicate_object(self.protrusion_mesh,
+                                                           'protrusion_%d' % index,
+                                                           link_to_scene=False)
+
+        # Scale the object based on the radius of the branch
+        nmv.scene.ops.scale_object_uniformly(protrusion_object, spine.post_synaptic_radius)
+
+        # Locate it
+        nmv.scene.ops.set_object_location(protrusion_object, spine.post_synaptic_position)
+
+        # Rotate it
+        nmv.scene.ops.rotate_object_towards_target(
+            protrusion_object, Vector((0, 0, -1)), spine.pre_synaptic_position)
+
+        # Return a reference to the spine
+        return protrusion_object
 
     ################################################################################################
     # @emanate_spine
@@ -108,7 +150,7 @@ class CircuitSpineBuilder:
         spine_object = nmv.scene.ops.duplicate_object(spine_template, index, link_to_scene=False)
 
         # Compute the spine extent
-        spine_extent = (spine.post_synaptic_position - spine.pre_synaptic_position).length
+        # spine_extent = (spine.post_synaptic_position - spine.pre_synaptic_position).length
 
         # Scale the spine
         nmv.scene.ops.scale_object_uniformly(spine_object, spine.size)
@@ -137,7 +179,8 @@ class CircuitSpineBuilder:
         # Keep a list of all the spines objects
         spines_objects = []
 
-        spines_positions = []
+        # Keep a list of all the protrusion objects
+        protrusion_objects = []
 
         # To load the circuit, 'brain' must be imported
         try:
@@ -185,6 +228,12 @@ class CircuitSpineBuilder:
             if post_section_id == 0:
                 continue
 
+            # To make the spine realistic, you have to add a little notch on top of the location
+            # and then add the spine above.
+            # The spine length (or scale) will be computed from surface to surface
+            # The notch length (or scale) will be computed based on the radius of the branch at the
+            # spine
+
             # Get the pre-and post-positions in the global coordinates
             pre_position = synapse.pre_surface_position()
             post_position = synapse.post_center_position()
@@ -192,6 +241,9 @@ class CircuitSpineBuilder:
             # Transform the spine positions to the circuit coordinates
             pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
             post_synaptic_position = Vector((post_position[0], post_position[1], post_position[2]))
+
+            spine_scale = (pre_synaptic_position - post_synaptic_position).length
+            # print((pre_synaptic_position - post_synaptic_position).length)
 
             if not self.options.mesh.global_coordinates:
                 pre_synaptic_position = global_to_local_transform * pre_synaptic_position
@@ -202,8 +254,10 @@ class CircuitSpineBuilder:
             spine = nmv.skeleton.Spine()
             spine.post_synaptic_position = post_synaptic_position
             spine.pre_synaptic_position = pre_synaptic_position
-            sample = morphology.section(synapse.post_section()).samples()[synapse.post_segment() + 1]
-            spine.size = sample[3] * 0.5
+            spine.post_synaptic_radius = \
+                morphology.section(synapse.post_section()).samples()[synapse.post_segment() + 1][3]
+            # print(spine.post_synaptic_radius)
+            spine.size = spine.post_synaptic_radius
             spines_list.append(spine)
 
         # Load the synapses from the file
@@ -216,8 +270,12 @@ class CircuitSpineBuilder:
             # Emanate a spine
             spine_object = self.emanate_spine(spine, i)
 
-            # Add the object to the list
+            # Create a protrusion object
+            protrusion_object = self.emanate_protrusion(spine, i)
+
+            # Add the objects to the lists
             spines_objects.append(spine_object)
+            protrusion_objects.append(protrusion_object)
 
         # Done
         nmv.utilities.time_line.show_iteration_progress(
@@ -227,6 +285,11 @@ class CircuitSpineBuilder:
         nmv.logger.info('Linking spines to the scene')
         for spine_object in spines_objects:
             bpy.context.scene.objects.link(spine_object)
+
+        # Link the protrusions to the scene in a single step
+        nmv.logger.info('Linking protrusions to the scene')
+        for protrusion_object in protrusion_objects:
+            bpy.context.scene.objects.link(protrusion_object)
 
         # TODO: adjust
         return spines_objects, spines_list
