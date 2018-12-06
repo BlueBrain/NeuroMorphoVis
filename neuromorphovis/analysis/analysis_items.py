@@ -157,7 +157,7 @@ ui_analysis_items = [
     # Volume-related items
     ################################################################################################
     AnalysisItem(variable='TotalVolume',
-                 name='Total Surface Area',
+                 name='Total Volume',
                  kernel=kernel_total_volume,
                  description='the total volume',
                  data_format='FLOAT',
