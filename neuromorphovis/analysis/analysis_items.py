@@ -56,6 +56,27 @@ ui_analysis_items = [
                  description='The Average number of samples per  section',
                  data_format='INT'),
 
+    # Minimum sample radius
+    AnalysisItem(variable='MinSampleRadius',
+                 name='Min. Sample Radius',
+                 kernel=kernel_minimum_sample_radius,
+                 description='The minimum sample radius',
+                 data_format='FLOAT'),
+
+    # Maximum sample radius
+    AnalysisItem(variable='MaxSampleRadius',
+                 name='Max. Sample Radius',
+                 kernel=kernel_maximum_sample_radius,
+                 description='The maximum sample radius',
+                 data_format='FLOAT'),
+
+    # Average sample radius
+    AnalysisItem(variable='AvgSampleRadius',
+                 name='Avg. Sample Radius',
+                 kernel=kernel_average_sample_radius,
+                 description='The average sample radius',
+                 data_format='FLOAT'),
+
     # Total number of zero-radii samples
     AnalysisItem(variable='ZeroRadiiSamples',
                  name='Zero-radius Samples',

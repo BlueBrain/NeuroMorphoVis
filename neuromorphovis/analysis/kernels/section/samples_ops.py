@@ -61,7 +61,6 @@ def compute_number_of_zero_radius_samples_per_section(section,
         A list to collect the analysis data.
     """
 
-    return
     # Number of zero radii samples
     number_zero_radii_samples = 0
 
@@ -71,3 +70,68 @@ def compute_number_of_zero_radius_samples_per_section(section,
 
     analysis_data.append(number_zero_radii_samples)
 
+
+####################################################################################################
+# @compute_minimum_sample_radius_per_section
+####################################################################################################
+def compute_minimum_sample_radius_per_section(section,
+                                              analysis_data):
+    """Computes the minimum sample radius of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # A list of radii of all the samples of a given section
+    radii = list()
+
+    for i_sample in section.samples:
+        radii.append(i_sample.radius)
+
+    analysis_data.append(min(radii))
+
+
+####################################################################################################
+# @compute_maximum_sample_radius_per_section
+####################################################################################################
+def compute_maximum_sample_radius_per_section(section,
+                                              analysis_data):
+    """Computes the maximum sample radius of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # A list of radii of all the samples of a given section
+    radii = list()
+
+    for i_sample in section.samples:
+        radii.append(i_sample.radius)
+
+    analysis_data.append(max(radii))
+
+
+####################################################################################################
+# @compute_average_sample_radius_per_section
+####################################################################################################
+def compute_average_sample_radius_per_section(section,
+                                              analysis_data):
+    """Computes the average sample radius of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # A list of radii of all the samples of a given section
+    radii = list()
+
+    for i_sample in section.samples:
+        radii.append(i_sample.radius)
+
+    analysis_data.append(1.0 * sum(radii) / len(radii))

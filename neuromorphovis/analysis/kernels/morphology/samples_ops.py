@@ -108,3 +108,57 @@ def kernel_number_zero_radius_samples(morphology):
         morphology,
         nmv.analysis.compute_number_of_zero_radius_samples_per_section_of_arbor,
         nmv.analysis.compute_total_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_minimum_sample_radius
+####################################################################################################
+def kernel_minimum_sample_radius(morphology):
+    """Find the minimum radius of the samples of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_sample_radius_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_maximum_sample_radius
+####################################################################################################
+def kernel_maximum_sample_radius(morphology):
+    """Find the minimum radius of the samples of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_sample_radius_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_average_sample_radius
+####################################################################################################
+def kernel_average_sample_radius(morphology):
+    """Find the average radius of the samples of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_sample_radius_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)

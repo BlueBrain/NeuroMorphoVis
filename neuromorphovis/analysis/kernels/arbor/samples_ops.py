@@ -187,7 +187,7 @@ def compute_number_of_zero_radius_samples_per_section_of_arbor(arbor):
     :param arbor:
         A given arbor to analyze.
     :return
-        Average number of samples per section along the gievn arbor.
+        Number of zero-radius samples along the given arbor.
     """
 
     # A list that will contain the number of samples per section
@@ -210,6 +210,83 @@ def compute_number_of_zero_radius_samples_per_section_of_arbor(arbor):
 
     # Return the average number of samples per section
     return total_number_zero_radius_samples
+
+
+####################################################################################################
+# @compute_minimum_sample_radius_of_arbor
+####################################################################################################
+def compute_minimum_sample_radius_of_arbor(arbor):
+    """Computes the minimum sample radius of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Minimum sample radius along the given arbor.
+    """
+
+    # A list that will contain the radii of all the samples along a given section
+    sections_samples_radii = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_minimum_sample_radius_per_section,
+          sections_samples_radii])
+
+    # Return the minimum sample radius
+    return min(sections_samples_radii)
+
+
+####################################################################################################
+# @compute_maximum_sample_radius_of_arbor
+####################################################################################################
+def compute_maximum_sample_radius_of_arbor(arbor):
+    """Computes the maximum sample radius of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Maximum sample radius along the given arbor.
+    """
+
+    # A list that will contain the radii of all the samples along a given section
+    sections_samples_radii = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_maximum_sample_radius_per_section,
+          sections_samples_radii])
+
+    # Return the maximum sample radius
+    return max(sections_samples_radii)
+
+
+####################################################################################################
+# @compute_average_sample_radius_of_arbor
+####################################################################################################
+def compute_average_sample_radius_of_arbor(arbor):
+    """Computes the average sample radius of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Average sample radius along the given arbor.
+    """
+
+    # A list that will contain the radii of all the samples along a given section
+    sections_samples_radii = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_average_sample_radius_per_section,
+          sections_samples_radii])
+
+    # Return the maximum sample radius
+    return (1.0 * sum(sections_samples_radii)) / len(sections_samples_radii)
+
+
 
 
 def compute_distribution_number_samples_per_section_of_arbor(arbor):
