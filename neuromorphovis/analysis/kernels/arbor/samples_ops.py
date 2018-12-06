@@ -61,6 +61,40 @@ def compute_total_number_samples_of_arbor(arbor):
 
 
 ####################################################################################################
+# @compute_total_number_samples_of_arbor
+####################################################################################################
+def compute_total_number_of_zero_radii_samples_of_arbor(arbor):
+    """Computes the total number of samples that have zero-radii along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Total number of samples of the arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_zero_radii_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_zero_radii_samples_per_section,
+          sections_number_zero_radii_samples])
+
+    # Total number of samples
+    total_number_zero_radii_samples = 0
+
+    # Iterate and sum up
+    for section_number_zero_radii_samples in sections_number_zero_radii_samples:
+
+        # Add to the total number of samples
+        total_number_zero_radii_samples += section_number_zero_radii_samples
+
+    # Return the total number of samples of the given arbor
+    return total_number_zero_radii_samples
+
+
+####################################################################################################
 # @compute_minimum_samples_count_of_arbor
 ####################################################################################################
 def compute_minimum_samples_count_of_arbor(arbor):
@@ -142,6 +176,41 @@ def compute_average_number_samples_per_section_of_arbor(arbor):
 
     # Return the average number of samples per section
     return int(total_number_samples * 1.0 / len(sections_number_samples))
+
+
+####################################################################################################
+# @compute_number_of_zero_radius_samples_per_section_of_arbor
+####################################################################################################
+def compute_number_of_zero_radius_samples_per_section_of_arbor(arbor):
+    """Computes the total number of zero-radius samples per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Average number of samples per section along the gievn arbor.
+    """
+
+    # A list that will contain the number of samples per section
+    sections_number_zero_radius_samples = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_zero_radius_samples_per_section,
+          sections_number_zero_radius_samples])
+
+    # Total number of samples
+    total_number_zero_radius_samples = 0
+
+    # Iterate and sum up
+    for section_number_zero_radius_samples in sections_number_zero_radius_samples:
+
+        # Add to the total number of samples
+        total_number_zero_radius_samples += section_number_zero_radius_samples
+
+    # Return the average number of samples per section
+    return total_number_zero_radius_samples
+
 
 def compute_distribution_number_samples_per_section_of_arbor(arbor):
 

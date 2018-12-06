@@ -49,6 +49,7 @@ def compute_total_analysis_result_of_morphology(analysis_result):
     if analysis_result.axon_result is not None:
         analysis_result.morphology_result += analysis_result.axon_result
 
+
 ####################################################################################################
 # @compute_minimum_analysis_result_of_morphology
 ####################################################################################################

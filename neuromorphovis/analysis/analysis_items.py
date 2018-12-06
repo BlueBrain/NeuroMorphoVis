@@ -56,6 +56,13 @@ ui_analysis_items = [
                  description='The Average number of samples per  section',
                  data_format='INT'),
 
+    # Total number of zero-radii samples
+    AnalysisItem(variable='ZeroRadiiSamples',
+                 name='Zero-radius Samples',
+                 kernel=kernel_number_zero_radius_samples,
+                 description='The total number of zero-radius samples',
+                 data_format='INT'),
+
     ################################################################################################
     # Length-related items
     ################################################################################################

@@ -48,15 +48,26 @@ def compute_number_of_segments_per_section(section,
     analysis_data.append(len(section.samples) - 1)
 
 
+####################################################################################################
+# @compute_number_of_segments_per_section
+####################################################################################################
+def compute_number_of_zero_radius_samples_per_section(section,
+                                                      analysis_data):
+    """Computes the number of zero radius samples of a given section.
 
-class SampleAnalysisInfo:
-    def __init__(self):
-        self.radius = 0
-        self.branching_order = 0
-        self.distance_from_soma = 0
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
 
+    return
+    # Number of zero radii samples
+    number_zero_radii_samples = 0
 
-# axon : data[SampleAnalysisInfo]
-# apical : data[SampleAnalysisInfo]
-# basal0 : data[SampleAnalysisInfo]
-# basal1: data[SampleAnalysisInfo]
+    for i_sample in section.samples:
+        if i_sample.radius < 0.000001:
+            number_zero_radii_samples += 1
+
+    analysis_data.append(number_zero_radii_samples)
+

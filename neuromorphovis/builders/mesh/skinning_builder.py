@@ -753,7 +753,8 @@ class SkinningBuilder:
     def add_surface_noise(self):
         """Adds noise to the surface of the reconstructed mesh(es).
 
-        NOTE: The surface mesh of the neuron is reconstructed as a set (or list) of meshes
+        NOTE: The surface mes
+        h of the neuron is reconstructed as a set (or list) of meshes
         representing the soma, different arbors and spines. This operation will JOIN all the
         objects (except the spines) into a single object only to be able to apply it correctly.
         """

@@ -90,3 +90,21 @@ def kernel_average_number_samples_per_section(morphology):
         morphology,
         nmv.analysis.compute_average_number_samples_per_section_of_arbor,
         nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_number_zero_radius_samples
+####################################################################################################
+def kernel_number_zero_radius_samples(morphology):
+    """Find the number of zero-radii samples of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_number_of_zero_radius_samples_per_section_of_arbor,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
