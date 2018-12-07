@@ -164,6 +164,29 @@ def kernel_average_sample_radius(morphology):
         nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
+def kernel_analyse_number_of_samples_per_section(morphology, options=None):
+
+    # Get the analysis results
+    analysis_results = nmv.analysis.get_analysis_lists(
+        morphology,
+        nmv.analysis.get_number_of_samples_per_section_of_arbor)
+
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(analysis_results.axon_result)
+    fig.savefig('/bbp/example/plot.pdf')
+
+
+def kernel_analyse_number_of_samples_per_section_wrt_distance(morphology, options):
+
+    # compute the sample count wrt distance from soma (also we need one for bifurcations)
+    pass
+
+def kernel_analyse_number_of_samples_per_section_wrt_branching_order(morphology, options):
+    pass
+
+
 ####################################################################################################
 # @kernel_analyse_samples_radii
 ####################################################################################################
@@ -174,4 +197,21 @@ def kernel_analyse_samples_radii(morphology,
     analysis_results = nmv.analysis.get_analysis_lists(morphology,
                                                        nmv.analysis.get_samples_radii_of_arbor)
 
-    
+    # Save the results to text files
+
+    # Create figures
+
+
+
+def kernel_analyse_samples_radii_distribution_wrt_distance(morphology,
+                                                           oprtions=None):
+
+    pass
+
+def kernel_analyse_segments_lengths(morphology,
+                                    options=None):
+    pass
+
+
+
+

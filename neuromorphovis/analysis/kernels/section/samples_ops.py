@@ -156,6 +156,23 @@ def get_samples_radii_of_section(section,
 
 
 ####################################################################################################
+# @get_number_of_samples_per_section_of_section
+####################################################################################################
+def get_number_of_samples_per_section_of_section(section,
+                                                 analysis_data):
+    """Gets a list (results will be appended to the @analysis_data list) of the number of samples
+    per section of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    analysis_data.append(len(section.samples))
+
+
+####################################################################################################
 # @get_samples_radii_and_distance_to_soma_of_section
 ####################################################################################################
 def get_samples_radii_and_distance_to_soma_of_section(section,

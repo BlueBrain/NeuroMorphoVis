@@ -299,10 +299,10 @@ def get_samples_radii_of_arbor(arbor):
         A list of the radii of the samples .
     """
 
-    # A list that will contain the radii of all the samples along the arbor
+    # A list that will contain the analysis data
     arbor_samples_radii = list()
 
-    # Append the radii of the samples to the list
+    # Analyse
     nmv.skeleton.ops.apply_operation_to_arbor(
         *[arbor,
           nmv.analysis.get_samples_radii_of_section,
@@ -311,6 +311,30 @@ def get_samples_radii_of_arbor(arbor):
     # Return the list
     return arbor_samples_radii
 
+
+####################################################################################################
+# @get_number_of_samples_per_section_of_arbor
+####################################################################################################
+def get_number_of_samples_per_section_of_arbor(arbor):
+    """Gets a list of the number of samples per section of a given arbor.
+
+    :param arbor:
+        A given arbor to get analyzed.
+    :return
+        A list of the radii of the samples .
+    """
+
+    # A list that will contain the analysis data
+    arbor_number_of_samples_per_section = list()
+
+    # Analyse
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.get_number_of_samples_per_section_of_section,
+          arbor_number_of_samples_per_section])
+
+    # Return the list
+    return arbor_number_of_samples_per_section
 
 
 
