@@ -162,3 +162,16 @@ def kernel_average_sample_radius(morphology):
         morphology,
         nmv.analysis.compute_average_sample_radius_of_arbor,
         nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_analyse_samples_radii
+####################################################################################################
+def kernel_analyse_samples_radii(morphology,
+                                 options=None):
+
+    # Get the analysis results
+    analysis_results = nmv.analysis.get_analysis_lists(morphology,
+                                                       nmv.analysis.get_samples_radii_of_arbor)
+
+    

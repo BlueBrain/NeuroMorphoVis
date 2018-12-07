@@ -287,6 +287,35 @@ def compute_average_sample_radius_of_arbor(arbor):
     return (1.0 * sum(sections_samples_radii)) / len(sections_samples_radii)
 
 
+####################################################################################################
+# @get_samples_radii_of_arbor
+####################################################################################################
+def get_samples_radii_of_arbor(arbor):
+    """Gets a list of the radii of all the samples of a given arbor.
+
+    :param arbor:
+        A given arbor to get analyzed.
+    :return
+        A list of the radii of the samples .
+    """
+
+    # A list that will contain the radii of all the samples along the arbor
+    arbor_samples_radii = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.get_samples_radii_of_section,
+          arbor_samples_radii])
+
+    # Return the list
+    return arbor_samples_radii
+
+
+
+
+
+
 
 
 def compute_distribution_number_samples_per_section_of_arbor(arbor):

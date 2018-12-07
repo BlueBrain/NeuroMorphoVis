@@ -179,3 +179,24 @@ def invoke_kernel(morphology,
 
     # Return the analysis result of the entire morphology
     return analysis_result
+
+
+####################################################################################################
+# @get_analysis_lists
+####################################################################################################
+def get_analysis_lists(morphology,
+                       kernel):
+    """Invoke the analysis kernel on the morphology and return the lists that contain the analysis
+    results.
+
+    :param morphology:
+        A given morphology skeleton to analyze.
+    :param kernel:
+        Analysis kernel that will be applied on the morphology.
+    :return:
+        The analysis results as lists. The format of these lists are only known within the section
+        function and the morphology function.
+    """
+
+    # Apply the analysis operation to the morphology and return the resulting lists
+    return nmv.analysis.apply_analysis_operation_to_morphology(*[morphology, kernel])

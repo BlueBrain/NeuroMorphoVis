@@ -135,3 +135,39 @@ def compute_average_sample_radius_per_section(section,
         radii.append(i_sample.radius)
 
     analysis_data.append(1.0 * sum(radii) / len(radii))
+
+
+####################################################################################################
+# @get_samples_radii_of_section
+####################################################################################################
+def get_samples_radii_of_section(section,
+                                 analysis_data):
+    """Gets a list (results will be appended to the @analysis_data list) of the radii of all the
+    samples of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    for i_sample in section.samples:
+        analysis_data.append(i_sample.radius)
+
+
+####################################################################################################
+# @get_samples_radii_and_distance_to_soma_of_section
+####################################################################################################
+def get_samples_radii_and_distance_to_soma_of_section(section,
+                                                      analysis_data):
+    """Gets a list (results will be appended to the @analysis_data list) of the radii of all the
+    samples of a given section and their distance to the soma.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    for i_sample in section.samples:
+        analysis_data.append([i_sample.radius, i_sample.point.length])

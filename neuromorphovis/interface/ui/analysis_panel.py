@@ -127,6 +127,8 @@ class AnalyzeMorphology(bpy.types.Operator):
         context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
 
+        nmv.analysis.kernel_analyse_samples_radii(nmv.interface.ui_morphology)
+
         return {'FINISHED'}
 
 
