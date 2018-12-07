@@ -28,56 +28,48 @@ ui_analysis_items = [
     ################################################################################################
     # Samples-related items
     ################################################################################################
-    # Total number of samples
     AnalysisItem(variable='TotalNumberSamples',
                  name='Total # Samples',
                  kernel=kernel_total_number_samples,
                  description='The total number of samples',
                  data_format='INT'),
 
-    # Minimum number of samples per section
     AnalysisItem(variable='MinNumberSamplePerSection',
                  name='Min. # Samples / Section',
                  kernel=kernel_minimum_number_samples_per_section,
                  description='The least number of samples per section',
                  data_format='INT'),
 
-    # Maximum number of samples per section
     AnalysisItem(variable='MaxNumberSamplePerSection',
                  name='Max. # Samples / Section',
                  kernel=kernel_maximum_number_samples_per_section,
                  description='The largest number of samples per section',
                  data_format='INT'),
 
-    # Average number of samples per section
     AnalysisItem(variable='AvgNumberSamplePerSection',
                  name='Avg. # Samples / Section',
                  kernel=kernel_average_number_samples_per_section,
                  description='The Average number of samples per  section',
                  data_format='INT'),
 
-    # Minimum sample radius
     AnalysisItem(variable='MinSampleRadius',
                  name='Min. Sample Radius',
                  kernel=kernel_minimum_sample_radius,
                  description='The minimum sample radius',
                  data_format='FLOAT'),
 
-    # Maximum sample radius
     AnalysisItem(variable='MaxSampleRadius',
                  name='Max. Sample Radius',
                  kernel=kernel_maximum_sample_radius,
                  description='The maximum sample radius',
                  data_format='FLOAT'),
 
-    # Average sample radius
     AnalysisItem(variable='AvgSampleRadius',
                  name='Avg. Sample Radius',
                  kernel=kernel_average_sample_radius,
                  description='The average sample radius',
                  data_format='FLOAT'),
 
-    # Total number of zero-radii samples
     AnalysisItem(variable='ZeroRadiiSamples',
                  name='Zero-radius Samples',
                  kernel=kernel_number_zero_radius_samples,
@@ -212,3 +204,26 @@ ui_analysis_items = [
                  data_format='FLOAT',
                  unit='VOLUME'),
 ]
+
+
+
+
+
+# compute histograms and distributions
+'''
+radii or sections length
+
+- histogram 
+- radius distance from soma 
+
+
+number of samples 
+- per section (histogram)
+- per arbor (bar chart)
+
+
+sections length
+- 
+
+
+'''
