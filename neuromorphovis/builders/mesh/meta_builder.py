@@ -90,6 +90,9 @@ class MetaBuilder:
         # Meta object mesh, used to build the mesh of the morphology
         self.meta_mesh = None
 
+        # A scale factor that was figured out by trial and error to correct the scaling of the radii
+        self.magic_scale_factor = 1.575
+
     ################################################################################################
     # @create_materials
     ################################################################################################
@@ -248,7 +251,7 @@ class MetaBuilder:
         travelled_distance = 0.0
 
         # Local points, initially at the first point
-        r = r1 * 0.5
+        r = r1
         x = p1[0]
         y = p1[1]
         z = p1[2]
@@ -259,7 +262,8 @@ class MetaBuilder:
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 
-            # Update its radius
+            # Set its radius
+            # TODO: Find a solution to compensate the connection points
             meta_element.radius = r
 
             # Update its coordinates
@@ -268,10 +272,7 @@ class MetaBuilder:
             # Proceed to the second point
             travelled_distance += r / 2
 
-            if travelled_distance > segment_length:
-                r = 0.5 * (r1 + (travelled_distance * dr / segment_length))
-            else:
-                r = r1 + (travelled_distance * dr / segment_length)
+            r = r1 + (travelled_distance * dr / segment_length)
 
             # Get the next point
             x = p1[0] + (travelled_distance * dx / segment_length)
@@ -303,8 +304,8 @@ class MetaBuilder:
             self.create_meta_segment(
                 p1=samples[i].point,
                 p2=samples[i + 1].point,
-                r1=samples[i].radius,
-                r2=samples[i + 1].radius)
+                r1=samples[i].radius * self.magic_scale_factor,
+                r2=samples[i + 1].radius * self.magic_scale_factor)
 
     ################################################################################################
     # @create_meta_arbor
@@ -394,7 +395,6 @@ class MetaBuilder:
                 self.create_meta_arbor(
                     root=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order)
-
 
     ################################################################################################
     # @decimate_neuron_mesh
@@ -547,8 +547,8 @@ class MetaBuilder:
         self.create_meta_segment(
             p1=self.morphology.soma.centroid,
             p2=arbor.samples[0].point,
-            r1= self.morphology.soma.mean_radius,
-            r2=arbor.samples[0].radius)
+            r1=self.morphology.soma.mean_radius,
+            r2=arbor.samples[0].radius * self.magic_scale_factor)
 
     ################################################################################################
     # @build_soma_from_meta_objects
@@ -593,6 +593,9 @@ class MetaBuilder:
         :return:
         """
 
+        # Header
+        nmv.logger.header('Meshing the Meta Object')
+
         # Select the mesh
         self.meta_mesh.select = True
 
@@ -601,6 +604,8 @@ class MetaBuilder:
 
         # Re-select it again to be able to perform post-processing operations in it
         self.meta_mesh.select = True
+
+        bpy.context.scene.objects.active = self.meta_mesh
 
     ################################################################################################
     # @reconstruct_mesh
