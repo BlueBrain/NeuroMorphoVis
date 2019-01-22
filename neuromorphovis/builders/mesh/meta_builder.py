@@ -327,24 +327,39 @@ class MetaBuilder:
             point_0 = section.samples[i].point
             point_1 = section.samples[i + 1].point
 
+            x1 = point_0[0]
+            y1 = point_0[1]
+            z1 = point_0[2]
+
+            x2 = point_1[0]
+            y2 = point_1[1]
+            z2 = point_1[2]
+
+            r1 = section.samples[i].radius
+            r2 = section.samples[i + 1].radius
+
             segment_vector = point_1 - point_0
             segment_length = segment_vector.length
 
-            if segment_length < 0.001: return
+            if segment_length < 0:
+                segment_length = 0.01
 
-
+            if r1 < segment_length / 1000:
+                r1 = segment_length / 1000
+            if r2 < segment_length / 1000:
+                r2 = segment_length / 1000
 
             length_so_far = 0
 
-            r = section.samples[i].radius
-            x = point_0[0]
-            y = point_0[1]
-            z = point_0[2]
+            r = r1
+            x = x1
+            y = y1
+            z = z1
 
-            dr = section.samples[i + 1].radius - section.samples[i + 1].radius
-            dx = point_1[0] - point_0[0]
-            dy = point_1[1] - point_0[1]
-            dz = point_1[2] - point_0[2]
+            dr = r2 - r1
+            dx = x2 - x1
+            dy = y2 - y1
+            dz = z2 - z1
 
             while length_so_far < segment_length:
 
@@ -508,7 +523,6 @@ class MetaBuilder:
                     arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     meta_object=mball)
 
-        return
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
@@ -522,7 +536,7 @@ class MetaBuilder:
                     max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                     arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i),
                     meta_object=mball)
-
+        return
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
             nmv.logger.info('Axon')
