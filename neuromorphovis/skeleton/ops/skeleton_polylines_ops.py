@@ -463,7 +463,7 @@ def poly_lines_intersect(poly_line_1,
     bv_m2 = bvhtree.BVHTree.FromBMesh(poly_line_2_bmesh)
 
     # Find the overlap between the two poly-line meshes
-    overlap_list= bv_m1.overlap(bv_m2)
+    overlap_list = bv_m1.overlap(bv_m2)
 
     # Delete the duplicated objects
     nmv.scene.ops.delete_list_objects([poly_line_1_duplicate, poly_line_2_duplicate])

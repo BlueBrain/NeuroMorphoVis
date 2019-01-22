@@ -109,6 +109,9 @@ class Meshing:
         # Skinning
         SKINNING = 'MESHING_TECHNIQUE_SKINNING'
 
+        # Meta objects-based meshing
+        META_OBJECTS = 'MESHING_TECHNIQUE_META_OBJECTS'
+
         ############################################################################################
         # @__init__
         ############################################################################################

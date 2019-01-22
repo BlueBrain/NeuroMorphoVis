@@ -85,8 +85,11 @@ class MeshPanel(bpy.types.Panel):
                (nmv.enums.Meshing.Technique.SKINNING,
                 'Skinning',
                 'Skinning'),
+               (nmv.enums.Meshing.Technique.META_OBJECTS,
+                'Meta',
+                'Meta objects'),
                ],
-        name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+        name='Meshing Method', default=nmv.enums.Meshing.Technique.META_OBJECTS)
 
 
     """
@@ -920,6 +923,16 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
             # Create the mesh builder
             mesh_builder = nmv.builders.SkinningBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+            # Reconstruct the mesh
+            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
+
+
+        elif meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
+
+            # Create the mesh builder
+            mesh_builder = nmv.builders.MetaBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
             # Reconstruct the mesh

@@ -403,13 +403,14 @@ def draw_connected_sections(section, name,
     for child in section.children:
 
         # Draw the children sections
-        draw_connected_sections(section=child, name=name, poly_line_data=poly_line_data,
+        draw_connected_sections(
+            section=child, name=name, poly_line_data=poly_line_data,
             sections_objects=sections_objects, secondary_sections=secondary_sections,
             branching_level=branching_level, max_branching_level=max_branching_level,
             material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
             transform=transform, repair_morphology=repair_morphology, caps=caps,
             render_frame=render_frame, frame_destination=frame_destination, camera=camera,
-                                roots_connection=roots_connection)
+            roots_connection=roots_connection)
 
 
 ####################################################################################################
