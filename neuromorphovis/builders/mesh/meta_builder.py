@@ -248,7 +248,7 @@ class MetaBuilder:
         travelled_distance = 0.0
 
         # Local points, initially at the first point
-        r = r1
+        r = r1 * 0.5
         x = p1[0]
         y = p1[1]
         z = p1[2]
@@ -268,8 +268,12 @@ class MetaBuilder:
             # Proceed to the second point
             travelled_distance += r / 2
 
+            if travelled_distance > segment_length:
+                r = 0.5 * (r1 + (travelled_distance * dr / segment_length))
+            else:
+                r = r1 + (travelled_distance * dr / segment_length)
+
             # Get the next point
-            r = r1 + (travelled_distance * dr / segment_length)
             x = p1[0] + (travelled_distance * dx / segment_length)
             y = p1[1] + (travelled_distance * dy / segment_length)
             z = p1[2] + (travelled_distance * dz / segment_length)
