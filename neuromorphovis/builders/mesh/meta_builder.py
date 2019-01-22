@@ -633,7 +633,10 @@ class MetaBuilder:
         # Finalize the meta object and construct a solid object
         self.finalize_meta_object()
 
-        return
+        # Mission done
+        nmv.logger.header('Done!')
+
+        return self.meta_mesh.select
 
         # Connect the arbors to the soma
         #self.connect_arbors_to_soma()
@@ -699,6 +702,6 @@ class MetaBuilder:
                     blue_config=self.options.morphology.blue_config,
                     gid=self.options.morphology.gid)
 
-        nmv.logger.header('Done!')
+
 
         return self.reconstructed_neuron_meshes
