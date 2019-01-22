@@ -318,14 +318,26 @@ class MetaBuilder:
             A given section to extrude a mesh around it.
         """
 
-        if len(section.samples) < 2:
+        # Get the list of samples
+        samples = section.samples
+
+        if section.is_root():
+
+            # Adding a root sample
+            point = mathutils.Vector((0, 0, 0))
+            radius = section.samples[0].radius
+            id = -1
+            root_sample = nmv.skeleton.Sample(point=point, radius=radius, id=id)
+            samples.insert(0, root_sample)
+
+        if len(samples) < 2:
             return
 
-        for i in range(len(section.samples) - 1):
+        for i in range(len(samples) - 1):
 
-            print('\t\tExtrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
-            point_0 = section.samples[i].point
-            point_1 = section.samples[i + 1].point
+            print('\t\tExtrusion Section [%d]' % samples[i].arbor_idx, end='\r')
+            point_0 = samples[i].point
+            point_1 = samples[i + 1].point
 
             x1 = point_0[0]
             y1 = point_0[1]
@@ -335,8 +347,8 @@ class MetaBuilder:
             y2 = point_1[1]
             z2 = point_1[2]
 
-            r1 = section.samples[i].radius
-            r2 = section.samples[i + 1].radius
+            r1 = samples[i].radius
+            r2 = samples[i + 1].radius
 
             segment_vector = point_1 - point_0
             segment_length = segment_vector.length
@@ -370,16 +382,10 @@ class MetaBuilder:
 
                 # Move x, y, z, and r to the next point
                 length_so_far += r / 2
-                r = section.samples[i].radius + (length_so_far * dr / segment_length)
+                r = samples[i].radius + (length_so_far * dr / segment_length)
                 x = point_0[0] + (length_so_far * dx / segment_length)
                 y = point_0[1] + (length_so_far * dy / segment_length)
                 z = point_0[2] + (length_so_far * dz / segment_length)
-
-
-
-
-
-
 
     ################################################################################################
     # @create_root_point_mesh
@@ -492,7 +498,6 @@ class MetaBuilder:
         # arbors_objects = []
         """
 
-
         # a reference to the scene
         scene = bpy.context.scene
 
@@ -508,6 +513,13 @@ class MetaBuilder:
         # set the resolution
         mball.resolution = 0.1
         mball.render_resolution = 1.0
+
+        # buildeing the soma
+
+        # Make a sphere at this point
+        #ele = mball.elements.new()
+        #ele.radius = self.morphology.soma.smallest_radius
+        #ele.co = (0, 0, 0)
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
@@ -882,23 +894,23 @@ class MetaBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
+        # self.create_skeleton_materials()
 
         # Verify and repair the morphology
-        self.verify_and_repair_morphology()
+        # self.verify_and_repair_morphology()
 
-
-
-
-
-
+        # Initialize the meta object
+        # self.initialize_meta_object()
 
         # Build the soma
-        # self.reconstruct_soma_mesh()
+        # self.build_soma()
 
         # Build the arbors
         # self.reconstruct_arbors_meshes()
         self.build_arbors()
+
+        # Finalize the meta object and construct a solid object
+        # self.finalize_meta_object()
 
         return
 

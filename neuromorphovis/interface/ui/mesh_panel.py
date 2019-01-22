@@ -928,7 +928,6 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
-
         elif meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
 
             # Create the mesh builder
@@ -937,7 +936,6 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
             # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
-
 
         else:
 
