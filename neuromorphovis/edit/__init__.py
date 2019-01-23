@@ -15,4 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .morphology_repairer import *
+from .morphology_editor import *

@@ -538,3 +538,21 @@ def get_index_of_nearest_vertex_to_point(mesh_object,
 
     # Return the nearest vertex index
     return nearest_vertex_index
+
+
+####################################################################################################
+# @get_vertex_position
+####################################################################################################
+def get_vertex_position(mesh_object,
+                        vertex_index):
+    """Gets the position of a vertex in a given mesh specified by its index.
+
+    :param mesh_object:
+        A mesh object that contains the vertex.
+    :param vertex_index:
+        The index of the vertex.
+    :return:
+        The position of the vertex.
+    """
+
+    return mesh_object.data.vertices[vertex_index].co

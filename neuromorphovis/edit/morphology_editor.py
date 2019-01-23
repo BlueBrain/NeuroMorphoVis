@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy, sys
+import copy
 
 # Blender imports
 import bpy, mathutils
@@ -31,10 +31,10 @@ import neuromorphovis.scene
 
 
 ####################################################################################################
-# @MorphologyRepairer
+# @MorphologyEditor
 ####################################################################################################
-class MorphologyRepairer:
-    """Morphology Repairer
+class MorphologyEditor:
+    """Morphology Editor
     """
 
     ################################################################################################
@@ -56,6 +56,12 @@ class MorphologyRepairer:
 
         # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
+
+        self.apical_skeleton = None
+
+        self.basal_dendrites_skeletons = list()
+
+        self.axon_skeleton = None
 
     ################################################################################################
     # @add_soma_to_arbor_segment
@@ -110,7 +116,7 @@ class MorphologyRepairer:
         """
 
         # On all the samples of the section
-        for i in range(len(section.samples) - 1):
+        for i in range(0, len(section.samples) - 1):
 
             # Points
             point_0 = section.samples[i].point
@@ -179,6 +185,9 @@ class MorphologyRepairer:
         # Extrude arbor mesh using the skinning method using a temporary radius
         self.extrude_arbor_along_skeleton(root=arbor, arbor_skeleton_mesh=arbor_skeleton_mesh)
 
+        # Link the created skeleton to the morphology
+        return arbor_skeleton_mesh
+
     ################################################################################################
     # @build_arbors
     ################################################################################################
@@ -196,7 +205,7 @@ class MorphologyRepairer:
         if self.morphology.apical_dendrite is not None:
 
             nmv.logger.info('Apical dendrite')
-            self.create_arbor_skeleton_mesh(
+            self.apical_skeleton = self.create_arbor_skeleton_mesh(
                 arbor=self.morphology.apical_dendrite,
                 arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX)
 
@@ -205,18 +214,88 @@ class MorphologyRepairer:
 
             # Create the basal dendrite meshes
             nmv.logger.info('Dendrite [%d]' % i)
-            self.create_arbor_skeleton_mesh(
+            self.basal_dendrites_skeletons.append(self.create_arbor_skeleton_mesh(
                 arbor=basal_dendrite,
-                arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i))
+                arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)))
 
         # Create the apical dendrite mesh
         if self.morphology.axon is not None:
 
             nmv.logger.info('Axon')
-            self.create_arbor_skeleton_mesh(
+            self.axon_skeleton = self.create_arbor_skeleton_mesh(
                 arbor=self.morphology.axon,
                 arbor_name=nmv.consts.Arbors.AXON_PREFIX)
 
+    ################################################################################################
+    # @update_section_coordinates
+    ################################################################################################
+    @staticmethod
+    def update_section_coordinates(section,
+                                   arbor_skeleton_mesh):
+        """Updates the coordinates of the samples of the given section from the skeleton object.
 
+        :param section:
+            A given section to update the positions of its samples.
+        :param arbor_skeleton_mesh:
+            The skeleton mesh of the arbor that is modified by the user.
+        """
 
+        # On all the samples of the section
+        for i in range(0, len(section.samples)):
 
+            # Update the position
+            section.samples[i].point = copy.deepcopy(nmv.mesh.ops.get_vertex_position(
+                mesh_object=arbor_skeleton_mesh, vertex_index=section.samples[i].arbor_idx))
+
+    ################################################################################################
+    # @update_arbor_coordinates
+    ################################################################################################
+    def update_arbor_coordinates(self,
+                                 root,
+                                 arbor_skeleton_mesh):
+        """"Updates the coordinates of the samples of the given arbor from the skeleton object.
+
+        :param root:
+            The root of a given section.
+        :param arbor_skeleton_mesh:
+            The skeleton mesh of the arbor that is modified by the user.
+        """
+
+        # Update for the current section
+        self.update_section_coordinates(root, arbor_skeleton_mesh)
+
+        # Update the children sections recursively
+        for child in root.children:
+            self.update_arbor_coordinates(child, arbor_skeleton_mesh)
+
+    ################################################################################################
+    # @update_arbor_coordinates
+    ################################################################################################
+    def update_skeleton_coordinates(self):
+
+        # Header
+        nmv.logger.header('Updating Morphology Skeleton Coordinates')
+
+        # Apical dendrite
+        if self.morphology.apical_dendrite is not None:
+
+            nmv.logger.info('Apical dendrite')
+            self.update_arbor_coordinates(
+                root=self.morphology.apical_dendrite,
+                arbor_skeleton_mesh=self.apical_skeleton)
+
+        # Do it dendrite by dendrite
+        for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+            nmv.logger.info('Dendrite [%d]' % i)
+            self.update_arbor_coordinates(
+                root=basal_dendrite,
+                arbor_skeleton_mesh=self.basal_dendrites_skeletons[i])
+
+        # Create the apical dendrite mesh
+        if self.morphology.axon is not None:
+
+            nmv.logger.info('Axon')
+            self.update_arbor_coordinates(
+                root=self.morphology.axon,
+                arbor_skeleton_mesh=self.axon_skeleton)

@@ -23,6 +23,9 @@ import neuromorphovis as nmv
 import neuromorphovis.enums
 import neuromorphovis.interface
 
+# A global variable to notify us if a new morphology has been loaded to the system or not
+current_morphology_label = None
+
 
 ####################################################################################################
 # @load_morphology
@@ -48,6 +51,14 @@ def load_morphology(panel_object,
         nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
             context_scene.MorphologyFile)
 
+        # Check if the morphology is loaded before or not
+        global current_morphology_label
+        if current_morphology_label is None:
+            current_morphology_label = nmv.interface.ui_options.morphology.label
+        else:
+            if current_morphology_label == nmv.interface.ui_options.morphology.label:
+                return
+
         # Load the morphology from the file
         loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
             options=nmv.interface.ui_options)
@@ -71,6 +82,14 @@ def load_morphology(panel_object,
 
         # Update the morphology label
         nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
+
+        # Check if the morphology is loaded before or not
+        global current_morphology_label
+        if current_morphology_label is None:
+            current_morphology_label = nmv.interface.ui_options.morphology.label
+        else:
+            if current_morphology_label == nmv.interface.ui_options.morphology.label:
+                return
 
         # Load the morphology from the circuit
         loading_flag, morphology_object = nmv.file.readers.BBPReader.load_morphology_from_circuit(

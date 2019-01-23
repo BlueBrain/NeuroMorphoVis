@@ -28,29 +28,32 @@ from bpy.props import FloatVectorProperty
 import neuromorphovis as nmv
 import neuromorphovis.consts
 import neuromorphovis.analysis
-import neuromorphovis.repair
+import neuromorphovis.edit
 import neuromorphovis.enums
 import neuromorphovis.file
 import neuromorphovis.interface
 import neuromorphovis.skeleton
 
 
-# Morphology repairing object
-morphology_repairer = None
+# Morphology editor
+morphology_editor = None
+
+# A flag to indicate that the morphology has been edited and ready for update
+is_skeleton_edited = False
 
 
 ####################################################################################################
-# @RepairPanel
+# @EditPanel
 ####################################################################################################
-class RepairPanel(bpy.types.Panel):
-    """Repair panel"""
+class EditPanel(bpy.types.Panel):
+    """Edit panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
-    bl_label = 'Morphology Repair'
+    bl_label = 'Morphology Editing'
     bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
@@ -74,18 +77,27 @@ class RepairPanel(bpy.types.Panel):
 
         # Morphology analysis button
         repair_morphology_column = layout.column(align=True)
-        repair_morphology_column.operator('repair.morphology', icon='MESH_DATA')
+        repair_morphology_column.operator('sketch.skeleton', icon='MESH_DATA')
+
+        # Morphology update button
+        update_morphology_column = layout.column(align=True)
+        update_morphology_column.operator('update.morphology_coordinates', icon='MESH_DATA')
+        if is_skeleton_edited:
+            update_morphology_column.enabled = True
+        else:
+            update_morphology_column.enabled = False
 
 
+
+        ####################################################################################################
+# @SketchSkeleton
 ####################################################################################################
-# @RepairMorphology
-####################################################################################################
-class RepairMorphology(bpy.types.Operator):
+class SketchSkeleton(bpy.types.Operator):
     """Repair the morphology skeleton, detect the artifacts and fix them"""
 
     # Operator parameters
-    bl_idname = "repair.morphology"
-    bl_label = "Repair Morphology"
+    bl_idname = "sketch.skeleton"
+    bl_label = "Sketch Skeleton"
 
     ################################################################################################
     # @execute
@@ -117,16 +129,61 @@ class RepairMorphology(bpy.types.Operator):
                 nmv.interface.ui_options.io.analysis_directory)
         """
 
+        # Clear the scene
+        nmv.scene.ops.clear_scene()
+
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
         # Create an object of the repairer
-        global morphology_repairer
-        morphology_repairer = nmv.repair.MorphologyRepairer(
+        global morphology_editor
+        morphology_editor = nmv.edit.MorphologyEditor(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Create the morphological skeleton
-        morphology_repairer.create_morphological_skeleton()
+        morphology_editor.create_morphological_skeleton()
+
+        # Update the editing flag
+        global is_skeleton_edited
+        is_skeleton_edited = True
+
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @UpdateMorphologyCoordinates
+####################################################################################################
+class UpdateMorphologyCoordinates(bpy.types.Operator):
+    """Update the morphology corrdinates following to the repair process.
+    """
+
+    # Operator parameters
+    bl_idname = "update.morphology_coordinates"
+    bl_label = "Update Coordinates"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Rendering context
+        :return:
+            'FINISHED'
+        """
+
+        # Create an object of the repairer
+        global morphology_editor
+
+        # Create the morphological skeleton
+        if morphology_editor is not None:
+            morphology_editor.update_skeleton_coordinates()
+
+            # Update the editing flag
+            global is_skeleton_edited
+            is_skeleton_edited = False
 
         return {'FINISHED'}
 
@@ -139,10 +196,13 @@ def register_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.register_class(RepairPanel)
+    bpy.utils.register_class(EditPanel)
 
     # Morphology analysis button
-    bpy.utils.register_class(RepairMorphology)
+    bpy.utils.register_class(SketchSkeleton)
+
+    # Morphology analysis button
+    bpy.utils.register_class(UpdateMorphologyCoordinates)
 
 
 ####################################################################################################
@@ -153,7 +213,9 @@ def unregister_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.unregister_class(RepairPanel)
+    bpy.utils.unregister_class(EditPanel)
 
     # Morphology analysis button
-    bpy.utils.unregister_class(RepairMorphology)
+    bpy.utils.unregister_class(SketchSkeleton)
+
+    bpy.utils.unregister_class(UpdateMorphologyCoordinates)

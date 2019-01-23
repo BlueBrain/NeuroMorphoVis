@@ -24,3 +24,4 @@ from .analysis_panel_ops import *
 from .mesh_panel import *
 from .morphology_panel import *
 from .morphology_panel_options import *
+from .edit_panel import *

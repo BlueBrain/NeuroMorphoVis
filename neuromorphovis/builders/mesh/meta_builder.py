@@ -619,7 +619,7 @@ class MetaBuilder:
         self.create_skeleton_materials()
 
         # Verify and repair the morphology
-        self.verify_and_repair_morphology()
+        # self.verify_and_repair_morphology()
 
         # Initialize the meta object
         self.initialize_meta_object(name=self.options.morphology.label)
