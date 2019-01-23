@@ -329,10 +329,6 @@ class MorphologyPanel(bpy.types.Panel):
         nmv.interface.ui.morphology_panel_options.set_skeleton_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
-        # Set the bounding box options
-        nmv.interface.ui.morphology_panel_options.set_bounding_box_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
-
         # Set the reconstruction options
         nmv.interface.ui.morphology_panel_options.set_reconstruction_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
@@ -349,12 +345,12 @@ class MorphologyPanel(bpy.types.Panel):
         reconstruct_morphology_button_row.enabled = True
 
         # Set the rendering options
-        nmv.interface.ui.morphology_panel_options.set_rendering_options(layout=layout,
-            scene=current_scene, options=nmv.interface.ui_options)
+        nmv.interface.ui.morphology_panel_options.set_rendering_options(
+            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Set the rendering options
-        nmv.interface.ui.morphology_panel_options.set_export_options(layout=layout,
-            scene=current_scene, options=nmv.interface.ui_options)
+        nmv.interface.ui.morphology_panel_options.set_export_options(
+            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
