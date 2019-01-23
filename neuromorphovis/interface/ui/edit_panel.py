@@ -54,7 +54,6 @@ class EditPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_label = 'Morphology Editing'
-    bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -135,6 +134,8 @@ class SketchSkeleton(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
+        nmv.file.write_morphology_to_swc_file(nmv.interface.ui_morphology, 'ss')
+
         # Create an object of the repairer
         global morphology_editor
         morphology_editor = nmv.edit.MorphologyEditor(
@@ -142,6 +143,9 @@ class SketchSkeleton(bpy.types.Operator):
 
         # Create the morphological skeleton
         morphology_editor.create_morphological_skeleton()
+
+        # Toggle from the object mode to the edit mode
+        bpy.ops.object.editmode_toggle()
 
         # Update the editing flag
         global is_skeleton_edited
@@ -173,6 +177,7 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
         :return:
             'FINISHED'
         """
+
 
         # Create an object of the repairer
         global morphology_editor

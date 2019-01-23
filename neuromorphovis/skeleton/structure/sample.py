@@ -74,7 +74,7 @@ class Sample:
         self.morphology_idx = -1
 
         # Sample index as reported in the morphology file, -1 is UNKNOWN or AUXILIARY
-        self.morphology_index=morphology_id
+        self.morphology_index = morphology_id
 
         # The section, where the sample belongs (updated after the section construction)
         self.section = section

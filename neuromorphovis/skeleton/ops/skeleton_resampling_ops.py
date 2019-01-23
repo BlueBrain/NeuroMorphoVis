@@ -72,6 +72,149 @@ def update_samples_indices_per_arbor(section,
         update_samples_indices_per_arbor(child, index)
 
 
+################################################################################################
+# @update_samples_indices_per_arbor_globally
+################################################################################################
+def update_samples_indices_per_arbor_globally(section,
+                                              index):
+    """Updates the global indices of all the samples along the given section.
+
+    Note: This global index of the sample w.r.t to the arbor it belongs to.
+
+    :param section:
+        A given section to update the indices of its samples.
+    :param index:
+        A list that contains a single value that accounts for the index of the arbor.
+        Note that we use this list as a trick to update the index value recursively.
+    """
+
+    # If the given section is root
+    if section.is_root():
+
+        # Update the arbor index of the first sample
+        section.samples[0].morphology_idx = index[0]
+
+        # Increment the index value
+        index[0] += 1
+
+    else:
+
+        # The index of the root is basically the same as the index of the last sample of the
+        # parent arbor
+        section.samples[0].morphology_idx = section.parent.samples[-1].morphology_idx
+
+    # Update the indices of the rest of the samples along the section
+    for i in range(1, len(section.samples)):
+
+        # Set the arbor index of the current sample
+        section.samples[i].morphology_idx = index[0]
+
+        # Increment the index
+        index[0] += 1
+
+    # Update the children sections recursively
+    for child in section.children:
+
+        # Update the children
+        update_samples_indices_per_arbor_globally(child, index)
+
+
+################################################################################################
+# @update_samples_indices_per_morphology
+################################################################################################
+def update_samples_indices_per_morphology(morphology_object):
+
+    # Initially, this index is set to ONE and incremented later (soma index = 0)
+    samples_global_morphology_index = [1]
+
+    # Apical dendrite
+    if morphology_object.apical_dendrite is not None:
+        update_samples_indices_per_arbor_globally(morphology_object.apical_dendrite,
+                                                  samples_global_morphology_index)
+
+    # Do it dendrite by dendrite
+    for basal_dendrite in morphology_object.dendrites:
+        samples_global_morphology_index[0] += 1
+        update_samples_indices_per_arbor_globally(basal_dendrite,
+                                                  samples_global_morphology_index)
+
+    # Axon
+    if morphology_object.axon is not None:
+        samples_global_morphology_index[0] += 1
+        update_samples_indices_per_arbor_globally(morphology_object.axon,
+                                                  samples_global_morphology_index)
+
+
+def construct_samples_list_from_section(section,
+                                        samples_list):
+
+    if section.is_root():
+
+        sample_string = ''
+        sample_string += '%d ' % section.samples[0].morphology_idx
+        sample_string += '%d ' % section.samples[0].type
+        sample_string += '%f ' % section.samples[0].point[0]
+        sample_string += '%f ' % section.samples[0].point[1]
+        sample_string += '%f ' % section.samples[0].point[2]
+        sample_string += '%f ' % section.samples[0].radius
+        sample_string += '1'
+        samples_list.append(sample_string)
+
+        # Update the indices of the rest of the samples along the section
+        for i in range(1, len(section.samples)):
+            sample_string = ''
+            sample_string += '%d ' % section.samples[i].morphology_idx
+            sample_string += '%d ' % section.samples[i].type
+            sample_string += '%f ' % section.samples[i].point[0]
+            sample_string += '%f ' % section.samples[i].point[1]
+            sample_string += '%f ' % section.samples[i].point[2]
+            sample_string += '%f ' % section.samples[i].radius
+            sample_string += '%d' % (section.samples[i].morphology_idx - 1)
+            samples_list.append(sample_string)
+    else:
+
+        # Update the indices of the rest of the samples along the section
+        for i in range(0, len(section.samples)):
+            sample_string = ''
+            sample_string += '%d ' % section.samples[i].morphology_idx
+            sample_string += '%d ' % section.samples[i].type
+            sample_string += '%f ' % section.samples[i].point[0]
+            sample_string += '%f ' % section.samples[i].point[1]
+            sample_string += '%f ' % section.samples[i].point[2]
+            sample_string += '%f ' % section.samples[i].radius
+            sample_string += '%d ' % (section.samples[i].morphology_idx - 1)
+            samples_list.append(sample_string)
+
+def construct_samples_list_from_arbor(arbor,
+                                      samples_list):
+    construct_samples_list_from_section(arbor, samples_list)
+
+    # Update the children sections recursively
+    for child in arbor.children:
+        construct_samples_list_from_arbor(child, samples_list)
+
+
+
+def construct_samples_list_from_morphology_tree(morphology_object):
+
+    samples_list = list()
+
+    # Apical dendrite
+    if morphology_object.apical_dendrite is not None:
+        construct_samples_list_from_arbor(morphology_object.apical_dendrite, samples_list)
+
+    # Do it dendrite by dendrite
+    for basal_dendrite in morphology_object.dendrites:
+        construct_samples_list_from_arbor(basal_dendrite, samples_list)
+
+    # Axon
+    if morphology_object.axon is not None:
+        construct_samples_list_from_arbor(morphology_object.axon, samples_list)
+
+    return samples_list
+
+
+
 ####################################################################################################
 # @resample_section
 ####################################################################################################

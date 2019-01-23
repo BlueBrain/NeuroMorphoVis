@@ -15,7 +15,5 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .morphology import *
-from .mesh import *
-from .strings import *
+from .swc_writer import *
 
