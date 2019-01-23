@@ -114,20 +114,6 @@ class MorphologyPanel(bpy.types.Panel):
         description="Displays the bounding box of the morphology",
         default=False)
 
-    # Bounding box data
-    bpy.types.Scene.BBoxPMinX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMinY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMinZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-
     # Morphology material
     bpy.types.Scene.MorphologyMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,

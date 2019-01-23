@@ -53,6 +53,20 @@ class AnalysisPanel(bpy.types.Panel):
     # Register a variable that indicates that the morphology is analyzed to be able to update the UI
     bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
 
+    # Bounding box data
+    bpy.types.Scene.BBoxPMinX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxPMinY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxPMinZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxPMaxX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxPMaxY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxPMaxZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxCenterX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxCenterY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BBoxCenterZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BoundsX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BoundsY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
+    bpy.types.Scene.BoundsZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
+
     ################################################################################################
     # @draw
     ################################################################################################
@@ -78,6 +92,10 @@ class AnalysisPanel(bpy.types.Panel):
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_groups_to_panel(
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)
+
+            # Set the bounding box options
+            nmv.interface.ui.set_bounding_box_options(
+                layout=layout, scene=context.scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
@@ -123,11 +141,14 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
+        # The bounding box is computed during the loading, update it
+        nmv.interface.ui.update_bounding_box_panel(context.scene, nmv.interface.ui_morphology.bounding_box)
+
         # Register the analysis components, apply the kernel functions and update the UI
         context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
 
-        nmv.analysis.kernel_analyse_number_of_samples_per_section(nmv.interface.ui_morphology)
+        # nmv.analysis.kernel_analyse_number_of_samples_per_section(nmv.interface.ui_morphology)
 
         return {'FINISHED'}
 
