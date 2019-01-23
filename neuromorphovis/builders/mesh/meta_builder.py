@@ -16,6 +16,9 @@
 ####################################################################################################
 
 
+# System imports
+import copy
+
 # Blender imports
 import bpy, mathutils
 

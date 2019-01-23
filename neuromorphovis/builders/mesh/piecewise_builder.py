@@ -264,7 +264,7 @@ class PiecewiseBuilder:
 
                 # Draw the apical dendrite as a set connected sections
                 nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(self.morphology.apical_dendrite),
+                    section=self.morphology.apical_dendrite,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrites_materials,
@@ -298,7 +298,7 @@ class PiecewiseBuilder:
                     # Draw the basal dendrites as a set connected sections
                     basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
-                        section=copy.deepcopy(basal_dendrite),
+                        section=basal_dendrite,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                         name=basal_dendrite_prefix,
                         material_list=self.basal_dendrites_materials,
@@ -330,7 +330,7 @@ class PiecewiseBuilder:
 
                 # Draw the axon as a set connected sections
                 nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(self.morphology.axon),
+                    section=self.morphology.axon,
                     max_branching_level=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Arbors.AXON_PREFIX,
                     material_list=self.axon_materials,

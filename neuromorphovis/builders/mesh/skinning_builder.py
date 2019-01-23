@@ -585,7 +585,7 @@ class SkinningBuilder:
         if not self.options.morphology.ignore_axon:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.axon is not None:
 
                 nmv.logger.info('Axon')
 
