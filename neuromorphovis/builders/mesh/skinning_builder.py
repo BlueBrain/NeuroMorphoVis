@@ -583,13 +583,17 @@ class SkinningBuilder:
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
-            nmv.logger.info('Axon')
 
-            # Create the axon mesh
-            arbors_objects.append(self.create_arbor_mesh(
-                arbor=self.morphology.axon,
-                max_branching_order=self.options.morphology.axon_branch_order,
-                arbor_name=nmv.consts.Arbors.AXON_PREFIX))
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                nmv.logger.info('Axon')
+
+                # Create the axon mesh
+                arbors_objects.append(self.create_arbor_mesh(
+                    arbor=self.morphology.axon,
+                    max_branching_order=self.options.morphology.axon_branch_order,
+                    arbor_name=nmv.consts.Arbors.AXON_PREFIX))
 
         # Return the list of meshes
         return arbors_objects

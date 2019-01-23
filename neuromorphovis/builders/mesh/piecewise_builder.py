@@ -319,31 +319,35 @@ class PiecewiseBuilder:
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
-            nmv.logger.info('Axon')
 
-            # Individual sections (tubes) of the axon
-            axon_objects = []
+            # Ensure tha existence of basal dendrites
+            if self.morphology.axon is not None:
 
-            # Draw the axon as a set connected sections
-            nmv.skeleton.ops.draw_connected_sections(
-                section=copy.deepcopy(self.morphology.axon),
-                max_branching_level=self.options.morphology.axon_branch_order,
-                name=nmv.consts.Arbors.AXON_PREFIX,
-                material_list=self.axon_materials,
-                bevel_object=bevel_object,
-                repair_morphology=True,
-                caps=caps,
-                sections_objects=axon_objects,
-                roots_connection=roots_connection)
+                nmv.logger.info('Axon')
 
-            # Ensure that axon objects were reconstructed
-            if len(axon_objects) > 0:
+                # Individual sections (tubes) of the axon
+                axon_objects = []
 
-                # Add a reference to the mesh object
-                self.morphology.axon.mesh = axon_objects[0]
+                # Draw the axon as a set connected sections
+                nmv.skeleton.ops.draw_connected_sections(
+                    section=copy.deepcopy(self.morphology.axon),
+                    max_branching_level=self.options.morphology.axon_branch_order,
+                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    material_list=self.axon_materials,
+                    bevel_object=bevel_object,
+                    repair_morphology=True,
+                    caps=caps,
+                    sections_objects=axon_objects,
+                    roots_connection=roots_connection)
 
-                # Add the sections (tubes) of the axons to the list
-                arbors_objects.extend(axon_objects)
+                # Ensure that axon objects were reconstructed
+                if len(axon_objects) > 0:
+
+                    # Add a reference to the mesh object
+                    self.morphology.axon.mesh = axon_objects[0]
+
+                    # Add the sections (tubes) of the axons to the list
+                    arbors_objects.extend(axon_objects)
 
         # Convert the section object (tubes) into meshes
         for arbor_object in arbors_objects:
