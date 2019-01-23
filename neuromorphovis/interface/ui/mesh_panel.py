@@ -86,9 +86,8 @@ class MeshPanel(bpy.types.Panel):
                 'Skinning',
                 'Skinning'),
                (nmv.enums.Meshing.Technique.META_OBJECTS,
-                'Meta',
-                'Meta objects'),
-               ],
+                'Meta Objects',
+                'Creates watertight mesh models using meta balls, but it could be slower than the other methods'),],
         name='Meshing Method', default=nmv.enums.Meshing.Technique.META_OBJECTS)
 
 
