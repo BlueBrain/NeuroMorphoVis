@@ -15,59 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import copy
-
-# Blender imports
-from mathutils import Vector
 
 # Internal imports
 import neuromorphovis as nmv
-import neuromorphovis.consts
-import neuromorphovis.file
 import neuromorphovis.skeleton
-
-
-####################################################################################################
-# @SWCWriter
-####################################################################################################
-class SWCWriter:
-
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self):
-        """Constructor
-        """
-
-        # The path where the morphology will be exported
-        self.output_file_path = None
-
-        self.morphology = None
-
-        # A list of all the samples parsed from the morphology file, to be used as a lookup table
-        # to construct the morphology skeleton directly
-        # http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
-        # Each sample in this list has the following structure:
-        #       [0] The index of the sample or sample number
-        #       [1] The type of the sample or structure identifier
-        #       [2] Sample x-coordinates
-        #       [3] Sample y-coordinates
-        #       [4] Sample z-coordinates
-        #       [5] Sample radius
-        #       [6] The index of the parent sample
-        self.samples_list = list()
-
-        # A list of the indices of the terminals of the sections
-        # This list is only updated once during the morphology loading, and then used to build the
-        # sections later in an accelerated way
-        self.sections_terminal_samples_indices = list()
-
-        # A list of the indices of each 'disconnected' section in the morphology
-        self.sections_samples_indices_list = list()
-
-        # A list of continuous paths extracted from the morphology file
-        self.paths = list()
 
 
 ####################################################################################################
