@@ -109,7 +109,7 @@ def construct_swc_samples_list_from_section(section,
 
         # Update the indices of the rest of the samples along the section
         for i in range(1, len(section.samples)):
-            sample_string = '%d %d %f %f %f %f %f' % (section.samples[i].morphology_idx,
+            sample_string = '%d %d %f %f %f %f %d' % (section.samples[i].morphology_idx,
                                                       section.samples[i].type,
                                                       section.samples[i].point[0],
                                                       section.samples[i].point[1],
@@ -133,7 +133,7 @@ def construct_swc_samples_list_from_section(section,
 
         # Update the indices of the rest of the samples along the section
         for i in range(2, len(section.samples)):
-            sample_string = '%d %d %f %f %f %f %f' % (section.samples[i].morphology_idx,
+            sample_string = '%d %d %f %f %f %f %d' % (section.samples[i].morphology_idx,
                                                       section.samples[i].type,
                                                       section.samples[i].point[0],
                                                       section.samples[i].point[1],
