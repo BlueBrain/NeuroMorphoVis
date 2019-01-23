@@ -101,6 +101,9 @@ class Morphology:
         # Morphology unified bounding box
         self.unified_bounding_box = None
 
+        # Morphology skeleton 'connected in one piece'
+        self.skeleton = None
+
         # Update the bounding boxes
         self.compute_bounding_box()
 

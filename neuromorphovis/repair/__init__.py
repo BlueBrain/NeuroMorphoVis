@@ -15,7 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .curve import *
-from .line import *
-from .sphere import *
-from .vertex import *
+from .morphology_repairer import *

@@ -25,6 +25,53 @@ import neuromorphovis.geometry
 import neuromorphovis.skeleton
 
 
+################################################################################################
+# @update_samples_indices_per_arbor
+################################################################################################
+def update_samples_indices_per_arbor(section,
+                                     index):
+    """Updates the global indices of all the samples along the given section.
+
+    Note: This global index of the sample w.r.t to the arbor it belongs to.
+
+    :param section:
+        A given section to update the indices of its samples.
+    :param index:
+        A list that contains a single value that accounts for the index of the arbor.
+        Note that we use this list as a trick to update the index value recursively.
+    """
+
+    # If the given section is root
+    if section.is_root():
+
+        # Update the arbor index of the first sample
+        section.samples[0].arbor_idx = index[0]
+
+        # Increment the index value
+        index[0] += 1
+
+    else:
+
+        # The index of the root is basically the same as the index of the last sample of the
+        # parent arbor
+        section.samples[0].arbor_idx = section.parent.samples[-1].arbor_idx
+
+    # Update the indices of the rest of the samples along the section
+    for i in range(1, len(section.samples)):
+
+        # Set the arbor index of the current sample
+        section.samples[i].arbor_idx = index[0]
+
+        # Increment the index
+        index[0] += 1
+
+    # Update the children sections recursively
+    for child in section.children:
+
+        # Update the children
+        update_samples_indices_per_arbor(child, index)
+
+
 ####################################################################################################
 # @resample_section
 ####################################################################################################
