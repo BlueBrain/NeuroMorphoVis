@@ -97,6 +97,10 @@ class SWCReader:
                 # Add the first sample to the path
                 path.append(sample_i[0])
 
+                # Append the last sample in the morphology file
+                if index + 1 == self.samples_list[-1][0]:
+                    path.append(sample_j[0])
+
             # Otherwise
             else:
 
@@ -202,8 +206,13 @@ class SWCReader:
         # Translation vector in case the file is not centered at the origin
         translation = Vector((0.0, 0.0, 0.0))
 
-        # For each line in the morphology file
+        # Construct a string from each line in the morphology file
+        string_list = list()
         for line in morphology_file:
+            string_list.append(line)
+
+        # For each line in the string list
+        for line in string_list:
 
             # Ignore lines with comments that have '#'
             if '#' in line:
@@ -268,6 +277,7 @@ class SWCReader:
         # Construct the connected paths from the samples list
         self.build_connected_paths_from_samples()
 
+        # Construct the individual sections from the paths
         self.build_sections_from_paths()
 
     ################################################################################################

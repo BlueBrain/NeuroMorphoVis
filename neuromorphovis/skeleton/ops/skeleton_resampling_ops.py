@@ -125,7 +125,7 @@ def update_samples_indices_per_arbor_globally(section,
 def update_samples_indices_per_morphology(morphology_object):
 
     # Initially, this index is set to ONE and incremented later (soma index = 0)
-    samples_global_morphology_index = [1]
+    samples_global_morphology_index = [4]
 
     # Apical dendrite
     if morphology_object.apical_dendrite is not None:
@@ -134,13 +134,11 @@ def update_samples_indices_per_morphology(morphology_object):
 
     # Do it dendrite by dendrite
     for basal_dendrite in morphology_object.dendrites:
-        samples_global_morphology_index[0] += 1
         update_samples_indices_per_arbor_globally(basal_dendrite,
                                                   samples_global_morphology_index)
 
     # Axon
     if morphology_object.axon is not None:
-        samples_global_morphology_index[0] += 1
         update_samples_indices_per_arbor_globally(morphology_object.axon,
                                                   samples_global_morphology_index)
 
@@ -173,8 +171,18 @@ def construct_samples_list_from_section(section,
             samples_list.append(sample_string)
     else:
 
+        sample_string = ''
+        sample_string += '%d ' % section.samples[1].morphology_idx
+        sample_string += '%d ' % section.samples[1].type
+        sample_string += '%f ' % section.samples[1].point[0]
+        sample_string += '%f ' % section.samples[1].point[1]
+        sample_string += '%f ' % section.samples[1].point[2]
+        sample_string += '%f ' % section.samples[1].radius
+        sample_string += '%d ' % section.parent.samples[-1].morphology_idx
+        samples_list.append(sample_string)
+
         # Update the indices of the rest of the samples along the section
-        for i in range(0, len(section.samples)):
+        for i in range(2, len(section.samples)):
             sample_string = ''
             sample_string += '%d ' % section.samples[i].morphology_idx
             sample_string += '%d ' % section.samples[i].type
