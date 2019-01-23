@@ -226,6 +226,7 @@ def construct_swc_samples_list_from_morphology_tree(morphology_object):
     if morphology_object.axon is not None:
         construct_swc_samples_list_from_arbor(morphology_object.axon, swc_samples_list)
 
+    # Return the SWC-complaint  list of samples
     return swc_samples_list
 
 
