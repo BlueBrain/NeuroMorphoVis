@@ -25,12 +25,12 @@ import neuromorphovis.geometry
 import neuromorphovis.skeleton
 
 
-################################################################################################
+####################################################################################################
 # @update_samples_indices_per_arbor
-################################################################################################
+####################################################################################################
 def update_samples_indices_per_arbor(section,
                                      index):
-    """Updates the global indices of all the samples along the given section.
+    """Updates the global indices (per arbor) of all the samples along the given section.
 
     Note: This global index of the sample w.r.t to the arbor it belongs to.
 
@@ -72,12 +72,12 @@ def update_samples_indices_per_arbor(section,
         update_samples_indices_per_arbor(child, index)
 
 
-################################################################################################
+####################################################################################################
 # @update_samples_indices_per_arbor_globally
-################################################################################################
+####################################################################################################
 def update_samples_indices_per_arbor_globally(section,
                                               index):
-    """Updates the global indices of all the samples along the given section.
+    """Updates the global indices (per morphology) of all the samples along the given section.
 
     Note: This global index of the sample w.r.t to the arbor it belongs to.
 
@@ -119,13 +119,25 @@ def update_samples_indices_per_arbor_globally(section,
         update_samples_indices_per_arbor_globally(child, index)
 
 
-################################################################################################
+####################################################################################################
 # @update_samples_indices_per_morphology
-################################################################################################
-def update_samples_indices_per_morphology(morphology_object):
+####################################################################################################
+def update_samples_indices_per_morphology(morphology_object,
+                                          starting_index):
+    """Updates the indices of the samples (globally on the morphology level).
+
+    NOTE: This will help us easily to write any SWC morphology file without any issues even if
+    the morphology skeleton is re-sampled.
+
+    :param morphology_object:
+        A morphology object.
+    :param starting_index:
+        The starting index of the first sample along the arbors. This index is updated based on
+        how many samples that belong to the soma.
+    """
 
     # Initially, this index is set to ONE and incremented later (soma index = 0)
-    samples_global_morphology_index = [4]
+    samples_global_morphology_index = [starting_index]
 
     # Apical dendrite
     if morphology_object.apical_dendrite is not None:
@@ -141,86 +153,6 @@ def update_samples_indices_per_morphology(morphology_object):
     if morphology_object.axon is not None:
         update_samples_indices_per_arbor_globally(morphology_object.axon,
                                                   samples_global_morphology_index)
-
-
-def construct_samples_list_from_section(section,
-                                        samples_list):
-
-    if section.is_root():
-
-        sample_string = ''
-        sample_string += '%d ' % section.samples[0].morphology_idx
-        sample_string += '%d ' % section.samples[0].type
-        sample_string += '%f ' % section.samples[0].point[0]
-        sample_string += '%f ' % section.samples[0].point[1]
-        sample_string += '%f ' % section.samples[0].point[2]
-        sample_string += '%f ' % section.samples[0].radius
-        sample_string += '1'
-        samples_list.append(sample_string)
-
-        # Update the indices of the rest of the samples along the section
-        for i in range(1, len(section.samples)):
-            sample_string = ''
-            sample_string += '%d ' % section.samples[i].morphology_idx
-            sample_string += '%d ' % section.samples[i].type
-            sample_string += '%f ' % section.samples[i].point[0]
-            sample_string += '%f ' % section.samples[i].point[1]
-            sample_string += '%f ' % section.samples[i].point[2]
-            sample_string += '%f ' % section.samples[i].radius
-            sample_string += '%d' % (section.samples[i].morphology_idx - 1)
-            samples_list.append(sample_string)
-    else:
-
-        sample_string = ''
-        sample_string += '%d ' % section.samples[1].morphology_idx
-        sample_string += '%d ' % section.samples[1].type
-        sample_string += '%f ' % section.samples[1].point[0]
-        sample_string += '%f ' % section.samples[1].point[1]
-        sample_string += '%f ' % section.samples[1].point[2]
-        sample_string += '%f ' % section.samples[1].radius
-        sample_string += '%d ' % section.parent.samples[-1].morphology_idx
-        samples_list.append(sample_string)
-
-        # Update the indices of the rest of the samples along the section
-        for i in range(2, len(section.samples)):
-            sample_string = ''
-            sample_string += '%d ' % section.samples[i].morphology_idx
-            sample_string += '%d ' % section.samples[i].type
-            sample_string += '%f ' % section.samples[i].point[0]
-            sample_string += '%f ' % section.samples[i].point[1]
-            sample_string += '%f ' % section.samples[i].point[2]
-            sample_string += '%f ' % section.samples[i].radius
-            sample_string += '%d ' % (section.samples[i].morphology_idx - 1)
-            samples_list.append(sample_string)
-
-def construct_samples_list_from_arbor(arbor,
-                                      samples_list):
-    construct_samples_list_from_section(arbor, samples_list)
-
-    # Update the children sections recursively
-    for child in arbor.children:
-        construct_samples_list_from_arbor(child, samples_list)
-
-
-
-def construct_samples_list_from_morphology_tree(morphology_object):
-
-    samples_list = list()
-
-    # Apical dendrite
-    if morphology_object.apical_dendrite is not None:
-        construct_samples_list_from_arbor(morphology_object.apical_dendrite, samples_list)
-
-    # Do it dendrite by dendrite
-    for basal_dendrite in morphology_object.dendrites:
-        construct_samples_list_from_arbor(basal_dendrite, samples_list)
-
-    # Axon
-    if morphology_object.axon is not None:
-        construct_samples_list_from_arbor(morphology_object.axon, samples_list)
-
-    return samples_list
-
 
 
 ####################################################################################################
