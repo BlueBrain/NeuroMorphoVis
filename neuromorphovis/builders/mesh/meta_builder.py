@@ -652,13 +652,7 @@ class MetaBuilder:
         # Adding spines
         self.add_spines()
 
-        # Adding nucleus
-        if self.options.mesh.nucleus == nmv.enums.Meshing.Nucleus.INTEGRATED:
-            nmv.logger.header('Adding nucleus')
-            nucleus_builder = nmv.builders.NucleusBuilder(
-                morphology=self.morphology, options=self.options)
-            nucleus_mesh = nucleus_builder.add_nucleus_inside_soma()
-
+        #
         # Compile a list of all the meshes in the scene, they account for the different mesh
         # objects of the neuron
         for scene_object in bpy.context.scene.objects:

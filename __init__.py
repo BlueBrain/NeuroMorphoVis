@@ -39,7 +39,7 @@ bl_info = {
     # the add-on with.
     "blender" : (2, 7, 9),
     # This is where users should look for this add-on.
-    "location" : "View 3D",
+    "location": "View 3D > Edit Mode > Tool Shelf",
     # Description
     "description": "Morphology reconstruction, analysis and visualization to mesh reconstruction. "
                    "The Add-on was developed by the Blue Brain Project at EPFL.",
