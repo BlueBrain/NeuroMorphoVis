@@ -321,7 +321,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "reconstruct.soma"
-    bl_label = "Soma"
+    bl_label = "Reconstruct Soma"
 
     # Timer parameters
     event_timer = None
