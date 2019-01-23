@@ -26,14 +26,9 @@ from bpy.props import EnumProperty
 from bpy.props import FloatVectorProperty
 
 import neuromorphovis as nmv
-import neuromorphovis.consts
-import neuromorphovis.analysis
 import neuromorphovis.edit
-import neuromorphovis.enums
-import neuromorphovis.file
 import neuromorphovis.interface
-import neuromorphovis.skeleton
-
+import neuromorphovis.scene
 
 # Morphology editor
 morphology_editor = None
@@ -87,8 +82,7 @@ class EditPanel(bpy.types.Panel):
             update_morphology_column.enabled = False
 
 
-
-        ####################################################################################################
+####################################################################################################
 # @SketchSkeleton
 ####################################################################################################
 class SketchSkeleton(bpy.types.Operator):
@@ -134,8 +128,6 @@ class SketchSkeleton(bpy.types.Operator):
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
 
-        nmv.file.write_morphology_to_swc_file(nmv.interface.ui_morphology, 'ss')
-
         # Create an object of the repairer
         global morphology_editor
         morphology_editor = nmv.edit.MorphologyEditor(
@@ -143,9 +135,6 @@ class SketchSkeleton(bpy.types.Operator):
 
         # Create the morphological skeleton
         morphology_editor.create_morphological_skeleton()
-
-        # Toggle from the object mode to the edit mode
-        bpy.ops.object.editmode_toggle()
 
         # Update the editing flag
         global is_skeleton_edited
@@ -177,7 +166,6 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
         :return:
             'FINISHED'
         """
-
 
         # Create an object of the repairer
         global morphology_editor

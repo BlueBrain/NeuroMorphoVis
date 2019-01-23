@@ -259,10 +259,9 @@ def write_morphology_to_swc_file(morphology_object,
     # Build the samples list
     swc_samples_list = construct_swc_samples_list_from_morphology_tree(morphology_object)
 
-    for i in swc_samples_list:
-        print(i)
-
-    # Write it to file
+    # Write the list to a file labeled with the same name of the morphology
+    nmv.file.write_list_string_to_file(
+        swc_samples_list, '%s/%s.swc' % (file_path, morphology_object.label))
 
 
 
