@@ -630,6 +630,12 @@ class MetaBuilder:
         # Activate the mesh object
         bpy.context.scene.objects.active = self.meta_mesh
 
+        # Adjusting the texture space, before assigning the material
+        bpy.context.object.data.use_auto_texspace = False
+        bpy.context.object.data.texspace_size[0] = 5
+        bpy.context.object.data.texspace_size[1] = 5
+        bpy.context.object.data.texspace_size[2] = 5
+
         # Assign the material to the selected mesh
         nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
 
