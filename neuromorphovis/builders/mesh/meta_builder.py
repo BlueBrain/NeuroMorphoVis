@@ -644,6 +644,22 @@ class MetaBuilder:
         bpy.context.scene.objects.active = self.meta_mesh
 
     ################################################################################################
+    # @transform_to_global_coordinates
+    ################################################################################################
+    def transform_to_global_coordinates(self):
+        """Transform the neuron membrane to the global coordinates.
+
+        NOTE: Spine transformation is already implemented by the spine builder, and therefore
+        this function applies only to the arbors and the soma.
+        """
+
+        # Transform the neuron object to the global coordinates
+        nmv.logger.header('Transforming to global coordinates')
+        nmv.skeleton.ops.transform_to_global_coordinates(
+            mesh_object=self.meta_mesh, blue_config=self.options.morphology.blue_config,
+            gid=self.options.morphology.gid)
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -671,18 +687,17 @@ class MetaBuilder:
         # Assign the material to the mesh
         self.assign_material_to_mesh()
 
-
-
+        # Transform the mesh to the global coordinates
+        if self.options.mesh.global_coordinates:
+            self.transform_to_global_coordinates()
 
         # Mission done
         nmv.logger.header('Done!')
 
-        return self.meta_mesh.select
+        # Return a reference to the created mesh
+        return self.meta_mesh
 
-        # Connect the arbors to the soma
-        #self.connect_arbors_to_soma()
 
-        return self.reconstructed_neuron_meshes
 
         # Adding surface roughness
         # self.add_surface_noise()
@@ -690,8 +705,6 @@ class MetaBuilder:
         # Decimation
         self.decimate_neuron_mesh()
 
-        # Adding spines
-        self.add_spines()
 
         #
         # Compile a list of all the meshes in the scene, they account for the different mesh
