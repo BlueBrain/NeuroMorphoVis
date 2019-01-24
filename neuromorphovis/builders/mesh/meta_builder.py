@@ -30,6 +30,7 @@ import neuromorphovis.mesh
 import neuromorphovis.shading
 import neuromorphovis.skeleton
 import neuromorphovis.utilities
+import neuromorphovis.scene
 
 
 ####################################################################################################
@@ -599,15 +600,41 @@ class MetaBuilder:
         # Header
         nmv.logger.header('Meshing the Meta Object')
 
+        # Deselect all objects
+        nmv.scene.ops.deselect_all()
+
         # Select the mesh
+        self.meta_mesh = bpy.context.scene.objects[self.morphology.label]
         self.meta_mesh.select = True
+        bpy.context.scene.objects.active = self.meta_mesh
 
         # Convert it to a mesh from meta-balls
         bpy.ops.object.convert(target='MESH')
 
+        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '.001']
+        self.meta_mesh.name = self.morphology.label
+
         # Re-select it again to be able to perform post-processing operations in it
         self.meta_mesh.select = True
 
+        bpy.context.scene.objects.active = self.meta_mesh
+
+    ################################################################################################
+    # @assign_material_to_mesh
+    ################################################################################################
+    def assign_material_to_mesh(self):
+
+        # Deselect all objects
+        nmv.scene.ops.deselect_all()
+
+        # Activate the mesh object
+        bpy.context.scene.objects.active = self.meta_mesh
+
+        # Assign the material to the selected mesh
+        nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
+
+        # Activate the mesh object
+        self.meta_mesh.select = True
         bpy.context.scene.objects.active = self.meta_mesh
 
     ################################################################################################
@@ -616,10 +643,6 @@ class MetaBuilder:
     def reconstruct_mesh(self):
         """Reconstructs the neuronal mesh using meta objects.
         """
-
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
 
         # Verify and repair the morphology
         # self.verify_and_repair_morphology()
@@ -635,6 +658,15 @@ class MetaBuilder:
 
         # Finalize the meta object and construct a solid object
         self.finalize_meta_object()
+
+        # We can here create the materials at the end to avoid any issues
+        self.create_skeleton_materials()
+
+        # Assign the material to the mesh
+        self.assign_material_to_mesh()
+
+
+
 
         # Mission done
         nmv.logger.header('Done!')
