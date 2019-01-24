@@ -111,3 +111,29 @@ def convert_bmesh_to_mesh(bmesh_object,
     """
 
     return link_to_new_object_in_scene(bmesh_object=bmesh_object, name=name)
+
+
+####################################################################################################
+# @convert_bmesh_to_mesh
+####################################################################################################
+def delete_bmesh(bmesh_object):
+    """Deletes a bmesh object.
+
+    :param bmesh_object:
+        A given bmesh object to delete.
+    """
+    bmesh.ops.delete(bmesh_object, geom=bmesh_object.faces)
+
+
+####################################################################################################
+# @delete_bmesh_list
+####################################################################################################
+def delete_bmesh_list(bmesh_list):
+    """Delete a list of bmesh objects.
+
+    :param bmesh_list:
+        A list of bmesh objects to be deleted.
+    """
+
+    for bmesh_object in bmesh_list:
+        delete_bmesh(bmesh_object)
