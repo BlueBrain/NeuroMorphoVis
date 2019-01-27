@@ -41,6 +41,7 @@ def load_morphology(panel_object,
         Current scene in the rendering context.
     """
 
+    global current_morphology_label
     # Read the data from a given morphology file either in .h5 or .swc formats
     if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
 
@@ -52,7 +53,6 @@ def load_morphology(panel_object,
             context_scene.MorphologyFile)
 
         # Check if the morphology is loaded before or not
-        global current_morphology_label
         if current_morphology_label is None:
             current_morphology_label = nmv.interface.ui_options.morphology.label
         else:
@@ -84,7 +84,6 @@ def load_morphology(panel_object,
         nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
 
         # Check if the morphology is loaded before or not
-        global current_morphology_label
         if current_morphology_label is None:
             current_morphology_label = nmv.interface.ui_options.morphology.label
         else:
