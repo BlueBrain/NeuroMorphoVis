@@ -247,6 +247,67 @@ def create_flat_material(name,
 
 
 ####################################################################################################
+# @create_flat_material
+####################################################################################################
+def create_voroni_cells_material(name,
+                                 color=nmv.consts.Color.WHITE):
+    """Creates a voroni shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    if not current_scene.render.engine == 'CYCLES':
+        current_scene.render.engine = 'CYCLES'
+
+    # Import the material from the library
+    material_reference = import_shader(shader_name='voroni-cells')
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    # Update the color gradient
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+    lamp_reference = bpy.context.object
+    lamp_reference.name = 'LampUp'
+    lamp_reference.data.name = "LampUp"
+    lamp_reference.location[0] = 0
+    lamp_reference.location[1] = 0
+    lamp_reference.location[2] = 0
+    lamp_reference.rotation_euler[0] = 1.5708
+    bpy.data.lamps['LampUp'].node_tree.nodes["Emission"].inputs[1].default_value = 2.5
+
+    nmv.scene.ops.deselect_all()
+    bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+    lamp_reference = bpy.context.object
+    lamp_reference.name = 'LampDown'
+    lamp_reference.data.name = "LampDown"
+    lamp_reference.location[0] = 0
+    lamp_reference.location[1] = 0
+    lamp_reference.location[2] = 0
+    lamp_reference.rotation_euler[0] = -1.5708
+    bpy.data.lamps['LampDown'].node_tree.nodes["Emission"].inputs[1].default_value = 2.5
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
 # @create_electron_light_material
 ####################################################################################################
 def create_electron_light_material(name,
@@ -520,6 +581,10 @@ def create_material(name,
     # Glossy bumpy
     elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
         return create_glossy_bumpy_material(name='%s_color' % name, color=color)
+
+    # Voroni
+    elif material_type == nmv.enums.Shading.VORONI:
+        return create_voroni_cells_material(name='%s_color' % name, color=color)
 
     # Flat
     elif material_type == nmv.enums.Shading.FLAT:

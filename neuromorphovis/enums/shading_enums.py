@@ -77,6 +77,9 @@ class Shading:
     # Wave
     WAVE = 'WAVE_SHADER'
 
+    # Voroni
+    VORONI = 'VORONI_SHADER'
+
     ################################################################################################
     # get_enum
     ################################################################################################
@@ -117,7 +120,8 @@ class Shading:
             return Shading.GRANULAR
         elif shader_type == 'wave':
             return Shading.WAVE
-
+        elif shader_type == 'voroni':
+            return Shading.VORONI
         else :
             return Shading.LAMBERT_WARD
 
@@ -159,5 +163,9 @@ class Shading:
 
         (FLAT,
          'Flat',
-         "Use Flat Shader")
+         "Use Flat Shader"),
+
+        (VORONI,
+         'Voroni',
+         "Use Voroni Shader")
     ]
