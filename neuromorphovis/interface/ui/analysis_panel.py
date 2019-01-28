@@ -111,7 +111,12 @@ class AnalyzeMorphology(bpy.types.Operator):
         """
 
         # Load the morphology file
-        nmv.interface.ui.load_morphology(self, context.scene)
+        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+
+        # If the result is None, report the issue
+        if loading_result is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
 
         # Plot the morphology (whatever issues it contains)
         nmv.interface.ui.sketch_morphology_skeleton_guide(

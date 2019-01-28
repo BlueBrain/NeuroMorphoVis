@@ -23,8 +23,9 @@ import neuromorphovis as nmv
 import neuromorphovis.enums
 import neuromorphovis.interface
 
-# A global variable to notify us if a new morphology has been loaded to the system or not
+# Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
+current_morphology_path = None
 
 
 ####################################################################################################
@@ -42,11 +43,19 @@ def load_morphology(panel_object,
     """
 
     global current_morphology_label
+    global current_morphology_path
+
     # Read the data from a given morphology file either in .h5 or .swc formats
     if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
 
         # Pass options from UI to system
         nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
+
+        # Ensure that a file has been selected
+        if 'Select File' in context_scene.MorphologyFile:
+            return None
+
+        # Ensure that there is some path loaded
 
         # Update the morphology label
         nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
@@ -55,9 +64,10 @@ def load_morphology(panel_object,
         # Check if the morphology is loaded before or not
         if current_morphology_label is None:
             current_morphology_label = nmv.interface.ui_options.morphology.label
+            current_morphology_path = nmv.interface.ui_options.morphology.morphology_file_path
         else:
             if current_morphology_label == nmv.interface.ui_options.morphology.label:
-                return
+                return 'ALREADY_LOADED'
 
         # Load the morphology from the file
         loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
@@ -72,6 +82,9 @@ def load_morphology(panel_object,
         # Otherwise, report an ERROR
         else:
             panel_object.report({'ERROR'}, 'Invalid Morphology File')
+
+            # None
+            return None
 
     # Read the data from a specific gid in a given circuit
     elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
@@ -88,7 +101,7 @@ def load_morphology(panel_object,
             current_morphology_label = nmv.interface.ui_options.morphology.label
         else:
             if current_morphology_label == nmv.interface.ui_options.morphology.label:
-                return
+                return 'ALREADY_LOADED'
 
         # Load the morphology from the circuit
         loading_flag, morphology_object = nmv.file.readers.BBPReader.load_morphology_from_circuit(
@@ -105,6 +118,14 @@ def load_morphology(panel_object,
         else:
             panel_object.report({'ERROR'}, 'Cannot Load Morphology from Circuit')
 
+            # None
+            return None
+
     else:
         # Report an invalid input source
         panel_object.report({'ERROR'}, 'Invalid Input Source')
+
+        # None
+        return None
+
+    return 'NEW_MORPHOLOGY_LOADED'

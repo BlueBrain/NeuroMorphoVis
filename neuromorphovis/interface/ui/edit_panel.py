@@ -21,20 +21,16 @@ import copy
 
 # Blender imports
 import bpy
-from mathutils import Vector
-from bpy.props import IntProperty
-from bpy.props import FloatProperty
-from bpy.props import StringProperty
 from bpy.props import BoolProperty
-from bpy.props import EnumProperty
-from bpy.props import FloatVectorProperty
 
+# Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.edit
 import neuromorphovis.interface
 import neuromorphovis.scene
 import neuromorphovis.consts
 
+# Globals
 # Morphology editor
 morphology_editor = None
 
@@ -79,7 +75,12 @@ class EditPanel(bpy.types.Panel):
         # Morphology sketching button
         if not in_edit_mode:
             sketching_morphology_column = layout.column(align=True)
-            sketching_morphology_column.operator('sketch.skeleton', icon='MESH_DATA')
+            sketching_morphology_column.operator('sketch.skeleton', icon='PARTICLE_POINT')
+
+        # Reconstruction options
+        edit_coordinates_row = layout.row()
+        edit_coordinates_row.label(text='Editing Samples Coordinates:',
+                                   icon='OUTLINER_OB_EMPTY')
 
         global is_skeleton_edited
         if not is_skeleton_edited:
@@ -96,6 +97,11 @@ class EditPanel(bpy.types.Panel):
 
         # Saving morphology buttons
         if not in_edit_mode:
+
+            # Saving morphology options
+            save_morphology_row = layout.row()
+            save_morphology_row.label(text='Save Morphology As:', icon='MESH_UVSPHERE')
+
             save_morphology_buttons_column = layout.column(align=True)
             save_morphology_buttons_column.operator('export_morphology.swc', icon='GROUP_VERTEX')
 
@@ -128,7 +134,12 @@ class SketchSkeleton(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Load the morphology file
-        nmv.interface.ui.load_morphology(self, context.scene)
+        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+
+        # If the result is None, report the issue
+        if loading_result is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
 
         # Plot the morphology (whatever issues it contains)
         nmv.interface.ui.sketch_morphology_skeleton_guide(
@@ -226,9 +237,6 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
 
         # Clear the scene
         nmv.scene.ops.clear_scene()
-
-        # Load the morphology file
-        nmv.interface.ui.load_morphology(self, context.scene)
 
         # Plot the morphology (whatever issues it contains)
         nmv.interface.ui.sketch_morphology_skeleton_guide(
