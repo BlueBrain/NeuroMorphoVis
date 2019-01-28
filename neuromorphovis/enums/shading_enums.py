@@ -166,6 +166,6 @@ class Shading:
          "Use Flat Shader"),
 
         (VORONI,
-         'Voroni',
-         "Use Voroni Shader")
+         'Voronoi',
+         "Use Voronoi Shader")
     ]
