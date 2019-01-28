@@ -205,92 +205,6 @@ def add_analysis_groups_to_panel(morphology,
 
 
 ####################################################################################################
-# @update_bounding_box_panel
-####################################################################################################
-def update_bounding_box_panel(current_scene,
-                              bbox):
-    """Update the bounding box panel
-
-    :param current_scene:
-        Current scene.
-    :param bbox:
-        Bounding box.
-    """
-
-    # PMin
-    current_scene.BBoxPMinX = bbox.p_min[0]
-    current_scene.BBoxPMinY = bbox.p_min[1]
-    current_scene.BBoxPMinZ = bbox.p_min[2]
-
-    # PMax
-    current_scene.BBoxPMaxX = bbox.p_max[0]
-    current_scene.BBoxPMaxY = bbox.p_max[1]
-    current_scene.BBoxPMaxZ = bbox.p_max[2]
-
-    # Center
-    current_scene.BBoxCenterX = bbox.center[0]
-    current_scene.BBoxCenterY = bbox.center[1]
-    current_scene.BBoxCenterZ = bbox.center[2]
-
-    # Bounds
-    current_scene.BoundsX = bbox.bounds[0]
-    current_scene.BoundsY = bbox.bounds[1]
-    current_scene.BoundsZ = bbox.bounds[2]
-
-
-####################################################################################################
-# set_bounding_box_options
-####################################################################################################
-def set_bounding_box_options(layout,
-                             scene,
-                             options):
-    """Morphology bounding box information.
-
-    :param layout:
-        Panel layout.
-    :param scene:
-        Context scene.
-    :param options:
-        System options.
-    """
-
-    # Bounding box options
-    bounding_box_row = layout.row()
-    bounding_box_row.label(text='Morphology Bounding Box:', icon='BORDER_RECT')
-
-    # Display bounding box option
-    bounding_box_p_row = layout.row()
-    bounding_box_p_min_row = bounding_box_p_row.column(align=True)
-    bounding_box_p_min_row.label(text='PMin:')
-    bounding_box_p_min_row.prop(scene, 'BBoxPMinX')
-    bounding_box_p_min_row.prop(scene, 'BBoxPMinY')
-    bounding_box_p_min_row.prop(scene, 'BBoxPMinZ')
-    bounding_box_p_min_row.enabled = False
-
-    bounding_box_p_max_row = bounding_box_p_row.column(align=True)
-    bounding_box_p_max_row.label(text='PMax:')
-    bounding_box_p_max_row.prop(scene, 'BBoxPMaxX')
-    bounding_box_p_max_row.prop(scene, 'BBoxPMaxY')
-    bounding_box_p_max_row.prop(scene, 'BBoxPMaxZ')
-    bounding_box_p_max_row.enabled = False
-
-    bounding_box_data_row = layout.row()
-    bounding_box_center_row = bounding_box_data_row.column(align=True)
-    bounding_box_center_row.label(text='Center:')
-    bounding_box_center_row.prop(scene, 'BBoxCenterX')
-    bounding_box_center_row.prop(scene, 'BBoxCenterY')
-    bounding_box_center_row.prop(scene, 'BBoxCenterZ')
-    bounding_box_center_row.enabled = False
-
-    bounding_box_bounds_row = bounding_box_data_row.column(align=True)
-    bounding_box_bounds_row.label(text='Bounds:')
-    bounding_box_bounds_row.prop(scene, 'BoundsX')
-    bounding_box_bounds_row.prop(scene, 'BoundsY')
-    bounding_box_bounds_row.prop(scene, 'BoundsZ')
-    bounding_box_bounds_row.enabled = False
-
-
-####################################################################################################
 # @analyze_morphology
 ####################################################################################################
 def analyze_morphology(morphology,
@@ -324,3 +238,32 @@ def analyze_morphology(morphology,
 
         # Morphology could not be analyzed
         return False
+
+
+####################################################################################################
+# @export_analysis_results
+####################################################################################################
+def export_analysis_results(morphology,
+                            directory):
+    """Export the analysis results into a file.
+
+    :param morphology:
+        The morphology that is analysed.
+    :param directory:
+        The output directory where the report will be written.
+    """
+
+    # Analysis results
+    analysis_results_string = '*' * 80 + '\n'
+    analysis_results_string += 'WARNING: AUTO-GENERATED FILE FROM NEUROMORPHOVIS \n'
+    analysis_results_string += '*' * 80 + '\n'
+    analysis_results_string += '* Analysis results for the morphology [%s] \n\n' % morphology.label
+
+    # Register the morphology variables to be able to show and update them on the UI
+    for item in nmv.analysis.ui_analysis_items:
+        analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)
+
+    # Write the text to file
+    analysis_results_file = open('%s/%s-analysis.txt' % (directory, morphology.label), 'w')
+    analysis_results_file.write(analysis_results_string)
+    analysis_results_file.close()

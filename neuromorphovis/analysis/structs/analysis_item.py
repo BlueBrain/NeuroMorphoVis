@@ -170,6 +170,34 @@ class AnalysisItem:
             setattr(context.scene, '%s%s' % (prefix, self.variable), result)
 
     ################################################################################################
+    # @get_analysis_result_string
+    ################################################################################################
+    def get_analysis_result_string(self,
+                                   prefix,
+                                   result):
+        """Returns a string that contains the result of the analysis.
+        :param prefix:
+            The prefix 'in string format' that is used to tag or identify the analysis component.
+        :param result:
+            The final results that should be assigned to the variable.
+        :return:
+            A string that contains the result of the analysis operation.
+        """
+
+        # Ensure that the result is not None
+        if result is not None:
+
+            # For the results string
+            result_string = '\t* %s : %s' % (prefix, str(result))
+
+            # Return the string
+            return result_string
+
+        # Otherwise, return None
+        else:
+            return None
+
+    ################################################################################################
     # @update_analysis_variables
     ################################################################################################
     def update_analysis_variables(self,
@@ -222,6 +250,61 @@ class AnalysisItem:
                 prefix=morphology.axon.get_type_prefix(), result=result, context=context)
 
     ################################################################################################
+    # @get_analysis_results_string
+    ################################################################################################
+    def get_analysis_results_string(self,
+                                    morphology):
+        """Gets the results of all the analysis in a string to get exported to a file.
+
+        :param morphology:
+            A given morphology to analyze.
+        :return:
+            A string with all the analysis results.
+        """
+
+        results_string = '- %s \n' % self.variable
+
+        # Morphology
+        results_string += self.get_analysis_result_string(
+            prefix='Morphology', result=self.result.morphology_result) + '\n'
+
+        # Apical dendrite
+        if morphology.apical_dendrite is not None:
+
+            # Get the apical dendrite result
+            result = self.result.apical_dendrite_result
+
+            results_string += self.get_analysis_result_string(
+                prefix=morphology.apical_dendrite.get_type_prefix(),
+                result=result) + '\n'
+
+        # Basal dendrites
+        if morphology.dendrites is not None:
+
+            # For each basal dendrite
+            for i, basal_dendrite in enumerate(morphology.dendrites):
+
+                # Get the result of this basal dendrite
+                result = self.result.basal_dendrites_result[i]
+
+                results_string += self.get_analysis_result_string(
+                    prefix='%s%d' % (basal_dendrite.get_type_prefix(), i),
+                    result=result) + '\n'
+
+        # Axon
+        if morphology.axon is not None:
+
+            # Get the axon result
+            result = self.result.axon_result
+
+            results_string += self.get_analysis_result_string(
+                prefix=morphology.axon.get_type_prefix(),
+                result=result) + '\n'
+
+        # Return the final string
+        return results_string
+
+    ################################################################################################
     # @apply_analysis_kernel
     ################################################################################################
     def apply_analysis_kernel(self,
@@ -242,3 +325,29 @@ class AnalysisItem:
 
             # Update the variables
             self.update_analysis_variables(morphology=morphology, context=context)
+
+    ################################################################################################
+    # @write_analysis_results_to_string
+    ################################################################################################
+    def write_analysis_results_to_string(self,
+                                         morphology):
+        """Applies the analysis kernels on the entire morphology.
+
+        :param morphology:
+            A given morphology to analyze.
+        """
+
+        # Analysis results
+        analysis_results_string = ''
+
+        # Ensure that there is a valid kernel
+        if self.kernel is not None:
+
+            # Get the result from applying the kernel on the entire morphology skeleton
+            self.result = self.kernel(morphology)
+
+            # Get the analysis results string
+            analysis_results_string += '%s \n' % self.get_analysis_results_string(morphology)
+
+        # Return the string
+        return analysis_results_string

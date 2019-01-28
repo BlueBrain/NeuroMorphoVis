@@ -53,20 +53,6 @@ class AnalysisPanel(bpy.types.Panel):
     # Register a variable that indicates that the morphology is analyzed to be able to update the UI
     bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
 
-    # Bounding box data
-    bpy.types.Scene.BBoxPMinX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMinY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMinZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxPMaxZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BBoxCenterZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsX = FloatProperty(name="X", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsY = FloatProperty(name="Y", min=-1e10, max=1e10, subtype='FACTOR')
-    bpy.types.Scene.BoundsZ = FloatProperty(name="Z", min=-1e10, max=1e10, subtype='FACTOR')
-
     ################################################################################################
     # @draw
     ################################################################################################
@@ -93,9 +79,9 @@ class AnalysisPanel(bpy.types.Panel):
             nmv.interface.add_analysis_groups_to_panel(
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)
 
-            # Set the bounding box options
-            nmv.interface.ui.set_bounding_box_options(
-                layout=layout, scene=context.scene, options=nmv.interface.ui_options)
+            # Export analysis button
+            export_analysis_row = layout.row()
+            export_analysis_row.operator('export.analysis_results', icon='MESH_DATA')
 
 
 ####################################################################################################
@@ -121,7 +107,39 @@ class AnalyzeMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Load the morphology file
+        nmv.interface.ui.load_morphology(self, context.scene)
+
+        # Register the analysis components, apply the kernel functions and update the UI
+        context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
+            morphology=nmv.interface.ui_morphology, context=context)
+
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @SaveSomaMeshBlend
+####################################################################################################
+class ExportAnalysisResults(bpy.types.Operator):
+    """Export the analysis results into a file."""
+
+    # Operator parameters
+    bl_idname = "export.analysis_results"
+    bl_label = "Export Results"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Rendering context
+        :return:
+            'FINISHED'
         """
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
@@ -136,19 +154,11 @@ class AnalyzeMorphology(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):
             nmv.file.ops.clean_and_create_directory(
                 nmv.interface.ui_options.io.analysis_directory)
-        """
 
-        # Load the morphology file
-        nmv.interface.ui.load_morphology(self, context.scene)
-
-        # The bounding box is computed during the loading, update it
-        nmv.interface.ui.update_bounding_box_panel(context.scene, nmv.interface.ui_morphology.bounding_box)
-
-        # Register the analysis components, apply the kernel functions and update the UI
-        context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
-            morphology=nmv.interface.ui_morphology, context=context)
-
-        # nmv.analysis.kernel_analyse_number_of_samples_per_section(nmv.interface.ui_morphology)
+        # Export the analysis results
+        nmv.interface.ui.export_analysis_results(
+            morphology=nmv.interface.ui_morphology,
+            directory=nmv.interface.ui_options.io.analysis_directory)
 
         return {'FINISHED'}
 
@@ -166,6 +176,9 @@ def register_panel():
     # Morphology analysis button
     bpy.utils.register_class(AnalyzeMorphology)
 
+    # Export analysis button
+    bpy.utils.register_class(ExportAnalysisResults)
+
 
 ####################################################################################################
 # @unregister_panel
@@ -179,3 +192,6 @@ def unregister_panel():
 
     # Morphology analysis button
     bpy.utils.unregister_class(AnalyzeMorphology)
+
+    # Export analysis button
+    bpy.utils.unregister_class(ExportAnalysisResults)
