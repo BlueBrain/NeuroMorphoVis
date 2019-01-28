@@ -184,8 +184,8 @@ class EditMorphologyCoordinates(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
         morphology_editor.sketch_morphology_skeleton()
 
-        # Switch back to object mode, to be able to export the mesh
-        bpy.ops.object.editmode_toggle()
+        # Switch to edit mode, to be able to export the mesh
+        bpy.ops.object.mode_set(mode='EDIT')
 
         # The morphology is edited
         global is_skeleton_edited
@@ -229,7 +229,8 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
         if morphology_editor is not None:
 
             # Switch back to object mode, to be able to export the mesh
-            bpy.ops.object.editmode_toggle()
+            bpy.ops.object.mode_set(mode='OBJECT')
+
             morphology_editor.update_skeleton_coordinates()
 
             global is_skeleton_edited

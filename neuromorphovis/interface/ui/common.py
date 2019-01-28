@@ -55,18 +55,18 @@ def load_morphology(panel_object,
         if 'Select File' in context_scene.MorphologyFile:
             return None
 
-        # Ensure that there is some path loaded
+        # If no morphologies are loaded
+        if current_morphology_path is None:
 
-        # Update the morphology label
-        nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-            context_scene.MorphologyFile)
+            # Update the morphology label
+            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
+                context_scene.MorphologyFile)
 
-        # Check if the morphology is loaded before or not
-        if current_morphology_label is None:
-            current_morphology_label = nmv.interface.ui_options.morphology.label
-            current_morphology_path = nmv.interface.ui_options.morphology.morphology_file_path
+        # If there is file that is loaded
         else:
-            if current_morphology_label == nmv.interface.ui_options.morphology.label:
+
+            # If the same path, then return
+            if current_morphology_path == nmv.interface.ui_options.morphology.morphology_file_path:
                 return 'ALREADY_LOADED'
 
         # Load the morphology from the file
