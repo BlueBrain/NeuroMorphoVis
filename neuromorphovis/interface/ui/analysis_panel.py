@@ -15,6 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+
+# System imports
+import copy
+
 # Blender imports
 import bpy
 from mathutils import Vector
@@ -109,6 +113,11 @@ class AnalyzeMorphology(bpy.types.Operator):
 
         # Load the morphology file
         nmv.interface.ui.load_morphology(self, context.scene)
+
+        # Plot the morphology (whatever issues it contains)
+        nmv.interface.ui.sketch_morphology_skeleton_guide(
+            morphology=nmv.interface.ui_morphology,
+            options=copy.deepcopy(nmv.interface.ui_options))
 
         # Register the analysis components, apply the kernel functions and update the UI
         context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(

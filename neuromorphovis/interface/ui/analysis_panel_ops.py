@@ -22,6 +22,8 @@ from bpy.props import BoolProperty
 # Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.analysis
+import neuromorphovis.builders
+import neuromorphovis.scene
 
 
 ####################################################################################################
@@ -238,6 +240,33 @@ def analyze_morphology(morphology,
 
         # Morphology could not be analyzed
         return False
+
+
+####################################################################################################
+# @sketch_morphology_skeleton_guide
+####################################################################################################
+def sketch_morphology_skeleton_guide(morphology,
+                                     options):
+    """Sketches the morphology skeleton in a very raw or basic format to correlate the analysis
+    results with it.
+
+    :param morphology:
+        Morphology skeleton.
+    :param options:
+        Instance of NMV options, but it will be modified here to account for the changes we must do.
+    """
+
+    # Set the morphology options to the default after they have been already initialized
+    options.morphology.set_default()
+
+    # Clear the scene
+    nmv.scene.clear_scene()
+
+    # Create a skeletonizer object to build the morphology skeleton
+    builder = nmv.builders.SkeletonBuilder(morphology, options)
+
+    # Draw the morphology skeleton and return a list of all the reconstructed objects
+    nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
 
 
 ####################################################################################################

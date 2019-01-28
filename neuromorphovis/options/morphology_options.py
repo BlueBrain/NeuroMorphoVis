@@ -166,3 +166,84 @@ class MorphologyOptions:
 
         # Export the morphology skeleton to .BLEND file for rendering using tubes
         self.export_blend = False
+
+    ################################################################################################
+    # @set_default
+    ################################################################################################
+    def set_default(self):
+        """Sets the default options for duplicated objects.
+        """
+
+        # Skeletonization algorithm, ORIGINAL by default
+        self.skeleton = nmv.enums.Skeletonization.Skeleton.ORIGINAL
+
+        # Arbor style
+        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
+
+        # Soma reconstruction technique (IGNORE, SPHERE, or REALISTIC by default)
+        self.soma_representation = nmv.enums.Soma.Representation.SPHERE
+
+        # Branching of the morphologies in the connected modes, either based on angles or radii
+        self.branching = nmv.enums.Skeletonization.Branching.RADII
+
+        # The arbors connectivity to the soma
+        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
+
+        # Enable/Disable axon reconstruction
+        self.ignore_axon = False
+
+        # Enable/Disable basal dendrites reconstruction
+        self.ignore_basal_dendrites = False
+
+        # Enable/Disable apical dendrite reconstruction (if exists)
+        self.ignore_apical_dendrite = False
+
+        # Axon branching order
+        self.axon_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+
+        # Basal dendrites branching order
+        self.basal_dendrites_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+
+        # Apical dendrites branch order
+        self.apical_dendrite_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+
+        # Soma color
+        self.soma_color = nmv.enums.Color.SOMA
+
+        # Axon color
+        self.axon_color = nmv.enums.Color.AXONS
+
+        # Basal dendrites color
+        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Apical dendrites color
+        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
+
+        # Articulations color
+        self.articulation_color = nmv.enums.Color.ARTICULATION
+
+        # The radii of the sections (as specified in the morphology file, scaled with a given
+        # scale factor, or constant at given fixed value)
+        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+
+        # A scale factor for the radii of the sections
+        self.sections_radii_scale = 1.0
+
+        # A fixed and unified value for the radii of all the sections in the morphology
+        self.sections_fixed_radii_value = 1.0
+
+        # Threshold radius, where any section with lower radius values will not drawn
+        self.threshold_radius = 100000
+
+        # Global coordinates
+        self.global_coordinates = False
+
+        # Number of sides of the bevel object used to scale the sections
+        # This parameter controls the quality of the reconstructed morphology
+        self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
+
+        # Selected a method to reconstruct the morphology
+        self.reconstruction_method = nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL
+
+        # Morphology material
+        self.material = nmv.enums.Shading.LAMBERT_WARD
