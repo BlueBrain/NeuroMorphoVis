@@ -153,6 +153,9 @@ class UnionBuilder:
         self.apical_dendrite_materials = self.create_materials(
             name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
 
+        # Create an illumination specific for the given material
+        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+
     ################################################################################################
     # @build_arbors
     ################################################################################################

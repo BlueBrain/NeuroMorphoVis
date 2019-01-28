@@ -131,6 +131,10 @@ class SkeletonBuilder:
             name='articulation', material_type=self.options.morphology.material,
             color=self.options.morphology.articulation_color)
 
+        # Create an illumination specific for the given material
+        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+
+
     def draw_section_samples_as_spheres(self,
                                         section):
         """

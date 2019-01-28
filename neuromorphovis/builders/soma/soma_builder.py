@@ -356,6 +356,9 @@ class SomaBuilder:
             nmv.shading.set_material_to_object(
                 mesh_object=soma_sphere_mesh, material_reference=soma_material)
 
+            # Create an illumination specific for the given material
+            nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+
         # Return a reference to the reconstructed soma mesh
         return soma_sphere_mesh
 

@@ -163,6 +163,9 @@ class SkinningBuilder:
         self.spines_colors = self.create_materials(
             name='spines', color=self.options.mesh.spines_color)
 
+        # Create an illumination specific for the given material
+        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+
     ################################################################################################
     # @verify_and_repair_morphology
     ################################################################################################

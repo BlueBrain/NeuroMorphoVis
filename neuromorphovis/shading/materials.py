@@ -41,9 +41,6 @@ def import_shader(shader_name):
         A reference to the shader after being loaded into blender.
     """
 
-    # Get active scene
-    current_scene = bpy.context.scene
-
     # Get the path of this file
     current_file = os.path.dirname(os.path.realpath(__file__))
     shaders_directory = '%s/shaders/%s.blend/Material' % (current_file, shader_name)
@@ -81,32 +78,6 @@ def create_shadow_material(name,
     # Switch the rendering engine to cycles to be able to create the material
     if not current_scene.render.engine == 'CYCLES':
         current_scene.render.engine = 'CYCLES'
-
-    # If no light sources in the scene, then create two sources one towards the top and the
-    # other one towards the bottom
-    if not nmv.scene.ops.is_object_in_scene_by_name('LampUp'):
-        nmv.scene.ops.deselect_all()
-
-        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-        lamp_reference = bpy.context.object
-        lamp_reference.name = 'LampUp'
-        lamp_reference.data.name = "LampUp"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
-        lamp_reference.rotation_euler[0] = 1.5708
-        bpy.data.lamps['LampUp'].node_tree.nodes["Emission"].inputs[1].default_value = 5
-
-        nmv.scene.ops.deselect_all()
-        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-        lamp_reference = bpy.context.object
-        lamp_reference.name = 'LampDown'
-        lamp_reference.data.name = "LampDown"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
-        lamp_reference.rotation_euler[0] = -1.5708
-        bpy.data.lamps['LampDown'].node_tree.nodes["Emission"].inputs[1].default_value = 5
 
     # Import the material from the library
     material_reference = import_shader(shader_name='shadow-material')
@@ -282,27 +253,6 @@ def create_voroni_cells_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
 
-    bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-    lamp_reference = bpy.context.object
-    lamp_reference.name = 'LampUp'
-    lamp_reference.data.name = "LampUp"
-    lamp_reference.location[0] = 0
-    lamp_reference.location[1] = 0
-    lamp_reference.location[2] = 0
-    lamp_reference.rotation_euler[0] = 1.5708
-    bpy.data.lamps['LampUp'].node_tree.nodes["Emission"].inputs[1].default_value = 2.5
-
-    nmv.scene.ops.deselect_all()
-    bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-    lamp_reference = bpy.context.object
-    lamp_reference.name = 'LampDown'
-    lamp_reference.data.name = "LampDown"
-    lamp_reference.location[0] = 0
-    lamp_reference.location[1] = 0
-    lamp_reference.location[2] = 0
-    lamp_reference.rotation_euler[0] = -1.5708
-    bpy.data.lamps['LampDown'].node_tree.nodes["Emission"].inputs[1].default_value = 2.5
-
     # Return a reference to the material
     return material_reference
 
@@ -415,19 +365,6 @@ def create_lambert_ward_material(name,
     if not current_scene.render.engine == 'BLENDER_RENDER':
         current_scene.render.engine = 'BLENDER_RENDER'
 
-    # If no light sources in the scene, then create two sources one towards the top and the
-    # other one towards the bottom
-    if not nmv.scene.ops.is_object_in_scene_by_name('DefaultLamp'):
-        nmv.scene.ops.deselect_all()
-
-        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-        lamp_reference = bpy.context.object
-        lamp_reference.name = 'DefaultLamp'
-        lamp_reference.data.name = "DefaultLamp"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
-
     # Create a new material
     material_reference = bpy.data.materials.new(name)
 
@@ -508,15 +445,6 @@ def create_glossy_bumpy_material(name,
     # Switch the rendering engine to cycles to be able to create the material
     if not current_scene.render.engine == 'CYCLES':
         current_scene.render.engine = 'CYCLES'
-
-    bpy.ops.object.lamp_add(type='HEMI', location=(0, 0, 0))
-    lamp_reference = bpy.context.object
-    lamp_reference.name = 'DefaultLamp'
-    lamp_reference.data.name = "DefaultLamp"
-    lamp_reference.location[0] = 0
-    lamp_reference.location[1] = 5
-    lamp_reference.location[2] = 0
-    lamp_reference.rotation_euler[0] = -1.5708
 
     # Import the material from the library
     material_reference = import_shader(shader_name='glossy-bumpy')
