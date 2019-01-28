@@ -138,7 +138,7 @@ class SketchSkeleton(bpy.types.Operator):
 
         morphology_editor = nmv.edit.MorphologyGlobalEditor(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-        morphology_editor.create_morphology_skeleton()
+        morphology_editor.sketch_morphology_skeleton()
 
         # Update the editing flag
         global is_skeleton_edited

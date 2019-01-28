@@ -31,7 +31,7 @@ import neuromorphovis.scene
 
 
 ####################################################################################################
-# @MorphologyEditor
+# @MorphologyGlobalEditor
 ####################################################################################################
 class MorphologyGlobalEditor:
     """Morphology Global Editor
@@ -61,8 +61,103 @@ class MorphologyGlobalEditor:
         # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
 
-        # Morphology skeleton mesh
-        self.morphology_skeleton_mesh = None
+        # A skeleton mesh that reflects the morphology
+        self.skeleton_mesh = None
+
+    ################################################################################################
+    # @update_samples_indices_per_morphology_of_section
+    ################################################################################################
+    @staticmethod
+    def update_samples_indices_per_morphology_of_section(section,
+                                                         index):
+        """Updates the global sample.morphology_idx variables for the given section.
+
+        :param section:
+            A given section to update its sample.morphology_idx values.
+        :param index:
+            A starting index.
+        """
+
+        # If the given section is root
+        if section.is_root():
+
+            # Update the arbor index of the first sample
+            section.samples[0].morphology_idx = index[0]
+
+            # Increment the index value
+            index[0] += 1
+
+        # Non-root sections
+        else:
+
+            # The index of the root is basically the same as the index of the last sample of the
+            # parent arbor
+            section.samples[0].morphology_idx = section.parent.samples[-1].morphology_idx
+
+        # Update the indices of the rest of the samples along the section
+        for i in range(1, len(section.samples)):
+            # Set the arbor index of the current sample
+            section.samples[i].morphology_idx = index[0]
+
+            # Increment the index
+            index[0] += 1
+
+    ################################################################################################
+    # @update_samples_indices_per_morphology_of_arbor
+    ################################################################################################
+    def update_samples_indices_per_morphology_of_arbor(self,
+                                                       arbor,
+                                                       starting_index):
+        """Updates the global sample.morphology_idx variables for the given arbor recursively.
+
+        :param arbor:
+            A given arbor to update its sample.morphology_idx values.
+        :param starting_index:
+            A starting index.
+        """
+
+        # Do it for section
+        self.update_samples_indices_per_morphology_of_section(section=arbor,
+                                                              index=starting_index)
+
+        # Update the children sections recursively
+        for child in arbor.children:
+            # Update the children
+            self.update_samples_indices_per_morphology_of_arbor(child, starting_index)
+
+    ################################################################################################
+    # @create_morphology_skeleton_as_multiple_arbors
+    ################################################################################################
+    def update_samples_indices_per_morphology_of_morphology(self):
+        """Updates the global sample.morphology_idx variables for the given morphology.
+        """
+
+        # Header
+        nmv.logger.header('Updating samples indices')
+
+        # Initially, this index is set to ONE and incremented later (soma index = 0)
+        samples_global_morphology_index = [1]
+
+        # Apical dendrite
+        if self.morphology.apical_dendrite is not None:
+            nmv.logger.info('Apical dendrite')
+            self.update_samples_indices_per_morphology_of_arbor(
+                self.morphology.apical_dendrite, samples_global_morphology_index)
+
+        # Basal dendrites
+        if self.morphology.dendrites is not None:
+
+            # Do it dendrite by dendrite
+            for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                nmv.logger.info('Dendrite [%d]' % i)
+                self.update_samples_indices_per_morphology_of_arbor(
+                    basal_dendrite, samples_global_morphology_index)
+
+        # Axon
+        if self.morphology.axon is not None:
+            nmv.logger.info('Axon')
+            self.update_samples_indices_per_morphology_of_arbor(
+                self.morphology.axon, samples_global_morphology_index)
 
     ################################################################################################
     # @add_soma_to_arbor_segment
@@ -77,17 +172,17 @@ class MorphologyGlobalEditor:
         """
 
         # Initial point is at the soma center (typically origin)
-        point_0 = mathutils.Vector((0.0, 0.0, 0.0))
+        point_0 = self.morphology.soma.centroid
 
         # Last point is at the first sample of the root section of the arbor
         point_1 = arbor.samples[0].point
 
         # Deselect all the objects in the scene and select the skeleton mesh
         nmv.scene.deselect_all()
-        nmv.scene.select_objects([self.morphology_skeleton_mesh])
+        nmv.scene.select_objects([self.skeleton_mesh])
 
         # Select the vertex that we need to start the extrusion process from (0 is the soma vertex)
-        nmv.mesh.select_vertex(self.morphology_skeleton_mesh, 0)
+        nmv.mesh.select_vertex(self.skeleton_mesh, 0)
 
         # Toggle from the object mode to the edit mode
         bpy.ops.object.editmode_toggle()
@@ -102,8 +197,8 @@ class MorphologyGlobalEditor:
     ################################################################################################
     # @extrude_section
     ################################################################################################
-    def extrude_section_along_arbor_skeleton(self,
-                                             section):
+    def extrude_section(self,
+                        section):
         """Extrudes the section along its samples starting from the first one to the last one.
 
         :param section:
@@ -119,7 +214,7 @@ class MorphologyGlobalEditor:
 
             # Select the vertex that we need to start the extrusion process from
             nmv.mesh.ops.select_vertex(
-                self.morphology_skeleton_mesh, section.samples[i].morphology_idx)
+                self.skeleton_mesh, section.samples[i].morphology_idx)
 
             # Toggle from the object mode to the edit mode
             bpy.ops.object.editmode_toggle()
@@ -132,34 +227,32 @@ class MorphologyGlobalEditor:
             bpy.ops.object.editmode_toggle()
 
     ################################################################################################
-    # @create_root_point_mesh
+    # @extrude_branch
     ################################################################################################
-    def extrude_arbor_along_skeleton(self,
-                                     root):
-        """Extrude the given arbor section by section recursively.
+    def extrude_branch(self,
+                       root):
+        """Extrude the given branch section by section recursively.
 
         :param root:
             The root of a given section.
         """
 
         # Extrude the section
-        self.extrude_section_along_arbor_skeleton(root)
+        self.extrude_section(root)
 
         # Extrude the children sections recursively
         for child in root.children:
-            self.extrude_arbor_along_skeleton(child)
+            self.extrude_branch(child)
 
     ################################################################################################
-    # @create_arbor_mesh
+    # @extrude_arbor
     ################################################################################################
-    def extende_skeleton_along_arbor(self,
-                                     arbor):
+    def extrude_arbor(self,
+                      arbor):
         """Creates a skeleton mesh of the given arbor recursively.
 
         :param arbor:
             A given arbor.
-        :param arbor_name:
-            The name of the arbor.
         :return:
             A reference to the created skeleton mesh object.
         """
@@ -167,16 +260,15 @@ class MorphologyGlobalEditor:
         # First of all, add an auxiliary segment from the soma center to the first sample
         self.add_soma_to_arbor_segment(arbor=arbor)
 
-        # Extrude arbor mesh using the skinning method using a temporary radius
-        self.extrude_arbor_along_skeleton(root=arbor)
-
+        # Extrude branch mesh
+        self.extrude_branch(root=arbor)
 
     ################################################################################################
-    # @create_morphology_skeleton_as_multiple_arbors
+    # @extrude_morphology_skeleton
     ################################################################################################
-    def create_morphology_skeleton_hola(self):
-        """Creates the skeleton of the morphology composed from multiple arbors such that we can
-        control it and update it during the repair operation.
+    def extrude_morphology_skeleton(self):
+        """Creates the skeleton of the morphology as a single object such that we can control it
+        and update it during the repair operation.
 
         NOTE: All the created objects are linked after their creation to the morphology itself.
         """
@@ -188,124 +280,40 @@ class MorphologyGlobalEditor:
         if self.morphology.apical_dendrite is not None:
 
             nmv.logger.info('Apical dendrite')
-            self.extende_skeleton_along_arbor(arbor=self.morphology.apical_dendrite)
+            self.extrude_arbor(arbor=self.morphology.apical_dendrite)
 
         # Do it dendrite by dendrite
         for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
             # Create the basal dendrite meshes
             nmv.logger.info('Dendrite [%d]' % i)
-            self.extende_skeleton_along_arbor(arbor=basal_dendrite)
+            self.extrude_arbor(arbor=basal_dendrite)
 
         # Create the apical dendrite mesh
         if self.morphology.axon is not None:
 
             nmv.logger.info('Axon')
-            self.extende_skeleton_along_arbor(arbor=self.morphology.axon)
+            self.extrude_arbor(arbor=self.morphology.axon)
 
     ################################################################################################
-    # @update_samples_indices_per_morphology_of_section
+    # @sketch_morphology_skeleton
     ################################################################################################
-    def update_samples_indices_per_morphology_of_section(self,
-                                                         section,
-                                                         index):
-
-        # If the given section is root
-        if section.is_root():
-
-            # Update the arbor index of the first sample
-            section.samples[0].morphology_idx = index[0]
-
-            # Increment the index value
-            index[0] += 1
-
-        else:
-
-            # The index of the root is basically the same as the index of the last sample of the
-            # parent arbor
-            section.samples[0].morphology_idx = section.parent.samples[-1].morphology_idx
-
-        # Update the indices of the rest of the samples along the section
-        for i in range(1, len(section.samples)):
-
-            # Set the arbor index of the current sample
-            section.samples[i].morphology_idx = index[0]
-
-            # Increment the index
-            index[0] += 1
-
-
-    ################################################################################################
-    # @update_samples_indices_per_morphology_of_arbor
-    ################################################################################################
-    def update_samples_indices_per_morphology_of_arbor(self,
-                                                       arbor,
-                                                       starting_index):
-
-        # Do it for section
-        self.update_samples_indices_per_morphology_of_section(section=arbor, index=starting_index)
-
-        # Update the children sections recursively
-        for child in arbor.children:
-
-            # Update the children
-            self.update_samples_indices_per_morphology_of_arbor(child, starting_index)
-
-    ################################################################################################
-    # @create_morphology_skeleton_as_multiple_arbors
-    ################################################################################################
-    def update_samples_indices_per_morphology_of_morphology(self):
-
-        # Header
-        nmv.logger.header('Updating samples indices')
-
-        # Initially, this index is set to ZERO and incremented later (soma index = 0)
-        samples_global_morphology_index = [1]
-
-        # Apical dendrite
-        if self.morphology.apical_dendrite is not None:
-
-            nmv.logger.info('Apical dendrite')
-            self.update_samples_indices_per_morphology_of_arbor(
-                self.morphology.apical_dendrite, samples_global_morphology_index)
-
-        # Basal dendrites
-        if self.morphology.dendrites is not None:
-
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
-                nmv.logger.info('Dendrite [%d]' % i)
-                self.update_samples_indices_per_morphology_of_arbor(
-                    basal_dendrite, samples_global_morphology_index)
-
-        # Axon
-        if self.morphology.axon is not None:
-
-            nmv.logger.info('Axon')
-            self.update_samples_indices_per_morphology_of_arbor(
-                self.morphology.axon, samples_global_morphology_index)
-
-    ################################################################################################
-    # @create_morphology_skeleton_as_multiple_arbors
-    ################################################################################################
-    def create_morphology_skeleton(self):
-        """Creates the skeleton of the morphology as a single object such that we can control it
+    def sketch_morphology_skeleton(self):
+        """Sketches the skeleton of the morphology as a single object such that we can control it
         and update it during the repair operation.
 
         NOTE: The created object is linked after their creation to the morphology itself.
         """
 
-        # Header
-        nmv.logger.header('Creating Morphology Skeleton for Repair')
-
         # Updating the samples indices along the entire morphology
         self.update_samples_indices_per_morphology_of_morphology()
 
-        # Create an initial proxy mesh at the origin
-        self.morphology_skeleton_mesh = nmv.geometry.create_vertex_mesh(name=self.morphology.label)
+        # Create an initial proxy mesh at the origin (reflecting the soma)
+        self.skeleton_mesh = nmv.geometry.create_vertex_mesh(name=self.morphology.label)
 
-        self.create_morphology_skeleton_hola()
+        # Extrude the morphology skeleton
+        self.extrude_morphology_skeleton()
+
 
 
 
