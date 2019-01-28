@@ -43,7 +43,6 @@ class NeuroRender(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_label = 'NeuroRender'
-    bl_context = 'objectmode'
     bl_category = 'NeuroRender'
 
     bpy.types.Scene.RenderMaterial = EnumProperty(

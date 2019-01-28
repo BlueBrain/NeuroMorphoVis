@@ -50,7 +50,6 @@ class MorphologyPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_label = 'Morphology Toolbox'
-    bl_context = 'objectmode'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 

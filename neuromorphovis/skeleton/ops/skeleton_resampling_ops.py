@@ -199,7 +199,8 @@ def resample_sections(section,
         diameters = (section.samples[1].radius + section.samples[0].radius) * 2
 
         # Report the warning
-        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], diameters [%f]' %
+        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], '
+                       'diameters [%f]' %
               (section.get_type_string(), section.id, section_length, diameters))
 
         if section_length < diameters:
@@ -285,6 +286,7 @@ def resample_section_based_on_radius(section):
     """
 
     return
+
 
 ####################################################################################################
 # @add_sample_at_section_center
