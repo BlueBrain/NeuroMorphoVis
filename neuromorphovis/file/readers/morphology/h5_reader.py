@@ -290,6 +290,7 @@ class H5Reader:
             section_index = i_section
 
             # Get section type
+            # 1: soma, 2: axon, 3: basal dendrite, 4: apical dendrite.
             section_type = self.structure_list[i_section][1]
 
             # Get the section parent index
@@ -316,7 +317,8 @@ class H5Reader:
 
                 # Build a NeuroMorphoVis sample
                 nmv_sample = neuromorphovis.skeleton.Sample(
-                    point=point, radius=radius, id=sample_index, morphology_id=sample_index)
+                    point=point, radius=radius, id=sample_index, morphology_id=sample_index,
+                    type=section_type)
 
                 # Add the sample to the list
                 samples.append(nmv_sample)

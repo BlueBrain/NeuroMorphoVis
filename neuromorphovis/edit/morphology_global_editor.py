@@ -314,23 +314,15 @@ class MorphologyGlobalEditor:
         # Extrude the morphology skeleton
         self.extrude_morphology_skeleton()
 
-
-
-
-
-
     ################################################################################################
     # @update_section_coordinates
     ################################################################################################
-    @staticmethod
-    def update_section_coordinates(section,
-                                   arbor_skeleton_mesh):
+    def update_section_coordinates(self,
+                                   section):
         """Updates the coordinates of the samples of the given section from the skeleton object.
 
         :param section:
             A given section to update the positions of its samples.
-        :param arbor_skeleton_mesh:
-            The skeleton mesh of the arbor that is modified by the user.
         """
 
         # On all the samples of the section
@@ -338,28 +330,25 @@ class MorphologyGlobalEditor:
 
             # Update the position
             section.samples[i].point = copy.deepcopy(nmv.mesh.ops.get_vertex_position(
-                mesh_object=arbor_skeleton_mesh, vertex_index=section.samples[i].arbor_idx))
+                mesh_object=self.skeleton_mesh, vertex_index=section.samples[i].morphology_idx))
 
     ################################################################################################
     # @update_arbor_coordinates
     ################################################################################################
     def update_arbor_coordinates(self,
-                                 root,
-                                 arbor_skeleton_mesh):
+                                 root):
         """"Updates the coordinates of the samples of the given arbor from the skeleton object.
 
         :param root:
             The root of a given section.
-        :param arbor_skeleton_mesh:
-            The skeleton mesh of the arbor that is modified by the user.
         """
 
         # Update for the current section
-        self.update_section_coordinates(root, arbor_skeleton_mesh)
+        self.update_section_coordinates(root)
 
         # Update the children sections recursively
         for child in root.children:
-            self.update_arbor_coordinates(child, arbor_skeleton_mesh)
+            self.update_arbor_coordinates(child)
 
     ################################################################################################
     # @update_arbor_coordinates
@@ -373,22 +362,16 @@ class MorphologyGlobalEditor:
         if self.morphology.apical_dendrite is not None:
 
             nmv.logger.info('Apical dendrite')
-            self.update_arbor_coordinates(
-                root=self.morphology.apical_dendrite,
-                arbor_skeleton_mesh=self.apical_skeleton)
+            self.update_arbor_coordinates(root=self.morphology.apical_dendrite)
 
         # Do it dendrite by dendrite
         for i, basal_dendrite in enumerate(self.morphology.dendrites):
 
             nmv.logger.info('Dendrite [%d]' % i)
-            self.update_arbor_coordinates(
-                root=basal_dendrite,
-                arbor_skeleton_mesh=self.basal_dendrites_skeletons[i])
+            self.update_arbor_coordinates(root=basal_dendrite)
 
         # Create the apical dendrite mesh
         if self.morphology.axon is not None:
 
             nmv.logger.info('Axon')
-            self.update_arbor_coordinates(
-                root=self.morphology.axon,
-                arbor_skeleton_mesh=self.axon_skeleton)
+            self.update_arbor_coordinates(root=self.morphology.axon)
