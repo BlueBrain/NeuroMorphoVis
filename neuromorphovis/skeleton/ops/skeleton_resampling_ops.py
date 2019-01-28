@@ -145,9 +145,10 @@ def update_samples_indices_per_morphology(morphology_object,
                                                   samples_global_morphology_index)
 
     # Do it dendrite by dendrite
-    for basal_dendrite in morphology_object.dendrites:
-        update_samples_indices_per_arbor_globally(basal_dendrite,
-                                                  samples_global_morphology_index)
+    if morphology_object.dendrites is not None:
+        for basal_dendrite in morphology_object.dendrites:
+            update_samples_indices_per_arbor_globally(basal_dendrite,
+                                                      samples_global_morphology_index)
 
     # Axon
     if morphology_object.axon is not None:

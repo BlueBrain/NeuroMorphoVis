@@ -57,10 +57,13 @@ class MorphologyEditor:
         # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
 
+        # Apical dendrite skeleton
         self.apical_skeleton = None
 
+        # Basal dendrite skeleton
         self.basal_dendrites_skeletons = list()
 
+        # Axon skeleton
         self.axon_skeleton = None
 
     ################################################################################################
@@ -173,7 +176,7 @@ class MorphologyEditor:
         """
 
         # Initially, this index is set to ONE and incremented later (soma index = 0)
-        samples_global_arbor_index = [1]
+        samples_global_arbor_index = 1
         nmv.skeleton.ops.update_samples_indices_per_arbor(arbor, samples_global_arbor_index)
 
         # Create an initial proxy mesh at the origin
@@ -189,11 +192,11 @@ class MorphologyEditor:
         return arbor_skeleton_mesh
 
     ################################################################################################
-    # @build_arbors
+    # @create_morphology_skeleton_as_multiple_arbors
     ################################################################################################
-    def create_morphological_skeleton(self):
-        """Creates the skeleton of the morphology such that we can control it and update it
-        during the repair operation.
+    def create_morphology_skeleton_as_multiple_arbors(self):
+        """Creates the skeleton of the morphology composed from multiple arbors such that we can
+        control it and update it during the repair operation.
 
         NOTE: All the created objects are linked after their creation to the morphology itself.
         """
@@ -225,6 +228,41 @@ class MorphologyEditor:
             self.axon_skeleton = self.create_arbor_skeleton_mesh(
                 arbor=self.morphology.axon,
                 arbor_name=nmv.consts.Arbors.AXON_PREFIX)
+
+    ################################################################################################
+    # @create_morphology_skeleton_as_multiple_arbors
+    ################################################################################################
+    def create_morphology_skeleton_as_single_object(self):
+        """Creates the skeleton of the morphology as a single object such that we can control it
+        and update it during the repair operation.
+
+        NOTE: The created object is linked after their creation to the morphology itself.
+        """
+
+        # Header
+        nmv.logger.header('Creating Morphology Skeleton for Repair')
+
+        # Initially, this index is set to ZERO and incremented later (soma index = 0)
+        samples_global_arbor_index = [0]
+
+        # Updating the samples indices along the entire morphology
+        nmv.skeleton.ops.update_samples_indices_per_morphology(
+            morphology_object=self.morphology, starting_index=samples_global_arbor_index)
+
+        # Create an initial proxy mesh at the origin
+        self.skeleton_mesh = nmv.geometry.create_vertex_mesh(name=self.morphology.label)
+
+        # Apical dendrite
+        if self.morphology.apical_dendrite is not None:
+            nmv.logger.info('Apical dendrite')
+
+            # First of all, add an auxiliary segment from the soma center to the first sample
+            self.add_soma_to_arbor_segment(arbor=self.morphology.apical_dendrite,
+                                           arbor_skeleton_mesh=self.skeleton_mesh)
+
+            # Extrude arbor mesh using the skinning method using a temporary radius
+            self.extrude_arbor_along_skeleton(root=self.morphology.apical_dendrite,
+                                              arbor_skeleton_mesh=self.skeleton_mesh)
 
     ################################################################################################
     # @update_section_coordinates
