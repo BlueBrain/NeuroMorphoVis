@@ -445,4 +445,5 @@ def set_export_options(layout,
     save_morphology_buttons_column = layout.column(align=True)
     save_morphology_buttons_column.operator('save_morphology.blend', icon='OUTLINER_OB_META')
     save_morphology_buttons_column.operator('save_morphology.swc', icon='GROUP_VERTEX')
+    save_morphology_buttons_column.operator('save_morphology.segments', icon='GROUP_VERTEX')
     save_morphology_buttons_column.enabled = True

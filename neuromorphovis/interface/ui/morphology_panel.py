@@ -929,6 +929,50 @@ class SaveMorphologySWC(bpy.types.Operator):
 
 
 ####################################################################################################
+# @SaveMorphologySegments
+####################################################################################################
+class SaveMorphologySegments(bpy.types.Operator):
+    """Save the reconstructed morphology as a list of segments into file"""
+
+    # Operator parameters
+    bl_idname = "save_morphology.segments"
+    bl_label = "Segments (.segments)"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """
+        Executes the operator.
+
+        :param context: Operator context.
+        :return: {'FINISHED'}
+        """
+
+        # Ensure that there is a valid directory where the meshes will be written to
+        if nmv.interface.ui_options.io.output_directory is None:
+            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
+            return {'FINISHED'}
+
+        if not nmv.file.ops.file_ops.path_exists(context.scene.OutputDirectory):
+            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+            return {'FINISHED'}
+
+        # Create the meshes directory if it does not exist
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.morphologies_directory)
+
+        # Export the reconstructed morphology as an .blend file
+        # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
+        # the exported blender file will contain all the morphology objects.
+        nmv.file.write_morphology_to_segments_file(
+            nmv.interface.ui_morphology, nmv.interface.ui_options.io.morphologies_directory)
+
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @SaveMorphologyBLEND
 ####################################################################################################
 class SaveMorphologyBLEND(bpy.types.Operator):
@@ -996,6 +1040,7 @@ def register_panel():
     # Saving morphology
     bpy.utils.register_class(SaveMorphologyBLEND)
     bpy.utils.register_class(SaveMorphologySWC)
+    bpy.utils.register_class(SaveMorphologySegments)
 
 
 ####################################################################################################
@@ -1020,3 +1065,5 @@ def unregister_panel():
     # Saving morphology
     bpy.utils.unregister_class(SaveMorphologyBLEND)
     bpy.utils.unregister_class(SaveMorphologySWC)
+    bpy.utils.unregister_class(SaveMorphologySegments)
+

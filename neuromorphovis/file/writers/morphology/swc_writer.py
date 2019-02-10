@@ -146,7 +146,7 @@ def construct_swc_samples_list_from_soma(soma,
 
 
 ####################################################################################################
-# @update_samples_indices_per_morphology
+# @construct_swc_samples_list_from_morphology_tree
 ####################################################################################################
 def construct_swc_samples_list_from_morphology_tree(morphology_object):
     """Constructs a list of samples retrieved from the given morphology skeleton compliant with
@@ -182,7 +182,7 @@ def construct_swc_samples_list_from_morphology_tree(morphology_object):
 
 
 ####################################################################################################
-# @update_samples_indices_per_morphology
+# @write_morphology_to_swc_file
 ####################################################################################################
 def write_morphology_to_swc_file(morphology_object,
                                  file_path):
