@@ -424,7 +424,7 @@ class SomaBuilder:
 
         # Make a subdivision for extra processing, if the topology is not required to be preserved
         if self.options.soma.irregular_subdivisions:
-            nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, faces_indices, cuts=1)
+            nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, faces_indices, cuts=2)
 
         # Get the actual intersecting faces via their indices (this is for smoothing)
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_fully_intersecting_sphere(

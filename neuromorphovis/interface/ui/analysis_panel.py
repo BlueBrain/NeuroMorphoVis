@@ -134,7 +134,7 @@ class AnalyzeMorphology(bpy.types.Operator):
 # @SaveSomaMeshBlend
 ####################################################################################################
 class ExportAnalysisResults(bpy.types.Operator):
-    """Export the analysis results into a file."""
+    """Export the analysis results into a file"""
 
     # Operator parameters
     bl_idname = "export.analysis_results"
