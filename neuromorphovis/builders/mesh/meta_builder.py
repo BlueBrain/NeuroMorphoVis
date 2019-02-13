@@ -662,6 +662,36 @@ class MetaBuilder:
             mesh_object=self.meta_mesh, blue_config=self.options.morphology.blue_config,
             gid=self.options.morphology.gid)
 
+    def build_soma_profile_from_meta_objects(self):
+
+        # Get the soma profile mesh that is created with the soma profile
+        soma_builder_object = nmv.builders.SomaBuilder(
+            morphology=self.morphology, options=self.options)
+
+        # Reconstruct the soma mesh
+        soma_profile_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+        # Adding the re-meshing to get a good topology of the mesh
+        nmv.scene.set_active_object(soma_profile_mesh)
+
+        # Apply the re-meshing modifier
+        bpy.ops.object.modifier_add(type='REMESH')
+        bpy.context.object.modifiers["Remesh"].octree_depth = 9
+        bpy.context.object.modifiers["Remesh"].mode = 'BLOCKS'
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Remesh")
+
+        # Get the vertices of the mesh to make the point cloud
+        soma_point_cloud = nmv.mesh.ops.get_vertices_in_object(soma_profile_mesh)
+
+        # Meta balls from point cloud
+        for point in soma_point_cloud:
+            element = self.meta_skeleton.elements.new()
+            element.co = point
+            element.radius = 0.1
+
+
+
+
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -676,7 +706,9 @@ class MetaBuilder:
         self.initialize_meta_object(name=self.options.morphology.label)
 
         # Build the soma
-        self.build_soma_from_meta_objects()
+        # self.build_soma_from_meta_objects()
+
+        self.build_soma_profile_from_meta_objects()
 
         # Build the arbors
         self.build_arbors()
