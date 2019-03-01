@@ -16,7 +16,8 @@
 ####################################################################################################
 
 # Blender modules
-import bpy, bmesh
+import bpy
+import bmesh
 
 
 ####################################################################################################
@@ -47,11 +48,12 @@ def convert_to_mesh_object(bmesh_object,
 # @convert_from_mesh_object
 ####################################################################################################
 def convert_from_mesh_object(mesh_object):
-    """
-    Converts the mesh object to a bmesh object and returns a reference to it.
+    """Converts the mesh object to a bmesh object and returns a reference to it.
 
-    :param mesh_object: An input mesh object.
-    :return: A reference to the bmesh object.
+    :param mesh_object:
+        An input mesh object.
+    :return:
+        A reference to the bmesh object.
     """
 
     # Return a reference to the bmesh created from the object.
@@ -63,14 +65,16 @@ def convert_from_mesh_object(mesh_object):
 ####################################################################################################
 def link_to_new_object_in_scene(bmesh_object,
                                 name='bmesh'):
-    """
-    Converts the bmesh to a new mesh object, renames it and links it to the scene as a blender
+    """Converts the bmesh to a new mesh object, renames it and links it to the scene as a blender
     object such that you can see it in the interface.
     This operation returns a reference to the created blender object.
 
-    :param bmesh_object: An input bmesh object.
-    :param name: The name of the object.
-    :return: A reference to the linked object.
+    :param bmesh_object:
+        An input bmesh object.
+    :param name:
+        The name of the object.
+    :return:
+        A reference to the linked object.
     """
 
     # Create a mesh object from the bmesh
@@ -89,11 +93,12 @@ def link_to_new_object_in_scene(bmesh_object,
 ####################################################################################################
 def link_to_existing_object_in_scene(bmesh_object,
                                      scene_object):
-    """
-    Links the bmesh object to an existing object in the scene.
+    """Links the bmesh object to an existing object in the scene.
 
-    :param bmesh_object: An input bmesh object.
-    :param scene_object: An object existing in the scene where the bmesh object will be linked to.
+    :param bmesh_object:
+        An input bmesh object.
+    :param scene_object:
+        An object existing in the scene where the bmesh object will be linked to.
     """
 
     # Link the bmesh to the given object, and update the mesh.

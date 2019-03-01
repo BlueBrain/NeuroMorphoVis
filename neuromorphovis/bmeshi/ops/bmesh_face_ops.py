@@ -22,9 +22,7 @@ import math
 import bmesh
 from mathutils import Vector, Matrix
 
-# Internal modules
-#import intersection
-
+# Internal imports
 import neuromorphovis as nmv
 import neuromorphovis.consts
 import neuromorphovis.geometry
@@ -35,12 +33,14 @@ import neuromorphovis.geometry
 ####################################################################################################
 def get_face_from_index(bmesh_object,
                         face_index):
-    """
-    Gets a face using its index.
+    """Gets a face using its index.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of a given face in the bmesh object.
-    :return: The selected face for the given index.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of a given face in the bmesh object.
+    :return:
+        The selected face for the given index.
     """
 
     # Update the bmesh faces
@@ -55,12 +55,14 @@ def get_face_from_index(bmesh_object,
 ####################################################################################################
 def get_nearest_face_index(bmesh_object,
                            point):
-    """
-    Gets the index of the nearest face to a given point in the three-dimensional space.
+    """Gets the index of the nearest face to a given point in the three-dimensional space.
 
-    :param bmesh_object: A given bmesh object.
-    :param point: The position of a given point.
-    :return: The index of the nearest face in the bmesh object to the point.
+    :param bmesh_object:
+        A given bmesh object.
+    :param point:
+        The position of a given point.
+    :return:
+        The index of the nearest face in the bmesh object to the point.
     """
 
     # Compute the shortest distance between the point and the centroid of all the faces of the
@@ -88,12 +90,14 @@ def get_nearest_face_index(bmesh_object,
 ####################################################################################################
 def get_nearest_vertex_index_to_point(bmesh_object,
                                       point):
-    """
-    Gets the index of the nearest vertex in a given bmesh object to a given point in space.
+    """Gets the index of the nearest vertex in a given bmesh object to a given point in space.
 
-    :param bmesh_object: A given bmesh object.
-    :param point: A given point in the three-dimensional space.
+    :param bmesh_object:
+        A given bmesh object.
+    :param point:
+        A given point in the three-dimensional space.
     :return:
+        The nearest vertex to a point.
     """
 
     # Get the index of the nearest face
@@ -126,14 +130,17 @@ def get_nearest_vertex_index_to_point(bmesh_object,
 def get_nearest_face_index_from_list(bmesh_object,
                                      point,
                                      faces_indices):
-    """
-    Gets the index of the nearest face to a given point in the space from a given list of faces
+    """Gets the index of the nearest face to a given point in the space from a given list of faces
     defined by their indices.
 
-    :param bmesh_object: A given bmesh object.
-    :param point: A given point in the three-dimensional space.
-    :param faces_indices: A given list of indices that defines some faces in the bmesh object.
-    :return: The index of the nearest face to the given point.
+    :param bmesh_object:
+        A given bmesh object.
+    :param point:
+        A given point in the three-dimensional space.
+    :param faces_indices:
+        A given list of indices that defines some faces in the bmesh object.
+    :return:
+        The index of the nearest face to the given point.
     """
 
     # Compute the shortest distance between the point and the centroid of all the given face of
@@ -164,13 +171,15 @@ def get_nearest_face_index_from_list(bmesh_object,
 ####################################################################################################
 def merge_faces_into_one_face(bmesh_object,
                               faces_indices):
-    """
-    Merges a group of faces into a single face.
+    """Merges a group of faces into a single face.
     This operation returns the index of the resulting face.
 
-    :param bmesh_object: A given bmesh object.
-    :param faces_indices: A list of indices of the faces that should be merged into one face.
-    :return: The index of the new face created after the merge operation.
+    :param bmesh_object:
+        A given bmesh object.
+    :param faces_indices:
+        A list of indices of the faces that should be merged into one face.
+    :return:
+        The index of the new face created after the merge operation.
     """
 
     # Retrieve the faces that will be merged together from their indices
@@ -236,18 +245,19 @@ def rotate_face_in_object_towards_point(bmesh_object,
 def rotate_face_from_center_to_point(bmesh_object,
                                      face_index,
                                      target_point):
-    """
-    Rotates the face towards a point, using a vector that is connected between the center of the
+    """Rotates the face towards a point, using a vector that is connected between the center of the
     face and the given target point.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of the face that should be rotated.
-    :param target_point: A point in space where the face should be oriented towards.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face that should be rotated.
+    :param target_point:
+        A point in space where the face should be oriented towards.
     """
 
     # Get the face from its index
-    face = get_face_from_index(bmesh_object,
-        face_index)
+    face = get_face_from_index(bmesh_object, face_index)
 
     # Compute the rotation angle and axis and then the rotation matrix
     face_center = face.calc_center_median()
@@ -276,13 +286,16 @@ def rotate_face_from_point_to_point(bmesh_object,
                                     face_index,
                                     from_point,
                                     to_point):
-    """
-    Rotates a face towards a point and from another point 'from_point' and not from its center.
+    """Rotates a face towards a point and from another point 'from_point' and not from its center.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of the face that should be rotated.
-    :param from_point: The initial point of the rotation vector.
-    :param to_point: The final point of the rotation vector.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face that should be rotated.
+    :param from_point:
+        The initial point of the rotation vector.
+    :param to_point:
+        The final point of the rotation vector.
     """
 
     # Get the face from its index
@@ -307,12 +320,14 @@ def rotate_face_from_point_to_point(bmesh_object,
 ####################################################################################################
 def extrude_face_to_face(bmesh_object,
                          face):
-    """
-    Extrudes a face by duplication at the same point.
+    """Extrudes a face by duplication at the same point.
 
-    :param bmesh_object: A given bmesh object.
-    :param face: A reference to the face that should be extruded.
-    :return: The index of the extruded face.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face:
+        A reference to the face that should be extruded.
+    :return:
+        The index of the extruded face.
     """
 
     # Return a reference to the extruded face
@@ -365,20 +380,22 @@ def extrude_face_to_point(bmesh_object,
     return face.index
 
 
-
 ####################################################################################################
 # @extrude_face_with_delta_along_its_normal
 ####################################################################################################
 def extrude_face_with_delta_along_its_normal(bmesh_object,
                                              face_index,
                                              delta):
-    """
-    Extrudes a face with a given delta (distance not vector) along its normal.
+    """Extrudes a face with a given delta (distance not vector) along its normal.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: An index to the face that should be extruded.
-    :param delta: The distance where the face will get extruded along its normal.
-    :return: The index of the extruded face.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        An index to the face that should be extruded.
+    :param delta:
+        The distance where the face will get extruded along its normal.
+    :return:
+        The index of the extruded face.
     """
 
     # Retrieve the face from its index
@@ -405,12 +422,14 @@ def extrude_face_with_delta_along_its_normal(bmesh_object,
 ####################################################################################################
 def get_face_shortest_edge(bmesh_object,
                            face_index):
-    """
-    Returns the length of the shortest edge of a given face defined by its index.
+    """Returns the length of the shortest edge of a given face defined by its index.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of the face.
-    :return: The length of the shortest edge.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face.
+    :return:
+        The length of the shortest edge.
     """
 
     # Get the face from its index
@@ -437,12 +456,14 @@ def get_face_shortest_edge(bmesh_object,
 ####################################################################################################
 def get_face_longest_edge(bmesh_object,
                           face_index):
-    """
-    Returns the length of longest edge of a given face defined by its index.
+    """Returns the length of longest edge of a given face defined by its index.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of the face.
-    :return: The length of the longest edge.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face.
+    :return:
+        The length of the longest edge.
     """
 
     # Get the face from its index
@@ -470,13 +491,16 @@ def get_face_longest_edge(bmesh_object,
 def subdivide_face(bmesh_object,
                    face_index,
                    cuts=1):
-    """
-    Subdivides a faces defined by its index into multiple cuts.
+    """Subdivides a faces defined by its index into multiple cuts.
 
-    :param bmesh_object: A given bmesh object.
-    :param face_index: The index of the face.
-    :param cuts: Number of subdivision level, 1 i.e. two faces from a single face.
-    :return: A list of the indices of the subdivided faces.
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of the face.
+    :param cuts:
+        Number of subdivision level, 1 i.e. two faces from a single face.
+    :return:
+        A list of the indices of the subdivided faces.
     """
 
     # Get the face from its index
@@ -509,17 +533,20 @@ def subdivide_face(bmesh_object,
 def subdivide_faces(bmesh_object,
                     faces_indices,
                     cuts=1):
-    """
-    This operation subdivides a set of faces defined by their indices into multiple cuts.
+    """This operation subdivides a set of faces defined by their indices into multiple cuts.
 
-    :param bmesh_object: A given bmesh object.
-    :param faces_indices: A list of the indices of all the faces that will be subdivided.
-    :param cuts: Number of subdivision level, 1 i.e. two faces from a single face.
-    :return: A list of the indices of the subdivided faces.
+    :param bmesh_object:
+        A given bmesh object.
+    :param faces_indices:
+        A list of the indices of all the faces that will be subdivided.
+    :param cuts:
+        Number of subdivision level, 1 i.e. two faces from a single face.
+    :return:
+        A list of the indices of the subdivided faces.
     """
 
     # Compile a list of all the edges of the given faces and remove the duplicate edges.
-    edges = []
+    edges = list()
 
     # Update the mbesh
     bmesh_object.faces.ensure_lookup_table()
@@ -559,15 +586,20 @@ def extrude_face_from_joint(bmesh_object,
                             joint_faces_indices,
                             p0, p1,
                             radius):
-    """
-    Extrudes a face from a joint and returns the index of the extruded face.
+    """Extrudes a face from a joint and returns the index of the extruded face.
 
-    :param bmesh_object: An input bmesh object.
-    :param joint_faces_indices: The indices of the joint face.
-    :param p0: The strating point of the extrusion.
-    :param p1: The destination point of the extrusion.
-    :param radius: The extrusion radius.
-    :return: The index of the extruded face.
+    :param bmesh_object:
+        An input bmesh object.
+    :param joint_faces_indices:
+        The indices of the joint face.
+    :param p0:
+        The starting point of the extrusion.
+    :param p1:
+        The destination point of the extrusion.
+    :param radius:
+        The extrusion radius.
+    :return:
+        The index of the extruded face.
     """
 
     # Select the nearest face to p1 from the joint
@@ -605,16 +637,21 @@ def extrude_face_to_joint(bmesh_object,
                           face_index,
                           p0, p1,
                           radius):
-    """
-    Extrudes a face to a joint and returns a list of the indices of all the faces covering it in
+    """Extrudes a face to a joint and returns a list of the indices of all the faces covering it in
     addition to the index of the top face.
 
-    :param bmesh_object: An input bmesh object.
-    :param face_index: The index of the face.
-    :param p0: The starting point of extrusion.
-    :param p1: The destination point of extrusion.
-    :param radius: The extrusion radius.
-    :return: A list of all the indices making the joint.
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the face.
+    :param p0:
+        The starting point of extrusion.
+    :param p1:
+        The destination point of extrusion.
+    :param radius:
+        The extrusion radius.
+    :return:
+        A list of all the indices making the joint.
     """
 
     # Get the face from its index
@@ -663,14 +700,16 @@ def extrude_face_to_joint(bmesh_object,
 def set_face_radius(bmesh_object,
                     face_index,
                     radius):
-    """
-    Changes the radius of a given face to a new value.
+    """Changes the radius of a given face to a new value.
     This method works well ONLY with almost square faces, if the face is very rectangular, the
     resulting shape from this operation is not good.
 
-    :param bmesh_object: An input bmesh object.
-    :param face_index: The index of the face.
-    :param radius: The requested radius.
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the face.
+    :param radius:
+        The requested radius.
     """
 
     # Get the face from its index
@@ -721,18 +760,6 @@ def set_face_radius(bmesh_object,
 
     return
 
-    # Update the radius vertex by vertex
-    for vertex in face.verts[:]:
-
-        # Compute the direction from the center of the face to the vertex
-        direction = (vertex.co - face_center).normalized()
-
-        # Compute the new distance where the vertex should be translated
-        new_distance = direction * radius
-
-        # Update the vertex value
-        vertex.co = face_center + new_distance
-
 
 ####################################################################################################
 # @get_indices_of_faces_fully_intersecting_sphere
@@ -740,15 +767,18 @@ def set_face_radius(bmesh_object,
 def get_indices_of_faces_fully_intersecting_sphere(bmesh_object,
                                                    sphere_center,
                                                    sphere_radius):
-    """
-    Returns a list of all the faces of a bmesh object that intersects another sphere defined by its
-    radius and center. The intersection is true if any vertex from the faces is located inside
-    the sphere.
+    """Returns a list of all the faces of a bmesh object that intersects another sphere defined
+    by its radius and center. The intersection is true if any vertex from the faces is
+    located inside the sphere.
 
-    :param bmesh_object: An input bmesh object.
-    :param sphere_center: The center of the sphere.
-    :param sphere_radius: The radius of the sphere.
-    :return: A list of indices of the faces that 'definitely' intersect the given sphere.
+    :param bmesh_object:
+        An input bmesh object.
+    :param sphere_center:
+        The center of the sphere.
+    :param sphere_radius:
+        The radius of the sphere.
+    :return:
+        A list of indices of the faces that 'definitely' intersect the given sphere.
     """
 
     # Compile a list with all the faces that intersect the sphere center
@@ -778,15 +808,18 @@ def get_indices_of_faces_fully_intersecting_sphere(bmesh_object,
 def get_indices_of_faces_intersecting_sphere(bmesh_object,
                                              sphere_center,
                                              sphere_radius):
-    """
-    Returns a list of all the faces of a bmesh object that intersects another sphere defined by its
-    radius and center. The intersection is true if any vertex from the faces is located inside
-    the sphere.
+    """Returns a list of all the faces of a bmesh object that intersects another sphere
+    defined by its radius and center. The intersection is true if any vertex from the faces
+    is located inside the sphere.
 
-    :param bmesh_object: An input bmesh object.
-    :param sphere_center: The center of the sphere.
-    :param sphere_radius: The radius of the sphere.
-    :return: A list of indices of the faces that intersect the given sphere.
+    :param bmesh_object:
+        An input bmesh object.
+    :param sphere_center:
+        The center of the sphere.
+    :param sphere_radius:
+        The radius of the sphere.
+    :return:
+        A list of indices of the faces that intersect the given sphere.
     """
 
     # Compile a list with all the faces that intersect the sphere center
@@ -826,12 +859,14 @@ def get_indices_of_faces_intersecting_sphere(bmesh_object,
 def map_face_to_circle(bmesh_object,
                        face_index,
                        circle):
-    """
-    Maps a given face with the specified face index to the circumference of a circle.
+    """Maps a given face with the specified face index to the circumference of a circle.
 
-    :param bmesh_object: An input bmesh object.
-    :param face_index: The index of the face that should be converted.
-    :param circle: A bmesh circle to map the selected face.
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the face that should be converted.
+    :param circle:
+        A bmesh circle to map the selected face.
     """
 
     # Get a reference to the face and start processing each vertex in the face
@@ -858,16 +893,19 @@ def convert_face_to_circle(bmesh_object,
                            face_index,
                            face_center,
                            face_radius):
-    """
-    Converts the face from irregular shape to a circle-like pattern to make it clean for the
+    """Converts the face from irregular shape to a circle-like pattern to make it clean for the
     extrusion.
     NOTE: This function should perform better than the mapping function @map_face_to_circle.
 
-    :param bmesh_object: An input bmesh object.
-    :param face_index: The index of the face being mapped to a circle.
-    :param face_center: A given point that reflects the actual center of the circle, but not the
-    actual center of the face.
-    :param face_radius: The given radius of the circle.
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the face being mapped to a circle.
+    :param face_center:
+        A given point that reflects the actual center of the circle, but not the actual center
+        of the face.
+    :param face_radius:
+        The given radius of the circle.
     """
 
     # Get a reference to the face and its centroid
@@ -883,25 +921,19 @@ def convert_face_to_circle(bmesh_object,
         vertex.co = face_center + direction * face_radius
 
 
-def convert_face_to_square(bmesh_object, face_index, face_center, face_radius):
-
-
-    # Compute the side
-    # Get a reference to the face and its centroid
-    face = get_face_from_index(bmesh_object, face_index)
-
-
 ####################################################################################################
 # @retrieve_face_vertices_as_list
 ####################################################################################################
 def retrieve_face_vertices_as_list(bmesh_object,
                                    face_index):
-    """
-    Returns a list of the vertices composing a face in a given bmesh using the face index.
+    """Returns a list of the vertices composing a face in a given bmesh using the face index.
 
-    :param bmesh_object: An input bmesh object.
-    :param face_index: The index of the corresponding face in the bmesh object.
-    :return: A list of vertices of the selected face via its index.
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the corresponding face in the bmesh object.
+    :return:
+        A list of vertices of the selected face via its index.
     """
 
     # A list of all the vertices of the selected face
@@ -919,9 +951,21 @@ def retrieve_face_vertices_as_list(bmesh_object,
     return vertices_list
 
 
+####################################################################################################
+# @scale_face
+####################################################################################################
 def scale_face(bmesh_object,
                face_index,
                scale_factor):
+    """Scale a given face.
+
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the corresponding face in the bmesh object.
+    :param scale_factor:
+        A given scale factor.
+    """
 
     # Get a reference to the face and its centroid
     face = get_face_from_index(bmesh_object, face_index)

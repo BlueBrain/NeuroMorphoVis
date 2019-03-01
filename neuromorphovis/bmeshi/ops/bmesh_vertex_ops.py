@@ -15,20 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
-# System imports
-import math
-
 # Blender imports
 import bmesh
-from mathutils import Vector, Matrix
-
-# Internal modules
-#import intersection
-
-import neuromorphovis as nmv
-import neuromorphovis.consts
-import neuromorphovis.geometry
 
 
 ####################################################################################################
