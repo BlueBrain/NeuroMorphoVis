@@ -34,6 +34,10 @@ import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
 
+import bmesh
+from random import uniform
+import mathutils
+
 
 ####################################################################################################
 # @ExtrusionBuilder
@@ -92,7 +96,9 @@ class SkinningBuilder:
 
         # A list of all the meshes that are reconstructed on a piecewise basis and correspond to
         # the different components of the neuron including soma, arbors and the spines as well
-        self.reconstructed_neuron_meshes= list()
+        self.reconstructed_neuron_meshes = list()
+
+        self.current_mesh = None
 
     ################################################################################################
     # @create_materials
@@ -115,7 +121,6 @@ class SkinningBuilder:
         materials_list = []
 
         for i in range(2):
-
             # Create the material
             material = nmv.shading.create_material(
                 name='%s_color_%d' % (name, i), color=color,
@@ -136,10 +141,10 @@ class SkinningBuilder:
 
         for material in bpy.data.materials:
             if 'soma_skeleton' in material.name or \
-               'axon_skeleton' in material.name or \
-               'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name or \
-               'spines' in material.name:
+                    'axon_skeleton' in material.name or \
+                    'basal_dendrites_skeleton' in material.name or \
+                    'apical_dendrite_skeleton' in material.name or \
+                    'spines' in material.name:
                 material.user_clear()
                 bpy.data.materials.remove(material)
 
@@ -186,7 +191,6 @@ class SkinningBuilder:
         # re-samples the morphology sections at 2.5 microns, however this can be improved later
         # by adding an algorithm that re-samples the section based on its radii.
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-
             # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_sections])
@@ -264,22 +268,22 @@ class SkinningBuilder:
 
         # Sample by sample along the section
         for i in range(starting_index, len(section.samples)):
+            print('\t\tUpdating Radii [%d]' % section.samples[i].arbor_idx)#, end='\r')
+            v = self.current_mesh.data.skin_vertices[0].data[section.samples[i].arbor_idx]
 
-            print('\t\tUpdating Radii [%d]' % section.samples[i].arbor_idx, end='\r')
-
+            radius = section.samples[i].radius #* self.radius_scaling_factor
+            v.radius = radius, radius
             # Select the vertex at the given sample
-            self.select_vertex(section.samples[i].arbor_idx)
+            #self.select_vertex(section.samples[i].arbor_idx)
 
             # Radius scale factor
-            radius = section.samples[i].radius * self.radius_scaling_factor
+            #radius = section.samples[i].radius * self.radius_scaling_factor
 
             # Resize the radius of the selected vertex
-            bpy.ops.transform.skin_resize(value=(radius, radius, radius),
-                                          constraint_axis=(False, False, False),
-                                          constraint_orientation='GLOBAL',
-                                          mirror=False,
-                                          proportional='ENABLED',
-                                          proportional_edit_falloff='SMOOTH', proportional_size=1)
+            #bpy.ops.transform.skin_resize(value=(radius, radius, radius),
+            #                              proportional='DISABLED',
+            #                              proportional_edit_falloff='SMOOTH',
+            #                              proportional_size=1)
 
     ################################################################################################
     # @update_arbor_samples_radii
@@ -311,6 +315,7 @@ class SkinningBuilder:
     # @extrude_section
     ################################################################################################
     def extrude_section(self,
+                        arbor_bmesh_object,
                         section):
         """Extrudes the section along its samples starting from the first one to the last one.
 
@@ -321,22 +326,18 @@ class SkinningBuilder:
         """
 
         for i in range(len(section.samples) - 1):
-
             print('\t\tExtrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
             point_0 = section.samples[i].point
             point_1 = section.samples[i + 1].point
 
-            # Select the vertex that we need to start the extrusion process from
-            self.select_vertex(section.samples[i].arbor_idx)
-
-            # Extrude
-            bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
-                                             TRANSFORM_OT_translate={"value": point_1 - point_0})
+            nmv.bmeshi.ops.extrude_vertex_towards_point(
+                arbor_bmesh_object, section.samples[i].arbor_idx, point_1)
 
     ################################################################################################
     # @create_root_point_mesh
     ################################################################################################
     def extrude_arbor(self,
+                      arbor_bmesh_object,
                       root,
                       max_branching_order):
         """Extrude the given arbor section by section recursively.
@@ -352,7 +353,57 @@ class SkinningBuilder:
             return
 
         # Extrude the section
-        self.extrude_section(root) 
+        self.extrude_section(arbor_bmesh_object, root)
+
+        # Extrude the children sections recursively
+        for child in root.children:
+            self.extrude_arbor(arbor_bmesh_object, child, max_branching_order)
+
+    ################################################################################################
+    # @extrude_section
+    ################################################################################################
+    def extrude_sectionx(self,
+                         section):
+        """Extrudes the section along its samples starting from the first one to the last one.
+
+        Note that the mesh to be extruded is already selected and there is no need to pass it.
+
+        :param section:
+            A given section to extrude a mesh around it.
+        """
+
+        for i in range(len(section.samples) - 1):
+            print('\t\tExtrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
+            point_0 = section.samples[i].point
+            point_1 = section.samples[i + 1].point
+
+            # Select the vertex that we need to start the extrusion process from
+            self.select_vertex(section.samples[i].arbor_idx)
+
+            # Extrude
+            bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
+                                             TRANSFORM_OT_translate={"value": point_1 - point_0})
+
+    ################################################################################################
+    # @create_root_point_mesh
+    ################################################################################################
+    def extrude_arborx(self,
+                       root,
+                       max_branching_order):
+        """Extrude the given arbor section by section recursively.
+
+        :param root:
+            The root of a given section.
+        :param max_branching_order:
+            The maximum branching order set by the user to terminate the recursive call.
+        """
+
+        # Do not proceed if the branching order limit is hit
+        if root.branching_order > max_branching_order:
+            return
+
+        # Extrude the section
+        self.extrude_section(root)
 
         # Extrude the children sections recursively
         for child in root.children:
@@ -384,13 +435,13 @@ class SkinningBuilder:
         bpy.ops.object.editmode_toggle()
 
         # Add a skin modifier
-        bpy.ops.object.modifier_add(type='SKIN')
+        # bpy.ops.object.modifier_add(type='SKIN')
 
         # Update the Skin modifiers parameters
-        bpy.context.object.modifiers["Skin"].use_x_symmetry = False
-        bpy.context.object.modifiers["Skin"].use_y_symmetry = False
-        bpy.context.object.modifiers["Skin"].use_z_symmetry = False
-        bpy.context.object.modifiers["Skin"].use_smooth_shade = False
+        # bpy.context.object.modifiers["Skin"].use_x_symmetry = False
+        # bpy.context.object.modifiers["Skin"].use_y_symmetry = False
+        # bpy.context.object.modifiers["Skin"].use_z_symmetry = False
+        # bpy.context.object.modifiers["Skin"].use_smooth_shade = False
 
         # Return a reference to the root point mesh
         return root_point_mesh
@@ -436,7 +487,6 @@ class SkinningBuilder:
 
         # Update the indices of the rest of the samples along the section
         for i in range(1, len(section.samples)):
-
             # Set the arbor index of the current sample
             section.samples[i].arbor_idx = index[0]
 
@@ -446,6 +496,21 @@ class SkinningBuilder:
         # Update the children sections recursively
         for child in section.children:
             self.update_samples_indices_per_arbor(child, index, max_branching_order)
+
+    def create_vertex_object(self):
+        bm = bmesh.new()
+        bm.verts.new()
+        return bm
+
+    def extrude_vertex_to_point(self, bm, index, point):
+        # Update the bmesh faces
+        bm.verts.ensure_lookup_table()
+        print(len(bm.verts))
+        p = bm.verts[index]
+        ret = bmesh.ops.extrude_vert_indiv(bm, verts=[p])
+        v = ret['verts'][0]
+        v.co += mathutils.Vector([uniform(-5, 5) for axis in "xyz"])
+        # r[index].co += mathutils.Vector((1, 0, 0))
 
     ################################################################################################
     # @create_arbor_mesh
@@ -468,61 +533,33 @@ class SkinningBuilder:
 
         # Initially, this index is set to one and incremented later
         samples_global_arbor_index = [0]
-        self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index, max_branching_order)
+        self.update_samples_indices_per_arbor(arbor, samples_global_arbor_index,
+                                              max_branching_order)
 
-        # Create an initial proxy mesh at the origin
-        arbor_mesh = self.create_root_point_mesh(arbor_name)
-
-        arbor_mesh.location = arbor.samples[0].point
-
-        # Toggle from the object mode to the edit mode
-        bpy.ops.object.editmode_toggle()
-
-        """
-        # Extrude the created mesh (already selected) to the first sample along the arbor (root)
-        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror": False},
-                                         TRANSFORM_OT_translate={"value": arbor.samples[0].point})
-
-        # Select the first vertex to update its radius
-        self.select_vertex(0)
-        bpy.ops.transform.skin_resize(value=(self.radius_scaling_factor,
-                                             self.radius_scaling_factor,
-                                             self.radius_scaling_factor),
-                                      constraint_axis=(False, False, False),
-                                      constraint_orientation='GLOBAL', mirror=False,
-                                      proportional='ENABLED',
-                                      proportional_edit_falloff='SMOOTH', proportional_size=1)
-        """
+        # creating the vertex
+        arbor_bmesh_object = nmv.bmeshi.create_vertex(arbor.samples[0].point)
 
         # Extrude arbor mesh using the skinning method using a temporary radius
-        self.extrude_arbor(root=arbor, max_branching_order=max_branching_order)
-        print("")
+        self.extrude_arbor(arbor_bmesh_object, arbor, max_branching_order)
 
-        # Update the radii of the arbor at each sample
+        arbor_mesh = nmv.bmeshi.convert_bmesh_to_mesh(arbor_bmesh_object, 'arbor')
+        skin = arbor_mesh.modifiers.new(name="Skin", type='SKIN')
+
+        # Toggle from the object mode to the edit mode
+        nmv.scene.set_active_object(arbor_mesh)
+
+
+        self.current_mesh = arbor_mesh
+        #bpy.ops.object.editmode_toggle()
+        # hide
+        #arbor_mesh.hide = True
         self.update_arbor_samples_radii(root=arbor, max_branching_order=max_branching_order)
-        print("")
-
-        # Toggle back to the object mode
-        bpy.ops.object.editmode_toggle()
-
-        # Apply the skinning modifier
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
 
-        # Remove the first face of the mesh for the connectivity
-        # TODO: Check if this arbor will be connected to the soma or not (pre-processing step)
-        nmv.mesh.ops.remove_first_face_of_quad_mesh_object(arbor_mesh)
+        nmv.mesh.smooth_object(mesh_object=self.current_mesh, level=2)
 
-        # Smooth the arbor
-        nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+        nmv.mesh.shade_smooth_object(self.current_mesh)
 
-        # Shade smooth the object
-        nmv.mesh.shade_smooth_object(mesh_object=arbor_mesh)
-
-        # Add back the face we removed before the smoothing to be able to bridge
-        nmv.mesh.close_open_faces(mesh_object=arbor_mesh)
-
-        # Add a reference of the reconstructed arbor mesh to the root section of the arbor
-        arbor.mesh = arbor_mesh
 
         # Return a reference to the arbor mesh
         return arbor_mesh
@@ -546,13 +583,13 @@ class SkinningBuilder:
 
         # Taper the sections if requested
         if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.taper_section])
 
         # Zigzag the sections if required
         if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.zigzag_section])
 
@@ -576,7 +613,6 @@ class SkinningBuilder:
 
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                 # Create the basal dendrite meshes
                 nmv.logger.info('Dendrite [%d]' % i)
                 arbors_objects.append(self.create_arbor_mesh(
@@ -589,7 +625,6 @@ class SkinningBuilder:
 
             # Ensure tha existence of basal dendrites
             if self.morphology.axon is not None:
-
                 nmv.logger.info('Axon')
 
                 # Create the axon mesh
@@ -684,7 +719,7 @@ class SkinningBuilder:
 
                 # Show the progress
                 nmv.utilities.show_progress(
-                    '\t * Decimating the mesh', float(i),float(len(neuron_meshes)))
+                    '\t * Decimating the mesh', float(i), float(len(neuron_meshes)))
 
                 # Decimate each mesh object
                 nmv.mesh.ops.decimate_mesh_object(
@@ -937,21 +972,18 @@ class SkinningBuilder:
         # Verify and repair the morphology
         self.verify_and_repair_morphology()
 
-
-
         # Build the soma
-        self.reconstruct_soma_mesh()
+        # self.reconstruct_soma_mesh()
 
         # Build the arbors
         # self.reconstruct_arbors_meshes()
         self.build_arbors()
 
         # Connect the arbors to the soma
-        self.connect_arbors_to_soma()
+        # self.connect_arbors_to_soma()
 
         print('Skinning...')
         return self.reconstructed_neuron_meshes
-
 
         # Adding surface roughness
         self.add_surface_noise()
@@ -973,7 +1005,6 @@ class SkinningBuilder:
         # objects of the neuron
         for scene_object in bpy.context.scene.objects:
             if scene_object.type == 'MESH':
-
                 # Add the object to the list
                 self.reconstructed_neuron_meshes.append(scene_object)
 
@@ -990,24 +1021,23 @@ class SkinningBuilder:
         # Connecting all the mesh objects together in a single object
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            nmv.logger.header('Connecting neurons objects')
+            nmv.logger.info('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
 
-                nmv.logger.header('Connecting neurons objects')
-                nmv.logger.info('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
+            # Group all the objects into a single mesh object after the decimation
+            neuron_mesh = nmv.mesh.ops.join_mesh_objects(
+                mesh_list=self.reconstructed_neuron_meshes,
+                name='%s_mesh' % self.options.morphology.label)
 
-                # Group all the objects into a single mesh object after the decimation
-                neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-                    mesh_list=self.reconstructed_neuron_meshes,
-                    name='%s_mesh' % self.options.morphology.label)
-
-                # Update the reconstructed_neuron_meshes list to a single object
-                self.reconstructed_neuron_meshes = [neuron_mesh]
+            # Update the reconstructed_neuron_meshes list to a single object
+            self.reconstructed_neuron_meshes = [neuron_mesh]
 
         # Transform the neuron object to the global coordinates
         if self.options.mesh.global_coordinates:
             nmv.logger.header('Transforming to global coordinates')
 
             for mesh_object in self.reconstructed_neuron_meshes:
-                nmv.skeleton. ops.transform_to_global(
+                nmv.skeleton.ops.transform_to_global(
                     neuron_object=mesh_object,
                     blue_config=self.options.morphology.blue_config,
                     gid=self.options.morphology.gid)
