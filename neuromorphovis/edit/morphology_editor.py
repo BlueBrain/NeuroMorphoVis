@@ -18,16 +18,10 @@
 # System imports
 import copy
 
-# Blender imports
-import bpy, mathutils
-
 # Internal modules
 import neuromorphovis as nmv
 import neuromorphovis.bmeshi
-import neuromorphovis.consts
-import neuromorphovis.geometry
 import neuromorphovis.mesh
-import neuromorphovis.skeleton
 import neuromorphovis.scene
 
 
@@ -95,6 +89,7 @@ class MorphologyEditor:
 
         # Update the indices of the rest of the samples along the section
         for i in range(1, len(section.samples)):
+
             # Set the arbor index of the current sample
             section.samples[i].morphology_idx = index[0]
 
@@ -120,6 +115,7 @@ class MorphologyEditor:
 
         # Update the children sections recursively
         for child in arbor.children:
+
             # Update the children
             self.update_samples_indices_per_morphology_of_arbor(child, starting_index)
 
@@ -138,6 +134,7 @@ class MorphologyEditor:
 
         # Apical dendrite
         if self.morphology.apical_dendrite is not None:
+
             nmv.logger.info('Apical dendrite')
             self.update_samples_indices_per_morphology_of_arbor(
                 self.morphology.apical_dendrite, samples_global_morphology_index)
@@ -147,12 +144,14 @@ class MorphologyEditor:
 
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
                 nmv.logger.info('Dendrite [%d]' % i)
                 self.update_samples_indices_per_morphology_of_arbor(
                     basal_dendrite, samples_global_morphology_index)
 
         # Axon
         if self.morphology.axon is not None:
+
             nmv.logger.info('Axon')
             self.update_samples_indices_per_morphology_of_arbor(
                 self.morphology.axon, samples_global_morphology_index)
