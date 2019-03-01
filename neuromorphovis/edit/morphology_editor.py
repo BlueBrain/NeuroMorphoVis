@@ -179,8 +179,8 @@ class MorphologyEditor:
             A given section to extrude a mesh around it.
         """
 
+        # Iterate over all the samples and extrude vertex by vertex
         for i in range(len(section.samples) - 1):
-            print('\t\tExtrusion Section [%d]' % section.samples[i].arbor_idx, end='\r')
             nmv.bmeshi.ops.extrude_vertex_towards_point(
                 self.skeleton_mesh, section.samples[i].morphology_idx, section.samples[i + 1].point)
 
@@ -284,6 +284,7 @@ class MorphologyEditor:
 
         # On all the samples of the section
         for i in range(0, len(section.samples)):
+
             # Update the position
             section.samples[i].point = copy.deepcopy(nmv.mesh.ops.get_vertex_position(
                 mesh_object=self.skeleton_mesh, vertex_index=section.samples[i].morphology_idx))
@@ -315,15 +316,18 @@ class MorphologyEditor:
 
         # Apical dendrite
         if self.morphology.apical_dendrite is not None:
+
             nmv.logger.info('Apical dendrite')
             self.update_arbor_coordinates(root=self.morphology.apical_dendrite)
 
         # Do it dendrite by dendrite
         for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
             nmv.logger.info('Dendrite [%d]' % i)
             self.update_arbor_coordinates(root=basal_dendrite)
 
         # Create the apical dendrite mesh
         if self.morphology.axon is not None:
+
             nmv.logger.info('Axon')
             self.update_arbor_coordinates(root=self.morphology.axon)
