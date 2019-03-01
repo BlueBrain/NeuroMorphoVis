@@ -180,7 +180,7 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Sketch the morphological skeleton for repair
-        morphology_editor = nmv.edit.MorphologyGlobalEditor(
+        morphology_editor = nmv.edit.MorphologyEditor(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
         morphology_editor.sketch_morphology_skeleton()
 

@@ -306,6 +306,7 @@ class MetaBuilder:
 
         # Proceed segment by segment
         for i in range(len(samples) - 1):
+            self.meta_skeleton.resolution = samples[i].radius * 0.5
 
             # Create the meta segment
             self.create_meta_segment(
@@ -536,8 +537,7 @@ class MetaBuilder:
 
         # Update the resolution of the meta skeleton
         # TODO: Get these parameters from the user interface
-        self.meta_skeleton.resolution = 0.1
-        self.meta_skeleton.render_resolution = 0.1
+        self.meta_skeleton.resolution = 1.0
 
     ################################################################################################
     # @emanate_soma_towards_arbor
@@ -682,7 +682,7 @@ class MetaBuilder:
         self.build_arbors()
 
         # Finalize the meta object and construct a solid object
-        self.finalize_meta_object()
+        # self.finalize_meta_object()
 
         # We can here create the materials at the end to avoid any issues
         self.create_skeleton_materials()
