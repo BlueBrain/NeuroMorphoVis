@@ -20,6 +20,7 @@ import random, copy, sys
 
 # Blender imports
 import bpy
+from mathutils import Vector
 
 # Internal modules
 import neuromorphovis as nmv
@@ -34,16 +35,13 @@ import neuromorphovis.skeleton
 import neuromorphovis.scene
 import neuromorphovis.utilities
 
-import bmesh
-from random import uniform
-import mathutils
-
 
 ####################################################################################################
 # @ExtrusionBuilder
 ####################################################################################################
 class SkinningBuilder:
-    """Mesh builder that creates accurate and nice meshes using skinning and extrusion"""
+    """Mesh builder that creates accurate and nice meshes using skinning. The reconstructed meshes
+    are not guaranteed to be watertight, but they look very nice if you need to use transparency."""
 
     ################################################################################################
     # @__init__
@@ -203,6 +201,36 @@ class SkinningBuilder:
         for child in root.children:
             self.extrude_arbor(arbor_bmesh_object, child, max_branching_order)
 
+
+    def extrude_auxiliary_section_from_soma_center_to_arbor(self,
+                                                            arbor,
+                                                            arbor_bmesh_object,
+                                                            number_samples):
+
+        # Soma origin
+        point_0 = Vector((0.0, 0.0, 0.0))
+
+        # Initial sample of the arbor
+        point_1 = arbor.samples[0].point
+
+        # Compute the distance between the two points
+        distance = (point_1 - point_0).length
+
+        # Direction
+        direction = (point_1 - point_0).normalized()
+
+        # Step
+        step = distance / number_samples
+
+        for i in range(1, number_samples - 1):
+
+            extrusion_point = point_0 + direction * step * i
+
+            # Extrude to the first sample along the arbor
+            nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, i - 1,
+                                                        extrusion_point)
+
+
     ################################################################################################
     # @create_arbor_mesh
     ################################################################################################
@@ -222,17 +250,21 @@ class SkinningBuilder:
             A reference to the created mesh object.
         """
 
+        number_samples = 5
+
         # Initially, this index is set to ONE and incremented later, sample zero is reserved to
         # the auxiliary sample that is added at the soma
-        samples_global_arbor_index = [1]
+        samples_global_arbor_index = [number_samples - 2]
         nmv.builders.update_samples_indices_per_arbor(
             arbor, samples_global_arbor_index, max_branching_order)
 
         # Create the initial vertex of the arbor skeleton
         arbor_bmesh_object = nmv.bmeshi.create_vertex()
 
+        self.extrude_auxiliary_section_from_soma_center_to_arbor(arbor, arbor_bmesh_object, number_samples)
+
         # Extrude to the first sample along the arbor
-        nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, arbor.samples[0].point)
+        # nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, arbor.samples[0].point)
 
         # Extrude arbor mesh using the skinning method using a temporary radius with a bmesh
         self.extrude_arbor(arbor_bmesh_object, arbor, max_branching_order)
