@@ -105,8 +105,8 @@ class UnionBuilder:
         # if self.options.mesh.edges == enumerators.__meshing_smooth_edges__:
 
         # Apply the resampling filter on the whole morphology skeleton
-        #nmv.skeleton.ops.apply_operation_to_morphology(
-        #    *[self.morphology, nmv.skeleton.ops.resample_sections, 1.0])
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_sections, 0.5])
 
         # Primary and secondary branching
         if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
@@ -191,10 +191,10 @@ class UnionBuilder:
                         apical_dendrite_objects)
 
                     # Smooth the mesh object
-                    nmv.mesh.smooth_object(mesh_object=apical_dendrite_mesh, level=2)
+                    #nmv.mesh.smooth_object(mesh_object=apical_dendrite_mesh, level=2)
 
                     # Further smoothing, only with shading
-                    nmv.mesh.shade_smooth_object(apical_dendrite_mesh)
+                    #nmv.mesh.shade_smooth_object(apical_dendrite_mesh)
 
                     # Add a reference to the mesh object
                     self.morphology.apical_dendrite.mesh = apical_dendrite_mesh
@@ -238,10 +238,10 @@ class UnionBuilder:
                         basal_dendrite_objects)
 
                     # Smooth the mesh object
-                    nmv.mesh.smooth_object(mesh_object=basal_dendrite_mesh, level=2)
+                    #nmv.mesh.smooth_object(mesh_object=basal_dendrite_mesh, level=2)
 
                     # Further smoothing, only with shading
-                    nmv.mesh.shade_smooth_object(basal_dendrite_mesh)
+                    #nmv.mesh.shade_smooth_object(basal_dendrite_mesh)
 
                     # Add a reference to the mesh object
                     self.morphology.dendrites[i].mesh = basal_dendrite_mesh

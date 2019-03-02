@@ -33,7 +33,7 @@ class Color:
         pass
 
     # Soma color
-    SOMA = Vector((0.75, 0.45, 0.15))
+    SOMA = Vector((1.0, 0.8, 0.15))
 
     # Basal dendrites color
     BASAL_DENDRITES = Vector((0.9, 0.1, 0.075))

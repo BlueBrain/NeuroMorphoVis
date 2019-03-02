@@ -191,7 +191,7 @@ class MorphologyPanel(bpy.types.Panel):
                 'Connected Sections (Repaired)',
                 "The morphology is repaired and fully reconstructed ")],
         name="Method",
-        default=nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED)
+        default=nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS)
 
     # Arbors style
     bpy.types.Scene.ArborsStyle = EnumProperty(

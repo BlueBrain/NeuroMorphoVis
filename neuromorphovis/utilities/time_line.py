@@ -49,13 +49,13 @@ def show_progress(message,
     if done:
 
         # Done message
-        sys.stdout.write('%s:  [100 %%]%s\n' % (message, nmv.consts.Messages.SPACES))
+        sys.stdout.write('%s: [100 %%]%s\n' % (message, nmv.consts.Messages.SPACES))
 
     else:
 
         # In progress message
         progress = 100.0 * (float(current) / float(total))
-        sys.stdout.write('%s:  [%2.2f %%]\r' % (message, progress))
+        sys.stdout.write('%s: [%2.2f %%]\r' % (message, progress))
 
 
 ####################################################################################################

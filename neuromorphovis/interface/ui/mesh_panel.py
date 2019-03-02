@@ -402,6 +402,38 @@ class MeshPanel(bpy.types.Panel):
         nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
     ################################################################################################
+    # @draw_union_meshing_options
+    ################################################################################################
+    def draw_union_meshing_options(self,
+                                   context):
+        """Draws the options when the union meshing technique is selected.
+
+        :param context:
+            Panel context.
+        """
+
+        # Surface roughness
+        mesh_surface_row = self.layout.row()
+        mesh_surface_row.label('Surface:')
+        mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+
+        # Tessellation parameters
+        tess_level_row = self.layout.row()
+        tess_level_row.prop(context.scene, 'TessellateMesh')
+        tess_level_column = tess_level_row.column()
+        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
+        if not context.scene.TessellateMesh:
+            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
+            tess_level_column.enabled = False
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+
+    ################################################################################################
     # @draw_piece_wise_meshing_options
     ################################################################################################
     def draw_piece_wise_meshing_options(self,
@@ -506,6 +538,8 @@ class MeshPanel(bpy.types.Panel):
             self.draw_meta_objects_meshing_options(context)
         elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
             self.draw_skinning_meshing_options(context)
+        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
+            self.draw_union_meshing_options(context)
 
     ################################################################################################
     # @draw_spines_options

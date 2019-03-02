@@ -36,7 +36,7 @@ class SomaOptions:
         self.method = nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY
 
         # Stiffness
-        self.stiffness = nmv.consts.SoftBody.GOAL_DEFAULT
+        self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT
 
         # Subdivision level of the sphere
         self.subdivision_level = nmv.consts.SoftBody.SUBDIVISIONS_DEFAULT

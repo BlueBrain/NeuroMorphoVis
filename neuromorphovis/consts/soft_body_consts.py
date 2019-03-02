@@ -42,7 +42,10 @@ class SoftBody:
     GOAL_DEFAULT = 0.5
 
     # Default value for the subdivision
-    SUBDIVISIONS_DEFAULT = 4
+    SUBDIVISIONS_DEFAULT = 5
 
     # Default value for the number of steps
     SIMULATION_STEPS_DEFAULT = 100
+
+    # Default value for stiffness
+    STIFFNESS_DEFAULT = 0.1

@@ -265,8 +265,7 @@ class BridgingBuilder:
                     repair_morphology=True,
                     caps=False,
                     sections_objects=apical_dendrite_objects,
-                    secondary_sections=secondary_sections,
-                    connect_to_soma=self.options.morphology.connect_to_soma)
+                    secondary_sections=secondary_sections)
 
                 for secondary_section in secondary_sections:
 
@@ -322,8 +321,7 @@ class BridgingBuilder:
                     repair_morphology=True,
                     caps=False,
                     sections_objects=basal_dendrite_objects,
-                    secondary_sections=secondary_sections,
-                    connect_to_soma=self.options.morphology.connect_to_soma)
+                    secondary_sections=secondary_sections)
 
                 for secondary_section in secondary_sections:
                     direction = \
@@ -370,8 +368,7 @@ class BridgingBuilder:
                 repair_morphology=True,
                 caps=False,
                 sections_objects=axon_objects,
-                secondary_sections=secondary_sections,
-                connect_to_soma=self.options.morphology.connect_to_soma)
+                secondary_sections=secondary_sections)
 
             for secondary_section in secondary_sections:
                 direction = \

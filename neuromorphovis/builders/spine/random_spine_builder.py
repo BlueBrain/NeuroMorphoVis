@@ -137,24 +137,25 @@ class RandomSpineBuilder:
             A list of meshes that correspond to the spines integrated on the morphology.
         """
 
-        # Keep a list of all the spines objects
-        spines_objects = []
-
-        # Load all the template spines and ignore the verbose messages of loading
-        self.load_spine_meshes()
-
+        # A list of the data of all the spines that will be added to the neuron morphology
         spines_list = list()
 
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
         nmv.skeleton.ops.apply_operation_to_morphology_partially(
             *[self.morphology,
+              self.options.morphology.axon_branch_order,
+              self.options.morphology.basal_dendrites_branch_order,
+              self.options.morphology.apical_dendrite_branch_order,
               nmv.skeleton.ops.get_random_spines_on_section,
               self.options.mesh.random_spines_percentage,
-              spines_list],
-            axon_branch_level=self.options.morphology.axon_branch_order,
-            basal_dendrites_branch_level=self.options.morphology.basal_dendrites_branch_order,
-            apical_dendrite_branch_level=self.options.morphology.apical_dendrite_branch_order)
+              spines_list])
+
+        # Keep a list of all the spines objects
+        spines_objects = []
+
+        # Load all the template spines and ignore the verbose messages of loading
+        self.load_spine_meshes()
 
         nmv.logger.info('Cloning and integrating spines')
         building_timer = nmv.utilities.timer.Timer()

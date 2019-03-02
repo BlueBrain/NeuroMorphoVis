@@ -187,10 +187,7 @@ def apply_operation_to_morphology(*args):
 ####################################################################################################
 # @apply_operation_to_morphology_partially
 ####################################################################################################
-def apply_operation_to_morphology_partially(axon_branch_level,
-                                            basal_dendrites_branch_level,
-                                            apical_dendrite_branch_level,
-                                            *args):
+def apply_operation_to_morphology_partially(*args):
     """Apply a given function/filter/operation to a given morphology object including ONLY the
     arbors that are below certain branching level recursively.
 
@@ -198,17 +195,19 @@ def apply_operation_to_morphology_partially(axon_branch_level,
         Arguments list, where the first argument is always the morphology and the second argument
         is the function of the operation/filter that will be applied and the rest of the arguments
         are those that will be passed to the function.
-
-    :param axon_branch_level:
-        The max branching level for the axon.
-    :param basal_dendrites_branch_level:
-        The max branching order for the basal dendrites.
-    :param apical_dendrite_branch_level:
-        The max branching level for the apical dendrites.
     """
 
     # The morphology is the first argument
     morphology = args[0]
+
+    # Axon maximum branching order
+    axon_branch_level = args[1]
+
+    # Basal dendrites maximum branching order
+    basal_dendrites_branch_level = args[2]
+
+    # Apical dendrites maximum branching order
+    apical_dendrite_branch_level = args[3]
 
     # Apical dendrite
     if morphology.apical_dendrite is not None:
@@ -225,7 +224,7 @@ def apply_operation_to_morphology_partially(axon_branch_level,
         arbor_args.append(morphology.apical_dendrite)
 
         # Add the other arguments
-        for i in range(1, len(args)):
+        for i in range(4, len(args)):
             arbor_args.append(args[i])
 
         # Apply the operation/filter to the arbor
@@ -249,7 +248,7 @@ def apply_operation_to_morphology_partially(axon_branch_level,
             arbor_args.append(dendrite)
 
             # Add the other arguments
-            for i in range(1, len(args)):
+            for i in range(4, len(args)):
                 arbor_args.append(args[i])
 
             # Apply the operation/filter to the arbor
@@ -270,7 +269,7 @@ def apply_operation_to_morphology_partially(axon_branch_level,
         arbor_args.append(morphology.axon)
 
         # Add the other arguments
-        for i in range(1, len(args)):
+        for i in range(4, len(args)):
             arbor_args.append(args[i])
 
         # Apply the operation/filter to the arbor

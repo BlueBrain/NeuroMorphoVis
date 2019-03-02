@@ -23,6 +23,7 @@ import bpy
 import neuromorphovis as nmv
 import neuromorphovis.enums
 import neuromorphovis.shading
+import neuromorphovis.mesh
 
 
 ################################################################################################
@@ -50,9 +51,8 @@ def create_materials(builder,
     for i in range(2):
 
         # Create the material
-        material = nmv.shading.create_material(
-            name='%s_color_%d' % (name, i), color=color,
-            material_type=builder.options.mesh.material)
+        material = nmv.shading.create_material(name='%s_color_%d' % (name, i), color=color,
+                                               material_type=builder.options.mesh.material)
 
         # Append the material to the materials list
         materials_list.append(material)
@@ -74,10 +74,10 @@ def create_skeleton_materials(builder):
 
     # Delete the old materials
     for material in bpy.data.materials:
-        if 'soma_skeleton' in material.name or \
-           'axon_skeleton' in material.name or \
-           'basal_dendrites_skeleton' in material.name or \
-           'apical_dendrite_skeleton' in material.name or \
+        if 'soma_skeleton' in material.name or              \
+           'axon_skeleton' in material.name or              \
+           'basal_dendrites_skeleton' in material.name or   \
+           'apical_dendrite_skeleton' in material.name or   \
            'spines' in material.name:
 
             # Clear
@@ -96,18 +96,20 @@ def create_skeleton_materials(builder):
 
     # Basal dendrites
     builder.basal_dendrites_materials = create_materials(
-        builder=builder, name='basal_dendrites_skeleton', color=builder.options.mesh.basal_dendrites_color)
+        builder=builder, name='basal_dendrites_skeleton',
+        color=builder.options.mesh.basal_dendrites_color)
 
     # Apical dendrite
-    builder.apical_dendrite_materials = create_materials(
-        builder=builder, name='apical_dendrite_skeleton', color=builder.options.mesh.apical_dendrites_color)
+    builder.apical_dendrites_materials = create_materials(
+        builder=builder, name='apical_dendrite_skeleton',
+        color=builder.options.mesh.apical_dendrites_color)
 
     # Spines
     builder.spines_colors = create_materials(
         builder=builder, name='spines', color=builder.options.mesh.spines_color)
 
     # Create an illumination specific for the given material
-    nmv.shading.create_material_specific_illumination(builder.options.morphology.material)
+    nmv.shading.create_material_specific_illumination(builder.options.mesh.material)
 
 
 def add_spines(self):
@@ -354,3 +356,146 @@ def select_vertex(vertex_idx):
 
     # Switch to the edit mode
     bpy.ops.object.mode_set(mode='EDIT')
+
+
+################################################################################################
+# @adjust_texture_mapping
+################################################################################################
+def adjust_texture_mapping(list_meshes,
+                           texspace_size):
+    """
+
+    :param list_meshes:
+    :param texspace_size:
+    :return:
+    """
+
+    # Do it mesh by mesh
+    for i, mesh_object in enumerate(list_meshes):
+        # Update the texture space of the created meshes
+        mesh_object.select = True
+        bpy.context.object.data.use_auto_texspace = False
+        bpy.context.object.data.texspace_size[0] = texspace_size
+        bpy.context.object.data.texspace_size[1] = texspace_size
+        bpy.context.object.data.texspace_size[2] = texspace_size
+
+        # Show the progress
+        nmv.utilities.show_progress(
+            '\t * Decimating the mesh', float(i), float(len(list_meshes)))
+
+################################################################################################
+# @decimate_neuron_mesh
+################################################################################################
+def decimate_neuron_mesh(tessellation_level):
+    """Decimate the reconstructed neuron mesh.
+    """
+
+    nmv.logger.header('Decimating the mesh')
+
+    if 0.05 < tessellation_level < 1.0:
+        nmv.logger.info('Decimating the neuron')
+
+        # Get a list of all the mesh objects (except the spines) of the neuron
+        neuron_meshes = list()
+        for scene_object in bpy.context.scene.objects:
+
+            # Only for meshes
+            if scene_object.type == 'MESH':
+
+                # Exclude the spines
+                if 'spine' in scene_object.name:
+                    continue
+
+                # Otherwise, add the object to the list
+                else:
+                    neuron_meshes.append(scene_object)
+
+        # Do it mesh by mesh
+        for i, object_mesh in enumerate(neuron_meshes):
+
+            # Update the texture space of the created meshes
+            object_mesh.select = True
+            bpy.context.object.data.use_auto_texspace = False
+            bpy.context.object.data.texspace_size[0] = 5
+            bpy.context.object.data.texspace_size[1] = 5
+            bpy.context.object.data.texspace_size[2] = 5
+
+            # Skip the soma, if the soma is disconnected
+            if 'soma' in object_mesh.name:
+                continue
+
+            # Show the progress
+            nmv.utilities.show_progress(
+                '\t * Decimating the mesh', float(i),float(len(neuron_meshes)))
+
+            # Decimate each mesh object
+            nmv.mesh.ops.decimate_mesh_object(
+                mesh_object=object_mesh, decimation_ratio=tessellation_level)
+
+
+
+
+################################################################################################
+# @joint_neuron_meshes_into_single_mesh
+################################################################################################
+def join_neuron_meshes_into_single_mesh(soma_meshes_list=None,
+                                        apical_dendrite_meshes_list=None,
+                                        basal_dendrites_meshes_list=None,
+                                        axon_meshes_list=None,
+                                        spines_meshes_list=None,
+                                        label='MESH'):
+    """Join all the given meshes into a single mesh.
+
+    NOTE: The best approach to perform this operation is to compile a list with the contents of
+    all the other lists and then merge this list.
+
+    :param soma_meshes_list:
+        A list of all the meshes created for the soma.
+    :param apical_dendrite_meshes_list:
+        A list of all the meshes created for the apical dendrites.
+    :param basal_dendrites_meshes_list:
+        A list of all the meshes created for the basal dendrites .
+    :param axon_meshes_list:
+        A list of all the meshes created for the axon.
+    :param spines_meshes_list:
+        A list of all the meshes created for the spines.
+    :param label:
+        The label of the joint mesh object.
+    :return:
+        A reference to the joint mesh object.
+    """
+
+    # A list of the individual mesh objects
+    individual_mesh_objects = list()
+
+    # Append the soma meshes
+    if soma_meshes_list is not None:
+        for mesh in soma_meshes_list:
+            individual_mesh_objects.append(mesh)
+
+    # Append the apical dendrites meshes
+    if soma_meshes_list is not None:
+        for mesh in apical_dendrite_meshes_list:
+            individual_mesh_objects.extend(mesh)
+
+    # Append the basal dendrites meshes
+    if soma_meshes_list is not None:
+        for mesh in basal_dendrites_meshes_list:
+            individual_mesh_objects.extend(mesh)
+
+    # Append the axon meshes
+    if soma_meshes_list is not None:
+        for mesh in axon_meshes_list:
+            individual_mesh_objects.extend(mesh)
+
+    # Append the spines meshes
+    if soma_meshes_list is not None:
+        for mesh in spines_meshes_list:
+            individual_mesh_objects.extend(mesh)
+
+    # Joint all the objects
+    joint_mesh_object = nmv.mesh.ops.join_mesh_objects(
+        mesh_list=individual_mesh_objects, name=label)
+
+    # Return a reference go the joint mesh object
+    return joint_mesh_object

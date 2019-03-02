@@ -59,7 +59,7 @@ class SomaPanel(bpy.types.Panel):
     bpy.types.Scene.SomaBaseColor = FloatVectorProperty(
         name="Soma Base Color", subtype='COLOR',
         description="The color of the reconstructed soma",
-        default=(1.0, 0.0, 0.0), min=0.0, max=1.0)
+        default=nmv.enums.Color.SOMA, min=0.0, max=1.0)
 
     # Reconstruction method
     bpy.types.Scene.SomaReconstructionMethod = EnumProperty(
