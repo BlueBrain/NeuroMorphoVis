@@ -343,11 +343,35 @@ class MeshPanel(bpy.types.Panel):
         default=0, min=0, max=100, subtype='PERCENTAGE')
 
     ################################################################################################
+    # @draw_skinning_meshing_options
+    ################################################################################################
+    def draw_skinning_meshing_options(self,
+                                          context):
+        """Draws the options when the skinning meshing technique is selected.
+
+        :param context:
+            Panel context.
+        """
+
+        # Tessellation parameters
+        tess_level_row = self.layout.row()
+        tess_level_row.prop(context.scene, 'TessellateMesh')
+        tess_level_column = tess_level_row.column()
+        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
+        if not context.scene.TessellateMesh:
+            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
+            tess_level_column.enabled = False
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+
+    ################################################################################################
     # @draw_meta_objects_meshing_options
     ################################################################################################
     def draw_meta_objects_meshing_options(self,
                                           context):
-        """Draws the options when the Meta Objects meshing technique is selected.
+        """Draws the options when the meta objects meshing technique is selected.
 
         :param context:
             Panel context.
@@ -477,6 +501,8 @@ class MeshPanel(bpy.types.Panel):
             self.draw_piece_wise_meshing_options(context)
         elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
             self.draw_meta_objects_meshing_options(context)
+        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+            self.draw_skinning_meshing_options(context)
 
     ################################################################################################
     # @draw_spines_options
@@ -562,7 +588,8 @@ class MeshPanel(bpy.types.Panel):
         nmv.interface.ui_options.mesh.material = context.scene.MeshMaterial
 
         # Draw the meshing options
-        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
+           context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
 
             # Homogeneous mesh coloring
             homogeneous_color_row = layout.row()
