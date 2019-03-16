@@ -72,56 +72,90 @@ class UnionBuilder:
         self.apical_dendrites_materials = None
 
         # A reference to the reconstructed soma mesh
-        self.reconstructed_soma_mesh = None
+        self.soma_mesh = None
+
+    ################################################################################################
+    # @verify_morphology_skeleton
+    ################################################################################################
+    def verify_morphology_skeleton(self):
+        """Verifies and repairs the morphology if the contain any artifacts that would potentially
+        affect the reconstruction quality of the mesh.
+
+        NOTE: The filters or operations performed in this builder are only specific to it. Other
+        builders might apply a different set of filters.
+        """
+
+        # Remove the internal samples, or the samples that intersect the soma at the first
+        # section and each arbor
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+
+        # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
+        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
+        # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
+        # after applying the vertex smoothing filter. The re-sampling filter for the moment
+        # re-samples the morphology sections at 2.5 microns, however this can be improved later
+        # by adding an algorithm that re-samples the section based on its radii.
+        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+
+            # Apply the re-sampling filter on the whole morphology skeleton
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_sections])
+
+        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
+        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
+        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+
+        # Label the primary and secondary sections based on radii
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology,
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+
+    ################################################################################################
+    # @modify_morphology_skeleton
+    ################################################################################################
+    def modify_morphology_skeleton(self):
+        """Modifies the morphology skeleton, if required. These modifications are specific to this
+        builder.
+        """
+
+        # Taper the sections if requested
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
+                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.taper_section])
+
+        # Zigzag the sections if required
+        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
+                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.zigzag_section])
 
     ################################################################################################
     # @build_arbors
     ################################################################################################
     def build_arbors(self,
                      bevel_object,
-                     caps):
+                     caps,
+                     roots_connection):
         """
         Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
 
-        :param bevel_object: A given bevel object to scale the section at the different samples.
-        :param caps: A flag to indicate whether the drawn sections are closed or not.
-        :return: A list of all the individual meshes of the arbors.
+        :param bevel_object:
+            A given bevel object to scale the section at the different samples.
+        :param caps:
+            A flag to indicate whether the drawn sections are closed or not.
+        :param roots_connection:
+            A flag to connect (for soma disconnected more) or disconnect (for soma bridging mode)
+            the arbor to the soma origin.
+            If this flag is set to True, this means that the arbor will be extended to the soma
+            origin and the branch will not be physically connected to the soma as a single mesh.
+            If the flag is set to False, the arbor will only have a bridging connection that
+            would allow us later to connect it to the nearest face on the soma create a
+            watertight mesh.
         """
-
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology,
-              nmv.skeleton.ops.remove_samples_inside_soma])
-
-        # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to resample the morphology skeleton. However, if the smooth
-        # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The resampling filter for the moment
-        # re-samples the morphology sections at 2.5 microns, however this can be improved later
-        # by adding an algorithm that re-samples the section based on its radii.
-        # if self.options.mesh.edges == enumerators.__meshing_smooth_edges__:
-
-        # Apply the resampling filter on the whole morphology skeleton
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_sections, 0.5])
-
-        # Primary and secondary branching
-        if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
-
-            # Label the primary and secondary sections based on angles
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-
-        else:
-
-            # Label the primary and secondary sections based on radii
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
         # Create a list that keeps references to the meshes of all the connected pieces of the
         # arbors of the mesh.
@@ -143,17 +177,15 @@ class UnionBuilder:
                     material_list=self.axon_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
-                    caps=False,
-                    sections_objects=axon_objects)
+                    caps=caps,
+                    sections_objects=axon_objects,
+                    roots_connection=roots_connection)
 
                 # Convert the section object (tubes) into meshes
                 for mesh_object in axon_objects:
                     nmv.scene.ops.convert_object_to_mesh(mesh_object)
 
                 axon_mesh = nmv.mesh.ops.union_mesh_objects_in_list(axon_objects)
-
-                # Smooth the mesh object
-                # nmv.mesh.smooth_object(mesh_object=axon_mesh, level=2)
 
                 # Add a reference to the mesh object
                 self.morphology.axon.mesh = axon_mesh
@@ -169,11 +201,6 @@ class UnionBuilder:
                 # Individual sections (tubes) of the apical dendrite
                 apical_dendrite_objects = []
 
-                # A list of all the connecting points of the apical dendrites
-                apical_dendrite_connection_points = []
-
-                secondary_sections = []
-
                 if self.morphology.apical_dendrite is not None:
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(self.morphology.apical_dendrite),
@@ -182,9 +209,9 @@ class UnionBuilder:
                         material_list=self.apical_dendrites_materials,
                         bevel_object=bevel_object,
                         repair_morphology=True,
-                        caps=False,
+                        caps=caps,
                         sections_objects=apical_dendrite_objects,
-                        secondary_sections=secondary_sections)
+                        roots_connection=roots_connection)
 
                     # Convert the section object (tubes) into meshes
                     for mesh_object in apical_dendrite_objects:
@@ -192,12 +219,6 @@ class UnionBuilder:
 
                     apical_dendrite_mesh = nmv.mesh.ops.union_mesh_objects_in_list(
                         apical_dendrite_objects)
-
-                    # Smooth the mesh object
-                    # nmv.mesh.smooth_object(mesh_object=apical_dendrite_mesh, level=2)
-
-                    # Further smoothing, only with shading
-                    #nmv.mesh.shade_smooth_object(apical_dendrite_mesh)
 
                     # Add a reference to the mesh object
                     self.morphology.apical_dendrite.mesh = apical_dendrite_mesh
@@ -208,9 +229,6 @@ class UnionBuilder:
         # Draw the basal dendrites
         if self.morphology.dendrites is not None:
             if not self.options.morphology.ignore_basal_dendrites:
-
-                # Individual sections (tubes) of each basal dendrite
-                basal_dendrites_objects = []
 
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
@@ -230,8 +248,9 @@ class UnionBuilder:
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
                         repair_morphology=True,
-                        caps=False,
-                        sections_objects=basal_dendrite_objects)
+                        caps=caps,
+                        sections_objects=basal_dendrite_objects,
+                        roots_connection=roots_connection)
 
                     # Convert the section object (tubes) into meshes
                     for mesh_object in basal_dendrite_objects:
@@ -239,12 +258,6 @@ class UnionBuilder:
 
                     basal_dendrite_mesh = nmv.mesh.ops.union_mesh_objects_in_list(
                         basal_dendrite_objects)
-
-                    # Smooth the mesh object
-                    # nmv.mesh.smooth_object(mesh_object=basal_dendrite_mesh, level=2)
-
-                    # Further smoothing, only with shading
-                    #nmv.mesh.shade_smooth_object(basal_dendrite_mesh)
 
                     # Add a reference to the mesh object
                     self.morphology.dendrites[i].mesh = basal_dendrite_mesh
@@ -254,8 +267,6 @@ class UnionBuilder:
 
         # Return the list of meshes
         return arbors_objects
-
-
 
     ################################################################################################
     # @connect_arbors_to_soma
@@ -279,7 +290,7 @@ class UnionBuilder:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.log('\t * Apical dendrite')
                 nmv.skeleton.ops.connect_arbor_to_soma(
-                    self.reconstructed_soma_mesh, self.morphology.apical_dendrite)
+                    self.soma_mesh, self.morphology.apical_dendrite)
 
         # Connecting basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -287,14 +298,12 @@ class UnionBuilder:
             # Do it dendrite by dendrite
             for i, basal_dendrite in enumerate(self.morphology.dendrites):
                 nmv.logger.log('\t * Dendrite [%d]' % i)
-                nmv.skeleton.ops.connect_arbor_to_soma(
-                    self.reconstructed_soma_mesh, basal_dendrite)
+                nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
 
         # Connecting axon
         if not self.options.morphology.ignore_axon:
             nmv.logger.log('\t * Axon')
-            nmv.skeleton.ops.connect_arbor_to_soma(
-                self.reconstructed_soma_mesh, self.morphology.axon)
+            nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -304,7 +313,8 @@ class UnionBuilder:
         """
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=16, name='hard_edges_arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -314,23 +324,17 @@ class UnionBuilder:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
-        self.build_arbors(bevel_object=bevel_object, caps=True,
-                          roots_connection=roots_connection)
-
-        # Close the caps of the apical dendrites meshes
-        for arbor_object in self.apical_dendrites_meshes:
-            nmv.mesh.close_open_faces(arbor_object)
-
-        # Close the caps of the basal dendrites meshes
-        for arbor_object in self.basal_dendrites_meshes:
-            nmv.mesh.close_open_faces(arbor_object)
-
-        # Close the caps of the axon meshes
-        for arbor_object in self.axon_meshes:
-            nmv.mesh.close_open_faces(arbor_object)
+        arbors_meshes = self.build_arbors(
+            bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+        # Smooth and close the faces of the apical dendrites meshes
+        for mesh in arbors_meshes:
+
+            # Close the edges
+            nmv.mesh.ops.close_open_faces(mesh)
 
     ################################################################################################
     # @build_soft_edges_arbors
@@ -340,7 +344,7 @@ class UnionBuilder:
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0 * math.sqrt(2), vertices=4, name='arbors_bevel')
+            radius=1.0 * math.sqrt(2), vertices=4, name='soft_edges_arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -350,23 +354,20 @@ class UnionBuilder:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
-        self.build_arbors(bevel_object=bevel_object, caps=False,
-                          roots_connection=roots_connection)
-
-        # Smooth and close the faces of the apical dendrites meshes
-        for mesh in self.apical_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the basal dendrites meshes
-        for mesh in self.basal_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the axon meshes
-        for mesh in self.axon_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
+        arbors_meshes = self.build_arbors(
+            bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+        # Smooth and close the faces of the apical dendrites meshes
+        for mesh in arbors_meshes:
+
+            # Smooth
+            nmv.mesh.ops.smooth_object(mesh_object=mesh, level=2)
+
+            # Close the edges
+            nmv.mesh.ops.close_open_faces(mesh)
 
     ################################################################################################
     # @reconstruct_arbors_meshes
@@ -395,6 +396,38 @@ class UnionBuilder:
             nmv.logger.log('ERROR')
 
     ################################################################################################
+    # @reconstruct_soma_mesh
+    ################################################################################################
+    def reconstruct_soma_mesh(self):
+        """Reconstruct the mesh of the soma.
+
+        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
+        soma profile before the arbors, such that the scene is almost empty.
+
+        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
+        we must use a high number of subdivisions to make smooth connections that look nice,
+        but if the arbors are connected to the soma origin, then we can use less subdivisions
+        since the soma will not be connected to the arbor at all.
+        """
+
+        # If the soma is connected to the root arbors
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            soma_builder_object = nmv.builders.SomaBuilder(
+                morphology=self.morphology, options=self.options)
+
+        # Otherwise, ignore
+        else:
+            soma_builder_object = nmv.builders.SomaBuilder(
+                morphology=self.morphology,
+                options=self.options)
+
+        # Reconstruct the soma mesh
+        self.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+        # Apply the shader to the reconstructed soma mesh
+        nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -410,19 +443,19 @@ class UnionBuilder:
         nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        # self.verify_morphology_skeleton()
+        self.verify_morphology_skeleton()
 
         # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
-        # self.modify_morphology_skeleton()
+        self.modify_morphology_skeleton()
 
         # Build the soma
-        # self.reconstruct_soma_mesh()
+        self.reconstruct_soma_mesh()
 
         # Build the arbors
-        # self.reconstruct_arbors_meshes()
+        self.reconstruct_arbors_meshes()
 
         # Connect the arbors to the soma
-        # self.connect_arbors_to_soma()
+        self.connect_arbors_to_soma()
 
         # Modifying mesh surface
         # self.modify_mesh_surface()
@@ -436,77 +469,3 @@ class UnionBuilder:
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
 
-
-        # Create a bevel object that will be used to create an proxy skeleton of the mesh
-        # Note that the radius is set to conserve the volumes of the branches
-        #bevel_object = nmv.mesh.create_bezier_circle(
-        #    radius=1.0 * math.sqrt(2), vertices=4, name='bevel')
-
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='bevel')
-
-
-        # Create the arbors using this 4-side bevel object and open caps (for smoothing)
-        arbors_meshes = self.build_arbors(bevel_object=bevel_object, caps=True)
-        #return
-
-        # Smooth and close the faces in one step
-        for mesh in arbors_meshes:
-            bpy.ops.object.editmode_toggle()
-            bpy.ops.mesh.vert_connect_concave()
-            bpy.ops.object.editmode_toggle()
-            #nmv.mesh.ops.smooth_object(mesh, level=2)
-
-        return arbors_meshes
-        # Close the caps to be able to bridge
-        for mesh in arbors_meshes:
-            nmv.mesh.ops.close_open_faces(mesh)
-
-        # return None
-        nmv.logger.log('Connecting the branches to the soma')
-        self.connect_arbors_to_soma()
-
-        return
-
-        # Apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
-
-            # There is an apical dendrite
-            if self.morphology.apical_dendrite is not None:
-
-                nmv.logger.log('\t * Apical dendrite')
-                nmv.skeleton.ops.connect_arbor_to_soma(self.reconstructed_soma_mesh, self.morphology.apical_dendrite)
-
-        # Basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
-
-            # Individual sections (tubes) of each basal dendrite
-            basal_dendrites_objects = []
-
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
-                nmv.logger.log('\t * Dendrite [%d]' % i)
-                nmv.skeleton.ops.connect_arbor_to_soma(self.reconstructed_soma_mesh, basal_dendrite)
-
-        if not self.options.morphology.ignore_axon:
-
-            nmv.logger.log('\t * Axon')
-            nmv.skeleton.ops.connect_arbor_to_soma(self.reconstructed_soma_mesh, self.morphology.axon)
-
-        return None
-
-        # Join the arbors and the soma in the same mesh object and rename it to the
-        # morphology name
-        neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-            mesh_list=neuron_meshes, name='%s_mesh' % self.options.morphology.label)
-
-
-
-        # Close all the open faces to avoid leaks (watertight)
-        # nmv.mesh.ops.close_open_faces(neuron_mesh)
-
-        # Delete the bevel object
-        nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-        # Return a reference to the created neuron mesh
-        return neuron_mesh

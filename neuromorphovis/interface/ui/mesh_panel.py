@@ -420,6 +420,22 @@ class MeshPanel(bpy.types.Panel):
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
 
+        # Edges
+        mesh_edges_row = self.layout.row()
+        mesh_edges_row.label('Edges:')
+        mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
+
+        # Soma connection
+        soma_connection_row = self.layout.row()
+        soma_connection_row.label('Soma:')
+        soma_connection_row.prop(context.scene, 'MeshSomaConnection', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.MeshSomaConnection
+
         # Tessellation parameters
         tess_level_row = self.layout.row()
         tess_level_row.prop(context.scene, 'TessellateMesh')
