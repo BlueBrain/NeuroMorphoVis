@@ -69,7 +69,7 @@ class UnionBuilder:
         self.basal_dendrites_materials = None
 
         # A list of the materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A reference to the reconstructed soma mesh
         self.reconstructed_soma_mesh = None
@@ -152,6 +152,9 @@ class UnionBuilder:
 
                 axon_mesh = nmv.mesh.ops.union_mesh_objects_in_list(axon_objects)
 
+                # Smooth the mesh object
+                # nmv.mesh.smooth_object(mesh_object=axon_mesh, level=2)
+
                 # Add a reference to the mesh object
                 self.morphology.axon.mesh = axon_mesh
 
@@ -176,7 +179,7 @@ class UnionBuilder:
                         section=copy.deepcopy(self.morphology.apical_dendrite),
                         max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                         name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                        material_list=self.apical_dendrite_materials,
+                        material_list=self.apical_dendrites_materials,
                         bevel_object=bevel_object,
                         repair_morphology=True,
                         caps=False,
@@ -191,7 +194,7 @@ class UnionBuilder:
                         apical_dendrite_objects)
 
                     # Smooth the mesh object
-                    #nmv.mesh.smooth_object(mesh_object=apical_dendrite_mesh, level=2)
+                    # nmv.mesh.smooth_object(mesh_object=apical_dendrite_mesh, level=2)
 
                     # Further smoothing, only with shading
                     #nmv.mesh.shade_smooth_object(apical_dendrite_mesh)
@@ -238,7 +241,7 @@ class UnionBuilder:
                         basal_dendrite_objects)
 
                     # Smooth the mesh object
-                    #nmv.mesh.smooth_object(mesh_object=basal_dendrite_mesh, level=2)
+                    # nmv.mesh.smooth_object(mesh_object=basal_dendrite_mesh, level=2)
 
                     # Further smoothing, only with shading
                     #nmv.mesh.shade_smooth_object(basal_dendrite_mesh)
@@ -404,11 +407,10 @@ class UnionBuilder:
 
         # Create a bevel object that will be used to create an proxy skeleton of the mesh
         # Note that the radius is set to conserve the volumes of the branches
-        bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0 * math.sqrt(2), vertices=4, name='bevel')
-
         #bevel_object = nmv.mesh.create_bezier_circle(
-        #    radius=1.0, vertices=12, name='bevel')
+        #    radius=1.0 * math.sqrt(2), vertices=4, name='bevel')
+
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='bevel')
 
 
         # Create the arbors using this 4-side bevel object and open caps (for smoothing)

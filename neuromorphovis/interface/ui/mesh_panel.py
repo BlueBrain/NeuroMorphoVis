@@ -626,6 +626,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Draw the meshing options
         if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
+           context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION or \
            context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
 
             # Homogeneous mesh coloring
