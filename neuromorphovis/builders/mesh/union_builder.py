@@ -283,27 +283,29 @@ class UnionBuilder:
         :return:
         """
 
-        # Connecting apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
 
-            # There is an apical dendrite
-            if self.morphology.apical_dendrite is not None:
-                nmv.logger.log('\t * Apical dendrite')
-                nmv.skeleton.ops.connect_arbor_to_soma(
-                    self.soma_mesh, self.morphology.apical_dendrite)
+            # Connecting apical dendrite
+            if not self.options.morphology.ignore_apical_dendrite:
 
-        # Connecting basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
+                # There is an apical dendrite
+                if self.morphology.apical_dendrite is not None:
+                    nmv.logger.log('\t * Apical dendrite')
+                    nmv.skeleton.ops.connect_arbor_to_soma(
+                        self.soma_mesh, self.morphology.apical_dendrite)
 
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                nmv.logger.log('\t * Dendrite [%d]' % i)
-                nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
+            # Connecting basal dendrites
+            if not self.options.morphology.ignore_basal_dendrites:
 
-        # Connecting axon
-        if not self.options.morphology.ignore_axon:
-            nmv.logger.log('\t * Axon')
-            nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.log('\t * Dendrite [%d]' % i)
+                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
+
+            # Connecting axon
+            if not self.options.morphology.ignore_axon:
+                nmv.logger.log('\t * Axon')
+                nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -325,16 +327,16 @@ class UnionBuilder:
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
+            bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
         # Smooth and close the faces of the apical dendrites meshes
-        for mesh in arbors_meshes:
+        #for mesh in arbors_meshes:
 
-            # Close the edges
-            nmv.mesh.ops.close_open_faces(mesh)
+        #    # Close the edges
+        #    nmv.mesh.ops.close_open_faces(mesh)
 
     ################################################################################################
     # @build_soft_edges_arbors
@@ -355,7 +357,7 @@ class UnionBuilder:
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
         arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
+            bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
@@ -367,7 +369,7 @@ class UnionBuilder:
             nmv.mesh.ops.smooth_object(mesh_object=mesh, level=2)
 
             # Close the edges
-            nmv.mesh.ops.close_open_faces(mesh)
+            #nmv.mesh.ops.close_open_faces(mesh)
 
     ################################################################################################
     # @reconstruct_arbors_meshes

@@ -273,13 +273,14 @@ class Morphology:
                 # Verify the length of the list
                 if len(arbor.samples) > 2:
 
-                    nmv.logger.log('MORPHOLOGY FIX: Removing a negative sample [%s]' % str(sample.id))
+                    nmv.logger.log(
+                        'MORPHOLOGY FIX: Removing a negative sample [%s]' % str(sample.id))
                     arbor.samples.remove(sample)
 
                 # If the section has one sample, then the code should not reach this point
                 elif len(arbor.samples) == 1:
                     nmv.logger.log(
-                    'MORPHOLOGY SEVERE ERROR: Cannot remove a single sampled section, EXITING!')
+                        'MORPHOLOGY SEVERE ERROR: Cannot remove a single sampled section, EXITING!')
                     exit(0)
 
                 # If the section has only two samples, and the second one is negative, then we must

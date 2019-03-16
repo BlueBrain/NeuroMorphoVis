@@ -90,9 +90,6 @@ def build_arbors_from_sections(sections_list):
     # If the sections list is empty
     if len(sections_list) == 0:
 
-        # This might be an issue
-        nmv.logger.log('WARNING: Empty sections list!')
-
         # Then return None
         return None
 

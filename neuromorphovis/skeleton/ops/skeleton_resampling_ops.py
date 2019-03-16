@@ -184,7 +184,7 @@ def resample_sections(section,
     elif len(section.samples) == 1:
 
         # Report the error
-        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has only ONE sample, cannot be re-sampled' %
+        nmv.logger.log('\t* ERROR: Section [%s: %d] has only ONE sample, cannot be re-sampled' %
               (section.get_type_string(), section.id))
 
         return
@@ -199,12 +199,12 @@ def resample_sections(section,
         diameters = (section.samples[1].radius + section.samples[0].radius) * 2
 
         # Report the warning
-        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], '
+        nmv.logger.log('\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], '
                        'diameters [%f]' %
               (section.get_type_string(), section.id, section_length, diameters))
 
         if section_length < diameters:
-            nmv.logger.log('\t\t\t* BAD SECTION')
+            nmv.logger.log('\t\t* BAD SECTION')
 
     # An index that will be used to keep track on the samples list
     i = 0
@@ -225,8 +225,8 @@ def resample_sections(section,
             direction = (section.samples[i + 1].point - section.samples[i].point).normalized()
 
             # Compute the auxiliary sample point, use epsilon for floating point comparison
-            sample_point = \
-                section.samples[i].point + (direction * resampling_distance * nmv.consts.Math.EPSILON)
+            sample_point = section.samples[i].point + \
+                           (direction * resampling_distance * nmv.consts.Math.EPSILON)
 
             # Compute the auxiliary sample radius based on the previous and next samples
             sample_radius = (section.samples[i + 1].radius + section.samples[i].radius) * 0.5
