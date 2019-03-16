@@ -255,81 +255,7 @@ class UnionBuilder:
         # Return the list of meshes
         return arbors_objects
 
-    ################################################################################################
-    # @connect_arbor_to_soma
-    ################################################################################################
-    def connect_arbor_to_soma(self,
-                              soma_mesh,
-                              arbor):
 
-        # Verify if the arbor is connected to the soma or not
-        if not arbor.connected_to_soma:
-            nmv.logger.log('WARNING: This arbor is not connected to the soma')
-            return
-
-        # Clip the auxiliary section using a cutting plane that is normal on the branch
-        # Get the intersection point between the soma and the apical dendrite
-        branch_starting_point = arbor.samples[0].point
-        branch_direction = arbor.samples[0].point.normalized()
-        intersection_point = branch_starting_point - 0.25 * branch_direction
-
-        # Construct a clipping plane and rotate it towards the origin
-        clipping_plane = nmv.mesh.create_plane(radius=2.0, location=intersection_point)
-        nmv.mesh.ops.rotate_face_towards_point(clipping_plane, Vector((0, 0, 0)))
-
-        # Clip the arbor mesh and return a reference to the result
-        section_mesh = nmv.mesh.ops.intersect_mesh_objects(arbor.mesh, clipping_plane)
-
-        # Delete the clipping plane to clean the scene
-        nmv.scene.ops.delete_list_objects([clipping_plane])
-
-        # Get the nearest face on the mesh surface to the intersection point
-        soma_mesh_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
-            soma_mesh, intersection_point)
-
-        # Deselect all the objects in the scene
-        nmv.scene.ops.deselect_all()
-
-        # Select the soma object
-        nmv.scene.ops.select_objects([soma_mesh])
-
-        # Select the face using its obtained index
-        nmv.mesh.ops.select_face_vertices(soma_mesh, soma_mesh_face_index)
-
-        # Select the section mesh
-        nmv.scene.ops.select_objects([section_mesh])
-
-        # Deselect all the vertices of the section mesh, for safety !
-        nmv.mesh.ops.deselect_all_vertices(section_mesh)
-
-        # Get the nearest face on the section mesh
-        section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
-            section_mesh, intersection_point)
-
-        # Select the face
-        nmv.mesh.ops.select_face_vertices(section_mesh, section_face_index)
-
-        # Apply a joint operation using bridging
-        reconstructed_soma_mesh = nmv.mesh.ops.join_mesh_objects(
-            [soma_mesh, section_mesh], name='neuron')
-
-        # Toggle to the edit mode to be able to apply the edge loop operation
-        bpy.ops.object.editmode_toggle()
-
-        # Apply the bridging operator
-        bpy.ops.mesh.bridge_edge_loops()
-
-        # Smooth the connection
-        bpy.ops.mesh.faces_shade_smooth()
-
-        # Switch back to object mode, to be able to export the mesh
-        bpy.ops.object.editmode_toggle()
-
-        # Select all the vertices of the final mesh
-        nmv.mesh.ops.select_all_vertices(reconstructed_soma_mesh)
-
-        # Deselect all the vertices of the parent mesh, for safety reasons
-        nmv.mesh.ops.deselect_all_vertices(reconstructed_soma_mesh)
 
     ################################################################################################
     # @connect_arbors_to_soma
@@ -371,6 +297,104 @@ class UnionBuilder:
                 self.reconstructed_soma_mesh, self.morphology.axon)
 
     ################################################################################################
+    # @build_hard_edges_arbors
+    ################################################################################################
+    def build_hard_edges_arbors(self):
+        """Reconstruct the meshes of the arbors of the neuron with HARD edges.
+        """
+
+        # Create a bevel object that will be used to create the mesh
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+
+        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
+        #  soma origin, otherwise extend the arbors to the origin
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+        else:
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+
+        # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
+        self.build_arbors(bevel_object=bevel_object, caps=True,
+                          roots_connection=roots_connection)
+
+        # Close the caps of the apical dendrites meshes
+        for arbor_object in self.apical_dendrites_meshes:
+            nmv.mesh.close_open_faces(arbor_object)
+
+        # Close the caps of the basal dendrites meshes
+        for arbor_object in self.basal_dendrites_meshes:
+            nmv.mesh.close_open_faces(arbor_object)
+
+        # Close the caps of the axon meshes
+        for arbor_object in self.axon_meshes:
+            nmv.mesh.close_open_faces(arbor_object)
+
+        # Delete the bevel object
+        nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+    ################################################################################################
+    # @build_soft_edges_arbors
+    ################################################################################################
+    def build_soft_edges_arbors(self):
+        """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
+        """
+        # Create a bevel object that will be used to create the mesh with 4 sides only
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0 * math.sqrt(2), vertices=4, name='arbors_bevel')
+
+        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
+        #  soma origin, otherwise extend the arbors to the origin
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+        else:
+            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+
+        # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
+        self.build_arbors(bevel_object=bevel_object, caps=False,
+                          roots_connection=roots_connection)
+
+        # Smooth and close the faces of the apical dendrites meshes
+        for mesh in self.apical_dendrites_meshes:
+            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
+
+        # Smooth and close the faces of the basal dendrites meshes
+        for mesh in self.basal_dendrites_meshes:
+            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
+
+        # Smooth and close the faces of the axon meshes
+        for mesh in self.axon_meshes:
+            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
+
+        # Delete the bevel object
+        nmv.scene.ops.delete_object_in_scene(bevel_object)
+
+    ################################################################################################
+    # @reconstruct_arbors_meshes
+    ################################################################################################
+    def reconstruct_arbors_meshes(self):
+        """Reconstruct the arbors.
+
+        # There are two techniques for reconstructing the mesh. The first uses sharp edges without
+        # any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
+        # The other method creates a smoothed mesh with soft edges. In this method, we will use a
+        # simplified bevel object with only 'four' vertices and smooth it later using vertices
+        # smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
+        """
+
+        nmv.logger.header('Building arbors')
+
+        # Hard edges (less samples per branch)
+        if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
+            self.build_hard_edges_arbors()
+
+        # Smooth edges (more samples per branch)
+        elif self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+            self.build_soft_edges_arbors()
+
+        else:
+            nmv.logger.log('ERROR')
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -385,25 +409,33 @@ class UnionBuilder:
         # performance since this is way better than creating a new material per section or segment
         nmv.builders.create_skeleton_materials(builder=self)
 
-        # A list that keeps references to all the created meshes of the neuron
-        neuron_meshes = []
+        # Verify and repair the morphology, if required
+        # self.verify_morphology_skeleton()
 
-        #soma_builder_object = nmv.builders.SomaBuilder(
-        #    morphology=self.morphology, options=self.options)
+        # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
+        # self.modify_morphology_skeleton()
 
-        # Reconstruct the mesh of the soma
-        #self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(
-        #    apply_shader=False)
+        # Build the soma
+        # self.reconstruct_soma_mesh()
 
-        # Apply the shader to the reconstructed soma mesh
-        #nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
+        # Build the arbors
+        # self.reconstruct_arbors_meshes()
 
-        # Add the soma mesh to the list
-        # neuron_meshes.append(self.reconstructed_soma_mesh)
+        # Connect the arbors to the soma
+        # self.connect_arbors_to_soma()
 
-        nmv.logger.log('**************************************************************************')
-        nmv.logger.log('Building arbors')
-        nmv.logger.log('**************************************************************************')
+        # Modifying mesh surface
+        # self.modify_mesh_surface()
+
+        # Decimation
+        # self.decimate_neuron_mesh()
+
+        # Adding spines
+        # self.add_spines()
+
+        # Report
+        nmv.logger.header('Mesh Reconstruction Done!')
+
 
         # Create a bevel object that will be used to create an proxy skeleton of the mesh
         # Note that the radius is set to conserve the volumes of the branches

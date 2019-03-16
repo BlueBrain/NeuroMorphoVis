@@ -648,30 +648,5 @@ class PiecewiseBuilder:
         # Adding spines
         self.add_spines()
 
-
-        # Group the objects of the neuron together
-        #nmv.builders.join_neuron_meshes_into_single_mesh()
-
-
-
-
-
-        # Group the objects of the neuron together
-        # self.join_neuron_meshes_into_single_mesh()
-
-
-
-
-
-        # Transform to the global coordinates
-        # self.transform_to_global_coordinates()
-
-        # Adjust the texture coordinates of the mesh
-
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
-
-        # Return a reference to the neuron mesh
-        return self.neuron_mesh
-
-
