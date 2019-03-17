@@ -89,7 +89,8 @@ class MeshPanel(bpy.types.Panel):
                 'Union'),
                (nmv.enums.Meshing.Technique.META_OBJECTS,
                 'Meta Objects',
-                'Creates watertight mesh models using meta balls, but it could be slower than the other methods'),],
+                'Creates watertight mesh models using meta balls, but it could be slower than'
+                ' the other methods')],
         name='Meshing Method', default=nmv.enums.Meshing.Technique.META_OBJECTS)
 
     # Is the soma connected to the first order branches or not !
@@ -344,6 +345,13 @@ class MeshPanel(bpy.types.Panel):
     bpy.types.Scene.NeuronMeshRenderingProgress = IntProperty(
         name="Rendering Progress",
         default=0, min=0, max=100, subtype='PERCENTAGE')
+
+    # Individual components export flag
+    bpy.types.Scene.ExportIndividuals = BoolProperty(
+        name='Export Components',
+        description='Export each component of the neuron as a separate mesh. This feature is '
+                    'important to label reconstructions with machine learning applications.',
+        default=False)
 
     ################################################################################################
     # @draw_skinning_meshing_options
@@ -902,7 +910,10 @@ class MeshPanel(bpy.types.Panel):
         # Saving meshes parameters
         save_neuron_mesh_row = layout.row()
         save_neuron_mesh_row.label(text='Save Neuron Mesh As:', icon='MESH_UVSPHERE')
-        self.shown_hidden_rows.append(save_neuron_mesh_row)
+
+        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+            export_individual_row = layout.row()
+            export_individual_row.prop(context.scene, 'ExportIndividuals')
 
         save_neuron_mesh_buttons_column = layout.column(align=True)
         save_neuron_mesh_buttons_column.operator('save_neuron_mesh.obj', icon='MESH_DATA')

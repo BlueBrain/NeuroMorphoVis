@@ -269,6 +269,29 @@ class UnionBuilder:
         return arbors_objects
 
     ################################################################################################
+    # @add_spines
+    ################################################################################################
+    def add_spines(self):
+        """Add the spines to the neuron.
+        """
+
+        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+            spines_builder = nmv.builders.CircuitSpineBuilder(
+                morphology=self.morphology, options=self.options)
+            # self.spines_mesh, self.spines_list = spines_builder.add_spines_to_morphology()
+
+        # Random spines
+        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+            nmv.logger.header('Adding random spines')
+            spines_builder = nmv.builders.RandomSpineBuilder(
+                morphology=self.morphology, options=self.options)
+            spines_objects = spines_builder.add_spines_to_morphology()
+
+        # Otherwise ignore spines
+        else:
+            nmv.logger.log('Ignoring spines')
+
+    ################################################################################################
     # @connect_arbors_to_soma
     ################################################################################################
     def connect_arbors_to_soma(self):
@@ -466,7 +489,7 @@ class UnionBuilder:
         # self.decimate_neuron_mesh()
 
         # Adding spines
-        # self.add_spines()
+        self.add_spines()
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
