@@ -46,3 +46,9 @@ class Image:
 
     # The bounding box increment that will clean the edges around the images
     GAP_DELTA = 5.0
+
+    # Default image resolution
+    DEFAULT_RESOLUTION = 512
+
+    # Default value for the image scale factor
+    DEFAULT_IMAGE_SCALE_FACTOR = 1.0
