@@ -51,9 +51,6 @@ class Arbors:
         # Scale the radii of the arbors using a constant factor
         SCALED = 'ARBORS_RADII_SCALED'
 
-        # Filter sections with radii smaller than a threshold value given
-        FILTERED = 'ARBORS_RADII_FILTERED'
-
         ############################################################################################
         # @get_enum
         ############################################################################################
@@ -66,10 +63,6 @@ class Arbors:
 
             # Scaled radii
             elif argument == 'scaled':
-                return Arbors.Radii.SCALED
-
-            # Scaled radii
-            elif argument == 'filtered':
                 return Arbors.Radii.SCALED
 
             # By default, use the original skeleton radii as specified in the morphology

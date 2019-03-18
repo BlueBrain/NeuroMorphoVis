@@ -95,6 +95,8 @@ class Section:
         # NOTE: This variable is only set to the root sections.
         self.soma_face_index = None
 
+        # The centroid of a branch
+        # NOTE: This variable is only set to the root sections.
         self.soma_face_centroid = None
 
         # This parameters defines whether this section is a continuation for a parent section or

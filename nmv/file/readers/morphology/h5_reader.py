@@ -222,7 +222,6 @@ class H5Reader:
         try:
 
             # Import the h5py module
-            # TODO: Adjust the paths to avoid Blender's numpy implementation
             import h5py
 
             # Read the h5 file using the python module into a data array
