@@ -580,5 +580,30 @@ class Meshing:
                 else:
                     return Meshing.Nucleus.Quality.LQ
 
+    ################################################################################################
+    # @ExportFormat
+    ################################################################################################
+    class ExportFormat:
+        """The file format of the exported meshes
+        """
 
+        # .ply
+        PLY = 'EXPORT_FORMAT_PLY'
 
+        # .stl
+        STL = 'EXPORT_FORMAT_STL'
+
+        # .obj
+        OBJ = 'EXPORT_FORMAT_OBJ'
+
+        # .off
+        OFF = 'EXPORT_FORMAT_OFF'
+
+        # .blend
+        BLEND = 'EXPORT_FORMAT_BLEND'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass

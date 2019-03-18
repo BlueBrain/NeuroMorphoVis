@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .renderer import *
 from .soma_renderer import *
 from .skeleton_renderer import *
 from .mesh_renderer import *

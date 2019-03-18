@@ -17,136 +17,176 @@
 
 # Internal imports
 import nmv
+import nmv.consts
 import nmv.enums
 import nmv.rendering
 
 
 ####################################################################################################
-# @NeuronSkeletonRenderer
+# @render
 ####################################################################################################
-class NeuronSkeletonRenderer:
-    """A simple factory for rendering reconstructed neuronal skeletons."""
+def render(bounding_box,
+           camera_view=nmv.enums.Camera.View.FRONT,
+           image_resolution=nmv.consts.Image.DEFAULT_RESOLUTION,
+           image_name='image',
+           image_directory=None,
+           keep_camera_in_scene=False):
+    """Renders a frustum in the scene defined by a given bounding box.
 
-    ################################################################################################
-    # @SomaRenderer
-    ################################################################################################
-    def __init__(self):
-        pass
+    :param bounding_box:
+        The bounding box of the frustum requested to be rendered.
+    :param camera_view:
+        The view of the camera, by default FRONT.
+    :param image_resolution:
+        The resolution of the image, by default 1024.
+    :param image_name:
+        The name of the image, by default 'image'.
+    :param image_directory:
+        The directory where the image will be rendered. If the directory is set to None,
+        then the prefix is included in @image_name.
+    :param keep_camera_in_scene:
+        Keep the camera used to do the rendering after the rendering is done.
+    """
 
-    ################################################################################################
-    # @render
-    ################################################################################################
-    @staticmethod
-    def render(bounding_box,
-               camera_view=nmv.enums.Camera.View.FRONT,
-               image_resolution=512,
-               image_name='SKELETON',
-               image_directory=None,
-               keep_camera_in_scene=False):
-        """Render the morphology skeleton to a .PNG image.
+    # Create a camera
+    camera = nmv.rendering.Camera('Camera_%s' % camera_view)
 
-        :param bounding_box:
-            The bounding box of the view requested to be rendered.
-        :param camera_view:
-            The view of the camera, by default FRONT.
-        :param image_resolution:
-            The resolution of the image, by default 512.
-        :param image_name:
-            The name of the image, by default 'SKELETON'.
-        :param image_directory:
-            The directory where the image will be rendered. If the directory is set to None,
-            then the prefix is included in @image_name.
-        :param keep_camera_in_scene:
-            Keep the camera used to do the rendering after the rendering is done.
-        """
+    # Image path prefix, i.e. w/o extension which will be added later
+    # If the directory is none, then the image name contains the full path of the image
+    image_prefix = \
+        '%s/%s' % (image_directory, image_name) if image_directory is not None else image_name
 
-        # Create a camera
-        skeleton_camera = nmv.rendering.Camera('MorphologyCamera_%s' % camera_view)
+    # Render an image
+    camera.render_scene(bounding_box=bounding_box,
+                        camera_view=camera_view,
+                        image_resolution=image_resolution,
+                        image_name=image_prefix,
+                        keep_camera_in_scene=keep_camera_in_scene)
 
-        # Image path prefix, i.e. w/o extension which will be added later
-        image_prefix = \
-            '%s/%s' % (image_directory, image_name) if image_directory is not None else image_name
 
-        # Render an image
-        skeleton_camera.render_scene(
-            bounding_box=bounding_box, camera_view=camera_view, image_resolution=image_resolution,
-            image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
+####################################################################################################
+# @render_to_scale
+####################################################################################################
+def render_to_scale(bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT,
+                    image_scale_factor=nmv.consts.Image.DEFAULT_IMAGE_SCALE_FACTOR,
+                    image_name='image',
+                    image_directory=None,
+                    keep_camera_in_scene=False):
+    """Renders a frustum in the scene defined by a given bounding box to scale, i.e. 1 pixel
+    would correspond to a scale factor.
 
-    ################################################################################################
-    # @render_to_scale
-    ################################################################################################
-    @staticmethod
-    def render_to_scale(bounding_box,
-                        camera_view=nmv.enums.Camera.View.FRONT,
-                        image_scale_factor=1.0,
-                        image_name='SKELETON',
-                        image_directory=None,
-                        keep_camera_in_scene=False):
-        """Render the reconstructed morphology to scale to a .PNG image.
+    :param bounding_box:
+        The bounding box of the view requested to be rendered.
+    :param camera_view:
+        The view of the camera, by default FRONT.
+    :param image_scale_factor:
+        The factor used to scale the resolution of the image the image, by default 1.
+    :param image_name:
+        The name of the image, by default 'MESH'.
+    :param image_directory:
+        The directory where the image will be rendered. If the directory is set to None,
+        then the prefix is included in @image_name.
+    :param keep_camera_in_scene:
+        Keep the camera used to do the rendering after the rendering is done.
+    """
 
-        :param bounding_box:
-            The bounding box of the view requested to be rendered.
-        :param camera_view:
-            The view of the camera, by default FRONT.
-        :param image_scale_factor:
-            The factor used to scale the resolution of the image the image, by default 1.
-        :param image_name:
-            The name of the image, by default 'MESH'.
-        :param image_directory:
-            The directory where the image will be rendered. If the directory is set to None,
-            then the prefix is included in @image_name.
-        :param keep_camera_in_scene:
-            Keep the camera used to do the rendering after the rendering is done.
-        """
+    # Create a camera
+    camera = nmv.rendering.Camera('ToScaleCamera_%s' % camera_view)
 
-        # Create a camera
-        skeleton_camera = nmv.rendering.Camera('MeshCamera_%s' % camera_view)
+    # Image path prefix, i.e. w/o extension which will be added later
+    # If the directory is none, then the image name contains the full path of the image
+    image_prefix = '%s/%s' % (
+        image_directory, image_name) if image_directory is not None else image_name
 
-        # Image path prefix, i.e. w/o extension which will be added later
-        image_prefix = '%s/%s' % (
-            image_directory, image_name) if image_directory is not None else image_name
+    # Render an image
+    camera.render_scene_to_scale(bounding_box=bounding_box,
+                                 camera_view=camera_view,
+                                 scale_factor=image_scale_factor,
+                                 image_name=image_prefix,
+                                 keep_camera_in_scene=keep_camera_in_scene)
 
-        # Render an image
-        skeleton_camera.render_scene_to_scale(
-            bounding_box=bounding_box, camera_view=camera_view, scale_factor=image_scale_factor,
-            image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
 
-    ################################################################################################
-    # @render
-    ################################################################################################
-    @staticmethod
-    def render_at_angle(morphology_objects,
-                        angle,
-                        bounding_box,
-                        camera_view=nmv.enums.Camera.View.FRONT,
-                        image_resolution=512,
-                        image_name='SKELETON',
-                        image_directory=None):
-        """Render the morphology skeleton to a .PNG image at a specific angle.
+####################################################################################################
+# @render_at_angle
+####################################################################################################
+def render_at_angle(scene_objects,
+                    angle,
+                    bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT_360,
+                    image_resolution=nmv.consts.Image.DEFAULT_RESOLUTION,
+                    image_name='image',
+                    image_directory=None):
+    """Renders a frustum in the scene defined by a given bounding box at a specific angle.
 
-        :param morphology_objects:
-            A list of all the objects that belong to the reconstructed morphology.
-        :param angle:
-            The angle the frame will be rendered at.
-        :param bounding_box:
-            The bounding box of the view requested to be rendered.
-        :param camera_view:
-            The view of the camera, by default FRONT.
-        :param image_resolution:
-            The resolution of the image, by default 512.
-        :param image_name:
-            The name of the image, by default 'SKELETON'.
-        :param image_directory:
-            The directory where the image will be rendered. If the directory is set to None,
-            then the prefix is included in @image_name.
-        """
+    :param scene_objects:
+        A list of all the objects that belong to the reconstructed mesh.
+    :param angle:
+        The angle the frame will be rendered at.
+    :param bounding_box:
+        The bounding box of the view requested to be rendered.
+    :param camera_view:
+        The view of the camera, by default FRONT.
+    :param image_resolution:
+        The resolution of the image, by default 512.
+    :param image_name:
+        The name of the image, by default 'SKELETON'.
+    :param image_directory:
+        The directory where the image will be rendered. If the directory is set to None,
+        then the prefix is included in @image_name.
+    """
 
-        # Rotate all the objects as if they are a single object
-        for morphology_object in morphology_objects:
+    # Rotate all the objects as if they are a single object
+    for scene_object in scene_objects:
 
-            # Rotate the soma mesh around the y axis
-            morphology_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0
+        # Rotate the mesh object around the y axis
+        scene_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0
 
-        nmv.rendering.NeuronSkeletonRenderer.render(
-            bounding_box=bounding_box, camera_view=camera_view,
-            image_resolution=image_resolution, image_name=image_name)
+    # Render the image
+    render(bounding_box=bounding_box,
+           camera_view=camera_view,
+           image_resolution=image_resolution,
+           image_name=image_name,
+           image_directory=image_directory)
+
+
+####################################################################################################
+# @render_at_angle_to_scale
+####################################################################################################
+def render_at_angle_to_scale(scene_objects,
+                             angle,
+                             bounding_box,
+                             camera_view=nmv.enums.Camera.View.FRONT_360,
+                             image_scale_factor=nmv.consts.Image.DEFAULT_IMAGE_SCALE_FACTOR,
+                             image_name='image',
+                             image_directory=None):
+    """Render the mesh to a .PNG image at a specific angle.
+    :param scene_objects:
+        A list of all the objects that will be rendered.
+    :param angle:
+        The angle the frame will be rendered at.
+    :param bounding_box:
+        The bounding box of the view requested to be rendered.
+    :param camera_view:
+        The view of the camera, by default FRONT.
+    :param image_scale_factor:
+        The factor used to scale the resolution of the image the image, by default 1.
+    :param image_name:
+        The name of the image, by default 'SKELETON'.
+    :param image_directory:
+        The directory where the image will be rendered. If the directory is set to None,
+        then the prefix is included in @image_name.
+    """
+
+    # Rotate all the objects as if they are a single object
+    for scene_object in scene_objects:
+
+        # Rotate the mesh object around the y axis
+        scene_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0
+
+    # Render the image to scale
+    render_to_scale(bounding_box=bounding_box,
+                    camera_view=camera_view,
+                    image_scale_factor=image_scale_factor,
+                    image_name=image_name,
+                    image_directory=image_directory)

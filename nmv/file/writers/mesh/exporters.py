@@ -59,6 +59,39 @@ def export_object_to_ply_file(mesh_object,
 
 
 ####################################################################################################
+# @export_object_to_ply_file
+####################################################################################################
+def export_objects_to_ply_file(mesh_objects,
+                              output_directory,
+                              output_file_name):
+    """
+    Exports a selected object to a .ply file.
+
+    :param mesh_object: A selected mesh object in the scene.
+    :param output_directory: The output directory where the mesh will be saved.
+    :param output_file_name: The name of the output mesh.
+    """
+
+    # Construct the name of the exported mesh.
+    output_file_path = "%s/%s.ply" % (output_directory, str(output_file_name))
+
+    # Deselect all the other objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    nmv.scene.ops.select_objects(mesh_objects)
+
+    # Export the mesh object to an OBJ file
+    nmv.logger.log('Exporting [%s]' % output_file_path)
+    export_timer = nmv.utilities.Timer()
+    export_timer.start()
+
+    bpy.ops.export_mesh.ply(filepath=output_file_path, check_existing=True)
+
+    export_timer.end()
+    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
+
+
+####################################################################################################
 # @export_object_to_obj_file
 ####################################################################################################
 def export_object_to_obj_file(mesh_object,

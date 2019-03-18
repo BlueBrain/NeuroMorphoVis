@@ -250,7 +250,7 @@ class MeshPanel(bpy.types.Panel):
     bpy.types.Scene.MeshHomogeneousColor = BoolProperty(
         name="Homogeneous Color",
         description="Use a single color for rendering all the objects of the mesh",
-        default=True)
+        default=False)
 
     # A homogeneous color for all the objects of the mesh (membrane and spines)
     bpy.types.Scene.NeuronMeshColor = FloatVectorProperty(
@@ -353,11 +353,30 @@ class MeshPanel(bpy.types.Panel):
                     'important to label reconstructions with machine learning applications.',
         default=False)
 
+    # Exported mesh file formats
+    bpy.types.Scene.ExportedMeshFormat = bpy.props.EnumProperty(
+        items=[(nmv.enums.Meshing.ExportFormat.PLY,
+                'Stanford (.ply)',
+                'Export the mesh to a .ply file'),
+               (nmv.enums.Meshing.ExportFormat.OBJ,
+                'Wavefront (.obj)',
+                'Export the mesh to a .obj file'),
+               (nmv.enums.Meshing.ExportFormat.STL,
+                'Stereolithography CAD (.stl)',
+                'Export the mesh to an .stl file'),
+               (nmv.enums.Meshing.ExportFormat.OFF,
+                'Object File Format (.off)',
+                'Export the mesh to an .off file'),
+               (nmv.enums.Meshing.ExportFormat.BLEND,
+                'Blender File (.blend)',
+                'Export the mesh as a .blend file')],
+        name='Format', default=nmv.enums.Meshing.ExportFormat.PLY)
+
     ################################################################################################
     # @draw_skinning_meshing_options
     ################################################################################################
     def draw_skinning_meshing_options(self,
-                                          context):
+                                      context):
         """Draws the options when the skinning meshing technique is selected.
 
         :param context:
@@ -370,7 +389,8 @@ class MeshPanel(bpy.types.Panel):
         tess_level_column = tess_level_row.column()
         tess_level_column.prop(context.scene, 'MeshTessellationLevel')
         if not context.scene.TessellateMesh:
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
+            # Use 1.0 to disable the tessellation
+            nmv.interface.ui_options.mesh.tessellation_level = 1.0
             tess_level_column.enabled = False
 
         # Pass options from UI to system
@@ -468,21 +488,20 @@ class MeshPanel(bpy.types.Panel):
             Panel context.
         """
 
-        # Surface roughness
-        mesh_surface_row = self.layout.row()
-        mesh_surface_row.label('Surface:')
-        mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
-
         # Edges
         mesh_edges_row = self.layout.row()
         mesh_edges_row.label('Edges:')
         mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
-
-        # Pass options from UI to system
         nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
+
+        # Surface roughness
+        if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+            mesh_surface_row = self.layout.row()
+            mesh_surface_row.label('Surface:')
+            mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
+            nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+        else:
+            nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
         # Soma connection
         soma_connection_row = self.layout.row()
@@ -522,7 +541,6 @@ class MeshPanel(bpy.types.Panel):
         nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
         nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
-
     ################################################################################################
     # @draw_meshing_options
     ################################################################################################
@@ -539,21 +557,17 @@ class MeshPanel(bpy.types.Panel):
 
         # Skeleton meshing options
         skeleton_meshing_options_row = layout.row()
-        skeleton_meshing_options_row.label(text='Skeleton Meshing Options:', icon='SURFACE_DATA')
-
-        # Which skeletonization technique to use
-        skeletonization_row = layout.row()
-        skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.skeletonization = context.scene.SkeletonizationTechnique
+        skeleton_meshing_options_row.label(text='Meshing Options:', icon='SURFACE_DATA')
 
         # Which meshing technique to use
         meshing_method_row = layout.row()
         meshing_method_row.prop(context.scene, 'MeshingTechnique', icon='OUTLINER_OB_EMPTY')
-
-        # Pass options from UI to system
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.MeshingTechnique
+
+        # Which skeletonization technique to use
+        skeletonization_row = layout.row()
+        skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
+        nmv.interface.ui_options.mesh.skeletonization = context.scene.SkeletonizationTechnique
 
         # Draw the meshing options
         if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
@@ -909,17 +923,23 @@ class MeshPanel(bpy.types.Panel):
 
         # Saving meshes parameters
         save_neuron_mesh_row = layout.row()
-        save_neuron_mesh_row.label(text='Save Neuron Mesh As:', icon='MESH_UVSPHERE')
+        save_neuron_mesh_row.label(text='Export Neuron Mesh:', icon='MESH_UVSPHERE')
+
 
         if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             export_individual_row = layout.row()
             export_individual_row.prop(context.scene, 'ExportIndividuals')
 
+        export_format = layout.row()
+
+        export_format.prop(context.scene, 'ExportedMeshFormat', icon='GROUP_VERTEX')
+
+
         save_neuron_mesh_buttons_column = layout.column(align=True)
-        save_neuron_mesh_buttons_column.operator('save_neuron_mesh.obj', icon='MESH_DATA')
-        save_neuron_mesh_buttons_column.operator('save_neuron_mesh.ply', icon='GROUP_VERTEX')
-        save_neuron_mesh_buttons_column.operator('save_neuron_mesh.stl', icon='RETOPO')
-        save_neuron_mesh_buttons_column.operator('save_neuron_mesh.blend', icon='OUTLINER_OB_META')
+        save_neuron_mesh_buttons_column.operator('export.neuron_mesh', icon='MESH_DATA')
+        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.ply', icon='GROUP_VERTEX')
+        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.stl', icon='RETOPO')
+        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.blend', icon='OUTLINER_OB_META')
         save_neuron_mesh_buttons_column.enabled = True
         self.shown_hidden_rows.append(save_neuron_mesh_buttons_column)
 
@@ -1079,75 +1099,8 @@ class RenderMeshFront(bpy.types.Operator):
             'FINISHED'
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Mesh Rendering ... Wait')
-
-        # A reference to the bounding box that will be used for the rendering
-        rendering_bbox = None
-
-        # Compute the bounding box for a close up view
-        if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MeshCloseUpSize)
-
-        # Compute the bounding box for a mid-shot view
-        elif context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide-shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-        # Stretch the bounding box by few microns
-        rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
-        # Render at a specific resolution
-        if context.scene.MeshRenderingResolution == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(
-                bounding_box=rendering_bbox,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.MeshFrameResolution,
-                image_name='MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Render at a specific scale factor
-        else:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(
-                bounding_box=rendering_bbox,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_scale_factor=context.scene.MeshFrameScaleFactor,
-                image_name='MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Mesh Rendering Done')
+        # Render the image
+        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.FRONT)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -1175,72 +1128,8 @@ class RenderMeshSide(bpy.types.Operator):
             'FINISHED'
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Mesh Rendering ... Wait')
-
-        # A reference to the bounding box that will be used for the rendering
-        bounding_box = None
-
-        # Compute the bounding box for a close up view
-        if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MeshCloseUpSize)
-
-        # Compute the bounding box for a mid shot view
-        elif context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-        # Render at a specific resolution
-        if context.scene.MeshRenderingResolution == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.SIDE,
-                image_resolution=context.scene.MeshFrameResolution,
-                image_name='MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Render at a specific scale factor
-        else:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.SIDE,
-                image_scale_factor=context.scene.MeshFrameScaleFactor,
-                image_name='MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Mesh Rendering Done')
+        # Render the image
+        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.SIDE)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -1268,72 +1157,8 @@ class RenderMeshTop(bpy.types.Operator):
             'FINISHED'.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Mesh Rendering ... Wait')
-
-        # A reference to the bounding box that will be used for the rendering
-        bounding_box = None
-
-        # Compute the bounding box for a close up view
-        if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MeshCloseUpSize)
-
-        # Compute the bounding box for a mid shot view
-        elif context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Compute the bounding box for the wide shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-        # Render at a specific resolution
-        if context.scene.MeshRenderingResolution == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.TOP,
-                image_resolution=context.scene.MeshFrameResolution,
-                image_name='MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Render at a specific scale factor
-        else:
-
-            # Render the image
-            nmv.rendering.NeuronMeshRenderer.render_to_scale(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.TOP,
-                image_scale_factor=context.scene.MeshFrameScaleFactor,
-                image_name='MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
-                image_directory=nmv.interface.ui_options.io.images_directory,
-                keep_camera_in_scene=context.scene.KeepMeshCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Mesh Rendering Done')
+        # Render the image
+        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.TOP)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -1353,6 +1178,9 @@ class RenderMesh360(bpy.types.Operator):
     event_timer = None
     timer_limits = bpy.props.IntProperty(default=0)
 
+    # Collect a list of the scene objects (meshes) to be rendered before starting the rendering loop
+    scene_objects = list()
+
     # 360 bounding box
     bounding_box_360 = None
 
@@ -1362,19 +1190,20 @@ class RenderMesh360(bpy.types.Operator):
     ################################################################################################
     # @modal
     ################################################################################################
-    def modal(self, context, event):
-        """
-        Threading and non-blocking handling.
+    def modal(self,
+              context,
+              event):
+        """Threading and non-blocking handling.
 
-        :param context: Panel context.
-        :param event: A given event for the panel.
+        :param context:
+            Panel context.
+        :param event:
+            A given event for the panel.
         """
-
-        # Get a reference to the scene
-        scene = context.scene
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > 360:
+
             # Reset the timer limits
             self.timer_limits = 0
 
@@ -1396,8 +1225,8 @@ class RenderMesh360(bpy.types.Operator):
                     nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
                 # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle(
-                    mesh_objects=nmv.interface.ui_reconstructed_mesh,
+                nmv.rendering.renderer.render_at_angle(
+                    scene_objects=self.scene_objects,
                     angle=self.timer_limits,
                     bounding_box=self.bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
@@ -1409,7 +1238,7 @@ class RenderMesh360(bpy.types.Operator):
 
                 # Render the image
                 nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
-                    mesh_objects=nmv.interface.ui_reconstructed_mesh,
+                    mesh_objects=self.scene_objects,
                     angle=self.timer_limits,
                     bounding_box=self.bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
@@ -1438,22 +1267,17 @@ class RenderMesh360(bpy.types.Operator):
             Panel context.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
+        # Validate the output directory
+        nmv.interface.ui.validate_output_directory(
+            panel_object=self, context_scene=context.scene)
 
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
+        # Get a list of all the meshes in the scene
+        self.scene_objects = nmv.scene.get_list_of_meshes_in_scene()
 
         # Create the sequences directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(
                 nmv.interface.ui_options.io.sequences_directory)
-
-        # A reference to the bounding box that will be used for the rendering
-        rendering_bbox = None
 
         # Compute the bounding box for a close up view
         if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
@@ -1518,211 +1342,14 @@ class RenderMesh360(bpy.types.Operator):
 
 
 ####################################################################################################
-# @SaveNeuronMeshOBJ
-####################################################################################################
-class SaveNeuronMeshOBJ(bpy.types.Operator):
-    """Save the neuron mesh in OBJ file"""
-
-    # Operator parameters
-    bl_idname = "save_neuron_mesh.obj"
-    bl_label = "Wavefront (.obj)"
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self, context):
-        """Executes the operator
-
-        :param context:
-            Rendering context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
-
-        # If the nmv.interface.ui_reconstructed_mesh list is empty, then skip the operation
-        if len(nmv.interface.ui_reconstructed_mesh) == 0:
-            self.report({'ERROR'}, 'Reconstruct a Neuron Mesh to Export it!')
-            return {'FINISHED'}
-
-        # If the mesh is already a single object,
-        elif len(nmv.interface.ui_reconstructed_mesh) == 1:
-
-            # Export the mesh object as an .OBJ  file
-            nmv.file.export_object_to_obj_file(
-                mesh_object=nmv.interface.ui_reconstructed_mesh[0],
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        # Otherwise, join all the mesh objects into a single object and export it
-        else:
-
-            # Join all the mesh objects into a single object
-            mesh_object = nmv.mesh.ops.join_mesh_objects(
-                mesh_list=nmv.interface.ui_reconstructed_mesh,
-                name=nmv.interface.ui_morphology.label)
-
-            # Export the mesh object as an .OBJ  file
-            nmv.file.export_object_to_obj_file(
-                mesh_object=mesh_object,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        return {'FINISHED'}
-
-
-####################################################################################################
-# @SaveNeuronMeshPLY
-####################################################################################################
-class SaveNeuronMeshPLY(bpy.types.Operator):
-    """Save the neuron mesh in PLY file"""
-
-    # Operator parameters
-    bl_idname = "save_neuron_mesh.ply"
-    bl_label = "Stanford (.ply)"
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self, context):
-        """Executes the operator
-
-        :param context:
-            Operator context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
-
-        # If the nmv.interface.ui_reconstructed_mesh list is empty, then skip the operation
-        if len(nmv.interface.ui_reconstructed_mesh) == 0:
-            self.report({'ERROR'}, 'Reconstruct a Neuron Mesh to Export it!')
-            return {'FINISHED'}
-
-        # If the mesh is already a single object,
-        elif len(nmv.interface.ui_reconstructed_mesh) == 1:
-
-            # Export the mesh object as an .OBJ  file
-            nmv.file.export_object_to_ply_file(
-                mesh_object=nmv.interface.ui_reconstructed_mesh[0],
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        # Otherwise, join all the mesh objects into a single object and export it
-        else:
-
-            # Join all the mesh objects into a single object
-            mesh_object = nmv.mesh.ops.join_mesh_objects(
-                mesh_list=nmv.interface.ui_reconstructed_mesh,
-                name=nmv.interface.ui_morphology.label)
-
-            # Export the mesh object as an .PLY  file
-            nmv.file.export_object_to_ply_file(
-                mesh_object=mesh_object,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        return {'FINISHED'}
-
-
-####################################################################################################
-# @SaveNeuronMeshSTL
-####################################################################################################
-class SaveNeuronMeshSTL(bpy.types.Operator):
-    """Save the neuron mesh in STL file"""
-
-    # Operator parameters
-    bl_idname = "save_neuron_mesh.stl"
-    bl_label = "Stereolithography CAD (.stl)"
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self, context):
-        """
-        Executes the operator.
-
-        :param context: Operator context.
-        :return: {'FINISHED'}
-        """
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
-
-        # If the nmv.interface.ui_reconstructed_mesh list is empty, then skip the operation
-        if len(nmv.interface.ui_reconstructed_mesh) == 0:
-            self.report({'ERROR'}, 'Reconstruct a Neuron Mesh to Export it!')
-            return {'FINISHED'}
-
-        # If the mesh is already a single object,
-        elif len(nmv.interface.ui_reconstructed_mesh) == 1:
-
-            # Export the mesh object as an .OBJ  file
-            nmv.file.export_object_to_stl_file(
-                mesh_object=nmv.interface.ui_reconstructed_mesh[0],
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        # Otherwise, join all the mesh objects into a single object and export it
-        else:
-
-            # Join all the mesh objects into a single object
-            mesh_object = nmv.mesh.ops.join_mesh_objects(
-                mesh_list=nmv.interface.ui_reconstructed_mesh,
-                name=nmv.interface.ui_morphology.label)
-
-            # Export the mesh object as an .STL  file
-            nmv.file.export_object_to_stl_file(
-                mesh_object=mesh_object,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-
-        return {'FINISHED'}
-
-
-####################################################################################################
 # @SaveNeuronMeshBLEND
 ####################################################################################################
-class SaveNeuronMeshBLEND(bpy.types.Operator):
-    """Save the neuron mesh in BLEND file"""
+class ExportMesh(bpy.types.Operator):
+    """Export neuron mesh"""
 
     # Operator parameters
-    bl_idname = "save_neuron_mesh.blend"
-    bl_label = "Blender Format (.blend)"
+    bl_idname = "export.neuron_mesh"
+    bl_label = "Export"
 
     ################################################################################################
     # @execute
@@ -1736,25 +1363,39 @@ class SaveNeuronMeshBLEND(bpy.types.Operator):
             'FINISHED'
         """
 
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
+        # Validate the output directory
+        nmv.interface.ui.validate_output_directory(panel_object=self, context_scene=context.scene)
 
         # Create the meshes directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
 
-        # Export the neuron mesh as an .BLEND file
-        # NOTE: Use None to the mesh object to export every thing in the scene
-        nmv.file.export_object_to_blend_file(
-            mesh_object=None,
-            output_directory=nmv.interface.ui_options.io.meshes_directory,
-            output_file_name=nmv.interface.ui_morphology.label)
+        # Get a list of all the meshes in the scene
+        mesh_objects = nmv.scene.get_list_of_meshes_in_scene()
+
+        # STL
+        if context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.STL:
+            nmv.file.export_object_to_stl_file(
+                mesh_object=None,
+                output_directory=nmv.interface.ui_options.io.meshes_directory,
+                output_file_name=nmv.interface.ui_morphology.label)
+        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.PLY:
+            nmv.file.export_objects_to_ply_file(
+                mesh_objects=mesh_objects,
+                output_directory=nmv.interface.ui_options.io.meshes_directory,
+                output_file_name=nmv.interface.ui_morphology.label)
+        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.OBJ:
+            nmv.file.export_object_to_obj_file(
+                mesh_object=None,
+                output_directory=nmv.interface.ui_options.io.meshes_directory,
+                output_file_name=nmv.interface.ui_morphology.label)
+        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
+            nmv.file.export_object_to_blend_file(
+                mesh_object=None,
+                output_directory=nmv.interface.ui_options.io.meshes_directory,
+                output_file_name=nmv.interface.ui_morphology.label)
+        else:
+            self.report({'ERROR'}, 'Unsupported file format to export mesh!')
 
         return {'FINISHED'}
 
@@ -1778,10 +1419,7 @@ def register_panel():
     bpy.utils.register_class(RenderMesh360)
 
     # Neuron mesh saving operators
-    bpy.utils.register_class(SaveNeuronMeshOBJ)
-    bpy.utils.register_class(SaveNeuronMeshPLY)
-    bpy.utils.register_class(SaveNeuronMeshSTL)
-    bpy.utils.register_class(SaveNeuronMeshBLEND)
+    bpy.utils.register_class(ExportMesh)
 
 
 ####################################################################################################
@@ -1797,13 +1435,8 @@ def unregister_panel():
     bpy.utils.unregister_class(ReconstructNeuronMesh)
 
     # Mesh rendering
-    bpy.utils.unregister_class(RenderMeshFront)
-    bpy.utils.unregister_class(RenderMeshSide)
-    bpy.utils.unregister_class(RenderMeshTop)
-    bpy.utils.unregister_class(RenderMesh360)
+    bpy.utils.unregister_class(ExportMesh)
 
     # Neuron mesh saving operators
-    bpy.utils.unregister_class(SaveNeuronMeshOBJ)
-    bpy.utils.unregister_class(SaveNeuronMeshPLY)
-    bpy.utils.unregister_class(SaveNeuronMeshSTL)
-    bpy.utils.unregister_class(SaveNeuronMeshBLEND)
+    bpy.utils.unregister_class(ExportMesh)
+

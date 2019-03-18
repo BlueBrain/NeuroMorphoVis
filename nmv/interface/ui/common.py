@@ -20,8 +20,12 @@ import bpy
 
 # Internal imports
 import nmv
+import nmv.consts
 import nmv.enums
 import nmv.interface
+import nmv.skeleton
+import nmv.bbox
+import nmv.rendering
 
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
@@ -129,3 +133,113 @@ def load_morphology(panel_object,
         return None
 
     return 'NEW_MORPHOLOGY_LOADED'
+
+
+####################################################################################################
+# @validate_output_directory
+####################################################################################################
+def validate_output_directory(panel_object,
+                              context_scene):
+    """Validates the existence of the output directory.
+
+    :param panel_object:
+        An object of a UI panel.
+
+    :param context_scene:
+        Current scene in the rendering context.
+    """
+
+    # Ensure that there is a valid directory where the images will be written to
+    if nmv.interface.ui_options.io.output_directory is None:
+        panel_object.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
+        return {'FINISHED'}
+
+    if not nmv.file.ops.path_exists(context_scene.OutputDirectory):
+        panel_object.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @render_mesh_image
+####################################################################################################
+def render_mesh_image(panel_object,
+                      context_scene,
+                      view):
+    """Renders an image of a mesh in the scene.
+
+    :param panel_object:
+        UI Panel.
+    :param context_scene:
+        A reference to the Blender scene.
+    :param view:
+        Rendering view.
+    """
+
+    # Validate the output directory
+    nmv.interface.ui.validate_output_directory(
+        panel_object=panel_object, context_scene=context_scene)
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+
+    # Report the process starting in the UI
+    panel_object.report({'INFO'}, 'Mesh Rendering ... Wait')
+
+    # Compute the bounding box for a close up view
+    if context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+
+        # Compute the bounding box for a close up view
+        bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+            extent=context_scene.MeshCloseUpSize)
+
+    # Compute the bounding box for a mid shot view
+    elif context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+
+        # Compute the bounding box for the available meshes only
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+    # Compute the bounding box for the wide shot view that correspond to the whole morphology
+    else:
+
+        # Compute the full morphology bounding box
+        bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+            morphology=nmv.interface.ui_morphology)
+
+    # Get the view prefix
+    if view == nmv.enums.Camera.View.FRONT:
+        view_prefix = 'FRONT'
+    elif view == nmv.enums.Camera.View.SIDE:
+        view_prefix = 'SIDE'
+    elif view == nmv.enums.Camera.View.TOP:
+        view_prefix = 'TOP'
+    else:
+        view_prefix = ''
+
+    # Render at a specific resolution
+    if context_scene.MeshRenderingResolution == \
+            nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+
+        # Render the image
+        nmv.rendering.render(
+            bounding_box=bounding_box,
+            camera_view=view,
+            image_resolution=context_scene.MeshFrameResolution,
+            image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_directory=nmv.interface.ui_options.io.images_directory,
+            keep_camera_in_scene=context_scene.KeepMeshCameras)
+
+    # Render at a specific scale factor
+    else:
+
+        # Render the image
+        nmv.rendering.render_to_scale(
+            bounding_box=bounding_box,
+            camera_view=view,
+            image_scale_factor=context_scene.MeshFrameScaleFactor,
+            image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_directory=nmv.interface.ui_options.io.images_directory,
+            keep_camera_in_scene=context_scene.KeepMeshCameras)
+
+    # Report the process termination in the UI
+    panel_object.report({'INFO'}, 'Mesh Rendering Done')
