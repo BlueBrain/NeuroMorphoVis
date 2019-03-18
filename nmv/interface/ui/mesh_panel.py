@@ -1267,6 +1267,11 @@ class RenderMesh360(bpy.types.Operator):
             Panel context.
         """
 
+        # If no morphology is loaded, report it
+        if nmv.interface.ui_morphology is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
+
         # Validate the output directory
         nmv.interface.ui.validate_output_directory(
             panel_object=self, context_scene=context.scene)
@@ -1362,6 +1367,11 @@ class ExportMesh(bpy.types.Operator):
         :return:
             'FINISHED'
         """
+
+        # If no morphology is loaded, report it
+        if nmv.interface.ui_morphology is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
 
         # Validate the output directory
         nmv.interface.ui.validate_output_directory(panel_object=self, context_scene=context.scene)

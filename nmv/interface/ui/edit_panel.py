@@ -173,6 +173,10 @@ class EditMorphologyCoordinates(bpy.types.Operator):
             'FINISHED'
         """
 
+        if nmv.interface.ui_morphology is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
+
         # Create an object of the repairer
         global morphology_editor
 
