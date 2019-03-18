@@ -19,11 +19,11 @@
 from mathutils import Vector
 
 # NeuroMorphoVis imports
-import neuromorphovis as nmv
-import neuromorphovis.geometry
-import neuromorphovis.mesh
-import neuromorphovis.file
-import neuromorphovis.scene
+import nmv
+import nmv.geometry
+import nmv.mesh
+import nmv.file
+import nmv.scene
 
 # Import vasculature scripts
 import vasculature_sample

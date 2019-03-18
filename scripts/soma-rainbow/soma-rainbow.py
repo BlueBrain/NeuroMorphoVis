@@ -28,11 +28,11 @@ import parsing
 import styling
 
 # NeuroMorphoVis imports
-import neuromorphovis as nmv
-import neuromorphovis.scene
-import neuromorphovis.rendering
-import neuromorphovis.enums
-import neuromorphovis.bbox
+import nmv
+import nmv.scene
+import nmv.rendering
+import nmv.enums
+import nmv.bbox
 
 
 ################################################################################

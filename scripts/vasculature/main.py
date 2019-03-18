@@ -23,9 +23,9 @@ import bpy
 from mathutils import Vector
 
 # NeuroMorphoVis imports
-import neuromorphovis as nmv
-import neuromorphovis.mesh
-import neuromorphovis.scene
+import nmv
+import nmv.mesh
+import nmv.scene
 
 # Internal imports
 project_space = ntpath.basename(os.path.dirname(os.path.realpath(__file__)))

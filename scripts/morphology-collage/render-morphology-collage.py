@@ -19,11 +19,11 @@ import sys, os
 import argparse
 
 import bpy
-import neuromorphovis as nmv
-import neuromorphovis.file
-import neuromorphovis.rendering
-import neuromorphovis.scene
-import neuromorphovis.mesh
+import nmv
+import nmv.file
+import nmv.rendering
+import nmv.scene
+import nmv.mesh
 
 
 ####################################################################################################
