@@ -18,7 +18,7 @@
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = "1.1.0"
+__version__     = "1.3.0"
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -33,7 +33,7 @@ bl_info = {
     # The author of this add-on
     "author" : "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version" : (1, 2, 0),
+    "version" : (1, 3, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
