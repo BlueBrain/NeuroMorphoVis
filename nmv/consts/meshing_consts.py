@@ -40,3 +40,16 @@ class Meshing:
 
     # The percentages of random spines added to the neuron
     RANDOM_SPINES_PERCENTAGE = 50.0
+
+    # PLY extension
+    PLY_EXTENSION = '.ply'
+
+    # OBJ extension
+    OBJ_EXTENSION = '.obj'
+
+    # STL extension
+    STL_EXTENSION = '.stl'
+
+    # BLEND extension
+    BLEND_EXTENSION = '.blend'
+

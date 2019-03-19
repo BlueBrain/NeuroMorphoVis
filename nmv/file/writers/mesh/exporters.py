@@ -20,168 +20,20 @@ import bpy
 
 # Internal modules
 import nmv
+import nmv.consts
+import nmv.enums
 import nmv.scene
 import nmv.mesh
 import nmv.utilities
 
 
 ####################################################################################################
-# @export_object_to_ply_file
+# @export_scene_to_blend_file
 ####################################################################################################
-def export_object_to_ply_file(mesh_object,
-                              output_directory,
-                              output_file_name):
-    """Exports a selected object to a .ply file.
+def export_scene_to_blend_file(output_directory,
+                               output_file_name):
+    """Exports the current scene to a binary .blend file.
 
-    :param mesh_object:
-        A selected mesh object in the scene.
-    :param output_directory:
-        The output directory where the mesh will be saved.
-    :param output_file_name:
-        The name of the output mesh.
-    """
-
-    # Construct the name of the exported mesh.
-    output_file_path = "%s/%s.ply" % (output_directory, str(output_file_name))
-
-    # Deselect all the other objects in the scene
-    nmv.scene.ops.deselect_all()
-
-    # Select the target mesh and set it to be the only active object
-    nmv.scene.ops.set_active_object(mesh_object)
-
-    # Export the mesh object to an OBJ file
-    nmv.logger.log('Exporting [%s]' % output_file_path)
-    export_timer = nmv.utilities.Timer()
-    export_timer.start()
-
-    bpy.ops.export_mesh.ply(filepath=output_file_path, check_existing=True)
-
-    export_timer.end()
-    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
-
-
-####################################################################################################
-# @export_object_to_ply_file
-####################################################################################################
-def export_objects_to_ply_file(mesh_objects,
-                               output_directory,
-                               output_file_name,
-                               export_individual_meshes=False):
-    """Exports a list of mesh objects as an individual mesh or separate objects.
-
-    :param mesh_objects:
-        A list of mesh objects in the scene to be exported.
-    :param output_directory:
-        The output directory where the mesh(es) will be saved.
-    :param output_file_name:
-        The name of the output mesh.
-    :param export_individual_meshes:
-        Export the individual meshes in the list.
-    """
-
-    if export_individual_meshes:
-
-        for mesh_object in mesh_objects:
-            export_object_to_ply_file(
-                mesh_object, output_directory, output_file_name + '_' + mesh_object.name)
-    else:
-
-        # Clone all the mesh objects
-        joint_mesh_object = nmv.scene.ops.clone_mesh_objects_into_joint_mesh(mesh_objects)
-
-        # Export the cloned file
-        export_object_to_ply_file(joint_mesh_object, output_directory, output_file_name)
-
-        # Delete the cloned object
-        nmv.scene.ops.delete_list_objects([joint_mesh_object])
-
-
-####################################################################################################
-# @export_object_to_obj_file
-####################################################################################################
-def export_object_to_obj_file(mesh_object,
-                              output_directory,
-                              output_file_name):
-    """Exports a selected object to an ascii .obj file.
-
-    :param mesh_object:
-        A selected mesh object in the scene.
-    :param output_directory:
-        The output directory where the mesh will be saved.
-    :param output_file_name:
-        The name of the output mesh.
-    """
-
-    # Construct the name of the exported mesh.
-    output_file_path = "%s/%s.obj" % (output_directory, output_file_name)
-
-    # Deselect all the other objects in the scene
-    nmv.scene.ops.deselect_all()
-
-    # Select the target mesh and set it to be the only active object
-    nmv.scene.ops.set_active_object(mesh_object)
-
-    nmv.logger.log('Exporting [%s]' % output_file_path)
-    export_timer = nmv.utilities.Timer()
-    export_timer.start()
-
-    bpy.ops.export_scene.obj(
-        filepath=output_file_path, check_existing=True, axis_forward='-Z', axis_up='Y',
-        use_selection=True, use_smooth_groups=True, use_smooth_groups_bitflags=False,
-        use_normals=True, use_triangles=True, path_mode='AUTO')
-
-    export_timer.end()
-    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
-
-
-####################################################################################################
-# @export_object_to_stl_file
-####################################################################################################
-def export_object_to_stl_file(mesh_object,
-                              output_directory,
-                              output_file_name):
-    """Exports a selected object to a binary .stl file.
-
-    :param mesh_object:
-        A selected mesh object in the scene.
-    :param output_directory:
-        The output directory where the mesh will be saved.
-    :param output_file_name:
-        The name of the output mesh.
-    """
-
-    # Construct the name of the exported mesh.
-    output_file_path = "%s/%s.stl" % (output_directory, output_file_name)
-
-    # Deselect all the other objects in the scene
-    nmv.scene.ops.deselect_all()
-
-    # Select the target mesh and set it to be the only active object
-    nmv.scene.ops.set_active_object(mesh_object)
-
-    # Export the mesh object to a binary STL file
-    nmv.logger.log('Exporting [%s]' % output_file_path)
-    export_timer = nmv.utilities.Timer()
-    export_timer.start()
-
-    bpy.ops.export_mesh.stl(filepath=output_file_path, check_existing=True, ascii=False)
-
-    export_timer.end()
-    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
-
-
-####################################################################################################
-# @export_object_to_blend_file
-####################################################################################################
-def export_object_to_blend_file(mesh_object,
-                                output_directory,
-                                output_file_name):
-    """Exports a selected object to a binary .blend file.
-
-    :param mesh_object:
-        A selected mesh object in the scene. If this option is set to None, the exported file will
-        contain all the objects that exist in the scene.
     :param output_directory:
         The output directory where the mesh will be saved.
     :param output_file_name:
@@ -194,10 +46,6 @@ def export_object_to_blend_file(mesh_object,
     # Deselect all the other objects in the scene
     nmv.scene.ops.deselect_all()
 
-    # Select the target mesh and set it to be the only active object if selected
-    if mesh_object is not None:
-        nmv.scene.ops.set_active_object(mesh_object)
-
     # Export the mesh object to a binary STL file
     nmv.logger.log('Exporting [%s]' % output_file_path)
     export_timer = nmv.utilities.Timer()
@@ -207,6 +55,127 @@ def export_object_to_blend_file(mesh_object,
 
     export_timer.end()
     nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
+
+
+####################################################################################################
+# @export_mesh_object_to_file
+####################################################################################################
+def export_mesh_object_to_file(mesh_object,
+                               output_directory,
+                               output_file_name,
+                               file_format=nmv.enums.Meshing.ExportFormat.PLY):
+    """Exports a mesh object to a file with a specific file format.
+
+    :param mesh_object:
+        A selected mesh object in the scene.
+    :param output_directory:
+        The output directory where the mesh will be saved.
+    :param output_file_name:
+        The name of the output mesh.
+    :param file_format:
+        The file format of the mesh.
+    """
+
+    # Deselect all the other objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Select the target mesh and set it to be the only active object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    if file_format == nmv.enums.Meshing.ExportFormat.PLY:
+        output_file_path = "%s/%s.%s" % (
+            output_directory, str(output_file_name), nmv.consts.Meshing.PLY_EXTENSION)
+
+    elif file_format == nmv.enums.Meshing.ExportFormat.OBJ:
+        output_file_path = "%s/%s.%s" % (
+            output_directory, str(output_file_name), nmv.consts.Meshing.OBJ_EXTENSION)
+
+    elif file_format == nmv.enums.Meshing.ExportFormat.STL:
+        output_file_path = "%s/%s.%s" % (
+            output_directory, str(output_file_name), nmv.consts.Meshing.STL_EXTENSION)
+
+    else:
+        nmv.logger.log('Error: Unknown mesh format')
+        return
+
+    # Export the mesh object to an OBJ file
+    nmv.logger.log('Exporting [%s]' % output_file_path)
+    export_timer = nmv.utilities.Timer()
+    export_timer.start()
+
+    if file_format == nmv.enums.Meshing.ExportFormat.PLY:
+        bpy.ops.export_mesh.ply(filepath=output_file_path, check_existing=True)
+
+    elif file_format == nmv.enums.Meshing.ExportFormat.OBJ:
+        bpy.ops.export_scene.obj(
+            filepath=output_file_path, check_existing=True, axis_forward='-Z', axis_up='Y',
+            use_selection=True, use_smooth_groups=True, use_smooth_groups_bitflags=False,
+            use_normals=True, use_triangles=True, path_mode='AUTO')
+
+    elif file_format == nmv.enums.Meshing.ExportFormat.STL:
+        bpy.ops.export_mesh.stl(
+            filepath=output_file_path, use_selection=True, check_existing=True, ascii=False)
+
+    else:
+        nmv.logger.log('Error: Unknown mesh format')
+
+    export_timer.end()
+    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
+
+
+####################################################################################################
+# @export_mesh_objects_to_file
+####################################################################################################
+def export_mesh_objects_to_file(mesh_objects,
+                                output_directory,
+                                output_file_name,
+                                file_format=nmv.enums.Meshing.ExportFormat.PLY,
+                                export_individual_meshes=False):
+    """Exports a list of mesh objects as an individual mesh or separate objects.
+
+    :param mesh_objects:
+        A list of mesh objects in the scene to be exported.
+    :param output_directory:
+        The output directory where the mesh(es) will be saved.
+    :param output_file_name:
+        The name of the output mesh.
+    :param file_format:
+        The file format of the exported mesh.
+    :param export_individual_meshes:
+        Export the individual meshes in the list.
+    """
+
+    # Blend files are exported once whatever the selection is
+    if file_format == nmv.enums.Meshing.ExportFormat.BLEND:
+
+        # Export the cloned file
+        export_scene_to_blend_file(output_directory, output_file_name)
+
+    # Other file formats have the same approach
+    else:
+
+        # Export each component in the mesh
+        if export_individual_meshes:
+
+            # Create a directory with the name of the mesh
+            mesh_directory = '%s/%s' % (output_directory, output_file_name)
+            nmv.file.ops.clean_and_create_directory(mesh_directory)
+
+            # Export each mesh in the given list
+            for mesh_object in mesh_objects:
+                export_mesh_object_to_file(
+                    mesh_object, mesh_directory, mesh_object.name, file_format)
+        else:
+
+            # Clone all the mesh objects
+            joint_mesh_object = nmv.scene.ops.clone_mesh_objects_into_joint_mesh(mesh_objects)
+
+            # Export the cloned file
+            export_mesh_object_to_file(
+                joint_mesh_object, output_directory, output_file_name, file_format)
+
+            # Delete the cloned object
+            nmv.scene.ops.delete_list_objects([joint_mesh_object])
 
 
 ####################################################################################################
@@ -239,16 +208,19 @@ def export_mesh_object(mesh_object,
 
     # To .obj format
     if obj:
-        export_object_to_obj_file(mesh_object, output_directory, file_name)
+        export_mesh_object_to_file(
+            mesh_object, output_directory, file_name, nmv.enums.Meshing.ExportFormat.OBJ)
 
     # To .ply format
     if ply:
-        export_object_to_ply_file(mesh_object, output_directory, file_name)
+        export_mesh_object_to_file(
+            mesh_object, output_directory, file_name, nmv.enums.Meshing.ExportFormat.PLY)
 
     # .To stl format
     if stl:
-        export_object_to_stl_file(mesh_object, output_directory, file_name)
+        export_mesh_object_to_file(
+            mesh_object, output_directory, file_name, nmv.enums.Meshing.ExportFormat.STL)
 
     # To .blend format
     if blend:
-        export_object_to_blend_file(mesh_object, output_directory, file_name)
+        export_scene_to_blend_file(output_directory, file_name)

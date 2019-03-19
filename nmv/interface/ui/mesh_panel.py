@@ -1383,29 +1383,12 @@ class ExportMesh(bpy.types.Operator):
         # Get a list of all the meshes in the scene
         mesh_objects = nmv.scene.get_list_of_meshes_in_scene()
 
-        # STL
-        if context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.STL:
-            nmv.file.export_object_to_stl_file(
-                mesh_object=None,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.PLY:
-            nmv.file.export_objects_to_ply_file(
-                mesh_objects=mesh_objects,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.OBJ:
-            nmv.file.export_object_to_obj_file(
-                mesh_object=None,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-        elif context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
-            nmv.file.export_object_to_blend_file(
-                mesh_object=None,
-                output_directory=nmv.interface.ui_options.io.meshes_directory,
-                output_file_name=nmv.interface.ui_morphology.label)
-        else:
-            self.report({'ERROR'}, 'Unsupported file format to export mesh!')
+        # Export
+        nmv.file.export_mesh_objects_to_file(mesh_objects,
+                                             nmv.interface.ui_options.io.meshes_directory,
+                                             nmv.interface.ui_morphology.label,
+                                             context.scene.ExportedMeshFormat,
+                                             context.scene.ExportIndividuals)
 
         return {'FINISHED'}
 
