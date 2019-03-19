@@ -925,21 +925,17 @@ class MeshPanel(bpy.types.Panel):
         save_neuron_mesh_row = layout.row()
         save_neuron_mesh_row.label(text='Export Neuron Mesh:', icon='MESH_UVSPHERE')
 
-
-        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
-            export_individual_row = layout.row()
-            export_individual_row.prop(context.scene, 'ExportIndividuals')
-
         export_format = layout.row()
-
         export_format.prop(context.scene, 'ExportedMeshFormat', icon='GROUP_VERTEX')
 
+        if not context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
+            if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+                export_individual_row = layout.row()
+                export_individual_row.prop(context.scene, 'ExportIndividuals')
 
+        # Save button
         save_neuron_mesh_buttons_column = layout.column(align=True)
         save_neuron_mesh_buttons_column.operator('export.neuron_mesh', icon='MESH_DATA')
-        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.ply', icon='GROUP_VERTEX')
-        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.stl', icon='RETOPO')
-        #save_neuron_mesh_buttons_column.operator('save_neuron_mesh.blend', icon='OUTLINER_OB_META')
         save_neuron_mesh_buttons_column.enabled = True
         self.shown_hidden_rows.append(save_neuron_mesh_buttons_column)
 
