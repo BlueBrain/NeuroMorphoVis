@@ -21,6 +21,7 @@ import bpy
 # Internal modules
 import nmv
 import nmv.scene
+import nmv.mesh
 import nmv.utilities
 
 
@@ -30,12 +31,14 @@ import nmv.utilities
 def export_object_to_ply_file(mesh_object,
                               output_directory,
                               output_file_name):
-    """
-    Exports a selected object to a .ply file.
+    """Exports a selected object to a .ply file.
 
-    :param mesh_object: A selected mesh object in the scene.
-    :param output_directory: The output directory where the mesh will be saved.
-    :param output_file_name: The name of the output mesh.
+    :param mesh_object:
+        A selected mesh object in the scene.
+    :param output_directory:
+        The output directory where the mesh will be saved.
+    :param output_file_name:
+        The name of the output mesh.
     """
 
     # Construct the name of the exported mesh.
@@ -62,33 +65,36 @@ def export_object_to_ply_file(mesh_object,
 # @export_object_to_ply_file
 ####################################################################################################
 def export_objects_to_ply_file(mesh_objects,
-                              output_directory,
-                              output_file_name):
+                               output_directory,
+                               output_file_name,
+                               export_individual_meshes=False):
+    """Exports a list of mesh objects as an individual mesh or separate objects.
+
+    :param mesh_objects:
+        A list of mesh objects in the scene to be exported.
+    :param output_directory:
+        The output directory where the mesh(es) will be saved.
+    :param output_file_name:
+        The name of the output mesh.
+    :param export_individual_meshes:
+        Export the individual meshes in the list.
     """
-    Exports a selected object to a .ply file.
 
-    :param mesh_object: A selected mesh object in the scene.
-    :param output_directory: The output directory where the mesh will be saved.
-    :param output_file_name: The name of the output mesh.
-    """
+    if export_individual_meshes:
 
-    # Construct the name of the exported mesh.
-    output_file_path = "%s/%s.ply" % (output_directory, str(output_file_name))
+        for mesh_object in mesh_objects:
+            export_object_to_ply_file(
+                mesh_object, output_directory, output_file_name + '_' + mesh_object.name)
+    else:
 
-    # Deselect all the other objects in the scene
-    nmv.scene.ops.deselect_all()
+        # Clone all the mesh objects
+        joint_mesh_object = nmv.scene.ops.clone_mesh_objects_into_joint_mesh(mesh_objects)
 
-    nmv.scene.ops.select_objects(mesh_objects)
+        # Export the cloned file
+        export_object_to_ply_file(joint_mesh_object, output_directory, output_file_name)
 
-    # Export the mesh object to an OBJ file
-    nmv.logger.log('Exporting [%s]' % output_file_path)
-    export_timer = nmv.utilities.Timer()
-    export_timer.start()
-
-    bpy.ops.export_mesh.ply(filepath=output_file_path, check_existing=True)
-
-    export_timer.end()
-    nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
+        # Delete the cloned object
+        nmv.scene.ops.delete_list_objects([joint_mesh_object])
 
 
 ####################################################################################################
@@ -97,12 +103,14 @@ def export_objects_to_ply_file(mesh_objects,
 def export_object_to_obj_file(mesh_object,
                               output_directory,
                               output_file_name):
-    """
-    Exports a selected object to an ascii .obj file.
+    """Exports a selected object to an ascii .obj file.
 
-    :param mesh_object: A selected mesh object in the scene.
-    :param output_directory: The output directory where the mesh will be saved.
-    :param output_file_name: The name of the output mesh.
+    :param mesh_object:
+        A selected mesh object in the scene.
+    :param output_directory:
+        The output directory where the mesh will be saved.
+    :param output_file_name:
+        The name of the output mesh.
     """
 
     # Construct the name of the exported mesh.
@@ -118,10 +126,10 @@ def export_object_to_obj_file(mesh_object,
     export_timer = nmv.utilities.Timer()
     export_timer.start()
 
-    bpy.ops.export_scene.obj(filepath=output_file_path, check_existing=True, axis_forward='-Z',
-        axis_up='Y', use_selection=True, use_smooth_groups=True,
-        use_smooth_groups_bitflags=False, use_normals=True, use_triangles=True,
-        path_mode='AUTO')
+    bpy.ops.export_scene.obj(
+        filepath=output_file_path, check_existing=True, axis_forward='-Z', axis_up='Y',
+        use_selection=True, use_smooth_groups=True, use_smooth_groups_bitflags=False,
+        use_normals=True, use_triangles=True, path_mode='AUTO')
 
     export_timer.end()
     nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())
@@ -133,12 +141,14 @@ def export_object_to_obj_file(mesh_object,
 def export_object_to_stl_file(mesh_object,
                               output_directory,
                               output_file_name):
-    """
-    Exports a selected object to a binary .stl file.
+    """Exports a selected object to a binary .stl file.
 
-    :param mesh_object: A selected mesh object in the scene.
-    :param output_directory: The output directory where the mesh will be saved.
-    :param output_file_name: The name of the output mesh.
+    :param mesh_object:
+        A selected mesh object in the scene.
+    :param output_directory:
+        The output directory where the mesh will be saved.
+    :param output_file_name:
+        The name of the output mesh.
     """
 
     # Construct the name of the exported mesh.
@@ -167,13 +177,15 @@ def export_object_to_stl_file(mesh_object,
 def export_object_to_blend_file(mesh_object,
                                 output_directory,
                                 output_file_name):
-    """
-    Exports a selected object to a binary .blend file.
+    """Exports a selected object to a binary .blend file.
 
-    :param mesh_object: A selected mesh object in the scene. If this option is set to None,
-    the exported file will contain all the objects that exist in the scene.
-    :param output_directory: The output directory where the mesh will be saved.
-    :param output_file_name: The name of the output mesh.
+    :param mesh_object:
+        A selected mesh object in the scene. If this option is set to None, the exported file will
+        contain all the objects that exist in the scene.
+    :param output_directory:
+        The output directory where the mesh will be saved.
+    :param output_file_name:
+        The name of the output mesh.
     """
 
     # Construct the name of the exported mesh.
@@ -207,16 +219,22 @@ def export_mesh_object(mesh_object,
                        ply=False,
                        stl=False,
                        blend=False):
-    """
-    Exports the mesh in one line in different file formats.
+    """Exports the mesh in one line in different file formats.
 
-    :param mesh_object: An input mesh object to export to a file.
-    :param output_directory: Output directory where the meshes will be saved.
-    :param file_name: Mesh prefix.
-    :param obj: Flag to export to .obj format.
-    :param ply: Flag to export to .ply format.
-    :param stl: Flag to export to .stl format.
-    :param blend: Flag to export to .blend format.
+    :param mesh_object:
+        An input mesh object to export to a file.
+    :param output_directory:
+        Output directory where the meshes will be saved.
+    :param file_name:
+        Mesh prefix.
+    :param obj:
+        Flag to export to .obj format.
+    :param ply:
+        Flag to export to .ply format.
+    :param stl:
+        Flag to export to .stl format.
+    :param blend:
+        Flag to export to .blend format.
     """
 
     # To .obj format
@@ -234,76 +252,3 @@ def export_mesh_object(mesh_object,
     # To .blend format
     if blend:
         export_object_to_blend_file(mesh_object, output_directory, file_name)
-
-
-####################################################################################################
-# @export_mesh_as_separate_objects
-####################################################################################################
-def export_mesh_as_separate_objects(soma_mesh,
-                                    branches_meshes,
-                                    spines_meshes,
-                                    output_directory,
-                                    output_file_name,
-                                    export_ply,
-                                    export_obj,
-                                    export_stl):
-    """
-    Exports the neuron meshes as separate objects.
-
-    :param soma_mesh: The mesh of the soma.
-    :param branches_meshes: A list of all the meshes of the branches.
-    :param spines_meshes: A list of all the meshes of the spines.
-    :param output_directory: A directory where all the meshes will be saved to.
-    :param output_file_name: File prefix.
-    :param export_ply: Save the meshes in ply format.
-    :param export_obj: Save the meshes in obj format.
-    :param export_stl: Save the meshes in stl format.
-    """
-
-    # To .ply format
-    if export_ply:
-
-        # Soma
-        export_object_to_ply_file(soma_mesh, output_directory, '%s_soma' % output_file_name)
-
-        # Branches
-        for i, branch_mesh in branches_meshes:
-            mesh_name = '%s_branch_%d' % (output_file_name, i)
-            export_object_to_ply_file(branch_mesh, output_directory, mesh_name)
-
-        # Spines
-        for i, spine_mesh in spines_meshes:
-            mesh_name = '%s_spine_%d' % (output_file_name, i)
-            export_object_to_ply_file(spine_mesh, output_directory, mesh_name)
-
-    # To obj. format
-    if export_obj:
-
-        # Soma
-        export_object_to_obj_file(soma_mesh, output_directory, '%s_soma' % output_file_name)
-
-        # Branches
-        for i, branch_mesh in branches_meshes:
-            mesh_name = '%s_branch_%d' % (output_file_name, i)
-            export_object_to_obj_file(branch_mesh, output_directory, mesh_name)
-
-        # Spines
-        for i, spine_mesh in spines_meshes:
-            mesh_name = '%s_spine_%d' % (output_file_name, i)
-            export_object_to_obj_file(spine_mesh, output_directory, mesh_name)
-
-    # To .stl format
-    if export_stl:
-
-        # Soma
-        export_object_to_stl_file(soma_mesh, output_directory, '%s_soma' % output_file_name)
-
-        # Branches
-        for i, branch_mesh in branches_meshes:
-            mesh_name = '%s_branch_%d' % (output_file_name, i)
-            export_object_to_stl_file(branch_mesh, output_directory, mesh_name)
-
-        # Spines
-        for i, spine_mesh in spines_meshes:
-            mesh_name = '%s_spine_%d' % (output_file_name, i)
-            export_object_to_stl_file(spine_mesh, output_directory, mesh_name)

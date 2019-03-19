@@ -25,6 +25,7 @@ from mathutils import Vector
 # Internal impots
 import nmv
 import nmv.bbox
+import nmv.mesh
 
 
 ####################################################################################################
@@ -659,6 +660,41 @@ def duplicate_object(original_object,
 
     # Return a reference to the duplicate object
     return duplicated_object
+
+
+####################################################################################################
+# @clone_mesh_objects_into_joint_mesh
+####################################################################################################
+def clone_mesh_objects_into_joint_mesh(mesh_objects):
+    """Clones a list of mesh objects and join the clones into a single object.
+
+    NOTE: This function is normally used to export a mesh object without affecting any mesh in
+    the scene.
+
+    :param mesh_objects:
+        A list of mesh objects in the scene.
+    :return:
+        A joint mesh object that can be used directly to export a mesh.
+    """
+
+    # Deselect all the other objects in the scene
+    deselect_all()
+
+    # Clones the mesh objects to join them together to export the mesh
+    cloned_mesh_objects = list()
+    for mesh_object in mesh_objects:
+        cloned_mesh_objects.append(nmv.scene.duplicate_object(mesh_object))
+    joint_mesh_object = nmv.mesh.join_mesh_objects(cloned_mesh_objects)
+
+    # Deselect all the other objects in the scene
+    deselect_all()
+
+    # Activate the joint mesh object
+    select_objects([joint_mesh_object])
+    set_active_object(joint_mesh_object)
+
+    # Return the clones mesh
+    return joint_mesh_object
 
 
 ####################################################################################################
