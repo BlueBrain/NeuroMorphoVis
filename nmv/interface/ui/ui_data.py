@@ -30,8 +30,11 @@ import nmv.options
 #   ui_options.options.analysis.VARIABLE : for the analysis options
 ui_options = nmv.options.NeuroMorphoVisOptions()
 
-# The morphology skeleton object loaded after UI interaction.
+# The morphology skeleton object loaded after UI interaction
 ui_morphology = None
+
+# All the icons loaded for the UI
+ui_icons = None
 
 # The reconstructed soma mesh object
 ui_soma_mesh = None

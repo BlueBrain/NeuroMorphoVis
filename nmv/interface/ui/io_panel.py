@@ -40,6 +40,7 @@ class IOPanel(bpy.types.Panel):
     bl_region_type = 'TOOLS'
     bl_label = 'Input / Output'
     bl_category = 'NeuroMorphoVis'
+    bl_options = {"HIDE_HEADER"}
 
     ################################################################################################
     # Panel options

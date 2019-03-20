@@ -23,41 +23,9 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+
 # System imports
 import sys, os, imp
-
-# Append the modules path to the system paths to be able to load the internal python modules
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-if "bpy" in locals():
-
-    # Import the modules
-    import nmv.interface.ui.about_panel
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
-
-    # Reloading the modules
-    imp.reload(nmv.interface.ui.about_panel)
-    imp.reload(nmv.interface.ui.io_panel)
-    imp.reload(nmv.interface.ui.analysis_panel)
-    imp.reload(nmv.interface.ui.edit_panel)
-    imp.reload(nmv.interface.ui.morphology_panel)
-    imp.reload(nmv.interface.ui.mesh_panel)
-
-else:
-
-    # Import the modules
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.about_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
 
 ####################################################################################################
 # Add-on information
@@ -68,7 +36,7 @@ bl_info = {
     # The author of this add-on
     "author" : "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version" : nmv.interface.ui.about_panel.AboutPanel.bl_nmv_version,
+    "version" : (1, 3, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
@@ -95,6 +63,40 @@ bl_info = {
     'tracker_url': 'https://github.com/BlueBrain/NeuroMorphoVis/issues?utf8=%E2%9C%93&q='
 }
 
+# Append the modules path to the system paths to be able to load the internal python modules
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+if "bpy" in locals():
+
+    # Import the modules
+    import nmv.interface.ui.io_panel
+    import nmv.interface.ui.analysis_panel
+    import nmv.interface.ui.edit_panel
+    import nmv.interface.ui.soma_panel
+    import nmv.interface.ui.morphology_panel
+    import nmv.interface.ui.mesh_panel
+    import nmv.interface.ui.about_panel
+
+    # Reloading the modules
+    imp.reload(nmv.interface.ui.about_panel)
+    imp.reload(nmv.interface.ui.io_panel)
+    imp.reload(nmv.interface.ui.analysis_panel)
+    imp.reload(nmv.interface.ui.edit_panel)
+    imp.reload(nmv.interface.ui.morphology_panel)
+    imp.reload(nmv.interface.ui.mesh_panel)
+
+else:
+
+    # Import the modules
+    import nmv.interface.ui.io_panel
+    import nmv.interface.ui.nmv_panel
+    import nmv.interface.ui.analysis_panel
+    import nmv.interface.ui.edit_panel
+    import nmv.interface.ui.soma_panel
+    import nmv.interface.ui.morphology_panel
+    import nmv.interface.ui.mesh_panel
+    import nmv.interface.ui.about_panel
+
 
 ####################################################################################################
 # @register
@@ -104,13 +106,14 @@ def register():
     """
 
     # Register panels
-    nmv.interface.ui.about_panel.register_panel()
+    nmv.interface.ui.nmv_panel.register_panel()
     nmv.interface.ui.io_panel.register_panel()
     nmv.interface.ui.analysis_panel.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma_panel.register_panel()
     nmv.interface.ui.morphology_panel.register_panel()
     nmv.interface.ui.mesh_panel.register_panel()
+    nmv.interface.ui.about_panel.register_panel()
 
 
 ####################################################################################################
@@ -121,12 +124,13 @@ def unregister():
     """
 
     # Un-register panels
-    nmv.interface.ui.about_panel.unregister_panel()
+    nmv.interface.ui.nmv_panel.unregister_panel()
     nmv.interface.ui.io_panel.unregister_panel()
     nmv.interface.ui.analysis_panel.unregister_panel()
     nmv.interface.ui.soma_panel.unregister_panel()
     nmv.interface.ui.morphology_panel.unregister_panel()
     nmv.interface.ui.mesh_panel.unregister_panel()
+    nmv.interface.ui.about_panel.unregister_panel()
 
 
 ####################################################################################################

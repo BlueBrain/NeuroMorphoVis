@@ -22,6 +22,7 @@ import subprocess
 
 # Blender imports
 import bpy
+import bpy.utils.previews
 
 # Internal imports
 import nmv
@@ -29,9 +30,8 @@ import nmv.enums
 import nmv.interface
 
 
+nmv_icons = None
 
-# global variable to store icons in
-custom_icons = None
 
 ####################################################################################################
 # @IOPanel
@@ -44,9 +44,9 @@ class AboutPanel(bpy.types.Panel):
     ################################################################################################
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
-    bl_label = 'About NeuroMorphoVis'
+    bl_label = 'About'
     bl_category = 'NeuroMorphoVis'
-    bl_nmv_version = (1, 3, 0)
+    bl_options = {'DEFAULT_CLOSED'}
 
     ################################################################################################
     # Panel options
@@ -62,42 +62,39 @@ class AboutPanel(bpy.types.Panel):
             Panel context.
         """
 
-
         # Get a reference to the panel layout
         layout = self.layout
 
-        # Get a reference to the scene
-        scene = context.scene
+        # Credits
+        credits_column = layout.column()
+        credits_column.label(text='Copyrights')
+        credits_column.label(text='Blue Brain Project (BBP)',
+                             icon_value=nmv.interface.ui_icons['bbp'].icon_id)
+        credits_column.label(text='Ecole Polytechnique Federale de Lausanne (EPFL)',
+                             icon_value=nmv.interface.ui_icons['epfl'].icon_id)
+        credits_column.separator()
 
-        #foobar()
-        import copy
+        credits_column.label(text='Main Author')
+        credits_column.label(text='Marwan Abdellah', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.separator()
+        credits_column.label(text='Credits')
+        credits_column.label(text='Juan Hernando', icon='OUTLINER_DATA_POSE')
+        credits_column.label(text='Ahmet Bilgili', icon='OUTLINER_DATA_POSE')
+        credits_column.label(text='Stefan Eilemann', icon='OUTLINER_DATA_POSE')
+        credits_column.label(text='Henry Markram', icon='OUTLINER_DATA_POSE')
+        credits_column.label(text='Felix Shuermann', icon='OUTLINER_DATA_POSE')
+        credits_column.separator()
 
-        # Input data options
-        input_data_options_row = layout.column()
+        version_column = layout.column()
+        version_column.label(text='Version: 1.3.0')
 
-        input_data_options_row.label(text='Main Author:')
-        input_data_options_row.label(text='    Marwan Abdellah')
-
-        input_data_options_row.label(text='Credits:')
-        input_data_options_row.label(text='    Juan Hernando')
-        input_data_options_row.label(text='    Ahmet Bilgili')
-        input_data_options_row.label(text='    Stefan Eilemann')
-        input_data_options_row.label(text='    Henry Markram')
-        input_data_options_row.label(text='    Felix Shuermann')
-
-        data = layout.row()
-        data.label(text='Current Version:', icon_value=custom_icons['github'].icon_id)
-
-        # Export analysis button
-        export_analysis_row = layout.row()
-        export_analysis_row.operator('update.nmv', icon='MESH_DATA')
-
-        global custom_icons
-
-
-        export_analysis_row = layout.row()
-        export_analysis_row.operator('update.nmv',
-                                     icon_value=custom_icons['github'].icon_id)
+        update_button = layout.box()
+        update_button.operator('update.nmv', emboss=True,
+                               icon_value=nmv.interface.ui_icons['nmv'].icon_id)
+        #update_button.scale_y = 4
+        mat = context.object.active_material
+        col = layout.column()
+        col.template_preview(mat, show_buttons=False,)
 
 
         """
@@ -143,7 +140,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "update.nmv"
-    bl_label = "Update NeuroMorphoVis"
+    bl_label = ""
 
     ################################################################################################
     # @execute
@@ -210,19 +207,11 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
-    global custom_icons
-    import bpy.utils.previews
-    custom_icons = bpy.utils.previews.new()
-    custom_icons.load("github", os.path.join('/computer/', "github.png"), 'IMAGE')
-
     # Panel
     bpy.utils.register_class(AboutPanel)
 
     # Buttons
     bpy.utils.register_class(UpdateNeuroMorphoVis)
-
-
-
 
 
 ####################################################################################################
@@ -231,15 +220,8 @@ def register_panel():
 def unregister_panel():
     """Un-registers all the classes in this panel"""
 
-    global custom_icons
-    bpy.utils.previews.remove(custom_icons)
-
     # Panel
     bpy.utils.unregister_class(AboutPanel)
 
     # Buttons
     bpy.utils.unregister_class(UpdateNeuroMorphoVis)
-
-
-
-

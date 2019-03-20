@@ -16,6 +16,7 @@
 ####################################################################################################
 
 from .common import *
+from .nmv_panel import *
 from .about_panel import *
 from .ui_data import *
 from .io_panel import *
