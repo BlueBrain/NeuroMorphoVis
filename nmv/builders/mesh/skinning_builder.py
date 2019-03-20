@@ -20,7 +20,6 @@ import random, copy, sys
 
 # Blender imports
 import bpy
-from mathutils import Vector
 
 # Internal modules
 import nmv
@@ -213,6 +212,8 @@ class SkinningBuilder:
                       max_branching_order):
         """Extrude the given arbor section by section recursively.
 
+        :param arbor_bmesh_object:
+            The bmesh object of the arbor.
         :param root:
             The root of a given section.
         :param max_branching_order:
@@ -229,34 +230,6 @@ class SkinningBuilder:
         # Extrude the children sections recursively
         for child in root.children:
             self.extrude_arbor(arbor_bmesh_object, child, max_branching_order)
-
-
-    def extrude_auxiliary_section_from_soma_center_to_arbor(self,
-                                                            arbor,
-                                                            arbor_bmesh_object,
-                                                            number_samples):
-
-        # Soma origin
-        point_0 = Vector((0.0, 0.0, 0.0))
-
-        # Initial sample of the arbor
-        point_1 = arbor.samples[0].point
-
-        # Compute the distance between the two points
-        distance = (point_1 - point_0).length
-
-        # Direction
-        direction = (point_1 - point_0).normalized()
-
-        # Step
-        step = distance / number_samples
-
-        for i in range(1, number_samples - 1):
-
-            extrusion_point = point_0 + direction * step * i
-
-            # Extrude to the first sample along the arbor
-            nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, i - 1, extrusion_point)
 
     ################################################################################################
     # @create_arbor_mesh
@@ -498,6 +471,9 @@ class SkinningBuilder:
 
         #if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
         #   nmv.builders.common.add_surface_noise_to_arbor(builder=self)
+
+        # Add the spines
+
 
         nmv.logger.header('Done!')
 
