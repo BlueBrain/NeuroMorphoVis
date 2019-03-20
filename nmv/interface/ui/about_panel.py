@@ -22,15 +22,16 @@ import subprocess
 
 # Blender imports
 import bpy
-from bpy.props import EnumProperty
-from bpy.props import StringProperty
-from bpy.props import BoolProperty
 
 # Internal imports
 import nmv
 import nmv.enums
 import nmv.interface
 
+
+
+# global variable to store icons in
+custom_icons = None
 
 ####################################################################################################
 # @IOPanel
@@ -51,7 +52,6 @@ class AboutPanel(bpy.types.Panel):
     # Panel options
     ################################################################################################
 
-
     ################################################################################################
     # @draw
     ################################################################################################
@@ -62,19 +62,77 @@ class AboutPanel(bpy.types.Panel):
             Panel context.
         """
 
+
         # Get a reference to the panel layout
         layout = self.layout
 
         # Get a reference to the scene
         scene = context.scene
 
+        #foobar()
+        import copy
+
         # Input data options
-        input_data_options_row = layout.row()
-        input_data_options_row.label(text='About Us:', icon='LIBRARY_DATA_DIRECT')
+        input_data_options_row = layout.column()
+
+        input_data_options_row.label(text='Main Author:')
+        input_data_options_row.label(text='    Marwan Abdellah')
+
+        input_data_options_row.label(text='Credits:')
+        input_data_options_row.label(text='    Juan Hernando')
+        input_data_options_row.label(text='    Ahmet Bilgili')
+        input_data_options_row.label(text='    Stefan Eilemann')
+        input_data_options_row.label(text='    Henry Markram')
+        input_data_options_row.label(text='    Felix Shuermann')
+
+        data = layout.row()
+        data.label(text='Current Version:', icon_value=custom_icons['github'].icon_id)
 
         # Export analysis button
         export_analysis_row = layout.row()
         export_analysis_row.operator('update.nmv', icon='MESH_DATA')
+
+        global custom_icons
+
+
+        export_analysis_row = layout.row()
+        export_analysis_row.operator('update.nmv',
+                                     icon_value=custom_icons['github'].icon_id)
+
+
+        """
+        x = layout.row()
+        import bpy
+        global tex
+        print(tex)
+        if tex is None:
+            x.template_preview(bpy.data.textures['4'])
+        else:
+            x.template_preview(tex)
+        """
+        """
+        #icon = bpy.utils.load_icon('/computer/hbp.png')
+        preview_collections = {}
+
+        try:
+            import bpy.utils.previews
+            pcoll = bpy.utils.previews.new()
+            # the path is calculated relative to this py file inside the addon folder
+            #my_icons_dir = os.path.join(os.path.dirname(__file__), "icons")
+            # load a preview thumbnail of the circle icon
+            pcoll.load("LOADED", os.path.join('/computer/', "hbp.png"), 'IMAGE')
+            preview_collections['icons'] = pcoll
+        except:
+            pass
+
+        print(preview_collections['icons']['LOADED'].icon_id)
+
+        # Export analysis button
+        export_analysis_row = layout.row()
+        export_analysis_row.operator('update.nmv', icon_value=preview_collections['icons']['LOADED'].icon_id)
+        """
+
+
 
 
 ####################################################################################################
@@ -110,7 +168,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         os.chdir(current_path)
         shell_command = 'git pull origin union'
         nmv.logger.log('Updating NeuroMorphoVis')
-        subprocess.call(shell_command, shell=True)
+        # subprocess.call(shell_command, shell=True)
 
         # Get the blender path from the current path, NOTE the differences on different OSes
         if 'darwin' in sys.platform:
@@ -123,13 +181,25 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
             nmv.logger.info('Error: Unknown Platform!')
             exit(0)
 
+
         # Call blender and exit this one
         shell_command = '%s &' % blender_executable
         nmv.logger.log('Restarting Blender')
-        subprocess.call(shell_command, shell=True)
+        #subprocess.call(shell_command, shell=True)
+
+        #img = bpy.data.images.new('/computer/4.png', 238, 138)
+        #img.name = '4'
+        #mg.reload()
+
+        #global tex
+        ##tex = bpy.data.textures.new('4', 'IMAGE')
+        #tex.image = img
+
+
+        #print(len(bpy.data.textures))
 
         # Exiting blender
-        exit(0)
+        #exit(0)
 
         return {'FINISHED'}
 
@@ -140,11 +210,18 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
+    global custom_icons
+    import bpy.utils.previews
+    custom_icons = bpy.utils.previews.new()
+    custom_icons.load("github", os.path.join('/computer/', "github.png"), 'IMAGE')
+
     # Panel
     bpy.utils.register_class(AboutPanel)
 
     # Buttons
     bpy.utils.register_class(UpdateNeuroMorphoVis)
+
+
 
 
 
@@ -154,8 +231,15 @@ def register_panel():
 def unregister_panel():
     """Un-registers all the classes in this panel"""
 
+    global custom_icons
+    bpy.utils.previews.remove(custom_icons)
+
     # Panel
     bpy.utils.unregister_class(AboutPanel)
 
     # Buttons
     bpy.utils.unregister_class(UpdateNeuroMorphoVis)
+
+
+
+
