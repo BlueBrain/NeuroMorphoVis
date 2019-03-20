@@ -47,13 +47,16 @@ class SomaBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 irregular_subdivisions=False):
         """Constructor
 
         :param morphology:
             A given morphology.
         :param options:
             System options.
+        :param irregular_subdivisions:
+            Force the soma to make irregular subdivisions for the pulled faces.
         """
 
         # Morphology
@@ -61,6 +64,9 @@ class SomaBuilder:
 
         # All the options of the project (an instance of MeshyOptions)
         self.options = options
+
+        # Force the soma to make irregular subdivisions for the pulled faces.
+        self.irregular_subdivisions = irregular_subdivisions
 
         # A common vertex group used to store all the vertices that will be grouped for the hooks
         self.vertex_group = None
@@ -423,7 +429,7 @@ class SomaBuilder:
             initial_soma_sphere, connection_point_on_soma, extrusion_radius)
 
         # Make a subdivision for extra processing, if the topology is not required to be preserved
-        if self.options.soma.irregular_subdivisions:
+        if self.options.soma.irregular_subdivisions or self.irregular_subdivisions:
             nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, faces_indices, cuts=2)
 
         # Get the actual intersecting faces via their indices (this is for smoothing)

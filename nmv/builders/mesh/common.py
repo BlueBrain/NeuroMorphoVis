@@ -28,6 +28,7 @@ import nmv.geometry
 import nmv.mesh
 import nmv.shading
 import nmv.skeleton
+import nmv.utilities
 
 
 ################################################################################################
@@ -160,7 +161,7 @@ def reconstruct_soma_mesh(builder):
 
     # If the soma is connected to the root arbors
     soma_builder_object = nmv.builders.SomaBuilder(
-        morphology=builder.morphology, options=builder.options)
+        morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
 
     # Reconstruct the soma mesh
     builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
@@ -193,7 +194,7 @@ def connect_arbors_to_soma(builder):
 
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:
-                nmv.logger.detail('Apical dendrite')
+                nmv.logger.info('Apical dendrite')
                 nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh,
                                                        builder.morphology.apical_dendrite)
 
@@ -205,7 +206,7 @@ def connect_arbors_to_soma(builder):
 
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(builder.morphology.dendrites):
-                    nmv.logger.detail('Dendrite [%d]' % i)
+                    nmv.logger.info('Dendrite [%d]' % i)
                     nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, basal_dendrite)
 
         # Connecting axon
@@ -213,8 +214,121 @@ def connect_arbors_to_soma(builder):
 
             # Create the apical dendrite mesh
             if builder.morphology.axon is not None:
-                nmv.logger.detail('Axon')
+                nmv.logger.info('Axon')
                 nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, builder.morphology.axon)
+
+
+####################################################################################################
+# @get_neuron_mesh_objects
+####################################################################################################
+def get_neuron_mesh_objects(builder,
+                            exclude_spines=False):
+    """Gets a list of all the objects that belong to the neuron mesh. If all the objects are all
+    connected into a single object, it will be returned as a single item in a list.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    :param exclude_spines:
+        Exclude the spine meshes from this selection since they have a very special treatment.
+    :return:
+        A list of all the mesh objects that belong to the neuron
+    """
+
+    # Prepare the list
+    neuron_mesh_objects = list()
+
+    # Query the objects in the scene
+    for scene_object in bpy.context.scene.objects:
+
+        # Only select meshes
+        if scene_object.type == 'MESH':
+
+            # Exclude the spines
+            if not exclude_spines:
+                if 'spine' in scene_object.name:
+                    neuron_mesh_objects.append(scene_object)
+
+            # Otherwise, add the object to the list
+            else:
+
+                if 'Apical' in scene_object.name or \
+                   'Basal' in scene_object.name or \
+                   'Axon' in scene_object.name or \
+                   builder.morphology.label in scene_object.name:
+                    neuron_mesh_objects.append(scene_object)
+
+    # Return the list
+    return neuron_mesh_objects
+
+
+####################################################################################################
+# @adjust_texture_mapping
+####################################################################################################
+def adjust_texture_mapping(mesh_objects,
+                           texspace_size=25.0):
+    """Adjusts the UV mapping of the meshes. This operation is recommended to be called after
+    any mesh operation.
+
+    :param mesh_objects:
+        A list of meshes.
+    :param texspace_size:
+        Texture space size, by default 5.0.
+    """
+
+    nmv.logger.header('UV mapping')
+
+    # Do it mesh by mesh
+    for i, mesh_object in enumerate(mesh_objects):
+
+        # Update the texture space of the created meshes
+        mesh_object.select = True
+        bpy.context.object.data.use_auto_texspace = False
+        bpy.context.object.data.texspace_size[0] = texspace_size
+        bpy.context.object.data.texspace_size[1] = texspace_size
+        bpy.context.object.data.texspace_size[2] = texspace_size
+
+        # Show the progress
+        nmv.utilities.show_progress(
+            '* Adjusting the UV mapping', float(i), float(len(mesh_objects)))
+
+    # Show the progress
+    nmv.utilities.show_progress('* Adjusting the UV mapping', 0, 0, done=True)
+
+
+################################################################################################
+# @decimate_neuron_mesh
+################################################################################################
+def decimate_neuron_mesh(builder):
+    """Decimates the reconstructed neuron mesh.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # Ensure that the tessellation level is within range
+    if 0.01 < builder.options.mesh.tessellation_level < 1.0:
+        nmv.logger.header('Decimating the neuron')
+
+        # Get neuron objects
+        neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=True)
+
+        # Do it mesh by mesh
+        for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
+
+            # Show the progress
+            nmv.utilities.show_progress(
+                '* Decimating the mesh', float(i), float(len(neuron_mesh_objects)))
+
+            # Decimate each mesh object
+            nmv.mesh.ops.decimate_mesh_object(
+                mesh_object=neuron_mesh_object,
+                decimation_ratio=builder.options.mesh.tessellation_level)
+
+        # Show the progress
+        nmv.utilities.show_progress('* Decimating the mesh', 0, 0, done=True)
+
+        # Adjust the texture mapping
+        adjust_texture_mapping(neuron_mesh_objects)
 
 
 ####################################################################################################
@@ -326,54 +440,6 @@ def add_spines(self):
 
 
 
-################################################################################################
-# @decimate_neuron_mesh
-################################################################################################
-def decimate_neuron_mesh(self):
-    """Decimate the reconstructed neuron mesh.
-    """
-
-    nmv.logger.header('Decimating the mesh')
-
-    if 0.05 < self.options.mesh.tessellation_level < 1.0:
-        nmv.logger.info('Decimating the neuron')
-
-        # Get a list of all the mesh objects (except the spines) of the neuron
-        neuron_meshes = list()
-        for scene_object in bpy.context.scene.objects:
-
-            # Only for meshes
-            if scene_object.type == 'MESH':
-
-                # Exclude the spines
-                if 'spine' in scene_object.name:
-                    continue
-
-                # Otherwise, add the object to the list
-                else:
-                    neuron_meshes.append(scene_object)
-
-        # Do it mesh by mesh
-        for i, object_mesh in enumerate(neuron_meshes):
-
-            # Update the texture space of the created meshes
-            object_mesh.select = True
-            bpy.context.object.data.use_auto_texspace = False
-            bpy.context.object.data.texspace_size[0] = 5
-            bpy.context.object.data.texspace_size[1] = 5
-            bpy.context.object.data.texspace_size[2] = 5
-
-            # Skip the soma, if the soma is disconnected
-            if 'soma' in object_mesh.name:
-                continue
-
-            # Show the progress
-            nmv.utilities.show_progress(
-                '\t * Decimating the mesh', float(i), float(len(neuron_meshes)))
-
-            # Decimate each mesh object
-            nmv.mesh.ops.decimate_mesh_object(
-                mesh_object=object_mesh, decimation_ratio=self.options.mesh.tessellation_level)
 
 
 ################################################################################################
@@ -463,80 +529,6 @@ def select_vertex(vertex_idx):
     # Switch to the edit mode
     bpy.ops.object.mode_set(mode='EDIT')
 
-
-################################################################################################
-# @adjust_texture_mapping
-################################################################################################
-def adjust_texture_mapping(list_meshes,
-                           texspace_size):
-    """
-
-    :param list_meshes:
-    :param texspace_size:
-    :return:
-    """
-
-    # Do it mesh by mesh
-    for i, mesh_object in enumerate(list_meshes):
-        # Update the texture space of the created meshes
-        mesh_object.select = True
-        bpy.context.object.data.use_auto_texspace = False
-        bpy.context.object.data.texspace_size[0] = texspace_size
-        bpy.context.object.data.texspace_size[1] = texspace_size
-        bpy.context.object.data.texspace_size[2] = texspace_size
-
-        # Show the progress
-        nmv.utilities.show_progress(
-            '\t * Decimating the mesh', float(i), float(len(list_meshes)))
-
-################################################################################################
-# @decimate_neuron_mesh
-################################################################################################
-def decimate_neuron_mesh(tessellation_level):
-    """Decimate the reconstructed neuron mesh.
-    """
-
-    nmv.logger.header('Decimating the mesh')
-
-    if 0.05 < tessellation_level < 1.0:
-        nmv.logger.info('Decimating the neuron')
-
-        # Get a list of all the mesh objects (except the spines) of the neuron
-        neuron_meshes = list()
-        for scene_object in bpy.context.scene.objects:
-
-            # Only for meshes
-            if scene_object.type == 'MESH':
-
-                # Exclude the spines
-                if 'spine' in scene_object.name:
-                    continue
-
-                # Otherwise, add the object to the list
-                else:
-                    neuron_meshes.append(scene_object)
-
-        # Do it mesh by mesh
-        for i, object_mesh in enumerate(neuron_meshes):
-
-            # Update the texture space of the created meshes
-            object_mesh.select = True
-            bpy.context.object.data.use_auto_texspace = False
-            bpy.context.object.data.texspace_size[0] = 5
-            bpy.context.object.data.texspace_size[1] = 5
-            bpy.context.object.data.texspace_size[2] = 5
-
-            # Skip the soma, if the soma is disconnected
-            if 'soma' in object_mesh.name:
-                continue
-
-            # Show the progress
-            nmv.utilities.show_progress(
-                '\t * Decimating the mesh', float(i),float(len(neuron_meshes)))
-
-            # Decimate each mesh object
-            nmv.mesh.ops.decimate_mesh_object(
-                mesh_object=object_mesh, decimation_ratio=tessellation_level)
 
 
 

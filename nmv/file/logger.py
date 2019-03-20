@@ -131,7 +131,8 @@ class Logger:
         """
         print("\n")  # Add a new line
         self.line()
-        self.log(args)
+        log_string = ''.join(map(str, args))
+        self.log('    * %s' % log_string)
         self.line()
 
     ################################################################################################

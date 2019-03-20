@@ -547,7 +547,7 @@ def set_material_to_object(mesh_object,
 # @adjust_material_uv
 ####################################################################################################
 def adjust_material_uv(mesh_object,
-                       size=1):
+                       size=5.0):
     """Update the texture space of the created meshes
 
     :param mesh_object:
@@ -556,7 +556,7 @@ def adjust_material_uv(mesh_object,
         The texture space size of the material, by default set to 1.
     """
     # Select the mesh
-    mesh_object.select = True
+    nmv.scene.set_active_object(mesh_object)
 
     # Set the 'auto_texspace' to False
     bpy.context.object.data.use_auto_texspace = False

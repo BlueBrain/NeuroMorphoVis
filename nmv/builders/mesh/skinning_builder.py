@@ -265,7 +265,8 @@ class SkinningBuilder:
                           arbor,
                           max_branching_order,
                           arbor_name,
-                          arbor_material):
+                          arbor_material,
+                          connected_to_soma=False):
         """Creates a mesh of the given arbor recursively.
 
         :param arbor:
@@ -276,33 +277,54 @@ class SkinningBuilder:
             The name of the arbor.
         :param arbor_material:
             The material or the arbor.
+        :param connected_to_soma:
+            If the arbor is connected to soma or not, by default False.
         :return:
             A reference to the created mesh object.
         """
 
-        number_samples = 5
+        # If the arbor is connected to soma, then start at the initial segment of the arbor
+        if connected_to_soma:
 
-        # Initially, this index is set to ONE and incremented later, sample zero is reserved to
-        # the auxiliary sample that is added at the soma
-        samples_global_arbor_index = [2]
-        nmv.builders.update_samples_indices_per_arbor(
-            arbor, samples_global_arbor_index, max_branching_order)
+            # Initially, this index is set to TWO and incremented later, sample zero is reserved to
+            # the auxiliary sample that is added at the soma, and the first sample to the point that
+            # is added right before the arbor starts
+            samples_global_arbor_index = [1]
+            nmv.builders.update_samples_indices_per_arbor(
+                arbor, samples_global_arbor_index, max_branching_order)
 
-        # Create the initial vertex of the arbor skeleton
-        arbor_bmesh_object = nmv.bmeshi.create_vertex()
+            # Add an auxiliary sample just before the arbor starts
+            auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[0].point.normalized()
 
-        #self.extrude_auxiliary_section_from_soma_center_to_arbor(arbor, arbor_bmesh_object, number_samples)
+            # Create the initial vertex of the arbor skeleton at the auxiliary point
+            arbor_bmesh_object = nmv.bmeshi.create_vertex(location=auxiliary_point)
 
-        # Extrude to the first sample along the arbor
-        # nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, Vector((0, 0, 0)))
+            # Extrude towards the first sample from the auxiliary point
+            nmv.bmeshi.ops.extrude_vertex_towards_point(
+                arbor_bmesh_object, 0, arbor.samples[0].point)
 
+        # Otherwise, add a little auxiliary sample and start from it
+        else:
 
-        direction = arbor.samples[0].point.normalized()
-        p0 = arbor.samples[0].point - 0.01 * direction
+            # Initially, this index is set to TWO and incremented later, sample zero is reserved to
+            # the auxiliary sample that is added at the soma, and the first sample to the point that
+            # is added right before the arbor starts
+            samples_global_arbor_index = [2]
+            nmv.builders.update_samples_indices_per_arbor(
+                arbor, samples_global_arbor_index, max_branching_order)
 
-        # Extrude to the first sample along the arbor
-        nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, p0)
-        nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 1, arbor.samples[0].point)
+            # Create the initial vertex of the arbor skeleton at the origin
+            arbor_bmesh_object = nmv.bmeshi.create_vertex()
+
+            # Add an auxiliary sample just before the arbor starts
+            auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[0].point.normalized()
+
+            # Extrude to the auxiliary sample
+            nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, auxiliary_point)
+
+            # Extrude towards the first sample
+            nmv.bmeshi.ops.extrude_vertex_towards_point(
+                arbor_bmesh_object, 1, arbor.samples[0].point)
 
         # Extrude arbor mesh using the skinning method using a temporary radius with a bmesh
         self.extrude_arbor(arbor_bmesh_object, arbor, max_branching_order)
@@ -335,14 +357,33 @@ class SkinningBuilder:
         # Apply the modifier
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
 
-        # Smooth the mesh object
-        nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+        # Remove the first face, before the smoothing operation if connected to the soma
+        if connected_to_soma:
+
+            # Remove the first face
+            nmv.mesh.ops.remove_first_face_of_quad_mesh_object(arbor_mesh)
+
+            # Smooth the mesh object
+            nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+
+            # Close the removed face
+            nmv.mesh.ops.close_open_faces(mesh_object=arbor_mesh)
+
+        # Otherwise, apply directly the smoothing operation
+        else:
+
+            # Smooth the mesh object
+            nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
 
         # Further smoothing, only with shading
         nmv.mesh.shade_smooth_object(arbor_mesh)
 
+        nmv.shading.adjust_material_uv(arbor_mesh, 50)
+
         # Assign the material to the reconstructed arbor mesh
         nmv.shading.set_material_to_object(arbor_mesh, arbor_material)
+
+
 
         # Return a reference to the arbor mesh
         return arbor_mesh
@@ -350,10 +391,14 @@ class SkinningBuilder:
     ################################################################################################
     # @build_arbors
     ################################################################################################
-    def build_arbors(self):
+    def build_arbors(self,
+                     connected_to_soma=False):
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
+
+        :param connected_to_soma:
+            If the arbor is connected to soma or not, by default False.
         """
 
         # Header
@@ -370,7 +415,8 @@ class SkinningBuilder:
                     arbor=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                    arbor_material= self.apical_dendrites_materials[0])
+                    arbor_material=self.apical_dendrites_materials[0],
+                    connected_to_soma=connected_to_soma)
 
                 # Add a reference to the mesh object
                 self.morphology.apical_dendrite.mesh = arbor_mesh
@@ -378,18 +424,23 @@ class SkinningBuilder:
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                # Create the basal dendrite meshes
-                nmv.logger.info('Dendrite [%d]' % i)
-                arbor_mesh = self.create_arbor_mesh(
-                    arbor=basal_dendrite,
-                    max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                    arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i),
-                    arbor_material=self.basal_dendrites_materials[0])
+            # Are dendrites there
+            if self.morphology.dendrites is not None:
 
-                # Add a reference to the mesh object
-                self.morphology.dendrites[i].mesh = arbor_mesh
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # Create the basal dendrite meshes
+                    nmv.logger.info('Dendrite [%d]' % i)
+                    arbor_mesh = self.create_arbor_mesh(
+                        arbor=basal_dendrite,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i),
+                        arbor_material=self.basal_dendrites_materials[0],
+                        connected_to_soma=connected_to_soma)
+
+                    # Add a reference to the mesh object
+                    self.morphology.dendrites[i].mesh = arbor_mesh
 
         # Draw the axon as a set connected sections
         if not self.options.morphology.ignore_axon:
@@ -403,11 +454,11 @@ class SkinningBuilder:
                     arbor=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order,
                     arbor_name=nmv.consts.Arbors.AXON_PREFIX,
-                    arbor_material=self.axon_materials[0])
+                    arbor_material=self.axon_materials[0],
+                    connected_to_soma=connected_to_soma)
 
                 # Add a reference to the mesh object
                 self.morphology.axon.mesh = arbor_mesh
-
 
     ################################################################################################
     # @reconstruct_mesh
@@ -424,16 +475,30 @@ class SkinningBuilder:
         self.verify_morphology_skeleton()
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
-        nmv.builders.common.modify_morphology_skeleton()
+        nmv.builders.common.modify_morphology_skeleton(builder=self)
 
         # Build the soma, with the default parameters
         nmv.builders.common.reconstruct_soma_mesh(builder=self)
 
-        # Build the arbors
-        self.build_arbors()
+        # Build the arbors and connect them to the soma
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
 
-        # if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-        #    nmv.builders.common.add_surface_noise_to_arbor(builder=self)
+            # Build the arbors
+            self.build_arbors(connected_to_soma=True)
+
+            # Connect to the soma
+            nmv.builders.common.connect_arbors_to_soma(builder=self)
+
+        # Build the arbors only without any connection to the soma
+        else:
+            self.build_arbors(connected_to_soma=False)
+
+        # Tessellation
+        if self.options.mesh.tessellation_level < 1.0:
+            nmv.builders.common.decimate_neuron_mesh(builder=self)
+
+        #if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+        #   nmv.builders.common.add_surface_noise_to_arbor(builder=self)
 
         nmv.logger.header('Done!')
 
