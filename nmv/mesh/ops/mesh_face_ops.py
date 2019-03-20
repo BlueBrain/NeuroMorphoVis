@@ -431,6 +431,36 @@ def close_open_faces(mesh_object):
 
 
 ####################################################################################################
+# @close_open_faces
+####################################################################################################
+def try_to_close_open_faces(mesh_object):
+    """Tries to close all the open faces of a mesh object. This function was to give a try with
+    functions that we don't care about the certainty of the application of the operation.
+
+    :param mesh_object:
+        A given mesh object.
+    """
+
+    # Select all the vertices of a mesh object
+    nmv.mesh.ops.select_all_vertices(mesh_object)
+
+    # Toggle the mesh object to the edit/object mode
+    bpy.ops.object.editmode_toggle()
+
+    # Add new faces for the selected vertices if there are any open faces
+    try:
+        bpy.ops.mesh.edge_face_add()
+    except:
+        pass
+
+    # Switch back to the edit more
+    bpy.ops.object.editmode_toggle()
+
+    # Deselect all the vertices again for the other side
+    nmv.mesh.ops.deselect_all_vertices(mesh_object)
+
+
+####################################################################################################
 # @close_caps_for_4_vertices_mesh
 ####################################################################################################
 def close_caps_for_4_vertices_mesh(mesh_object):

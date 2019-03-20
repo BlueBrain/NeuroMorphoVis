@@ -15,6 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import random
 
 # Blender imports
 import bpy
@@ -22,8 +24,10 @@ import bpy
 # Internal imports
 import nmv
 import nmv.enums
-import nmv.shading
+import nmv.geometry
 import nmv.mesh
+import nmv.shading
+import nmv.skeleton
 
 
 ################################################################################################
@@ -65,8 +69,7 @@ def create_materials(builder,
 # @create_skeleton_materials
 ####################################################################################################
 def create_skeleton_materials(builder):
-    """Create the materials that will be used to shade the reconstructed objects from a given
-    builder.
+    """Create the materials that will be used to shade the different object from a given builder.
 
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
@@ -105,52 +108,128 @@ def create_skeleton_materials(builder):
         color=builder.options.mesh.apical_dendrites_color)
 
     # Spines
-    builder.spines_colors = create_materials(
+    builder.spines_materials = create_materials(
         builder=builder, name='spines', color=builder.options.mesh.spines_color)
 
     # Create an illumination specific for the given material
     nmv.shading.create_material_specific_illumination(builder.options.mesh.material)
 
 
-def add_spines(self):
-    # Add spines
-    spines_objects = None
-    if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-        nmv.logger.header('Adding circuit spines')
-        spines_objects = nmv.builders.build_circuit_spines(
-            morphology=self.morphology, blue_config=self.options.morphology.blue_config,
-            gid=self.options.morphology.gid, material=self.spines_colors[0])
+####################################################################################################
+# @modify_morphology_skeleton
+####################################################################################################
+def modify_morphology_skeleton(builder):
+    """Modifies the morphology skeleton, if required. These modifications are generic and not
+    specific to any builder. Specific modifications can be implemented as a function in the
+    corresponding builder.
 
-    # Random spines
-    elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-        nmv.logger.header('Adding random spines')
-        spines_builder = nmv.builders.RandomSpineBuilder(
-            morphology=self.morphology, options=self.options)
-        spines_objects = spines_builder.add_spines_to_morphology()
-
-    # Otherwise ignore spines
-    else:
-        return
-
-    # Join the spine objects into a single mesh
-    spine_mesh_name = '%s_spines' % self.options.morphology.label
-    self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
-
-
-################################################################################################
-# @add_surface_noise
-################################################################################################
-def add_surface_noise(self):
-    """Adds noise to the surface of the reconstructed mesh(es).
-
-    NOTE: The surface mes
-    h of the neuron is reconstructed as a set (or list) of meshes
-    representing the soma, different arbors and spines. This operation will JOIN all the
-    objects (except the spines) into a single object only to be able to apply it correctly.
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-        nmv.logger.header('Adding surface roughness')
+    # Taper the sections if requested
+    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
+       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.taper_section])
+
+    # Zigzag the sections if required
+    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
+       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.zigzag_section])
+
+
+####################################################################################################
+# @reconstruct_soma_mesh
+####################################################################################################
+def reconstruct_soma_mesh(builder):
+    """Reconstruct the mesh of the soma.
+
+    NOTE: To improve the performance of the soft body physics simulation, reconstruct the
+    soma profile before the arbors, such that the scene is almost empty.
+
+    NOTE: If the soma is requested to be connected to the initial segments of the arbors,
+    we must use a high number of subdivisions to make smooth connections that look nice,
+    but if the arbors are connected to the soma origin, then we can use less subdivisions
+    since the soma will not be connected to the arbor at all.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # If the soma is connected to the root arbors
+    soma_builder_object = nmv.builders.SomaBuilder(
+        morphology=builder.morphology, options=builder.options)
+
+    # Reconstruct the soma mesh
+    builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+    # Apply the shader to the reconstructed soma mesh
+    nmv.shading.set_material_to_object(builder.soma_mesh, builder.soma_materials[0])
+
+
+####################################################################################################
+# @connect_arbors_to_soma
+####################################################################################################
+def connect_arbors_to_soma(builder):
+    """Connects the root section of a given arbor to the soma at its initial segment.
+
+    This function checks if the arbor mesh is 'logically' connected to the soma or not,
+    following to the initial validation steps that determines if the arbor has a valid
+    connection point to the soma or not.
+    If the arbor is 'logically' connected to the soma, this function returns immediately.
+    The arbor is a Section object, see Section() @ section.py.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+        nmv.logger.header('Connecting arbors to soma')
+
+        # Connecting apical dendrite
+        if not builder.options.morphology.ignore_apical_dendrite:
+
+            # There is an apical dendrite
+            if builder.morphology.apical_dendrite is not None:
+                nmv.logger.detail('Apical dendrite')
+                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh,
+                                                       builder.morphology.apical_dendrite)
+
+        # Connecting basal dendrites
+        if not builder.options.morphology.ignore_basal_dendrites:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.dendrites is not None:
+
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(builder.morphology.dendrites):
+                    nmv.logger.detail('Dendrite [%d]' % i)
+                    nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, basal_dendrite)
+
+        # Connecting axon
+        if not builder.options.morphology.ignore_axon:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.axon is not None:
+                nmv.logger.detail('Axon')
+                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, builder.morphology.axon)
+
+
+####################################################################################################
+# @add_surface_noise_to_arbor
+####################################################################################################
+def add_surface_noise_to_arbor(builder):
+    """Adds noise to the surface of the arbors of the reconstructed mesh(es).
+    """
+
+    if builder.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+        nmv.logger.header('Adding surface roughness to arbors')
+
+        # Get a list of all the meshes of the reconstructed arbors
+
+
 
         # Join all the mesh objects (except the spines) of the neuron into a single mesh object
         nmv.logger.info('Joining meshes')
@@ -171,14 +250,14 @@ def add_surface_noise(self):
         # Join all the objects into a single neuron mesh
         neuron_mesh = nmv.mesh.ops.join_mesh_objects(
             mesh_list=neuron_meshes,
-            name='%s_mesh_proxy' % self.options.morphology.label)
+            name='%s_mesh_proxy' % builder.options.morphology.label)
 
         # The soma is already reconstructed with high number of subdivisions for accuracy,
         # and the arbors are reconstructed with minimal number of samples that is sufficient to
         # make them smooth. Therefore, we must add the noise around the soma and its connections
         # to the arbors (the stable extent) with a different amplitude.
         stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
-            self.morphology)
+            builder.morphology)
 
         # Apply the noise addition filter
         nmv.logger.info('Adding noise')
@@ -187,7 +266,7 @@ def add_surface_noise(self):
             if nmv.geometry.ops.is_point_inside_sphere(
                     stable_extent_center, stable_extent_radius, vertex.co):
                 if nmv.geometry.ops.is_point_inside_sphere(
-                        stable_extent_center, self.morphology.soma.smallest_radius,
+                        stable_extent_center, builder.morphology.soma.smallest_radius,
                         vertex.co):
                     vertex.select = True
                     vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
@@ -219,6 +298,33 @@ def add_surface_noise(self):
 
         # Smooth each mesh object
         nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
+
+def add_spines(self):
+    # Add spines
+    spines_objects = None
+    if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+        nmv.logger.header('Adding circuit spines')
+        spines_objects = nmv.builders.build_circuit_spines(
+            morphology=self.morphology, blue_config=self.options.morphology.blue_config,
+            gid=self.options.morphology.gid, material=self.spines_materials[0])
+
+    # Random spines
+    elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+        nmv.logger.header('Adding random spines')
+        spines_builder = nmv.builders.RandomSpineBuilder(
+            morphology=self.morphology, options=self.options)
+        spines_objects = spines_builder.add_spines_to_morphology()
+
+    # Otherwise ignore spines
+    else:
+        return
+
+    # Join the spine objects into a single mesh
+    spine_mesh_name = '%s_spines' % self.options.morphology.label
+    self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+
+
+
 
 ################################################################################################
 # @decimate_neuron_mesh

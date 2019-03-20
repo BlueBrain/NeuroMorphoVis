@@ -184,10 +184,7 @@ def export_mesh_objects_to_file(mesh_objects,
 def export_mesh_object(mesh_object,
                        output_directory,
                        file_name,
-                       obj=False,
-                       ply=False,
-                       stl=False,
-                       blend=False):
+                       obj=False, ply=False, stl=False, blend=False):
     """Exports the mesh in one line in different file formats.
 
     :param mesh_object:

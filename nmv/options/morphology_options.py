@@ -78,7 +78,7 @@ class MorphologyOptions:
         self.ignore_apical_dendrite = False
 
         # Axon branching order
-        self.axon_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.axon_branch_order = nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER
 
         # Basal dendrites branching order
         self.basal_dendrites_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER

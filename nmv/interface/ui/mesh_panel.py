@@ -91,16 +91,19 @@ class MeshPanel(bpy.types.Panel):
                 'Meta Objects',
                 'Creates watertight mesh models using meta balls, but it could be slower than'
                 ' the other methods')],
-        name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
+        name='Meshing Method', default=nmv.enums.Meshing.Technique.SKINNING)
 
     # Is the soma connected to the first order branches or not !
-    bpy.types.Scene.MeshSomaConnection = EnumProperty(
+    bpy.types.Scene.SomaArborsConnection = EnumProperty(
         items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,
                 'Connected',
-                'Connect the soma mesh to the arbors'),
+                'Connect the soma mesh to the arbors to make a nice mesh that can be used for any'
+                'type of visualization that involves transparency'),
                (nmv.enums.Meshing.SomaConnection.DISCONNECTED,
                 'Disconnected',
-                'Create the soma as a separate mesh and do not connect it to the arbors')],
+                'Create the soma as a separate mesh and do not connect it to the arbors. This '
+                'option is used to guarantee surface smoothing when a volume is reconstructed '
+                'from the resulting mesh, but cannot be used for surface transparency')],
         name='Soma Connection',
         default=nmv.enums.Meshing.SomaConnection.DISCONNECTED)
 
@@ -383,6 +386,23 @@ class MeshPanel(bpy.types.Panel):
             Panel context.
         """
 
+        # Surface roughness
+        if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+            mesh_surface_row = self.layout.row()
+            mesh_surface_row.label('Surface:')
+            mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
+            nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+        else:
+            nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+
+        # Soma connection
+        soma_connection_row = self.layout.row()
+        soma_connection_row.label('Soma:')
+        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
+
         # Tessellation parameters
         tess_level_row = self.layout.row()
         tess_level_row.prop(context.scene, 'TessellateMesh')
@@ -459,10 +479,10 @@ class MeshPanel(bpy.types.Panel):
         # Soma connection
         soma_connection_row = self.layout.row()
         soma_connection_row.label('Soma:')
-        soma_connection_row.prop(context.scene, 'MeshSomaConnection', expand=True)
+        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
 
         # Pass options from UI to system
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.MeshSomaConnection
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
 
         # Tessellation parameters
         tess_level_row = self.layout.row()
@@ -506,10 +526,10 @@ class MeshPanel(bpy.types.Panel):
         # Soma connection
         soma_connection_row = self.layout.row()
         soma_connection_row.label('Soma:')
-        soma_connection_row.prop(context.scene, 'MeshSomaConnection', expand=True)
+        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
 
         # Pass options from UI to system
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.MeshSomaConnection
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
 
         # Mesh objects connection
         neuron_objects_connection_row = self.layout.row()

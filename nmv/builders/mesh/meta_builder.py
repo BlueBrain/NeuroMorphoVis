@@ -72,7 +72,7 @@ class MetaBuilder:
         self.apical_dendrite_materials = None
 
         # A list of the colors/materials of the spines
-        self.spines_colors = None
+        self.spines_materials = None
 
         # A reference to the reconstructed soma mesh
         self.reconstructed_soma_mesh = None
@@ -163,7 +163,7 @@ class MetaBuilder:
             name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
 
         # Spines
-        self.spines_colors = self.create_materials(
+        self.spines_materials = self.create_materials(
             name='spines', color=self.options.mesh.spines_color)
 
         # Create an illumination specific for the given material
@@ -493,7 +493,7 @@ class MetaBuilder:
             nmv.logger.header('Adding circuit spines')
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology, blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid, material=self.spines_colors[0])
+                gid=self.options.morphology.gid, material=self.spines_materials[0])
 
         # Random spines
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:

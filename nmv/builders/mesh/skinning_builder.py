@@ -76,32 +76,13 @@ class SkinningBuilder:
         self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the spines
-        self.spines_colors = None
+        self.spines_materials = None
 
         # A reference to the reconstructed soma mesh
-        self.reconstructed_soma_mesh = None
-
-
-        # A list of the reconstructed meshes of the apical dendrites
-        self.apical_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the basal dendrites
-        self.basal_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the axon
-        self.axon_meshes = list()
-
+        self.soma_mesh = None
 
         # A reference to the reconstructed spines mesh
         self.spines_mesh = None
-
-        # A parameter to track the current branching order on each arbor
-        # NOTE: This parameter must get reset when you start working on a new arbor
-        self.branching_order = 0
-
-        # A list of all the meshes that are reconstructed on a piecewise basis and correspond to
-        # the different components of the neuron including soma, arbors and the spines as well
-        self.reconstructed_neuron_meshes = list()
 
     ################################################################################################
     # @verify_morphology_skeleton
@@ -138,27 +119,7 @@ class SkinningBuilder:
         # Label the primary and secondary sections based on radii, skinning is agnostic
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
-
-    ################################################################################################
-    # @modify_morphology_skeleton
-    ################################################################################################
-    def modify_morphology_skeleton(self):
-        """Modifies the morphology skeleton, if required. These modifications are specific to this
-        builder.
-        """
-
-        # Taper the sections if requested
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.taper_section])
-
-        # Zigzag the sections if required
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.zigzag_section])
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
 
     ################################################################################################
     # @update_section_samples_radii
@@ -295,9 +256,7 @@ class SkinningBuilder:
             extrusion_point = point_0 + direction * step * i
 
             # Extrude to the first sample along the arbor
-            nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, i - 1,
-                                                        extrusion_point)
-
+            nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, i - 1, extrusion_point)
 
     ################################################################################################
     # @create_arbor_mesh
@@ -305,7 +264,8 @@ class SkinningBuilder:
     def create_arbor_mesh(self,
                           arbor,
                           max_branching_order,
-                          arbor_name):
+                          arbor_name,
+                          arbor_material):
         """Creates a mesh of the given arbor recursively.
 
         :param arbor:
@@ -314,6 +274,8 @@ class SkinningBuilder:
             The maximum branching order of the arbor.
         :param arbor_name:
             The name of the arbor.
+        :param arbor_material:
+            The material or the arbor.
         :return:
             A reference to the created mesh object.
         """
@@ -336,10 +298,8 @@ class SkinningBuilder:
 
 
         direction = arbor.samples[0].point.normalized()
-
         p0 = arbor.samples[0].point - 0.01 * direction
 
-        # Extrude to the first sample along the arbor
         # Extrude to the first sample along the arbor
         nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, p0)
         nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 1, arbor.samples[0].point)
@@ -381,6 +341,9 @@ class SkinningBuilder:
         # Further smoothing, only with shading
         nmv.mesh.shade_smooth_object(arbor_mesh)
 
+        # Assign the material to the reconstructed arbor mesh
+        nmv.shading.set_material_to_object(arbor_mesh, arbor_material)
+
         # Return a reference to the arbor mesh
         return arbor_mesh
 
@@ -391,17 +354,10 @@ class SkinningBuilder:
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
-
-        :return:
-            A list of all the individual meshes of the arbors.
         """
 
         # Header
         nmv.logger.header('Building Arbors')
-
-        # Create a list that keeps references to the meshes of all the connected pieces of the
-        # arbors of the mesh.
-        arbors_objects = []
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
@@ -413,11 +369,8 @@ class SkinningBuilder:
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX)
-
-                # Apply the material to the reconstructed arbor
-                nmv.shading.set_material_to_object(arbor_mesh,
-                                                   self.apical_dendrites_materials[0])
+                    arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    arbor_material= self.apical_dendrites_materials[0])
 
                 # Add a reference to the mesh object
                 self.morphology.apical_dendrite.mesh = arbor_mesh
@@ -432,11 +385,8 @@ class SkinningBuilder:
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=basal_dendrite,
                     max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                    arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i))
-
-                # Apply the material to the reconstructed arbor
-                nmv.shading.set_material_to_object(arbor_mesh,
-                                                   self.basal_dendrites_materials[0])
+                    arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i),
+                    arbor_material=self.basal_dendrites_materials[0])
 
                 # Add a reference to the mesh object
                 self.morphology.dendrites[i].mesh = arbor_mesh
@@ -452,202 +402,38 @@ class SkinningBuilder:
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    arbor_name=nmv.consts.Arbors.AXON_PREFIX)
-
-                # Apply the material to the reconstructed arbor
-                nmv.shading.set_material_to_object(arbor_mesh,
-                                                   self.axon_materials[0])
+                    arbor_name=nmv.consts.Arbors.AXON_PREFIX,
+                    arbor_material=self.axon_materials[0])
 
                 # Add a reference to the mesh object
                 self.morphology.axon.mesh = arbor_mesh
 
-                # Return the list of meshes
-        return arbors_objects
-
-    ################################################################################################
-    # @connect_arbors_to_soma
-    ################################################################################################
-    def connect_arbors_to_soma(self):
-        """Connects the root section of a given arbor to the soma at its initial segment.
-
-        This function checks if the arbor mesh is 'logically' connected to the soma or not,
-        following to the initial validation steps that determines if the arbor has a valid
-        connection point to the soma or not.
-        If the arbor is 'logically' connected to the soma, this function returns immediately.
-        The arbor is a Section object, see Section() @ section.py.
-        """
-
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            nmv.logger.header('Connecting arbors to soma')
-
-            # Connecting apical dendrite
-            if not self.options.morphology.ignore_apical_dendrite:
-
-                # There is an apical dendrite
-                if self.morphology.apical_dendrite is not None:
-                    nmv.logger.detail('Apical dendrite')
-                    nmv.skeleton.ops.connect_arbor_to_soma(
-                        self.reconstructed_soma_mesh, self.morphology.apical_dendrite)
-
-            # Connecting basal dendrites
-            if not self.options.morphology.ignore_basal_dendrites:
-
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    nmv.logger.detail('Dendrite [%d]' % i)
-                    nmv.skeleton.ops.connect_arbor_to_soma(
-                        self.reconstructed_soma_mesh, basal_dendrite)
-
-            # Connecting axon
-            if not self.options.morphology.ignore_axon:
-                nmv.logger.detail('Axon')
-                nmv.skeleton.ops.connect_arbor_to_soma(
-                    self.reconstructed_soma_mesh, self.morphology.axon)
-
-    ################################################################################################
-    # @reconstruct_soma_mesh
-    ################################################################################################
-    def reconstruct_soma_mesh(self):
-        """Reconstruct the mesh of the soma.
-
-        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
-        soma profile before the arbors, such that the scene is almost empty.
-
-        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
-        we must use a high number of subdivisions to make smooth connections that look nice,
-        but if the arbors are connected to the soma origin, then we can use less subdivisions
-        since the soma will not be connected to the arbor at all.
-        """
-
-        # If the soma is connected to the root arbors
-        soma_builder_object = nmv.builders.SomaBuilder(
-            morphology=self.morphology, options=self.options)
-
-        # Reconstruct the soma mesh
-        self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader to the reconstructed soma mesh
-        nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
-
-    ################################################################################################
-    # @add_surface_noise
-    ################################################################################################
-    def add_membrane_roughness_to_arbor(self,
-                                        arbor_mesh,
-                                        stable_extent_center,
-                                        stable_extent_radius,
-                                        minimum_value=-0.25,
-                                        maximum_value=0.25):
-        """Add roughness to the surface of the mesh to look realistic. This function is tested by
-        trial and error. The minimum and maximum values are different for each arbor. The stable
-        extent defines the soma region.
-
-        :param arbor_mesh:
-            The mesh of the arbor.
-        :param minimum_value:
-            The minimum value of the noise.
-        :param maximum_value:
-            The maximum value of the noise.
-        :param stable_extent_center:
-            The center of the stable extent that defines the soma.
-        :param stable_extent_radius:
-            The radius of the stable extent that defines the soma.
-        :return:
-        """
-
-        for i in range(int(0.1 * len(arbor_mesh.data.vertices))):
-
-            # Get a reference to the vertex
-            vertex = arbor_mesh.data.vertices[i]
-
-            # Make sure that we are not in the stable region
-            if not nmv.geometry.ops.is_point_inside_sphere(stable_extent_center,
-                                                           stable_extent_radius,
-                                                           vertex.co):
-
-                roughness_value = random.uniform(-0.25, 0.1)
-
-                if 0.0 < random.uniform(0, 1.0) < 0.045:
-                    roughness_value += random.uniform(0.05, 0.1)
-                elif 0.045 < random.uniform(0, 1.0) < 0.06:
-                    roughness_value += random.uniform(0.2, 0.5)
-                vertex.select = True
-                vertex.co = vertex.co + (vertex.normal * roughness_value)
-                vertex.select = False
-
-        """
-                        if nmv.geometry.ops.is_point_inside_sphere(
-                        stable_extent_center, self.morphology.soma.smallest_radius,
-                        vertex.co):
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.01))
-                    vertex.select = False
-
-                else:
-                    if 0.0 < random.uniform(0, 1.0) < 0.1:
-                        vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.2))
-                        vertex.select = False
-            else:
-        """
-
-    ################################################################################################
-    # @add_surface_noise
-    ################################################################################################
-    def add_surface_noise(self):
-        """Adds noise to the surface of the reconstructed mesh(es).
-        """
-
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.header('Adding surface roughness')
-
-            # The soma is already reconstructed with high number of subdivisions for accuracy,
-            # and the arbors are reconstructed with minimal number of samples that is sufficient to
-            # make them smooth. Therefore, we must add the noise around the soma and its connections
-            # to the arbors (the stable extent) with a different amplitude.
-            stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
-                self.morphology)
-
-            if self.morphology.apical_dendrite.mesh is not None:
-
-                # Decimate
-                nmv.mesh.ops.decimate_mesh_object(
-                    mesh_object=self.morphology.apical_dendrite.mesh, decimation_ratio=0.25)
-
-                self.add_membrane_roughness_to_arbor(
-                    self.morphology.apical_dendrite.mesh, stable_extent_center, stable_extent_radius)
-
-                # Smooth
-                nmv.mesh.ops.smooth_object(mesh_object=self.morphology.apical_dendrite.mesh, level=1)
 
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh as a set of piecewise-watertight meshes.
-        The meshes are logically connected, but the different branches are intersecting,
-        so they can be used perfectly for voxelization purposes, but they cannot be used for
-        surface rendering with 'transparency'.
+        """Reconstructs the neuronal mesh using the skinning modifiers in Blender.
         """
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.create_skeleton_materials(builder=self)
+        nmv.builders.common.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
         self.verify_morphology_skeleton()
 
-        # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
-        self.modify_morphology_skeleton()
+        # Apply skeleton-based operation, if required, to slightly modify the skeleton
+        nmv.builders.common.modify_morphology_skeleton()
 
-        # Build the soma
-        self.reconstruct_soma_mesh()
+        # Build the soma, with the default parameters
+        nmv.builders.common.reconstruct_soma_mesh(builder=self)
 
         # Build the arbors
-        # self.reconstruct_arbors_meshes()
         self.build_arbors()
 
-        # self.add_surface_noise()
+        # if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+        #    nmv.builders.common.add_surface_noise_to_arbor(builder=self)
 
         nmv.logger.header('Done!')
 

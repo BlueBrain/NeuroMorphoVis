@@ -95,8 +95,7 @@ def is_arbor_disconnected_from_soma(arbor,
 # @label_primary_and_secondary_sections_based_on_radii
 ####################################################################################################
 def label_primary_and_secondary_sections_based_on_radii(section):
-    """
-    Label the children of a given section to primary or secondary, based on the radii of the
+    """Labels the children of a given section to primary or secondary, based on the radii of the
     children. The child is labeled primary if its first sample has a greater radius than the
     other child.
 
@@ -165,7 +164,7 @@ def label_primary_and_secondary_sections_based_on_radii(section):
 # @label_primary_and_secondary_sections_based_on_angles
 ####################################################################################################
 def label_primary_and_secondary_sections_based_on_angles(section):
-    """Label the children of the section to primary or secondary, based on the angles between the
+    """Labels the children of the section to primary or secondary, based on the angles between the
     section, that is considered parent and the children. Note that the greater the angle is between
     the parent section and the child, the more primary the child is.
 
@@ -269,6 +268,133 @@ def label_primary_and_secondary_sections_based_on_angles(section):
     # Update the radius of the last sample of the section according to the @greatest_radius to
     # match that of the first sample of the primary branch
     section.samples[-1].radius = greatest_radius
+
+
+####################################################################################################
+# @label_primary_and_secondary_sections_based_on_angles_with_fixed_radii
+####################################################################################################
+def label_primary_and_secondary_sections_based_on_angles_with_fixed_radii(section):
+    """Labels the children of the section to primary or secondary, based on the angles between the
+    section, that is considered parent and the children. Note that the greater the angle is between
+    the parent section and the child, the more primary the child is.
+
+    NOTE: To avoid resampling artifacts, the radius of the parent section is UPDATED to match the
+    greatest radius of the first sample of the children sections.
+
+    :param section:
+        A given section to set the order of its children to either primary or secondary.
+    """
+
+    # If the section does not have any children, then this filter is not valid
+    if not section.has_children():
+
+        # Return
+        return
+
+    # If this section is a root, then its primary by default
+    if not section.has_parent():
+
+        # Set the section to a primary
+        section.is_primary = True
+
+    # Get the vector of the parent section based on its last two samples
+    parent_vector = (section.samples[-2].point - section.samples[-1].point).normalized()
+
+    # Store a reference to the primary child
+    primary_child = None
+
+    # The angle between the parent and child sections
+    greatest_angle = 0.0
+
+    smallest_angle = 1e3
+
+    # The radius of the greatest child
+    greatest_radius = section.samples[-1].radius
+
+    # The smallest radius
+    smallest_radius = 1e3
+
+    # Iterate over the children of the section
+    for child in section.children:
+
+        # If the radius of the first sample of the child is greater than the greatest radius,
+        # then update it
+        if child.samples[0].radius > greatest_radius:
+
+            # Update the greatest radius
+            greatest_radius = child.samples[0].radius
+
+        # If the radius of the first sample of the child is smaller than the smallest radius,
+        # then update it
+        if child.samples[0].radius < smallest_radius:
+
+            # Update the greatest radius
+            smallest_radius = child.samples[0].radius
+
+    # Iterate again over the children of the section
+    for child in section.children:
+
+        # Compute the vector of the child section based on its first two samples
+        child_vector = (child.samples[1].point - child.samples[0].point)
+        if child_vector.length > 0:
+            child_vector = child_vector.normalized()
+
+        # Compute the angle between the two vectors
+        angle = parent_vector.angle(child_vector)
+
+        if angle < smallest_angle:
+            smallest_angle = angle
+
+        # If the angle is greater than the greatest angle, then update the @primary_child reference
+        if angle > greatest_angle:
+
+            # Update the angle
+            greatest_angle = angle
+
+            # Update the primary child
+            primary_child = child
+
+    # Create a new children list with update order, where the primary section comes first and the
+    # secondary ones come later in the loop for the smooth continuation of the meshing
+    children_list_with_updated_order = list()
+
+    # Add the primary child as the first element in the list
+    children_list_with_updated_order.append(primary_child)
+
+    # Update the labels
+    for child in section.children:
+
+        # If this child is the primary child (compare the IDs, then set its label to primary)
+        if child.id == primary_child.id:
+
+            # Update the label
+            child.is_primary = True
+
+            # Set the radius of the primary child to the greatest
+            child.samples[0].radius = smallest_radius
+
+
+
+        # Otherwise, set it to secondary
+        else:
+
+            # Append the secondary child to the children list that has the new order
+            children_list_with_updated_order.append(child)
+
+            # Update the label
+            child.is_primary = False
+
+            # Set the radius of a secondary child to half of the primary branch
+            child.samples[0].radius = smallest_radius
+
+
+
+    # Update the children list in the section
+    section.children = children_list_with_updated_order
+
+    # Update the radius of the last sample of the section according to the @greatest_radius to
+    # match that of the first sample of the primary branch
+    section.samples[-1].radius = smallest_radius
 
 
 ####################################################################################################
