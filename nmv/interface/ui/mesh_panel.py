@@ -91,7 +91,7 @@ class MeshPanel(bpy.types.Panel):
                 'Meta Objects',
                 'Creates watertight mesh models using meta balls, but it could be slower than'
                 ' the other methods')],
-        name='Meshing Method', default=nmv.enums.Meshing.Technique.SKINNING)
+        name='Meshing Method', default=nmv.enums.Meshing.Technique.UNION)
 
     # Is the soma connected to the first order branches or not !
     bpy.types.Scene.SomaArborsConnection = EnumProperty(
@@ -412,10 +412,10 @@ class MeshPanel(bpy.types.Panel):
             # Use 1.0 to disable the tessellation
             nmv.interface.ui_options.mesh.tessellation_level = 1.0
             tess_level_column.enabled = False
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        else:
+            # Pass options from UI to system
+            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
     ################################################################################################
     # @draw_meta_objects_meshing_options

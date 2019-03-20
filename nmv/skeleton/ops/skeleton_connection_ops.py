@@ -216,6 +216,9 @@ def label_primary_and_secondary_sections_based_on_angles(section):
             # Update the greatest radius
             greatest_radius = child.samples[0].radius
 
+    # Iterate over the children of the section
+    for child in section.children:
+
         # Compute the vector of the child section based on its first two samples
         child_vector = (child.samples[1].point - child.samples[0].point).normalized()
 
@@ -260,14 +263,15 @@ def label_primary_and_secondary_sections_based_on_angles(section):
             child.is_primary = False
 
             # Set the radius of a secondary child to half of the primary branch
-            child.samples[0].radius = greatest_radius * 0.5
+            child.samples[0].radius = greatest_radius * 0.25
 
     # Update the children list in the section
     section.children = children_list_with_updated_order
 
     # Update the radius of the last sample of the section according to the @greatest_radius to
     # match that of the first sample of the primary branch
-    section.samples[-1].radius = greatest_radius
+    if section.samples[-1].radius < greatest_radius:
+        section.samples[-1].radius = greatest_radius
 
 
 ####################################################################################################

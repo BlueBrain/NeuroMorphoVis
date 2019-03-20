@@ -265,6 +265,75 @@ def extrude_connected_sections(section,
             roots_connection=roots_connection)
 
 
+def get_connected_sections_poly_line_recursively(section,
+                                                 poly_lines_data=[],
+                                                 poly_line_data=[],
+                                                 branching_level=0,
+                                                 max_branching_level=nmv.consts.Math.INFINITY):
+    # Ignore the drawing if the section is None
+    if section is None:
+        return
+
+    # Increment the branching level
+    branching_level += 1
+
+    # Get a list of all the poly-line that corresponds to the given section
+    section_poly_line = nmv.skeleton.ops.get_section_poly_line(section=section)
+
+    # Extend the polyline samples for final mesh building
+    poly_line_data.extend(section_poly_line)
+
+    # If the section does not have any children, then draw the section and clean the list
+    if not section.has_children() or branching_level >= max_branching_level:
+
+        # Polyline name
+        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
+
+        # Append the polyline to the list, and copy the data before clearing the list
+        poly_lines_data.append([copy.deepcopy(poly_line_data), poly_line_name])
+
+        # Clean @poly_line_data to collect the data from the remaining sections
+        poly_line_data[:] = []
+
+        # If no more branching is required, then exit the loop
+        return
+
+    # Iterate over the children sections and draw them, if any
+    for child in section.children:
+
+        get_connected_sections_poly_line_recursively(
+            section=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
+            branching_level=branching_level, max_branching_level=max_branching_level)
+
+
+def draw_connected_sections_poly_lines(arbor,
+                                       bevel_object,
+                                       caps=True,
+                                       max_branching_level=nmv.consts.Math.INFINITY):
+
+    # A list that will contain all the poly-lines gathered from traversing the arbor tree with
+    # depth-first traversal
+    poly_lines_data = list()
+
+    # Construct the poly-lines
+    get_connected_sections_poly_line_recursively(
+        section=arbor, poly_lines_data=poly_lines_data, max_branching_level=max_branching_level)
+
+    # A list that will contain all the drawn poly-lines to be able to access them later, although
+    # we can access them by name
+    poly_lines_objects = list()
+
+    # For each poly-line in the list, draw it
+    for poly_line_data in poly_lines_data:
+
+        # Draw the section, and append the result to the objects list
+        poly_lines_objects.append(draw_section_from_poly_line_data(
+            data=poly_line_data[0], name=poly_line_data[1], bevel_object=bevel_object, caps=caps))
+
+    # Return the list
+    return poly_lines_objects
+
+
 ####################################################################################################
 # @draw_connected_sections
 ####################################################################################################

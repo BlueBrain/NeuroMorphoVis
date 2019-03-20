@@ -109,27 +109,36 @@ class UnionBuilder:
         # Label the primary and secondary sections based on radii
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
 
-    ################################################################################################
-    # @modify_morphology_skeleton
-    ################################################################################################
-    def modify_morphology_skeleton(self):
-        """Modifies the morphology skeleton, if required. These modifications are specific to this
-        builder.
-        """
+    def build_arbor(self,
+                    arbor,
+                    caps,
+                    bevel_object,
+                    maximum_branching_order,
+                    name,
+                    material):
 
-        # Taper the sections if requested
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.taper_section])
+        arbor_poly_line_objects = nmv.skeleton.ops.draw_connected_sections_poly_lines(
+            arbor=arbor, max_branching_level=maximum_branching_order, bevel_object=bevel_object,
+            caps=caps)
 
-        # Zigzag the sections if required
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-                self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.zigzag_section])
+        # Convert the section object (poly-lines or tubes) into meshes
+        for arbor_poly_line_object in arbor_poly_line_objects:
+            nmv.scene.ops.convert_object_to_mesh(arbor_poly_line_object)
+
+        # Union all the mesh objects into a single object
+        arbor.mesh = nmv.mesh.ops.union_mesh_objects_in_list(arbor_poly_line_objects)
+
+        # Rename the mesh
+        arbor.mesh.name = name
+
+        # Assign the material to the reconstructed arbor mesh
+        nmv.shading.set_material_to_object(arbor.mesh, material)
+
+        # Update the UV mapping
+        nmv.shading.adjust_material_uv(arbor.mesh)
+
 
     ################################################################################################
     # @build_arbors
@@ -137,7 +146,7 @@ class UnionBuilder:
     def build_arbors(self,
                      bevel_object,
                      caps,
-                     roots_connection):
+                     roots_connection=False):
         """
         Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
@@ -157,74 +166,26 @@ class UnionBuilder:
             watertight mesh.
         """
 
-        # Create a list that keeps references to the meshes of all the connected pieces of the
-        # arbors of the mesh.
-        arbors_objects = []
-
-        # Draw the axon as a set connected sections
-
+        # Axon
         if self.morphology.axon is not None:
             if not self.options.morphology.ignore_axon:
                 nmv.logger.log('\t * Axon')
 
-                # Individual sections (tubes) of the axon
-                axon_objects = []
-
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=copy.deepcopy(self.morphology.axon),
-                    max_branching_level=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Arbors.AXON_PREFIX,
-                    material_list=self.axon_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=True,
-                    caps=caps,
-                    sections_objects=axon_objects,
-                    roots_connection=roots_connection)
-
-                # Convert the section object (tubes) into meshes
-                for mesh_object in axon_objects:
-                    nmv.scene.ops.convert_object_to_mesh(mesh_object)
-
-                axon_mesh = nmv.mesh.ops.union_mesh_objects_in_list(axon_objects)
-
-                # Add a reference to the mesh object
-                self.morphology.axon.mesh = axon_mesh
-
-                # Add the sections (tubes) of the axons to the list
-                arbors_objects.append(axon_mesh)
+                self.build_arbor(
+                    arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
+                    maximum_branching_order=self.options.morphology.axon_branch_order,
+                    name=nmv.consts.Arbors.AXON_PREFIX, material=self.axon_materials[0])
 
         # Draw the apical dendrite, if exists
         if self.morphology.apical_dendrite is not None:
             if not self.options.morphology.ignore_apical_dendrite:
                 nmv.logger.log('\t * Apical dendrite')
 
-                # Individual sections (tubes) of the apical dendrite
-                apical_dendrite_objects = []
-
-                if self.morphology.apical_dendrite is not None:
-                    nmv.skeleton.ops.draw_connected_sections(
-                        section=copy.deepcopy(self.morphology.apical_dendrite),
-                        max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                        name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                        material_list=self.apical_dendrites_materials,
-                        bevel_object=bevel_object,
-                        repair_morphology=True,
-                        caps=caps,
-                        sections_objects=apical_dendrite_objects,
-                        roots_connection=roots_connection)
-
-                    # Convert the section object (tubes) into meshes
-                    for mesh_object in apical_dendrite_objects:
-                        nmv.scene.ops.convert_object_to_mesh(mesh_object)
-
-                    apical_dendrite_mesh = nmv.mesh.ops.union_mesh_objects_in_list(
-                        apical_dendrite_objects)
-
-                    # Add a reference to the mesh object
-                    self.morphology.apical_dendrite.mesh = apical_dendrite_mesh
-
-                    # Add the sections (tubes) of the basal dendrites to the list
-                    arbors_objects.append(apical_dendrite_mesh)
+                self.build_arbor(
+                    arbor=self.morphology.apical_dendrite, caps=caps, bevel_object=bevel_object,
+                    maximum_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    material=self.apical_dendrites_materials[0])
 
         # Draw the basal dendrites
         if self.morphology.dendrites is not None:
@@ -232,41 +193,16 @@ class UnionBuilder:
 
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                     nmv.logger.log('\t * Dendrite [%d]' % i)
-
-                    # Individual sections (tubes) of the basal dendrite
-                    basal_dendrite_objects = []
 
                     # Draw the basal dendrites as a set connected sections
                     basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
 
-                    nmv.skeleton.ops.draw_connected_sections(
-                        section=copy.deepcopy(basal_dendrite),
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                    self.build_arbor(
+                        arbor=basal_dendrite, caps=caps, bevel_object=bevel_object,
+                        maximum_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=basal_dendrite_prefix,
-                        material_list=self.basal_dendrites_materials,
-                        bevel_object=bevel_object,
-                        repair_morphology=True,
-                        caps=caps,
-                        sections_objects=basal_dendrite_objects,
-                        roots_connection=roots_connection)
-
-                    # Convert the section object (tubes) into meshes
-                    for mesh_object in basal_dendrite_objects:
-                        nmv.scene.ops.convert_object_to_mesh(mesh_object)
-
-                    basal_dendrite_mesh = nmv.mesh.ops.union_mesh_objects_in_list(
-                        basal_dendrite_objects)
-
-                    # Add a reference to the mesh object
-                    self.morphology.dendrites[i].mesh = basal_dendrite_mesh
-
-                    # Add the sections (tubes) of the basal dendrite to the list
-                    arbors_objects.append(basal_dendrite_mesh)
-
-        # Return the list of meshes
-        return arbors_objects
+                        material=self.basal_dendrites_materials[0])
 
     ################################################################################################
     # @add_spines
@@ -349,8 +285,7 @@ class UnionBuilder:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
-        arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
+        self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
@@ -379,17 +314,16 @@ class UnionBuilder:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
-        arbors_meshes = self.build_arbors(
-            bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
+        self.build_arbors(bevel_object=bevel_object, caps=True)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
         # Smooth and close the faces of the apical dendrites meshes
-        for mesh in arbors_meshes:
+        #for mesh in arbors_meshes:
 
             # Smooth
-            nmv.mesh.ops.smooth_object(mesh_object=mesh, level=2)
+            #nmv.mesh.ops.smooth_object(mesh_object=mesh, level=2)
 
             # Close the edges
             #nmv.mesh.ops.close_open_faces(mesh)
@@ -471,16 +405,16 @@ class UnionBuilder:
         self.verify_morphology_skeleton()
 
         # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
-        self.modify_morphology_skeleton()
+        nmv.builders.common.modify_morphology_skeleton(builder=self)
 
         # Build the soma
-        self.reconstruct_soma_mesh()
+        # self.reconstruct_soma_mesh()
 
         # Build the arbors
         self.reconstruct_arbors_meshes()
 
         # Connect the arbors to the soma
-        self.connect_arbors_to_soma()
+        # self.connect_arbors_to_soma()
 
         # Modifying mesh surface
         # self.modify_mesh_surface()
