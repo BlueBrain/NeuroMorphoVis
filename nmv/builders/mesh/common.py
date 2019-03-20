@@ -265,7 +265,7 @@ def get_neuron_mesh_objects(builder,
 # @adjust_texture_mapping
 ####################################################################################################
 def adjust_texture_mapping(mesh_objects,
-                           texspace_size=25.0):
+                           texspace_size=5.0):
     """Adjusts the UV mapping of the meshes. This operation is recommended to be called after
     any mesh operation.
 
@@ -280,12 +280,8 @@ def adjust_texture_mapping(mesh_objects,
     # Do it mesh by mesh
     for i, mesh_object in enumerate(mesh_objects):
 
-        # Update the texture space of the created meshes
-        mesh_object.select = True
-        bpy.context.object.data.use_auto_texspace = False
-        bpy.context.object.data.texspace_size[0] = texspace_size
-        bpy.context.object.data.texspace_size[1] = texspace_size
-        bpy.context.object.data.texspace_size[2] = texspace_size
+        # Adjust the size
+        nmv.shading.adjust_material_uv(mesh_object, size=texspace_size)
 
         # Show the progress
         nmv.utilities.show_progress(
