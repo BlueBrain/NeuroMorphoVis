@@ -43,7 +43,7 @@ class NMVPanel(bpy.types.Panel):
     bl_region_type = 'TOOLS'
     bl_label = 'NeuroMorphoVis'
     bl_category = 'NeuroMorphoVis'
-    #bl_options = {"HIDE_HEADER"}
+    bl_options = {"HIDE_HEADER"}
 
     ################################################################################################
     # Panel parameters
@@ -54,12 +54,7 @@ class NMVPanel(bpy.types.Panel):
         :param context:
             Context
         """
-
-        credits_column = self.layout.box()
-        credits_column.label(text='Blue Brain Project (BBP)',
-                             icon_value=nmv.interface.ui_icons['bbp'].icon_id)
-
-
+        pass
 
 
 ####################################################################################################

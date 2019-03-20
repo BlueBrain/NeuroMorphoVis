@@ -88,48 +88,13 @@ class AboutPanel(bpy.types.Panel):
         version_column = layout.column()
         version_column.label(text='Version: 1.3.0')
 
-        update_button = layout.box()
+        update_button = layout.column()
         update_button.operator('update.nmv', emboss=True,
-                               icon_value=nmv.interface.ui_icons['nmv'].icon_id)
-        #update_button.scale_y = 4
-        mat = context.object.active_material
-        col = layout.column()
-        col.template_preview(mat, show_buttons=False,)
+                               icon_value=nmv.interface.ui_icons['github'].icon_id)
 
-
-        """
-        x = layout.row()
-        import bpy
-        global tex
-        print(tex)
-        if tex is None:
-            x.template_preview(bpy.data.textures['4'])
-        else:
-            x.template_preview(tex)
-        """
-        """
-        #icon = bpy.utils.load_icon('/computer/hbp.png')
-        preview_collections = {}
-
-        try:
-            import bpy.utils.previews
-            pcoll = bpy.utils.previews.new()
-            # the path is calculated relative to this py file inside the addon folder
-            #my_icons_dir = os.path.join(os.path.dirname(__file__), "icons")
-            # load a preview thumbnail of the circle icon
-            pcoll.load("LOADED", os.path.join('/computer/', "hbp.png"), 'IMAGE')
-            preview_collections['icons'] = pcoll
-        except:
-            pass
-
-        print(preview_collections['icons']['LOADED'].icon_id)
-
-        # Export analysis button
-        export_analysis_row = layout.row()
-        export_analysis_row.operator('update.nmv', icon_value=preview_collections['icons']['LOADED'].icon_id)
-        """
-
-
+        # logo_row = layout.row(align=True)
+        # logo_row.alignment = 'EXPAND'
+        # logo_row.template_preview(bpy.data.textures["nmv-logo"])
 
 
 ####################################################################################################
@@ -140,7 +105,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "update.nmv"
-    bl_label = ""
+    bl_label = "Update"
 
     ################################################################################################
     # @execute

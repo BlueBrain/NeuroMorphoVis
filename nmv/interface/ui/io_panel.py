@@ -15,6 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import copy
+import os
+
 # Blender imports
 import bpy
 from bpy.props import EnumProperty
@@ -25,6 +29,7 @@ from bpy.props import BoolProperty
 import nmv
 import nmv.enums
 import nmv.interface
+import nmv.scene
 
 
 ####################################################################################################
@@ -40,7 +45,6 @@ class IOPanel(bpy.types.Panel):
     bl_region_type = 'TOOLS'
     bl_label = 'Input / Output'
     bl_category = 'NeuroMorphoVis'
-    bl_options = {"HIDE_HEADER"}
 
     ################################################################################################
     # Panel options
@@ -171,6 +175,9 @@ class IOPanel(bpy.types.Panel):
             # Report an invalid input source
             self.report({'ERROR'}, 'Invalid Input Source')
 
+        import_button = layout.column()
+        import_button.operator('load.morphology', icon='ANIM_DATA')
+
         # Output options
         output_data_options_row = layout.row()
         output_data_options_row.label(text='Output Options:', icon='SCRIPT')
@@ -230,6 +237,55 @@ class IOPanel(bpy.types.Panel):
 
 
 ####################################################################################################
+# @SketchSkeleton
+####################################################################################################
+class LoadMorphology(bpy.types.Operator):
+    """Loads morphology
+    """
+
+    # Operator parameters
+    bl_idname = "load.morphology"
+    bl_label = "Load"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Rendering context
+        :return:
+            'FINISHED'
+        """
+
+        # Clear the scene
+        nmv.scene.ops.clear_scene()
+
+        # Load the images
+        images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
+        nmv_logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
+        nmv_logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
+        nmv_logo_tex.extension = 'CLIP'
+
+        # Load the morphology file
+        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+
+        # If the result is None, report the issue
+        if loading_result is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
+
+        # Plot the morphology (whatever issues it contains)
+        nmv.interface.ui.sketch_morphology_skeleton_guide(
+            morphology=nmv.interface.ui_morphology,
+            options=copy.deepcopy(nmv.interface.ui_options))
+
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -237,6 +293,9 @@ def register_panel():
 
     # InputOutput data
     bpy.utils.register_class(IOPanel)
+
+    # Buttons
+    bpy.utils.register_class(LoadMorphology)
 
 
 ####################################################################################################
@@ -247,3 +306,6 @@ def unregister_panel():
 
     # InputOutput data
     bpy.utils.unregister_class(IOPanel)
+
+    # Buttons
+    bpy.utils.unregister_class(LoadMorphology)
