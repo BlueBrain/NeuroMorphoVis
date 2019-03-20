@@ -16,6 +16,7 @@
 ####################################################################################################
 
 # System imports
+import sys
 import os
 import subprocess
 
@@ -99,14 +100,28 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
             'FINISHED'
         """
 
+        print(AboutPanel.bl_nmv_version)
+        print(sys.platform)
+
         # Get the current path
         current_path = os.path.dirname(os.path.realpath(__file__))
 
-        print(AboutPanel.bl_nmv_version)
-
+        # Go to the main directory and pull the latest master
+        os.chdir(current_path)
+        shell_command = 'git pull origin union'
+        nmv.logger.log('Updating NeuroMorphoVis')
+        subprocess.call(shell_command, shell=True)
 
         # Get the blender path from the current path, NOTE the differences on different OSes
-        blender_executable = '%s/../../../../../../../blender' % current_path
+        if 'darwin' in sys.platform:
+            blender_executable = '%s/../../../../../../../../MacOS/blender' % current_path
+        elif 'linux' in sys.platform:
+            blender_executable = '%s/../../../../../../../blender' % current_path
+        elif 'win' in sys.platform or 'Win' in sys.platform:
+            blender_executable = '%s/../../../../../../../blender.exe' % current_path
+        else:
+            nmv.logger.info('Error: Unknown Platform!')
+            exit(0)
 
         # Call blender and exit this one
         shell_command = '%s &' % blender_executable
