@@ -127,12 +127,9 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         shell_command = '%s &' % blender_executable
         nmv.logger.log('Restarting Blender')
         subprocess.call(shell_command, shell=True)
+
+        # Exiting blender
         exit(0)
-
-        #
-        #shell_command = 'git clone https://github.com/BlueBrain/NeuroMorphoVis.git /home/abdellah/Desktop/data/'
-        #subprocess.call(shell_command, shell=True)
-
 
         return {'FINISHED'}
 
