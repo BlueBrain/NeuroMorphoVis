@@ -71,6 +71,7 @@ def smooth_object(mesh_object,
 
     # Set the smoothing level
     bpy.context.object.modifiers["Subsurf"].levels = level
+    bpy.context.object.modifiers["Subsurf"].use_subsurf_uv = False
 
     # Apply the smoothing modifier
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subsurf")

@@ -357,6 +357,9 @@ class SkinningBuilder:
         # Apply the modifier
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
 
+        # Assign the material to the reconstructed arbor mesh
+        nmv.shading.set_material_to_object(arbor_mesh, arbor_material)
+
         # Remove the first face, before the smoothing operation if connected to the soma
         if connected_to_soma:
 
@@ -378,12 +381,8 @@ class SkinningBuilder:
         # Further smoothing, only with shading
         nmv.mesh.shade_smooth_object(arbor_mesh)
 
-        nmv.shading.adjust_material_uv(arbor_mesh, 50)
-
-        # Assign the material to the reconstructed arbor mesh
-        nmv.shading.set_material_to_object(arbor_mesh, arbor_material)
-
-
+        # Update the UV mapping
+        nmv.shading.adjust_material_uv(arbor_mesh)
 
         # Return a reference to the arbor mesh
         return arbor_mesh

@@ -559,9 +559,9 @@ def adjust_material_uv(mesh_object,
     nmv.scene.set_active_object(mesh_object)
 
     # Set the 'auto_texspace' to False
-    bpy.context.object.data.use_auto_texspace = False
+    mesh_object.data.use_auto_texspace = False
 
     # Update the texture space size
-    bpy.context.object.data.texspace_size[0] = size
-    bpy.context.object.data.texspace_size[1] = size
-    bpy.context.object.data.texspace_size[2] = size
+    mesh_object.data.texspace_size[0] = size
+    mesh_object.data.texspace_size[1] = size
+    mesh_object.data.texspace_size[2] = size
