@@ -126,7 +126,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
 
         # Go to the main directory and pull the latest master
         os.chdir(current_path)
-        shell_command = 'git pull origin union'
+        shell_command = 'git pull origin master'
         nmv.logger.log('Updating NeuroMorphoVis ...')
         subprocess.call(shell_command, shell=True)
 
