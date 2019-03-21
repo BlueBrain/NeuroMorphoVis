@@ -190,6 +190,6 @@ def create_material_specific_illumination(material_type):
     elif material_type == nmv.enums.Shading.VORONI:
         return create_voroni_cells_illumination()
 
-    # Default, do not create any illumination
+    # Default, just use the lambert shader illumination
     else:
-        pass
+        return create_lambert_ward_illumination()
