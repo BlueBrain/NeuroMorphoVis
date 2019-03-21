@@ -97,6 +97,9 @@ class MetaBuilder:
         # A scale factor that was figured out by trial and error to correct the scaling of the radii
         self.magic_scale_factor = 1.575
 
+        # The smallest detected radius while building the model, to be used for meta-ball resolution
+        self.smallest_radius = 10.0
+
     ################################################################################################
     # @create_materials
     ################################################################################################
@@ -216,11 +219,7 @@ class MetaBuilder:
     ################################################################################################
     # @create_meta_segment
     ################################################################################################
-    def create_meta_segment(self,
-                            p1,
-                            p2,
-                            r1,
-                            r2):
+    def create_meta_segment(self, p1, p2, r1, r2):
         """Constructs a segment that is composed of two points with a meta object.
 
         :param p1:
@@ -306,7 +305,9 @@ class MetaBuilder:
 
         # Proceed segment by segment
         for i in range(len(samples) - 1):
-            self.meta_skeleton.resolution = samples[i].radius * 0.5
+
+            if samples[i].radius < self.smallest_radius:
+                self.smallest_radius = samples[i].radius
 
             # Create the meta segment
             self.create_meta_segment(
@@ -606,9 +607,13 @@ class MetaBuilder:
         # Deselect all objects
         nmv.scene.ops.deselect_all()
 
+        # Update the resolution
+        self.meta_skeleton.resolution = self.smallest_radius
+
         # Select the mesh
         self.meta_mesh = bpy.context.scene.objects[self.morphology.label]
         self.meta_mesh.select = True
+
         bpy.context.scene.objects.active = self.meta_mesh
 
         # Convert it to a mesh from meta-balls
@@ -682,7 +687,7 @@ class MetaBuilder:
         self.build_arbors()
 
         # Finalize the meta object and construct a solid object
-        # self.finalize_meta_object()
+        self.finalize_meta_object()
 
         # We can here create the materials at the end to avoid any issues
         self.create_skeleton_materials()
