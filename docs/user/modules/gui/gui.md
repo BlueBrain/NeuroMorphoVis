@@ -20,7 +20,7 @@ When the user clicks on this tab, the following panel will appear.
 	<img src="images/gui-loading-toolboxes.jpg" width="800">
 </p> 
 
-This panel contains five sections or tabs:
+In the current version of _NeuroMorphoVis_, this panel contains seven sections or tabs:
 
 + __Input / Output__ 
 + __Morphology Analysis__
@@ -49,6 +49,9 @@ The _Morphology Analysis_ toolbox can be loaded by clicking on the _Morphology A
 	<img src="images/gui-morphology-analysis-panel-open.png" width="800">
 </p> 
 
+### Morphology Editing 
+The _Morphology Editing_ toolbox can be loaded by clicking on the _Morphology Editing_ tab. We will add later a little guide to show how to use this utility. 
+
 ### Soma Reconstruction 
 
 The _Soma Reconstruction_ toolbox can be loaded by clicking on the _Soma Toolbox_ tab. This [guide](soma-reconstruction.md) explains how to use this toolbox to create three-dimensional profiles of the somata on a physically-plausible basis using Hooke's law and mass-spring models.
@@ -72,3 +75,6 @@ The _Mesh Reconstruction_ toolbox can be loaded by clicking on the _Mesh Toolbox
 <p align="center">
 	<img src="images/gui-mesh-reconstruction-panel.jpg" width="800">
 </p> 
+
+### About 
+If you would like to update _NeuroMorphoVis_, you can open this tab and clock on the __Update__ button, which will pull the latest version of the tool and restarts your Blender application. 
