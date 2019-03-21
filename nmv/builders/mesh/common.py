@@ -303,7 +303,7 @@ def decimate_neuron_mesh(builder):
 
     # Ensure that the tessellation level is within range
     if 0.01 < builder.options.mesh.tessellation_level < 1.0:
-        nmv.logger.header('Decimating the neuron')
+        nmv.logger.header('Decimating Mesh')
 
         # Get neuron objects
         neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=True)

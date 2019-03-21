@@ -81,7 +81,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.AxonBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the axon",
-        default=5, min=1, max=100)
+        default=nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER, min=1, max=100)
 
     # Build basal dendrites
     bpy.types.Scene.BuildBasalDendrites = BoolProperty(
@@ -93,7 +93,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.BasalDendritesBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the basal dendrites",
-        default=100, min=1, max=100)
+        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=1, max=100)
 
     # Build apical dendrite
     bpy.types.Scene.BuildApicalDendrite = BoolProperty(
@@ -105,7 +105,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.ApicalDendriteBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the apical dendrite",
-        default=100, min=1, max=100)
+        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=1, max=100)
 
     # Display bounding box info
     bpy.types.Scene.DisplayBoundingBox = BoolProperty(

@@ -98,7 +98,7 @@ class MetaBuilder:
         self.magic_scale_factor = 1.575
 
         # The smallest detected radius while building the model, to be used for meta-ball resolution
-        self.smallest_radius = 10.0
+        self.smallest_radius = 1e5
 
     ################################################################################################
     # @verify_and_repair_morphology
@@ -122,7 +122,6 @@ class MetaBuilder:
             *[self.morphology,
               nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
 
-
     ################################################################################################
     # @create_meta_segment
     ################################################################################################
@@ -144,7 +143,6 @@ class MetaBuilder:
         segment_length = segment.length
 
         # Make sure that the segment length is not zero
-        # TODO: Verify this when the radii are greater than the distance
         if segment_length < 0.001:
             return
 
@@ -176,7 +174,6 @@ class MetaBuilder:
             meta_element = self.meta_skeleton.elements.new()
 
             # Set its radius
-            # TODO: Find a solution to compensate the connection points
             meta_element.radius = r
 
             # Update its coordinates
@@ -223,52 +220,6 @@ class MetaBuilder:
                 r1=samples[i].radius * self.magic_scale_factor,
                 r2=samples[i + 1].radius * self.magic_scale_factor)
 
-
-    def create_meta_poly_line(self,
-                              poly_line_data):
-
-        # Ensure that the poly-line has at least two samples, otherwise it will give an error
-        if len(poly_line_data) < 2:
-            return
-
-        # Proceed segment by segment
-        for i in range(len(poly_line_data) - 1):
-
-            #print(poly_line_data[i][0][0])
-
-            point_1 = poly_line_data[i]
-            point_2 = poly_line_data[i + 1]
-
-            if poly_line_data[i][1] < self.smallest_radius:
-                self.smallest_radius = poly_line_data[i][1]
-
-            p1 = mathutils.Vector((point_1[0][0], point_1[0][1], point_1[0][2]))
-            r1 = point_1[1]
-            p2 = mathutils.Vector((point_2[0][0], point_2[0][1], point_2[0][2]))
-            r2 = point_2[1]
-
-            # Create the meta segment
-            self.create_meta_segment(
-                p1=p1, p2=p2, r1=r1 * self.magic_scale_factor, r2=r2 * self.magic_scale_factor)
-
-    def create_meta_arbor_depth_first(self,
-                          root,
-                          max_branching_order):
-
-        # A list that will contain all the poly-lines gathered from traversing the arbor tree with
-        # depth-first traversal
-        poly_lines_data = list()
-
-        # Construct the poly-lines
-        nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
-            section=root, poly_lines_data=poly_lines_data, max_branching_level=max_branching_order)
-
-        # For each poly-line in the list, draw it
-        for poly_line_data in poly_lines_data:
-            self.create_meta_poly_line(poly_line_data[0])
-
-
-
     ################################################################################################
     # @create_meta_arbor
     ################################################################################################
@@ -282,6 +233,7 @@ class MetaBuilder:
         :param max_branching_order:
             The maximum branching order set by the user to terminate the recursive call.
         """
+        bpy.context.space_data.viewport_shade = 'MATERIAL'
 
         # Do not proceed if the branching order limit is hit
         if root.branching_order > max_branching_order:
@@ -301,49 +253,33 @@ class MetaBuilder:
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
-
-        :return:
-            A list of all the individual meshes of the arbors.
         """
+        bpy.context.space_data.viewport_shade = 'MATERIAL'
 
         # Header
         nmv.logger.header('Building Arbors')
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.info('Apical dendrite')
-
-            # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
-
+                nmv.logger.info('Apical Dendrite')
                 self.create_meta_arbor(
                     root=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
-                #self.create_meta_arbor_depth_first(root=self.morphology.apical_dendrite,
-                #    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-                return
-        # Draw the basal dendrites
+        # Draw the basal dendrites, if exist
         if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.info('Dendrite [%d]' % i)
+                    self.create_meta_arbor(
+                        root=basal_dendrite,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
-                # Create the basal dendrite meshes
-                nmv.logger.info('Dendrite [%d]' % i)
-                self.create_meta_arbor(
-                    root=basal_dendrite,
-                    max_branching_order=self.options.morphology.basal_dendrites_branch_order)
-
-        # Draw the axon as a set connected sections
+        # Draw the axon, if exist
         if not self.options.morphology.ignore_axon:
-            nmv.logger.info('Axon')
-
-            # Create the apical dendrite mesh
             if self.morphology.axon is not None:
-
-                # Create the axon mesh
+                nmv.logger.info('Axon')
                 self.create_meta_arbor(
                     root=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order)
@@ -357,8 +293,6 @@ class MetaBuilder:
 
         :param name:
             Meta-object name.
-        :return:
-            A reference to the meta object
         """
 
         # Create a new meta skeleton that will be used to reconstruct the skeleton frame
@@ -433,8 +367,6 @@ class MetaBuilder:
     ################################################################################################
     def finalize_meta_object(self):
         """Converts the meta object to a mesh and get it ready for export or visualization.
-
-        :return:
         """
 
         # Header
@@ -461,7 +393,9 @@ class MetaBuilder:
         # Re-select it again to be able to perform post-processing operations in it
         self.meta_mesh.select = True
 
-        bpy.context.scene.objects.active = self.meta_mesh
+        # Set the mesh to be the active one
+        nmv.scene.set_active_object(self.meta_mesh)
+
 
     ################################################################################################
     # @assign_material_to_mesh
@@ -472,20 +406,16 @@ class MetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Activate the mesh object
-        bpy.context.scene.objects.active = self.meta_mesh
-
-        # Adjusting the texture space, before assigning the material
-        bpy.context.object.data.use_auto_texspace = False
-        bpy.context.object.data.texspace_size[0] = 5
-        bpy.context.object.data.texspace_size[1] = 5
-        bpy.context.object.data.texspace_size[2] = 5
+        nmv.scene.set_active_object(self.meta_mesh)
 
         # Assign the material to the selected mesh
         nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
 
+        # Update the UV mapping
+        nmv.shading.adjust_material_uv(self.meta_mesh)
+
         # Activate the mesh object
-        self.meta_mesh.select = True
-        bpy.context.scene.objects.active = self.meta_mesh
+        nmv.scene.set_active_object(self.meta_mesh)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -493,6 +423,9 @@ class MetaBuilder:
     def reconstruct_mesh(self):
         """Reconstructs the neuronal mesh using meta objects.
         """
+
+        # Verify the morphology
+        self.verify_and_repair_morphology()
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
         nmv.builders.common.modify_morphology_skeleton(builder=self)
@@ -504,10 +437,15 @@ class MetaBuilder:
         self.build_soma_from_meta_objects()
 
         # Build the arbors
+        # TODO: Adding the spines should be part of the meshing
         self.build_arbors()
 
         # Finalize the meta object and construct a solid object
         self.finalize_meta_object()
+
+        # Tessellation
+        if self.options.mesh.tessellation_level < 1.0:
+            nmv.builders.common.decimate_neuron_mesh(builder=self)
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
@@ -517,4 +455,4 @@ class MetaBuilder:
         self.assign_material_to_mesh()
 
         # Mission done
-        nmv.logger.header('Done!')
+        nmv.logger.header('Mesh Reconstruction Done!')

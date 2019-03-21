@@ -33,7 +33,7 @@ class Arbors:
     MAX_BRANCHING_ORDER = 100
 
     # Default branching order for the axon is different, as it is ignored in many cases
-    AXON_DEFAULT_BRANCHING_ORDER = 5
+    AXON_DEFAULT_BRANCHING_ORDER = 2
 
     # Axon prefix
     AXON_PREFIX = 'Axon'

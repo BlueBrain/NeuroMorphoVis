@@ -287,6 +287,23 @@ def resample_section_based_on_radius(section):
 
     return
 
+def resample_section_based_on_smallest_segment(section):
+
+
+    smallest_segment_length = 1e3
+
+    for i in range(len(section.samples) - 1):
+
+        segment_length = (section.samples[i + 1].point - section.samples[i].point).length
+        if segment_length < smallest_segment_length:
+            smallest_segment_length = segment_length
+
+    print(smallest_segment_length)
+    if smallest_segment_length > 0.5:
+        resample_sections(section=section, resampling_distance=smallest_segment_length)
+    else:
+        resample_sections(section=section, resampling_distance=0.5)
+
 
 ####################################################################################################
 # @add_sample_at_section_center
