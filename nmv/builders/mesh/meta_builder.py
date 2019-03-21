@@ -101,78 +101,6 @@ class MetaBuilder:
         self.smallest_radius = 10.0
 
     ################################################################################################
-    # @create_materials
-    ################################################################################################
-    def create_materials(self,
-                         name,
-                         color):
-        """Creates just two materials of the mesh on the input parameters of the user.
-
-        :param name:
-            The name of the material/color.
-        :param color:
-            The code of the given colors.
-        :return:
-            A list of two elements (different or same colors) where we can apply later to the drawn
-            sections or segments.
-        """
-
-        # A list of the created materials
-        materials_list = []
-
-        for i in range(2):
-
-            # Create the material
-            material = nmv.shading.create_material(
-                name='%s_color_%d' % (name, i), color=color,
-                material_type=self.options.mesh.material)
-
-            # Append the material to the materials list
-            materials_list.append(material)
-
-        # Return the list
-        return materials_list
-
-    ################################################################################################
-    # @create_skeleton_materials
-    ################################################################################################
-    def create_skeleton_materials(self):
-        """Create the materials of the skeleton.
-        """
-
-        for material in bpy.data.materials:
-            if 'soma_skeleton' in material.name or \
-               'axon_skeleton' in material.name or \
-               'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name or \
-               'spines' in material.name:
-                material.user_clear()
-                bpy.data.materials.remove(material)
-
-        # Soma
-        self.soma_materials = self.create_materials(
-            name='soma_skeleton', color=self.options.mesh.soma_color)
-
-        # Axon
-        self.axon_materials = self.create_materials(
-            name='axon_skeleton', color=self.options.mesh.axon_color)
-
-        # Basal dendrites
-        self.basal_dendrites_materials = self.create_materials(
-            name='basal_dendrites_skeleton', color=self.options.mesh.basal_dendrites_color)
-
-        # Apical dendrite
-        self.apical_dendrite_materials = self.create_materials(
-            name='apical_dendrite_skeleton', color=self.options.mesh.apical_dendrites_color)
-
-        # Spines
-        self.spines_materials = self.create_materials(
-            name='spines', color=self.options.mesh.spines_color)
-
-        # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
-
-    ################################################################################################
     # @verify_and_repair_morphology
     ################################################################################################
     def verify_and_repair_morphology(self):
@@ -185,36 +113,14 @@ class MetaBuilder:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
-        # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
-        # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The re-sampling filter for the moment
-        # re-samples the morphology sections at 2.5 microns, however this can be improved later
-        # by adding an algorithm that re-samples the section based on its radii.
-        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-
-            # Apply the re-sampling filter on the whole morphology skeleton
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections])
-
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
-        # Primary and secondary branching
-        if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
-
-            # Label the primary and secondary sections based on angles
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-
-        else:
-
-            # Label the primary and secondary sections based on radii
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+        # Label the primary and secondary sections based on angles
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology,
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
 
     ################################################################################################
     # @create_meta_segment
@@ -356,20 +262,6 @@ class MetaBuilder:
         # Header
         nmv.logger.header('Building Arbors')
 
-        # Apply the morphology reformation filters if requested before creating the arbors
-
-        # Taper the sections if requested
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.taper_section])
-
-        # Zigzag the sections if required
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.zigzag_section])
-
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
             nmv.logger.info('Apical dendrite')
@@ -406,112 +298,6 @@ class MetaBuilder:
                     max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
-    # @decimate_neuron_mesh
-    ################################################################################################
-    def decimate_neuron_mesh(self):
-        """Decimate the reconstructed neuron mesh.
-        """
-
-        nmv.logger.header('Decimating the mesh')
-
-        if 0.05 < self.options.mesh.tessellation_level < 1.0:
-            nmv.logger.info('Decimating the neuron')
-
-            # Get a list of all the mesh objects (except the spines) of the neuron
-            neuron_meshes = list()
-            for scene_object in bpy.context.scene.objects:
-
-                # Only for meshes
-                if scene_object.type == 'MESH':
-
-                    # Exclude the spines
-                    if 'spine' in scene_object.name:
-                        continue
-
-                    # Otherwise, add the object to the list
-                    else:
-                        neuron_meshes.append(scene_object)
-
-            # Do it mesh by mesh
-            for i, object_mesh in enumerate(neuron_meshes):
-
-                # Update the texture space of the created meshes
-                object_mesh.select = True
-                bpy.context.object.data.use_auto_texspace = False
-                bpy.context.object.data.texspace_size[0] = 5
-                bpy.context.object.data.texspace_size[1] = 5
-                bpy.context.object.data.texspace_size[2] = 5
-
-                # Skip the soma, if the soma is disconnected
-                if 'soma' in object_mesh.name:
-                    continue
-
-                # Show the progress
-                nmv.utilities.show_progress(
-                    '\t * Decimating the mesh', float(i),float(len(neuron_meshes)))
-
-                # Decimate each mesh object
-                nmv.mesh.ops.decimate_mesh_object(
-                    mesh_object=object_mesh, decimation_ratio=self.options.mesh.tessellation_level)
-
-    ################################################################################################
-    # @reconstruct_soma_mesh
-    ################################################################################################
-    def reconstruct_soma_mesh(self):
-        """Reconstruct the mesh of the soma.
-
-        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
-        soma profile before the arbors, such that the scene is almost empty.
-
-        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
-        we must use a high number of subdivisions to make smooth connections that look nice,
-        but if the arbors are connected to the soma origin, then we can use less subdivisions
-        since the soma will not be connected to the arbor at all.
-        """
-
-        # If the soma is connected to the root arbors
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology, options=self.options)
-
-        # Otherwise, ignore
-        else:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology,
-                options=self.options)
-
-        # Reconstruct the soma mesh
-        self.reconstructed_soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader to the reconstructed soma mesh
-        nmv.shading.set_material_to_object(self.reconstructed_soma_mesh, self.soma_materials[0])
-
-    def add_spines(self):
-
-        # Add spines
-        spines_objects = None
-        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            nmv.logger.header('Adding circuit spines')
-            spines_objects = nmv.builders.build_circuit_spines(
-                morphology=self.morphology, blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid, material=self.spines_materials[0])
-
-        # Random spines
-        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-            nmv.logger.header('Adding random spines')
-            spines_builder = nmv.builders.RandomSpineBuilder(
-                morphology=self.morphology, options=self.options)
-            spines_objects = spines_builder.add_spines_to_morphology()
-
-        # Otherwise ignore spines
-        else:
-            return
-
-        # Join the spine objects into a single mesh
-        spine_mesh_name = '%s_spines' % self.options.morphology.label
-        self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
-
-    ################################################################################################
     # @initialize_meta_object
     ################################################################################################
     def initialize_meta_object(self,
@@ -536,8 +322,7 @@ class MetaBuilder:
         # Link the meta object to the scene
         scene.objects.link(self.meta_mesh)
 
-        # Update the resolution of the meta skeleton
-        # TODO: Get these parameters from the user interface
+        # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
 
     ################################################################################################
@@ -652,30 +437,14 @@ class MetaBuilder:
         bpy.context.scene.objects.active = self.meta_mesh
 
     ################################################################################################
-    # @transform_to_global_coordinates
-    ################################################################################################
-    def transform_to_global_coordinates(self):
-        """Transform the neuron membrane to the global coordinates.
-
-        NOTE: Spine transformation is already implemented by the spine builder, and therefore
-        this function applies only to the arbors and the soma.
-        """
-
-        # Transform the neuron object to the global coordinates
-        nmv.logger.header('Transforming to global coordinates')
-        nmv.skeleton.ops.transform_to_global_coordinates(
-            mesh_object=self.meta_mesh, blue_config=self.options.morphology.blue_config,
-            gid=self.options.morphology.gid)
-
-    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
         """Reconstructs the neuronal mesh using meta objects.
         """
 
-        # Verify and repair the morphology
-        # self.verify_and_repair_morphology()
+        # Apply skeleton-based operation, if required, to slightly modify the skeleton
+        nmv.builders.common.modify_morphology_skeleton(builder=self)
 
         # Initialize the meta object
         self.initialize_meta_object(name=self.options.morphology.label)
@@ -689,75 +458,12 @@ class MetaBuilder:
         # Finalize the meta object and construct a solid object
         self.finalize_meta_object()
 
-        # We can here create the materials at the end to avoid any issues
-        self.create_skeleton_materials()
+        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
+        # performance since this is way better than creating a new material per section or segment
+        nmv.builders.common.create_skeleton_materials(builder=self)
 
         # Assign the material to the mesh
         self.assign_material_to_mesh()
 
-        # Transform the mesh to the global coordinates
-        if self.options.mesh.global_coordinates:
-            self.transform_to_global_coordinates()
-
         # Mission done
         nmv.logger.header('Done!')
-
-        # Return a reference to the created mesh
-        return self.meta_mesh
-
-
-
-        # Adding surface roughness
-        # self.add_surface_noise()
-
-        # Decimation
-        self.decimate_neuron_mesh()
-
-
-        #
-        # Compile a list of all the meshes in the scene, they account for the different mesh
-        # objects of the neuron
-        for scene_object in bpy.context.scene.objects:
-            if scene_object.type == 'MESH':
-
-                # Add the object to the list
-                self.reconstructed_neuron_meshes.append(scene_object)
-
-                # If the meshes are merged into a single object, we must override the texture values
-                # Update the texture space of the created mesh
-                scene_object.select = True
-                bpy.context.scene.objects.active = scene_object
-                bpy.context.object.data.use_auto_texspace = False
-                bpy.context.object.data.texspace_size[0] = 5
-                bpy.context.object.data.texspace_size[1] = 5
-                bpy.context.object.data.texspace_size[2] = 5
-                scene_object.select = False
-
-        # Connecting all the mesh objects together in a single object
-        if self.options.mesh.neuron_objects_connection == \
-                nmv.enums.Meshing.ObjectsConnection.CONNECTED:
-
-                nmv.logger.header('Connecting neurons objects')
-                nmv.logger.info('Connecting neuron: [%s_mesh]' % self.options.morphology.label)
-
-                # Group all the objects into a single mesh object after the decimation
-                neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-                    mesh_list=self.reconstructed_neuron_meshes,
-                    name='%s_mesh' % self.options.morphology.label)
-
-                # Update the reconstructed_neuron_meshes list to a single object
-                self.reconstructed_neuron_meshes = [neuron_mesh]
-
-        # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
-            nmv.logger.header('Transforming to global coordinates')
-
-            for mesh_object in self.reconstructed_neuron_meshes:
-                nmv.skeleton. ops.transform_to_global(
-                    neuron_object=mesh_object,
-                    blue_config=self.options.morphology.blue_config,
-                    gid=self.options.morphology.gid)
-
-
-
-        return self.reconstructed_neuron_meshes
