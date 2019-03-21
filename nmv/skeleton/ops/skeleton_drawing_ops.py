@@ -324,7 +324,7 @@ def draw_connected_sections_poly_lines(arbor,
     poly_lines_objects = list()
 
     # For each poly-line in the list, draw it
-    for poly_line_data in poly_lines_data:
+    for i, poly_line_data in enumerate(poly_lines_data):
 
         # Draw the section, and append the result to the objects list
         poly_lines_objects.append(draw_section_from_poly_line_data(

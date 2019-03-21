@@ -106,22 +106,50 @@ class UnionBuilder:
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
-        # Label the primary and secondary sections based on radii
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+        # Label the primary and secondary sections based on angles, and if does not work use
+        # the radii as a fallback
+        try:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology,
+                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+        except ValueError:
+            nmv.logger.info('Labeling branches based on radii as a fallback')
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology,
+                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
     def build_arbor(self,
                     arbor,
                     caps,
                     bevel_object,
-                    maximum_branching_order,
+                    max_branching_order,
                     name,
                     material):
 
-        arbor_poly_line_objects = nmv.skeleton.ops.draw_connected_sections_poly_lines(
-            arbor=arbor, max_branching_level=maximum_branching_order, bevel_object=bevel_object,
-            caps=caps)
+        #arbor_poly_line_objects = nmv.skeleton.ops.draw_connected_sections_poly_lines(
+        #    arbor=arbor, max_branching_level=max_branching_order, bevel_object=bevel_object,
+        #    caps=caps)
+
+        # A list that will contain all the poly-lines gathered from traversing the arbor tree with
+        # depth-first traversal
+        arbor_poly_lines_data = list()
+
+        # Construct the poly-lines
+        nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
+            section=arbor, poly_lines_data=arbor_poly_lines_data,
+            max_branching_level=max_branching_order)
+
+        # A list that will contain all the drawn poly-lines to be able to access them later,
+        # although we can access them by name
+        arbor_poly_line_objects = list()
+
+        # For each poly-line in the list, draw it
+        for i, poly_line_data in enumerate(arbor_poly_lines_data):
+
+            # Draw the section, and append the result to the objects list
+            arbor_poly_line_objects.append(nmv.skeleton.ops.draw_section_from_poly_line_data(
+                data=poly_line_data[0], name=poly_line_data[1], bevel_object=bevel_object,
+                caps=False if i == 0 else caps))
 
         # Convert the section object (poly-lines or tubes) into meshes
         for arbor_poly_line_object in arbor_poly_line_objects:
@@ -173,7 +201,7 @@ class UnionBuilder:
 
                 self.build_arbor(
                     arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
-                    maximum_branching_order=self.options.morphology.axon_branch_order,
+                    max_branching_order=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Arbors.AXON_PREFIX, material=self.axon_materials[0])
 
         # Draw the apical dendrite, if exists
@@ -183,7 +211,7 @@ class UnionBuilder:
 
                 self.build_arbor(
                     arbor=self.morphology.apical_dendrite, caps=caps, bevel_object=bevel_object,
-                    maximum_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     material=self.apical_dendrites_materials[0])
 
@@ -200,32 +228,9 @@ class UnionBuilder:
 
                     self.build_arbor(
                         arbor=basal_dendrite, caps=caps, bevel_object=bevel_object,
-                        maximum_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=basal_dendrite_prefix,
                         material=self.basal_dendrites_materials[0])
-
-    ################################################################################################
-    # @add_spines
-    ################################################################################################
-    def add_spines(self):
-        """Add the spines to the neuron.
-        """
-
-        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            spines_builder = nmv.builders.CircuitSpineBuilder(
-                morphology=self.morphology, options=self.options)
-            # self.spines_mesh, self.spines_list = spines_builder.add_spines_to_morphology()
-
-        # Random spines
-        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-            nmv.logger.header('Adding random spines')
-            spines_builder = nmv.builders.RandomSpineBuilder(
-                morphology=self.morphology, options=self.options)
-            spines_objects = spines_builder.add_spines_to_morphology()
-
-        # Otherwise ignore spines
-        else:
-            nmv.logger.log('Ignoring spines')
 
     ################################################################################################
     # @connect_arbors_to_soma
@@ -392,11 +397,7 @@ class UnionBuilder:
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """
-        Reconstructs the neuronal mesh as a set of piecewise watertight meshes.
-        The meshes are logically connected, but the different branches are intersecting,
-        so they can be used perfectly for voxelization purposes, but they cannot be used for
-        surface rendering with transparency.
+        """Reconstructs the mesh.
         """
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
@@ -425,7 +426,7 @@ class UnionBuilder:
         # self.decimate_neuron_mesh()
 
         # Adding spines
-        self.add_spines()
+        # self.add_spines()
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
