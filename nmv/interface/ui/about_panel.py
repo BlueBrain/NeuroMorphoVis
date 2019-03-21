@@ -101,7 +101,7 @@ class AboutPanel(bpy.types.Panel):
 # @UpdateNeuroMorphoVis
 ####################################################################################################
 class UpdateNeuroMorphoVis(bpy.types.Operator):
-    """Update NeuroMorphoVis button"""
+    """Update NeuroMorphoVis"""
 
     # Operator parameters
     bl_idname = "update.nmv"
@@ -119,9 +119,6 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         :return:
             'FINISHED'
         """
-
-        print(AboutPanel.bl_nmv_version)
-        print(sys.platform)
 
         # Get the current path
         current_path = os.path.dirname(os.path.realpath(__file__))

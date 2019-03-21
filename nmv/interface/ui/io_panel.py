@@ -177,6 +177,7 @@ class IOPanel(bpy.types.Panel):
 
         import_button = layout.column()
         import_button.operator('load.morphology', icon='ANIM_DATA')
+        import_button.separator()
 
         # Output options
         output_data_options_row = layout.row()
