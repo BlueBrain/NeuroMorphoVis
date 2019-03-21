@@ -91,7 +91,7 @@ class MeshPanel(bpy.types.Panel):
                 'Meta Objects',
                 'Creates watertight mesh models using meta balls, but it could be slower than'
                 ' the other methods')],
-        name='Meshing Method', default=nmv.enums.Meshing.Technique.META_OBJECTS)
+        name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
     # Is the soma connected to the first order branches or not !
     bpy.types.Scene.SomaArborsConnection = EnumProperty(
