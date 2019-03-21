@@ -24,9 +24,11 @@ This panel contains five sections or tabs:
 
 + __Input / Output__ 
 + __Morphology Analysis__
++ __Morphology Editing__
 + __Soma Toolbox__
 + __Morphology Toolbox__
 + __Mesh Toolbox__ 
++ __About__
 
 By default, the _Input / Output_ tab is open while the rest of the tabs are closed. This action is intended to avoid any distraction or negative impressions given to the user. Each tab has already many parameters that can be configured to control certain aspects. Therefore, it is advisable to open __only__ the tab the user is interested in and close the rest of the tabs to avoid any clutter.
 
