@@ -130,7 +130,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         os.chdir(current_path)
         shell_command = 'git pull origin union'
         nmv.logger.log('Updating NeuroMorphoVis')
-        # subprocess.call(shell_command, shell=True)
+        subprocess.call(shell_command, shell=True)
 
         # Get the blender path from the current path, NOTE the differences on different OSes
         if 'darwin' in sys.platform:
@@ -140,28 +140,17 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         elif 'win' in sys.platform or 'Win' in sys.platform:
             blender_executable = '%s/../../../../../../../blender.exe' % current_path
         else:
+            blender_executable = ''
             nmv.logger.info('Error: Unknown Platform!')
             exit(0)
-
 
         # Call blender and exit this one
         shell_command = '%s &' % blender_executable
         nmv.logger.log('Restarting Blender')
-        #subprocess.call(shell_command, shell=True)
-
-        #img = bpy.data.images.new('/computer/4.png', 238, 138)
-        #img.name = '4'
-        #mg.reload()
-
-        #global tex
-        ##tex = bpy.data.textures.new('4', 'IMAGE')
-        #tex.image = img
-
-
-        #print(len(bpy.data.textures))
+        subprocess.call(shell_command, shell=True)
 
         # Exiting blender
-        #exit(0)
+        exit(0)
 
         return {'FINISHED'}
 
