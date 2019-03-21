@@ -63,14 +63,6 @@ class NMVPanel(bpy.types.Panel):
 def register_panel():
     """Registers all the classes in this panel"""
 
-    # Load the icons
-    nmv.interface.ui_icons = bpy.utils.previews.new()
-    images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
-    nmv.interface.ui_icons.load("github", os.path.join(images_path, "github-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("bbp", os.path.join(images_path, "bbp-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("epfl", os.path.join(images_path, "epfl-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("nmv", os.path.join(images_path, "nmv-logo.png"), 'IMAGE')
-
     # Panel
     bpy.utils.register_class(NMVPanel)
 
@@ -80,9 +72,6 @@ def register_panel():
 ####################################################################################################
 def unregister_panel():
     """Un-registers all the classes in this panel"""
-
-    # Remove the icons
-    bpy.utils.previews.remove(nmv.interface.ui_icons)
 
     # Panel
     bpy.utils.unregister_class(NMVPanel)

@@ -89,7 +89,6 @@ else:
 
     # Import the modules
     import nmv.interface.ui.io_panel
-    import nmv.interface.ui.nmv_panel
     import nmv.interface.ui.analysis_panel
     import nmv.interface.ui.edit_panel
     import nmv.interface.ui.soma_panel
@@ -106,7 +105,6 @@ def register():
     """
 
     # Register panels
-    nmv.interface.ui.nmv_panel.register_panel()
     nmv.interface.ui.io_panel.register_panel()
     nmv.interface.ui.analysis_panel.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
@@ -124,7 +122,6 @@ def unregister():
     """
 
     # Un-register panels
-    nmv.interface.ui.nmv_panel.unregister_panel()
     nmv.interface.ui.io_panel.unregister_panel()
     nmv.interface.ui.analysis_panel.unregister_panel()
     nmv.interface.ui.soma_panel.unregister_panel()

@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import os
+
 # Blender imports
 import bpy
 
@@ -30,6 +33,31 @@ import nmv.rendering
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
 current_morphology_path = None
+
+
+####################################################################################################
+# @load_morphology
+####################################################################################################
+def load_icons():
+    """Loads the external icons.
+    """
+    nmv.interface.ui_icons = bpy.utils.previews.new()
+    images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
+    nmv.interface.ui_icons.load("github", os.path.join(images_path, "github-logo.png"), 'IMAGE')
+    nmv.interface.ui_icons.load("bbp", os.path.join(images_path, "bbp-logo.png"), 'IMAGE')
+    nmv.interface.ui_icons.load("epfl", os.path.join(images_path, "epfl-logo.png"), 'IMAGE')
+    nmv.interface.ui_icons.load("nmv", os.path.join(images_path, "nmv-logo.png"), 'IMAGE')
+
+
+####################################################################################################
+# @load_morphology
+####################################################################################################
+def unload_icons():
+    """Unloads the external icons, after loading them to Blender.
+    """
+
+    # Remove the icons
+    bpy.utils.previews.remove(nmv.interface.ui_icons)
 
 
 ####################################################################################################

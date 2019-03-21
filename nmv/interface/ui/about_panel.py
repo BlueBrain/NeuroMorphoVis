@@ -29,7 +29,6 @@ import nmv
 import nmv.enums
 import nmv.interface
 
-
 nmv_icons = None
 
 
