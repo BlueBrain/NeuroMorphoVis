@@ -122,6 +122,7 @@ class MetaBuilder:
             *[self.morphology,
               nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
 
+
     ################################################################################################
     # @create_meta_segment
     ################################################################################################
@@ -222,6 +223,52 @@ class MetaBuilder:
                 r1=samples[i].radius * self.magic_scale_factor,
                 r2=samples[i + 1].radius * self.magic_scale_factor)
 
+
+    def create_meta_poly_line(self,
+                              poly_line_data):
+
+        # Ensure that the poly-line has at least two samples, otherwise it will give an error
+        if len(poly_line_data) < 2:
+            return
+
+        # Proceed segment by segment
+        for i in range(len(poly_line_data) - 2):
+
+            #print(poly_line_data[i][0][0])
+
+            point_1 = poly_line_data[i]
+            point_2 = poly_line_data[i + 1]
+
+            if poly_line_data[i][1] < self.smallest_radius:
+                self.smallest_radius = poly_line_data[i][1]
+
+            p1 = mathutils.Vector((point_1[0][0], point_1[0][1], point_1[0][2]))
+            r1 = point_1[1]
+            p2 = mathutils.Vector((point_2[0][0], point_2[0][1], point_2[0][2]))
+            r2 = point_2[1]
+
+            # Create the meta segment
+            self.create_meta_segment(
+                p1=p1, p2=p2, r1=r1 * self.magic_scale_factor, r2=r2 * self.magic_scale_factor)
+
+    def create_meta_arbor_depth_first(self,
+                          root,
+                          max_branching_order):
+
+        # A list that will contain all the poly-lines gathered from traversing the arbor tree with
+        # depth-first traversal
+        poly_lines_data = list()
+
+        # Construct the poly-lines
+        nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
+            section=root, poly_lines_data=poly_lines_data, max_branching_level=max_branching_order)
+
+        # For each poly-line in the list, draw it
+        for poly_line_data in poly_lines_data:
+            self.create_meta_poly_line(poly_line_data[0])
+
+
+
     ################################################################################################
     # @create_meta_arbor
     ################################################################################################
@@ -269,10 +316,14 @@ class MetaBuilder:
             # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
 
-                self.create_meta_arbor(
-                    root=self.morphology.apical_dendrite,
+                #self.create_meta_arbor(
+                #    root=self.morphology.apical_dendrite,
+                #    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+
+                self.create_meta_arbor_depth_first(root=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
+                return
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
