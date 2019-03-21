@@ -215,7 +215,6 @@ class MetaBuilder:
         :param max_branching_order:
             The maximum branching order set by the user to terminate the recursive call.
         """
-        bpy.context.space_data.viewport_shade = 'MATERIAL'
 
         # Do not proceed if the branching order limit is hit
         if root.branching_order > max_branching_order:

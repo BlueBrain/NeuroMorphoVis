@@ -478,6 +478,9 @@ def create_material(name,
         A reference to the created material
     """
 
+    # Switch to Material mode to visualize the textures
+    bpy.context.space_data.viewport_shade = 'MATERIAL'
+
     # Lambert Ward
     if material_type == nmv.enums.Shading.LAMBERT_WARD:
         return create_lambert_ward_material(name='%s_color' % name, color=color)
