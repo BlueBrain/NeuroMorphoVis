@@ -232,7 +232,7 @@ class MetaBuilder:
             return
 
         # Proceed segment by segment
-        for i in range(len(poly_line_data) - 2):
+        for i in range(len(poly_line_data) - 1):
 
             #print(poly_line_data[i][0][0])
 
@@ -316,12 +316,12 @@ class MetaBuilder:
             # Create the apical dendrite mesh
             if self.morphology.apical_dendrite is not None:
 
-                #self.create_meta_arbor(
-                #    root=self.morphology.apical_dendrite,
-                #    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-                self.create_meta_arbor_depth_first(root=self.morphology.apical_dendrite,
+                self.create_meta_arbor(
+                    root=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+
+                #self.create_meta_arbor_depth_first(root=self.morphology.apical_dendrite,
+                #    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
                 return
         # Draw the basal dendrites

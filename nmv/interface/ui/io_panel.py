@@ -279,6 +279,8 @@ class LoadMorphology(bpy.types.Operator):
             return {'FINISHED'}
 
         # Plot the morphology (whatever issues it contains)
+        nmv.interface.ui_options.morphology.reconstruction_method = \
+            nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))

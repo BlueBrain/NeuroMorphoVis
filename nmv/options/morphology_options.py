@@ -122,7 +122,7 @@ class MorphologyOptions:
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
 
         # Selected a method to reconstruct the morphology
-        self.reconstruction_method = nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL
+        self.reconstruction_method = nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
 
         # Morphology material
         self.material = nmv.enums.Shading.LAMBERT_WARD
@@ -243,7 +243,7 @@ class MorphologyOptions:
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
 
         # Selected a method to reconstruct the morphology
-        self.reconstruction_method = nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL
+        self.reconstruction_method = nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
 
         # Morphology material
         self.material = nmv.enums.Shading.LAMBERT_WARD
