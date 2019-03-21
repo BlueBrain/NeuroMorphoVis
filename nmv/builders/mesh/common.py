@@ -31,41 +31,6 @@ import nmv.skeleton
 import nmv.utilities
 
 
-################################################################################################
-# @create_materials
-################################################################################################
-def create_materials(builder,
-                     name,
-                     color):
-    """Creates just two materials of the mesh on the input parameters of the user.
-
-    :param builder:
-        The builder object.
-    :param name:
-        The name of the material/color.
-    :param color:
-        The code of the given colors.
-    :return:
-        A list of two elements (different or same colors) where we can apply later to the drawn
-        sections or segments.
-    """
-
-    # A list of the created materials
-    materials_list = []
-
-    for i in range(2):
-
-        # Create the material
-        material = nmv.shading.create_material(name='%s_color_%d' % (name, i), color=color,
-                                               material_type=builder.options.mesh.material)
-
-        # Append the material to the materials list
-        materials_list.append(material)
-
-    # Return the list
-    return materials_list
-
-
 ####################################################################################################
 # @create_skeleton_materials
 ####################################################################################################
@@ -91,26 +56,29 @@ def create_skeleton_materials(builder):
             bpy.data.materials.remove(material)
 
     # Soma
-    builder.soma_materials = create_materials(
-        builder=builder, name='soma_skeleton', color=builder.options.mesh.soma_color)
+    builder.soma_materials = nmv.shading.create_materials(
+        material_type=builder.options.mesh.material, name='soma_skeleton',
+        color=builder.options.mesh.soma_color)
 
     # Axon
-    builder.axon_materials = create_materials(
-        builder=builder, name='axon_skeleton', color=builder.options.mesh.axon_color)
+    builder.axon_materials = nmv.shading.create_materials(
+        material_type=builder.options.mesh.material, name='axon_skeleton',
+        color=builder.options.mesh.axon_color)
 
     # Basal dendrites
-    builder.basal_dendrites_materials = create_materials(
-        builder=builder, name='basal_dendrites_skeleton',
+    builder.basal_dendrites_materials = nmv.shading.create_materials(
+        material_type=builder.options.mesh.material, name='basal_dendrites_skeleton',
         color=builder.options.mesh.basal_dendrites_color)
 
     # Apical dendrite
-    builder.apical_dendrites_materials = create_materials(
-        builder=builder, name='apical_dendrite_skeleton',
+    builder.apical_dendrites_materials = nmv.shading.create_materials(
+        material_type=builder.options.mesh.material, name='apical_dendrite_skeleton',
         color=builder.options.mesh.apical_dendrites_color)
 
     # Spines
-    builder.spines_materials = create_materials(
-        builder=builder, name='spines', color=builder.options.mesh.spines_color)
+    builder.spines_materials = nmv.shading.create_materials(
+        material_type=builder.options.mesh.material,
+        name='spines', color=builder.options.mesh.spines_color)
 
     # Create an illumination specific for the given material
     nmv.shading.create_material_specific_illumination(builder.options.mesh.material)

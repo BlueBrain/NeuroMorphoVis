@@ -341,9 +341,6 @@ class ReconstructSomaOperator(bpy.types.Operator):
             A given event for the panel.
         """
 
-        # Get a reference to the scene
-        scene = context.scene
-
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > self.max_simulation_limit:
 

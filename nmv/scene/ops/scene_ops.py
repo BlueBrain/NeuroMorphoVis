@@ -95,6 +95,24 @@ def clear_scene():
 
 
 ####################################################################################################
+# @clear_lights
+####################################################################################################
+def clear_lights():
+    """Clear the lights.
+    """
+
+    # Iterate over all the objects in the scene, and remove the 'Cube', 'Lamp' and 'Camera' if exist
+    for scene_object in bpy.context.scene.objects:
+
+        # Object selection
+        if scene_object.name == 'Lamp':
+            scene_object.select = True
+
+            # Delete the object
+            bpy.ops.object.delete()
+
+
+####################################################################################################
 # @select_all
 ####################################################################################################
 def select_all():

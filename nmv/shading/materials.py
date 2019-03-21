@@ -568,3 +568,38 @@ def adjust_material_uv(mesh_object,
     mesh_object.data.texspace_size[0] = size
     mesh_object.data.texspace_size[1] = size
     mesh_object.data.texspace_size[2] = size
+
+
+################################################################################################
+# @create_materials
+################################################################################################
+def create_materials(material_type,
+                     name,
+                     color):
+    """Creates just two materials of the mesh on the input parameters of the user.
+
+    :param material_type:
+        The type of the material.
+    :param name:
+        The name of the material/color.
+    :param color:
+        The code of the given colors.
+    :return:
+        A list of two elements (different or same colors) where we can apply later to the drawn
+        sections or segments.
+    """
+
+    # A list of the created materials
+    materials_list = []
+
+    for i in range(2):
+
+        # Create the material
+        material = nmv.shading.create_material(name='%s_color_%d' % (name, i), color=color,
+                                               material_type=material_type)
+
+        # Append the material to the materials list
+        materials_list.append(material)
+
+    # Return the list
+    return materials_list
