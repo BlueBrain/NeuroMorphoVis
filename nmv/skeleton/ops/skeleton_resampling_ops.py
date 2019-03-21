@@ -275,30 +275,29 @@ def resample_sections(section,
 
 
 ####################################################################################################
-# @resample_section_adaptively
+# @resample_section_based_on_smallest_segment
 ####################################################################################################
-def resample_section_based_on_radius(section):
-    """Resample a given section based on the radius of its last sample.
-    This function resamples a section with a resampling distance
-    TODO: Implement this function
+def resample_section_based_on_smallest_segment(section):
+    """Resamples a section based on the smallest segment.
+
     :param section:
-    :return:
+        A given section to resample.
     """
 
-    return
-
-def resample_section_based_on_smallest_segment(section):
-
-
+    # Large value
     smallest_segment_length = 1e3
 
+    # Iterate on all the segments
     for i in range(len(section.samples) - 1):
 
+        # Compute its length
         segment_length = (section.samples[i + 1].point - section.samples[i].point).length
+
+        # Validate
         if segment_length < smallest_segment_length:
             smallest_segment_length = segment_length
 
-    print(smallest_segment_length)
+    # Resample the section
     if smallest_segment_length > 0.5:
         resample_sections(section=section, resampling_distance=smallest_segment_length)
     else:
@@ -741,82 +740,3 @@ def resample_section_stem(section):
 
     # After resampling the section, update the logical indexes of the samples
     section.reorder_samples()
-
-
-####################################################################################################
-# @resample_primary_section
-####################################################################################################
-def resample_section_components(section):
-    """
-    Re-samples a section along its front and rear ends in addition to its stem.
-    The primary sections will be resampled in two steps. The first step will resample the edges
-    of the section using the radii of the first and last samples of the section. The second step
-    will resample the intermediate samples (or the samples that are located between the first and
-    last samples) into equidistant samples using the diameter of the first sample, if possible.
-
-    :param section:
-        A given primary a section to be resampled.
-    """
-
-    # Ignore resampling the axon for the moment until tested
-    if section.get_type_string() == 'AXON':
-        return
-
-    # Ignore resampling VERY short sections
-    if section.is_short:
-        return
-
-    # Compute section length
-    section_length = nmv.skeleton.ops.compute_section_length(section)
-
-    # Compute the minimal section length that requires resampling
-    minimal_section_length = (section.samples[0].radius + section.samples[-1].radius) * 2
-
-    # If the section length is less than the minimal section length, the try to handle this
-    # situation without resampling
-    if section_length < minimal_section_length:
-
-        # Report the issue
-        nmv.logger.log('\t\t* RESAMPLING: Cannot resample the section [%s]' % section.id)
-        return
-
-    # Resample the primary sections
-    if section.is_primary:
-
-        if section.has_parent():
-
-            # Resample the front side of the section
-            resample_section_front(section=section)
-
-        if section.has_children():
-
-            # Resample the rear side of the section
-            resample_section_rear(section=section)
-
-        # Resample the stem only when the angle between the children is less than
-        if len(section.children) == 2:
-            vector_1 = (section.children[0].samples[1].point -
-                        section.children[0].samples[0].point).normalized()
-            vector_2 = (section.children[1].samples[1].point -
-                        section.children[1].samples[0].point).normalized()
-            angle = vector_1.angle(vector_2)
-
-            #if angle < 15 or angle > 165:
-            #    # Resample the stem of the section
-            #    resample_section_stem(section=section)
-
-    # Resample the secondary section, only at the rear
-    else:
-
-        if section.has_parent():
-
-            # Resample the front side of the section
-            resample_section_front(section=section)
-
-        if section.has_children():
-
-            # Resample the rear section of the secondary section only
-            resample_section_rear(section=section)
-
-    # Remove duplicate samples
-    #remove_duplicate_samples(section=section)
