@@ -63,15 +63,15 @@ class SomaPanel(bpy.types.Panel):
 
     # Reconstruction method
     bpy.types.Scene.SomaReconstructionMethod = EnumProperty(
-        items=[(nmv.enums.Soma.ReconstructionMethod.COMBINED,
-                'Complex',
-                'Reconstruct a complex shape for the soma using all available data'),
-               (nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY,
-                'Arbors',
+        items=[(nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY,
+                '3D Profile',
                 'Reconstruct the shape of the soma using the arbors only'),
                (nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY,
-                'Profile',
-                'Reconstruct the shape of the soma using the profile points only')],
+                '2D Profile',
+                'Reconstruct the shape of the soma using the profile points only'),
+               (nmv.enums.Soma.ReconstructionMethod.COMBINED,
+                'Mixed',
+                'Reconstruct a complex shape for the soma using all available data')],
         name='Method',
         default=nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY)
 
