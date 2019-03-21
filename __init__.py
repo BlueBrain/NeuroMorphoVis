@@ -21,8 +21,11 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import sys, os, imp
+
 # NeuroMorphoVis version
-v = open(".version", "r")
+v = open("%s/.version" % os.path.dirname(os.path.realpath(__file__)), "r")
 version = v.read()
 version = version.split(' ')
 v.close()
@@ -34,9 +37,6 @@ __version__     = version
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
-
-# System imports
-import sys, os, imp
 
 ####################################################################################################
 # Add-on information

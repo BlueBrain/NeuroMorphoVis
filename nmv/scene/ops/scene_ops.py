@@ -57,6 +57,10 @@ def clear_scene():
     NOTE: This function targets clearing meshes, curve, objects and materials.
     """
 
+    # Adjust the clipping planes in case of perspective projection
+    bpy.context.space_data.clip_start = 0.01
+    bpy.context.space_data.clip_end = 10000
+
     # Select each object in the scene
     for scene_object in bpy.context.scene.objects:
         scene_object.select = True
