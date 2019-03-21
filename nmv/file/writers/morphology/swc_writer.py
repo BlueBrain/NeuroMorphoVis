@@ -169,9 +169,11 @@ def construct_swc_samples_list_from_morphology_tree(morphology_object):
     if morphology_object.apical_dendrite is not None:
         construct_swc_samples_list_from_arbor(morphology_object.apical_dendrite, swc_samples_list)
 
-    # Do it dendrite by dendrite
-    for basal_dendrite in morphology_object.dendrites:
-        construct_swc_samples_list_from_arbor(basal_dendrite, swc_samples_list)
+    # basal dendrites
+    if morphology_object.dendrites is not None:
+        # Do it dendrite by dendrite
+        for basal_dendrite in morphology_object.dendrites:
+            construct_swc_samples_list_from_arbor(basal_dendrite, swc_samples_list)
 
     # Axon
     if morphology_object.axon is not None:

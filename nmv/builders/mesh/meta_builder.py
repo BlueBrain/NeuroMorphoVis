@@ -332,15 +332,17 @@ class MetaBuilder:
             if self.morphology.apical_dendrite is not None:
                 self.emanate_soma_towards_arbor(arbor=self.morphology.apical_dendrite)
 
-        # Emanate towards basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
+        if self.morphology.dendrites is not None:
 
-            # Do it dendrite by dendrite
-            for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            # Emanate towards basal dendrites
+            if not self.options.morphology.ignore_basal_dendrites:
 
-                # Basal dendrites
-                nmv.logger.info('Dendrite [%d]' % i)
-                self.emanate_soma_towards_arbor(arbor=basal_dendrite)
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # Basal dendrites
+                    nmv.logger.info('Dendrite [%d]' % i)
+                    self.emanate_soma_towards_arbor(arbor=basal_dendrite)
 
         # Emanate towards the axon, if exists
         if not self.options.morphology.ignore_apical_dendrite:

@@ -256,10 +256,12 @@ class UnionBuilder:
             # Connecting basal dendrites
             if not self.options.morphology.ignore_basal_dendrites:
 
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    nmv.logger.log('\t * Dendrite [%d]' % i)
-                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
+                if self.morphology.dendrites is not None:
+
+                    # Do it dendrite by dendrite
+                    for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                        nmv.logger.log('\t * Dendrite [%d]' % i)
+                        nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
 
             # Connecting axon
             if not self.options.morphology.ignore_axon:

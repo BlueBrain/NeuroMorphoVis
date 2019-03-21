@@ -320,11 +320,13 @@ class MorphologyEditor:
             nmv.logger.info('Apical dendrite')
             self.update_arbor_coordinates(root=self.morphology.apical_dendrite)
 
-        # Do it dendrite by dendrite
-        for i, basal_dendrite in enumerate(self.morphology.dendrites):
+        if self.morphology.dendrites is not None:
 
-            nmv.logger.info('Dendrite [%d]' % i)
-            self.update_arbor_coordinates(root=basal_dendrite)
+            # Do it dendrite by dendrite
+            for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                nmv.logger.info('Dendrite [%d]' % i)
+                self.update_arbor_coordinates(root=basal_dendrite)
 
         # Create the apical dendrite mesh
         if self.morphology.axon is not None:
