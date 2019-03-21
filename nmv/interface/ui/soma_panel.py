@@ -153,26 +153,6 @@ class SomaPanel(bpy.types.Panel):
         # Pass options from UI to system
         nmv.interface.ui_options.soma.method = context.scene.SomaReconstructionMethod
 
-        # Color options
-        colors_row = layout.row()
-        colors_row.label(text='Colors & Materials:', icon='COLOR')
-
-        # Soma color
-        soma_base_color_row = layout.row()
-        soma_base_color_row.prop(context.scene, 'SomaBaseColor')
-
-        # Pass options from UI to system
-        color = context.scene.SomaBaseColor
-        soma_base_color_value = Vector((color.r, color.g, color.b))
-        nmv.interface.ui_options.soma.soma_color = soma_base_color_value
-
-        # Soma material option
-        soma_material_row = layout.row()
-        soma_material_row.prop(context.scene, 'SomaMaterial')
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.soma.soma_material = context.scene.SomaMaterial
-
         # Soft body options
         soft_body_params_row = layout.row()
         soft_body_params_row.label(text='Soft Body Parameters:', icon='GROUP_UVS')
@@ -194,12 +174,25 @@ class SomaPanel(bpy.types.Panel):
         nmv.interface.ui_options.soma.subdivision_level = context.scene.SubdivisionLevel
         nmv.interface.ui_options.soma.irregular_subdivisions = context.scene.IrregularSubdivisions
 
-        # Simulation steps
-        simulation_steps_row = layout.row()
-        simulation_steps_row.prop(context.scene, 'SimulationSteps')
+        # Color options
+        colors_row = layout.row()
+        colors_row.label(text='Colors & Materials:', icon='COLOR')
+
+        # Soma color
+        soma_base_color_row = layout.row()
+        soma_base_color_row.prop(context.scene, 'SomaBaseColor')
 
         # Pass options from UI to system
-        nmv.interface.ui_options.soma.simulation_steps = context.scene.SimulationSteps
+        color = context.scene.SomaBaseColor
+        soma_base_color_value = Vector((color.r, color.g, color.b))
+        nmv.interface.ui_options.soma.soma_color = soma_base_color_value
+
+        # Soma material option
+        soma_material_row = layout.row()
+        soma_material_row.prop(context.scene, 'SomaMaterial')
+
+        # Pass options from UI to system
+        nmv.interface.ui_options.soma.soma_material = context.scene.SomaMaterial
 
         # Soma reconstruction options
         soma_reconstruction_row = layout.row()
