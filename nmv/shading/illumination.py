@@ -106,11 +106,12 @@ def create_glossy_bumpy_illumination():
 
     # Add the light sources
     for i, angle in enumerate(light_rotation):
-        bpy.ops.object.lamp_add(type='HEMI', location=(0, 0, 0))
-        lamp_reference = bpy.context.object
-        lamp_reference.name = 'Lamp%d' % i
-        lamp_reference.data.name = "Lamp%d" % i
-        lamp_reference.rotation_euler = angle
+        lamp_data = bpy.data.lamps.new(name='HemiLamp%d' % i, type='HEMI')
+        lamp_object = bpy.data.objects.new(name='HemiLamp%d' % i, object_data=lamp_data)
+        bpy.context.scene.objects.link(lamp_object)
+        lamp_object.rotation_euler = angle
+        bpy.data.lamps['HemiLamp%d' % i].use_nodes = True
+        bpy.data.lamps['HemiLamp%d' % i].node_tree.nodes["Emission"].inputs[1].default_value = 10
 
 
 ####################################################################################################

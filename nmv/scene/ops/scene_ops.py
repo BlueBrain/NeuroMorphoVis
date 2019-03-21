@@ -105,11 +105,16 @@ def clear_lights():
     for scene_object in bpy.context.scene.objects:
 
         # Object selection
-        if scene_object.name == 'Lamp':
+        if 'Lamp' in scene_object.name:
             scene_object.select = True
 
             # Delete the object
             bpy.ops.object.delete()
+
+    # Select all the light, unlink them and clear their data
+    for scene_lamp in bpy.data.lamps:
+        scene_lamp.user_clear()
+        bpy.data.lamps.remove(scene_lamp)
 
 
 ####################################################################################################
