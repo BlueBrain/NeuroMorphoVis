@@ -835,15 +835,15 @@ def update_arbors_connection_to_soma(morphology):
 
     # If the apical dendrite exists, then set its connectivity to True directly
     if morphology.apical_dendrite is not None:
-
-        # Set the connectivity of the apical dendrite to True
         morphology.apical_dendrite.connected_to_soma = True
 
     # Verify the connectivity of the basal dendrites
-    verify_basal_dendrites_connection_to_soma(morphology=morphology)
+    if morphology.dendrites is not None:
+        verify_basal_dendrites_connection_to_soma(morphology=morphology)
 
     # Verify the connectivity of the axon
-    verify_axon_connection_to_soma(morphology=morphology)
+    if morphology.axon is not None:
+        verify_axon_connection_to_soma(morphology=morphology)
 
 
 ####################################################################################################

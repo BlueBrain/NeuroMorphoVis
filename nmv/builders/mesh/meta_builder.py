@@ -15,10 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
-# System imports
-import copy
-
 # Blender imports
 import bpy, mathutils
 
@@ -73,20 +69,6 @@ class MetaBuilder:
 
         # A list of the colors/materials of the spines
         self.spines_materials = None
-
-        # A reference to the reconstructed soma mesh
-        self.reconstructed_soma_mesh = None
-
-        # A reference to the reconstructed spines mesh
-        self.spines_mesh = None
-
-        # A parameter to track the current branching order on each arbor
-        # NOTE: This parameter must get reset when you start working on a new arbor
-        self.branching_order = 0
-
-        # A list of all the meshes that are reconstructed on a piecewise basis and correspond to
-        # the different components of the neuron including soma, arbors and the spines as well
-        self.reconstructed_neuron_meshes = list()
 
         # Meta object skeleton, used to build the skeleton of the morphology
         self.meta_skeleton = None
@@ -317,16 +299,22 @@ class MetaBuilder:
                                    arbor):
         """Extends the space of the soma towards the given arbor to make a shape that is not sphere.
 
+        NOTE: The arbor must be connected to the soma to apply this operation, otherwise it
+        is ignored.
+
         :param arbor:
             A given arbor to emanate the soma towards.
         """
 
-        # Assume that from the soma center towards the first point along the arbor is a segment
-        self.create_meta_segment(
-            p1=self.morphology.soma.centroid,
-            p2=arbor.samples[0].point,
-            r1=self.morphology.soma.mean_radius,
-            r2=arbor.samples[0].radius * self.magic_scale_factor)
+        # The arbor must be connected to the soma
+        if arbor.connected_to_soma:
+
+            # Assume that from the soma center towards the first point along the arbor is a segment
+            self.create_meta_segment(
+                p1=self.morphology.soma.centroid,
+                p2=arbor.samples[0].point,
+                r1=self.morphology.soma.mean_radius,
+                r2=arbor.samples[0].radius * self.magic_scale_factor)
 
     ################################################################################################
     # @build_soma_from_meta_objects
@@ -376,13 +364,14 @@ class MetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = self.smallest_radius
+        self.meta_skeleton.resolution = self.smallest_radius * 2.0
+        nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
         self.meta_mesh = bpy.context.scene.objects[self.morphology.label]
-        self.meta_mesh.select = True
 
-        bpy.context.scene.objects.active = self.meta_mesh
+        # Set the mesh to be the active one
+        nmv.scene.set_active_object(self.meta_mesh)
 
         # Convert it to a mesh from meta-balls
         bpy.ops.object.convert(target='MESH')
@@ -395,7 +384,6 @@ class MetaBuilder:
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
-
 
     ################################################################################################
     # @assign_material_to_mesh
@@ -437,7 +425,7 @@ class MetaBuilder:
         self.build_soma_from_meta_objects()
 
         # Build the arbors
-        # TODO: Adding the spines should be part of the meshing
+        # TODO: Adding the spines should be part of the meshing using the spine morphologies
         self.build_arbors()
 
         # Finalize the meta object and construct a solid object
