@@ -37,13 +37,41 @@ def create_lambert_ward_illumination():
     if not nmv.scene.ops.is_object_in_scene_by_name('DefaultLamp'):
         nmv.scene.ops.deselect_all()
 
+        # Lamp 1
         bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
         lamp_reference = bpy.context.object
-        lamp_reference.name = 'DefaultLamp'
-        lamp_reference.data.name = "DefaultLamp"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
+        lamp_reference.name = 'Lamp1'
+        lamp_reference.data.name = "Lamp1"
+        lamp_reference.location = (0, 0, 0)
+        lamp_reference.rotation_euler = (0, 0, 0)
+        lamp_reference.data.energy = 0.5
+
+        # Lamp 2
+        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+        lamp_reference = bpy.context.object
+        lamp_reference.name = 'Lamp2'
+        lamp_reference.data.name = "Lamp2"
+        lamp_reference.location = (0, 0, 0)
+        lamp_reference.rotation_euler = (0, 3.14159, 0)
+        lamp_reference.data.energy = 0.5
+
+        # Lamp 3
+        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+        lamp_reference = bpy.context.object
+        lamp_reference.name = 'Lamp3'
+        lamp_reference.data.name = "Lamp3"
+        lamp_reference.location = (0, 0, 0)
+        lamp_reference.rotation_euler = (1.5708, 0, 0)
+        lamp_reference.data.energy = 0.5
+
+        # Lamp 4
+        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+        lamp_reference = bpy.context.object
+        lamp_reference.name = 'Lamp4'
+        lamp_reference.data.name = "Lamp4"
+        lamp_reference.location = (0, 0, 0)
+        lamp_reference.rotation_euler = (-1.5708, 0, 0)
+        lamp_reference.data.energy = 0.5
 
     return
 
