@@ -125,24 +125,12 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         # Go to the main directory and pull the latest master
         os.chdir(current_path)
         shell_command = 'git pull origin union'
-        nmv.logger.log('Updating NeuroMorphoVis')
+        nmv.logger.log('Updating NeuroMorphoVis ...')
         subprocess.call(shell_command, shell=True)
 
-        # Get the blender path from the current path, NOTE the differences on different OSes
-        if 'darwin' in sys.platform:
-            blender_executable = '%s/../../../../../../../../MacOS/blender' % current_path
-        elif 'linux' in sys.platform:
-            blender_executable = '%s/../../../../../../../blender' % current_path
-        elif 'win' in sys.platform or 'Win' in sys.platform:
-            blender_executable = '%s/../../../../../../../blender.exe' % current_path
-        else:
-            blender_executable = ''
-            nmv.logger.info('Error: Unknown Platform!')
-            exit(0)
-
         # Call blender and exit this one
-        shell_command = '%s &' % blender_executable
-        nmv.logger.log('Restarting Blender')
+        shell_command = '%s &' % bpy.app.binary_path
+        nmv.logger.log('Restarting Blender with NeuroMorphoVis ...')
         subprocess.call(shell_command, shell=True)
 
         # Exiting blender
