@@ -371,9 +371,9 @@ class UnionBuilder:
         # Connect the arbors to the soma
         nmv.builders.common.connect_arbors_to_soma(builder=self)
 
-
-        # Decimation
-        # self.decimate_neuron_mesh()
+        # Tessellation
+        if self.options.mesh.tessellation_level < 1.0:
+            nmv.builders.common.decimate_neuron_mesh(builder=self)
 
         # Adding spines
         # self.add_spines()
