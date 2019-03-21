@@ -110,8 +110,6 @@ class Shading:
             return Shading.GLOSSY_BUMPY
         elif shader_type == 'lambert':
             return Shading.LAMBERT_WARD
-        elif shader_type == 'plastic':
-            return Shading.PLASTIC
         elif shader_type == 'cracks':
             return Shading.CRACKS
         elif shader_type == 'grid':
@@ -150,7 +148,7 @@ class Shading:
          "Use Dark Electron Shader"),
 
         (GLOSSY,
-         'Glossy',
+         'Plastic',
          "Use Glossy Shader"),
 
         (GLOSSY_BUMPY,

@@ -118,17 +118,37 @@ class UnionBuilder:
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
-    def build_arbor(self,
-                    arbor,
+    ################################################################################################
+    # @build_arbor
+    ################################################################################################
+    @staticmethod
+    def build_arbor(arbor,
                     caps,
                     bevel_object,
                     max_branching_order,
                     name,
-                    material):
+                    material,
+                    connection_to_soma,
+                    soft):
+        """Builds the arbor.
 
-        #arbor_poly_line_objects = nmv.skeleton.ops.draw_connected_sections_poly_lines(
-        #    arbor=arbor, max_branching_level=max_branching_order, bevel_object=bevel_object,
-        #    caps=caps)
+        :param arbor:
+            The root section of the neurite.
+        :param caps:
+            Caps flag, True or False.
+        :param bevel_object:
+            A bevel object used to shape the arbor.
+        :param max_branching_order:
+            Maximum branching order.
+        :param name:
+            Arbor name.
+        :param material:
+            The material that will be applied to the arbor mesh.
+        :param connection_to_soma:
+            A flag to check if the arbor is connected to the soma or not.
+        :param soft:
+            A flag to indicate that it is a soft arbor.
+        """
 
         # A list that will contain all the poly-lines gathered from traversing the arbor tree with
         # depth-first traversal
@@ -138,6 +158,12 @@ class UnionBuilder:
         nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
             section=arbor, poly_lines_data=arbor_poly_lines_data,
             max_branching_level=max_branching_order)
+
+        # If the arbor not connected to the soma, then add a point at the origin
+        if not connection_to_soma:
+
+            # Add an auxiliary point at the origin
+            arbor_poly_lines_data[0][0].insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
 
         # A list that will contain all the drawn poly-lines to be able to access them later,
         # although we can access them by name
@@ -167,14 +193,23 @@ class UnionBuilder:
         # Update the UV mapping
         nmv.shading.adjust_material_uv(arbor.mesh)
 
+        # Close the edges only if not connected to soma
+
+        # If soft arbors are required, smooth the mesh before closing the faces
+        if soft:
+            nmv.mesh.ops.smooth_object(mesh_object=arbor.mesh, level=2)
+
+        # Close the caps
+        nmv.mesh.ops.close_open_faces(arbor.mesh)
 
     ################################################################################################
-    # @build_arbors
+    # @build_union_arbors
     ################################################################################################
-    def build_arbors(self,
-                     bevel_object,
-                     caps,
-                     roots_connection=False):
+    def build_union_arbors(self,
+                           bevel_object,
+                           caps,
+                           connection_to_soma,
+                           soft):
         """
         Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
@@ -184,7 +219,7 @@ class UnionBuilder:
             A given bevel object to scale the section at the different samples.
         :param caps:
             A flag to indicate whether the drawn sections are closed or not.
-        :param roots_connection:
+        :param connection_to_soma:
             A flag to connect (for soma disconnected more) or disconnect (for soma bridging mode)
             the arbor to the soma origin.
             If this flag is set to True, this means that the arbor will be extended to the soma
@@ -202,7 +237,8 @@ class UnionBuilder:
                 self.build_arbor(
                     arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Arbors.AXON_PREFIX, material=self.axon_materials[0])
+                    name=nmv.consts.Arbors.AXON_PREFIX, material=self.axon_materials[0],
+                    connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the apical dendrite, if exists
         if self.morphology.apical_dendrite is not None:
@@ -213,7 +249,8 @@ class UnionBuilder:
                     arbor=self.morphology.apical_dendrite, caps=caps, bevel_object=bevel_object,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                    material=self.apical_dendrites_materials[0])
+                    material=self.apical_dendrites_materials[0],
+                    connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the basal dendrites
         if self.morphology.dendrites is not None:
@@ -230,48 +267,8 @@ class UnionBuilder:
                         arbor=basal_dendrite, caps=caps, bevel_object=bevel_object,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=basal_dendrite_prefix,
-                        material=self.basal_dendrites_materials[0])
-
-    ################################################################################################
-    # @connect_arbors_to_soma
-    ################################################################################################
-    def connect_arbors_to_soma(self):
-        """
-        Connects the root section of a given arbor to the soma at its initial segment.
-        This function checks if the arbor mesh is 'logically' connected to the soma or not,
-        following to the initial validation steps that determines if the arbor has a valid
-        connection point to the soma or not.
-        If the arbor is 'logically' connected to the soma, this function returns immediately.
-        The arbor is a Section object, see Section() @ section.py.
-
-        :return:
-        """
-
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-
-            # Connecting apical dendrite
-            if not self.options.morphology.ignore_apical_dendrite:
-
-                # There is an apical dendrite
-                if self.morphology.apical_dendrite is not None:
-                    nmv.logger.log('\t * Apical dendrite')
-                    nmv.skeleton.ops.connect_arbor_to_soma(
-                        self.soma_mesh, self.morphology.apical_dendrite)
-
-            # Connecting basal dendrites
-            if not self.options.morphology.ignore_basal_dendrites:
-
-                if self.morphology.dendrites is not None:
-
-                    # Do it dendrite by dendrite
-                    for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                        nmv.logger.log('\t * Dendrite [%d]' % i)
-                        nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
-
-            # Connecting axon
-            if not self.options.morphology.ignore_axon:
-                nmv.logger.log('\t * Axon')
-                nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
+                        material=self.basal_dendrites_materials[0],
+                        connection_to_soma=connection_to_soma, soft=soft)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -287,21 +284,16 @@ class UnionBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+            connection_to_soma = True
         else:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+            connection_to_soma = False
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
-        self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
+        self.build_union_arbors(bevel_object=bevel_object, caps=True,
+                                connection_to_soma=connection_to_soma, soft=False)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-        # Smooth and close the faces of the apical dendrites meshes
-        #for mesh in arbors_meshes:
-
-        #    # Close the edges
-        #    nmv.mesh.ops.close_open_faces(mesh)
 
     ################################################################################################
     # @build_soft_edges_arbors
@@ -316,29 +308,21 @@ class UnionBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+            connection_to_soma = True
         else:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+            connection_to_soma = False
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
-        self.build_arbors(bevel_object=bevel_object, caps=True)
+        self.build_union_arbors(bevel_object=bevel_object, caps=True,
+                                connection_to_soma=connection_to_soma, soft=True)
 
         # Delete the bevel object
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
-        # Smooth and close the faces of the apical dendrites meshes
-        #for mesh in arbors_meshes:
-
-            # Smooth
-            #nmv.mesh.ops.smooth_object(mesh_object=mesh, level=2)
-
-            # Close the edges
-            #nmv.mesh.ops.close_open_faces(mesh)
-
     ################################################################################################
     # @reconstruct_arbors_meshes
     ################################################################################################
-    def reconstruct_arbors_meshes(self):
+    def build_arbors(self):
         """Reconstruct the arbors.
 
         # There are two techniques for reconstructing the mesh. The first uses sharp edges without
@@ -362,38 +346,6 @@ class UnionBuilder:
             nmv.logger.log('ERROR')
 
     ################################################################################################
-    # @reconstruct_soma_mesh
-    ################################################################################################
-    def reconstruct_soma_mesh(self):
-        """Reconstruct the mesh of the soma.
-
-        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
-        soma profile before the arbors, such that the scene is almost empty.
-
-        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
-        we must use a high number of subdivisions to make smooth connections that look nice,
-        but if the arbors are connected to the soma origin, then we can use less subdivisions
-        since the soma will not be connected to the arbor at all.
-        """
-
-        # If the soma is connected to the root arbors
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology, options=self.options)
-
-        # Otherwise, ignore
-        else:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology,
-                options=self.options)
-
-        # Reconstruct the soma mesh
-        self.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader to the reconstructed soma mesh
-        nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])
-
-    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -411,16 +363,14 @@ class UnionBuilder:
         nmv.builders.common.modify_morphology_skeleton(builder=self)
 
         # Build the soma
-        # self.reconstruct_soma_mesh()
+        nmv.builders.common.reconstruct_soma_mesh(builder=self)
 
         # Build the arbors
-        self.reconstruct_arbors_meshes()
+        self.build_arbors()
 
         # Connect the arbors to the soma
-        # self.connect_arbors_to_soma()
+        nmv.builders.common.connect_arbors_to_soma(builder=self)
 
-        # Modifying mesh surface
-        # self.modify_mesh_surface()
 
         # Decimation
         # self.decimate_neuron_mesh()
