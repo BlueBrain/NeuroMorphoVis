@@ -351,6 +351,9 @@ class MorphologyPanel(bpy.types.Panel):
         nmv.interface.ui.morphology_panel_options.set_export_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(layout)
+
 
 ####################################################################################################
 # ReconstructMorphologyOperator

@@ -105,6 +105,9 @@ class EditPanel(bpy.types.Panel):
             save_morphology_buttons_column = layout.column(align=True)
             save_morphology_buttons_column.operator('export_morphology.swc', icon='GROUP_VERTEX')
 
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(layout)
+
 
 ####################################################################################################
 # @SketchSkeleton

@@ -28,6 +28,7 @@ import bpy.utils.previews
 import nmv
 import nmv.enums
 import nmv.interface
+import nmv.utilities
 
 nmv_icons = None
 
@@ -85,7 +86,8 @@ class AboutPanel(bpy.types.Panel):
         credits_column.separator()
 
         version_column = layout.column()
-        version_column.label(text='Version: 1.3.0')
+        version = nmv.utilities.get_nmv_version()
+        version_column.label(text='Version: %d.%d.%d' % (version[0], version[1], version[2]))
 
         update_button = layout.column()
         update_button.operator('update.nmv', emboss=True,

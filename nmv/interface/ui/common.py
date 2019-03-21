@@ -63,6 +63,21 @@ def unload_icons():
 ####################################################################################################
 # @load_morphology
 ####################################################################################################
+def enable_or_disable_layout(layout):
+    """Activates or deactivates the layout based on the status of the morphology.
+
+    :param layout:
+        A given layout to enable or disable.
+    """
+    if nmv.interface.ui_morphology is None:
+        layout.enabled = False
+    else:
+        layout.enabled = True
+
+
+####################################################################################################
+# @load_morphology
+####################################################################################################
 def load_morphology(panel_object,
                     context_scene):
     """Load a given morphology from file.

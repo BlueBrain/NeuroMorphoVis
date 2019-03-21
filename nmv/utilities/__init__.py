@@ -16,6 +16,7 @@
 ####################################################################################################
 
 from .parser import *
+from .parser import *
 from .std_output import *
 from .time_line import *
 from .timer import *

@@ -23,12 +23,13 @@ from mathutils import Vector
 # @parse_color_from_argument
 ####################################################################################################
 def parse_color_from_argument(color_argument):
-    """
-    Gets the RGB values from the color arguments. This function is compatible with an RGB color
+    """Gets the RGB values from the color arguments. This function is compatible with an RGB color
     format with 0-255 or 0.0-0.1 representations.
 
-    :param color_argument: A given color argument.
-    :return: A vector having RGB color components.
+    :param color_argument:
+        A given color argument.
+    :return:
+        A vector having RGB color components.
     """
 
     # Split the string

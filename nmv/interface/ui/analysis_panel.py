@@ -86,6 +86,11 @@ class AnalysisPanel(bpy.types.Panel):
             export_analysis_row = layout.row()
             export_analysis_row.operator('export.analysis_results', icon='MESH_DATA')
 
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(layout)
+
+
+
 
 ####################################################################################################
 # @SaveSomaMeshBlend

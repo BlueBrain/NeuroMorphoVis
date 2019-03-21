@@ -988,6 +988,9 @@ class MeshPanel(bpy.types.Panel):
         # Mesh export options
         self.draw_mesh_export_options(context)
 
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(self.layout)
+
 
 ####################################################################################################
 # @ReconstructNeuronMesh

@@ -311,6 +311,9 @@ class SomaPanel(bpy.types.Panel):
             render_view_buttons_row.enabled = False
             render_animations_buttons_row.enabled = False
 
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(layout)
+
 
 ####################################################################################################
 # @ReconstructSoma
