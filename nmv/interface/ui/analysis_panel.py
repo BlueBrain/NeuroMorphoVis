@@ -64,7 +64,7 @@ class AnalysisPanel(bpy.types.Panel):
         """Draw the panel
 
         :param context:
-            Rendering context
+            Blender context
         """
 
         # Get a reference to the panel layout
@@ -108,7 +108,7 @@ class AnalyzeMorphology(bpy.types.Operator):
         """Execute the operator.
 
         :param context:
-            Rendering context
+            Blender context
         :return:
             'FINISHED'
         """
@@ -151,7 +151,7 @@ class ExportAnalysisResults(bpy.types.Operator):
         """Execute the operator.
 
         :param context:
-            Rendering context
+            Blender context
         :return:
             'FINISHED'
         """
@@ -161,10 +161,12 @@ class ExportAnalysisResults(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        nmv.logger.log(context.scene.OutputDirectory)
         if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
+
+        # Verify the output directory
+        nmv.interface.validate_output_directory(self, context.scene)
 
         # Create the analysis directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):

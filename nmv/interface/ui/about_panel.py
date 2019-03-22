@@ -49,17 +49,14 @@ class AboutPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     ################################################################################################
-    # Panel options
-    ################################################################################################
-
-    ################################################################################################
     # @draw
     ################################################################################################
-    def draw(self, context):
+    def draw(self,
+             context):
         """Draw the panel.
 
         :param context:
-            Panel context.
+            Blender context.
         """
 
         # Get a reference to the panel layout
@@ -85,6 +82,7 @@ class AboutPanel(bpy.types.Panel):
         credits_column.label(text='Felix Shuermann', icon='OUTLINER_DATA_POSE')
         credits_column.separator()
 
+        # Version
         version_column = layout.column()
         version = nmv.utilities.get_nmv_version()
         version_column.label(text='Version: %d.%d.%d' % (version[0], version[1], version[2]))
@@ -92,10 +90,6 @@ class AboutPanel(bpy.types.Panel):
         update_button = layout.column()
         update_button.operator('update.nmv', emboss=True,
                                icon_value=nmv.interface.ui_icons['github'].icon_id)
-
-        # logo_row = layout.row(align=True)
-        # logo_row.alignment = 'EXPAND'
-        # logo_row.template_preview(bpy.data.textures["nmv-logo"])
 
 
 ####################################################################################################
@@ -116,7 +110,7 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         """Execute the operator.
 
         :param context:
-            Rendering context
+            Blender context
         :return:
             'FINISHED'
         """
