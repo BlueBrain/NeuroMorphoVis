@@ -266,7 +266,7 @@ class MorphologyPanel(bpy.types.Panel):
         default=1.0, min=0.01, max=5.0)
 
     # Rendering type
-    bpy.types.Scene.RenderingType= EnumProperty(
+    bpy.types.Scene.RenderingType = EnumProperty(
         items=[(nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION,
                 'Fixed Resolution',
                 'Renders a full view of the morphology at a specified resolution'),
@@ -423,67 +423,8 @@ class RenderMorphologyFront(bpy.types.Operator):
             'FINISHED'.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Morphology Rendering ... Wait')
-
-        # Compute the bounding box for a close up view
-        if context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MorphologyCloseUpDimensions)
-
-            # Image name
-            image_name = 'MORPHOLOGY_FRONT_CLOSE_UP_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for a mid-shot view
-        elif context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Image name
-            image_name = 'MORPHOLOGY_FRONT_MID_SHOT_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for the wide-shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-            # Image name
-            image_name = 'MORPHOLOGY_FRONT_FULL_VIEW_%s' % nmv.interface.ui_options.morphology.label
-
-        # Stretch the bounding box by few microns
-        rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
-        # Render the morphology
-        nmv.rendering.NeuronSkeletonRenderer.render(
-            bounding_box=rendering_bbox,
-            camera_view=nmv.enums.Camera.View.FRONT,
-            image_resolution=context.scene.MorphologyFrameResolution,
-            image_name=image_name,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.KeepSomaCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Rendering Morphology Done')
+        # Render the image
+        nmv.interface.ui.render_morphology_image(self, context.scene, nmv.enums.Camera.View.FRONT)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -511,67 +452,8 @@ class RenderMorphologySide(bpy.types.Operator):
             'FINISHED'.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Morphology Rendering ... Wait')
-
-        # Compute the bounding box for a close up view
-        if context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MorphologyCloseUpDimensions)
-
-            # Image name
-            image_name = 'MORPHOLOGY_SIDE_CLOSE_UP_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for a mid-shot view
-        elif context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Image name
-            image_name = 'MORPHOLOGY_SIDE_MID_SHOT_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for the wide-shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-            # Image name
-            image_name = 'MORPHOLOGY_SIDE_FULL_VIEW_%s' % nmv.interface.ui_options.morphology.label
-
-        # Stretch the bounding box by few microns
-        rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
-        # Render the morphology
-        nmv.rendering.NeuronSkeletonRenderer.render(
-            bounding_box=rendering_bbox,
-            camera_view=nmv.enums.Camera.View.SIDE,
-            image_resolution=context.scene.MorphologyFrameResolution,
-            image_name=image_name,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.KeepSomaCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Rendering Morphology Done')
+        # Render the image
+        nmv.interface.ui.render_morphology_image(self, context.scene, nmv.enums.Camera.View.SIDE)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -599,67 +481,8 @@ class RenderMorphologyTop(bpy.types.Operator):
             'FINISHED'.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-            return {'FINISHED'}
-
-        # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Report the process starting in the UI
-        self.report({'INFO'}, 'Morphology Rendering ... Wait')
-
-        # Compute the bounding box for a close up view
-        if context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
-
-            # Compute the bounding box for a close up view
-            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MorphologyCloseUpDimensions)
-
-            # Image name
-            image_name = 'MORPHOLOGY_TOP_CLOSE_UP_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for a mid-shot view
-        elif context.scene.MorphologyRenderingView == \
-                nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
-
-            # Compute the bounding box for the available meshes only
-            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Image name
-            image_name = 'MORPHOLOGY_TOP_MID_SHOT_%s' % nmv.interface.ui_options.morphology.label
-
-        # Compute the bounding box for the wide-shot view that correspond to the whole morphology
-        else:
-
-            # Compute the full morphology bounding box
-            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                morphology=nmv.interface.ui_morphology)
-
-            # Image name
-            image_name = 'MORPHOLOGY_TOP_FULL_VIEW_%s' % nmv.interface.ui_options.morphology.label
-
-        # Stretch the bounding box by few microns
-        rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
-        # Render the morphology
-        nmv.rendering.NeuronSkeletonRenderer.render(
-            bounding_box=rendering_bbox,
-            camera_view=nmv.enums.Camera.View.TOP,
-            image_resolution=context.scene.MorphologyFrameResolution,
-            image_name='MORPHOLOGY_TOP_%s' % nmv.interface.ui_options.morphology.label,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.KeepSomaCameras)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Rendering Morphology Done')
+        # Render the image
+        nmv.interface.ui.render_morphology_image(self, context.scene, nmv.enums.Camera.View.TOP)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -746,8 +569,8 @@ class RenderMorphology360(bpy.types.Operator):
             bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
             # Render a frame
-            nmv.rendering.NeuronSkeletonRenderer.render_at_angle(
-                morphology_objects=nmv.interface.ui_reconstructed_skeleton,
+            nmv.rendering.renderer.render_at_angle(
+                scene_objects=nmv.interface.ui_reconstructed_skeleton,
                 angle=self.timer_limits,
                 bounding_box=bounding_box_360,
                 camera_view=nmv.enums.Camera.View.FRONT,

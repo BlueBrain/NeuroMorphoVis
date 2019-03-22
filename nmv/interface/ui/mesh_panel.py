@@ -1261,8 +1261,8 @@ class RenderMesh360(bpy.types.Operator):
             else:
 
                 # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
-                    mesh_objects=self.scene_objects,
+                nmv.rendering.renderer.render_at_angle_to_scale(
+                    scene_objects=self.scene_objects,
                     angle=self.timer_limits,
                     bounding_box=self.bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
