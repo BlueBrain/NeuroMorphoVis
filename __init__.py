@@ -47,7 +47,7 @@ bl_info = {
     # The author of this add-on
     "author": "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version": (int(__version__[0]), int(__version__[1]), int(__version__[2])),
+    "version": (1, 3, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
