@@ -396,6 +396,9 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
 
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
+
         # Confirm operation done
         return {'FINISHED'}
 

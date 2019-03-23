@@ -779,3 +779,17 @@ def is_object_in_scene_by_name(object_name):
 
     # No, it doesn't exist
     return False
+
+
+####################################################################################################
+# @view_all_scene
+####################################################################################################
+def view_all_scene():
+    """View all the objects in the scene.
+    """
+
+    # Switch to the top view
+    bpy.ops.view3d.viewnumpad(type='TOP')
+
+    # View all the objects in the scene
+    bpy.ops.view3d.view_all()

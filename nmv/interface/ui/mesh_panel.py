@@ -784,6 +784,9 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             # Invalid method
             self.report({'ERROR'}, 'Invalid Meshing Technique')
 
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
+
         return {'FINISHED'}
 
 

@@ -289,6 +289,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # Upgrade the timer limits
             self.timer_limits += 1
 
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
+
         # Next frame
         return {'PASS_THROUGH'}
 
@@ -338,6 +341,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
         wm = context.window_manager
         self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
         wm.modal_handler_add(self)
+
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
 
         # Done
         return {'RUNNING_MODAL'}

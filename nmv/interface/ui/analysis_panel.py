@@ -36,6 +36,7 @@ import nmv.enums
 import nmv.file
 import nmv.interface
 import nmv.skeleton
+import nmv.scene
 
 
 ####################################################################################################
@@ -129,6 +130,9 @@ class AnalyzeMorphology(bpy.types.Operator):
         # Register the analysis components, apply the kernel functions and update the UI
         context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
+
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
 
         return {'FINISHED'}
 
