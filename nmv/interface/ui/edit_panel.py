@@ -149,9 +149,6 @@ class SketchSkeleton(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))
 
-        # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
-
         return {'FINISHED'}
 
 
