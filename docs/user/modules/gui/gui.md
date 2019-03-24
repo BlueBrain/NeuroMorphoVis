@@ -50,7 +50,7 @@ The _Morphology Analysis_ toolbox can be loaded by clicking on the _Morphology A
 </p> 
 
 ### Morphology Editing 
-The _Morphology Editing_ toolbox can be loaded by clicking on the _Morphology Editing_ tab. We will add later a little guide to show how to use this utility. 
+The _Morphology Editing_ toolbox can be loaded by clicking on the _Morphology Editing_ tab. his [guide](morphology-editing.md) explains how to use this toolbox to analyze the morphology skeleton.      
 
 ### Soma Reconstruction 
 
