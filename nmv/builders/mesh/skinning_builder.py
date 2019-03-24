@@ -441,16 +441,16 @@ class SkinningBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.common.create_skeleton_materials(builder=self)
+        nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
         self.verify_morphology_skeleton()
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
-        nmv.builders.common.modify_morphology_skeleton(builder=self)
+        nmv.builders.modify_morphology_skeleton(builder=self)
 
         # Build the soma, with the default parameters
-        nmv.builders.common.reconstruct_soma_mesh(builder=self)
+        nmv.builders.reconstruct_soma_mesh(builder=self)
 
         # Build the arbors and connect them to the soma
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
@@ -459,21 +459,20 @@ class SkinningBuilder:
             self.build_arbors(connected_to_soma=True)
 
             # Connect to the soma
-            nmv.builders.common.connect_arbors_to_soma(builder=self)
+            nmv.builders.connect_arbors_to_soma(builder=self)
 
         # Build the arbors only without any connection to the soma
         else:
             self.build_arbors(connected_to_soma=False)
 
         # Tessellation
-        if self.options.mesh.tessellation_level < 1.0:
-            nmv.builders.common.decimate_neuron_mesh(builder=self)
+        nmv.builders.decimate_neuron_mesh(builder=self)
 
         # Surface roughness
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.builders.common.add_surface_noise_to_arbor(builder=self)
+        nmv.builders.add_surface_noise_to_arbor(builder=self)
 
         # Add the spines
         nmv.builders.add_spines_to_surface(builder=self)
 
+        # Done
         nmv.logger.header('Done!')

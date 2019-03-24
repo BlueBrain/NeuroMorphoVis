@@ -386,7 +386,8 @@ def add_surface_noise_to_arbor(builder):
 ####################################################################################################
 # @add_spines_to_surface
 ####################################################################################################
-def add_spines_to_surface(builder):
+def add_spines_to_surface(builder,
+                          join_spine_meshes=False):
     """Adds spines meshes to the surface mesh of the neuron.
 
     NOTE: The spines will just be added to the surface, but they will not get merged to the surface
@@ -394,6 +395,8 @@ def add_spines_to_surface(builder):
 
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
+    :param join_spine_meshes:
+        Join all the spines meshes into a single mesh object for simplicity.
     """
 
     # Build spines from a BBP circuit
@@ -414,13 +417,57 @@ def add_spines_to_surface(builder):
     else:
         return
 
-    # Join the spine objects into a single mesh
-    #spine_mesh_name = '%s_spines' % self.options.morphology.label
-    #self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+    # Join the spine objects into a single mesh, if required
+    if join_spine_meshes:
+        spine_mesh_name = '%s_spines' % builder.options.morphology.label
+        nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
 
+####################################################################################################
+# @join_mesh_object_into_single_object
+####################################################################################################
+def join_mesh_object_into_single_object(builder):
+    """Join all the mesh objects in the scene into a single mesh.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    :return:
+        A reference to the joint mesh.
+    """
+
+    # Build spines from a BBP circuit
+    if builder.options.mesh.neuron_objects_connection == \
+       nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+
+        # Get a list of all the neuron mesh objects
+        mesh_objects = get_neuron_mesh_objects(builder=builder)
+
+        # Join them into a single object
+        joint_mesh = nmv.mesh.join_mesh_objects(mesh_objects, builder.options.morphology.label)
+
+        # Return a reference to the joint mesh object
+        return joint_mesh
 
 
+####################################################################################################
+# @transform_to_global_coordinates
+####################################################################################################
+def transform_to_global_coordinates(builder):
+    """Transforms the neuron mesh to the global coordinates.
+
+    NOTE: Spine transformation is already implemented by the spine builder, and therefore
+    this function applies only to the arbors and the soma.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # Transform the neuron object to the global coordinates
+    if builder.options.mesh.global_coordinates:
+        nmv.logger.header('Transforming to global coordinates')
+        nmv.skeleton.ops.transform_to_global_coordinates(
+            mesh_object=builder.neuron_mesh, blue_config=builder.options.morphology.blue_config,
+            gid=builder.options.morphology.gid)
 
 
 ################################################################################################

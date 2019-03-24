@@ -143,7 +143,7 @@ bpy.types.Scene.SurfaceRoughness = EnumProperty(
     default=nmv.enums.Meshing.Surface.SMOOTH)
 
 # Spine sources can be random or from a BBP circuit
-bpy.types.Scene.SpinesSourceCircuit= EnumProperty(
+bpy.types.Scene.SpinesSourceCircuit = EnumProperty(
     items=[(nmv.enums.Meshing.Spines.Source.IGNORE,
             'Ignore',
             'Ignore creating the spines'),
@@ -333,7 +333,7 @@ bpy.types.Scene.NeuronMeshRenderingProgress = IntProperty(
 bpy.types.Scene.ExportIndividuals = BoolProperty(
     name='Export Components',
     description='Export each component of the neuron as a separate mesh. This feature is '
-                'important to label reconstructions with machine learning applications.',
+                'important to label reconstructions with machine learning applications',
     default=False)
 
 # Exported mesh file formats

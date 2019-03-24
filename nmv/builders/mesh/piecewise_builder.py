@@ -150,26 +150,6 @@ class PiecewiseBuilder:
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
     ################################################################################################
-    # @modify_morphology_skeleton
-    ################################################################################################
-    def modify_morphology_skeleton(self):
-        """Modifies the morphology skeleton, if required. These modifications are specific to this
-        builder.
-        """
-
-        # Taper the sections if requested
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.taper_section])
-
-        # Zigzag the sections if required
-        if self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-           self.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.zigzag_section])
-
-    ################################################################################################
     # @build_arbors
     ################################################################################################
     def build_arbors(self,
@@ -554,60 +534,6 @@ class PiecewiseBuilder:
                         vertex.select = False
             else:
         """
-
-
-    ################################################################################################
-    # @add_surface_noise
-    ################################################################################################
-    def add_surface_noise(self):
-        """Adds noise to the surface of the reconstructed mesh(es).
-        """
-
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.header('Adding surface roughness')
-
-            # The soma is already reconstructed with high number of subdivisions for accuracy,
-            # and the arbors are reconstructed with minimal number of samples that is sufficient to
-            # make them smooth. Therefore, we must add the noise around the soma and its connections
-            # to the arbors (the stable extent) with a different amplitude.
-            stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
-                self.morphology)
-
-            for apical_dendrite_mesh in self.apical_dendrites_meshes:
-                self.add_membrane_roughness_to_arbor(
-                    apical_dendrite_mesh, stable_extent_center, stable_extent_radius)
-
-                # Decimate
-                nmv.mesh.ops.decimate_mesh_object(
-                    mesh_object=apical_dendrite_mesh, decimation_ratio=0.25)
-
-                # Smooth
-                nmv.mesh.ops.smooth_object(mesh_object=apical_dendrite_mesh, level=1)
-
-
-            # Deselect all the vertices
-            # nmv.mesh.ops.deselect_all_vertices(mesh_object=self.neuron_mesh)
-
-
-
-
-    ################################################################################################
-    # @transform_to_global_coordinates
-    ################################################################################################
-    def transform_to_global_coordinates(self):
-        """Transform the neuron membrane to the global coordinates.
-
-        NOTE: Spine transformation is already implemented by the spine builder, and therefore
-        this function applies only to the arbors and the soma.
-        """
-
-        # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
-            nmv.logger.header('Transforming to global coordinates')
-            nmv.skeleton.ops.transform_to_global_coordinates(
-                mesh_object=self.neuron_mesh, blue_config=self.options.morphology.blue_config,
-                gid=self.options.morphology.gid)
-
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -622,31 +548,37 @@ class PiecewiseBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.common.create_skeleton_materials(builder=self)
+        nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
         self.verify_morphology_skeleton()
 
-        # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
-        self.modify_morphology_skeleton()
+        # Apply skeleton - based operation, if required, to slightly modify the skeleton
+        nmv.builders.modify_morphology_skeleton(builder=self)
 
-        # Build the soma
-        self.reconstruct_soma_mesh()
+        # Build the soma, with the default parameters
+        nmv.builders.reconstruct_soma_mesh(builder=self)
 
         # Build the arbors
         self.reconstruct_arbors_meshes()
 
-        # Connect the arbors to the soma
-        self.connect_arbors_to_soma()
+        # Connect to the soma
+        nmv.builders.connect_arbors_to_soma(builder=self)
 
-        # Adding surface roughness
-        self.add_surface_noise()
+        # Tessellation
+        nmv.builders.decimate_neuron_mesh(builder=self)
 
-        # Decimation
-        # self.decimate_neuron_mesh()
+        # Surface roughness
+        nmv.builders.add_surface_noise_to_arbor(builder=self)
 
-        # Adding spines
-        self.add_spines()
+        # Add the spines
+        nmv.builders.add_spines_to_surface(builder=self)
+
+        # Join all the objects into a single object
+        nmv.builders.join_mesh_object_into_single_object(builder=self)
+
+        # Transform to the global coordinates, if required
+        nmv.builders.transform_to_global_coordinates(builder=self)
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')

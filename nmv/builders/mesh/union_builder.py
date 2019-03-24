@@ -360,23 +360,22 @@ class UnionBuilder:
         self.verify_morphology_skeleton()
 
         # Apply skeleton-based operation, if required, to slightly modify the morphology skeleton
-        nmv.builders.common.modify_morphology_skeleton(builder=self)
+        nmv.builders.modify_morphology_skeleton(builder=self)
 
         # Build the soma
-        nmv.builders.common.reconstruct_soma_mesh(builder=self)
+        nmv.builders.reconstruct_soma_mesh(builder=self)
 
         # Build the arbors
         self.build_arbors()
 
         # Connect the arbors to the soma
-        nmv.builders.common.connect_arbors_to_soma(builder=self)
+        nmv.builders.connect_arbors_to_soma(builder=self)
 
         # Tessellation
-        if self.options.mesh.tessellation_level < 1.0:
-            nmv.builders.common.decimate_neuron_mesh(builder=self)
+        nmv.builders.decimate_neuron_mesh(builder=self)
 
         # Adding spines
-        # self.add_spines()
+        nmv.builders.add_spines_to_surface(builder=self)
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
