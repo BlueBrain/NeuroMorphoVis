@@ -276,6 +276,9 @@ class MetaBuilder:
             Meta-object name.
         """
 
+        # Header
+        nmv.logger.header('Creating the Meta Object')
+
         # Create a new meta skeleton that will be used to reconstruct the skeleton frame
         self.meta_skeleton = bpy.data.metaballs.new(name)
 
@@ -290,6 +293,7 @@ class MetaBuilder:
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
+        nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
     ################################################################################################
     # @emanate_soma_towards_arbor
@@ -433,8 +437,7 @@ class MetaBuilder:
         self.finalize_meta_object()
 
         # Tessellation
-        if self.options.mesh.tessellation_level < 1.0:
-            nmv.builders.common.decimate_neuron_mesh(builder=self)
+        nmv.builders.common.decimate_neuron_mesh(builder=self)
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment

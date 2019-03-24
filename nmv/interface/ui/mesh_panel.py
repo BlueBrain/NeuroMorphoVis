@@ -275,26 +275,17 @@ class MeshPanel(bpy.types.Panel):
             Panel context.
         """
 
-        # Surface roughness
-        mesh_surface_row = self.layout.row()
-        mesh_surface_row.label('Surface:')
-        mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
-
         # Tessellation parameters
         tess_level_row = self.layout.row()
         tess_level_row.prop(context.scene, 'TessellateMesh')
         tess_level_column = tess_level_row.column()
         tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
+        if context.scene.TessellateMesh:
+            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        else:
             nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
             tess_level_column.enabled = False
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
 
     ################################################################################################
     # @draw_union_meshing_options
@@ -698,16 +689,6 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
-        # Extrusion
-        elif meshing_technique == nmv.enums.Meshing.Technique.EXTRUSION:
-
-            # Create the mesh builder
-            mesh_builder = nmv.builders.ExtrusionBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
-            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
-
         elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
 
             # Create the mesh builder
@@ -730,9 +711,6 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
             # Invalid method
             self.report({'ERROR'}, 'Invalid Meshing Technique')
-
-        # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
 
         return {'FINISHED'}
 
