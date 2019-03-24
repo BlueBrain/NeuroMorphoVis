@@ -17,33 +17,33 @@ export this modified morphology skeleton or to use it for other toolboxes in _Ne
 ## How to use this Toolbox?
 
 <p align="center">
-  <img src="images/morphology-editing/editing-1.jpg" width=300>
+  <img src="images/morphology-editing/editing-1.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-2.jpg" width=300>
+  <img src="images/morphology-editing/editing-2.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-3.jpg" width=300>
+  <img src="images/morphology-editing/editing-3.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-4.jpg" width=300>
+  <img src="images/morphology-editing/editing-4.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-5.jpg" width=300>
+  <img src="images/morphology-editing/editing-5.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-6.jpg" width=300>
+  <img src="images/morphology-editing/editing-6.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-7.jpg" width=300>
+  <img src="images/morphology-editing/editing-7.png" width=300>
 </p>
 
 <p align="center">
-  <img src="images/morphology-editing/editing-8.jpg" width=300>
+  <img src="images/morphology-editing/editing-8.png" width=300>
 </p>
