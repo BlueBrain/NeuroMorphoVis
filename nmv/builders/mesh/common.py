@@ -139,6 +139,98 @@ def reconstruct_soma_mesh(builder):
 
 
 ####################################################################################################
+# @get_neuron_mesh_objects
+####################################################################################################
+def get_neuron_mesh_objects(builder,
+                            exclude_spines=False):
+    """Gets a list of all the objects that belong to the neuron mesh. If all the objects are all
+    connected into a single object, it will be returned as a single item in a list.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    :param exclude_spines:
+        Exclude the spine meshes from this selection since they have a very special treatment.
+    :return:
+        A list of all the mesh objects that belong to the neuron
+    """
+
+    # Prepare the list
+    neuron_mesh_objects = list()
+
+    # Query the objects in the scene
+    for scene_object in bpy.context.scene.objects:
+
+        # Only select meshes
+        if scene_object.type == 'MESH':
+
+            # Exclude the spines
+            if not exclude_spines:
+                if 'spine' in scene_object.name:
+                    neuron_mesh_objects.append(scene_object)
+
+            if 'Apical' in scene_object.name or \
+               'Basal' in scene_object.name or \
+               'Axon' in scene_object.name or \
+               'soma' in scene_object.name or \
+                 builder.morphology.label in scene_object.name:
+                neuron_mesh_objects.append(scene_object)
+
+    # Return the list
+    return neuron_mesh_objects
+
+
+####################################################################################################
+# @adjust_texture_mapping
+####################################################################################################
+def adjust_texture_mapping(mesh_objects,
+                           texspace_size=5.0):
+    """Adjusts the UV mapping of the meshes. This operation is recommended to be called after
+    any mesh operation.
+
+    :param mesh_objects:
+        A list of meshes.
+    :param texspace_size:
+        Texture space size, by default 5.0.
+    """
+
+    nmv.logger.header('UV mapping')
+
+    # Do it mesh by mesh
+    for i, mesh_object in enumerate(mesh_objects):
+
+        # Adjust the size
+        nmv.shading.adjust_material_uv(mesh_object, size=texspace_size)
+
+        # Show the progress
+        nmv.utilities.show_progress(
+            '* Adjusting the UV mapping', float(i), float(len(mesh_objects)))
+
+    # Show the progress
+    nmv.utilities.show_progress('* Adjusting the UV mapping', 0, 0, done=True)
+
+
+####################################################################################################
+# @adjust_texture_mapping_of_all_meshes
+####################################################################################################
+def adjust_texture_mapping_of_all_meshes(builder, texspace_size=5.0):
+    """Adjusts the UV mapping of the meshes. This operation is recommended to be called after
+    any mesh operation.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+
+    :param texspace_size:
+        Texture space size, by default 5.0.
+    """
+
+    # Get a list of all the neurons in the scene
+    mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+
+    # Adjust the mapping of all the meshes
+    adjust_texture_mapping(mesh_objects=mesh_objects, texspace_size=texspace_size)
+
+
+####################################################################################################
 # @connect_arbors_to_soma
 ####################################################################################################
 def connect_arbors_to_soma(builder):
@@ -185,78 +277,8 @@ def connect_arbors_to_soma(builder):
                 nmv.logger.info('Axon')
                 nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, builder.morphology.axon)
 
-
-####################################################################################################
-# @get_neuron_mesh_objects
-####################################################################################################
-def get_neuron_mesh_objects(builder,
-                            exclude_spines=False):
-    """Gets a list of all the objects that belong to the neuron mesh. If all the objects are all
-    connected into a single object, it will be returned as a single item in a list.
-
-    :param builder:
-        An object of the builder that is used to reconstruct the neuron mesh.
-    :param exclude_spines:
-        Exclude the spine meshes from this selection since they have a very special treatment.
-    :return:
-        A list of all the mesh objects that belong to the neuron
-    """
-
-    # Prepare the list
-    neuron_mesh_objects = list()
-
-    # Query the objects in the scene
-    for scene_object in bpy.context.scene.objects:
-
-        # Only select meshes
-        if scene_object.type == 'MESH':
-
-            # Exclude the spines
-            if not exclude_spines:
-                if 'spine' in scene_object.name:
-                    neuron_mesh_objects.append(scene_object)
-
-            # Otherwise, add the object to the list
-            else:
-
-                if 'Apical' in scene_object.name or \
-                   'Basal' in scene_object.name or \
-                   'Axon' in scene_object.name or \
-                   builder.morphology.label in scene_object.name:
-                    neuron_mesh_objects.append(scene_object)
-
-    # Return the list
-    return neuron_mesh_objects
-
-
-####################################################################################################
-# @adjust_texture_mapping
-####################################################################################################
-def adjust_texture_mapping(mesh_objects,
-                           texspace_size=5.0):
-    """Adjusts the UV mapping of the meshes. This operation is recommended to be called after
-    any mesh operation.
-
-    :param mesh_objects:
-        A list of meshes.
-    :param texspace_size:
-        Texture space size, by default 5.0.
-    """
-
-    nmv.logger.header('UV mapping')
-
-    # Do it mesh by mesh
-    for i, mesh_object in enumerate(mesh_objects):
-
-        # Adjust the size
-        nmv.shading.adjust_material_uv(mesh_object, size=texspace_size)
-
-        # Show the progress
-        nmv.utilities.show_progress(
-            '* Adjusting the UV mapping', float(i), float(len(mesh_objects)))
-
-    # Show the progress
-    nmv.utilities.show_progress('* Adjusting the UV mapping', 0, 0, done=True)
+    # Adjust the texture mapping after connecting the meshes together
+    adjust_texture_mapping_of_all_meshes(builder=builder)
 
 
 ################################################################################################
@@ -300,35 +322,16 @@ def decimate_neuron_mesh(builder):
 ####################################################################################################
 def add_surface_noise_to_arbor(builder):
     """Adds noise to the surface of the arbors of the reconstructed mesh(es).
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
     """
 
     if builder.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
         nmv.logger.header('Adding surface roughness to arbors')
 
         # Get a list of all the meshes of the reconstructed arbors
-
-
-
-        # Join all the mesh objects (except the spines) of the neuron into a single mesh object
-        nmv.logger.info('Joining meshes')
-        neuron_meshes = list()
-        for scene_object in bpy.context.scene.objects:
-
-            # Only for meshes
-            if scene_object.type == 'MESH':
-
-                # Exclude the spines
-                if 'spin' in scene_object.name:
-                    continue
-
-                # Otherwise, add the object to the list
-                else:
-                    neuron_meshes.append(scene_object)
-
-        # Join all the objects into a single neuron mesh
-        neuron_mesh = nmv.mesh.ops.join_mesh_objects(
-            mesh_list=neuron_meshes,
-            name='%s_mesh_proxy' % builder.options.morphology.label)
+        mesh_objects = get_neuron_mesh_objects(builder=builder)
 
         # The soma is already reconstructed with high number of subdivisions for accuracy,
         # and the arbors are reconstructed with minimal number of samples that is sufficient to
@@ -337,60 +340,74 @@ def add_surface_noise_to_arbor(builder):
         stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
             builder.morphology)
 
-        # Apply the noise addition filter
-        nmv.logger.info('Adding noise')
-        for i in range(len(neuron_mesh.data.vertices)):
-            vertex = neuron_mesh.data.vertices[i]
-            if nmv.geometry.ops.is_point_inside_sphere(
-                    stable_extent_center, stable_extent_radius, vertex.co):
+        # Apply the operation to every mesh object in the list
+        for mesh_object in mesh_objects:
+
+            # Apply the noise addition filter
+            for i in range(len(mesh_object.data.vertices)):
+                vertex = mesh_object.data.vertices[i]
                 if nmv.geometry.ops.is_point_inside_sphere(
-                        stable_extent_center, builder.morphology.soma.smallest_radius,
-                        vertex.co):
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
-                    vertex.select = False
-                else:
-                    if 0.0 < random.uniform(0, 1.0) < 0.1:
+                        stable_extent_center, stable_extent_radius, vertex.co):
+                    if nmv.geometry.ops.is_point_inside_sphere(
+                            stable_extent_center, builder.morphology.soma.smallest_radius,
+                            vertex.co):
                         vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.3))
+                        vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
                         vertex.select = False
-            else:
+                    else:
+                        if 0.0 < random.uniform(0, 1.0) < 0.1:
+                            vertex.select = True
+                            vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.3))
+                            vertex.select = False
+                else:
 
-                value = random.uniform(-0.1, 0.1)
-                if 0.0 < random.uniform(0, 1.0) < 0.045:
-                    value += random.uniform(0.05, 0.1)
-                elif 0.045 < random.uniform(0, 1.0) < 0.06:
-                    value += random.uniform(0.2, 0.4)
-                vertex.select = True
-                vertex.co = vertex.co + (vertex.normal * value)
-                vertex.select = False
+                    value = random.uniform(-0.1, 0.1)
+                    if 0.0 < random.uniform(0, 1.0) < 0.045:
+                        value += random.uniform(0.05, 0.1)
+                    elif 0.045 < random.uniform(0, 1.0) < 0.06:
+                        value += random.uniform(0.2, 0.4)
+                    vertex.select = True
+                    vertex.co = vertex.co + (vertex.normal * value)
+                    vertex.select = False
 
-        # Decimate and smooth for getting the bumps
-        nmv.logger.info('Smoothing')
+            # Decimate and smooth for getting the bumps
+            nmv.logger.info('Smoothing')
 
-        # Deselect all the vertices
-        nmv.mesh.ops.deselect_all_vertices(mesh_object=neuron_mesh)
+            # Deselect all the vertices
+            nmv.mesh.ops.deselect_all_vertices(mesh_object=mesh_object)
 
-        # Decimate each mesh object
-        nmv.mesh.ops.decimate_mesh_object(mesh_object=neuron_mesh, decimation_ratio=0.5)
+            # Decimate each mesh object
+            nmv.mesh.ops.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.5)
 
-        # Smooth each mesh object
-        nmv.mesh.ops.smooth_object(mesh_object=neuron_mesh, level=1)
+            # Smooth each mesh object
+            nmv.mesh.ops.smooth_object(mesh_object=mesh_object, level=1)
 
-def add_spines(self):
-    # Add spines
-    spines_objects = None
-    if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-        nmv.logger.header('Adding circuit spines')
+
+####################################################################################################
+# @add_spines_to_surface
+####################################################################################################
+def add_spines_to_surface(builder):
+    """Adds spines meshes to the surface mesh of the neuron.
+
+    NOTE: The spines will just be added to the surface, but they will not get merged to the surface
+    with any union operator.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # Build spines from a BBP circuit
+    if builder.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+        nmv.logger.header('Adding Spines from a BBP Circuit')
         spines_objects = nmv.builders.build_circuit_spines(
-            morphology=self.morphology, blue_config=self.options.morphology.blue_config,
-            gid=self.options.morphology.gid, material=self.spines_materials[0])
+            morphology=builder.morphology, blue_config=builder.options.morphology.blue_config,
+            gid=builder.options.morphology.gid, material=builder.spines_materials[0])
 
-    # Random spines
-    elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-        nmv.logger.header('Adding random spines')
+    # Just add some random spines for the look only
+    elif builder.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+        nmv.logger.header('Adding Random Spines')
         spines_builder = nmv.builders.RandomSpineBuilder(
-            morphology=self.morphology, options=self.options)
+            morphology=builder.morphology, options=builder.options)
         spines_objects = spines_builder.add_spines_to_morphology()
 
     # Otherwise ignore spines
@@ -398,8 +415,8 @@ def add_spines(self):
         return
 
     # Join the spine objects into a single mesh
-    spine_mesh_name = '%s_spines' % self.options.morphology.label
-    self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+    #spine_mesh_name = '%s_spines' % self.options.morphology.label
+    #self.spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
 
 

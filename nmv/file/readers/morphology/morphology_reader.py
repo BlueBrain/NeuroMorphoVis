@@ -116,8 +116,9 @@ def read_morphology_from_file(options):
     else:
 
         # Issue an error
-        nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' % morphology_extension)
-        return False
+        nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' %
+                       morphology_extension)
+        return False, None
 
     # If the morphology object is None, return False
     if morphology_object is None:

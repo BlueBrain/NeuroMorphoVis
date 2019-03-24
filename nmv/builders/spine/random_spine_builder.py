@@ -119,7 +119,6 @@ class RandomSpineBuilder:
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
 
         # Rotate the spine towards the pre-synaptic point
-
         nmv.scene.ops.rotate_object_towards_target(
             spine_object, spine.post_synaptic_position,
             spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
@@ -166,7 +165,7 @@ class RandomSpineBuilder:
         for i, spine in enumerate(spines_list):
 
             # Show progress
-            nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
+            nmv.utilities.time_line.show_iteration_progress('\t* Spines', i, number_spines)
 
             # Emanate a spine
             spine_object = self.emanate_spine(spine, i)
@@ -176,7 +175,7 @@ class RandomSpineBuilder:
 
         # Done
         nmv.utilities.time_line.show_iteration_progress(
-            '\t Spines', number_spines, number_spines, done=True)
+            '\t* Spines', number_spines, number_spines, done=True)
 
         # Report the time
         building_timer.end()

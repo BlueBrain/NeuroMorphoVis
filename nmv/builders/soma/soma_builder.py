@@ -866,11 +866,11 @@ class SomaBuilder:
 
             # Update the progress shell
             nmv.utilities.show_progress(
-                'Simulation: ', frame_index, nmv.consts.Simulation.MAX_FRAME)
+                '* Simulation: ', frame_index, nmv.consts.Simulation.MAX_FRAME)
 
         # Report process done
         nmv.utilities.show_progress(
-            'Simulation: ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME,
+            '* Simulation: ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME,
             done=True)
 
         # Build the soma mesh from the soft body object after deformation
@@ -908,11 +908,11 @@ class SomaBuilder:
             bpy.context.scene.frame_set(frame_index)
 
             # Update the progress shell
-            nmv.utilities.show_progress('Simulation: ', frame_index, nmv.consts.Simulation.MAX_FRAME)
+            nmv.utilities.show_progress('* Simulation: ', frame_index, nmv.consts.Simulation.MAX_FRAME)
 
         # Report process done
         nmv.utilities.show_progress(
-            'Simulation: ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME)
+            '* Simulation: ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME)
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)

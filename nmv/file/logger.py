@@ -129,7 +129,7 @@ class Logger:
         :param args:
             Input arguments.
         """
-        print("\n")  # Add a new line
+        print("")  # Add a new line
         self.line()
         log_string = ''.join(map(str, args))
         self.log('    * %s' % log_string)

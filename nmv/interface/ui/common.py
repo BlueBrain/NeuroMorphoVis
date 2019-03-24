@@ -95,39 +95,51 @@ def load_morphology(panel_object,
     # Read the data from a given morphology file either in .h5 or .swc formats
     if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
+        try:
+            # Pass options from UI to system
+            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
 
-        # Ensure that a file has been selected
-        if 'Select File' in context_scene.MorphologyFile:
-            return None
+            # Ensure that a file has been selected
+            if 'Select File' in context_scene.MorphologyFile:
+                return None
 
-        # If no morphologies are loaded
-        if current_morphology_path is None:
+            # If no morphologies are loaded
+            if current_morphology_path is None:
 
-            # Update the morphology label
-            nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                context_scene.MorphologyFile)
+                # Update the morphology label
+                nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
+                    context_scene.MorphologyFile)
 
-        # If there is file that is loaded
-        else:
+            # If there is file that is loaded
+            else:
 
-            # If the same path, then return
-            if current_morphology_path == nmv.interface.ui_options.morphology.morphology_file_path:
-                return 'ALREADY_LOADED'
+                # If the same path, then return
+                if current_morphology_path == nmv.interface.ui_options.morphology.morphology_file_path:
+                    return 'ALREADY_LOADED'
 
-        # Load the morphology from the file
-        loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-            options=nmv.interface.ui_options)
+            # Load the morphology from the file
+            loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
+                options=nmv.interface.ui_options)
 
-        # Verify the loading operation
-        if loading_flag:
+            # Verify the loading operation
+            if loading_flag:
 
-            # Update the morphology
-            nmv.interface.ui_morphology = morphology_object
+                # Update the morphology
+                nmv.interface.ui_morphology = morphology_object
 
-        # Otherwise, report an ERROR
-        else:
+            # Otherwise, report an ERROR
+            else:
+
+                # Report the issue
+                panel_object.report({'ERROR'}, 'Invalid Morphology File')
+
+                # None
+                return None
+
+        # Invalid morphology file
+        except ValueError:
+
+            # Report the issue
             panel_object.report({'ERROR'}, 'Invalid Morphology File')
 
             # None

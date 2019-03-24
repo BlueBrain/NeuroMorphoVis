@@ -469,11 +469,11 @@ class SkinningBuilder:
         if self.options.mesh.tessellation_level < 1.0:
             nmv.builders.common.decimate_neuron_mesh(builder=self)
 
-        #if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-        #   nmv.builders.common.add_surface_noise_to_arbor(builder=self)
+        # Surface roughness
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+            nmv.builders.common.add_surface_noise_to_arbor(builder=self)
 
         # Add the spines
-
+        nmv.builders.add_spines_to_surface(builder=self)
 
         nmv.logger.header('Done!')
-
