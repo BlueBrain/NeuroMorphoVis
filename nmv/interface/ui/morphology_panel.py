@@ -386,7 +386,7 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
         # If the result is None, report the issue
         if loading_result is None:
-            self.report({'ERROR'}, 'Please select a morphology file')
+            self.report({'ERROR'}, 'Please select a valid morphology file')
             return {'FINISHED'}
 
         # Create a skeletonizer object to build the morphology skeleton

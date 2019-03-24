@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy, sys
+import random, copy
 
 # Blender imports
 import bpy
@@ -57,7 +57,7 @@ class SkinningBuilder:
         """
 
         # Morphology
-        self.morphology = morphology
+        self.morphology = copy.deepcopy(morphology)
 
         # Loaded options from NeuroMorphoVis
         self.options = options

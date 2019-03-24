@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Syetsm imports
+import copy
+
 # Blender imports
 import bpy, mathutils
 
@@ -50,7 +53,7 @@ class MetaBuilder:
         """
 
         # Morphology
-        self.morphology = morphology
+        self.morphology = copy.deepcopy(morphology)
 
         # Loaded options from NeuroMorphoVis
         self.options = options

@@ -57,7 +57,7 @@ class PiecewiseBuilder:
         """
 
         # Morphology
-        self.morphology = morphology
+        self.morphology = copy.deepcopy(morphology)
 
         # Loaded options from NeuroMorphoVis
         self.options = options

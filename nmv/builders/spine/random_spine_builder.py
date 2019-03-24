@@ -166,7 +166,7 @@ class RandomSpineBuilder:
 
         # Rotate the spine towards the pre-synaptic point
         nmv.scene.ops.rotate_object_towards_target(
-            spine_object, spine.post_synaptic_position,
+            spine_object, Vector((0, 0, -1)),
             spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
 
         # Adjust the shading

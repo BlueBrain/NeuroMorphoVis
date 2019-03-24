@@ -56,7 +56,7 @@ class SkeletonBuilder:
         """
 
         # Morphology
-        self.morphology = morphology
+        self.morphology = copy.deepcopy(morphology)
 
         # All the options of the project (an instance of MeshyOptions)
         self.options = options

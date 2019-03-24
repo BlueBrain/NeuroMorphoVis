@@ -193,7 +193,7 @@ def adjust_texture_mapping(mesh_objects,
         Texture space size, by default 5.0.
     """
 
-    nmv.logger.header('UV mapping')
+    nmv.logger.header('UV Mapping')
 
     # Do it mesh by mesh
     for i, mesh_object in enumerate(mesh_objects):
