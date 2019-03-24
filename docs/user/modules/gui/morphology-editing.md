@@ -16,6 +16,7 @@ export this modified morphology skeleton or to use it for other toolboxes in _Ne
 
 ## How to use this Toolbox?
 
+After loading the morphology, the user can sketch the a tube representation of the morphology to visualizae and analyze its three-dimensional structure by clicking on __Skecth Morphology__ button.  
 <p align="center">
   <img src="images/morphology-editing/editing-1.png">
 </p>
