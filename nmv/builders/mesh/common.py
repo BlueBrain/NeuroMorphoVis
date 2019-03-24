@@ -519,7 +519,6 @@ def update_samples_indices_per_arbor(section,
         update_samples_indices_per_arbor(child, index, max_branching_order)
 
 
-
 ################################################################################################
 # @select_vertex
 ################################################################################################
@@ -553,72 +552,3 @@ def select_vertex(vertex_idx):
 
     # Switch to the edit mode
     bpy.ops.object.mode_set(mode='EDIT')
-
-
-
-
-
-################################################################################################
-# @joint_neuron_meshes_into_single_mesh
-################################################################################################
-def join_neuron_meshes_into_single_mesh(soma_meshes_list=None,
-                                        apical_dendrite_meshes_list=None,
-                                        basal_dendrites_meshes_list=None,
-                                        axon_meshes_list=None,
-                                        spines_meshes_list=None,
-                                        label='MESH'):
-    """Join all the given meshes into a single mesh.
-
-    NOTE: The best approach to perform this operation is to compile a list with the contents of
-    all the other lists and then merge this list.
-
-    :param soma_meshes_list:
-        A list of all the meshes created for the soma.
-    :param apical_dendrite_meshes_list:
-        A list of all the meshes created for the apical dendrites.
-    :param basal_dendrites_meshes_list:
-        A list of all the meshes created for the basal dendrites .
-    :param axon_meshes_list:
-        A list of all the meshes created for the axon.
-    :param spines_meshes_list:
-        A list of all the meshes created for the spines.
-    :param label:
-        The label of the joint mesh object.
-    :return:
-        A reference to the joint mesh object.
-    """
-
-    # A list of the individual mesh objects
-    individual_mesh_objects = list()
-
-    # Append the soma meshes
-    if soma_meshes_list is not None:
-        for mesh in soma_meshes_list:
-            individual_mesh_objects.append(mesh)
-
-    # Append the apical dendrites meshes
-    if soma_meshes_list is not None:
-        for mesh in apical_dendrite_meshes_list:
-            individual_mesh_objects.extend(mesh)
-
-    # Append the basal dendrites meshes
-    if soma_meshes_list is not None:
-        for mesh in basal_dendrites_meshes_list:
-            individual_mesh_objects.extend(mesh)
-
-    # Append the axon meshes
-    if soma_meshes_list is not None:
-        for mesh in axon_meshes_list:
-            individual_mesh_objects.extend(mesh)
-
-    # Append the spines meshes
-    if soma_meshes_list is not None:
-        for mesh in spines_meshes_list:
-            individual_mesh_objects.extend(mesh)
-
-    # Joint all the objects
-    joint_mesh_object = nmv.mesh.ops.join_mesh_objects(
-        mesh_list=individual_mesh_objects, name=label)
-
-    # Return a reference go the joint mesh object
-    return joint_mesh_object
