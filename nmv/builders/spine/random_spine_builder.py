@@ -112,7 +112,7 @@ class RandomSpineBuilder:
         spine_object.name = '%s_spine_%d' % (self.options.morphology.label, id)
 
         # Scale the spine
-        spine_scale = spine.size + random.uniform(0.75, 1.0)
+        spine_scale = spine.size * random.uniform(1.25, 1.5)
         nmv.scene.ops.scale_object_uniformly(spine_object, spine_scale)
 
         # Translate the spine to the post synaptic position
@@ -122,6 +122,9 @@ class RandomSpineBuilder:
         nmv.scene.ops.rotate_object_towards_target(
             spine_object, spine.post_synaptic_position,
             spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
+
+        # Adjust the shading
+        nmv.shading.adjust_material_uv(spine_object, 5)
 
         # Return a reference to the spine
         return spine_object
