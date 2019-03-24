@@ -52,6 +52,10 @@ The _Morphology Analysis_ toolbox can be loaded by clicking on the _Morphology A
 ### Morphology Editing 
 The _Morphology Editing_ toolbox can be loaded by clicking on the _Morphology Editing_ tab. his [guide](morphology-editing.md) explains how to use this toolbox to analyze the morphology skeleton.      
 
+<p align="center">
+	<img src="images/morphology-editing-panel.png" width="800">
+</p> 
+
 ### Soma Reconstruction 
 
 The _Soma Reconstruction_ toolbox can be loaded by clicking on the _Soma Toolbox_ tab. This [guide](soma-reconstruction.md) explains how to use this toolbox to create three-dimensional profiles of the somata on a physically-plausible basis using Hooke's law and mass-spring models.
