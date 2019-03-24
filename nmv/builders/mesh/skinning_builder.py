@@ -373,6 +373,10 @@ class SkinningBuilder:
             If the arbor is connected to soma or not, by default False.
         """
 
+        spines_builder = nmv.builders.RandomSpineBuilder(
+            morphology=self.morphology, options=self.options)
+        spines_builder.load_spine_meshes()
+
         # Header
         nmv.logger.header('Building Arbors')
 

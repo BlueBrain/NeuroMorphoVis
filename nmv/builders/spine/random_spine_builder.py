@@ -65,6 +65,52 @@ class RandomSpineBuilder:
     ################################################################################################
     # @load_spine_meshes
     ################################################################################################
+    def emanate_spine_from_face(self,
+                                dendrite_samples,
+                                dendrite_mesh,
+                                face_index, id):
+
+        # Create the spine
+        spine = nmv.skeleton.Spine()
+        spine.post_synaptic_position = dendrite_mesh.data.polygons[face_index].center
+        spine.pre_synaptic_position = dendrite_mesh.data.polygons[face_index].center + \
+                                      1.0 * dendrite_mesh.data.polygons[face_index].normal
+
+        lenght = 1e5
+        for i_sample in dendrite_samples:
+            distance = (i_sample.point - spine.post_synaptic_position).length
+            #print(distance)
+            if distance < lenght:
+                spine.size = i_sample.radius * 3
+                print(spine.size)
+
+        # Select a random spine from the spines list
+        spine_template = random.choice(self.spine_meshes)
+
+        # Get a copy of the template and update it
+        spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+
+        # Rename the spine
+        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, id)
+
+        # Scale the spine
+        spine_scale = spine.size
+        nmv.scene.ops.scale_object_uniformly(spine_object, spine_scale)
+
+        # Translate the spine to the post synaptic position
+        nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
+
+        # Rotate the spine towards the pre-synaptic point
+        #nmv.scene.ops.rotate_object_towards_target(
+        #    spine_object, spine.post_synaptic_position, spine.pre_synaptic_position)
+
+        # Rotate it
+        nmv.scene.ops.rotate_object_towards_target(
+            spine_object, Vector((0, 0, -1)), spine.pre_synaptic_position)
+
+    ################################################################################################
+    # @load_spine_meshes
+    ################################################################################################
     def load_spine_meshes(self):
         """Loads all the spine meshes from the spines directory
 

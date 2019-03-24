@@ -128,7 +128,7 @@ def convert_face_to_circle(mesh_object,
         # Get the vertex from its index
         vertex = mesh_object.data.vertices[vertex_index]
 
-        # Compute the direction from the centro to the veretx
+        # Compute the direction from the center to the vertex
         direction = (vertex.co - face.center).normalized()
 
         # Compute the mapping point along that direction and set the vertex coordinates to it

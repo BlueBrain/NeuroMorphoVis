@@ -75,6 +75,15 @@ class Morphology:
         # Morphology apical dendrite
         self.apical_dendrite = apical_dendrite
 
+        # A linear list of all the samples of the axons, used to query radii based on distance
+        self.axon_samples = list()
+
+        # A linear list of all the samples of the basals, used to query radii based on distance
+        self.basal_dendrites_samples = list()
+
+        # A linear list of all the samples of the apical, used to query radii based on distance
+        self.apical_dendrite_samples = list()
+
         # A copy of the original axon, needed for comparison
         self.original_axon = copy.deepcopy(axon)
 
@@ -106,6 +115,48 @@ class Morphology:
 
         # Update the branching order
         self.update_branching_order()
+
+        # Build the samples lists
+        self.build_samples_lists()
+
+    ################################################################################################
+    # @build_samples_lists_recursively
+    ################################################################################################
+    def build_samples_lists_recursively(self,
+                                        section,
+                                        samples_list=[]):
+        """Build the list of samples recursively.
+
+        :param section:
+            A given section to get its samples.
+        :param samples_list:
+            A list to append the samples to.
+        """
+
+        for i_sample in section.samples:
+            samples_list.append(i_sample)
+
+        for child in section.children:
+            self.build_samples_lists_recursively(child, samples_list)
+
+    ################################################################################################
+    # @build_samples_lists
+    ################################################################################################
+    def build_samples_lists(self):
+        """Constructs the samples list for all the arbors.
+        """
+
+        if self.axon is not None:
+            self.build_samples_lists_recursively(self.axon, self.axon_samples)
+
+        if self.basal_dendrites_samples is not None:
+            for basal in self.dendrites:
+                basal_list = list()
+                self.build_samples_lists_recursively(basal, basal_list)
+                self.basal_dendrites_samples.append(copy.deepcopy(basal_list))
+
+        if self.apical_dendrite is not None:
+            self.build_samples_lists_recursively(self.apical_dendrite, self.apical_dendrite_samples)
 
     ################################################################################################
     # @has_axon
@@ -246,7 +297,8 @@ class Morphology:
         # If the first sample is relatively far away, then connect it back to the soma
         if first_sample_distance > 20:
             # Report the issue
-            nmv.logger.log('MORPHOLOGY ERROR: The first sample of [%s: %s] is far away [%f] from the soma!' %
+            nmv.logger.log('MORPHOLOGY ERROR: The first sample of [%s: %s] is far '
+                           'away [%f] from the soma!' %
                   (arbor.get_type_string(), str(arbor.id), first_sample_distance))
 
             # Get the direction of the first sample
