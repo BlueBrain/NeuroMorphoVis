@@ -241,6 +241,7 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
             # Switch back to object mode, to be able to export the mesh
             bpy.ops.object.mode_set(mode='OBJECT')
 
+            # Update the morphology skeleton
             morphology_editor.update_skeleton_coordinates()
 
             global is_skeleton_edited

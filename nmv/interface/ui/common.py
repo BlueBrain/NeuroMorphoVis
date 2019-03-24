@@ -114,7 +114,8 @@ def load_morphology(panel_object,
             else:
 
                 # If the same path, then return
-                if current_morphology_path == nmv.interface.ui_options.morphology.morphology_file_path:
+                if current_morphology_path == \
+                   nmv.interface.ui_options.morphology.morphology_file_path:
                     return 'ALREADY_LOADED'
 
             # Load the morphology from the file

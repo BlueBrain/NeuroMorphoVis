@@ -377,6 +377,12 @@ class UnionBuilder:
         # Adding spines
         nmv.builders.add_spines_to_surface(builder=self)
 
+        # Join all the objects into a single object
+        nmv.builders.join_mesh_object_into_single_object(builder=self)
+
+        # Transform to the global coordinates, if required
+        nmv.builders.transform_to_global_coordinates(builder=self)
+
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
 

@@ -474,5 +474,8 @@ class SkinningBuilder:
         # Add the spines
         nmv.builders.add_spines_to_surface(builder=self)
 
+        # Transform to the global coordinates, if required
+        nmv.builders.transform_to_global_coordinates(builder=self)
+
         # Done
-        nmv.logger.header('Done!')
+        nmv.logger.header('Mesh Reconstruction Done!')

@@ -176,10 +176,6 @@ class PiecewiseBuilder:
             A list of all the individual meshes of the arbors.
         """
 
-        # Create a list that keeps references to the meshes of all the connected pieces of the
-        # arbors of the mesh.
-        arbors_objects = []
-
         # Draw the apical dendrite if not ignored
         if not self.options.morphology.ignore_apical_dendrite:
 

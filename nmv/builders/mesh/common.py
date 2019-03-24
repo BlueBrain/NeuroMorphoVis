@@ -370,9 +370,6 @@ def add_surface_noise_to_arbor(builder):
                     vertex.co = vertex.co + (vertex.normal * value)
                     vertex.select = False
 
-            # Decimate and smooth for getting the bumps
-            nmv.logger.info('Smoothing')
-
             # Deselect all the vertices
             nmv.mesh.ops.deselect_all_vertices(mesh_object=mesh_object)
 
