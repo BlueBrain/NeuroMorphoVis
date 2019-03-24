@@ -121,6 +121,30 @@ class MeshPanel(bpy.types.Panel):
                     context.scene.RandomSpinesPercentage
 
     ################################################################################################
+    # @draw_tessellation_options
+    ################################################################################################
+    def draw_tessellation_options(self, context):
+        """Draw the coloring options.
+
+        :param context:
+            Context.
+        """
+
+        # Tessellation parameters
+        tess_level_row = self.layout.row()
+        tess_level_row.prop(context.scene, 'TessellateMesh')
+        tess_level_column = tess_level_row.column()
+        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
+        if not context.scene.TessellateMesh:
+            # Use 1.0 to disable the tessellation
+            nmv.interface.ui_options.mesh.tessellate_mesh = False
+            nmv.interface.ui_options.mesh.tessellation_level = 1.0
+            tess_level_column.enabled = False
+        else:
+            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
+            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+
+    ################################################################################################
     # @draw_color_options
     ################################################################################################
     def draw_color_options(self, context):
@@ -222,6 +246,37 @@ class MeshPanel(bpy.types.Panel):
     ################################################################################################
     # @draw_skinning_meshing_options
     ################################################################################################
+    def draw_connectivity_options(self, context):
+        """Draws the connectivity options.
+
+        :param context:
+            Blender context.
+        """
+
+        # Soma connection
+        soma_connection_row = self.layout.row()
+        soma_connection_row.label('Soma:')
+        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
+
+        # If the soma is connected, then by default, the arbors are connected
+        if nmv.interface.ui_options.mesh.soma_connection == \
+            nmv.enums.Meshing.SomaConnection.DISCONNECTED:
+
+            # Mesh objects connection
+            neuron_objects_connection_row = self.layout.row()
+            neuron_objects_connection_row.label('Skeleton Objects:')
+            neuron_objects_connection_row.prop(context.scene, 'MeshObjectsConnection', expand=True)
+            nmv.interface.ui_options.mesh.neuron_objects_connection = \
+                context.scene.MeshObjectsConnection
+
+        else:
+            nmv.interface.ui_options.mesh.neuron_objects_connection = \
+                nmv.enums.Meshing.ObjectsConnection.DISCONNECTED
+
+    ################################################################################################
+    # @draw_skinning_meshing_options
+    ################################################################################################
     def draw_skinning_meshing_options(self,
                                       context):
         """Draws the options when the skinning meshing technique is selected.
@@ -239,27 +294,11 @@ class MeshPanel(bpy.types.Panel):
         else:
             nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
-        # Soma connection
-        soma_connection_row = self.layout.row()
-        soma_connection_row.label('Soma:')
-        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
+        # Connectivity options
+        self.draw_connectivity_options(context)
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
-
-        # Tessellation parameters
-        tess_level_row = self.layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
-        tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
-            # Use 1.0 to disable the tessellation
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0
-            tess_level_column.enabled = False
-        else:
-            # Pass options from UI to system
-            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        # Tessellation options
+        self.draw_tessellation_options(context)
 
         # Spine options
         self.draw_spines_options(context)
@@ -275,17 +314,8 @@ class MeshPanel(bpy.types.Panel):
             Panel context.
         """
 
-        # Tessellation parameters
-        tess_level_row = self.layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
-        tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if context.scene.TessellateMesh:
-            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
-        else:
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
-            tess_level_column.enabled = False
+        # Tessellation options
+        self.draw_tessellation_options(context)
 
     ################################################################################################
     # @draw_union_meshing_options
@@ -314,26 +344,11 @@ class MeshPanel(bpy.types.Panel):
         # Pass options from UI to system
         nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
 
-        # Soma connection
-        soma_connection_row = self.layout.row()
-        soma_connection_row.label('Soma:')
-        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
+        # Connectivity options
+        self.draw_connectivity_options(context)
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
-
-        # Tessellation parameters
-        tess_level_row = self.layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
-        tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
-            tess_level_column.enabled = False
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        # Tessellation options
+        self.draw_tessellation_options(context)
 
         # Spine options
         self.draw_spines_options(context)
@@ -370,32 +385,11 @@ class MeshPanel(bpy.types.Panel):
         branching_row.prop(context.scene, 'MeshBranching', expand=True)
         nmv.interface.ui_options.mesh.branching = context.scene.MeshBranching
 
-        # Soma connection
-        soma_connection_row = self.layout.row()
-        soma_connection_row.label('Soma:')
-        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
+        # Connectivity options
+        self.draw_connectivity_options(context)
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
-
-        # Mesh objects connection
-        neuron_objects_connection_row = self.layout.row()
-        neuron_objects_connection_row.label('Skeleton Objects:')
-        neuron_objects_connection_row.prop(context.scene, 'MeshObjectsConnection', expand=True)
-        nmv.interface.ui_options.mesh.neuron_objects_connection = \
-            context.scene.MeshObjectsConnection
-
-        # Tessellation parameters
-        tess_level_row = self.layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
-        tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
-            nmv.interface.ui_options.mesh.tessellation_level = 1.0  # To disable the tessellation
-            tess_level_column.enabled = False
-
-        nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-        nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+        # Tessellation options
+        self.draw_tessellation_options(context)
 
         # Spine options
         self.draw_spines_options(context)
@@ -437,6 +431,8 @@ class MeshPanel(bpy.types.Panel):
             self.draw_skinning_meshing_options(context)
         elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
             self.draw_union_meshing_options(context)
+        else:
+            pass
 
     ################################################################################################
     # @draw_mesh_reconstruction_button
@@ -661,50 +657,26 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
         # Piece-wise watertight meshing
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
-
-            # Create the mesh builder
             mesh_builder = nmv.builders.PiecewiseBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
-            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
-
-        # Bridging
-        elif meshing_technique == nmv.enums.Meshing.Technique.BRIDGING:
-
-            # Create the mesh builder
-            mesh_builder = nmv.builders.BridgingBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Union
         elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
-
-            # Create the mesh builder
             mesh_builder = nmv.builders.UnionBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
+        # Skinning
         elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
-
-            # Create the mesh builder
             mesh_builder = nmv.builders.SkinningBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
+        # Meta Balls
         elif meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
-
-            # Create the mesh builder
             mesh_builder = nmv.builders.MetaBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-
-            # Reconstruct the mesh
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         else:

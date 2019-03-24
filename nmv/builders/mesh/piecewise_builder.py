@@ -89,19 +89,6 @@ class PiecewiseBuilder:
         # A list of the reconstructed meshes of the axon
         self.axon_meshes = list()
 
-        # A reference to the reconstructed spines mesh (spines are grouped in a single mesh)
-        self.spines_mesh = None
-
-        self.spines_list = None
-
-        # A mesh of the reconstructed nucleus
-        self.nucleus_mesh = None
-
-        # A reference to the reconstructed neuron mesh
-        # NOTE: After the generation of the individual meshes of each component of the neuron,
-        # these components are joint together into a single mesh and assigned to this variable
-        self.neuron_mesh = None
-
     ################################################################################################
     # @verify_morphology_skeleton
     ################################################################################################
@@ -248,7 +235,6 @@ class PiecewiseBuilder:
 
             # Ensure tha existence of basal dendrites
             if self.morphology.axon is not None:
-
                 nmv.logger.info('Axon')
 
                 # Draw the axon as a set connected sections
@@ -272,51 +258,6 @@ class PiecewiseBuilder:
                     # Convert the section object (tubes) into meshes
                     for arbor_object in self.axon_meshes:
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
-
-    ################################################################################################
-    # @connect_arbors_to_soma
-    ################################################################################################
-    def connect_arbors_to_soma(self):
-        """Connects the root section of a given arbor to the soma at its initial segment.
-
-        This function checks if the arbor mesh is 'logically' connected to the soma or not,
-        following to the initial validation steps that determines if the arbor has a valid
-        connection point to the soma or not.
-        If the arbor is 'logically' connected to the soma, this function returns immediately.
-        The arbor is a Section object, see Section() @ section.py.
-        """
-
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            nmv.logger.header('Connecting arbors to soma')
-
-            # Connecting apical dendrite
-            if not self.options.morphology.ignore_apical_dendrite:
-
-                # There is an apical dendrite
-                if self.morphology.apical_dendrite is not None:
-                    nmv.logger.detail('Apical dendrite')
-                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh,
-                                                           self.morphology.apical_dendrite)
-
-            # Connecting basal dendrites
-            if not self.options.morphology.ignore_basal_dendrites:
-
-                # Ensure tha existence of basal dendrites
-                if self.morphology.dendrites is not None:
-
-                    # Do it dendrite by dendrite
-                    for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                        nmv.logger.detail('Dendrite [%d]' % i)
-                        nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, basal_dendrite)
-
-            # Connecting axon
-            if not self.options.morphology.ignore_axon:
-
-                # Ensure tha existence of the axon
-                if self.morphology.axon is not None:
-
-                    nmv.logger.detail('Axon')
-                    nmv.skeleton.ops.connect_arbor_to_soma(self.soma_mesh, self.morphology.axon)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -388,48 +329,16 @@ class PiecewiseBuilder:
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
     ################################################################################################
-    # @reconstruct_soma_mesh
-    ################################################################################################
-    def reconstruct_soma_mesh(self):
-        """Reconstruct the mesh of the soma.
-
-        NOTE: To improve the performance of the soft body physics simulation, reconstruct the
-        soma profile before the arbors, such that the scene is almost empty.
-
-        NOTE: If the soma is requested to be connected to the initial segments of the arbors,
-        we must use a high number of subdivisions to make smooth connections that look nice,
-        but if the arbors are connected to the soma origin, then we can use less subdivisions
-        since the soma will not be connected to the arbor at all.
-        """
-
-        # If the soma is connected to the root arbors
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology, options=self.options)
-
-        # Otherwise, ignore
-        else:
-            soma_builder_object = nmv.builders.SomaBuilder(
-                morphology=self.morphology,
-                options=self.options)
-
-        # Reconstruct the soma mesh
-        self.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader to the reconstructed soma mesh
-        nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])
-
-    ################################################################################################
     # @reconstruct_arbors_meshes
     ################################################################################################
     def reconstruct_arbors_meshes(self):
         """Reconstruct the arbors.
 
-        # There are two techniques for reconstructing the mesh. The first uses sharp edges without
-        # any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
-        # The other method creates a smoothed mesh with soft edges. In this method, we will use a
-        # simplified bevel object with only 'four' vertices and smooth it later using vertices
-        # smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
+        There are two techniques for reconstructing the mesh. The first uses sharp edges without
+        any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
+        The other method creates a smoothed mesh with soft edges. In this method, we will use a
+        simplified bevel object with only 'four' vertices and smooth it later using vertices
+        smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
         """
 
         nmv.logger.header('Building arbors')
@@ -445,91 +354,6 @@ class PiecewiseBuilder:
         else:
             nmv.logger.log('ERROR')
 
-    ################################################################################################
-    # @add_spines
-    ################################################################################################
-    def add_spines(self):
-        """Add the spines to the neuron.
-        """
-
-        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            spines_builder = nmv.builders.CircuitSpineBuilder(
-                morphology=self.morphology, options=self.options)
-            self.spines_mesh, self.spines_list = spines_builder.add_spines_to_morphology()
-
-        # Random spines
-        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-            nmv.logger.header('Adding random spines')
-            spines_builder = nmv.builders.RandomSpineBuilder(
-                morphology=self.morphology, options=self.options)
-            spines_objects = spines_builder.add_spines_to_morphology()
-
-        # Otherwise ignore spines
-        else:
-            nmv.logger.log('Ignoring spines')
-
-    ################################################################################################
-    # @add_surface_noise
-    ################################################################################################
-    def add_membrane_roughness_to_arbor(self,
-                                        arbor_mesh,
-                                        stable_extent_center,
-                                        stable_extent_radius,
-                                        minimum_value=-0.25,
-                                        maximum_value=0.25):
-        """Add roughness to the surface of the mesh to look realistic. This function is tested by
-        trial and error. The minimum and maximum values are different for each arbor. The stable
-        extent defines the soma region.
-
-        :param arbor_mesh:
-            The mesh of the arbor.
-        :param minimum_value:
-            The minimum value of the noise.
-        :param maximum_value:
-            The maximum value of the noise.
-        :param stable_extent_center:
-            The center of the stable extent that defines the soma.
-        :param stable_extent_radius:
-            The radius of the stable extent that defines the soma.
-        :return:
-        """
-
-        for i in range(len(arbor_mesh.data.vertices)):
-
-            # Get a reference to the vertex
-            vertex = arbor_mesh.data.vertices[i]
-
-            # Make sure that we are not in the stable region
-            if not nmv.geometry.ops.is_point_inside_sphere(stable_extent_center,
-                                                           stable_extent_radius,
-                                                           vertex.co):
-
-                roughness_value = random.uniform(-0.25, 0.1)
-
-                if 0.0 < random.uniform(0, 1.0) < 0.045:
-                    roughness_value += random.uniform(0.05, 0.1)
-                elif 0.045 < random.uniform(0, 1.0) < 0.06:
-                    roughness_value += random.uniform(0.2, 0.5)
-                vertex.select = True
-                vertex.co = vertex.co + (vertex.normal * roughness_value)
-                vertex.select = False
-
-
-        """
-                        if nmv.geometry.ops.is_point_inside_sphere(
-                        stable_extent_center, self.morphology.soma.smallest_radius,
-                        vertex.co):
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.01))
-                    vertex.select = False
-
-                else:
-                    if 0.0 < random.uniform(0, 1.0) < 0.1:
-                        vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.2))
-                        vertex.select = False
-            else:
-        """
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################

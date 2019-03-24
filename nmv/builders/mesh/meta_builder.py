@@ -446,5 +446,8 @@ class MetaBuilder:
         # Assign the material to the mesh
         self.assign_material_to_mesh()
 
+        # Transform to the global coordinates, if required
+        nmv.builders.transform_to_global_coordinates(builder=self)
+
         # Mission done
         nmv.logger.header('Mesh Reconstruction Done!')
