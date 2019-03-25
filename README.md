@@ -64,13 +64,13 @@ _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender_
 
 A binary package of the current version of _NeuroMorphoVis_ __is shipped with Blender version 2.79__ for the followign platforms:
 
-+ __Ubuntu__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
++ __Ubuntu__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.3.0/blender-neuromorphovis-linux-x86_64.zip).
 
-+ __Red Hat__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79b-linux-x86_64.zip).
++ __Red Hat__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.3.0/blender-neuromorphovis-linux-x86_64.zip).
 
-+ __Mac OS__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-blender-2.79-macOS-10.6.zip).
++ __Mac OS__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.3.0/blender-neuromorphovis-macOSX.dmg).
 
-+ __Windows__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.0.0/neuromorphovis-1.0.0-blender-2.79-windows64.zip).
++ __Windows__ Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0) is available from this [link](https://github.com/BlueBrain/NeuroMorphoVis/releases/download/v1.3.0/blender-neuromorphovis-windows64.zip).
 
 ### Sample Morphologies 
 
