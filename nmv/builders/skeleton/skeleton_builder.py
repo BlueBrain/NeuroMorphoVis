@@ -813,9 +813,7 @@ class SkeletonBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
-            # Resample the sections
-            # nmv.skeleton.ops.apply_operation_to_morphology(
-            #    *[self.morphology, nmv.skeleton.ops.resample_sections])
+            # The adaptive resampling is quite important to prevent breaking the structure
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
 
