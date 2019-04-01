@@ -134,21 +134,22 @@ class SkeletonBuilder:
         # Create an illumination specific for the given material
         nmv.shading.create_material_specific_illumination(self.options.morphology.material)
 
-
-    def draw_section_samples_as_spheres(self,
-                                        section):
-        """
+    ################################################################################################
+    # @draw_section_samples_as_spheres
+    ################################################################################################
+    @staticmethod
+    def draw_section_samples_as_spheres(section):
+        """Draw the section samples as a set of spheres.
 
         :param section:
+            A given section to draw.
         :return:
+            List of spheres of the section.
         """
         output = list()
         for sample in section.samples:
-            #print(sample)
-            # xsphere = nmv.bmeshi.create_ico_sphere(radius=sample.radius, location=sample.point, subdivisions=2)
-            xsphere = nmv.bmeshi.create_uv_sphere(radius=sample.radius, location=sample.point)
-            #sphere = nmv.mesh.create_ico_sphere(radius=sample.radius, location=sample.point, subdivisions=2)
-            output.append(xsphere)
+            sphere = nmv.bmeshi.create_uv_sphere(radius=sample.radius, location=sample.point)
+            output.append(sphere)
         return output
 
     ################################################################################################
@@ -813,8 +814,10 @@ class SkeletonBuilder:
                 *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
             # Resample the sections
+            # nmv.skeleton.ops.apply_operation_to_morphology(
+            #    *[self.morphology, nmv.skeleton.ops.resample_sections])
             nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections])
+                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
 
         # Verify the connectivity of the arbors of the morphology to the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)

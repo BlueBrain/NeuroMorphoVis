@@ -129,6 +129,48 @@ def read_morphology_from_file(options):
 
 
 ####################################################################################################
+# @read_morphology_from_file_naively
+####################################################################################################
+def read_morphology_from_file_naively(morphology_file_path):
+    """Loads a morphology object from file. This loader mainly supports .h5 or .swc file formats.
+
+    :param morphology_file_path:
+        The path where the morphology is.
+    :return:
+        Morphology object and True (if the morphology is loaded) or False (if the something is
+        wrong).
+    """
+
+    # Get the extension from the file path
+    morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
+
+    # If it is a .h5 file, use the h5 loader
+    if '.h5' in morphology_extension:
+
+        # Load the .h5 file
+        morphology_object = read_h5_morphology(morphology_file_path)
+
+    elif '.swc' in morphology_extension:
+
+        # Load the .swc file
+        morphology_object = read_swc_morphology(morphology_file_path)
+
+    else:
+
+        # Issue an error
+        nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' %
+                       morphology_extension)
+        return False, None
+
+    # If the morphology object is None, return False
+    if morphology_object is None:
+        return False, None
+
+    # The morphology file was loaded successfully
+    return True, morphology_object
+
+
+####################################################################################################
 # @load_from_circuit
 ####################################################################################################
 def load_from_circuit(options):

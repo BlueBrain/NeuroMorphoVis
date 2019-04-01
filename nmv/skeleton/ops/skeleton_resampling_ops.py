@@ -176,7 +176,7 @@ def resample_sections(section,
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples, cannot be re-sampled' %
-              (section.get_type_string(), section.id))
+                       (section.get_type_string(), section.id))
 
         return
 
@@ -185,7 +185,7 @@ def resample_sections(section,
 
         # Report the error
         nmv.logger.log('\t* ERROR: Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-              (section.get_type_string(), section.id))
+                       (section.get_type_string(), section.id))
 
         return
 
@@ -201,7 +201,7 @@ def resample_sections(section,
         # Report the warning
         nmv.logger.log('\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], '
                        'diameters [%f]' %
-              (section.get_type_string(), section.id, section_length, diameters))
+                       (section.get_type_string(), section.id, section_length, diameters))
 
         if section_length < diameters:
             nmv.logger.log('\t\t* BAD SECTION')
@@ -272,6 +272,78 @@ def resample_sections(section,
 
     # After resampling the section, update the logical indexes of the samples
     section.reorder_samples()
+
+
+####################################################################################################
+# @resample_section_based_on_smallest_segment
+####################################################################################################
+def resample_section_adaptively(section):
+    """Resample the sections adaptively based on the radii of each sample and the distance between
+    each two consecutive samples.
+
+    :param section:
+        A given section to resample.
+    """
+
+    # If the section has no samples, report this as an error and ignore this filter
+    if len(section.samples) == 0:
+
+        # Report the error
+        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples, cannot be re-sampled' %
+                       (section.get_type_string(), section.id))
+
+        return
+
+    # If the section has ONLY one sample, report this as an error and ignore this filter
+    elif len(section.samples) == 1:
+
+        # Report the error
+        nmv.logger.log('\t* ERROR: Section [%s: %d] has only ONE sample, cannot be re-sampled' %
+                       (section.get_type_string(), section.id))
+
+        return
+
+    # If the section has ONLY two sample, report this as a warning
+    elif len(section.samples) == 2:
+
+        # Compute section length
+        section_length = (section.samples[1].point - section.samples[0].point).length
+
+        # Compute the combined diameters of the samples
+        diameters = (section.samples[1].radius + section.samples[0].radius) * 2
+
+        # Report the warning
+        nmv.logger.log('\t* WARNING: Section [%s: %d] has only TWO samples: length [%f], '
+                       'diameters [%f]' %
+                       (section.get_type_string(), section.id, section_length, diameters))
+
+        if section_length < diameters:
+            nmv.logger.log('\t\t* BAD SECTION')
+
+    # The section has more than two samples, can be resampled
+    else:
+
+        i = 0
+        while True:
+            if i < len(section.samples) - 1:
+
+                sample_1 = section.samples[i]
+                sample_2 = section.samples[i + 1]
+
+                # Segment length
+                segment_length = (sample_2.point - sample_1.point).length
+
+                # If the distance between the two samples if less than the radius of the first
+                # sample remove the second sample
+                if segment_length < sample_1.radius + sample_2.radius:
+                    section.samples.remove(section.samples[i + 1])
+                    i = 0
+                else:
+                    i += 1
+
+            # No more samples to process, break please
+            else:
+                break
 
 
 ####################################################################################################
