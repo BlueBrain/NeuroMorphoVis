@@ -148,7 +148,7 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 <p align="center">
 	<img src="docs/artifacts/renderings/somata-ncc.jpeg" width=804>
 	<img src="docs/artifacts/renderings/neuron-group.jpeg" width=804>
-	<img src="docs/artifacts/renderings/hippcampal-neuron.jpeg" width=400>
+	<img src="docs/artifacts/renderings/bumpy-shading.png" width=804>
 </p>
 
 
