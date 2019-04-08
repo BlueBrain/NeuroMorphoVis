@@ -150,10 +150,11 @@ class Morphology:
             self.build_samples_lists_recursively(self.axon, self.axon_samples)
 
         if self.basal_dendrites_samples is not None:
-            for basal in self.dendrites:
-                basal_list = list()
-                self.build_samples_lists_recursively(basal, basal_list)
-                self.basal_dendrites_samples.append(copy.deepcopy(basal_list))
+            if self.dendrites is not None:
+                for basal in self.dendrites:
+                    basal_list = list()
+                    self.build_samples_lists_recursively(basal, basal_list)
+                    self.basal_dendrites_samples.append(copy.deepcopy(basal_list))
 
         if self.apical_dendrite is not None:
             self.build_samples_lists_recursively(self.apical_dendrite, self.apical_dendrite_samples)

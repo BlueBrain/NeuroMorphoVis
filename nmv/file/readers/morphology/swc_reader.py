@@ -91,6 +91,16 @@ class SWCReader:
             sample_i = self.samples_list[index]
             sample_j = self.samples_list[index + 1]
 
+            if sample_i is None or sample_j is None:
+                index = index + 1
+                continue
+
+            # Ensure that this is not a soma profile point
+            if sample_i[nmv.consts.Arbors.SWC_SAMPLE_TYPE_IDX] == \
+                    nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE:
+                index = index + 1
+                continue
+
             # If the two samples are connected
             if sample_j[-1] == sample_i[0]:
 
@@ -105,6 +115,7 @@ class SWCReader:
             else:
 
                 # Append the last sample to the path
+                # path.append(sample_j[-1])
                 path.append(sample_i[0])
 
                 # Append the path to the paths list
@@ -199,9 +210,11 @@ class SWCReader:
         # Open the file, read it line by line and store the result in list.
         morphology_file = open(self.morphology_file, 'r')
 
+        initial_samples_list = list()
+
         # Add a dummy sample to the list at index 0 to match the indices
         # The zeroth sample always defines the soma parameters, and it is parsed independently
-        self.samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
+        initial_samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
 
         # Translation vector in case the file is not centered at the origin
         translation = Vector((0.0, 0.0, 0.0))
@@ -253,8 +266,6 @@ class SWCReader:
 
             # Get the sample radius
             radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
-            if radius < 0.00001:
-                radius = 0.5
 
             # Get the sample parent index
             parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
@@ -272,7 +283,22 @@ class SWCReader:
             z = z - translation[2]
 
             # Add the sample to the list
-            self.samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+            initial_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+
+        # Search for the maximum index of the samples
+        maximum_index = 0
+        for i_sample in initial_samples_list:
+            if i_sample[0] > maximum_index:
+                maximum_index = i_sample[0]
+
+        # Create the actual samples list
+        for i in range(maximum_index + 1):
+            self.samples_list.append(None)
+
+        # Set the samples at their corresponding indices to make it easy to index them, and keep
+        # the rest to Null and double check them later
+        for i_sample in initial_samples_list:
+            self.samples_list[i_sample[0]] = i_sample
 
         # Construct the connected paths from the samples list
         self.build_connected_paths_from_samples()
@@ -340,6 +366,9 @@ class SWCReader:
         # For each sample in the given samples list
         for sample in self.samples_list:
 
+            if sample is None:
+                continue
+
             # If the types are matching
             if sample[1] == sample_type:
 
@@ -370,7 +399,7 @@ class SWCReader:
         # Filter the samples
         for sample in soma_samples:
 
-            # If the sample has no parent (-1)
+            # If the sample has no parent (-1), then this is the soma itself
             if sample[-1] == nmv.consts.Arbors.SWC_NO_PARENT_SAMPLE_TYPE:
 
                 # Get soma centroid
@@ -431,6 +460,23 @@ class SWCReader:
 
                 # Append this point to the list
                 soma_profile_points_on_arbors.append(soma_profile_point)
+
+        # If the soma radius is zero, then get the average of the profile points if exist
+        if soma_radius < 1e-5:
+
+            # Set a new radius based on the profile points if they are there
+            if len(soma_profile_points) > 0:
+                soma_radius = 0.0
+                for point in soma_profile_points:
+                    soma_radius += point.length
+                soma_radius = soma_radius / len(soma_profile_points)
+
+            # Otherwise, use the profile points to get the average radius
+            else:
+                soma_radius = 0.0
+                for point in soma_profile_points_on_arbors:
+                    soma_radius += point.length
+                soma_radius = soma_radius / len(soma_profile_points_on_arbors)
 
         # Construct the soma object
         soma_object = nmv.skeleton.Soma(
