@@ -236,7 +236,8 @@ class SWCReader:
                 continue
 
             # Extract the data from the line
-            data = line.strip('\n').split(' ')
+            data = ' '.join(line.split())
+            data = data.strip('\n').split(' ')
 
             # If unwanted characters exit, remove them
             for i in data:
