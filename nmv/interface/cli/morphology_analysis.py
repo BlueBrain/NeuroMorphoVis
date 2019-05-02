@@ -43,7 +43,7 @@ import nmv.scene
 ####################################################################################################
 # @analyze_morphology
 ####################################################################################################
-def analyze_morphologyx(cli_morphology,
+def analyze_morphology_skeleton(cli_morphology,
                        cli_options):
     """Morphology analysis operations.
 
@@ -53,7 +53,23 @@ def analyze_morphologyx(cli_morphology,
         System options parsed from the command line interface (CLI).
     """
 
-    # TODO: implement this function
+    # Register the analysis components, apply the kernel functions and update the UI
+    morphology_analysis_flag = nmv.interface.analyze_morphology(morphology=cli_morphology)
+
+    # Export the analysis result 
+    if morphology_analysis_flag:
+        
+        # Create the analysis directory if it does not exist
+        if not nmv.file.ops.path_exists(cli_options.io.analysis_directory):
+            nmv.file.ops.clean_and_create_directory(cli_options.io.analysis_directory)
+
+        # Export the analysis results
+        nmv.interface.ui.export_analysis_results(
+            morphology=cli_morphology, directory=cli_options.io.analysis_directory)
+
+    else:
+        nmv.logger.log('ERROR: Cannot analyze the morphology file [%s]' % 
+            cli_options.morphology.label)
 
 
 ####################################################################################################
@@ -113,7 +129,7 @@ if __name__ == "__main__":
         exit(0)
 
     # Morphology analysis
-    analyze_morphology(cli_morphology=cli_morphology, cli_options=cli_options)
+    analyze_morphology_skeleton(cli_morphology=cli_morphology, cli_options=cli_options)
     nmv.logger.log('NMV Done')
 
 

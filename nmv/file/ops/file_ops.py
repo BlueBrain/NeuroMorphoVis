@@ -130,6 +130,10 @@ def create_output_tree(output_directory):
     slurm_logs_directory = '%s/%s' % (output_directory, Paths.SLURM_LOGS_FOLDER)
     clean_and_create_directory(slurm_logs_directory)
 
+    # Analysis directory
+    analysis_directory = '%s/%s' % (output_directory, Paths.ANALYSIS_FOLDER)
+    clean_and_create_directory(analysis_directory)
+
     # Morphologies directory
     meshes_directory = '%s/%s' % (output_directory, Paths.MORPHOLOGIES_FOLDER)
     clean_and_create_directory(meshes_directory)

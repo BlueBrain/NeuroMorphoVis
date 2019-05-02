@@ -48,7 +48,7 @@ class Paths:
     SEQUENCES_FOLDER = 'sequences'
 
     # The folder where the analysis files will be generated
-    ANALYSIS_FOLDER = 'sequences'
+    ANALYSIS_FOLDER = 'analysis'
 
     # The folder where SLURM files will be generated
     SLURM_FOLDER = 'slurm'

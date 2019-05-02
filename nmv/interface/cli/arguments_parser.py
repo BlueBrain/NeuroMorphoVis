@@ -116,6 +116,17 @@ def parse_command_line_arguments():
         Args.OUTPUT_DIRECTORY,
         action='store', default=None,
         help=arg_help)
+    ################################################################################################
+    # Analysis and meta-data generation
+    ################################################################################################
+    analysis_args = parser.add_argument_group('Analysis', 'Analysis')
+
+    # Morphology analysis
+    arg_help = 'Analyze the morphology skeleton and report the artifacts.'
+    analysis_args.add_argument(
+        Args.ANALYZE_MORPHOLOGY,
+        action='store_true', default=False,
+        help=arg_help)
 
     ################################################################################################
     # Soma arguments
@@ -137,7 +148,7 @@ def parse_command_line_arguments():
         Args.SOMA_SUBDIVISION_LEVEL,
         action='store', type=int, default=5,
         help=arg_help)
-
+    
     ################################################################################################
     # Morphology arguments
     ################################################################################################
@@ -391,7 +402,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Meshing algorithm
-    arg_options = ['(piecewise-watertight)', 'union', 'bridging']
+    arg_options = ['(piecewise-watertight)', 'union', 'skinning', 'meta-balls']
     arg_help = 'Meshing algorithm. \n' \
                'Options: %s' % arg_options
     meshing_args.add_argument(
@@ -505,6 +516,13 @@ def parse_command_line_arguments():
     arg_help = 'Exports the neuron mesh as a Blender file (.BLEND).'
     export_args.add_argument(
         Args.EXPORT_BLEND_NEURON,
+        action='store_true', default=False,
+        help=arg_help)
+
+    # Export the neuron mesh in .BLEND format
+    arg_help = 'Exports each part (or component) of the neuron mesh as separate mesh.'
+    export_args.add_argument(
+        Args.EXPORT_INDIVIDUALS,
         action='store_true', default=False,
         help=arg_help)
 
@@ -695,18 +713,6 @@ def parse_command_line_arguments():
         action='store', default='low',
         help=arg_help)
 
-    ################################################################################################
-    # Analysis and meta-data generation
-    ################################################################################################
-    analysis_args = parser.add_argument_group('Analysis', 'Analysis')
-
-    # Morphology analysis
-    arg_help = 'Analyze the morphology skeleton and report the artifacts.'
-    analysis_args.add_argument(
-        Args.ANALYZE_MORPHOLOGY,
-        action='store_true', default=False,
-        help=arg_help)
-
     # Parse the arguments, and return a list of them
     return parser.parse_args()
 
@@ -875,7 +881,7 @@ def create_shell_commands(arguments,
     cli_morphology_analysis = '%s/morphology_analysis.py' % cli_interface_path
     cli_mesh_reconstruction = '%s/neuron_mesh_reconstruction.py' % cli_interface_path
 
-    # Morphology analysis task
+    # Morphology analysis task: call the @cli_morphology_analysis interface
     if arguments.analyze_morphology:
 
         # Add this command to the list

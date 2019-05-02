@@ -97,7 +97,7 @@ def reconstruct_neuron_mesh(cli_morphology,
 ####################################################################################################
 # @save_neuron_mesh
 ####################################################################################################
-def save_neuron_mesh(neuron_mesh,
+def save_neuron_mesh(cli_morphology,
                      cli_options):
     """Save the reconstructed neuron mesh to a file.
 
@@ -108,16 +108,42 @@ def save_neuron_mesh(neuron_mesh,
     """
 
     # Header
-    nmv.logger.header('Saving mesh')
+    nmv.logger.header('Exporting mesh')
 
-    # Update the file prefix
-    neuron_mesh_file_name = '%s' % cli_options.morphology.label
+    # Get a list of all the meshes in the scene
+    mesh_objects = nmv.scene.get_list_of_meshes_in_scene()
 
-    # Export the neuron mesh
-    nmv.file.export_mesh_object(neuron_mesh, cli_options.io.meshes_directory,
-                                neuron_mesh_file_name, ply=cli_options.mesh.export_ply,
-                                obj=cli_options.mesh.export_obj, stl=cli_options.mesh.export_stl,
-                                blend=cli_options.mesh.export_blend)
+    # OBJ
+    if cli_options.mesh.export_obj:
+        nmv.file.export_mesh_objects_to_file(mesh_objects,
+                                             cli_options.io.meshes_directory,
+                                             cli_morphology.label,
+                                             nmv.enums.Meshing.ExportFormat.OBJ,
+                                             cli_options.mesh.export_individuals)
+
+    # PLY
+    if cli_options.mesh.export_ply:
+        nmv.file.export_mesh_objects_to_file(mesh_objects,
+                                             cli_options.io.meshes_directory,
+                                             cli_morphology.label,
+                                             nmv.enums.Meshing.ExportFormat.PLY,
+                                             cli_options.mesh.export_individuals)
+
+    # STL
+    if cli_options.mesh.export_stl:
+        nmv.file.export_mesh_objects_to_file(mesh_objects,
+                                             cli_options.io.meshes_directory,
+                                             cli_morphology.label,
+                                             nmv.enums.Meshing.ExportFormat.STL,
+                                             cli_options.mesh.export_individuals)
+
+    # BLEND
+    if cli_options.mesh.export_blend:
+        nmv.file.export_mesh_objects_to_file(mesh_objects,
+                                             cli_options.io.meshes_directory,
+                                             cli_morphology.label,
+                                             nmv.enums.Meshing.ExportFormat.BLEND,
+                                             cli_options.mesh.export_individuals)
 
 
 ####################################################################################################
@@ -325,7 +351,7 @@ if __name__ == "__main__":
        cli_options.mesh.export_stl or cli_options.mesh.export_blend:
 
         # Save the neuron mesh
-        save_neuron_mesh(neuron_mesh=neuron_mesh, cli_options=cli_options)
+        save_neuron_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Render the mesh
     if cli_options.mesh.render:

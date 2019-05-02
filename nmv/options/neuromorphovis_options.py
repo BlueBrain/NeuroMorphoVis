@@ -121,6 +121,9 @@ class NeuroMorphoVisOptions:
         # Morphology file
         if arguments.input == 'file':
 
+            # Set the gid to None
+            self.morphology.gid = None
+
             # Update the file
             self.morphology.morphology_file_path = arguments.morphology_file
 
@@ -381,6 +384,9 @@ class NeuroMorphoVisOptions:
 
         # Save the reconstructed mesh as a .BLEND file to the meshes directory
         self.mesh.export_blend = arguments.export_neuron_mesh_blend
+
+        # Export each part of the neuron as a separate mesh if possible
+        self.mesh.export_individuals = arguments.export_individuals
 
         # Export the reconstructed mesh to the global coordinates of the circuit
         self.mesh.global_coordinates = arguments.global_coordinates

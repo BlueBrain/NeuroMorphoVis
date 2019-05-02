@@ -210,7 +210,7 @@ def add_analysis_groups_to_panel(morphology,
 # @analyze_morphology
 ####################################################################################################
 def analyze_morphology(morphology,
-                       context):
+                       context=None):
     """Registers the different analysis components and then analyze the morphology.
 
     :param morphology:

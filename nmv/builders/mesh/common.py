@@ -461,10 +461,30 @@ def transform_to_global_coordinates(builder):
 
     # Transform the neuron object to the global coordinates
     if builder.options.mesh.global_coordinates:
+        
+        # Make sure that a GID is selected 
+        if builder.options.morphology.gid is None:
+            return 
+
         nmv.logger.header('Transforming to global coordinates')
-        nmv.skeleton.ops.transform_to_global_coordinates(
-            mesh_object=builder.neuron_mesh, blue_config=builder.options.morphology.blue_config,
-            gid=builder.options.morphology.gid)
+        
+        # Get neuron objects
+        neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+
+        # Do it mesh by mesh
+        for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
+
+            # Show the progress
+            nmv.utilities.show_progress(
+                '* Transforming to global coordinates', float(i), float(len(neuron_mesh_objects)))
+
+            # Transforming to global coordinates 
+            nmv.skeleton.ops.transform_to_global_coordinates(
+                mesh_object=neuron_mesh_object, blue_config=builder.options.morphology.blue_config,
+                gid=builder.options.morphology.gid)
+
+        # Show the progress
+        nmv.utilities.show_progress('* Decimating the mesh', 0, 0, done=True)
 
 
 ################################################################################################

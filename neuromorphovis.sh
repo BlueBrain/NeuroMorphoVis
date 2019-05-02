@@ -99,6 +99,13 @@ if [ "$EXPORT_NEURON_MESH_STL" == "yes" ];
     then BOOL_ARGS+=' --export-neuron-mesh-stl '; fi
 if [ "$EXPORT_NEURON_MESH_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-neuron-mesh-blend '; fi
+if [ "$EXPORT_INDIVIDUALS" == "yes" ];
+    then BOOL_ARGS+=' --export-individuals '; fi
+####################################################################################################
+# Morphology analysis
+if [ "$ANALYZE_MORPHOLOGY_SKELETON" == "yes" ];
+    then BOOL_ARGS+=' --analyze-morphology '; fi
+
 
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS

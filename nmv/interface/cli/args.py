@@ -63,6 +63,12 @@ class Args:
     OUTPUT_DIRECTORY = '--output-directory'
 
     ################################################################################################
+    # Analysis arguments
+    ################################################################################################
+    # Analyze morphology
+    ANALYZE_MORPHOLOGY = '--analyze-morphology'
+    
+    ################################################################################################
     # Soma reconstruction arguments
     ################################################################################################
     # Soma stiffness
@@ -224,6 +230,9 @@ class Args:
     # Export the neuron mesh as .BLEND
     EXPORT_BLEND_NEURON = '--export-neuron-mesh-blend'
 
+    # Export each part of the neuron mesh as a separate file for tagging
+    EXPORT_INDIVIDUALS = '--export-individuals'
+
     ################################################################################################
     # Rendering arguments
     ################################################################################################
@@ -286,9 +295,3 @@ class Args:
 
     # Job granularity
     JOB_GRANULARITY = '--job-granularity'
-
-    ################################################################################################
-    # Analysis arguments
-    ################################################################################################
-    # Analyze morphology
-    ANALYZE_MORPHOLOGY = '--analyze-morphology'

@@ -155,3 +155,6 @@ class MeshOptions:
 
         # Save the reconstructed mesh as a .blend file to the output directory
         self.export_blend = False
+
+        # Export individual objects of the neurons to separate meshes
+        self.export_individuals = False

@@ -28,10 +28,10 @@ __status__      = "Production"
 import os, sys, subprocess
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
-import_paths = ['neuromorphovis/interface/cli', 'neuromorphovis/file/ops', 'neuromorphovis/slurm']
+import_paths = ['nmv/interface/cli', 'nmv/file/ops', 'nmv/slurm']
 for import_path in import_paths:
     sys.path.append(('%s/%s' %(os.path.dirname(os.path.realpath(__file__)), import_path)))
-
+    
 # Internal imports
 import arguments_parser
 import file_ops
@@ -61,7 +61,7 @@ def create_shell_commands_for_local_execution(arguments,
     shell_commands = list()
 
     # Retrieve the path to the CLIs
-    cli_interface_path = os.path.dirname(os.path.realpath(__file__))
+    cli_interface_path = os.path.dirname(os.path.realpath(__file__)) + '/nmv/interface/cli'
     cli_soma_reconstruction = '%s/soma_reconstruction.py' % cli_interface_path
     cli_morphology_reconstruction = '%s/neuron_morphology_reconstruction.py' % cli_interface_path
     cli_morphology_analysis = '%s/morphology_analysis.py' % cli_interface_path
@@ -69,11 +69,11 @@ def create_shell_commands_for_local_execution(arguments,
 
     # Morphology analysis task
     if arguments.analyze_morphology:
-
+        
         # Add this command to the list
         shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
                               (arguments.blender, cli_morphology_analysis, arguments_string))
-
+                              
     # Morphology reconstruction task: call the @cli_morphology_reconstruction interface
     if arguments.reconstruct_morphology_skeleton or         \
        arguments.render_neuron_morphology or                \

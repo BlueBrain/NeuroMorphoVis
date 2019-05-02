@@ -315,7 +315,7 @@ class AnalysisItem:
         :param morphology:
             A given morphology to analyze.
         :param context:
-            Blender context.
+            Blender context for the results to appear in the user interface.
         """
 
         if self.kernel is not None:
@@ -324,7 +324,8 @@ class AnalysisItem:
             self.result = self.kernel(morphology)
 
             # Update the variables
-            self.update_analysis_variables(morphology=morphology, context=context)
+            if context is not None:
+                self.update_analysis_variables(morphology=morphology, context=context)
 
     ################################################################################################
     # @write_analysis_results_to_string
