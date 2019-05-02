@@ -399,7 +399,7 @@ def render_mesh_image(panel_object,
     elif view == nmv.enums.Camera.View.TOP:
         view_prefix = 'TOP'
     else:
-        view_prefix = ''
+        view_prefix = 'FRONT'
 
     # Render at a specific resolution
     if context_scene.MeshRenderingResolution == \

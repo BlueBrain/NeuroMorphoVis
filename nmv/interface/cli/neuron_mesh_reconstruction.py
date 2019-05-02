@@ -69,9 +69,14 @@ def reconstruct_neuron_mesh(cli_morphology,
         neuron_mesh_builder = nmv.builders.UnionBuilder(cli_morphology, cli_options)
 
     # BridgingBuilder
-    elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.BRIDGING:
-        nmv.logger.log('Builder: Bridging')
-        neuron_mesh_builder = nmv.builders.BridgingBuilder(cli_morphology, cli_options)
+    elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
+        nmv.logger.log('Builder: Meta')
+        neuron_mesh_builder = nmv.builders.MetaBuilder(cli_morphology, cli_options)
+
+    # BridgingBuilder
+    elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
+        nmv.logger.log('Builder: Skinning')
+        neuron_mesh_builder = nmv.builders.SkinningBuilder(cli_morphology, cli_options)
 
     # PiecewiseBuilder
     elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
@@ -82,7 +87,7 @@ def reconstruct_neuron_mesh(cli_morphology,
     else:
 
         # Invalid meshing algorithm
-        nmv.logger.log('ERROR: INVALID meshing algorithm')
+        nmv.logger.log('ERROR: INVALID meshing technique')
 
         # Kill NeuroMorphoVis
         nmv.kill()
@@ -95,14 +100,14 @@ def reconstruct_neuron_mesh(cli_morphology,
 
 
 ####################################################################################################
-# @save_neuron_mesh
+# @export_neuron_mesh
 ####################################################################################################
-def save_neuron_mesh(cli_morphology,
-                     cli_options):
+def export_neuron_mesh(cli_morphology,
+                       cli_options):
     """Save the reconstructed neuron mesh to a file.
 
-    :param neuron_mesh:
-        A reconstructed neuron mesh object.
+    :param cli_morphology:
+        Morphology object.
     :param cli_options:
         CLI options given by the user.
     """
@@ -149,13 +154,10 @@ def save_neuron_mesh(cli_morphology,
 ####################################################################################################
 # @render_neuron_mesh_to_static_frame
 ####################################################################################################
-def render_neuron_mesh_to_static_frame(neuron_mesh,
-                                       cli_options,
-                                       cli_morphology):
+def render_neuron_mesh_to_static_frame(cli_morphology,
+                                       cli_options):
     """Renders a static frame of the reconstructed neuron mesh.
 
-    :param neuron_mesh:
-        A reconstructed neuron mesh.
     :param cli_options:
         CLI options.
     :param cli_morphology:
@@ -164,6 +166,10 @@ def render_neuron_mesh_to_static_frame(neuron_mesh,
 
     # Header
     nmv.logger.header('Rendering static frame of the neuron mesh')
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(cli_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(cli_options.io.images_directory)
 
     # Compute the bounding box for a close up view
     if cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
@@ -185,39 +191,46 @@ def render_neuron_mesh_to_static_frame(neuron_mesh,
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
             morphology=cli_morphology)
 
+    # Get the view prefix
+    if cli_options.mesh.camera_view == nmv.enums.Camera.View.FRONT:
+        view_prefix = 'FRONT'
+    elif cli_options.mesh.camera_view == nmv.enums.Camera.View.SIDE:
+        view_prefix = 'SIDE'
+    elif cli_options.mesh.camera_view == nmv.enums.Camera.View.TOP:
+        view_prefix = 'TOP'
+    else:
+        view_prefix = 'FRONT'
+
     # Render at a specific resolution
     if cli_options.mesh.resolution_basis == nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
         # Render the image
-        nmv.rendering.NeuronMeshRenderer.render(
+        nmv.rendering.render(
             bounding_box=bounding_box,
-            camera_view=nmv.enums.Camera.View.FRONT,
+            camera_view=cli_options.mesh.camera_view,
             image_resolution=cli_options.mesh.full_view_resolution,
-            image_name='MESH_FRONT_%s' % cli_morphology.label,
+            image_name='MESH_%s_%s' % (view_prefix, cli_options.morphology.label),
             image_directory=cli_options.io.images_directory)
 
     # Render at a specific scale factor
     else:
 
         # Render the image
-        nmv.rendering.NeuronMeshRenderer.render_to_scale(
+        nmv.rendering.render_to_scale(
             bounding_box=bounding_box,
-            camera_view=nmv.enums.Camera.View.FRONT,
+            camera_view=cli_options.mesh.camera_view,
             image_scale_factor=cli_options.mesh.resolution_scale_factor,
-            image_name='MESH_FRONT_%s' % cli_morphology.label,
+            image_name='MESH_%s_%s' % (view_prefix, cli_options.morphology.label),
             image_directory=cli_options.io.images_directory)
 
 
 ####################################################################################################
 # @render_mesh_360
 ####################################################################################################
-def render_neuron_mesh_360(neuron_mesh,
-                           cli_options,
+def render_neuron_mesh_360(cli_options,
                            cli_morphology):
     """Renders a 360 sequence of the reconstructed neuron mesh.
 
-    :param neuron_mesh:
-        Reconstructed neuron mesh.
     :param cli_options:
         CLI options.
     :param cli_morphology:
@@ -226,6 +239,10 @@ def render_neuron_mesh_360(neuron_mesh,
 
     # Header
     nmv.logger.header('Rendering a 360 sequence of the neuron mesh')
+
+    # Create the sequences directory if it does not exist
+    if not nmv.file.ops.path_exists(cli_options.io.sequences_directory):
+        nmv.file.ops.clean_and_create_directory(cli_options.io.sequences_directory)
 
     # Render a 360 sequence
     if cli_options.mesh.render_360:
@@ -254,10 +271,16 @@ def render_neuron_mesh_360(neuron_mesh,
         bounding_box_360 = nmv.bbox.compute_360_bounding_box(bounding_box,
                                                              cli_morphology.soma.centroid)
 
+        # Stretch the bounding box by few microns
+        bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+
         # Create a specific directory for this mesh
         output_directory = '%s/%s_mesh_360' % (
             cli_options.io.sequences_directory, cli_options.morphology.label)
         nmv.file.ops.clean_and_create_directory(output_directory)
+
+        # Get a list of all the meshes in the scene
+        scene_meshes = nmv.scene.get_list_of_meshes_in_scene()
 
         # Render 360
         for i in range(360):
@@ -270,8 +293,10 @@ def render_neuron_mesh_360(neuron_mesh,
                     nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
                 # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle(
-                    mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
+                nmv.rendering.renderer.render_at_angle(
+                    scene_objects=scene_meshes,
+                    angle=i,
+                    bounding_box=bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
                     image_resolution=cli_options.mesh.full_view_resolution,
                     image_name=image_name)
@@ -280,10 +305,12 @@ def render_neuron_mesh_360(neuron_mesh,
             else:
 
                 # Render the image
-                nmv.rendering.NeuronMeshRenderer.render_at_angle_to_scale(
-                    mesh_objects=[neuron_mesh], angle=i, bounding_box=bounding_box_360,
+                nmv.rendering.renderer.render_at_angle_to_scale(
+                    scene_objects=scene_meshes,
+                    angle=i,
+                    bounding_box=bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                    image_scale_factor=cli_options.mesh.resolution_scale_facto,
                     image_name=image_name)
 
 
@@ -350,18 +377,16 @@ if __name__ == "__main__":
     if cli_options.mesh.export_ply or cli_options.mesh.export_obj or \
        cli_options.mesh.export_stl or cli_options.mesh.export_blend:
 
-        # Save the neuron mesh
-        save_neuron_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
+        # Export the neuron mesh
+        export_neuron_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Render the mesh
     if cli_options.mesh.render:
-        render_neuron_mesh_to_static_frame(neuron_mesh=neuron_mesh, cli_options=cli_options,
-                                           cli_morphology=cli_morphology)
+        render_neuron_mesh_to_static_frame(cli_options=cli_options, cli_morphology=cli_morphology)
 
     # Render 360 of the mesh
     if cli_options.mesh.render_360:
-        render_neuron_mesh_360(neuron_mesh=neuron_mesh, cli_options=cli_options,
-                               cli_morphology=cli_morphology)
+        render_neuron_mesh_360(cli_options=cli_options, cli_morphology=cli_morphology)
 
     # Rendering the mesh
     nmv.logger.log('NMV Done')
