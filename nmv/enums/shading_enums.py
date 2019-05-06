@@ -118,7 +118,7 @@ class Shading:
             return Shading.GRANULAR
         elif shader_type == 'wave':
             return Shading.WAVE
-        elif shader_type == 'voroni':
+        elif shader_type == 'voronoi':
             return Shading.VORONI
         else :
             return Shading.LAMBERT_WARD
