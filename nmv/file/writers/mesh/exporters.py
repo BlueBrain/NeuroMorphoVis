@@ -83,15 +83,15 @@ def export_mesh_object_to_file(mesh_object,
     nmv.scene.ops.set_active_object(mesh_object)
 
     if file_format == nmv.enums.Meshing.ExportFormat.PLY:
-        output_file_path = "%s/%s.%s" % (
+        output_file_path = "%s/%s%s" % (
             output_directory, str(output_file_name), nmv.consts.Meshing.PLY_EXTENSION)
 
     elif file_format == nmv.enums.Meshing.ExportFormat.OBJ:
-        output_file_path = "%s/%s.%s" % (
+        output_file_path = "%s/%s%s" % (
             output_directory, str(output_file_name), nmv.consts.Meshing.OBJ_EXTENSION)
 
     elif file_format == nmv.enums.Meshing.ExportFormat.STL:
-        output_file_path = "%s/%s.%s" % (
+        output_file_path = "%s/%s%s" % (
             output_directory, str(output_file_name), nmv.consts.Meshing.STL_EXTENSION)
 
     else:

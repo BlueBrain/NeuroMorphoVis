@@ -140,6 +140,14 @@ class Meshing:
             elif argument == 'extrusion':
                 return Meshing.Technique.EXTRUSION
 
+            # Skinning
+            elif argument == 'skinning':
+                return Meshing.Technique.SKINNING
+
+            # Meta objects
+            elif argument == 'meta-balls':
+                return Meshing.Technique.META_OBJECTS
+
             # By default use piecewise-watertight
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT

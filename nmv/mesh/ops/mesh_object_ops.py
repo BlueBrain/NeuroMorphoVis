@@ -563,7 +563,7 @@ def join_mesh_objects(mesh_list,
 
     # If the input list contains only one mesh, return a reference to it
     if len(mesh_list) == 1:
-        return mesh_list[1]
+        return mesh_list[0]
 
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()

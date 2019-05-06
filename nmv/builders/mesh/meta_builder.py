@@ -238,7 +238,6 @@ class MetaBuilder:
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
         """
-        bpy.context.space_data.viewport_shade = 'MATERIAL'
 
         # Header
         nmv.logger.header('Building Arbors')

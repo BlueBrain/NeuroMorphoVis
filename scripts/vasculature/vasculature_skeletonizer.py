@@ -117,7 +117,6 @@ class VasculatureSkeletonizer:
 
         # A list of all the samples along the section
         section_samples_list = list()
-
         # Traverse the section, segment by segment
         for i_segment in range(initial_segment_index, final_segment_index):
 

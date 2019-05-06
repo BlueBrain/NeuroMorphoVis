@@ -21,7 +21,6 @@ import os, sys, bpy
 # Blender imports
 from mathutils import Vector
 
-
 # Internal impots
 import nmv
 import nmv.bbox
