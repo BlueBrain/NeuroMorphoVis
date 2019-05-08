@@ -18,7 +18,7 @@
 
 # If no configuration file is provided, then report it and exit
 if [ $# -eq 0 ]
-	then echo "No configuration file is provided, EXITTING!"; exit
+	then echo "No configuration file is provided, EXITING!"; exit
 fi
 
 # Source the input configuration file to use the parameters 

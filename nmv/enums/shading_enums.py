@@ -77,8 +77,11 @@ class Shading:
     # Wave
     WAVE = 'WAVE_SHADER'
 
-    # Voroni
-    VORONI = 'VORONI_SHADER'
+    # Wire frame
+    WIRE_FRAME = 'WIREFRAME_SHADER'
+
+    # Voronoi
+    VORONOI = 'VORONOI_SHADER'
 
     ################################################################################################
     # get_enum
@@ -119,8 +122,11 @@ class Shading:
         elif shader_type == 'wave':
             return Shading.WAVE
         elif shader_type == 'voronoi':
-            return Shading.VORONI
-        else :
+            return Shading.VORONOI
+        elif shader_type == 'wireframe':
+            return Shading.WIRE_FRAME
+
+        else:
             return Shading.LAMBERT_WARD
 
     ################################################################################################
@@ -163,7 +169,11 @@ class Shading:
          'Flat',
          "Use Flat Shader"),
 
-        (VORONI,
+        (VORONOI,
          'Voronoi',
-         "Use Voronoi Shader")
+         "Use Voronoi Shader"),
+
+        (WIRE_FRAME,
+         'Wire-frame',
+         "Use Wire Frame Shader")
     ]

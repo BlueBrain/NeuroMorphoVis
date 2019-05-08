@@ -117,6 +117,7 @@ class VasculatureSkeletonizer:
 
         # A list of all the samples along the section
         section_samples_list = list()
+
         # Traverse the section, segment by segment
         for i_segment in range(initial_segment_index, final_segment_index):
 
@@ -150,7 +151,6 @@ class VasculatureSkeletonizer:
             # Get a list that has all the samples of the section
             section_samples_list = self.get_samples_on_section(initial_segment_index,
                                                                final_segment_index)
-
             # Construct the section
             section = vasculature_section.VasculatureSection(i_section, section_samples_list)
 

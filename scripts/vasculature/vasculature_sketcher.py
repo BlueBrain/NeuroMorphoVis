@@ -118,22 +118,14 @@ class VasculatureSketcher:
             Output directory.
         """
 
-        portion_size = int(float(len(sections_list)) / max_portions)
-
-        start_index = portion * portion_size
-        end_index = start_index + portion_size
-
         # For each section
-        for i in range(start_index, end_index):
-
-            if i >= len(sections_list):
-                break
+        for i in range(0, 100000):
 
             # Indication
-            print('%d/%d' % (i, end_index))
+            print('%d' % (i))
 
             # Clear the scene
-            nmv.scene.clear_scene()
+            # nmv.scene.clear_scene()
 
             # Draw and save the section
             self.draw_and_save_section(sections_list[i], output_directory)

@@ -55,7 +55,7 @@ class VasculatureLoader:
         # A list of all the connections in the data set
         self.connections_list = list()
 
-        # Load the dataset directly
+        # Load the data set directly
         self.load_dataset_from_file()
 
     ################################################################################################

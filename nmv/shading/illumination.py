@@ -175,7 +175,7 @@ def create_material_specific_illumination(material_type):
         return create_glossy_bumpy_illumination()
 
     # Voroni
-    elif material_type == nmv.enums.Shading.VORONI:
+    elif material_type == nmv.enums.Shading.VORONOI:
         return create_voronoi_cells_illumination()
 
     # Default, just use the lambert shader illumination
