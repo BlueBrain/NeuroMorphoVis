@@ -509,7 +509,7 @@ def collect_mesh_stats(builder):
             ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
 
     builder.mesh_statistics += \
-        '\n\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
+        '\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
 
 
 ####################################################################################################
