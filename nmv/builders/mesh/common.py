@@ -448,6 +448,37 @@ def join_mesh_object_into_single_object(builder):
 
 
 ####################################################################################################
+# @collect_morphology_stats
+####################################################################################################
+def collect_morphology_stats(builder):
+    """Collects the stats. of the morphology skeleton.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    nmv.logger.header('Collecting Morphology Stats.')
+
+    builder.morphology_statistics += '\tSoma: ' + 'Found \n' \
+        if builder.morphology.soma is not None else 'Not Found \n'
+    if builder.morphology.apical_dendrite is not None:
+        builder.morphology_statistics += '\tApical Dendrite: 1 \n'
+    else:
+        builder.morphology_statistics += '\tApical Dendrite: 0 \n'
+
+    if builder.morphology.dendrites is not None:
+        builder.morphology_statistics += '\tBasal Dendrites: %d \n' \
+                                         % len(builder.morphology.dendrites)
+    else:
+        builder.morphology_statistics += '\t* Basal Dendrites: 0 \n'
+
+    if builder.morphology.axon is not None:
+        builder.morphology_statistics += '\tAxon: 1 \n'
+    else:
+        builder.morphology_statistics += '\tAxon: 0 \n'
+
+
+####################################################################################################
 # @collect_mesh_stats
 ####################################################################################################
 def collect_mesh_stats(builder):
@@ -493,12 +524,18 @@ def write_statistics_to_file(builder, tag):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
+    # Collect the morphology stats.
+    collect_morphology_stats(builder)
+
     # Write the stats to file
     if builder.options.io.statistics_directory is None:
         output_directory = os.getcwd()
     else:
         output_directory = builder.options.io.statistics_directory
     stats_file = open('%s/%s-%s.stats' % (output_directory, builder.morphology.label, tag), 'w')
+
+    stats_file.write(builder.morphology_statistics)
+    stats_file.write('\n')
     stats_file.write(builder.profiling_statistics)
     stats_file.write('\n')
     stats_file.write(builder.mesh_statistics)

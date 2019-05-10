@@ -86,6 +86,9 @@ class SkinningBuilder:
         # Statistics
         self.profiling_statistics = 'SkinningBuilder Profiles: \n'
 
+        # Stats. about the morphology
+        self.morphology_statistics = 'Morphology: \n'
+
         # Stats. about the mesh
         self.mesh_statistics = 'SkinningBuilder Mesh: \n'
 

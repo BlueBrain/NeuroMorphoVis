@@ -80,6 +80,9 @@ class UnionBuilder:
         # Statistics
         self.profiling_statistics = 'UnionBuilder Profiles: \n'
 
+        # Stats. about the morphology
+        self.morphology_statistics = 'Morphology: \n'
+
         # Stats. about the mesh
         self.mesh_statistics = 'UnionBuilder Mesh: \n'
 

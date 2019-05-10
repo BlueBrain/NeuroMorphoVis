@@ -92,6 +92,9 @@ class PiecewiseBuilder:
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiles: \n'
 
+        # Stats. about the morphology
+        self.morphology_statistics = 'Morphology: \n'
+
         # Stats. about the mesh
         self.mesh_statistics = 'PiecewiseBuilder Mesh: \n'
 

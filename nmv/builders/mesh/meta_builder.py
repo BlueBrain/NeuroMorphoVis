@@ -88,6 +88,9 @@ class MetaBuilder:
         # Statistics
         self.profiling_statistics = 'MetaBuilder Profiles: \n'
 
+        # Stats. about the morphology
+        self.morphology_statistics = 'Morphology: \n'
+
         # Stats. about the mesh
         self.mesh_statistics = 'MetaBuilder Mesh: \n'
 
