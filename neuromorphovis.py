@@ -25,7 +25,11 @@ __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
 # System imports
-import os, sys, subprocess
+import os
+import sys
+import subprocess
+from joblib import Parallel, delayed
+import multiprocessing
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['nmv/interface/cli', 'nmv/file/ops', 'nmv/slurm']
@@ -36,6 +40,13 @@ for import_path in import_paths:
 import arguments_parser
 import file_ops
 import slurm
+
+
+####################################################################################################
+# @execute_shell_command
+####################################################################################################
+def execute_shell_command(shell_command):
+    subprocess.call(shell_command, shell=True)
 
 
 ####################################################################################################
@@ -165,6 +176,9 @@ def run_local_neuromorphovis(arguments):
             print('ERROR: The directory [%s] does NOT contain any morphology files' %
                   arguments.morphology_directory)
 
+        # A list of all the commands to be executed
+        shell_commands = list()
+
         # Construct the commands for every individual morphology file
         for morphology_file in morphology_files:
 
@@ -173,13 +187,17 @@ def run_local_neuromorphovis(arguments):
                 arguments=arguments, morphology_file=morphology_file)
 
             # Construct the shell command to run the workflow
-            # Construct the shell command to run the workflow
-            shell_commands = create_shell_commands_for_local_execution(arguments, arguments_string)
+            shell_commands.extend(
+                create_shell_commands_for_local_execution(arguments, arguments_string))
 
-            # Run NeuroMorphoVis from Blender in the background mode
-            for shell_command in shell_commands:
-                # print('RUNNING: ' + shell_command)
-                subprocess.call(shell_command, shell=True)
+        # Parallel execution
+        # Parallel(n_jobs=8)(
+        #    delayed(execute_shell_command)(command) for command in shell_commands)
+
+        # Run NeuroMorphoVis from Blender in the background mode
+        for shell_command in shell_commands:
+            # print('RUNNING: ' + shell_command)
+            subprocess.call(shell_command, shell=True)
 
     else:
         print('ERROR: Input data source, use \'file, gid, target or directory\'')
