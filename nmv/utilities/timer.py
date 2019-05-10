@@ -66,3 +66,33 @@ class Timer:
 
         # Return the duration in milliseconds.
         return self.ending_time - self.starting_time
+
+
+####################################################################################################
+# @profile_function
+####################################################################################################
+def profile_function(function, *args):
+    """Runs a function and profiles it.
+    :param function:
+        Function object.
+    :param args:
+        Arguments to the function
+    :return:
+        Function result, Profiling string.
+    """
+
+    # Start the timer
+    starting_time = time.time()
+
+    # Run the function
+    function_return = function(*args)
+
+    # Stop the timer
+    ending_time = time.time()
+
+    # Compute the execution time
+    execution_time = ending_time - starting_time
+
+    # Construct the profiling string
+    profiling_string = '\t Stats. @%s: [%.3f]\n' % (function.__name__, execution_time)
+    return function_return, profiling_string

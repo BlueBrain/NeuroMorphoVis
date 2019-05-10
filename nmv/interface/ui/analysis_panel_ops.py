@@ -288,6 +288,24 @@ def export_analysis_results(morphology,
     analysis_results_string += '*' * 80 + '\n'
     analysis_results_string += '* Analysis results for the morphology [%s] \n\n' % morphology.label
 
+    analysis_results_string += '- Contents \n'
+    analysis_results_string += '\t* Soma: ' + 'Found \n' \
+        if morphology.soma is not None else 'Not Found \n'
+    if morphology.apical_dendrite is not None:
+        analysis_results_string += '\t* Apical Dendrite: 1 \n'
+    else:
+        analysis_results_string += '\t* Apical Dendrite: 0 \n'
+
+    if morphology.dendrites is not None:
+        analysis_results_string += '\t* Basal Dendrites: %d \n' % len(morphology.dendrites)
+    else:
+        analysis_results_string += '\t* Basal Dendrites: 0 \n'
+
+    if morphology.axon is not None:
+        analysis_results_string += '\t* Axon: 1 \n\n'
+    else:
+        analysis_results_string += '\t* Axon: 0 \n\n'
+
     # Register the morphology variables to be able to show and update them on the UI
     for item in nmv.analysis.ui_analysis_items:
         analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)

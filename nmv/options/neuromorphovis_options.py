@@ -92,6 +92,10 @@ class NeuroMorphoVisOptions:
         self.io.analysis_directory = '%s/%s' % (arguments.output_directory,
                                                 nmv.consts.Paths.ANALYSIS_FOLDER)
 
+        # Statistics directory
+        self.io.statistics_directory = '%s/%s' % (arguments.output_directory,
+                                                  nmv.consts.Paths.STATS_FOLDER)
+
         ############################################################################################
         # Morphology options
         ############################################################################################

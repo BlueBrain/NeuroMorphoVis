@@ -44,7 +44,7 @@ import nmv.scene
 # @analyze_morphology
 ####################################################################################################
 def analyze_morphology_skeleton(cli_morphology,
-                       cli_options):
+                                cli_options):
     """Morphology analysis operations.
 
     :param cli_morphology:
@@ -68,8 +68,8 @@ def analyze_morphology_skeleton(cli_morphology,
             morphology=cli_morphology, directory=cli_options.io.analysis_directory)
 
     else:
-        nmv.logger.log('ERROR: Cannot analyze the morphology file [%s]' % 
-            cli_options.morphology.label)
+        nmv.logger.log('ERROR: Cannot analyze the morphology file [%s]' %
+                       cli_options.morphology.label)
 
 
 ####################################################################################################

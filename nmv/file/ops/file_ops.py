@@ -150,6 +150,10 @@ def create_output_tree(output_directory):
     sequences_directory = '%s/%s' % (output_directory, Paths.SEQUENCES_FOLDER)
     clean_and_create_directory(sequences_directory)
 
+    # Stats directory
+    stats_directory = '%s/%s' % (output_directory, Paths.STATS_FOLDER)
+    clean_and_create_directory(stats_directory)
+
 
 ####################################################################################################
 # @path_exists

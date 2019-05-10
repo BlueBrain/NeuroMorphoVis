@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # Syetsm imports
-import copy
+import copy, os
 
 # Blender imports
 import bpy, mathutils
@@ -85,10 +85,13 @@ class MetaBuilder:
         # The smallest detected radius while building the model, to be used for meta-ball resolution
         self.smallest_radius = 1e5
 
+        # Statistics
+        self.statistics = 'MetaBuilder Stats: \n'
+
     ################################################################################################
-    # @verify_and_repair_morphology
+    # @verify_morphology_skeleton
     ################################################################################################
-    def verify_and_repair_morphology(self):
+    def verify_morphology_skeleton(self):
         """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
         """
@@ -383,7 +386,7 @@ class MetaBuilder:
         # Convert it to a mesh from meta-balls
         bpy.ops.object.convert(target='MESH')
 
-        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '.001']
+        self.meta_mesh = bpy.context.scene.objects[0]
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
@@ -419,27 +422,37 @@ class MetaBuilder:
         """Reconstructs the neuronal mesh using meta objects.
         """
 
-        # Verify the morphology
-        self.verify_and_repair_morphology()
+        # Verify and repair the morphology, if required
+        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        self.statistics += stats
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
-        nmv.builders.common.modify_morphology_skeleton(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.common.modify_morphology_skeleton, self)
+        self.statistics += stats
 
         # Initialize the meta object
-        self.initialize_meta_object(name=self.options.morphology.label)
+        result, stats = nmv.utilities.profile_function(
+            self.initialize_meta_object, self.options.morphology.label)
+        self.statistics += stats
 
         # Build the soma
-        self.build_soma_from_meta_objects()
+        result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
+        self.statistics += stats
 
         # Build the arbors
         # TODO: Adding the spines should be part of the meshing using the spine morphologies
-        self.build_arbors()
+        result, stats = nmv.utilities.profile_function(self.build_arbors)
+        self.statistics += stats
 
         # Finalize the meta object and construct a solid object
-        self.finalize_meta_object()
+        result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
+        self.statistics += stats
 
         # Tessellation
-        nmv.builders.common.decimate_neuron_mesh(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.common.decimate_neuron_mesh, self)
+        self.statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
@@ -449,7 +462,17 @@ class MetaBuilder:
         self.assign_material_to_mesh()
 
         # Transform to the global coordinates, if required
-        nmv.builders.transform_to_global_coordinates(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.transform_to_global_coordinates, self)
+        self.statistics += stats
 
-        # Mission done
+        # Report
         nmv.logger.header('Mesh Reconstruction Done!')
+        nmv.logger.log(self.statistics)
+
+        # Write the stats to file
+        # output_directory = self.options.io.statistics_directory
+        output_directory = os.getcwd()
+        stats_file = open('%s/%s-meshing-meta.stats' % (output_directory, self.morphology.label), 'w')
+        stats_file.write(self.statistics)
+        stats_file.close()

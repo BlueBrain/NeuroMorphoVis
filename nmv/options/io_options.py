@@ -48,3 +48,7 @@ class IOOptions:
         # Analysis directory, where the analysis reports will be saved
         self.analysis_directory = None
 
+        # Statistics directory, where the stats. will be saved
+        self.statistics_directory = None
+
+

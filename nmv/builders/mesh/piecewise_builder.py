@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy
+import random, os, copy
 
 # Blender imports
 import bpy
@@ -88,6 +88,9 @@ class PiecewiseBuilder:
 
         # A list of the reconstructed meshes of the axon
         self.axon_meshes = list()
+
+        # Statistics
+        self.statistics = 'PiecewiseBuilder Stats: \n'
 
     ################################################################################################
     # @verify_morphology_skeleton
@@ -371,34 +374,57 @@ class PiecewiseBuilder:
         nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        self.verify_morphology_skeleton()
+        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        self.statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton
-        nmv.builders.modify_morphology_skeleton(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.modify_morphology_skeleton, self)
+        self.statistics += stats
 
         # Build the soma, with the default parameters
-        nmv.builders.reconstruct_soma_mesh(builder=self)
+        result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
+        self.statistics += stats
 
         # Build the arbors
-        self.reconstruct_arbors_meshes()
+        result, stats = nmv.utilities.profile_function(self.reconstruct_arbors_meshes)
+        self.statistics += stats
 
         # Connect to the soma
-        nmv.builders.connect_arbors_to_soma(builder=self)
+        result, stats = nmv.utilities.profile_function(nmv.builders.connect_arbors_to_soma, self)
+        self.statistics += stats
 
         # Tessellation
-        nmv.builders.decimate_neuron_mesh(builder=self)
+        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
+        self.statistics += stats
 
         # Surface roughness
-        nmv.builders.add_surface_noise_to_arbor(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.add_surface_noise_to_arbor, self)
+        self.statistics += stats
 
         # Add the spines
-        nmv.builders.add_spines_to_surface(builder=self)
+        result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
+        self.statistics += stats
 
         # Join all the objects into a single object
-        nmv.builders.join_mesh_object_into_single_object(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.join_mesh_object_into_single_object, self)
+        self.statistics += stats
 
         # Transform to the global coordinates, if required
-        nmv.builders.transform_to_global_coordinates(builder=self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.transform_to_global_coordinates, self)
+        self.statistics += stats
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
+        nmv.logger.log(self.statistics)
+
+        # Write the stats to file
+        # output_directory = self.options.io.statistics_directory
+        output_directory = os.getcwd()
+        stats_file = open('%s/%s-meshing-piecewise.stats' % (output_directory, self.morphology.label), 'w')
+        stats_file.write(self.statistics)
+        stats_file.close()
+

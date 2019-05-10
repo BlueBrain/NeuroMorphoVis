@@ -47,6 +47,9 @@ class Paths:
     # The folder where the sequences will be generated
     SEQUENCES_FOLDER = 'sequences'
 
+    # The folder where the stats. will be generated
+    STATS_FOLDER = 'stats'
+
     # The folder where the analysis files will be generated
     ANALYSIS_FOLDER = 'analysis'
 
