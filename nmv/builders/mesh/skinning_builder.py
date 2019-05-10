@@ -84,7 +84,10 @@ class SkinningBuilder:
         self.spines_mesh = None
 
         # Statistics
-        self.statistics = 'SkinningBuilder Stats: \n'
+        self.profiling_statistics = 'SkinningBuilder Profiles: \n'
+
+        # Stats. about the mesh
+        self.mesh_statistics = 'SkinningBuilder Mesh: \n'
 
     ################################################################################################
     # @verify_morphology_skeleton
@@ -448,68 +451,65 @@ class SkinningBuilder:
 
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
             nmv.builders.modify_morphology_skeleton, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Build the soma, with the default parameters
         result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Build the arbors and connect them to the soma
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
 
             # Build the arbors
             result, stats = nmv.utilities.profile_function(self.build_arbors, True)
-            self.statistics += stats
+            self.profiling_statistics += stats
 
             # Connect to the soma
             result, stats = nmv.utilities.profile_function(
                 nmv.builders.connect_arbors_to_soma, self)
-            self.statistics += stats
+            self.profiling_statistics += stats
 
         # Build the arbors only without any connection to the soma
         else:
             # Build the arbors
             result, stats = nmv.utilities.profile_function(self.build_arbors, False)
-            self.statistics += stats
+            self.profiling_statistics += stats
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Surface roughness
         result, stats = nmv.utilities.profile_function(
             nmv.builders.add_surface_noise_to_arbor, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Add the spines
         result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Join all the objects into a single object
         result, stats = nmv.utilities.profile_function(
             nmv.builders.join_mesh_object_into_single_object, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Transform to the global coordinates, if required
         result, stats = nmv.utilities.profile_function(
             nmv.builders.transform_to_global_coordinates, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
+
+        # Collect the stats. of the mesh
+        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        self.profiling_statistics += stats
 
         # Done
         nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.log(self.statistics)
+        nmv.logger.log(self.profiling_statistics)
 
         # Write the stats to file
-        if self.options.io.statistics_directory is None:
-            output_directory = os.getcwd()
-        else:
-            output_directory = self.options.io.statistics_directory
-        stats_file = open('%s/%s-meshing-piecewise.stats' % (output_directory,
-                                                             self.morphology.label), 'w')
-        stats_file.write(self.statistics)
-        stats_file.close()
+        nmv.builders.write_statistics_to_file(builder=self, tag='skinning')

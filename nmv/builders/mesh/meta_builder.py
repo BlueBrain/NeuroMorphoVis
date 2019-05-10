@@ -86,7 +86,10 @@ class MetaBuilder:
         self.smallest_radius = 1e5
 
         # Statistics
-        self.statistics = 'MetaBuilder Stats: \n'
+        self.profiling_statistics = 'MetaBuilder Profiles: \n'
+
+        # Stats. about the mesh
+        self.mesh_statistics = 'MetaBuilder Mesh: \n'
 
     ################################################################################################
     # @verify_morphology_skeleton
@@ -424,35 +427,35 @@ class MetaBuilder:
 
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
             nmv.builders.common.modify_morphology_skeleton, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Initialize the meta object
         result, stats = nmv.utilities.profile_function(
             self.initialize_meta_object, self.options.morphology.label)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Build the soma
         result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Build the arbors
         # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Finalize the meta object and construct a solid object
         result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(
             nmv.builders.common.decimate_neuron_mesh, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
@@ -464,18 +467,15 @@ class MetaBuilder:
         # Transform to the global coordinates, if required
         result, stats = nmv.utilities.profile_function(
             nmv.builders.transform_to_global_coordinates, self)
-        self.statistics += stats
+        self.profiling_statistics += stats
+
+        # Collect the stats. of the mesh
+        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        self.profiling_statistics += stats
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.log(self.statistics)
+        nmv.logger.log(self.profiling_statistics)
 
         # Write the stats to file
-        if self.options.io.statistics_directory is None:
-            output_directory = os.getcwd()
-        else:
-            output_directory = self.options.io.statistics_directory
-        stats_file = open('%s/%s-meshing-piecewise.stats' % (output_directory,
-                                                             self.morphology.label), 'w')
-        stats_file.write(self.statistics)
-        stats_file.close()
+        nmv.builders.write_statistics_to_file(builder=self, tag='meta')

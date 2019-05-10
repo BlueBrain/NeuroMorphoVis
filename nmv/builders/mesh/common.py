@@ -17,6 +17,7 @@
 
 # System imports
 import random
+import os
 
 # Blender imports
 import bpy
@@ -444,6 +445,65 @@ def join_mesh_object_into_single_object(builder):
 
         # Return a reference to the joint mesh object
         return joint_mesh
+
+
+####################################################################################################
+# @collect_mesh_stats
+####################################################################################################
+def collect_mesh_stats(builder):
+    """Collects the stats. of the reconstructed mesh.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    nmv.logger.header('Collecting Mesh Stats.')
+
+    # Get neuron objects
+    neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+
+    total_vertices = 0
+    total_polygons = 0
+
+    # Do it mesh by mesh
+    for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
+
+        vertices = len(neuron_mesh_object.data.vertices)
+        polygons = len(neuron_mesh_object.data.polygons)
+
+        total_vertices += vertices
+        total_polygons += polygons
+
+        builder.mesh_statistics += '\t' + neuron_mesh_object.name + \
+            ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
+
+    builder.mesh_statistics += \
+        '\n\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
+
+
+####################################################################################################
+# @write_statistics_to_file
+####################################################################################################
+def write_statistics_to_file(builder, tag):
+    """Write the profiling stats. and also the mesh stats to file.
+
+    :param tag:
+        A label that will be used to tag the stats. file.
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # Write the stats to file
+    if builder.options.io.statistics_directory is None:
+        output_directory = os.getcwd()
+    else:
+        output_directory = builder.options.io.statistics_directory
+    stats_file = open('%s/%s-%s.stats' % (output_directory, builder.morphology.label, tag), 'w')
+    stats_file.write(builder.profiling_statistics)
+    stats_file.write('\n')
+    stats_file.write(builder.mesh_statistics)
+
+    stats_file.close()
 
 
 ####################################################################################################

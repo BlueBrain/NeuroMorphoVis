@@ -94,5 +94,5 @@ def profile_function(function, *args):
     execution_time = ending_time - starting_time
 
     # Construct the profiling string
-    profiling_string = '\t Stats. @%s: [%.3f]\n' % (function.__name__, execution_time)
+    profiling_string = '\tStats. @%s: [%.3f]\n' % (function.__name__, execution_time)
     return function_return, profiling_string
