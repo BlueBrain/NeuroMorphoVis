@@ -101,6 +101,9 @@ class Skeletonization:
         # Disconnect the sections and draw each of them as an independent object
         DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
 
+        # Samples
+        SAMPLES = 'SKELETONIZATION_SAMPLES'
+
         # Similar to DISCONNECTED_SECTIONS, and add an articulation sphere to connect the sections
         ARTICULATED_SECTIONS = 'SKELETONIZATION_ARTICULATED_SECTIONS'
 
@@ -128,6 +131,10 @@ class Skeletonization:
             # Disconnected segments
             if argument == 'disconnected-segments':
                 return Skeletonization.Method.DISCONNECTED_SEGMENTS
+
+                # Connected sections
+            elif argument == 'samples':
+                return Skeletonization.Method.SAMPLES
 
             # Disconnected sections
             elif argument == 'disconnected-sections':

@@ -148,7 +148,8 @@ class SkeletonBuilder:
         """
         output = list()
         for sample in section.samples:
-            sphere = nmv.bmeshi.create_uv_sphere(radius=sample.radius, location=sample.point)
+            sphere = nmv.bmeshi.create_ico_sphere(radius=sample.radius, location=sample.point,
+                                                  subdivisions=3)
             output.append(sphere)
         return output
 
@@ -274,20 +275,21 @@ class SkeletonBuilder:
 
             # Draw the children sections
             for child in root.children:
-                self.draw_section_terminals_as_spheres(child, sphere_objects=sphere_objects,
-                    material_list=material_list, branching_level=branching_level,
-                    max_branching_level=max_branching_level)
+                self.draw_section_terminals_as_spheres(
+                    child, sphere_objects=sphere_objects, material_list=material_list,
+                    branching_level=branching_level, max_branching_level=max_branching_level)
 
-
+    ################################################################################################
+    # @draw_sections_as_spheres
+    ################################################################################################
     def draw_sections_as_spheres(self,
                                 root,
                                 name,
                                 material_list=[],
                                 segments_objects=[],
                                 branching_level=0,
-                                max_branching_level=nmv.consts.Math.INFINITY,
-                                bevel_object=None):
-        """
+                                max_branching_level=nmv.consts.Math.INFINITY):
+        """Draw the section as a list of spheres.
 
         :param root:
         :param name:
@@ -312,6 +314,7 @@ class SkeletonBuilder:
 
         # Make sure that the arbor exist
         if root is not None:
+
             section_name = '%s_%d' % (name, root.id)
             drawn_spheres = self.draw_section_samples_as_spheres(root)
 
@@ -326,7 +329,6 @@ class SkeletonBuilder:
                     max_branching_level=max_branching_level,
                     name=name,
                     material_list=material_list,
-                    bevel_object=bevel_object,
                     segments_objects=segments_objects)
 
     ################################################################################################
@@ -441,7 +443,7 @@ class SkeletonBuilder:
                 self.progressive_frames_directory, '{0:05d}'.format(self.progressive_frame_index))
 
             # Render the image to film
-            #camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
+            # camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
 
             self.progressive_frame_index += 1
 
@@ -508,69 +510,108 @@ class SkeletonBuilder:
                     bevel_object=bevel_object,
                     sections_objects=sections_objects)
 
-    def draw_morphology_as_spheres(self, bevel_object):
+    ################################################################################################
+    # @draw_morphology_as_spheres
+    ################################################################################################
+    def draw_morphology_as_spheres(self):
+        """Draws the morphology as a set of spheres.
 
-        # A list of objects (references to drawn segments) that compose the morphology
-        morphology_objects = []
+        :return:
+            A list of spheres.
+        """
+
+        # Morphology objects
+        morphology_objects = list()
 
         # Draw the axon
         if not self.options.morphology.ignore_axon:
-            axon_segments_objects = []
-            self.draw_sections_as_spheres(
-                self.morphology.axon,
-                name=nmv.consts.Arbors.AXON_PREFIX,
-                max_branching_level=self.options.morphology.axon_branch_order,
-                material_list=self.axon_materials,
-                bevel_object=bevel_object,
-                segments_objects=axon_segments_objects)
+            if self.morphology.axon is not None:
+                nmv.logger.info('Axon')
 
-            # Extend the morphology objects list
-            morphology_objects.extend(axon_segments_objects)
+                axon_segments_objects = []
+                self.draw_sections_as_spheres(
+                    self.morphology.axon,
+                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    max_branching_level=self.options.morphology.axon_branch_order,
+                    material_list=self.axon_materials,
+                    segments_objects=axon_segments_objects)
+
+                # Convert the objects to something and add them to the scene
+                for i, item in enumerate(axon_segments_objects):
+                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+                        item, '%s_%d' % ('axon', i))
+
+                    # Smooth shading
+                    nmv.mesh.shade_smooth_object(sphere_mesh)
+
+                    # Assign the material
+                    nmv.shading.set_material_to_object(sphere_mesh, self.axon_materials[i % 2])
+
+                    # Append the sphere mesh to the morphology objects
+                    morphology_objects.append(sphere_mesh)
 
         # Draw the basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
             if self.morphology.dendrites is not None:
-
                 basal_dendrites_segments_objects = []
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.info('Basal dendrite [%d]' % i)
                     dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
                     self.draw_sections_as_spheres(
                         basal_dendrite, name=dendrite_name,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.basal_dendrites_materials,
-                        bevel_object=bevel_object,
                         segments_objects=basal_dendrites_segments_objects)
 
-                # Extend the morphology objects list
-                morphology_objects.extend(basal_dendrites_segments_objects)
+                # Convert the objects to something and add them to the scene
+                for i, item in enumerate(basal_dendrites_segments_objects):
+                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+                        item, '%s_%d' % ('basal_dendrite', i))
+
+                    # Smooth shading
+                    nmv.mesh.shade_smooth_object(sphere_mesh)
+
+                    # Assign the material
+                    nmv.shading.set_material_to_object(sphere_mesh,
+                                                       self.basal_dendrites_materials[i % 2])
+
+                    # Append the sphere mesh to the morphology objects
+                    morphology_objects.append(sphere_mesh)
 
         # Draw the apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
-            apical_dendrite_segments_objects = []
-            self.draw_sections_as_spheres(
-                self.morphology.apical_dendrite,
-                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.apical_dendrite_materials,
-                bevel_object=bevel_object,
-                segments_objects=apical_dendrite_segments_objects)
 
-            # Extend the morphology objects list
-            morphology_objects.extend(apical_dendrite_segments_objects)
+            # Draw the apical dendrite, if exists
+            if self.morphology.apical_dendrite is not None:
+                nmv.logger.info('Apical dendrite')
 
+                apical_dendrite_segments_objects = []
+                self.draw_sections_as_spheres(
+                    self.morphology.apical_dendrite,
+                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    material_list=self.apical_dendrite_materials,
+                    segments_objects=apical_dendrite_segments_objects)
 
+                # Convert the objects to something and add them to the scene
+                for i, item in enumerate(apical_dendrite_segments_objects):
+                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
+                        item, '%s_%d' % ('apical_dendrite', i))
 
-        # convert the objects to something and add them to the scene
-        for item in morphology_objects:
-            soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-                item, '%s_sample' % self.options.morphology.label)
-            nmv.mesh.shade_smooth_object(soma_sphere_mesh)
+                    # Smooth shading
+                    nmv.mesh.shade_smooth_object(sphere_mesh)
 
+                    # Assign the material
+                    nmv.shading.set_material_to_object(sphere_mesh,
+                                                       self.apical_dendrite_materials[i % 2])
 
-        # Return a reference to the list of drawn objects
+                    # Append the sphere mesh to the morphology objects
+                    morphology_objects.append(sphere_mesh)
+
+        # Return a list of the morphology objects
         return morphology_objects
 
     ################################################################################################
@@ -782,7 +823,7 @@ class SkeletonBuilder:
                 self.progressive_frames_directory, '{0:05d}'.format(self.progressive_frame_index))
 
             # Render the image to film
-            #camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
+            # camera_ops.render_scene_to_image(self.progressive_rendering_camera, frame_file_path)
 
             self.progressive_frame_index += 1
 
@@ -1060,6 +1101,9 @@ class SkeletonBuilder:
                 mesh_object=soma_mesh, blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid)
 
+    ################################################################################################
+    # @transform_arbors_to_global_coordinates
+    ################################################################################################
     def transform_arbors_to_global_coordinates(self,
                                                arbors):
         if self.options.morphology.global_coordinates:
@@ -1109,6 +1153,10 @@ class SkeletonBuilder:
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_sections(
                 bevel_object=bevel_object))
+
+        # Draw the morphology as a set of samples
+        elif method == nmv.enums.Skeletonization.Method.SAMPLES:
+            morphology_objects.extend(self.draw_morphology_as_spheres())
 
         # Draw the morphology as a set of articulated tubes, where each SECTION is connected to
         # the following one by a sphere
