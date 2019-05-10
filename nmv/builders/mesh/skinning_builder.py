@@ -505,8 +505,11 @@ class SkinningBuilder:
         nmv.logger.log(self.statistics)
 
         # Write the stats to file
-        # output_directory = self.options.io.statistics_directory
-        output_directory = os.getcwd()
-        stats_file = open('%s/%s-meshing-skinning.stats' % (output_directory, self.morphology.label), 'w')
+        if self.options.io.statistics_directory is None:
+            output_directory = os.getcwd()
+        else:
+            output_directory = self.options.io.statistics_directory
+        stats_file = open('%s/%s-meshing-piecewise.stats' % (output_directory,
+                                                             self.morphology.label), 'w')
         stats_file.write(self.statistics)
         stats_file.close()
