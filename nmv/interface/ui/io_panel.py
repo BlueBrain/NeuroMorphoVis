@@ -207,7 +207,7 @@ class LoadMorphology(bpy.types.Operator):
         bpy.ops.view3d.viewnumpad(type='TOP')
 
         # View all the objects in the scene
-        bpy.ops.view3d.view_all()
+        bpy.ops.view3d.view_selected()
 
         return {'FINISHED'}
 

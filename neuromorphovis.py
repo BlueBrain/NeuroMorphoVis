@@ -191,13 +191,13 @@ def run_local_neuromorphovis(arguments):
                 create_shell_commands_for_local_execution(arguments, arguments_string))
 
         # Parallel execution
-        # Parallel(n_jobs=8)(
-        #    delayed(execute_shell_command)(command) for command in shell_commands)
+        Parallel(n_jobs=8)(
+           delayed(execute_shell_command)(command) for command in shell_commands)
 
         # Run NeuroMorphoVis from Blender in the background mode
-        for shell_command in shell_commands:
+        # for shell_command in shell_commands:
             # print('RUNNING: ' + shell_command)
-            subprocess.call(shell_command, shell=True)
+        #    subprocess.call(shell_command, shell=True)
 
     else:
         print('ERROR: Input data source, use \'file, gid, target or directory\'')
