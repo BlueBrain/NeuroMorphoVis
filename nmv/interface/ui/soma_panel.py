@@ -797,8 +797,13 @@ class RenderSomaProgressive(bpy.types.Operator):
             nmv.interface.ui_options.morphology.label)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
-        # Load the morphology
-        self.load_morphology(context_scene=context.scene)
+        # Load the morphology file
+        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+
+        # If the result is None, report the issue
+        if loading_result is None:
+            self.report({'ERROR'}, 'Please select a morphology file')
+            return {'FINISHED'}
 
         # Create a some builder object
         self.soma_builder = nmv.builders.SomaBuilder(
