@@ -17,6 +17,7 @@
 
 # System imports
 import random, os, copy
+import time
 
 # Blender imports
 import bpy
@@ -91,6 +92,21 @@ class SkinningBuilder:
 
         # Stats. about the mesh
         self.mesh_statistics = 'SkinningBuilder Mesh: \n'
+
+        # Total extrusion time
+        self.extrusion_time = 0
+
+        # Total subdivision time
+        self.subdivision_time = 0
+
+        # Total time to apply the skin modifier
+        self.skin_modifier_time = 0
+
+        # Total time to update the radii
+        self.update_radii_time = 0
+
+        # Conversion from bmesh to mesh time
+        self.mesh_conversion_time = 0
 
     ################################################################################################
     # @verify_morphology_skeleton
@@ -309,10 +325,14 @@ class SkinningBuilder:
                 arbor_bmesh_object, 1, arbor.samples[0].point)
 
         # Extrude arbor mesh using the skinning method using a temporary radius with a bmesh
+        extrusion_time = time.time()
         self.extrude_arbor(arbor_bmesh_object, arbor, max_branching_order)
+        self.extrusion_time += time.time() - extrusion_time
 
         # Convert the bmesh to a mesh object
+        mesh_conversion_time = time.time()
         arbor_mesh = nmv.bmeshi.convert_bmesh_to_mesh(arbor_bmesh_object, arbor_name)
+        self.mesh_conversion_time += time.time() - mesh_conversion_time
 
         # Apply a skin modifier create the membrane of the skeleton
         arbor_mesh.modifiers.new(name="Skin", type='SKIN')
@@ -333,11 +353,15 @@ class SkinningBuilder:
         vertex.radius = arbor.samples[0].radius, arbor.samples[0].radius
 
         # Update the radii of the arbor using the fast method before applying the skinning modifier
+        update_radii_time = time.time()
         self.update_arbor_samples_radii(
             arbor_mesh=arbor_mesh, root=arbor, max_branching_order=max_branching_order)
+        self.update_radii_time += time.time() - update_radii_time
 
         # Apply the modifier
+        skin_modifier_time = time.time()
         bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
+        self.skin_modifier_time += time.time() - skin_modifier_time
 
         # Assign the material to the reconstructed arbor mesh
         nmv.shading.set_material_to_object(arbor_mesh, arbor_material)
@@ -349,7 +373,9 @@ class SkinningBuilder:
             nmv.mesh.ops.remove_first_face_of_quad_mesh_object(arbor_mesh)
 
             # Smooth the mesh object
+            subdivision_time = time.time()
             nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+            self.subdivision_time += time.time() - subdivision_time
 
             # Close the removed face
             nmv.mesh.ops.close_open_faces(mesh_object=arbor_mesh)
@@ -358,7 +384,9 @@ class SkinningBuilder:
         else:
 
             # Smooth the mesh object
+            subdivision_time = time.time()
             nmv.mesh.smooth_object(mesh_object=arbor_mesh, level=2)
+            self.subdivision_time += time.time() - subdivision_time
 
         # Further smoothing, only with shading
         nmv.mesh.shade_smooth_object(arbor_mesh)
@@ -482,6 +510,26 @@ class SkinningBuilder:
             # Build the arbors
             result, stats = nmv.utilities.profile_function(self.build_arbors, False)
             self.profiling_statistics += stats
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('extrusion',
+                                                                 self.extrusion_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('subdivision',
+                                                                 self.subdivision_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('skin_modifier',
+                                                                 self.skin_modifier_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('update_radii',
+                                                                 self.update_radii_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('mesh_conversion',
+                                                                 self.mesh_conversion_time)
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)

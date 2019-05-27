@@ -17,6 +17,7 @@
 
 # System imports
 import random
+import time
 
 # Blender imports
 import bpy
@@ -24,6 +25,7 @@ from mathutils import Vector, Matrix
 
 # Internal imports
 import nmv
+import nmv.bmeshi
 import nmv.enums
 import nmv.geometry
 import nmv.mesh
@@ -377,8 +379,6 @@ def label_primary_and_secondary_sections_based_on_angles_with_fixed_radii(sectio
             # Set the radius of the primary child to the greatest
             child.samples[0].radius = smallest_radius
 
-
-
         # Otherwise, set it to secondary
         else:
 
@@ -390,8 +390,6 @@ def label_primary_and_secondary_sections_based_on_angles_with_fixed_radii(sectio
 
             # Set the radius of a secondary child to half of the primary branch
             child.samples[0].radius = smallest_radius
-
-
 
     # Update the children list in the section
     section.children = children_list_with_updated_order
@@ -961,6 +959,9 @@ def connect_arbor_to_soma(soma_mesh,
     section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
         arbor.mesh, intersection_point)
 
+    # NOTE: This approach could be faster, but we need to get
+    # section_face_index = arbor.mesh.data.polygons[-1].index
+
     # Select the face
     nmv.mesh.ops.select_face_vertices(arbor.mesh, section_face_index)
 
@@ -981,10 +982,10 @@ def connect_arbor_to_soma(soma_mesh,
     bpy.ops.object.editmode_toggle()
 
     # Select all the vertices of the final mesh
-    nmv.mesh.ops.select_all_vertices(soma_mesh)
+    # nmv.mesh.ops.select_all_vertices(soma_mesh)
 
     # Deselect all the vertices of the parent mesh, for safety reasons
-    nmv.mesh.ops.deselect_all_vertices(soma_mesh)
+    # nmv.mesh.ops.deselect_all_vertices(soma_mesh)
 
 
 ####################################################################################################
