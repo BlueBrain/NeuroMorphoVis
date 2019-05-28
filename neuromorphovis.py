@@ -28,8 +28,7 @@ __status__      = "Production"
 import os
 import sys
 import subprocess
-from joblib import Parallel, delayed
-import multiprocessing
+
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['nmv/interface/cli', 'nmv/file/ops', 'nmv/slurm']
@@ -191,7 +190,9 @@ def run_local_neuromorphovis(arguments):
                 create_shell_commands_for_local_execution(arguments, arguments_string))
 
         # Parallel execution
-        #Parallel(n_jobs=8)(
+        # from joblib import Parallel, delayed
+        # import multiprocessing
+        # Parallel(n_jobs=8)(
         #   delayed(execute_shell_command)(command) for command in shell_commands)
 
         # Run NeuroMorphoVis from Blender in the background mode

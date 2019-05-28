@@ -98,7 +98,7 @@ class AnalysisItem:
         elif 'Axon' in variable_prefix:
             description = '%s %s' % (self.description, 'of the axon')
         else:
-            pass
+            description = 'None'
 
         # Float entry
         if self.data_format == 'FLOAT':

@@ -771,8 +771,8 @@ class BBPReader:
 
             # Build section
             section = nmv.skeleton.Section(
-                id=section_id, parent_id=parent_section_id, children_ids=children_ids, samples=samples,
-                type=section_type)
+                id=section_id, parent_id=parent_section_id, children_ids=children_ids,
+                samples=samples, type=section_type)
 
             # Set the parenting
             if parent_section_id is None:

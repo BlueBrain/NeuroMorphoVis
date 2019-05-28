@@ -53,7 +53,9 @@ class Soma:
         self.profile_points = profile_points
 
         # The profile points of the arbors
-        self.arbors_profile_points = sorted(arbors_profile_points)
+        self.arbors_profile_points = arbors_profile_points
+        if self.arbors_profile_points is not None:
+            self.arbors_profile_points = sorted(arbors_profile_points)
 
         # Possible radii that can be assigned to the soma during its reconstruction
         self.possible_radii = list()
