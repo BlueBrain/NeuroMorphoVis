@@ -108,6 +108,15 @@ class SkinningBuilder:
         # Conversion from bmesh to mesh time
         self.mesh_conversion_time = 0
 
+        # Smooth shade the surface
+        self.smooth_shading_time = 0
+
+        # Modifier creation time
+        self.creating_modifier_time = 0
+
+        # Reindexing time
+        self.reindexing_time = 0
+
     ################################################################################################
     # @verify_morphology_skeleton
     ################################################################################################
@@ -307,9 +316,11 @@ class SkinningBuilder:
             # Initially, this index is set to TWO and incremented later, sample zero is reserved to
             # the auxiliary sample that is added at the soma, and the first sample to the point that
             # is added right before the arbor starts
+            reindexing_time = time.time()
             samples_global_arbor_index = [2]
             nmv.builders.update_samples_indices_per_arbor(
                 arbor, samples_global_arbor_index, max_branching_order)
+            self.reindexing_time += time.time() - reindexing_time
 
             # Create the initial vertex of the arbor skeleton at the origin
             arbor_bmesh_object = nmv.bmeshi.create_vertex()
@@ -335,7 +346,9 @@ class SkinningBuilder:
         self.mesh_conversion_time += time.time() - mesh_conversion_time
 
         # Apply a skin modifier create the membrane of the skeleton
+        creating_modifier_time = time.time()
         arbor_mesh.modifiers.new(name="Skin", type='SKIN')
+        self.creating_modifier_time += time.time() - creating_modifier_time
 
         # Activate the arbor mesh
         nmv.scene.set_active_object(arbor_mesh)
@@ -389,7 +402,9 @@ class SkinningBuilder:
             self.subdivision_time += time.time() - subdivision_time
 
         # Further smoothing, only with shading
+        smooth_shading_time = time.time()
         nmv.mesh.shade_smooth_object(arbor_mesh)
+        self.smooth_shading_time += time.time() - smooth_shading_time
 
         # Update the UV mapping
         nmv.shading.adjust_material_uv(arbor_mesh)
@@ -530,6 +545,18 @@ class SkinningBuilder:
         # Details about the arbors building
         self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('mesh_conversion',
                                                                  self.mesh_conversion_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('reindexing',
+                                                                 self.reindexing_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('smooth_shading',
+                                                                 self.smooth_shading_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('creating_modifier',
+                                                                 self.creating_modifier_time)
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
