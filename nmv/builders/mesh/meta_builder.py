@@ -163,7 +163,6 @@ class MetaBuilder:
 
         # Construct the meta elements along the segment
         while travelled_distance < segment_length:
-
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 
@@ -322,7 +321,6 @@ class MetaBuilder:
 
         # The arbor must be connected to the soma
         if arbor.connected_to_soma:
-
             # Assume that from the soma center towards the first point along the arbor is a segment
             self.create_meta_segment(
                 p1=self.morphology.soma.centroid,
@@ -353,7 +351,6 @@ class MetaBuilder:
 
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                     # Basal dendrites
                     nmv.logger.info('Dendrite [%d]' % i)
                     self.emanate_soma_towards_arbor(arbor=basal_dendrite)
