@@ -15,7 +15,7 @@ The following people have contributed to NeuroMorphoVis:
     Henry Markram (EPFL)
     Felix Schürmann (EPFL)
     
-##### Technical Support (Software)
+##### Technical Support (Deployment)
 
     Pawel Podhajski (EPFL)
 

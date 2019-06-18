@@ -41,7 +41,7 @@ class SlurmConfiguration:
         self.num_tasks_per_node = 1
 
         # Number of CPUs required to run the task
-        self.num_cpus_per_task = 4
+        self.num_cpus_per_task = 2
 
         # Running partition
         self.partition = 'prod_small'
