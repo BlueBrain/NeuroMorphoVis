@@ -181,13 +181,18 @@ class UnionBuilder:
         # although we can access them by name
         arbor_poly_line_objects = list()
 
+        # Indicate the curve style
+        curve_style = 'POLY'
+        if soft:
+            curve_style = 'NURBS'
+
         # For each poly-line in the list, draw it
         for i, poly_line_data in enumerate(arbor_poly_lines_data):
 
             # Draw the section, and append the result to the objects list
             arbor_poly_line_objects.append(nmv.skeleton.ops.draw_section_from_poly_line_data(
                 data=poly_line_data[0], name=poly_line_data[1], bevel_object=bevel_object,
-                caps=False if i == 0 else caps))
+                caps=False if i == 0 else caps, curve_style=curve_style))
 
         # Convert the section object (poly-lines or tubes) into meshes
         for arbor_poly_line_object in arbor_poly_line_objects:
@@ -204,12 +209,6 @@ class UnionBuilder:
 
         # Update the UV mapping
         nmv.shading.adjust_material_uv(arbor.mesh)
-
-        # Close the edges only if not connected to soma
-
-        # If soft arbors are required, smooth the mesh before closing the faces
-        if soft:
-            nmv.mesh.ops.smooth_object(mesh_object=arbor.mesh, level=2)
 
         # Close the caps
         nmv.mesh.ops.close_open_faces(arbor.mesh)
@@ -239,6 +238,8 @@ class UnionBuilder:
             If the flag is set to False, the arbor will only have a bridging connection that
             would allow us later to connect it to the nearest face on the soma create a
             watertight mesh.
+        :param soft:
+            A flag indicating that the arbors will be smooth.
         """
 
         # Axon
@@ -315,7 +316,7 @@ class UnionBuilder:
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0 * math.sqrt(2), vertices=4, name='soft_edges_arbors_bevel')
+            radius=1.0, vertices=16, name='soft_edges_arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin

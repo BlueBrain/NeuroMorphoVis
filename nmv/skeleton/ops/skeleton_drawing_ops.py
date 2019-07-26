@@ -46,7 +46,8 @@ def draw_section_from_poly_line_data(data,
                                      material=None,
                                      color=None,
                                      bevel_object=None,
-                                     caps=False):
+                                     caps=False,
+                                     curve_style='POLY'):
     """Draw a morphological section as a poly-line (or tube) object and returns a reference to it.
 
     :param data:
@@ -61,6 +62,8 @@ def draw_section_from_poly_line_data(data,
         A given bevel object to scale the section.
     :param caps:
         A flag to close the caps of the section sides or keep them open.
+    :param curve_style:
+        The style of the poly line curve.
     :return:
         A reference to the drawn section.
     """
@@ -75,7 +78,7 @@ def draw_section_from_poly_line_data(data,
     # Draw the section from the given data in poly-line format
     section_object = nmv.geometry.draw_poly_line(
         poly_line_data=data, name=section_name, material=material, color=color,
-        bevel_object=bevel_object, caps=caps)
+        bevel_object=bevel_object, caps=caps, curve_style=curve_style)
 
     # Return a reference to the drawn section object
     return section_object
