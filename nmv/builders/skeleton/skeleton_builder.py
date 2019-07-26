@@ -99,12 +99,12 @@ class SkeletonBuilder:
         # Clear all the materials that are already present in the scene
         for material in bpy.data.materials:
             if 'soma_skeleton' in material.name or \
-               'axon_skeleton' in material.name or \
-               'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name or \
-               'articulation' in material.name:
-                    material.user_clear()
-                    bpy.data.materials.remove(material)
+                    'axon_skeleton' in material.name or \
+                    'basal_dendrites_skeleton' in material.name or \
+                    'apical_dendrite_skeleton' in material.name or \
+                    'articulation' in material.name:
+                material.user_clear()
+                bpy.data.materials.remove(material)
 
         # Soma
         self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
@@ -283,12 +283,12 @@ class SkeletonBuilder:
     # @draw_sections_as_spheres
     ################################################################################################
     def draw_sections_as_spheres(self,
-                                root,
-                                name,
-                                material_list=[],
-                                segments_objects=[],
-                                branching_level=0,
-                                max_branching_level=nmv.consts.Math.INFINITY):
+                                 root,
+                                 name,
+                                 material_list=[],
+                                 segments_objects=[],
+                                 branching_level=0,
+                                 max_branching_level=nmv.consts.Math.INFINITY):
         """Draw the section as a list of spheres.
 
         :param root:
@@ -438,7 +438,6 @@ class SkeletonBuilder:
 
         # Draw the frame for progressive rendering
         if self.options.morphology.render_progressive:
-
             frame_file_path = '%s/frame_%s' % (
                 self.progressive_frames_directory, '{0:05d}'.format(self.progressive_frame_index))
 
@@ -499,7 +498,6 @@ class SkeletonBuilder:
 
             # Process the children, section by section
             for child in root.children:
-
                 # Draw the sections of all the children at the same branching level
                 self.draw_root_as_disconnected_sections(
                     root=child,
@@ -794,7 +792,6 @@ class SkeletonBuilder:
 
                 basal_dendrites_spheres_objects = []
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                     # Draw the basal dendrites as a set connected sections
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
@@ -807,7 +804,7 @@ class SkeletonBuilder:
 
         # Draw the apical dendrite joints
         if not self.options.morphology.ignore_apical_dendrite:
-            apical_dendrite_spheres_objects=[]
+            apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
                 sphere_objects=apical_dendrite_spheres_objects,
@@ -849,7 +846,6 @@ class SkeletonBuilder:
 
         # Re-sample the morphology skeleton, if the repair is required
         if repair_morphology:
-
             # Remove the samples that intersect with the soma
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
@@ -887,7 +883,6 @@ class SkeletonBuilder:
 
                 # Draw each basal dendrites as a set connected sections
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                     dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
@@ -912,7 +907,6 @@ class SkeletonBuilder:
 
             # Ensure tha existence of the apical dendrite
             if self.morphology.apical_dendrite is not None:
-
                 # Draw the apical dendrite as a set connected sections
                 apical_dendrite_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
@@ -961,6 +955,123 @@ class SkeletonBuilder:
         return morphology_objects
 
     ################################################################################################
+    # @draw_morphology_as_connected_skeleton
+    ################################################################################################
+    def draw_morphology_as_connected_skeleton(self,
+                                              bevel_object=None,
+                                              repair_morphology=False):
+        """Reconstruct and draw the morphology as a single connected skeleton.
+        NOTE: This method is quite efficient to render thousand of morphologies in few seconds.
+
+        :param bevel_object:
+            A bevel object used to scale the radii of the sections.
+        :param repair_morphology:
+            A flag to indicate whether we need to repair the morphology or not.
+        :return:
+            A list of all the objects of the morphology that are already drawn.
+        """
+
+        # Re-sample the morphology skeleton, if the repair is required
+        if repair_morphology:
+            # Remove the samples that intersect with the soma
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+
+            # The adaptive resampling is quite important to prevent breaking the structure
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
+
+        # Verify the connectivity of the arbors of the morphology to the soma
+        nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)
+
+        # Primary and secondary branching
+        if self.options.mesh.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+
+            # Label the primary and secondary sections based on angles
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology,
+                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+
+        else:
+
+            # Label the primary and secondary sections based on radii
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology,
+                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+
+        # A list of all the poly lines of all the arbors
+        morphology_poly_lines_data = []
+
+        # Draw the axon as a set connected sections
+        if not self.options.morphology.ignore_axon:
+
+            # Ensure tha existence of basal dendrites
+            if self.morphology.axon is not None:
+
+                # A list containing all the poly lines of each arbor
+                arbor_poly_line_data = []
+
+                # Build the arbor as a single object
+                nmv.skeleton.ops.build_arbor_as_single_object(
+                    section=copy.deepcopy(self.morphology.axon),
+                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    poly_line_data=arbor_poly_line_data,
+                    poly_lines_data=morphology_poly_lines_data,
+                    max_branching_level=self.options.morphology.axon_branch_order,
+                    repair_morphology=repair_morphology,
+                    roots_connection=self.options.morphology.arbors_to_soma_connection)
+
+        # Draw the basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                # Draw each basal dendrites as a set connected sections
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # A list containing all the poly lines of each arbor
+                    arbor_poly_line_data = []
+
+                    # Build the arbor as a single object
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    nmv.skeleton.ops.build_arbor_as_single_object(
+                        section=copy.deepcopy(basal_dendrite),
+                        name=dendrite_prefix,
+                        poly_line_data=arbor_poly_line_data,
+                        poly_lines_data=morphology_poly_lines_data,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        repair_morphology=repair_morphology,
+                        roots_connection=self.options.morphology.arbors_to_soma_connection)
+
+        # Draw the apical dendrite
+        if not self.options.morphology.ignore_apical_dendrite:
+
+            # Ensure tha existence of the axon
+            if self.morphology.apical_dendrite is not None:
+
+                # A list containing all the poly lines of each arbor
+                arbor_poly_line_data = []
+
+                # Build the arbor as a single object
+                nmv.skeleton.ops.build_arbor_as_single_object(
+                    section=copy.deepcopy(self.morphology.apical_dendrite),
+                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    poly_line_data=arbor_poly_line_data,
+                    poly_lines_data=morphology_poly_lines_data,
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    repair_morphology=repair_morphology,
+                    roots_connection=self.options.morphology.arbors_to_soma_connection)
+
+        # Draw the skeleton
+        skeleton = nmv.geometry.draw_poly_lines_as_single_object(
+            poly_lines_data=morphology_poly_lines_data, bevel_object=bevel_object,
+            material=self.axon_materials[0])
+
+        # Draw a list that contains the skeleton object to match the return type
+        return [skeleton]
+
+    ################################################################################################
     # @draw_morphology_as_connected_sections
     ################################################################################################
     def draw_morphology_as_disconnected_skeleton(self,
@@ -977,7 +1088,6 @@ class SkeletonBuilder:
 
         # Repair severe morphology artifacts if @repair_morphology is set
         if repair_morphology:
-
             # Repair the section which has single child only
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology,
@@ -1042,7 +1152,6 @@ class SkeletonBuilder:
                 basal_dendrites_sections_objects = []
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
                     # Draw the basal dendrites as a set connected sections
                     dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
@@ -1167,7 +1276,7 @@ class SkeletonBuilder:
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
-                    bevel_object=bevel_object, repair_morphology=False, disconnect_skelecton=True))
+                bevel_object=bevel_object, repair_morphology=False, disconnect_skelecton=True))
 
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
@@ -1185,6 +1294,10 @@ class SkeletonBuilder:
         # origin
         elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
+                bevel_object=bevel_object, repair_morphology=True))
+
+        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SKELETON:
+            morphology_objects.extend(self.draw_morphology_as_connected_skeleton(
                 bevel_object=bevel_object, repair_morphology=True))
 
         # By default, use the full morphology method
@@ -1229,10 +1342,9 @@ class SkeletonBuilder:
             nmv.logger.log('Ignoring soma representation')
 
         # Transform the arbors to the global coordinates if required for a circuit
-        if self.options.morphology.global_coordinates and           \
+        if self.options.morphology.global_coordinates and \
                 self.options.morphology.blue_config is not None and \
                 self.options.morphology.gid is not None:
-
             # Transforming
             nmv.logger.log('Transforming morphology to global coordinates ')
             nmv.skeleton.ops.transform_morphology_to_global_coordinates(
@@ -1242,4 +1354,3 @@ class SkeletonBuilder:
 
         # Return the list of the drawn morphology objects
         return morphology_objects
-

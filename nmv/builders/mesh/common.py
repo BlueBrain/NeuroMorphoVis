@@ -105,9 +105,14 @@ def modify_morphology_skeleton(builder):
 
     # Zigzag the sections if required
     if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
+       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.PLANAR_ZIGZAG or \
        builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.zigzag_section])
+
+    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.PLANAR:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.project_to_xy_plane])
 
 
 ####################################################################################################

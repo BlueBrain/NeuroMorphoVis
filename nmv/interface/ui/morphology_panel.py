@@ -81,7 +81,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.AxonBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the axon",
-        default=nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER, min=1, max=100)
+        default=nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=100)
 
     # Build basal dendrites
     bpy.types.Scene.BuildBasalDendrites = BoolProperty(
@@ -93,7 +93,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.BasalDendritesBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the basal dendrites",
-        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=1, max=100)
+        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
     # Build apical dendrite
     bpy.types.Scene.BuildApicalDendrite = BoolProperty(
@@ -105,7 +105,7 @@ class MorphologyPanel(bpy.types.Panel):
     bpy.types.Scene.ApicalDendriteBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the apical dendrite",
-        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=1, max=100)
+        default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
     # Display bounding box info
     bpy.types.Scene.DisplayBoundingBox = BoolProperty(
@@ -192,7 +192,12 @@ class MorphologyPanel(bpy.types.Panel):
                 "The sections of a single arbor are connected together"),
                (nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED,
                 'Connected Sections (Repaired)',
-                "The morphology is repaired and fully reconstructed ")],
+                "The morphology is repaired and fully reconstructed "),
+               (nmv.enums.Skeletonization.Method.CONNECTED_SKELETON,
+                'Connected Skeleton',
+                "The arbors of the entire morphology are drawn as a single object. "
+                "This method could be used to draw thousands of morphologies at once")
+               ],
         name="Method",
         default=nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS)
 

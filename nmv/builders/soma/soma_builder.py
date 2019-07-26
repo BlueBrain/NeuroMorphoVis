@@ -568,14 +568,17 @@ class SomaBuilder:
             # Build towards the apical dendrite, if the apical dendrite is available
             if self.morphology.apical_dendrite is not None:
 
-                # Create the extrusion face, where the pulling will occur
-                nmv.logger.info('Apical dendrite')
-                extrusion_face_centroid = self.create_branch_extrusion_face(
-                    soma_bmesh_sphere, self.morphology.apical_dendrite, visualize_connection=False)
+                # THe branching order must be greater than zero
+                if self.options.morphology.apical_dendrite_branch_order > 0:
 
-                # Update the list
-                roots_and_faces_centroids.append(
-                    [self.morphology.apical_dendrite, extrusion_face_centroid])
+                    # Create the extrusion face, where the pulling will occur
+                    nmv.logger.info('Apical dendrite')
+                    extrusion_face_centroid = self.create_branch_extrusion_face(
+                        soma_bmesh_sphere, self.morphology.apical_dendrite, visualize_connection=False)
+
+                    # Update the list
+                    roots_and_faces_centroids.append(
+                        [self.morphology.apical_dendrite, extrusion_face_centroid])
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -583,27 +586,30 @@ class SomaBuilder:
             # Ensure tha existence of basal dendrites
             if self.morphology.dendrites is not None:
 
-                # Build towards the dendrites, if possible
-                for i, dendrite_root in enumerate(self.morphology.dendrites):
+                # The branching order must be greater than zero
+                if self.options.morphology.basal_dendrites_branch_order > 0:
 
-                    # The dendrite must be connected to the soma
-                    if dendrite_root.connected_to_soma:
+                    # Build towards the dendrites, if possible
+                    for i, dendrite_root in enumerate(self.morphology.dendrites):
 
-                        # Which dendrite ?!!
-                        nmv.logger.info('Dendrite [%d]' % i)
+                        # The dendrite must be connected to the soma
+                        if dendrite_root.connected_to_soma:
 
-                        # Create the extrusion face, where the pulling will occur
-                        extrusion_face_centroid = self.create_branch_extrusion_face(
-                            soma_bmesh_sphere, dendrite_root, visualize_connection=False)
+                            # Which dendrite ?!!
+                            nmv.logger.info('Dendrite [%d]' % i)
 
-                        # Update the list
-                        roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
+                            # Create the extrusion face, where the pulling will occur
+                            extrusion_face_centroid = self.create_branch_extrusion_face(
+                                soma_bmesh_sphere, dendrite_root, visualize_connection=False)
 
-                    # This basal dendrite is not connected to soma
-                    else:
+                            # Update the list
+                            roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
 
-                        # Report the issue
-                        nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
+                        # This basal dendrite is not connected to soma
+                        else:
+
+                            # Report the issue
+                            nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -611,16 +617,19 @@ class SomaBuilder:
             # Ensure that the axon is present
             if self.morphology.axon is not None:
 
-                # The axon must be connected to the soma
-                if self.morphology.axon.connected_to_soma:
+                # The branching order must be greater than zero
+                if self.options.morphology.axon_branch_order > 0:
 
-                    # Create the extrusion face, where the pulling will occur
-                    nmv.logger.info('Axon')
-                    extrusion_face_centroid = self.create_branch_extrusion_face(
-                        soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
+                    # The axon must be connected to the soma
+                    if self.morphology.axon.connected_to_soma:
 
-                    # Update the list
-                    roots_and_faces_centroids.append([self.morphology.axon, extrusion_face_centroid])
+                        # Create the extrusion face, where the pulling will occur
+                        nmv.logger.info('Axon')
+                        extrusion_face_centroid = self.create_branch_extrusion_face(
+                            soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
+
+                        # Update the list
+                        roots_and_faces_centroids.append([self.morphology.axon, extrusion_face_centroid])
 
             # The axon is not connected to soma
             else:

@@ -101,6 +101,9 @@ class Skeletonization:
         # Disconnect the sections and draw each of them as an independent object
         DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
 
+        # Connected skeleton where all the skeleton lines will be connected together in a one object
+        CONNECTED_SKELETON = 'SKELETONIZATION_CONNECTED_SKELETON'
+
         # Samples
         SAMPLES = 'SKELETONIZATION_SAMPLES'
 

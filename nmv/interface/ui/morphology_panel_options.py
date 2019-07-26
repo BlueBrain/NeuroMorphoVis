@@ -246,99 +246,125 @@ def set_color_options(layout,
     # Pass options from UI to system
     options.morphology.material = scene.MorphologyMaterial
 
-    color_by_part_row = layout.row()
-    color_by_part_row.prop(scene, 'ColorArborByPart')
-    color_bw_row = color_by_part_row.column()
-    color_bw_row.prop(scene, 'ColorArborBlackAndWhite')
-    color_bw_row.enabled = False
+    # If we use the connected skeleton, we should use only a single color for the entire skeleton
+    if scene.MorphologyReconstructionTechnique == \
+        nmv.enums.Skeletonization.Method.CONNECTED_SKELETON:
 
-    # Assign different colors to each part of the skeleton by part
-    if scene.ColorArborByPart:
-        options.morphology.axon_color = Vector((-1, 0, 0))
-        options.morphology.basal_dendrites_color = Vector((-1, 0, 0))
-        options.morphology.apical_dendrites_color = Vector((-1, 0, 0))
-        color_bw_row.enabled = True
+        neuron_color_row = layout.row()
+        neuron_color_row.prop(scene, 'NeuronMorphologyColor')
 
-        # Render in black and white
-        if scene.ColorArborBlackAndWhite:
-            options.morphology.axon_color = Vector((0, -1, 0))
-            options.morphology.basal_dendrites_color = Vector((0, -1, 0))
-            options.morphology.apical_dendrites_color = Vector((0, -1, 0))
+        # Pass options from UI to system
+        color = scene.NeuronMorphologyColor
+        options.morphology.axon_color = Vector((color.r, color.g, color.b))
+        options.morphology.basal_dendrites_color = Vector((color.r, color.g, color.b))
+        options.morphology.apical_dendrites_color = Vector((color.r, color.g, color.b))
+        options.morphology.articulation_color = Vector((color.r, color.g, color.b))
 
-    # One color per component
+        # Soma color option
+        soma_color_row = layout.row()
+        soma_color_row.prop(scene, 'SomaColor')
+        if not scene.BuildSoma:
+            soma_color_row.enabled = False
+
+        # Pass options from UI to system
+        soma_color_value = Vector((scene.SomaColor.r, scene.SomaColor.g, scene.SomaColor.b))
+        options.morphology.soma_color = soma_color_value
+
     else:
 
-        # Homogeneous morphology coloring
-        homogeneous_color_row = layout.row()
-        homogeneous_color_row.prop(scene, 'MorphologyHomogeneousColor')
+        color_by_part_row = layout.row()
+        color_by_part_row.prop(scene, 'ColorArborByPart')
+        color_bw_row = color_by_part_row.column()
+        color_bw_row.prop(scene, 'ColorArborBlackAndWhite')
+        color_bw_row.enabled = False
 
-        # If the homogeneous color flag is set
-        if scene.MorphologyHomogeneousColor:
+        # Assign different colors to each part of the skeleton by part
+        if scene.ColorArborByPart:
+            options.morphology.axon_color = Vector((-1, 0, 0))
+            options.morphology.basal_dendrites_color = Vector((-1, 0, 0))
+            options.morphology.apical_dendrites_color = Vector((-1, 0, 0))
+            color_bw_row.enabled = True
 
-            neuron_color_row = layout.row()
-            neuron_color_row.prop(scene, 'NeuronMorphologyColor')
+            # Render in black and white
+            if scene.ColorArborBlackAndWhite:
+                options.morphology.axon_color = Vector((0, -1, 0))
+                options.morphology.basal_dendrites_color = Vector((0, -1, 0))
+                options.morphology.apical_dendrites_color = Vector((0, -1, 0))
 
-            # Pass options from UI to system
-            color = scene.NeuronMorphologyColor
-            options.morphology.soma_color = Vector((color.r, color.g, color.b))
-            options.morphology.axon_color = Vector((color.r, color.g, color.b))
-            options.morphology.basal_dendrites_color = Vector((color.r, color.g, color.b))
-            options.morphology.apical_dendrites_color = Vector((color.r, color.g, color.b))
-            options.morphology.articulation_color = Vector((color.r, color.g, color.b))
+        # One color per component
         else:
 
-            # Soma color option
-            soma_color_row = layout.row()
-            soma_color_row.prop(scene, 'SomaColor')
-            if not scene.BuildSoma:
-                soma_color_row.enabled = False
+            # Homogeneous morphology coloring
+            homogeneous_color_row = layout.row()
+            homogeneous_color_row.prop(scene, 'MorphologyHomogeneousColor')
 
-            # Pass options from UI to system
-            soma_color_value = Vector((scene.SomaColor.r, scene.SomaColor.g, scene.SomaColor.b))
-            options.morphology.soma_color = soma_color_value
+            # If the homogeneous color flag is set
+            if scene.MorphologyHomogeneousColor:
 
-            # Axon color option
-            axon_color_row = layout.row()
-            axon_color_row.prop(scene, 'AxonColor')
-            if not scene.BuildAxon or scene.ColorArborByPart:
-                axon_color_row.enabled = False
-
-            # Pass options from UI to system
-            axon_color_value = Vector((scene.AxonColor.r, scene.AxonColor.g, scene.AxonColor.b))
-            options.morphology.axon_color = axon_color_value
-
-            # Basal dendrites color option
-            basal_dendrites_color_row = layout.row()
-            basal_dendrites_color_row.prop(scene, 'BasalDendritesColor')
-            if not scene.BuildBasalDendrites or scene.ColorArborByPart:
-                basal_dendrites_color_row.enabled = False
-
-            # Pass options from UI to system
-            color = scene.BasalDendritesColor
-            basal_dendrites_color_value = Vector((color.r, color.g, color.b))
-            options.morphology.basal_dendrites_color = basal_dendrites_color_value
-
-            # Apical dendrite color option
-            apical_dendrites_color_row = layout.row()
-            apical_dendrites_color_row.prop(scene, 'ApicalDendriteColor')
-            if not scene.BuildApicalDendrite or scene.ColorArborByPart:
-                apical_dendrites_color_row.enabled = False
-
-            # Pass options from UI to system
-            color = scene.ApicalDendriteColor
-            apical_dendrites_color_value = Vector((color.r, color.g, color.b))
-            options.morphology.apical_dendrites_color = apical_dendrites_color_value
-
-            # Articulation color option
-            technique = scene.MorphologyReconstructionTechnique
-            if technique == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
-                articulation_color_row = layout.row()
-                articulation_color_row.prop(scene, 'ArticulationColor')
+                neuron_color_row = layout.row()
+                neuron_color_row.prop(scene, 'NeuronMorphologyColor')
 
                 # Pass options from UI to system
-                color = scene.ArticulationColor
-                articulation_color_value = Vector((color.r, color.g, color.b))
-                options.morphology.articulation_color = articulation_color_value
+                color = scene.NeuronMorphologyColor
+                options.morphology.soma_color = Vector((color.r, color.g, color.b))
+                options.morphology.axon_color = Vector((color.r, color.g, color.b))
+                options.morphology.basal_dendrites_color = Vector((color.r, color.g, color.b))
+                options.morphology.apical_dendrites_color = Vector((color.r, color.g, color.b))
+                options.morphology.articulation_color = Vector((color.r, color.g, color.b))
+            else:
+
+                # Soma color option
+                soma_color_row = layout.row()
+                soma_color_row.prop(scene, 'SomaColor')
+                if not scene.BuildSoma:
+                    soma_color_row.enabled = False
+
+                # Pass options from UI to system
+                soma_color_value = Vector((scene.SomaColor.r, scene.SomaColor.g, scene.SomaColor.b))
+                options.morphology.soma_color = soma_color_value
+
+                # Axon color option
+                axon_color_row = layout.row()
+                axon_color_row.prop(scene, 'AxonColor')
+                if not scene.BuildAxon or scene.ColorArborByPart:
+                    axon_color_row.enabled = False
+
+                # Pass options from UI to system
+                axon_color_value = Vector((scene.AxonColor.r, scene.AxonColor.g, scene.AxonColor.b))
+                options.morphology.axon_color = axon_color_value
+
+                # Basal dendrites color option
+                basal_dendrites_color_row = layout.row()
+                basal_dendrites_color_row.prop(scene, 'BasalDendritesColor')
+                if not scene.BuildBasalDendrites or scene.ColorArborByPart:
+                    basal_dendrites_color_row.enabled = False
+
+                # Pass options from UI to system
+                color = scene.BasalDendritesColor
+                basal_dendrites_color_value = Vector((color.r, color.g, color.b))
+                options.morphology.basal_dendrites_color = basal_dendrites_color_value
+
+                # Apical dendrite color option
+                apical_dendrites_color_row = layout.row()
+                apical_dendrites_color_row.prop(scene, 'ApicalDendriteColor')
+                if not scene.BuildApicalDendrite or scene.ColorArborByPart:
+                    apical_dendrites_color_row.enabled = False
+
+                # Pass options from UI to system
+                color = scene.ApicalDendriteColor
+                apical_dendrites_color_value = Vector((color.r, color.g, color.b))
+                options.morphology.apical_dendrites_color = apical_dendrites_color_value
+
+                # Articulation color option
+                technique = scene.MorphologyReconstructionTechnique
+                if technique == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+                    articulation_color_row = layout.row()
+                    articulation_color_row.prop(scene, 'ArticulationColor')
+
+                    # Pass options from UI to system
+                    color = scene.ArticulationColor
+                    articulation_color_value = Vector((color.r, color.g, color.b))
+                    options.morphology.articulation_color = articulation_color_value
 
 
 ####################################################################################################

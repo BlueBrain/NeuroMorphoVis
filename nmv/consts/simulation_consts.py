@@ -33,4 +33,4 @@ class Simulation:
     MIN_FRAME = 0
 
     # Max frame (starting time or frame for the simulation)
-    MAX_FRAME = 100
+    MAX_FRAME = 200

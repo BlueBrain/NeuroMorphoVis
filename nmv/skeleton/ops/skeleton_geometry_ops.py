@@ -418,6 +418,25 @@ def zigzag_section(section,
 
 
 ####################################################################################################
+# @project_to_plane
+####################################################################################################
+def project_to_xy_plane(section):
+    """Project the section to XY plane.
+
+    :param section:
+        A given section to project.
+    """
+
+    # Get the length of the section (in terms of number of samples)
+    number_samples = len(section.samples)
+
+    for i in range(0, number_samples):
+
+        # Compute the new sample position
+        section.samples[i].point[2] = 0
+
+
+####################################################################################################
 # @simplify_section_to_straight_line
 ####################################################################################################
 def simplify_section_to_straight_line(section):

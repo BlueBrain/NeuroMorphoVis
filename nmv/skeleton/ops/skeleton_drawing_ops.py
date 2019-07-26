@@ -73,8 +73,9 @@ def draw_section_from_poly_line_data(data,
     section_name = '%s_section' % name
 
     # Draw the section from the given data in poly-line format
-    section_object = nmv.geometry.draw_poly_line(poly_line_data=data, name=section_name,
-        material=material, color=color, bevel_object=bevel_object, caps=caps)
+    section_object = nmv.geometry.draw_poly_line(
+        poly_line_data=data, name=section_name, material=material, color=color,
+        bevel_object=bevel_object, caps=caps)
 
     # Return a reference to the drawn section object
     return section_object
