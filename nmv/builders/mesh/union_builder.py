@@ -398,6 +398,11 @@ class UnionBuilder:
         result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
         self.profiling_statistics += stats
 
+        # Surface roughness
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.add_surface_noise_to_arbor, self)
+        self.profiling_statistics += stats
+
         # Join all the objects into a single object
         result, stats = nmv.utilities.profile_function(
             nmv.builders.join_mesh_object_into_single_object, self)
