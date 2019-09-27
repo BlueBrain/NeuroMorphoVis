@@ -92,7 +92,7 @@ class Arbors:
     # The index of an apical dendrite sample in an SWC file
     SWC_APICAL_DENDRITE_SAMPLE_TYPE = 4
 
-    # The index of a fork point sample (bi- or tri-furcation)
+    # The index of a fork point sample (bi- or trifurcation)
     SWC_FORK_POINT_SAMPLE_TYPE = 5
 
     # The index of an end point sample in an SWC file

@@ -40,7 +40,7 @@ def update_section_parenting(section,
 
     # Detect if the section has no parent, then set it as a root
     # Use the first sample to identify if this section is a root or not
-    if section.samples[0].parent_id == 1:
+    if str(section.samples[0].parent_id) == str(-1):
 
         # This section is a root
         section.parent = None

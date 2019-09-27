@@ -529,7 +529,6 @@ class SkinningBuilder:
         # Details about the arbors building
         self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('extrusion',
                                                                  self.extrusion_time)
-
         # Details about the arbors building
         self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('subdivision',
                                                                  self.subdivision_time)

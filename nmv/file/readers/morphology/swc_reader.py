@@ -286,14 +286,14 @@ class SWCReader:
             # Add the sample to the list
             initial_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
 
-        # Search for the maximum index of the samples
-        maximum_index = 0
+        # Search for the largest index of the samples
+        largest_index = 0
         for i_sample in initial_samples_list:
-            if i_sample[0] > maximum_index:
-                maximum_index = i_sample[0]
+            if i_sample[0] > largest_index:
+                largest_index = i_sample[0]
 
-        # Create the actual samples list
-        for i in range(maximum_index + 1):
+        # Create the actual samples list, and take into consideration the added soma sample
+        for i in range(largest_index + 1):
             self.samples_list.append(None)
 
         # Set the samples at their corresponding indices to make it easy to index them, and keep
@@ -474,10 +474,14 @@ class SWCReader:
 
             # Otherwise, use the profile points to get the average radius
             else:
-                soma_radius = 0.0
-                for point in soma_profile_points_on_arbors:
-                    soma_radius += point.length
-                soma_radius = soma_radius / len(soma_profile_points_on_arbors)
+
+                if len(soma_profile_points_on_arbors) > 0:
+                    soma_radius = 0.0
+                    for point in soma_profile_points_on_arbors:
+                        soma_radius += point.length
+                    soma_radius = soma_radius / len(soma_profile_points_on_arbors)
+                else:
+                    soma_radius = 1.0
 
         # Construct the soma object
         soma_object = nmv.skeleton.Soma(
@@ -502,7 +506,7 @@ class SWCReader:
 
         sections_list = list()
 
-        # A list that only contains the arbors of the requested type
+        # A list that only contains the samples of the arbor of the requested type
         arbor_sections_samples_indices_list = list()
 
         # For each section
@@ -511,7 +515,7 @@ class SWCReader:
             # Get the last sample along this section
             last_sample = self.samples_list[section_samples_indices[-1]]
 
-            # If the type is matching
+            # If the type is matching, just randomly take the last sample
             if str(last_sample[1]) == str(arbor_type):
 
                 # Append to the list
@@ -520,11 +524,17 @@ class SWCReader:
         # For each section
         for arbor_section in arbor_sections_samples_indices_list:
 
+            print(arbor_section[0])
+
             # Construct the samples list
             samples_list = list()
 
             # For each sample in the section
             for arbor_sample_index in arbor_section:
+
+                # If this is a root sample, indicate that this section is a root
+                if arbor_sample_index == -1:
+                    continue
 
                 # Ignore the soma sample
                 if self.samples_list[arbor_sample_index][0] == 1:
@@ -533,11 +543,17 @@ class SWCReader:
                 # Get the a nmv sample based on its index
                 nmv_sample = self.get_nmv_sample_from_samples_list(arbor_sample_index)
 
+                # Add a new NMV sample
                 samples_list.append(nmv_sample)
 
             # Construct an nmv section that ONLY contains the samples list, and UPDATE its other
             # members later when all the other sections are reconstructed
             nmv_section = nmv.skeleton.Section(samples=samples_list)
+
+            # If this is a root sample, indicate that this section is a root
+            if arbor_section[0] == -1:
+                nmv_section.parent_id = -1
+                nmv_section.parent = None
 
             # Append the reconstructed sections to the sections list
             sections_list.append(nmv_section)
@@ -553,6 +569,7 @@ class SWCReader:
 
         # Updates the sections parenting
         for section in sections_list:
+
             nmv.skeleton.ops.update_section_parenting(section, sections_list)
 
         # Return a list of all the disconnected sections
