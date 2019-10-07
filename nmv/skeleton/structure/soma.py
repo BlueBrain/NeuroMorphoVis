@@ -73,16 +73,10 @@ class Soma:
         self.possible_radii = sorted(self.possible_radii)
 
         # The smallest radius
-        if len(self.possible_radii) > 0:
-            self.smallest_radius = self.possible_radii[0]
-        else:
-            self.smallest_radius = 1.0
+        self.smallest_radius = self.possible_radii[0]
 
         # The largest radius
-        if len(self.possible_radii) > 0:
-            self.largest_radius = self.possible_radii[-1]
-        else:
-            self.largest_radius = 1.0
+        self.largest_radius = self.possible_radii[-1]
 
 
 

@@ -651,7 +651,7 @@ def verify_axon_connection_to_soma(morphology):
         # Verify if the axon intersects with the apical dendrite
         if nmv.skeleton.ops.axon_intersects_apical_dendrite(
                 axon=morphology.axon, apical_dendrite=morphology.apical_dendrite,
-                soma_radius=morphology.soma.mean_radius):
+                soma_radius=morphology.soma.smallest_radius):
 
             # Report the issue
             nmv.logger.detail(
@@ -685,7 +685,7 @@ def verify_axon_connection_to_soma(morphology):
     # Is the axon intersecting with any basal dendrite !
     if nmv.skeleton.ops.axon_intersects_dendrites(
             axon=morphology.axon, dendrites=morphology.dendrites,
-            soma_radius=morphology.soma.mean_radius):
+            soma_radius=morphology.soma.smallest_radius):
 
         # Report the issue
         nmv.logger.detail('WARNING: The axon @ section [%d] is intersecting with a basal dendrite'
@@ -799,7 +799,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         if nmv.skeleton.ops.dendrite_intersects_apical_dendrite(
                 dendrite=basal_dendrite,
                 apical_dendrite=morphology.apical_dendrite,
-                soma_radius=morphology.soma.mean_radius):
+                soma_radius=morphology.soma.smallest_radius):
 
             # Mark the basal dendrite connected to the soma
             basal_dendrite.connected_to_soma = False
@@ -811,7 +811,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # dendrite is intersecting with another basal dendrite with largest radius
         if nmv.skeleton.ops.basal_dendrite_intersects_basal_dendrite(
                 dendrite=basal_dendrite, dendrites=morphology.dendrites,
-                soma_radius=morphology.soma.mean_radius):
+                soma_radius=morphology.soma.smallest_radius):
 
             # Mark the basal dendrite connected to the soma
             basal_dendrite.connected_to_soma = False

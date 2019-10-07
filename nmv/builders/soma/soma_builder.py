@@ -75,7 +75,7 @@ class SomaBuilder:
         self.hooks_list = None
 
         # Set the initial soma radius to half of its mean radius
-        self.initial_soma_radius = 0.5 * morphology.soma.mean_radius
+        self.initial_soma_radius = morphology.soma.smallest_radius
 
         # Ensure the connection between the arbors and the soma
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)

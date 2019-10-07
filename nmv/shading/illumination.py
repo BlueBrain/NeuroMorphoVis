@@ -174,7 +174,7 @@ def create_material_specific_illumination(material_type):
     elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
         return create_glossy_bumpy_illumination()
 
-    # Voroni
+    # Voronoi
     elif material_type == nmv.enums.Shading.VORONOI:
         return create_voronoi_cells_illumination()
 

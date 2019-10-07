@@ -325,7 +325,7 @@ class MetaBuilder:
             self.create_meta_segment(
                 p1=self.morphology.soma.centroid,
                 p2=arbor.samples[0].point,
-                r1=self.morphology.soma.mean_radius,
+                r1=self.morphology.soma.smallest_radius,
                 r2=arbor.samples[0].radius * self.magic_scale_factor)
 
     ################################################################################################

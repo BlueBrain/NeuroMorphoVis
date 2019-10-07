@@ -132,7 +132,7 @@ def construct_swc_samples_list_from_soma(soma,
     sample_string = '1 1 %f %f %f %f -1' % (soma.centroid[0],
                                             soma.centroid[1],
                                             soma.centroid[2],
-                                            soma.mean_radius)
+                                            soma.smallest_radius)
     samples_list.append(sample_string)
 
     # Soma profile points

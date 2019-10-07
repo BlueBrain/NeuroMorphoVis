@@ -183,6 +183,7 @@ class SWCReader:
             # Build the sections
             for i in range(0, len(samples_located_along_path) - 1):
 
+                # A list of the section indices
                 section_indices = list()
 
                 # Get the first index along the section
@@ -191,8 +192,10 @@ class SWCReader:
                 # Get the last index along the section
                 last_sample = samples_located_along_path[i + 1]
 
+                # Get the index of the first sample
                 first_sample_index = path.index(first_sample)
 
+                # Get the index of the last sample
                 last_sample_index = path.index(last_sample)
 
                 for j in range(first_sample_index, last_sample_index + 1):
@@ -524,20 +527,25 @@ class SWCReader:
         # For each section
         for arbor_section in arbor_sections_samples_indices_list:
 
-            print(arbor_section[0])
-
             # Construct the samples list
             samples_list = list()
+
+            # A flag to indicate whether this section is root or not
+            is_root_section = False
 
             # For each sample in the section
             for arbor_sample_index in arbor_section:
 
                 # If this is a root sample, indicate that this section is a root
-                if arbor_sample_index == -1:
+                if str(arbor_sample_index) == str(-1):
                     continue
 
                 # Ignore the soma sample
-                if self.samples_list[arbor_sample_index][0] == 1:
+                if str(self.samples_list[arbor_sample_index][0]) == str(1):
+                    continue
+
+                if self.samples_list[arbor_sample_index][-1] == -1:
+                    is_root_section = True
                     continue
 
                 # Get the a nmv sample based on its index
@@ -551,7 +559,7 @@ class SWCReader:
             nmv_section = nmv.skeleton.Section(samples=samples_list)
 
             # If this is a root sample, indicate that this section is a root
-            if arbor_section[0] == -1:
+            if is_root_section:
                 nmv_section.parent_id = -1
                 nmv_section.parent = None
 
