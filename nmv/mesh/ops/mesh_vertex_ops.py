@@ -23,6 +23,7 @@ from mathutils import Vector, Matrix
 import nmv
 import nmv.scene
 import nmv.mesh
+import nmv.utilities
 
 
 ####################################################################################################
@@ -346,7 +347,10 @@ def create_vertex_group(mesh_object,
     """
 
     # Create the vertex group
-    vertex_group = mesh_object.vertex_groups.new(name)
+    if nmv.utilities.is_blender_280():
+        vertex_group = mesh_object.vertex_groups.new(name=name)
+    else:
+        vertex_group = mesh_object.vertex_groups.new(name)
 
     # Return a reference to the vertex group
     return vertex_group

@@ -67,9 +67,12 @@ def create_uv_sphere(radius=1,
     bmesh_uv_sphere = bmesh.new()
 
     # Create a uv-sphere
-    bmesh.ops.create_uvsphere(
-        bmesh_uv_sphere, u_segments=subdivisions, v_segments=subdivisions, diameter=radius)
-    # bmesh.ops.create_icosphere(bmesh_uv_sphere, subdivisions=subdivisions, diameter=radius)
+    if nmv.utilities.is_blender_280():
+        bmesh.ops.create_uvsphere(
+            bmesh_uv_sphere, u_segments=subdivisions, v_segments=subdivisions, radius=radius)
+    else:
+        bmesh.ops.create_uvsphere(
+            bmesh_uv_sphere, u_segments=subdivisions, v_segments=subdivisions, diameter=radius)
 
     # Translate it to the specified position
     bmesh.ops.translate(bmesh_uv_sphere, verts=bmesh_uv_sphere.verts[:], vec=location)
@@ -100,7 +103,10 @@ def create_ico_sphere(radius=1,
     bmesh_ico_sphere = bmesh.new()
 
     # Create an ico-sphere
-    bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, diameter=radius)
+    if nmv.utilities.is_blender_280():
+        bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, diameter=radius)
+    else:
+        bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, diameter=radius)
 
     # Translate it to the specified position
     bmesh.ops.translate(bmesh_ico_sphere, verts=bmesh_ico_sphere.verts[:], vec=location)
@@ -136,15 +142,10 @@ def create_circle(radius=1,
     # Get the version of the running Blender [MAJOR, MINOR, PATCH]
     blender_version = nmv.utilities.get_blender_version()
 
-    # NOTE: Previous versions of blender were mistaken for the argument diameter
-    if int(blender_version[0]) >= 2 and int(blender_version[1]) > 78:
-
-        # Create a circle
-        bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, diameter=radius, segments=vertices)
-
+    # Create a circle
+    if nmv.utilities.is_blender_280():
+        bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, radius=radius, segments=vertices)
     else:
-
-        # Create a circle
         bmesh.ops.create_circle(bmesh_circle, cap_ends=caps, diameter=radius, segments=vertices)
 
     # Translate it to the specified position

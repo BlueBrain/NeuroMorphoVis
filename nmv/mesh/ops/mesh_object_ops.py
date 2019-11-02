@@ -230,17 +230,17 @@ def joint_meshes(soma_mesh=None,
 
     # Select the soma mesh if not None
     if soma_mesh is not None:
-        soma_mesh.select = True
+        nmv.scene.select_object(soma_mesh)
 
     # Select all the branches meshes
     if len(branches_meshes) > 0:
         for branch_mesh in branches_meshes:
-            branch_mesh.select = True
+            nmv.scene.select_object(branch_mesh)
 
     # Select all the spines meshes
     if len(spines_meshes) > 0:
         for spine_mesh in spines_meshes:
-            spine_mesh.select = True
+            nmv.scene.select_object(spine_mesh)
 
     # Join the meshes together
     bpy.ops.object.join()
@@ -342,10 +342,10 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.mesh.ops.select_face_vertices(mesh_object_1, nearest_face_index_on_mesh_1)
 
     # Deselect mesh_object_1
-    mesh_object_1.select = False
+    nmv.scene.deselect_object(mesh_object_1)
 
     # Select mesh_object_2 and set it to be the active object
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_2)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     nmv.mesh.ops.close_open_faces(mesh_object_2)
@@ -358,8 +358,8 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.mesh.ops.select_face_vertices(mesh_object_2, nearest_face_index_on_mesh_2)
 
     # Select mesh_object_1 and mesh_object_2
-    mesh_object_1.select = True
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_1)
+    nmv.scene.select_object(mesh_object_2)
 
     # Set the mesh_object_1 to be active
     bpy.context.scene.objects.active = mesh_object_1
@@ -574,7 +574,7 @@ def join_mesh_objects(mesh_list,
         if mesh_object.type == 'MESH':
             
             # Select the mesh object
-            mesh_object.select = True
+            nmv.scene.select_object(mesh_object)
 
     # Set the 0th mesh to be active
     bpy.context.scene.objects.active = mesh_list[0]

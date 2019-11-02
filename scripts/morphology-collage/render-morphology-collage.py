@@ -101,7 +101,7 @@ def load_morphologies(meshes_directory):
         # If the meshes are merged into a single object, we must override the texture values
         # Update the texture space of the created mesh
         scene_object = mesh_objects[0]
-        scene_object.select = True
+        nmv.scene.select_object(scene_object
         bpy.context.scene.objects.active = scene_object
         bpy.context.object.data.use_auto_texspace = False
         bpy.context.object.data.texspace_size[0] = 5

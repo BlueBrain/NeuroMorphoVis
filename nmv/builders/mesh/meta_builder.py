@@ -299,7 +299,7 @@ class MetaBuilder:
         scene = bpy.context.scene
 
         # Link the meta object to the scene
-        scene.objects.link(self.meta_mesh)
+        nmv.scene.link_object_to_scene(self.meta_mesh)
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
@@ -393,7 +393,7 @@ class MetaBuilder:
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
-        self.meta_mesh.select = True
+        nmv.scene.select_object(self.meta_mesh)
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)

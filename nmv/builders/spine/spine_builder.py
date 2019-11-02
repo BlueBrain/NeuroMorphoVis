@@ -224,7 +224,7 @@ def build_circuit_spines(morphology,
     # Link the spines to the scene in a single step
     nmv.logger.info('Linking spines to the scene')
     for i in spines_objects:
-        bpy.context.scene.objects.link(i)
+        nmv.scene.link_object_to_scene(i)
 
     # Report the time
     building_timer.end()

@@ -801,7 +801,7 @@ def duplicate_object(original_object,
 
     # Link it to the scene
     if link_to_scene:
-        bpy.context.scene.objects.link(duplicated_object)
+        link_object_to_scene(duplicated_object)
 
         # Deselect all the objects in the scene
         for scene_object in bpy.context.scene.objects:
@@ -911,7 +911,10 @@ def view_all_scene():
     """
 
     # Switch to the top view
-    bpy.ops.view3d.viewnumpad(type='TOP')
+    if nmv.utilities.is_blender_280():
+        pass
+    else:
+        bpy.ops.view3d.viewnumpad(type='TOP')
 
     # View all the objects in the scene
     bpy.ops.view3d.view_all()

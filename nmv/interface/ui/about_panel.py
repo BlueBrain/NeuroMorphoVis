@@ -76,11 +76,12 @@ class AboutPanel(bpy.types.Panel):
         credits_column.label(text='Marwan Abdellah', icon='OUTLINER_DATA_ARMATURE')
         credits_column.separator()
         credits_column.label(text='Credits')
-        credits_column.label(text='Juan Hernando', icon='OUTLINER_DATA_POSE')
-        credits_column.label(text='Ahmet Bilgili', icon='OUTLINER_DATA_POSE')
-        credits_column.label(text='Stefan Eilemann', icon='OUTLINER_DATA_POSE')
-        credits_column.label(text='Henry Markram', icon='OUTLINER_DATA_POSE')
-        credits_column.label(text='Felix Shuermann', icon='OUTLINER_DATA_POSE')
+        credits_column.label(text='Juan Hernando', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Caitlin Monney', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Ahmet Bilgili', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Stefan Eilemann', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Henry Markram', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Felix Shuermann', icon='OUTLINER_DATA_ARMATURE')
         credits_column.separator()
 
         # Version

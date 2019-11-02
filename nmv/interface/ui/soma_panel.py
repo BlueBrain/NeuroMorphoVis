@@ -177,7 +177,7 @@ class SomaPanel(bpy.types.Panel):
         save_soma_mesh_buttons_column = layout.column(align=True)
         save_soma_mesh_buttons_column.operator('save_soma_mesh.obj', icon='MESH_DATA')
         save_soma_mesh_buttons_column.operator('save_soma_mesh.ply', icon='GROUP_VERTEX')
-        save_soma_mesh_buttons_column.operator('save_soma_mesh.stl', icon='RETOPO')
+        save_soma_mesh_buttons_column.operator('save_soma_mesh.stl', icon='MESH_DATA')
         save_soma_mesh_buttons_column.operator('save_soma_mesh.blend', icon='OUTLINER_OB_META')
 
         # If the reconstructed soma is not available in the scene, then deactivate these buttons

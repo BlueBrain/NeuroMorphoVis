@@ -102,7 +102,7 @@ def locate_hook_at_keyframe(hook,
     nmv.scene.ops.set_active_object(hook)
 
     # Select the hook
-    hook.select = True
+    nmv.scene.select_object(hook)
 
     # Change its location
     hook.location=location
@@ -134,7 +134,7 @@ def scale_hook_at_keyframe(hook,
     nmv.scene.ops.set_active_object(hook)
 
     # Select the hook
-    hook.select = True
+    nmv.scene.select_object(hook)
 
     # Scale the hook
     hook.scale = (scale, scale, scale)

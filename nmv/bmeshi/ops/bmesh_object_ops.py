@@ -19,6 +19,9 @@
 import bpy
 import bmesh
 
+import nmv
+import nmv.scene
+
 
 ####################################################################################################
 # @convert_to_mesh_object
@@ -81,11 +84,11 @@ def link_to_new_object_in_scene(bmesh_object,
     mesh_object = convert_to_mesh_object(bmesh_object, name)
 
     # Create a blender object, link it to the scene
-    object = bpy.data.objects.new(name, mesh_object)
-    bpy.context.scene.objects.link(object)
+    blender_object = bpy.data.objects.new(name, mesh_object)
+    nmv.scene.link_object_to_scene(blender_object)
 
     # Return a reference to it
-    return object
+    return blender_object
 
 
 ####################################################################################################

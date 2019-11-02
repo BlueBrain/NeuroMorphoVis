@@ -42,11 +42,11 @@ def set_skeleton_options(layout,
 
     # Morphology skeleton options
     skeleton_row = layout.row()
-    skeleton_row.label(text='Morphology Skeleton:', icon='POSE_DATA')
+    skeleton_row.label(text='Morphology Skeleton:', icon='QUESTION')
 
     # Build soma options
     build_soma_row = layout.row()
-    build_soma_row.label('Soma:')
+    build_soma_row.label(text='Soma:')
     build_soma_row.prop(scene, 'BuildSoma', expand=True)
 
     # Pass options from UI to system
@@ -139,7 +139,7 @@ def set_reconstruction_options(layout,
 
         # Morphology branching
         branching_row = layout.row()
-        branching_row.label('Branching:')
+        branching_row.label(text='Branching:')
         branching_row.prop(scene, 'MorphologyBranching', expand=True)
 
         # Pass options from UI to system

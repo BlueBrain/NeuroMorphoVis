@@ -85,7 +85,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Spines
         spines_row = layout.row()
-        spines_row.label('Source:')
+        spines_row.label(text='Source:')
 
         # If you are reading from a BBP circuit
         if context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
@@ -106,7 +106,7 @@ class MeshPanel(bpy.types.Panel):
 
             # Spines quality
             spines_quality_row = layout.row()
-            spines_quality_row.label('Quality:')
+            spines_quality_row.label(text='Quality:')
             spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
 
             # Pass options from UI to system
@@ -116,7 +116,7 @@ class MeshPanel(bpy.types.Panel):
             if nmv.interface.ui_options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
                 # Random percentage
                 spines_percentage_row = layout.row()
-                spines_percentage_row.label('Percentage:')
+                spines_percentage_row.label(text='Percentage:')
                 spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
 
                 # Pass options from UI to system
@@ -258,7 +258,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Soma connection
         soma_connection_row = self.layout.row()
-        soma_connection_row.label('Soma:')
+        soma_connection_row.label(text='Soma:')
         soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
         nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
 
@@ -268,7 +268,7 @@ class MeshPanel(bpy.types.Panel):
 
             # Mesh objects connection
             neuron_objects_connection_row = self.layout.row()
-            neuron_objects_connection_row.label('Skeleton Objects:')
+            neuron_objects_connection_row.label(text='Skeleton Objects:')
             neuron_objects_connection_row.prop(context.scene, 'MeshObjectsConnection', expand=True)
             nmv.interface.ui_options.mesh.neuron_objects_connection = \
                 context.scene.MeshObjectsConnection
@@ -291,7 +291,7 @@ class MeshPanel(bpy.types.Panel):
         # Surface roughness
         if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
             mesh_surface_row = self.layout.row()
-            mesh_surface_row.label('Surface:')
+            mesh_surface_row.label(text='Surface:')
             mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
             nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
         else:
@@ -333,7 +333,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Surface roughness
         mesh_surface_row = self.layout.row()
-        mesh_surface_row.label('Surface:')
+        mesh_surface_row.label(text='Surface:')
         mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
 
         # Pass options from UI to system
@@ -341,7 +341,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Edges
         mesh_edges_row = self.layout.row()
-        mesh_edges_row.label('Edges:')
+        mesh_edges_row.label(text='Edges:')
         mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
 
         # Pass options from UI to system
@@ -369,14 +369,14 @@ class MeshPanel(bpy.types.Panel):
 
         # Edges
         mesh_edges_row = self.layout.row()
-        mesh_edges_row.label('Edges:')
+        mesh_edges_row.label(text='Edges:')
         mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
         nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
 
         # Surface roughness
         if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
             mesh_surface_row = self.layout.row()
-            mesh_surface_row.label('Surface:')
+            mesh_surface_row.label(text='Surface:')
             mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
             nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
         else:
@@ -384,7 +384,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Mesh branching
         branching_row = self.layout.row()
-        branching_row.label('Branching:')
+        branching_row.label(text='Branching:')
         branching_row.prop(context.scene, 'MeshBranching', expand=True)
         nmv.interface.ui_options.mesh.branching = context.scene.MeshBranching
 
@@ -480,7 +480,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Rendering view
         rendering_view_row = layout.row()
-        rendering_view_row.label('View:')
+        rendering_view_row.label(text='View:')
         rendering_view_row.prop(context.scene, 'MeshRenderingView', expand=True)
         self.shown_hidden_rows.append(rendering_view_row)
 
@@ -506,7 +506,7 @@ class MeshPanel(bpy.types.Panel):
 
             # Rendering resolution
             rendering_resolution_row = layout.row()
-            rendering_resolution_row.label('Resolution:')
+            rendering_resolution_row.label(text='Resolution:')
             rendering_resolution_row.prop(context.scene, 'MeshRenderingResolution', expand=True)
             self.shown_hidden_rows.append(rendering_resolution_row)
 

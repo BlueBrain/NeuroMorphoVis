@@ -1267,10 +1267,10 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     nmv.mesh.ops.select_face_vertices(mesh_object_1, nearest_face_index_on_mesh_1)
 
     # Deselect mesh_object_1
-    mesh_object_1.select = False
+    nmv.scene.deselect_object(mesh_object_1)
 
     # Select mesh_object_2 and set it to be the active object
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_2)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     nmv.mesh.ops.close_open_faces(mesh_object_2)
@@ -1283,11 +1283,11 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     nmv.mesh.ops.select_face_vertices(mesh_object_2, nearest_face_index_on_mesh_2)
 
     # Select mesh_object_1 and mesh_object_2
-    mesh_object_1.select = True
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_1)
+    nmv.scene.select_object(mesh_object_2)
 
     # Set the mesh_object_1 to be active
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     bpy.ops.object.parent_set()

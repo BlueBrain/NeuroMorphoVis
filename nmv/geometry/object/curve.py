@@ -51,7 +51,7 @@ def draw_cyclic_curve_from_points(curve_name,
     # Create an object to the curve and link it to the scene
     curve_object = bpy.data.objects.new("o_%s" % curve_name, curve_data)
     curve_object.location = (0, 0, 0)
-    bpy.context.scene.objects.link(curve_object)
+    nmv.scene.link_object_to_scene(curve_object)
 
     curve = curve_data.splines.new('POLY')
     curve.points.add(len(list_points) - 1)

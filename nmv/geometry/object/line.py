@@ -18,6 +18,10 @@
 # Blender imports
 import bpy
 
+# Internal imports
+import nmv
+import nmv.scene
+
 
 ####################################################################################################
 # @create_line_object_from_data
@@ -42,7 +46,7 @@ def create_line_object_from_data(data,
 
     # Create a line object and link it to the scene
     line_object = bpy.data.objects.new(str(name), data)
-    bpy.context.scene.objects.link(line_object)
+    nmv.scene.link_object_to_scene(line_object)
 
     # Add the two points to the line object
     # NOTE: Once the strip is created, it contains by default a single point, so we need to add

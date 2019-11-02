@@ -175,7 +175,7 @@ def import_object_from_blend_file(input_directory,
     # Link objects to current scene
     for i_object in data_dst.objects:
         if i_object is not None:
-            current_scene.objects.link(i_object)
+            nmv.scene.link_object_to_scene(i_object)
 
     # Return reference to the objects loaded
     return data_dst.objects
