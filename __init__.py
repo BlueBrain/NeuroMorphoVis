@@ -87,21 +87,14 @@ def register():
     """
 
     # Import the modules
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
-    import nmv.interface.ui.about_panel
+    import nmv.interface
 
     # Reloading the modules
-    imp.reload(nmv.interface.ui.about_panel)
-    imp.reload(nmv.interface.ui.io_panel)
-    imp.reload(nmv.interface.ui.analysis_panel)
-    imp.reload(nmv.interface.ui.edit_panel)
-    imp.reload(nmv.interface.ui.morphology_panel)
-    imp.reload(nmv.interface.ui.mesh_panel)
+    imp.reload(nmv.interface)
+
+    nmv.logger.header('Loading NeuroMorphoVis')
+    nmv.logger.info('Version [%s]' % str(__version__))
+    nmv.logger.info('Copyrights (C) Marwan Abdellah, Blue Brain Project (BBP) - (EPFL)')
 
     # Register panels
     nmv.interface.ui.io_panel.register_panel()
@@ -119,6 +112,11 @@ def register():
 def unregister():
     """Unregister the different modules of the interface.
     """
+
+    # Import the modules
+    import nmv.interface
+
+    nmv.logger.header('Unloading NeuroMorphoVis')
 
     # Un-register panels
     nmv.interface.ui.io_panel.unregister_panel()

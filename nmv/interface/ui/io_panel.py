@@ -21,12 +21,8 @@ import os
 
 # Blender imports
 import bpy
-from bpy.props import EnumProperty
-from bpy.props import StringProperty
-from bpy.props import BoolProperty
 
 # Internal imports
-import nmv
 import nmv.enums
 import nmv.interface
 import nmv.scene
@@ -71,20 +67,20 @@ class IOPanel(bpy.types.Panel):
 
         # Input source
         input_source_row = layout.row()
-        input_source_row.prop(scene, 'InputSource')
+        input_source_row.prop(scene, 'NMV_InputSource')
 
         # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
+        if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
             morphology_file_row = layout.row()
-            morphology_file_row.prop(scene, 'MorphologyFile')
+            morphology_file_row.prop(scene, 'NMV_MorphologyFile')
 
         # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
+        elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
 
             blue_config_row = layout.row()
-            blue_config_row.prop(scene, 'CircuitFile')
+            blue_config_row.prop(scene, 'NMV_CircuitFile')
             gid_row = layout.row()
-            gid_row.prop(scene, 'Gid')
+            gid_row.prop(scene, 'NMV_Gid')
 
         # Otherwise, ERROR
         else:
@@ -93,7 +89,7 @@ class IOPanel(bpy.types.Panel):
             self.report({'ERROR'}, 'Invalid Input Source')
 
         import_button = layout.column()
-        import_button.operator('load.morphology', icon='ANIM_DATA')
+        import_button.operator('nmv.load_morphology', icon='ANIM_DATA')
         import_button.separator()
 
         # Output options
@@ -102,34 +98,34 @@ class IOPanel(bpy.types.Panel):
 
         # Output directory
         output_directory_row = layout.row()
-        output_directory_row.prop(scene, 'OutputDirectory')
+        output_directory_row.prop(scene, 'NMV_OutputDirectory')
 
         # Default paths
         default_paths_row = layout.row()
-        default_paths_row.prop(scene, 'DefaultArtifactsRelativePath')
+        default_paths_row.prop(scene, 'NMV_DefaultArtifactsRelativePath')
 
         # Images path
         images_path_row = layout.row()
-        images_path_row.prop(scene, 'ImagesPath')
+        images_path_row.prop(scene, 'NMV_ImagesPath')
 
         # Sequences path
         sequences_path_row = layout.row()
-        sequences_path_row.prop(scene, 'SequencesPath')
+        sequences_path_row.prop(scene, 'NMV_SequencesPath')
 
         # Meshes path
         meshes_path_row = layout.row()
-        meshes_path_row.prop(scene, 'MeshesPath')
+        meshes_path_row.prop(scene, 'NMV_MeshesPath')
 
         # Morphologies path
         morphologies_path_row = layout.row()
-        morphologies_path_row.prop(scene, 'MorphologiesPath')
+        morphologies_path_row.prop(scene, 'NMV_MorphologiesPath')
 
         # Analysis path
         analysis_path_row = layout.row()
-        analysis_path_row.prop(scene, 'AnalysisPath')
+        analysis_path_row.prop(scene, 'NMV_AnalysisPath')
 
         # Disable the default paths selection if the use default paths flag is set
-        if scene.DefaultArtifactsRelativePath:
+        if scene.NMV_DefaultArtifactsRelativePath:
             images_path_row.enabled = False
             sequences_path_row.enabled = False
             meshes_path_row.enabled = False
@@ -137,21 +133,21 @@ class IOPanel(bpy.types.Panel):
             analysis_path_row.enabled = False
 
         # Pass options from UI to system
-        if 'Select Directory' in scene.OutputDirectory:
+        if 'Select Directory' in scene.NMV_OutputDirectory:
             nmv.interface.ui_options.io.output_directory = None
         else:
             nmv.interface.ui_options.io.output_directory = \
-                scene.OutputDirectory
+                scene.NMV_OutputDirectory
             nmv.interface.ui_options.io.images_directory = \
-                '%s/%s' % (scene.OutputDirectory, scene.ImagesPath)
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_ImagesPath)
             nmv.interface.ui_options.io.sequences_directory = \
-                '%s/%s' % (scene.OutputDirectory, scene.SequencesPath)
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_SequencesPath)
             nmv.interface.ui_options.io.morphologies_directory = \
-                '%s/%s' % (scene.OutputDirectory, scene.MorphologiesPath)
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_MorphologiesPath)
             nmv.interface.ui_options.io.meshes_directory = \
-                '%s/%s' % (scene.OutputDirectory, scene.MeshesPath)
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_MeshesPath)
             nmv.interface.ui_options.io.analysis_directory = \
-                '%s/%s' % (scene.OutputDirectory, scene.AnalysisPath)
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_AnalysisPath)
 
 
 ####################################################################################################
@@ -162,7 +158,7 @@ class LoadMorphology(bpy.types.Operator):
     """
 
     # Operator parameters
-    bl_idname = "load.morphology"
+    bl_idname = "nmv.load_morphology"
     bl_label = "Load"
 
     ################################################################################################
@@ -178,14 +174,15 @@ class LoadMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
+
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
         # Load the images
         images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
-        nmv_logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
-        nmv_logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
-        nmv_logo_tex.extension = 'CLIP'
+        logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
+        logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
+        logo_tex.extension = 'CLIP'
 
         # Load the morphology file
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)

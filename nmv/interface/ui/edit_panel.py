@@ -57,8 +57,8 @@ class EditPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     # Register a variable that indicates that the morphology is sketched to be able to update the UI
-    bpy.types.Scene.MorphologySketched = BoolProperty(default=False)
-    bpy.types.Scene.MorphologyCoordinatesEdited = BoolProperty(default=False)
+    bpy.types.Scene.NMV_MorphologySketched = BoolProperty(default=False)
+    bpy.types.Scene.NMV_MorphologyCoordinatesEdited = BoolProperty(default=False)
 
     ################################################################################################
     # @draw
@@ -288,7 +288,7 @@ class ExportMorphologySWC(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 

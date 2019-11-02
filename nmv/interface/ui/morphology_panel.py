@@ -54,12 +54,11 @@ class MorphologyPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
-
     ################################################################################################
     # Panel options
     ################################################################################################
     # Build soma
-    bpy.types.Scene.BuildSoma = EnumProperty(
+    bpy.types.Scene.NMV_BuildSoma = EnumProperty(
         items=[(nmv.enums.Soma.Representation.IGNORE,
                 'Ignore',
                 'Ignore soma reconstruction'),
@@ -73,110 +72,110 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Soma.Representation.SPHERE)
 
     # Build axon
-    bpy.types.Scene.BuildAxon = BoolProperty(
+    bpy.types.Scene.NMV_BuildAxon = BoolProperty(
         name="Build Axon",
         description="Select this flag to reconstruct the axon",
         default=True)
 
     # Axon branching order
     # Since the axon is so complicated, we will set its default branching order to 5
-    bpy.types.Scene.AxonBranchingLevel = IntProperty(
+    bpy.types.Scene.NMV_AxonBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the axon",
         default=nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=100)
 
     # Build basal dendrites
-    bpy.types.Scene.BuildBasalDendrites = BoolProperty(
+    bpy.types.Scene.NMV_BuildBasalDendrites = BoolProperty(
         name="Build Basal Dendrites",
         description="Select this flag to reconstruct the basal dendrites",
         default=True)
 
     # Basal dendrites branching order
-    bpy.types.Scene.BasalDendritesBranchingLevel = IntProperty(
+    bpy.types.Scene.NMV_BasalDendritesBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the basal dendrites",
         default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
     # Build apical dendrite
-    bpy.types.Scene.BuildApicalDendrite = BoolProperty(
+    bpy.types.Scene.NMV_BuildApicalDendrite = BoolProperty(
         name="Build Apical Dendrites",
         description="Select this flag to reconstruct the apical dendrite (if exists)",
         default=True)
 
     # Apical dendrite branching order
-    bpy.types.Scene.ApicalDendriteBranchingLevel = IntProperty(
+    bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = IntProperty(
         name="Branching Order",
         description="Branching order for the apical dendrite",
         default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
     # Display bounding box info
-    bpy.types.Scene.DisplayBoundingBox = BoolProperty(
+    bpy.types.Scene.NMV_DisplayBoundingBox = BoolProperty(
         name="Display Bounding Box Info",
         description="Displays the bounding box of the morphology",
         default=False)
 
     # Morphology material
-    bpy.types.Scene.MorphologyMaterial = EnumProperty(
+    bpy.types.Scene.NMV_MorphologyMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,
         name="Material",
         default=nmv.enums.Shading.LAMBERT_WARD)
 
     # Color arbor by part
-    bpy.types.Scene.ColorArborByPart = BoolProperty(
+    bpy.types.Scene.NMV_ColorArborByPart = BoolProperty(
         name="Color Arbor By Part",
         description="Each component of the arbor will be assigned a different color",
         default=False)
 
     # Color arbor using black and white alternatives
-    bpy.types.Scene.ColorArborBlackAndWhite = BoolProperty(
+    bpy.types.Scene.NMV_ColorArborBlackAndWhite = BoolProperty(
         name="Black / White",
         description="Each component of the arbor will be assigned a either black or white",
         default=False)
 
     # Use single color for the all the objects in the morphology
-    bpy.types.Scene.MorphologyHomogeneousColor = BoolProperty(
+    bpy.types.Scene.NMV_MorphologyHomogeneousColor = BoolProperty(
         name="Homogeneous Color",
         description="Use a single color for rendering all the objects of the morphology",
         default=False)
 
     # A homogeneous color for all the objects of the morphology
-    bpy.types.Scene.NeuronMorphologyColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_NeuronMorphologyColor = FloatVectorProperty(
         name="Membrane Color",
         subtype='COLOR', default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
         description="The homogeneous color of the reconstructed morphology membrane")
 
     # Soma color
-    bpy.types.Scene.SomaColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_SomaColor = FloatVectorProperty(
         name="Soma Color",
         subtype='COLOR', default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
         description="The color of the reconstructed soma")
 
     # Axon color
-    bpy.types.Scene.AxonColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_AxonColor = FloatVectorProperty(
         name="Axon Color",
         subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
         description="The color of the reconstructed axon")
 
     # Basal dendrites color
-    bpy.types.Scene.BasalDendritesColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_BasalDendritesColor = FloatVectorProperty(
         name="Basal Dendrites  Color",
         subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
         description="The color of the reconstructed basal dendrites")
 
     # Apical dendrite color
-    bpy.types.Scene.ApicalDendriteColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_ApicalDendriteColor = FloatVectorProperty(
         name="Apical Dendrite Color",
         subtype='COLOR', default=nmv.enums.Color.APICAL_DENDRITES, min=0.0, max=1.0,
         description="The color of the reconstructed apical dendrite")
 
     # Articulation color
-    bpy.types.Scene.ArticulationColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_ArticulationColor = FloatVectorProperty(
         name="Articulation Color",
         subtype='COLOR', default=nmv.enums.Color.ARTICULATION, min=0.0, max=1.0,
         description="The color of the articulations in the Articulated Section mode")
 
     # Reconstruction method
-    bpy.types.Scene.MorphologyReconstructionTechnique = EnumProperty(
+    bpy.types.Scene.NMV_MorphologyReconstructionTechnique = EnumProperty(
         items=[(nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS,
                 'Disconnected Segments',
                 "Each segment is an independent object (this approach is time consuming)"),
@@ -204,13 +203,13 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS)
 
     # Arbors style
-    bpy.types.Scene.ArborsStyle = EnumProperty(
+    bpy.types.Scene.NMV_ArborsStyle = EnumProperty(
         items=nmv.enums.Arbors.Style.MORPHOLOGY_STYLE_ITEMS,
         name="Skeleton Style",
         default=nmv.enums.Arbors.Style.ORIGINAL)
 
     # Branching, is it based on angles or radii
-    bpy.types.Scene.MorphologyBranching = EnumProperty(
+    bpy.types.Scene.NMV_MorphologyBranching = EnumProperty(
         items=[(nmv.enums.Skeletonization.Branching.ANGLES,
                 'Angles',
                 'Make the branching based on the angles at branching points'),
@@ -221,7 +220,7 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Skeletonization.Branching.ANGLES)
 
     # Soma connection to roots
-    bpy.types.Scene.SomaConnectionToRoot = EnumProperty(
+    bpy.types.Scene.NMV_SomaConnectionToRoot = EnumProperty(
         items=[(nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN,
                 'Connect Connected',
                 'Connect the arbors that are physically connected to the origin of the soma'),
@@ -235,13 +234,13 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN)
 
     # Arbor quality
-    bpy.types.Scene.ArborQuality = IntProperty(
+    bpy.types.Scene.NMV_ArborQuality = IntProperty(
         name="Sides",
         description="Number of vertices of the cross-section of each segment along the arbor",
         default=16, min=4, max=128)
 
     # Section radius
-    bpy.types.Scene.SectionsRadii = EnumProperty(
+    bpy.types.Scene.NMV_SectionsRadii = EnumProperty(
         items=[(nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED,
                 'As Specified in Morphology',
                 "Use the cross-sectional radii reported in the morphology file"),
@@ -258,25 +257,25 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED)
 
     # Fixed section radius value
-    bpy.types.Scene.FixedRadiusValue = FloatProperty(
+    bpy.types.Scene.NMV_FixedRadiusValue = FloatProperty(
         name="Value (micron)",
         description="The value of the radius in microns between (0.05 and 5.0) microns",
         default=1.0, min=0.05, max=5.0)
 
     # Threshold value for the radius
-    bpy.types.Scene.FilteredRadiusThreshold = FloatProperty(
+    bpy.types.Scene.NMV_FilteredRadiusThreshold = FloatProperty(
         name="Threshold",
         description="The value of the threshold radius in microns between (0.005 and 5.0) microns",
         default=1.0, min=0.005, max=5.0)
 
     # Global radius scale value
-    bpy.types.Scene.RadiusScaleValue= FloatProperty(
+    bpy.types.Scene.NMV_RadiusScaleValue= FloatProperty(
         name="Scale",
         description="A scale factor for scaling the radii of the arbors between (0.01 and 5.0)",
         default=1.0, min=0.01, max=5.0)
 
     # Rendering type
-    bpy.types.Scene.RenderingType = EnumProperty(
+    bpy.types.Scene.NMV_RenderingType = EnumProperty(
         items=[(nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION,
                 'Fixed Resolution',
                 'Renders a full view of the morphology at a specified resolution'),
@@ -287,7 +286,7 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION)
 
     # Rendering view
-    bpy.types.Scene.MorphologyRenderingView = EnumProperty(
+    bpy.types.Scene.NMV_MorphologyRenderingView = EnumProperty(
         items=[(nmv.enums.Skeletonization.Rendering.View.WIDE_SHOT_VIEW,
                 'Wide Shot',
                 'Renders an image of the full view'),
@@ -301,19 +300,19 @@ class MorphologyPanel(bpy.types.Panel):
         default=nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW)
 
     # Frame resolution
-    bpy.types.Scene.MorphologyFrameResolution = IntProperty(
+    bpy.types.Scene.NMV_MorphologyFrameResolution = IntProperty(
         name="Resolution",
         default=512, min=128, max=1024 * 10,
         description="The resolution of the image generated from rendering the morphology")
 
     # Frame scale factor 'for rendering to scale option '
-    bpy.types.Scene.MorphologyFrameScaleFactor = FloatProperty(
+    bpy.types.Scene.NMV_MorphologyFrameScaleFactor = FloatProperty(
         name="Scale",
         default=1.0, min=1.0, max=100.0,
         description="The scale factor for rendering a morphology to scale")
 
     # Morphology close up dimensions
-    bpy.types.Scene.MorphologyCloseUpDimensions = FloatProperty(
+    bpy.types.Scene.NMV_MorphologyCloseUpDimensions = FloatProperty(
         name="Dimensions",
         default=20, min=5, max=100,
         description="The dimensions of the view that will be rendered in microns")
@@ -350,7 +349,7 @@ class MorphologyPanel(bpy.types.Panel):
         quick_reconstruction_row = layout.row()
         quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
         reconstruct_morphology_button_row = layout.row()
-        reconstruct_morphology_button_row.operator('reconstruct.morphology', icon='RNA_ADD')
+        reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
         reconstruct_morphology_button_row.enabled = True
 
         # Set the rendering options
@@ -372,7 +371,7 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
     """Morphology reconstruction operator"""
 
     # Operator parameters
-    bl_idname = "reconstruct.morphology"
+    bl_idname = "nmv.reconstruct_morphology"
     bl_label = "Reconstruct Morphology"
 
     ################################################################################################
@@ -420,7 +419,7 @@ class RenderMorphologyFront(bpy.types.Operator):
     """Render front view of the reconstructed morphology"""
 
     # Operator parameters
-    bl_idname = "render_morphology.front"
+    bl_idname = "nmv.render_morphology_front"
     bl_label = "Front"
 
     ################################################################################################
@@ -508,7 +507,7 @@ class RenderMorphology360(bpy.types.Operator):
     """Render a 360 view of the reconstructed morphology"""
 
     # Operator parameters
-    bl_idname = "render_morphology.360"
+    bl_idname = "nmv.render_morphology_360"
     bl_label = "360"
 
     # Timer parameters
@@ -617,7 +616,7 @@ class RenderMorphology360(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -668,7 +667,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
     """Render a progressive sequence of the reconstruction procedure (time-consuming)"""
 
     # Operator parameters
-    bl_idname = "render_morphology.progressive"
+    bl_idname = "nmv.render_morphology_progressive"
     bl_label = "Progressive"
 
     ################################################################################################
@@ -690,7 +689,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -730,7 +729,7 @@ class SaveMorphologySWC(bpy.types.Operator):
     """Save the reconstructed morphology in an SWC file"""
 
     # Operator parameters
-    bl_idname = "save_morphology.swc"
+    bl_idname = "nmv.save_morphology_swc"
     bl_label = "SWC (.swc)"
 
     ################################################################################################
@@ -750,7 +749,7 @@ class SaveMorphologySWC(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -774,7 +773,7 @@ class SaveMorphologySegments(bpy.types.Operator):
     """Save the reconstructed morphology as a list of segments into file"""
 
     # Operator parameters
-    bl_idname = "save_morphology.segments"
+    bl_idname = "nmv.save_morphology_segments"
     bl_label = "Segments (.segments)"
 
     ################################################################################################
@@ -794,7 +793,7 @@ class SaveMorphologySegments(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -818,7 +817,7 @@ class SaveMorphologyBLEND(bpy.types.Operator):
     """Save the reconstructed morphology in a blender file"""
 
     # Operator parameters
-    bl_idname = "save_morphology.blend"
+    bl_idname = "nmv.save_morphology_blend"
     bl_label = "Blender Format (.blend)"
 
     ################################################################################################
@@ -838,7 +837,7 @@ class SaveMorphologyBLEND(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 

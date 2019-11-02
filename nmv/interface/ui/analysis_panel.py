@@ -21,15 +21,7 @@ import copy
 
 # Blender imports
 import bpy
-from mathutils import Vector
-from bpy.props import IntProperty
-from bpy.props import FloatProperty
-from bpy.props import StringProperty
-from bpy.props import BoolProperty
-from bpy.props import EnumProperty
-from bpy.props import FloatVectorProperty
 
-import nmv
 import nmv.consts
 import nmv.analysis
 import nmv.enums
@@ -57,7 +49,7 @@ class AnalysisPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     # Register a variable that indicates that the morphology is analyzed to be able to update the UI
-    bpy.types.Scene.MorphologyAnalyzed = BoolProperty(default=False)
+    bpy.types.Scene.NMV_MorphologyAnalyzed = bpy.props.BoolProperty(default=False)
 
     ################################################################################################
     # @draw
@@ -75,11 +67,11 @@ class AnalysisPanel(bpy.types.Panel):
 
         # Morphology analysis button
         analyze_morphology_column = layout.column(align=True)
-        analyze_morphology_column.operator('analyze.morphology', icon='MESH_DATA')
+        analyze_morphology_column.operator('nmv.analyze_morphology', icon='MESH_DATA')
 
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its neurites count
-        if context.scene.MorphologyAnalyzed:
+        if context.scene.NMV_MorphologyAnalyzed:
 
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_groups_to_panel(
@@ -87,7 +79,7 @@ class AnalysisPanel(bpy.types.Panel):
 
             # Export analysis button
             export_analysis_row = layout.row()
-            export_analysis_row.operator('export.analysis_results', icon='MESH_DATA')
+            export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
@@ -100,7 +92,7 @@ class AnalyzeMorphology(bpy.types.Operator):
     """Analyze the morphology skeleton, detect the artifacts and report them"""
 
     # Operator parameters
-    bl_idname = "analyze.morphology"
+    bl_idname = "nmv.analyze_morphology"
     bl_label = "Analyze Morphology"
 
     ################################################################################################
@@ -130,7 +122,7 @@ class AnalyzeMorphology(bpy.types.Operator):
             options=copy.deepcopy(nmv.interface.ui_options))
 
         # Register the analysis components, apply the kernel functions and update the UI
-        context.scene.MorphologyAnalyzed = nmv.interface.analyze_morphology(
+        context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
 
         # View all the objects in the scene
@@ -146,7 +138,7 @@ class ExportAnalysisResults(bpy.types.Operator):
     """Export the analysis results into a file"""
 
     # Operator parameters
-    bl_idname = "export.analysis_results"
+    bl_idname = "nmv.export_analysis_results"
     bl_label = "Export Results"
 
     ################################################################################################
@@ -167,7 +159,7 @@ class ExportAnalysisResults(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.OutputDirectory):
+        if not nmv.file.ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 

@@ -46,3 +46,4 @@ ui_reconstructed_skeleton = list()
 # NOTE: If this list contains a single mesh object, then it accounts for the entire mesh after
 # joining all the mesh objects together
 ui_reconstructed_mesh = list()
+

@@ -93,15 +93,15 @@ def load_morphology(panel_object,
     global current_morphology_path
 
     # Read the data from a given morphology file either in .h5 or .swc formats
-    if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
+    if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
 
         #try:
         if True:
             # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
+            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
 
             # Ensure that a file has been selected
-            if 'Select File' in context_scene.MorphologyFile:
+            if 'Select File' in context_scene.NMV_MorphologyFile:
                 return None
 
             # If no morphologies are loaded
@@ -109,7 +109,7 @@ def load_morphology(panel_object,
 
                 # Update the morphology label
                 nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                    context_scene.MorphologyFile)
+                    context_scene.NMV_MorphologyFile)
 
                 # Load the morphology file
                 # Load the morphology from the file
@@ -123,7 +123,7 @@ def load_morphology(panel_object,
                     nmv.interface.ui_morphology = morphology_object
 
                     # Update the current morphology path
-                    current_morphology_path = context_scene.MorphologyFile
+                    current_morphology_path = context_scene.NMV_MorphologyFile
 
                     # New morphology loaded
                     return 'NEW_MORPHOLOGY_LOADED'
@@ -150,7 +150,7 @@ def load_morphology(panel_object,
 
                     # Update the morphology label
                     nmv.interface.ui_options.morphology.label = \
-                        nmv.file.ops.get_file_name_from_path(context_scene.MorphologyFile)
+                        nmv.file.ops.get_file_name_from_path(context_scene.NMV_MorphologyFile)
 
                     # Load the morphology file
                     # Load the morphology from the file
@@ -164,7 +164,7 @@ def load_morphology(panel_object,
                         nmv.interface.ui_morphology = morphology_object
 
                         # Update the current morphology path
-                        current_morphology_path = context_scene.MorphologyFile
+                        current_morphology_path = context_scene.NMV_MorphologyFile
 
                         # New morphology loaded
                         return 'NEW_MORPHOLOGY_LOADED'
@@ -188,14 +188,14 @@ def load_morphology(panel_object,
             return None
 
     # Read the data from a specific gid in a given circuit
-    elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
 
         # Pass options from UI to system
         nmv.interface.ui_options.morphology.blue_config = context_scene.CircuitFile
-        nmv.interface.ui_options.morphology.gid = context_scene.Gid
+        nmv.interface.ui_options.morphology.gid = context_scene.NMV_Gid
 
         # Update the morphology label
-        nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
+        nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.NMV_Gid)
 
         # Check if the morphology is loaded before or not
         if current_morphology_label is None:
@@ -251,7 +251,7 @@ def validate_output_directory(panel_object,
         panel_object.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
         return {'FINISHED'}
 
-    if not nmv.file.ops.path_exists(context_scene.OutputDirectory):
+    if not nmv.file.ops.path_exists(context_scene.NMV_OutputDirectory):
         panel_object.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
         return {'FINISHED'}
 

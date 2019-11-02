@@ -31,7 +31,7 @@ import nmv.utilities
 
 
 # Meshing technique
-bpy.types.Scene.MeshingTechnique = EnumProperty(
+bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
     items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
             'Piecewise Watertight',
             'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
@@ -56,7 +56,7 @@ bpy.types.Scene.MeshingTechnique = EnumProperty(
     name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
 # Skeleton style
-bpy.types.Scene.SkeletonizationTechnique = EnumProperty(
+bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
     items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
             'Original',
             'Use the original morphology skeleton'),
@@ -80,7 +80,7 @@ bpy.types.Scene.SkeletonizationTechnique = EnumProperty(
     name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
 
 # Is the soma connected to the first order branches or not !
-bpy.types.Scene.SomaArborsConnection = EnumProperty(
+bpy.types.Scene.NMV_SomaArborsConnection = EnumProperty(
     items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,
             'Connected',
             'Connect the soma mesh to the arbors to make a nice mesh that can be used for any'
@@ -94,7 +94,7 @@ bpy.types.Scene.SomaArborsConnection = EnumProperty(
     default=nmv.enums.Meshing.SomaConnection.DISCONNECTED)
 
 # The skeleton of the union-based meshing algorithm
-bpy.types.Scene.UnionMethodSkeleton= EnumProperty(
+bpy.types.Scene.NMV_UnionMethodSkeleton= EnumProperty(
     items=[(nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON,
             'Quad',
             'Use a quad skeleton for the union meshing algorithm'),
@@ -105,7 +105,7 @@ bpy.types.Scene.UnionMethodSkeleton= EnumProperty(
     default=nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON)
 
 # Edges, hard or smooth
-bpy.types.Scene.MeshSmoothing = EnumProperty(
+bpy.types.Scene.NMV_MeshSmoothing = EnumProperty(
     items=[(nmv.enums.Meshing.Edges.HARD,
             'Sharp',
             'Make the edges between the segments sharp and hard'),
@@ -116,7 +116,7 @@ bpy.types.Scene.MeshSmoothing = EnumProperty(
     default=nmv.enums.Meshing.Edges.HARD)
 
 # Branching, is it based on angles or radii
-bpy.types.Scene.MeshBranching = EnumProperty(
+bpy.types.Scene.NMV_MeshBranching = EnumProperty(
     items=[(nmv.enums.Meshing.Branching.ANGLES,
             'Angles',
             'Make the branching based on the angles at branching points'),
@@ -127,7 +127,7 @@ bpy.types.Scene.MeshBranching = EnumProperty(
     default=nmv.enums.Meshing.Branching.ANGLES)
 
 # Are the mesh objects connected or disconnected.
-bpy.types.Scene.MeshObjectsConnection = EnumProperty(
+bpy.types.Scene.NMV_MeshObjectsConnection = EnumProperty(
     items=[(nmv.enums.Meshing.ObjectsConnection.CONNECTED,
             'Connected',
             'Connect all the objects of the mesh into one piece'),
@@ -138,7 +138,7 @@ bpy.types.Scene.MeshObjectsConnection = EnumProperty(
     default=nmv.enums.Meshing.ObjectsConnection.DISCONNECTED)
 
 # Is the output model for reality or beauty
-bpy.types.Scene.SurfaceRoughness = EnumProperty(
+bpy.types.Scene.NMV_SurfaceRoughness = EnumProperty(
     items=[(nmv.enums.Meshing.Surface.ROUGH,
             'Rough',
             'Create a mesh that looks like a real neuron reconstructed from microscope'),
@@ -149,7 +149,7 @@ bpy.types.Scene.SurfaceRoughness = EnumProperty(
     default=nmv.enums.Meshing.Surface.SMOOTH)
 
 # Spine sources can be random or from a BBP circuit
-bpy.types.Scene.SpinesSourceCircuit = EnumProperty(
+bpy.types.Scene.NMV_SpinesSourceCircuit = EnumProperty(
     items=[(nmv.enums.Meshing.Spines.Source.IGNORE,
             'Ignore',
             'Ignore creating the spines'),
@@ -163,7 +163,7 @@ bpy.types.Scene.SpinesSourceCircuit = EnumProperty(
     default=nmv.enums.Meshing.Spines.Source.IGNORE)
 
 # Spine sources are only random
-bpy.types.Scene.SpinesSourceRandom = EnumProperty(
+bpy.types.Scene.NMV_SpinesSourceRandom = EnumProperty(
     items=[(nmv.enums.Meshing.Spines.Source.IGNORE,
             'Ignore',
             'Ignore creating the spines'),
@@ -174,7 +174,7 @@ bpy.types.Scene.SpinesSourceRandom = EnumProperty(
     default=nmv.enums.Meshing.Spines.Source.IGNORE)
 
 # Spine meshes quality
-bpy.types.Scene.SpineMeshQuality = EnumProperty(
+bpy.types.Scene.NMV_SpineMeshQuality = EnumProperty(
     items=[(nmv.enums.Meshing.Spines.Quality.LQ,
             'Low',
             'Load low quality meshes'),
@@ -185,7 +185,7 @@ bpy.types.Scene.SpineMeshQuality = EnumProperty(
     default=nmv.enums.Meshing.Spines.Quality.LQ)
 
 # Nucleus
-bpy.types.Scene.Nucleus = EnumProperty(
+bpy.types.Scene.NMV_Nucleus = EnumProperty(
     items=[(nmv.enums.Meshing.Nucleus.IGNORE,
             'Ignore',
             'The nucleus is ignored'),
@@ -196,7 +196,7 @@ bpy.types.Scene.Nucleus = EnumProperty(
     default=nmv.enums.Meshing.Nucleus.IGNORE)
 
 # Nucleus mesh quality
-bpy.types.Scene.NucleusMeshQuality = EnumProperty(
+bpy.types.Scene.NMV_NucleusMeshQuality = EnumProperty(
     items=[(nmv.enums.Meshing.Nucleus.Quality.LQ,
             'Low',
             'Low quality nucleus mesh'),
@@ -207,84 +207,84 @@ bpy.types.Scene.NucleusMeshQuality = EnumProperty(
     default=nmv.enums.Meshing.Nucleus.Quality.LQ)
 
 # Fix artifacts flag
-bpy.types.Scene.FixMorphologyArtifacts = BoolProperty(
+bpy.types.Scene.NMV_FixMorphologyArtifacts = BoolProperty(
     name='Fix Morphology Artifacts',
     description='Fixes the morphology artifacts during the mesh reconstruction process',
     default=True)
 
 # Mesh tessellation flag
-bpy.types.Scene.TessellateMesh = BoolProperty(
+bpy.types.Scene.NMV_TessellateMesh = BoolProperty(
     name='Tessellation',
     description='Tessellate the reconstructed mesh to reduce the geometry complexity',
     default=False)
 
 # Mesh tessellation level
-bpy.types.Scene.MeshTessellationLevel = FloatProperty(
+bpy.types.Scene.NMV_MeshTessellationLevel = FloatProperty(
     name='Factor',
     description='Mesh tessellation level (between 0.1 and 1.0)',
     default=1.0, min=0.1, max=1.0)
 
 # Random spines percentage
-bpy.types.Scene.RandomSpinesPercentage = FloatProperty(
+bpy.types.Scene.NMV_RandomSpinesPercentage = FloatProperty(
     name='Percentage',
     description='The percentage of the random spines along the dendrites (1 - 100)',
     default=50, min=1.0, max=100.0)
 
-bpy.types.Scene.MeshMaterial = EnumProperty(
+bpy.types.Scene.NMV_MeshMaterial = EnumProperty(
     items=nmv.enums.Shading.MATERIAL_ITEMS,
     name="Material",
     default=nmv.enums.Shading.LAMBERT_WARD)
 
 # Use single color for the all the objects in the mesh
-bpy.types.Scene.MeshHomogeneousColor = BoolProperty(
+bpy.types.Scene.NMV_MeshHomogeneousColor = BoolProperty(
     name="Homogeneous Color",
     description="Use a single color for rendering all the objects of the mesh",
     default=False)
 
 # A homogeneous color for all the objects of the mesh (membrane and spines)
-bpy.types.Scene.NeuronMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_NeuronMeshColor = FloatVectorProperty(
     name="Membrane Color", subtype='COLOR',
     default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
     description="The homogeneous color of the reconstructed mesh membrane")
 
 # The color of the reconstructed soma mesh
-bpy.types.Scene.SomaMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_SomaMeshColor = FloatVectorProperty(
     name="Soma Color", subtype='COLOR',
     default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
     description="The color of the reconstructed soma mesh")
 
 # The color of the reconstructed axon mesh
-bpy.types.Scene.AxonMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_AxonMeshColor = FloatVectorProperty(
     name="Axon Color", subtype='COLOR',
     default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
     description="The color of the reconstructed axon mesh")
 
 # The color of the reconstructed basal dendrites meshes
-bpy.types.Scene.BasalDendritesMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_BasalDendritesMeshColor = FloatVectorProperty(
     name="Basal Dendrites Color", subtype='COLOR',
     default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
     description="The color of the reconstructed basal dendrites")
 
 # The color of the reconstructed apical dendrite meshes
-bpy.types.Scene.ApicalDendriteMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_ApicalDendriteMeshColor = FloatVectorProperty(
     name="Apical Dendrite Color", subtype='COLOR',
     default=nmv.enums.Color.APICAL_DENDRITES, min=0.0, max=1.0,
     description="The color of the reconstructed apical dendrite")
 
 # The color of the spines meshes
-bpy.types.Scene.SpinesMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_SpinesMeshColor = FloatVectorProperty(
     name="Spines Color", subtype='COLOR',
     default=nmv.enums.Color.SPINES, min=0.0, max=1.0,
     description="The color of the spines")
 
 # The color of the nucleus mesh
-bpy.types.Scene.NucleusMeshColor = FloatVectorProperty(
+bpy.types.Scene.NMV_NucleusMeshColor = FloatVectorProperty(
     name="Nucleus Color", subtype='COLOR',
     default=nmv.enums.Color.NUCLEI, min=0.0, max=1.0,
     description="The color of the nucleus")
 
 # Rendering resolution
-bpy.types.Scene.MeshRenderingResolution = EnumProperty(
+bpy.types.Scene.NMV_MeshRenderingResolution = EnumProperty(
     items=[(nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION,
             'Fixed',
             'Renders an image of the mesh at a specific resolution'),
@@ -295,7 +295,7 @@ bpy.types.Scene.MeshRenderingResolution = EnumProperty(
     default=nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION)
 
 # Rendering view
-bpy.types.Scene.MeshRenderingView = EnumProperty(
+bpy.types.Scene.NMV_MeshRenderingView = EnumProperty(
     items=[(nmv.enums.Meshing.Rendering.View.WIDE_SHOT_VIEW,
             'Wide Shot',
             'Renders an image of the full view'),
@@ -308,42 +308,42 @@ bpy.types.Scene.MeshRenderingView = EnumProperty(
     name='View', default=nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW)
 
 # Keep cameras
-bpy.types.Scene.KeepMeshCameras = BoolProperty(
+bpy.types.Scene.NMV_KeepMeshCameras = BoolProperty(
     name="Keep Cameras & Lights in Scene",
     description="Keep the cameras in the scene to be used later if this file is saved",
     default=False)
 
 # Image resolution
-bpy.types.Scene.MeshFrameResolution = IntProperty(
+bpy.types.Scene.NMV_MeshFrameResolution = IntProperty(
     name='Resolution',
     description='The resolution of the image generated from rendering the mesh',
     default=512, min=128, max=1024 * 10)
 
 # Frame scale factor 'for rendering to scale option '
-bpy.types.Scene.MeshFrameScaleFactor = FloatProperty(
+bpy.types.Scene.NMV_MeshFrameScaleFactor = FloatProperty(
     name="Scale", default=1.0, min=1.0, max=100.0,
     description="The scale factor for rendering a mesh to scale")
 
 # Mesh rendering close up size
-bpy.types.Scene.MeshCloseUpSize = FloatProperty(
+bpy.types.Scene.NMV_MeshCloseUpSize = FloatProperty(
     name='Size',
     description='The size of the view that will be rendered in microns',
     default=20, min=5, max=100,)
 
 # Soma rendering progress bar
-bpy.types.Scene.NeuronMeshRenderingProgress = IntProperty(
+bpy.types.Scene.NMV_NeuronMeshRenderingProgress = IntProperty(
     name="Rendering Progress",
     default=0, min=0, max=100, subtype='PERCENTAGE')
 
 # Individual components export flag
-bpy.types.Scene.ExportIndividuals = BoolProperty(
+bpy.types.Scene.NMV_ExportIndividuals = BoolProperty(
     name='Export Components',
     description='Export each component of the neuron as a separate mesh. This feature is '
                 'important to label reconstructions with machine learning applications',
     default=False)
 
 # Exported mesh file formats
-bpy.types.Scene.ExportedMeshFormat = bpy.props.EnumProperty(
+bpy.types.Scene.NMV_ExportedMeshFormat = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.ExportFormat.PLY,
             'Stanford (.ply)',
             'Export the mesh to a .ply file'),

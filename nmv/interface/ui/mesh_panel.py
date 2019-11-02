@@ -88,7 +88,7 @@ class MeshPanel(bpy.types.Panel):
         spines_row.label(text='Source:')
 
         # If you are reading from a BBP circuit
-        if context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
+        if context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
             spines_row.prop(context.scene, 'SpinesSourceCircuit', expand=True)
 
             # Pass options from UI to system

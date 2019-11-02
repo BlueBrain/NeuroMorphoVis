@@ -45,13 +45,13 @@ class NeuroRender(bpy.types.Panel):
     bl_label = 'NeuroRender'
     bl_category = 'NeuroRender'
 
-    bpy.types.Scene.RenderMaterial = EnumProperty(
+    bpy.types.Scene.NMV_RenderMaterial = EnumProperty(
         items=nmv.enums.Shading.MATERIAL_ITEMS,
         name="Material",
         default=nmv.enums.Shading.LAMBERT_WARD)
 
     # Material color
-    bpy.types.Scene.MaterialColor = FloatVectorProperty(
+    bpy.types.Scene.NMV_MaterialColor = FloatVectorProperty(
         name="Material Color", subtype='COLOR',
         default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
         description="The color of the material")
