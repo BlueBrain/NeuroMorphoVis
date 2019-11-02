@@ -330,7 +330,7 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.scene.ops.deselect_all()
 
     # Select mesh_object_1 and set it to be the active object
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Get the nearest face to the starting point
     indices = nmv.mesh.ops.get_indices_of_nearest_faces_to_point_within_delta(
@@ -362,7 +362,7 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.scene.select_object(mesh_object_2)
 
     # Set the mesh_object_1 to be active
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     bpy.ops.object.parent_set()
@@ -577,7 +577,7 @@ def join_mesh_objects(mesh_list,
             nmv.scene.select_object(mesh_object)
 
     # Set the 0th mesh to be active
-    bpy.context.scene.objects.active = mesh_list[0]
+    nmv.scene.set_active_object(mesh_list[0])
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     # bpy.ops.object.parent_set()
@@ -586,7 +586,7 @@ def join_mesh_objects(mesh_list,
     bpy.ops.object.join()
 
     # Get a reference to the resulting mesh
-    result_mesh = bpy.context.scene.objects.active
+    result_mesh = nmv.scene.get_active_object()
 
     # Rename it
     result_mesh.name = name

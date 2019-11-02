@@ -78,7 +78,7 @@ class Camera:
         bpy.ops.object.camera_add(location=location, rotation=rotation)
 
         # Set the camera to be the active object
-        camera = bpy.context.scene.objects.active
+        camera = nmv.scene.get_active_object()
 
         # Rename the camera to the specified name
         camera.name = self.name

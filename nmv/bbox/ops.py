@@ -382,7 +382,7 @@ def draw_scene_bounding_box():
     # Draw a cube, rename it and then scale it to fit the bounding box
     bpy.ops.mesh.primitive_cube_add(radius=0.5, location=scene_bounding_box.center)
     bpy.context.object.scale = scene_bounding_box.bounds
-    bounding_box = bpy.context.scene.objects.active
+    bounding_box = nmv.scene.get_active_object()
     bounding_box.name = 'scene_bounding_box'
 
     # Return a reference to the bounding box

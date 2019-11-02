@@ -1246,9 +1246,8 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     # Now, we can safely convert the arbor to a mesh
     mesh_object_2 = nmv.scene.ops.convert_object_to_mesh(arbor_poly_line)
 
-
     # Select mesh_object_1 and set it to be the active object
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     # mesh_face_ops.close_open_faces(mesh_object_1)

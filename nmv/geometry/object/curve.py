@@ -99,7 +99,7 @@ def draw_closed_circle(radius=1,
         vertices=vertices, radius=radius/2, location=location, fill_type=fill)
 
     # Return a reference to the circle objects
-    circle = bpy.context.scene.objects.active
+    circle = nmv.scene.get_active_object()
 
     # Rename the circle
     circle.name = name

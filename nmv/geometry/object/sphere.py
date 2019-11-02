@@ -22,6 +22,7 @@ import bpy
 import nmv
 import nmv.shading
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -52,10 +53,15 @@ def create_uv_sphere(radius=1,
     nmv.scene.ops.deselect_all()
     
     # Add the sphere
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=subdivisions, size=radius, location=location)
-    
+    if nmv.utilities.is_blender_280():
+        bpy.ops.mesh.primitive_uv_sphere_add(
+            segments=subdivisions, radius=radius, location=location)
+    else:
+        bpy.ops.mesh.primitive_uv_sphere_add(
+            segments=subdivisions, size=radius, location=location)
+
     # Select the sphere to set its name and returns a reference to it
-    sphere = bpy.context.scene.objects.active
+    sphere = nmv.scene.get_active_object()
 
     # Update the sphere name
     sphere.name = name
@@ -102,10 +108,15 @@ def create_ico_sphere(radius=1,
     nmv.scene.ops.deselect_all()
     
     # Add the sphere
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, size=radius, location=location)
-    
+    if nmv.utilities.is_blender_280():
+        bpy.ops.mesh.primitive_ico_sphere_add(
+            subdivisions=subdivisions, radius=radius, location=location)
+    else:
+        bpy.ops.mesh.primitive_ico_sphere_add(
+            subdivisions=subdivisions, size=radius, location=location)
+
     # Select the sphere to set its name and returns a reference to it
-    sphere = bpy.context.scene.objects.active
+    sphere =  nmv.scene.get_active_object()
 
     # Update the sphere name
     sphere.name = name

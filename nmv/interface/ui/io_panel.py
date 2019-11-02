@@ -203,10 +203,10 @@ class LoadMorphology(bpy.types.Operator):
             options=copy.deepcopy(nmv.interface.ui_options))
 
         # Switch to the orthographic mode
-        bpy.ops.view3d.view_persportho()
+        # bpy.ops.view3d.view_persportho()
 
         # Switch to the top view
-        bpy.ops.view3d.viewnumpad(type='TOP')
+        # bpy.ops.view3d.viewnumpad(type='TOP')
 
         # View all the objects in the scene
         bpy.ops.view3d.view_selected()
