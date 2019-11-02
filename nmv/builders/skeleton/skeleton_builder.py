@@ -1306,7 +1306,7 @@ class SkeletonBuilder:
                 bevel_object=bevel_object))
 
         # Hide the bevel object to avoid having it rendered
-        bevel_object.hide = True
+        nmv.scene.hide_object(bevel_object)
 
         # Draw the soma as a sphere object
         if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:

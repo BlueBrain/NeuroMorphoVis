@@ -303,7 +303,7 @@ def draw_poly_line(poly_line_data,
         line_strip.data.splines[0].use_endpoint_u = True
 
     # Link this curve to the scene
-    bpy.context.scene.objects.link(line_strip)
+    nmv.scene.link_object_to_scene(line_strip)
 
     # Assume that the location of the line is set at the origin until further notice
     line_strip.location = Vector((0, 0, 0))
@@ -419,7 +419,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
         line_strip.data.splines[0].use_endpoint_u = True
 
     # Link this curve to the scene
-    bpy.context.scene.objects.link(line_strip)
+    nmv.scene.link_object_to_scene(line_strip)
 
     # Assume that the location of the line is set at the origin until further notice
     line_strip.location = Vector((0, 0, 0))

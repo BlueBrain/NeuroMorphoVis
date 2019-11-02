@@ -21,12 +21,14 @@ import os
 
 # Blender imports
 import bpy
+import mathutils
 
 # Internal imports
 import nmv
 import nmv.consts
 import nmv.enums
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -402,30 +404,49 @@ def create_lambert_ward_material(name,
     current_scene = bpy.context.scene
 
     # Set the current rendering engine to Blender
-    if not current_scene.render.engine == 'BLENDER_RENDER':
+
+    if nmv.utilities.is_blender_280():
+        current_scene.render.engine = 'BLENDER_WORKBENCH'
+
+        # Create a new material (color) and assign it to the line
+        color = mathutils.Vector((color[0], color[1], color[2], 1.0))
+
+        # Create a new material (color) and assign it to the line
+        line_material = bpy.data.materials.new('color.%s' % name)
+        line_material.diffuse_color = color
+
+        # Zero-metallic and roughness
+        line_material.roughness = 1.0
+        line_material.metallic = 0.5
+
+        # Return a reference to the material
+        return line_material
+    else:
         current_scene.render.engine = 'BLENDER_RENDER'
 
-    # Create a new material
-    material_reference = bpy.data.materials.new(name)
+        # Create a new material
+        material_reference = bpy.data.materials.new(name)
 
-    # Set the diffuse parameters
-    material_reference.diffuse_color = color
-    material_reference.diffuse_shader = 'LAMBERT'
-    material_reference.diffuse_intensity = 1.0
+        # Set the diffuse parameters
+        material_reference.diffuse_color = color
+        material_reference.diffuse_shader = 'LAMBERT'
+        material_reference.diffuse_intensity = 1.0
 
-    # Set the specular parameters
-    material_reference.specular_color = specular
-    material_reference.specular_shader = 'WARDISO'
-    material_reference.specular_intensity = 1
+        # Set the specular parameters
+        material_reference.specular_color = specular
+        material_reference.specular_shader = 'WARDISO'
+        material_reference.specular_intensity = 1
 
-    # Transparency
-    material_reference.alpha = alpha
+        # Transparency
+        material_reference.alpha = alpha
 
-    # Set the ambient parameters
-    material_reference.ambient = 1.0
+        # Set the ambient parameters
+        material_reference.ambient = 1.0
 
-    # Return a reference to the material
-    return material_reference
+        # Return a reference to the material
+        return material_reference
+
+
 
 
 ####################################################################################################

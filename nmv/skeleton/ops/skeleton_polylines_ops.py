@@ -52,7 +52,9 @@ def get_section_poly_line(section,
     for i in range(len(section.samples)):
 
         # Get the coordinates of the sample
-        point = transform * section.samples[i].point
+        #point = transform * section.samples[i].point
+
+        point = section.samples[i].point
 
         # Use the actual radius of the samples reported in the morphology file
         poly_line.append([(point[0], point[1], point[2], 1), section.samples[i].radius])

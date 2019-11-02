@@ -162,6 +162,7 @@ def create_material_specific_illumination(material_type):
         Material type.
     """
 
+    return
     # Lambert Ward
     if material_type == nmv.enums.Shading.LAMBERT_WARD:
         return create_lambert_ward_illumination()
