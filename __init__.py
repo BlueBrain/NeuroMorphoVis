@@ -78,7 +78,13 @@ bl_info = {
 # Append the modules path to the system paths to be able to load the internal python modules
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-if "bpy" in locals():
+
+####################################################################################################
+# @register
+####################################################################################################
+def register():
+    """Register the different modules of the interface.
+    """
 
     # Import the modules
     import nmv.interface.ui.io_panel
@@ -96,25 +102,6 @@ if "bpy" in locals():
     imp.reload(nmv.interface.ui.edit_panel)
     imp.reload(nmv.interface.ui.morphology_panel)
     imp.reload(nmv.interface.ui.mesh_panel)
-
-else:
-
-    # Import the modules
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
-    import nmv.interface.ui.about_panel
-
-
-####################################################################################################
-# @register
-####################################################################################################
-def register():
-    """Register the different modules of the interface.
-    """
 
     # Register panels
     nmv.interface.ui.io_panel.register_panel()
