@@ -47,13 +47,13 @@ bl_info = {
     # The author of this add-on
     "author": "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version": (1, 3, 0),
+    "version": (1, 4, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
-    "blender": (2, 7, 9),
+    "blender": (2, 80, 0),
     # This is where users should look for this add-on.
-    "location": "View 3D > Edit Mode > Tool Shelf",
+    # "location": "View 3D > Edit Mode > Tool Shelf",
     # Description
     "description": "Morphology reconstruction, analysis and visualization to mesh reconstruction. "
                    "The Add-on was developed by the Blue Brain Project (BBP) at Ecole "

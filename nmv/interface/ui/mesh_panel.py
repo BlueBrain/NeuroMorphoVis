@@ -51,9 +51,12 @@ from .mesh_panel_options import *
 class MeshPanel(bpy.types.Panel):
     """MeshPanel class"""
 
-    # Panel options
+    ################################################################################################
+    # Panel parameters
+    ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
+    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_idname = "OBJECT_PT_NMV_MeshingToolBox"
     bl_label = 'Mesh Toolbox'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}

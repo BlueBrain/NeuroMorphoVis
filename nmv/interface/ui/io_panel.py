@@ -30,6 +30,7 @@ import nmv
 import nmv.enums
 import nmv.interface
 import nmv.scene
+import nmv.utilities
 from .io_panel_options import *
 
 
@@ -43,7 +44,8 @@ class IOPanel(bpy.types.Panel):
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
+    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_idname = "OBJECT_PT_NMV_IO"
     bl_label = 'Input / Output'
     bl_category = 'NeuroMorphoVis'
 

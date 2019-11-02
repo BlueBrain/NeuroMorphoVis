@@ -29,6 +29,7 @@ import nmv.edit
 import nmv.interface
 import nmv.scene
 import nmv.consts
+import nmv.utilities
 
 # Globals
 # Morphology editor
@@ -49,7 +50,8 @@ class EditPanel(bpy.types.Panel):
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
+    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_idname = "OBJECT_PT_NMV_MorphologyEditing"
     bl_label = 'Morphology Editing'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}

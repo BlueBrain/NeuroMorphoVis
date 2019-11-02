@@ -73,3 +73,16 @@ def get_blender_version_string():
     return '%s_%s_%s' % (str(version[0]), str(version[1]), str(version[2]))
 
 
+####################################################################################################
+# @is_blender_280
+####################################################################################################
+def is_blender_280():
+    """Checks if the used version of Blender is compatible with version 2.8.
+
+    :return:
+        True if this version of Blender is 2.8, otherwise False.
+    """
+
+    if get_blender_version() >= (2, 80, 0):
+        return True
+    return False

@@ -37,6 +37,7 @@ import nmv.file
 import nmv.interface
 import nmv.skeleton
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -49,7 +50,8 @@ class AnalysisPanel(bpy.types.Panel):
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
+    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_idname = "OBJECT_PT_NMV_Analysis"
     bl_label = 'Morphology Analysis'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
