@@ -89,17 +89,17 @@ class MeshPanel(bpy.types.Panel):
 
         # If you are reading from a BBP circuit
         if context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
-            spines_row.prop(context.scene, 'SpinesSourceCircuit', expand=True)
+            spines_row.prop(context.scene, 'NMV_SpinesSourceCircuit', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines = context.scene.SpinesSourceCircuit
+            nmv.interface.ui_options.mesh.spines = context.scene.NMV_SpinesSourceCircuit
 
         # Otherwise, it is only random
         else:
-            spines_row.prop(context.scene, 'SpinesSourceRandom', expand=True)
+            spines_row.prop(context.scene, 'NMV_SpinesSourceRandom', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines = context.scene.SpinesSourceRandom
+            nmv.interface.ui_options.mesh.spines = context.scene.NMV_SpinesSourceRandom
 
         # If the spines are not ignored
         if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
@@ -107,21 +107,21 @@ class MeshPanel(bpy.types.Panel):
             # Spines quality
             spines_quality_row = layout.row()
             spines_quality_row.label(text='Quality:')
-            spines_quality_row.prop(context.scene, 'SpineMeshQuality', expand=True)
+            spines_quality_row.prop(context.scene, 'NMV_SpineMeshQuality', expand=True)
 
             # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines_mesh_quality = context.scene.SpineMeshQuality
+            nmv.interface.ui_options.mesh.spines_mesh_quality = context.scene.NMV_SpineMeshQuality
 
             # Percentage in case of random spines
             if nmv.interface.ui_options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
                 # Random percentage
                 spines_percentage_row = layout.row()
                 spines_percentage_row.label(text='Percentage:')
-                spines_percentage_row.prop(context.scene, 'RandomSpinesPercentage')
+                spines_percentage_row.prop(context.scene, 'NMV_RandomSpinesPercentage')
 
                 # Pass options from UI to system
                 nmv.interface.ui_options.mesh.random_spines_percentage = \
-                    context.scene.RandomSpinesPercentage
+                    context.scene.NMV_RandomSpinesPercentage
 
     ################################################################################################
     # @draw_tessellation_options
@@ -135,17 +135,17 @@ class MeshPanel(bpy.types.Panel):
 
         # Tessellation parameters
         tess_level_row = self.layout.row()
-        tess_level_row.prop(context.scene, 'TessellateMesh')
+        tess_level_row.prop(context.scene, 'NMV_TessellateMesh')
         tess_level_column = tess_level_row.column()
-        tess_level_column.prop(context.scene, 'MeshTessellationLevel')
-        if not context.scene.TessellateMesh:
+        tess_level_column.prop(context.scene, 'NMV_MeshTessellationLevel')
+        if not context.scene.NMV_TessellateMesh:
             # Use 1.0 to disable the tessellation
             nmv.interface.ui_options.mesh.tessellate_mesh = False
             nmv.interface.ui_options.mesh.tessellation_level = 1.0
             tess_level_column.enabled = False
         else:
-            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.TessellateMesh
-            nmv.interface.ui_options.mesh.tessellation_level = context.scene.MeshTessellationLevel
+            nmv.interface.ui_options.mesh.tessellate_mesh = context.scene.NMV_TessellateMesh
+            nmv.interface.ui_options.mesh.tessellation_level = context.scene.NMV_MeshTessellationLevel
 
     ################################################################################################
     # @draw_color_options
@@ -166,85 +166,85 @@ class MeshPanel(bpy.types.Panel):
 
         # Mesh material
         mesh_material_row = layout.row()
-        mesh_material_row.prop(context.scene, 'MeshMaterial')
-        nmv.interface.ui_options.mesh.material = context.scene.MeshMaterial
+        mesh_material_row.prop(context.scene, 'NMV_MeshMaterial')
+        nmv.interface.ui_options.mesh.material = context.scene.NMV_MeshMaterial
 
         # Draw the meshing options
-        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
-           context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION or \
-           context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+        if context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
+           context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION or \
+           context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
 
             # Homogeneous mesh coloring
             homogeneous_color_row = layout.row()
-            homogeneous_color_row.prop(context.scene, 'MeshHomogeneousColor')
+            homogeneous_color_row.prop(context.scene, 'NMV_MeshHomogeneousColor')
 
             # If the homogeneous color flag is set
-            if context.scene.MeshHomogeneousColor:
+            if context.scene.NMV_MeshHomogeneousColor:
                 neuron_color_row = layout.row()
-                neuron_color_row.prop(context.scene, 'NeuronMeshColor')
+                neuron_color_row.prop(context.scene, 'NMV_NeuronMeshColor')
 
                 nmv.interface.ui_options.mesh.soma_color = \
-                    context.scene.NeuronMeshColor
+                    context.scene.NMV_NeuronMeshColor
                 nmv.interface.ui_options.mesh.axon_color = \
-                    context.scene.NeuronMeshColor
+                    context.scene.NMV_NeuronMeshColor
                 nmv.interface.ui_options.mesh.basal_dendrites_color = \
-                    context.scene.NeuronMeshColor
+                    context.scene.NMV_NeuronMeshColor
                 nmv.interface.ui_options.mesh.apical_dendrites_color = \
-                    context.scene.NeuronMeshColor
+                    context.scene.NMV_NeuronMeshColor
                 nmv.interface.ui_options.mesh.spines_color = \
-                    context.scene.NeuronMeshColor
+                    context.scene.NMV_NeuronMeshColor
 
             # Different colors
             else:
                 soma_color_row = layout.row()
-                soma_color_row.prop(context.scene, 'SomaMeshColor')
-                nmv.interface.ui_options.mesh.soma_color = context.scene.SomaMeshColor
+                soma_color_row.prop(context.scene, 'NMV_SomaMeshColor')
+                nmv.interface.ui_options.mesh.soma_color = context.scene.NMV_SomaMeshColor
 
                 axon_color_row = layout.row()
-                axon_color_row.prop(context.scene, 'AxonMeshColor')
-                nmv.interface.ui_options.mesh.axon_color = context.scene.AxonMeshColor
+                axon_color_row.prop(context.scene, 'NMV_AxonMeshColor')
+                nmv.interface.ui_options.mesh.axon_color = context.scene.NMV_AxonMeshColor
 
                 basal_dendrites_color_row = layout.row()
-                basal_dendrites_color_row.prop(context.scene, 'BasalDendritesMeshColor')
+                basal_dendrites_color_row.prop(context.scene, 'NMV_BasalDendritesMeshColor')
                 nmv.interface.ui_options.mesh.basal_dendrites_color = \
-                    context.scene.BasalDendritesMeshColor
+                    context.scene.NMV_BasalDendritesMeshColor
 
                 apical_dendrites_color_row = layout.row()
-                apical_dendrites_color_row.prop(context.scene, 'ApicalDendriteMeshColor')
+                apical_dendrites_color_row.prop(context.scene, 'NMV_ApicalDendriteMeshColor')
                 nmv.interface.ui_options.mesh.apical_dendrites_color = \
-                    context.scene.ApicalDendriteMeshColor
+                    context.scene.NMV_ApicalDendriteMeshColor
 
                 # Spines must be there to set a color for them
                 if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
                     spines_color_row = layout.row()
-                    spines_color_row.prop(context.scene, 'SpinesMeshColor')
-                    nmv.interface.ui_options.mesh.spines_color = context.scene.SpinesMeshColor
+                    spines_color_row.prop(context.scene, 'NMV_SpinesMeshColor')
+                    nmv.interface.ui_options.mesh.spines_color = context.scene.NMV_SpinesMeshColor
 
-        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
+        elif context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
 
             neuron_color_row = layout.row()
-            neuron_color_row.prop(context.scene, 'NeuronMeshColor')
+            neuron_color_row.prop(context.scene, 'NMV_NeuronMeshColor')
 
             # Pass options from UI to system
             nmv.interface.ui_options.mesh.soma_color = \
-                context.scene.NeuronMeshColor
+                context.scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.mesh.axon_color = \
-                context.scene.NeuronMeshColor
+                context.scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.mesh.basal_dendrites_color = \
-                context.scene.NeuronMeshColor
+                context.scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.mesh.apical_dendrites_color = \
-                context.scene.NeuronMeshColor
+                context.scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.mesh.spines_color = \
-                context.scene.NeuronMeshColor
+                context.scene.NMV_NeuronMeshColor
 
         # Add nucleus color option if they are not ignored
-        if context.scene.Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
+        if context.scene.NMV_Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
             nucleus_color_row = layout.row()
-            nucleus_color_row.prop(context.scene, 'NucleusMeshColor')
+            nucleus_color_row.prop(context.scene, 'NMV_NucleusMeshColor')
 
             nmv.interface.ui_options.mesh.nucleus_color = Vector((
-                context.scene.NucleusMeshColor.r, context.scene.NucleusMeshColor.g,
-                context.scene.NucleusMeshColor.b))
+                context.scene.NMV_NucleusMeshColor.r, context.scene.NMV_NucleusMeshColor.g,
+                context.scene.NMV_NucleusMeshColor.b))
 
     ################################################################################################
     # @draw_skinning_meshing_options
@@ -259,8 +259,8 @@ class MeshPanel(bpy.types.Panel):
         # Soma connection
         soma_connection_row = self.layout.row()
         soma_connection_row.label(text='Soma:')
-        soma_connection_row.prop(context.scene, 'SomaArborsConnection', expand=True)
-        nmv.interface.ui_options.mesh.soma_connection = context.scene.SomaArborsConnection
+        soma_connection_row.prop(context.scene, 'NMV_SomaArborsConnection', expand=True)
+        nmv.interface.ui_options.mesh.soma_connection = context.scene.NMV_SomaArborsConnection
 
         # If the soma is connected, then by default, the arbors are connected
         if nmv.interface.ui_options.mesh.soma_connection == \
@@ -269,9 +269,9 @@ class MeshPanel(bpy.types.Panel):
             # Mesh objects connection
             neuron_objects_connection_row = self.layout.row()
             neuron_objects_connection_row.label(text='Skeleton Objects:')
-            neuron_objects_connection_row.prop(context.scene, 'MeshObjectsConnection', expand=True)
+            neuron_objects_connection_row.prop(context.scene, 'NMV_MeshObjectsConnection', expand=True)
             nmv.interface.ui_options.mesh.neuron_objects_connection = \
-                context.scene.MeshObjectsConnection
+                context.scene.NMV_MeshObjectsConnection
 
         else:
             nmv.interface.ui_options.mesh.neuron_objects_connection = \
@@ -292,8 +292,8 @@ class MeshPanel(bpy.types.Panel):
         if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
             mesh_surface_row = self.layout.row()
             mesh_surface_row.label(text='Surface:')
-            mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
-            nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+            mesh_surface_row.prop(context.scene, 'NMV_SurfaceRoughness', expand=True)
+            nmv.interface.ui_options.mesh.surface = context.scene.NMV_SurfaceRoughness
         else:
             nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
@@ -334,18 +334,18 @@ class MeshPanel(bpy.types.Panel):
         # Surface roughness
         mesh_surface_row = self.layout.row()
         mesh_surface_row.label(text='Surface:')
-        mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
+        mesh_surface_row.prop(context.scene, 'NMV_SurfaceRoughness', expand=True)
 
         # Pass options from UI to system
-        nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+        nmv.interface.ui_options.mesh.surface = context.scene.NMV_SurfaceRoughness
 
         # Edges
         mesh_edges_row = self.layout.row()
         mesh_edges_row.label(text='Edges:')
-        mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
+        mesh_edges_row.prop(context.scene, 'NMV_MeshSmoothing', expand=True)
 
         # Pass options from UI to system
-        nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
+        nmv.interface.ui_options.mesh.edges = context.scene.NMV_MeshSmoothing
 
         # Connectivity options
         self.draw_connectivity_options(context)
@@ -370,23 +370,23 @@ class MeshPanel(bpy.types.Panel):
         # Edges
         mesh_edges_row = self.layout.row()
         mesh_edges_row.label(text='Edges:')
-        mesh_edges_row.prop(context.scene, 'MeshSmoothing', expand=True)
-        nmv.interface.ui_options.mesh.edges = context.scene.MeshSmoothing
+        mesh_edges_row.prop(context.scene, 'NMV_MeshSmoothing', expand=True)
+        nmv.interface.ui_options.mesh.edges = context.scene.NMV_MeshSmoothing
 
         # Surface roughness
         if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
             mesh_surface_row = self.layout.row()
             mesh_surface_row.label(text='Surface:')
-            mesh_surface_row.prop(context.scene, 'SurfaceRoughness', expand=True)
-            nmv.interface.ui_options.mesh.surface = context.scene.SurfaceRoughness
+            mesh_surface_row.prop(context.scene, 'NMV_SurfaceRoughness', expand=True)
+            nmv.interface.ui_options.mesh.surface = context.scene.NMV_SurfaceRoughness
         else:
             nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
         # Mesh branching
         branching_row = self.layout.row()
         branching_row.label(text='Branching:')
-        branching_row.prop(context.scene, 'MeshBranching', expand=True)
-        nmv.interface.ui_options.mesh.branching = context.scene.MeshBranching
+        branching_row.prop(context.scene, 'NMV_MeshBranching', expand=True)
+        nmv.interface.ui_options.mesh.branching = context.scene.NMV_MeshBranching
 
         # Connectivity options
         self.draw_connectivity_options(context)
@@ -417,22 +417,22 @@ class MeshPanel(bpy.types.Panel):
 
         # Which meshing technique to use
         meshing_method_row = layout.row()
-        meshing_method_row.prop(context.scene, 'MeshingTechnique', icon='OUTLINER_OB_EMPTY')
-        nmv.interface.ui_options.mesh.meshing_technique = context.scene.MeshingTechnique
+        meshing_method_row.prop(context.scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
+        nmv.interface.ui_options.mesh.meshing_technique = context.scene.NMV_MeshingTechnique
 
         # Which skeletonization technique to use
         skeletonization_row = layout.row()
-        skeletonization_row.prop(context.scene, 'SkeletonizationTechnique', icon='CURVE_BEZCURVE')
-        nmv.interface.ui_options.mesh.skeletonization = context.scene.SkeletonizationTechnique
+        skeletonization_row.prop(context.scene, 'NMV_SkeletonizationTechnique', icon='CURVE_BEZCURVE')
+        nmv.interface.ui_options.mesh.skeletonization = context.scene.NMV_SkeletonizationTechnique
 
         # Draw the meshing options
-        if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        if context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             self.draw_piece_wise_meshing_options(context)
-        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
+        elif context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
             self.draw_meta_objects_meshing_options(context)
-        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+        elif context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
             self.draw_skinning_meshing_options(context)
-        elif context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
+        elif context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
             self.draw_union_meshing_options(context)
         else:
             pass
@@ -457,7 +457,7 @@ class MeshPanel(bpy.types.Panel):
 
         # Mesh reconstruction options
         mesh_reconstruction_row = layout.row()
-        mesh_reconstruction_row.operator('reconstruct.neuron_mesh', icon='MESH_DATA')
+        mesh_reconstruction_row.operator('nmv.reconstruct_neuron_mesh', icon='MESH_DATA')
 
     ################################################################################################
     # @draw_rendering_options
@@ -481,23 +481,23 @@ class MeshPanel(bpy.types.Panel):
         # Rendering view
         rendering_view_row = layout.row()
         rendering_view_row.label(text='View:')
-        rendering_view_row.prop(context.scene, 'MeshRenderingView', expand=True)
+        rendering_view_row.prop(context.scene, 'NMV_MeshRenderingView', expand=True)
         self.shown_hidden_rows.append(rendering_view_row)
 
         # Add the close up size option
-        if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+        if context.scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
 
             # Close up size option
             close_up_size_row = layout.row()
             close_up_size_row.label(text='Close Up Size:')
-            close_up_size_row.prop(context.scene, 'MeshCloseUpSize')
+            close_up_size_row.prop(context.scene, 'NMV_MeshCloseUpSize')
             close_up_size_row.enabled = True
             self.shown_hidden_rows.append(close_up_size_row)
 
             # Frame resolution option (only for the close up mode)
             frame_resolution_row = layout.row()
             frame_resolution_row.label(text='Frame Resolution:')
-            frame_resolution_row.prop(context.scene, 'MeshFrameResolution')
+            frame_resolution_row.prop(context.scene, 'NMV_MeshFrameResolution')
             frame_resolution_row.enabled = True
             self.shown_hidden_rows.append(frame_resolution_row)
 
@@ -507,17 +507,17 @@ class MeshPanel(bpy.types.Panel):
             # Rendering resolution
             rendering_resolution_row = layout.row()
             rendering_resolution_row.label(text='Resolution:')
-            rendering_resolution_row.prop(context.scene, 'MeshRenderingResolution', expand=True)
+            rendering_resolution_row.prop(context.scene, 'NMV_MeshRenderingResolution', expand=True)
             self.shown_hidden_rows.append(rendering_resolution_row)
 
             # Add the frame resolution option
-            if context.scene.MeshRenderingResolution == \
+            if context.scene.NMV_MeshRenderingResolution == \
                     nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
                 # Frame resolution option (only for the close up mode)
                 frame_resolution_row = layout.row()
                 frame_resolution_row.label(text='Frame Resolution:')
-                frame_resolution_row.prop(context.scene, 'MeshFrameResolution')
+                frame_resolution_row.prop(context.scene, 'NMV_MeshFrameResolution')
                 frame_resolution_row.enabled = True
                 self.shown_hidden_rows.append(frame_resolution_row)
 
@@ -527,35 +527,35 @@ class MeshPanel(bpy.types.Panel):
                 # Scale factor option
                 scale_factor_row = layout.row()
                 scale_factor_row.label(text='Resolution Scale:')
-                scale_factor_row.prop(context.scene, 'MeshFrameScaleFactor')
+                scale_factor_row.prop(context.scene, 'NMV_MeshFrameScaleFactor')
                 scale_factor_row.enabled = True
                 self.shown_hidden_rows.append(scale_factor_row)
 
         # Keep the cameras used for the rendering in the scene
         keep_cameras_row = layout.row()
-        keep_cameras_row.prop(context.scene, 'KeepMeshCameras')
+        keep_cameras_row.prop(context.scene, 'NMV_KeepMeshCameras')
         keep_cameras_row.enabled = False
 
         # Rendering view
         render_view_row = layout.row()
         render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')
         render_view_buttons_row = layout.row(align=True)
-        render_view_buttons_row.operator('render_mesh.front', icon='AXIS_FRONT')
-        render_view_buttons_row.operator('render_mesh.side', icon='AXIS_SIDE')
-        render_view_buttons_row.operator('render_mesh.top', icon='AXIS_TOP')
+        render_view_buttons_row.operator('nmv.render_mesh_front', icon='AXIS_FRONT')
+        render_view_buttons_row.operator('nmv.render_mesh_side', icon='AXIS_SIDE')
+        render_view_buttons_row.operator('nmv.render_mesh_top', icon='AXIS_TOP')
         render_view_buttons_row.enabled = True
         self.shown_hidden_rows.append(render_view_buttons_row)
 
         render_animation_row = layout.row()
         render_animation_row.label(text='Render Animation:', icon='CAMERA_DATA')
         render_animations_buttons_row = layout.row(align=True)
-        render_animations_buttons_row.operator('render_mesh.360', icon='FORCE_MAGNETIC')
+        render_animations_buttons_row.operator('nmv.render_mesh_360', icon='FORCE_MAGNETIC')
         render_animations_buttons_row.enabled = True
         self.shown_hidden_rows.append(render_animations_buttons_row)
 
         # Soma rendering progress bar
         neuron_mesh_rendering_progress_row = layout.row()
-        neuron_mesh_rendering_progress_row.prop(context.scene, 'NeuronMeshRenderingProgress')
+        neuron_mesh_rendering_progress_row.prop(context.scene, 'NMV_NeuronMeshRenderingProgress')
         neuron_mesh_rendering_progress_row.enabled = False
         self.shown_hidden_rows.append(neuron_mesh_rendering_progress_row)
 
@@ -578,16 +578,16 @@ class MeshPanel(bpy.types.Panel):
         save_neuron_mesh_row.label(text='Export Neuron Mesh:', icon='MESH_UVSPHERE')
 
         export_format = layout.row()
-        export_format.prop(context.scene, 'ExportedMeshFormat', icon='GROUP_VERTEX')
+        export_format.prop(context.scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
 
-        if not context.scene.ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
-            if context.scene.MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        if not context.scene.NMV_ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
+            if context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
                 export_individual_row = layout.row()
-                export_individual_row.prop(context.scene, 'ExportIndividuals')
+                export_individual_row.prop(context.scene, 'NMV_ExportIndividuals')
 
         # Save button
         save_neuron_mesh_buttons_column = layout.column(align=True)
-        save_neuron_mesh_buttons_column.operator('export.neuron_mesh', icon='MESH_DATA')
+        save_neuron_mesh_buttons_column.operator('nmv.export_neuron_mesh', icon='MESH_DATA')
         save_neuron_mesh_buttons_column.enabled = True
         self.shown_hidden_rows.append(save_neuron_mesh_buttons_column)
 
@@ -628,7 +628,7 @@ class ReconstructNeuronMesh(bpy.types.Operator):
     """Reconstructs the mesh of the neuron"""
 
     # Operator parameters
-    bl_idname = "reconstruct.neuron_mesh"
+    bl_idname = "nmv.reconstruct_neuron_mesh"
     bl_label = "Reconstruct Mesh"
 
     ################################################################################################
@@ -697,7 +697,7 @@ class RenderMeshFront(bpy.types.Operator):
     """Render front view of the reconstructed mesh"""
 
     # Operator parameters
-    bl_idname = "render_mesh.front"
+    bl_idname = "nmv.render_mesh_front"
     bl_label = "Front"
 
     ################################################################################################
@@ -727,7 +727,7 @@ class RenderMeshSide(bpy.types.Operator):
     """Render side view of the reconstructed mesh"""
 
     # Operator parameters
-    bl_idname = "render_mesh.side"
+    bl_idname = "nmv.render_mesh_side"
     bl_label = "Side"
 
     ################################################################################################
@@ -756,7 +756,7 @@ class RenderMeshTop(bpy.types.Operator):
     """Render top view of the reconstructed mesh"""
 
     # Operator parameters
-    bl_idname = "render_mesh.top"
+    bl_idname = "nmv.render_mesh_top"
     bl_label = "Top"
 
     ################################################################################################
@@ -785,7 +785,7 @@ class RenderMesh360(bpy.types.Operator):
     """Render a 360 view of the reconstructed mesh"""
 
     # Operator parameters
-    bl_idname = "render_mesh.360"
+    bl_idname = "nmv.render_mesh_360"
     bl_label = "360"
 
     # Timer parameters
@@ -835,7 +835,7 @@ class RenderMesh360(bpy.types.Operator):
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
 
             # Render at a specific resolution
-            if context.scene.MeshRenderingResolution == \
+            if context.scene.NMV_MeshRenderingResolution == \
                     nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
                 # Render the image
@@ -844,7 +844,7 @@ class RenderMesh360(bpy.types.Operator):
                     angle=self.timer_limits,
                     bounding_box=self.bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_resolution=context.scene.MeshFrameResolution,
+                    image_resolution=context.scene.NMV_MeshFrameResolution,
                     image_name=image_name)
 
             # Render at a specific scale factor
@@ -856,14 +856,14 @@ class RenderMesh360(bpy.types.Operator):
                     angle=self.timer_limits,
                     bounding_box=self.bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_scale_factor=context.scene.MeshFrameScaleFactor,
+                    image_scale_factor=context.scene.NMV_MeshFrameScaleFactor,
                     image_name=image_name)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
 
             # Update the progress bar
-            context.scene.NeuronMeshRenderingProgress = int(100 * self.timer_limits / 360.0)
+            context.scene.NMV_NeuronMeshRenderingProgress = int(100 * self.timer_limits / 360.0)
 
             # Upgrade the timer limits
             self.timer_limits += 1
@@ -899,14 +899,14 @@ class RenderMesh360(bpy.types.Operator):
                 nmv.interface.ui_options.io.sequences_directory)
 
         # Compute the bounding box for a close up view
-        if context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+        if context.scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
 
             # Compute the bounding box for a close up view
             rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=context.scene.MeshCloseUpSize)
+                extent=context.scene.NMV_MeshCloseUpSize)
 
         # Compute the bounding box for a mid shot view
-        elif context.scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+        elif context.scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
 
             # Compute the bounding box for the available meshes only
             rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -967,7 +967,7 @@ class ExportMesh(bpy.types.Operator):
     """Export neuron mesh"""
 
     # Operator parameters
-    bl_idname = "export.neuron_mesh"
+    bl_idname = "nmv.export_neuron_mesh"
     bl_label = "Export"
 
     ################################################################################################
@@ -1001,8 +1001,8 @@ class ExportMesh(bpy.types.Operator):
         nmv.file.export_mesh_objects_to_file(mesh_objects,
                                              nmv.interface.ui_options.io.meshes_directory,
                                              nmv.interface.ui_morphology.label,
-                                             context.scene.ExportedMeshFormat,
-                                             context.scene.ExportIndividuals)
+                                             context.scene.NMV_ExportedMeshFormat,
+                                             context.scene.NMV_ExportIndividuals)
 
         return {'FINISHED'}
 

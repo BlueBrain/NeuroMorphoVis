@@ -449,7 +449,7 @@ class RenderMorphologySide(bpy.types.Operator):
     """Render side view of the reconstructed morphology"""
 
     # Operator parameters
-    bl_idname = "render_morphology.side"
+    bl_idname = "nmv.render_morphology_side"
     bl_label = "Side"
 
     ################################################################################################
@@ -478,7 +478,7 @@ class RenderMorphologyTop(bpy.types.Operator):
     """Render top view of the reconstructed morphology"""
 
     # Operator parameters
-    bl_idname = "render_morphology.top"
+    bl_idname = "nmv.render_morphology_top"
     bl_label = "Top"
 
     ################################################################################################
