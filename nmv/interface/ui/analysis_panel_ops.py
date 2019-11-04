@@ -60,11 +60,11 @@ def get_label_from_prefix(prefix):
 ####################################################################################################
 def register_group_checkbox(prefix,
                             description):
-    """For each arbor or neurite in the morphology, there will be a checkbox to show and hide the
-    analysis data group.
+    """For each arbor in the morphology, there will be a checkbox to show and hide the analysis
+    data group.
 
     This feature is added to reduce any clutter if the number of analysis entries are huge.
-    Note that the morphology group will be check by default, in contrast to the arbors.
+    Note that the morphology group will be checked by default, in contrast to the arbors.
 
     :param prefix:
         The prefix 'in string format' that is used to tag or identify the arbor.
@@ -76,6 +76,11 @@ def register_group_checkbox(prefix,
     if 'Morphology' in prefix:
         setattr(bpy.types.Scene, '%s' % prefix,
                 BoolProperty(name='Morphology', description=description, default=True))
+
+    # This one is for the soma
+    elif 'Soma' in prefix:
+        setattr(bpy.types.Scene, '%s' % prefix,
+                BoolProperty(name='Soma', description=description, default=False))
 
     # By default hide the arbors analysis groups (unset their checkboxes)
     else:
@@ -98,27 +103,25 @@ def register_analysis_groups(morphology):
     register_group_checkbox(prefix='Morphology',
                             description='Show the analysis data of the entire morphology')
 
-    # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    # Register the checkbox of the 'Soma' group
+    register_group_checkbox(prefix='Soma', description='Show the analysis data of the soma')
 
-        # Register the group checkbox of the 'Apical Dendrite'
+    # Register the group checkbox of the 'Apical Dendrite', if it exists
+    if morphology.apical_dendrite is not None:
         register_group_checkbox(prefix=morphology.apical_dendrite.get_type_prefix(),
                                 description='Show the analysis data of %s' %
                                             morphology.apical_dendrite.get_type_label())
     # Basal dendrites
     if morphology.dendrites is not None:
 
-        # For each basal dendrite
+        # Register the group checkbox of the 'Basal Dendrite i'
         for i, basal_dendrite in enumerate(morphology.dendrites):
-
-            # Register the group checkbox of the 'Basal Dendrite i'
             register_group_checkbox(prefix='%s%i' % (basal_dendrite.get_type_prefix(), i),
                                     description='Show the analysis data of %s %d' %
                                                 (basal_dendrite.get_type_label(), i))
-    # Axon
-    if morphology.axon is not None:
 
-        # Register the group checkbox of the 'Axon'
+    # Register the group checkbox of the 'Axon', if it exists
+    if morphology.axon is not None:
         register_group_checkbox(prefix=morphology.axon.get_type_prefix(),
                                 description='Show the analysis data of %s' %
                                             morphology.axon.get_type_label())
@@ -152,9 +155,14 @@ def add_analysis_group_to_panel(prefix,
         # Create a sub-column that aligns the analysis data from the original outline
         analysis_area = outline.column(align=True)
 
-        # Update the analysis area with all the filters
-        for item in nmv.analysis.ui_analysis_items:
+        # In case of showing the analysis results of the entire morphology, add the
+        # results of the global analysis before the common ones
+        if 'Morphology' in prefix:
+            for item in nmv.analysis.ui_global_analysis_items:
+                analysis_area.prop(context.scene, '%s' % item.variable)
 
+        # Update the analysis area with all the filters, that are common
+        for item in nmv.analysis.ui_per_arbor_analysis_items:
             analysis_area.prop(context.scene, '%s%s' % (prefix, item.variable))
 
         # Disable editing the analysis area
@@ -225,13 +233,21 @@ def analyze_morphology(morphology,
         # Register the different analysis groups
         register_analysis_groups(morphology=morphology)
 
-        # Register the morphology variables to be able to show and update them on the UI
-        for item in nmv.analysis.ui_analysis_items:
-            item.register_analysis_variables(morphology=morphology)
+        # Register the global morphology variables to be able to show and update them on the UI
+        for item in nmv.analysis.ui_global_analysis_items:
+            item.register_global_analysis_variables(morphology=morphology)
 
-        # Apply the analysis filters and update the results
-        for item in nmv.analysis.ui_analysis_items:
-            item.apply_analysis_kernel(morphology=morphology, context=context)
+        # Register the per-arbor variables to be able to show and update them on the UI
+        for item in nmv.analysis.ui_per_arbor_analysis_items:
+            item.register_per_arbor_analysis_variables(morphology=morphology)
+
+        # Apply the global analysis filters and update the results
+        for item in nmv.analysis.ui_global_analysis_items:
+            item.apply_global_analysis_kernel(morphology=morphology, context=context)
+
+        # Apply the per-arbor analysis filters and update the results
+        for item in nmv.analysis.ui_per_arbor_analysis_items:
+            item.apply_per_arbor_analysis_kernel(morphology=morphology, context=context)
 
         # Morphology is analyzed
         return True
@@ -307,7 +323,7 @@ def export_analysis_results(morphology,
         analysis_results_string += '\t* Axon: 0 \n\n'
 
     # Register the morphology variables to be able to show and update them on the UI
-    for item in nmv.analysis.ui_analysis_items:
+    for item in nmv.analysis.ui_per_arbor_analysis_items:
         analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)
 
     # Write the text to file

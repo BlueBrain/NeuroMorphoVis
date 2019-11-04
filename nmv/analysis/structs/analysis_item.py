@@ -116,15 +116,36 @@ class AnalysisItem:
             pass
 
     ################################################################################################
-    # @register_morphology_variables
+    # @register_global_analysis_variables
     ################################################################################################
-    def register_analysis_variables(self,
-                                    morphology):
-        """Registers each analysis variable in the group.
+    def register_global_analysis_variables(self,
+                                           morphology):
+        """Registers each global analysis variable in the group.
 
         :param morphology:
             A given morphology to analyze.
-        :return:
+        """
+
+        # Float entry
+        if self.data_format == 'FLOAT':
+            setattr(bpy.types.Scene, '%s' % self.variable,
+                    FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
+                                  min=0, max=1e32, precision=5))
+
+        # Int entry
+        elif self.data_format == 'INT':
+            setattr(bpy.types.Scene, '%s' % self.variable,
+                    IntProperty(name=self.name, description=self.description, subtype='FACTOR'))
+
+    ################################################################################################
+    # @register_per_arbor_analysis_variables
+    ################################################################################################
+    def register_per_arbor_analysis_variables(self,
+                                              morphology):
+        """Registers each per-arbor analysis variable in the group.
+
+        :param morphology:
+            A given morphology to analyze.
         """
 
         # Morphology
@@ -305,12 +326,12 @@ class AnalysisItem:
         return results_string
 
     ################################################################################################
-    # @apply_analysis_kernel
+    # @apply_per_arbor_analysis_kernel
     ################################################################################################
-    def apply_analysis_kernel(self,
-                              morphology,
-                              context):
-        """Applies the analysis kernels on the entire morphology.
+    def apply_per_arbor_analysis_kernel(self,
+                                        morphology,
+                                        context):
+        """Applies the analysis kernels 'per-arbor' on the entire morphology.
 
         :param morphology:
             A given morphology to analyze.
@@ -326,6 +347,29 @@ class AnalysisItem:
             # Update the variables
             if context is not None:
                 self.update_analysis_variables(morphology=morphology, context=context)
+
+    ################################################################################################
+    # @apply_global_analysis_kernel
+    ################################################################################################
+    def apply_global_analysis_kernel(self,
+                                     morphology,
+                                     context):
+        """Applies the global analysis kernels and updates the results.
+
+        :param morphology:
+            A given morphology to analyze.
+        :param context:
+            Blender context for the results to appear in the user interface.
+        """
+
+        if self.kernel is not None:
+
+            # Get the result from applying the kernel on the entire morphology skeleton
+            self.result = self.kernel(morphology)
+
+            # Update the variables
+            if context is not None:
+                setattr(context.scene, '%s' % self.variable, self.result)
 
     ################################################################################################
     # @write_analysis_results_to_string

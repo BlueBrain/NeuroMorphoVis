@@ -70,7 +70,7 @@ class AnalysisPanel(bpy.types.Panel):
         analyze_morphology_column.operator('nmv.analyze_morphology', icon='MESH_DATA')
 
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
-        # components based on its neurites count
+        # components based on its arbors count
         if context.scene.NMV_MorphologyAnalyzed:
 
             # If the morphology is analyzed, then add the results to the analysis panel
@@ -100,12 +100,12 @@ class AnalyzeMorphology(bpy.types.Operator):
     ################################################################################################
     def execute(self,
                 context):
-        """Execute the operator.
+        """Executes the operator.
 
         :param context:
-            Blender context
+            Blender context.
         :return:
-            'FINISHED'
+            'FINISHED'.
         """
 
         # Load the morphology file
@@ -116,18 +116,11 @@ class AnalyzeMorphology(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
-        # Plot the morphology (whatever issues it contains)
-        nmv.interface.ui.sketch_morphology_skeleton_guide(
-            morphology=nmv.interface.ui_morphology,
-            options=copy.deepcopy(nmv.interface.ui_options))
-
         # Register the analysis components, apply the kernel functions and update the UI
         context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
 
-        # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
-
+        # Operator done
         return {'FINISHED'}
 
 

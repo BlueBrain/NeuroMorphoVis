@@ -214,7 +214,7 @@ class LoadMorphology(bpy.types.Operator):
         # Report the morphology loading time
         end_time = time.time()
         context.scene.NMV_MorphologyLoadingTime = end_time - start_time
-        nmv.logger.info('Morphology drawn in [%f] seconds' %
+        nmv.logger.info('Morphology loaded in [%f] seconds' %
                         context.scene.NMV_MorphologyLoadingTime)
 
         # Switch to the orthographic mode

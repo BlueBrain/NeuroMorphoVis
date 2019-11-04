@@ -21,9 +21,9 @@ from nmv.analysis.kernels.morphology import *
 
 
 ####################################################################################################
-# A list of all the analysis items (or kernels) that will applied on the morphology skeleton
+# A list of all the analysis items (kernels) that will applied on the morphology skeleton per arbor
 ####################################################################################################
-ui_analysis_items = [
+ui_per_arbor_analysis_items = [
 
     ################################################################################################
     # Samples-related items
@@ -206,6 +206,38 @@ ui_analysis_items = [
 ]
 
 
+####################################################################################################
+# Global analysis items, only applied on a global level not per-arbor level
+####################################################################################################
+ui_global_analysis_items = [
+
+    ################################################################################################
+    # Arborization items
+    ################################################################################################
+    AnalysisItem(variable='NumberApicalDendrites',
+                 name='# Apical Dendrites',
+                 kernel=kernel_global_number_apical_dendrites,
+                 description='The total number of apical dendrites in the morphology',
+                 data_format='INT'),
+
+    AnalysisItem(variable='NumberBasalDendrites',
+                 name='# Basal Dendrites',
+                 kernel=kernel_global_number_basal_dendrites,
+                 description='The total number of basal dendrites in the morphology',
+                 data_format='INT'),
+
+    AnalysisItem(variable='NumberAxons',
+                 name='# Axons',
+                 kernel=kernel_global_number_axons,
+                 description='The total number of axons in the morphology',
+                 data_format='INT'),
+
+    AnalysisItem(variable='NumberNeurites',
+                 name='Total # Neurites',
+                 kernel=kernel_global_total_number_neurites,
+                 description='The total number of all the neurites in the morphology',
+                 data_format='INT'),
+]
 
 
 
