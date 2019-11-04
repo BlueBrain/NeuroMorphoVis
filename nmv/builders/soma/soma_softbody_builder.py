@@ -34,9 +34,9 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @SomaBuilder
+# @SomaSoftBodyBuilder
 ####################################################################################################
-class SomaBuilder:
+class SomaSoftBodyBuilder:
     """A robust factory for reconstructing a three-dimensional profile of neuronal somata on a
     physically-plausible basis using soft body objects, Hooke's law and the physics engine of
     Blender.

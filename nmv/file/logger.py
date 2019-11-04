@@ -133,7 +133,6 @@ class Logger:
         self.line()
         log_string = ''.join(map(str, args))
         self.log('    * %s' % log_string)
-        self.line()
 
     ################################################################################################
     # @info

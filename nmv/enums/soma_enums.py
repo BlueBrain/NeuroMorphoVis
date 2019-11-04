@@ -77,20 +77,67 @@ class Soma:
                 return Soma.Representation.REALISTIC
 
     ################################################################################################
+    # @Profile
+    ################################################################################################
+    class Profile:
+        """Profile enumerators
+        """
+
+        # Use the profile points only
+        PROFILE_POINTS_ONLY = 'SOMA_PROFILE_BASED_ON_PROFILE_POINTS_ONLY'
+
+        # Use the arbors
+        ARBORS_ONLY = 'SOMA_PROFILE_BASED_ON_ARBORS_ONLY'
+
+        # Use the arbors and the profile points
+        COMBINED = 'SOMA_PROFILE_BASED_ON_ARBORS_AND_PROFILE_POINTS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+            """Gets the enumerator from the argument directly.
+
+            :param argument:
+                Soma profile argument.
+            :return:
+                Soma reconstruction method enumerator.
+            """
+
+            # Arbors only
+            if argument == 'arbors':
+                return Soma.Profile.ARBORS_ONLY
+
+            # Profile points only
+            elif argument == 'profile':
+                return Soma.Profile.PROFILE_POINTS_ONLY
+
+            elif argument == 'combined':
+                return Soma.Profile.COMBINED
+
+            # Arbors only by default
+            else:
+                return Soma.Profile.ARBORS_ONLY
+
+    ################################################################################################
     # @ReconstructionMethod
     ################################################################################################
     class ReconstructionMethod:
         """Soma reconstruction method enumerators
         """
 
-        # Use the profile points only
-        PROFILE_POINTS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_PROFILE_POINTS_ONLY'
+        # Use soft body physics
+        SOFT_BODY_PHYSICS = 'SOMA_RECONSTRUCTION_METHOD_SOFT_BODY_PHYSICS'
 
-        # Use the arbors
-        ARBORS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_ONLY'
-
-        # Use the arbors and the profile points
-        COMBINED = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_AND_PROFILE_POINTS'
+        # Use meta balls
+        META_BALLS = 'SOMA_RECONSTRUCTION_METHOD_META_BALLS'
 
         ############################################################################################
         # @__init__
@@ -112,17 +159,14 @@ class Soma:
             """
 
             # Arbors only
-            if argument == 'arbors':
-                return Soma.ReconstructionMethod.ARBORS_ONLY
+            if argument == 'softbody':
+                return Soma.ReconstructionMethod.SOFT_BODY_PHYSICS
 
             # Profile points only
-            elif argument == 'profile':
-                return Soma.ReconstructionMethod.PROFILE_POINTS_ONLY
+            elif argument == 'metaballs':
+                return Soma.ReconstructionMethod.META_BALLS
 
-            elif argument == 'combined':
-                return Soma.ReconstructionMethod.COMBINED
-
-            # Arbors only by default
+            # MetaBalls only by default
             else:
-                return Soma.ReconstructionMethod.ARBORS_ONLY
+                return Soma.ReconstructionMethod.META_BALLS
 

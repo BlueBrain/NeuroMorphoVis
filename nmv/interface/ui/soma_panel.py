@@ -18,11 +18,6 @@
 # Blender imports
 import bpy
 from mathutils import Vector
-from bpy.props import IntProperty
-from bpy.props import BoolProperty
-from bpy.props import FloatProperty
-from bpy.props import EnumProperty
-from bpy.props import FloatVectorProperty
 
 # Internal modules
 import nmv
@@ -68,32 +63,48 @@ class SomaPanel(bpy.types.Panel):
         layout = self.layout
 
         reconstruction_method_row = layout.row()
-        reconstruction_method_row.label(text='Method:')
-        reconstruction_method_row.prop(context.scene, 'NMV_SomaReconstructionMethod', expand=True)
+        reconstruction_method_row.prop(context.scene, 'NMV_SomaReconstructionMethod')
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.soma.method = context.scene.NMV_SomaReconstructionMethod
+        if context.scene.NMV_SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.META_BALLS:
 
-        # Soft body options
-        soft_body_params_row = layout.row()
-        soft_body_params_row.label(text='Soft Body Parameters:', icon='GROUP_UVS')
+            reconstruction_method_row = layout.row()
+            reconstruction_method_row.prop(context.scene, 'NMV_SomaMetaBallResolution')
+            nmv.interface.ui_options.soma.meta_ball_resolution = \
+                context.scene.NMV_SomaMetaBallResolution
 
-        # Soft body stiffness option
-        stiffness_row = layout.row()
-        stiffness_row.prop(context.scene, 'NMV_Stiffness')
+        elif context.scene.NMV_SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.soma.stiffness = context.scene.NMV_Stiffness
+            reconstruction_method_row = layout.row()
+            reconstruction_method_row.prop(context.scene, 'NMV_SomaProfile')
 
-        # Ico-sphere subdivision level option
-        subdivision_level_row = layout.row()
-        subdivision_level_row.prop(context.scene, 'NMV_SubdivisionLevel')
-        irregular_subdivisions_row = layout.row()
-        irregular_subdivisions_row.prop(context.scene, 'NMV_IrregularSubdivisions')
+            # Pass options from UI to system
+            nmv.interface.ui_options.soma.method = context.scene.NMV_SomaProfile
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.soma.subdivision_level = context.scene.NMV_SubdivisionLevel
-        nmv.interface.ui_options.soma.irregular_subdivisions = context.scene.NMV_IrregularSubdivisions
+            # Soft body options
+            soft_body_params_row = layout.row()
+            soft_body_params_row.label(text='Soft Body Parameters:', icon='GROUP_UVS')
+
+            # Soft body stiffness option
+            stiffness_row = layout.row()
+            stiffness_row.prop(context.scene, 'NMV_Stiffness')
+
+            # Pass options from UI to system
+            nmv.interface.ui_options.soma.stiffness = context.scene.NMV_Stiffness
+
+            # Ico-sphere subdivision level option
+            subdivision_level_row = layout.row()
+            subdivision_level_row.prop(context.scene, 'NMV_SubdivisionLevel')
+            irregular_subdivisions_row = layout.row()
+            irregular_subdivisions_row.prop(context.scene, 'NMV_IrregularSubdivisions')
+
+            # Pass options from UI to system
+            nmv.interface.ui_options.soma.subdivision_level = context.scene.NMV_SubdivisionLevel
+            nmv.interface.ui_options.soma.irregular_subdivisions = context.scene.NMV_IrregularSubdivisions
+
+        else:
+            pass
 
         # Color options
         colors_row = layout.row()
@@ -123,10 +134,14 @@ class SomaPanel(bpy.types.Panel):
         soma_reconstruction_buttons_row = layout.row(align=True)
         soma_reconstruction_buttons_row.operator('nmv.reconstruct_soma', icon='FORCE_LENNARDJONES')
 
-        # Soma simulation progress bar
-        soma_simulation_progress_row = layout.row()
-        soma_simulation_progress_row.prop(context.scene, 'NMV_SomaSimulationProgress')
-        soma_simulation_progress_row.enabled = False
+        # Progress
+        if context.scene.NMV_SomaReconstructionMethod == \
+                nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
+
+            # Soma simulation progress bar
+            soma_simulation_progress_row = layout.row()
+            soma_simulation_progress_row.prop(context.scene, 'NMV_SomaSimulationProgress')
+            soma_simulation_progress_row.enabled = False
 
         # Soma rendering options
         quick_rendering_row = layout.row()
@@ -243,7 +258,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
     event_timer = None
     timer_limits = bpy.props.IntProperty(default=0)
 
-    meshy_soma_builder = None
+    soma_builder = None
     soma_sphere_object = None
     min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
     max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
@@ -318,36 +333,49 @@ class ReconstructSomaOperator(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
-        # Create a some builder
-        self.meshy_soma_builder = nmv.builders.SomaBuilder(
-            nmv.interface.ui_morphology, nmv.interface.ui_options)
-
-        # Build the basic profile of the some from the soft body operation, but don't run the
-        # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
         if bpy.context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY:
-            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body()
-        elif bpy.context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY:
-            self.soma_sphere_object = \
-                self.meshy_soma_builder.build_soma_based_on_profile_points_only()
-        elif bpy.context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.COMBINED:
-            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body(
-                use_profile_points=True)
+            nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+
+            # Create a some builder
+            self.soma_builder = nmv.builders.SomaMetaBuilder(
+                nmv.interface.ui_morphology, nmv.interface.ui_options)
+
+            # Reconstruct the soma in a single step
+            self.soma_builder.reconstruct_soma_mesh()
+            return {'FINISHED'}
+
         else:
-            self.soma_sphere_object = self.meshy_soma_builder.build_soma_soft_body()
 
-        # Use the event timer to update the UI during the soma building
-        wm = context.window_manager
-        self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
-        wm.modal_handler_add(self)
+            # Create a some builder
+            self.soma_builder = nmv.builders.SomaSoftBodyBuilder(
+                nmv.interface.ui_morphology, nmv.interface.ui_options)
 
-        # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
+            # Build the basic profile of the some from the soft body operation, but don't run the
+            # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
+            if bpy.context.scene.NMV_SomaProfile == \
+                    nmv.enums.Soma.Profile.ARBORS_ONLY:
+                self.soma_sphere_object = self.soma_builder.build_soma_soft_body()
+            elif bpy.context.scene.NMV_SomaProfile == \
+                    nmv.enums.Soma.Profile.PROFILE_POINTS_ONLY:
+                self.soma_sphere_object = \
+                    self.soma_builder.build_soma_based_on_profile_points_only()
+            elif bpy.context.scene.NMV_SomaProfile == \
+                    nmv.enums.Soma.Profile.COMBINED:
+                self.soma_sphere_object = self.soma_builder.build_soma_soft_body(
+                    use_profile_points=True)
+            else:
+                self.soma_sphere_object = self.soma_builder.build_soma_soft_body()
 
-        # Done
-        return {'RUNNING_MODAL'}
+            # Use the event timer to update the UI during the soma building
+            wm = context.window_manager
+            self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
+            wm.modal_handler_add(self)
+
+            # View all the objects in the scene
+            nmv.scene.ops.view_all_scene()
+
+            # Done
+            return {'RUNNING_MODAL'}
 
     ################################################################################################
     # @cancel
@@ -364,7 +392,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
         wm.event_timer_remove(self.event_timer)
 
         # Build the mesh from the soft body object
-        self.soma_sphere_object = self.meshy_soma_builder.build_soma_mesh_from_soft_body_object(
+        self.soma_sphere_object = self.soma_builder.build_soma_mesh_from_soft_body_object(
             self.soma_sphere_object)
 
         # Keep a reference to the mesh object in case we need to save or texture it
@@ -374,8 +402,8 @@ class ReconstructSomaOperator(bpy.types.Operator):
         nmv.utilities.show_progress(
             'Simulation', self.timer_limits, self.max_simulation_limit, done=True)
 
-        if bpy.context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.PROFILE_POINTS_ONLY:
+        if bpy.context.scene.NMV_SomaProfile == \
+                nmv.enums.Soma.Profile.PROFILE_POINTS_ONLY:
 
             # Decimate the mesh using 25%
             nmv.logger.info('Decimation')
@@ -696,7 +724,7 @@ class RenderSomaProgressive(bpy.types.Operator):
     morphology_object = None
 
     # Meshy soma builder parameters
-    soma_builder = None
+    soma_softbody_builder = None
     soma_sphere_object = None
     min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
     max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
@@ -807,7 +835,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create a some builder object
-        self.soma_builder = nmv.builders.SomaBuilder(
+        self.soma_softbody_builder = nmv.builders.SomaSoftBodyBuilder(
             nmv.interface.ui_morphology, nmv.interface.ui_options)
 
         # Build the basic profile of the some from the soft body operation, but don't run the

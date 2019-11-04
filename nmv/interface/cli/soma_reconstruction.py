@@ -79,7 +79,7 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
     nmv.scene.ops.clear_scene()
 
     # Create a soma builder object
-    soma_builder = nmv.builders.SomaBuilder(cli_morphology, cli_options)
+    soma_softbody_builder = nmv.builders.SomaSoftBodyBuilder(cli_morphology, cli_options)
 
     # Reconstruct the three-dimensional profile of the soma mesh
     soma_mesh = soma_builder.reconstruct_soma_mesh()

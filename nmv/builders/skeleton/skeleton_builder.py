@@ -1324,7 +1324,7 @@ class SkeletonBuilder:
         elif self.options.morphology.soma_representation == nmv.enums.Soma.Representation.REALISTIC:
 
             # Create a soma builder object
-            soma_builder_object = nmv.builders.SomaBuilder(self.morphology, self.options)
+            soma_builder_object = nmv.builders.SomaSoftBodyBuilder(self.morphology, self.options)
 
             # Reconstruct the three-dimensional profile of the soma mesh without applying the
             # default shader to it,
@@ -1339,6 +1339,13 @@ class SkeletonBuilder:
 
         # Otherwise, ignore the soma drawing
         else:
+
+            soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
+
+            soma_builder_object.reconstruct_soma_mesh()
+
+
+
             nmv.logger.log('Ignoring soma representation')
 
         # Transform the arbors to the global coordinates if required for a circuit

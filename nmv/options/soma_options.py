@@ -33,7 +33,10 @@ class SomaOptions:
         """
 
         # Reconstruction method
-        self.method = nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY
+        self.method = nmv.enums.Soma.ReconstructionMethod.META_BALLS
+
+        # Meta ball resolution in case of using the MetaBall generation approach
+        self.meta_ball_resolution = 0.1
 
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT
