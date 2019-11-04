@@ -69,7 +69,7 @@ class MorphologyPanel(bpy.types.Panel):
                 'SoftBody',
                 'Reconstruct a 3D profile of the soma using Soft Body physics.'
                 'This method takes few seconds to reconstruct a soma mesh')],
-        name='Soma',
+        name='',
         default=nmv.enums.Soma.Representation.META_BALLS)
 
     # Build axon

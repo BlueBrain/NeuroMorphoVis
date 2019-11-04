@@ -63,6 +63,12 @@ bpy.types.Scene.NMV_Gid = bpy.props.StringProperty(
     description="Select a specific GID in the circuit",
     default="Add a GID", maxlen=1024)
 
+# Loading time
+bpy.types.Scene.NMV_MorphologyLoadingTime = bpy.props.FloatProperty(
+    name="Loading Morphology (Sec)",
+    description="The time it takes to load the morphology from file and draw it to the viewport",
+    default=0, min=0, max=1000000)
+
 # Output directory
 bpy.types.Scene.NMV_OutputDirectory = bpy.props.StringProperty(
     name="Output Directory",

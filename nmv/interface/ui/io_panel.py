@@ -18,6 +18,7 @@
 # System imports
 import copy
 import os
+import time
 
 # Blender imports
 import bpy
@@ -91,6 +92,15 @@ class IOPanel(bpy.types.Panel):
         import_button = layout.column()
         import_button.operator('nmv.load_morphology', icon='ANIM_DATA')
         import_button.separator()
+
+        # Stats
+        if nmv.interface.ui_morphology is not None:
+            morphology_stats_row = layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+
+            loading_time_row = layout.row()
+            loading_time_row.prop(scene, 'NMV_MorphologyLoadingTime')
+            loading_time_row.enabled = False
 
         # Output options
         output_data_options_row = layout.row()
@@ -174,7 +184,6 @@ class LoadMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
-
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
@@ -183,6 +192,9 @@ class LoadMorphology(bpy.types.Operator):
         logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
         logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
         logo_tex.extension = 'CLIP'
+
+        # Morphology loading time
+        start_time = time.time()
 
         # Load the morphology file
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)
@@ -198,6 +210,12 @@ class LoadMorphology(bpy.types.Operator):
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))
+
+        # Report the morphology loading time
+        end_time = time.time()
+        context.scene.NMV_MorphologyLoadingTime = end_time - start_time
+        nmv.logger.info('Morphology drawn in [%f] seconds' %
+                        context.scene.NMV_MorphologyLoadingTime)
 
         # Switch to the orthographic mode
         # bpy.ops.view3d.view_persportho()
