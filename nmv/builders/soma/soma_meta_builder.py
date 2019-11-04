@@ -103,9 +103,6 @@ class SomaMetaBuilder:
         # Create a new meta object that reflects the reconstructed mesh at the end of the operation
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
 
-        # Get a reference to the scene
-        scene = bpy.context.scene
-
         # Link the meta object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
 
@@ -131,7 +128,7 @@ class SomaMetaBuilder:
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
-        self.meta_mesh = bpy.context.scene.objects[self.morphology.label]
+        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma']
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
@@ -139,7 +136,11 @@ class SomaMetaBuilder:
         # Convert it to a mesh from meta-balls
         bpy.ops.object.convert(target='MESH')
 
-        self.meta_mesh = bpy.context.scene.objects[0]
+        # Deselect all objects
+        nmv.scene.deselect_all()
+
+        # Select the soma object
+        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma.001']
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
@@ -346,7 +347,7 @@ class SomaMetaBuilder:
         """
 
         # Initialize the MetaObject before emanating towards the branches
-        self.initialize_meta_object(name=self.morphology.label)
+        self.initialize_meta_object(name=self.morphology.label + '_soma')
 
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()
@@ -355,6 +356,10 @@ class SomaMetaBuilder:
         self.finalize_meta_object()
 
         # Assign the material to the reconstructed mesh
-        self.assign_material_to_mesh()
+        if apply_shader:
+            self.assign_material_to_mesh()
+
+        # Return a reference to the reconstructed mesh
+        return self.meta_mesh
 
 

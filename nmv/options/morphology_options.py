@@ -59,8 +59,8 @@ class MorphologyOptions:
         # Morphology label (based on the GID or the morphology file name)
         self.label = None
 
-        # Soma reconstruction technique (IGNORE, SPHERE, or REALISTIC by default)
-        self.soma_representation = nmv.enums.Soma.Representation.REALISTIC
+        # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
+        self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeletonization.Branching.ANGLES

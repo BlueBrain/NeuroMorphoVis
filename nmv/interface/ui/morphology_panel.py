@@ -60,11 +60,17 @@ class MorphologyPanel(bpy.types.Panel):
                (nmv.enums.Soma.Representation.SPHERE,
                 'Sphere',
                 'Represent the soma by a sphere'),
-               (nmv.enums.Soma.Representation.REALISTIC,
-                'Profile',
-                'Reconstruct a 3D profile of the soma')],
+               (nmv.enums.Soma.Representation.META_BALLS,
+                'MetaBalls',
+                'Reconstruct a rough shape of the soma using MetaBalls. '
+                'This approach is real-time and can reconstruct good shapes for the somata, but '
+                'more accurate profiles could be reconstructed with the Soft Body option'),
+               (nmv.enums.Soma.Representation.SOFT_BODY,
+                'SoftBody',
+                'Reconstruct a 3D profile of the soma using Soft Body physics.'
+                'This method takes few seconds to reconstruct a soma mesh')],
         name='Soma',
-        default=nmv.enums.Soma.Representation.SPHERE)
+        default=nmv.enums.Soma.Representation.META_BALLS)
 
     # Build axon
     bpy.types.Scene.NMV_BuildAxon = bpy.props.BoolProperty(

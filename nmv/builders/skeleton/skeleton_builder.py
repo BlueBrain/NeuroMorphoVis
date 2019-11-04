@@ -1321,7 +1321,7 @@ class SkeletonBuilder:
             morphology_objects.append(soma_sphere)
 
         # Or as a reconstructed profile using the soma builder
-        elif self.options.morphology.soma_representation == nmv.enums.Soma.Representation.REALISTIC:
+        elif self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SOFT_BODY:
 
             # Create a soma builder object
             soma_builder_object = nmv.builders.SomaSoftBodyBuilder(self.morphology, self.options)
@@ -1337,15 +1337,24 @@ class SkeletonBuilder:
             # Add the soma mesh to the morphology objects
             morphology_objects.append(soma_mesh)
 
-        # Otherwise, ignore the soma drawing
-        else:
+        elif self.options.morphology.soma_representation == \
+                nmv.enums.Soma.Representation.META_BALLS:
 
+            # Create the MetaBuilder
             soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
 
-            soma_builder_object.reconstruct_soma_mesh()
+            # Reconstruct the soma, don't apply the default shader and use the one from the
+            # morphology panel
+            soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 
+            # Apply the shader given in the morphology options, not the one in the soma toolbox
+            nmv.shading.set_material_to_object(soma_mesh, self.soma_materials[0])
 
+            # Add the soma mesh to the morphology objects
+            morphology_objects.append(soma_mesh)
 
+        # Otherwise, ignore the soma drawing
+        else:
             nmv.logger.log('Ignoring soma representation')
 
         # Transform the arbors to the global coordinates if required for a circuit

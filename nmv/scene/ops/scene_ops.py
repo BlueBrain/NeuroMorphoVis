@@ -292,6 +292,21 @@ def select_object_by_name(object_name):
 
 
 ####################################################################################################
+# @select_object_containing_string
+####################################################################################################
+def select_object_containing_string(search_string):
+    """Select an object in the scene given part of its name.
+
+    :param search_string:
+        The name of first object that contains part of the given string.
+    """
+
+    # Set the '.select' flag of the object to True
+    for scene_object in bpy.context.scene.objects:
+        if search_string in scene_object.name:
+            select_object(scene_object)
+
+####################################################################################################
 # @deselect_object_by_name
 ####################################################################################################
 def deselect_object_by_name(object_name):

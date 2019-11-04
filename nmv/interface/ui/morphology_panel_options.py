@@ -47,7 +47,7 @@ def set_skeleton_options(layout,
     # Build soma options
     build_soma_row = layout.row()
     build_soma_row.label(text='Soma:')
-    build_soma_row.prop(scene, 'NMV_BuildSoma', expand=True)
+    build_soma_row.prop(scene, 'NMV_BuildSoma')
 
     # Pass options from UI to system
     options.morphology.soma_representation = scene.NMV_BuildSoma
