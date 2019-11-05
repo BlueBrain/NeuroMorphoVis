@@ -334,7 +334,8 @@ class ReconstructSomaOperator(bpy.types.Operator):
                 'Simulation', self.timer_limits, context.scene.NMV_SimulationSteps)
 
             # Update the progress bar
-            context.scene.NMV_SomaSimulationProgress = self.timer_limits
+            context.scene.NMV_SomaSimulationProgress = \
+                int(100.0 * self.timer_limits / context.scene.NMV_SimulationSteps)
 
             # Upgrade the timer limits
             self.timer_limits += 1
