@@ -65,55 +65,51 @@ class SomaPanel(bpy.types.Panel):
             Panel context.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Get a reference to the panel layout
         layout = self.layout
 
+        # Get a reference to the soma options
+        soma_options = nmv.interface.ui_options.soma
+
         reconstruction_method_row = layout.row()
-        reconstruction_method_row.prop(context.scene, 'NMV_SomaReconstructionMethod')
+        reconstruction_method_row.prop(scene, 'NMV_SomaReconstructionMethod')
 
-        if context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.META_BALLS:
-
+        if scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.ReconstructionMethod.META_BALLS:
             reconstruction_method_row = layout.row()
-            reconstruction_method_row.prop(context.scene, 'NMV_SomaMetaBallResolution')
-            nmv.interface.ui_options.soma.meta_ball_resolution = \
-                context.scene.NMV_SomaMetaBallResolution
+            reconstruction_method_row.prop(scene, 'NMV_SomaMetaBallResolution')
+            soma_options.meta_ball_resolution = scene.NMV_SomaMetaBallResolution
 
-        elif context.scene.NMV_SomaReconstructionMethod == \
+        elif scene.NMV_SomaReconstructionMethod == \
                 nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
 
             reconstruction_method_row = layout.row()
-            reconstruction_method_row.prop(context.scene, 'NMV_SomaProfile')
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.soma.method = context.scene.NMV_SomaProfile
+            reconstruction_method_row.prop(scene, 'NMV_SomaProfile')
+            soma_options.method = scene.NMV_SomaProfile
 
             # Soft body options
             soft_body_params_row = layout.row()
             soft_body_params_row.label(text='Soft Body Parameters:', icon='GROUP_UVS')
 
+            # Simulation steps
+            simulation_steps_row = layout.row()
+            simulation_steps_row.prop(scene, 'NMV_SimulationSteps')
+            soma_options.simulation_steps = scene.NMV_SimulationSteps
+
             # Soft body stiffness option
             stiffness_row = layout.row()
-            stiffness_row.prop(context.scene, 'NMV_Stiffness')
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.soma.stiffness = context.scene.NMV_Stiffness
+            stiffness_row.prop(scene, 'NMV_Stiffness')
+            soma_options.stiffness = scene.NMV_Stiffness
 
             # Ico-sphere subdivision level option
             subdivision_level_row = layout.row()
-            subdivision_level_row.prop(context.scene, 'NMV_SubdivisionLevel')
+            subdivision_level_row.prop(scene, 'NMV_SubdivisionLevel')
             irregular_subdivisions_row = layout.row()
-            irregular_subdivisions_row.prop(context.scene, 'NMV_IrregularSubdivisions')
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.soma.subdivision_level = context.scene.NMV_SubdivisionLevel
-            nmv.interface.ui_options.soma.irregular_subdivisions = \
-                context.scene.NMV_IrregularSubdivisions
-
-            # Simulation steps
-            simulation_steps_row = layout.row()
-            simulation_steps_row.prop(context.scene, 'NMV_SimulationSteps')
-            nmv.interface.ui_options.soma.simulation_steps = context.scene.NMV_SimulationSteps
+            irregular_subdivisions_row.prop(scene, 'NMV_IrregularSubdivisions')
+            soma_options.subdivision_level = scene.NMV_SubdivisionLevel
+            soma_options.irregular_subdivisions = scene.NMV_IrregularSubdivisions
 
         else:
             pass
@@ -124,19 +120,17 @@ class SomaPanel(bpy.types.Panel):
 
         # Soma color
         soma_base_color_row = layout.row()
-        soma_base_color_row.prop(context.scene, 'NMV_SomaBaseColor')
+        soma_base_color_row.prop(scene, 'NMV_SomaBaseColor')
 
         # Pass options from UI to system
-        color = context.scene.NMV_SomaBaseColor
+        color = scene.NMV_SomaBaseColor
         soma_base_color_value = Vector((color.r, color.g, color.b))
-        nmv.interface.ui_options.soma.soma_color = soma_base_color_value
+        soma_options.soma_color = soma_base_color_value
 
         # Soma material option
         soma_material_row = layout.row()
-        soma_material_row.prop(context.scene, 'NMV_SomaMaterial')
-
-        # Pass options from UI to system
-        nmv.interface.ui_options.soma.soma_material = context.scene.NMV_SomaMaterial
+        soma_material_row.prop(scene, 'NMV_SomaMaterial')
+        soma_options.soma_material = scene.NMV_SomaMaterial
 
         # Soma reconstruction options
         soma_reconstruction_row = layout.row()
@@ -147,12 +141,12 @@ class SomaPanel(bpy.types.Panel):
         soma_reconstruction_buttons_row.operator('nmv.reconstruct_soma', icon='FORCE_LENNARDJONES')
 
         # Progress
-        if context.scene.NMV_SomaReconstructionMethod == \
+        if scene.NMV_SomaReconstructionMethod == \
                 nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
 
             # Soma simulation progress bar
             soma_simulation_progress_row = layout.row()
-            soma_simulation_progress_row.prop(context.scene, 'NMV_SomaSimulationProgress')
+            soma_simulation_progress_row.prop(scene, 'NMV_SomaSimulationProgress')
             soma_simulation_progress_row.enabled = False
 
         # Report the stats
@@ -162,7 +156,7 @@ class SomaPanel(bpy.types.Panel):
             soma_stats_row.label(text='Stats:', icon='RECOVER_LAST')
 
             reconstruction_time_row = layout.row()
-            reconstruction_time_row.prop(context.scene, 'NMV_SomaReconstructionTime')
+            reconstruction_time_row.prop(scene, 'NMV_SomaReconstructionTime')
             reconstruction_time_row.enabled = False
 
         # Soma rendering options
@@ -172,17 +166,17 @@ class SomaPanel(bpy.types.Panel):
         # Soma frame resolution option
         frame_resolution_row = layout.row()
         frame_resolution_row.label(text='Frame Resolution:')
-        frame_resolution_row.prop(context.scene, 'NMV_SomaFrameResolution')
+        frame_resolution_row.prop(scene, 'NMV_SomaFrameResolution')
 
         # Soma view dimensions in micron option
         view_dimensions_row = layout.row()
         view_dimensions_row.label(text='View Dimensions:')
-        view_dimensions_row.prop(context.scene, 'NMV_ViewDimensions')
+        view_dimensions_row.prop(scene, 'NMV_ViewDimensions')
         view_dimensions_row.enabled = False
 
         # Soma view dimensions in micron option
         keep_cameras_row = layout.row()
-        keep_cameras_row.prop(context.scene, 'NMV_KeepSomaCameras')
+        keep_cameras_row.prop(scene, 'NMV_KeepSomaCameras')
         keep_cameras_row.enabled = False
 
         # Render view buttons
@@ -203,7 +197,7 @@ class SomaPanel(bpy.types.Panel):
 
         # Soma rendering progress bar
         soma_rendering_progress_row = layout.row()
-        soma_rendering_progress_row.prop(context.scene, 'NMV_SomaRenderingProgress')
+        soma_rendering_progress_row.prop(scene, 'NMV_SomaRenderingProgress')
         soma_rendering_progress_row.enabled = False
 
         # Saving somata parameters
@@ -229,10 +223,8 @@ class SomaPanel(bpy.types.Panel):
             # Get the soma mesh name
             reconstructed_soma_mesh_name = nmv.interface.ui_options.morphology.label + '_soma'
 
-            # Does the soma mesh exist in the scene
+            # Does the soma mesh exist in the scene, then activate the buttons
             if nmv.scene.ops.is_object_in_scene_by_name(reconstructed_soma_mesh_name):
-
-                # Activate the buttons
                 save_soma_mesh_buttons_column.enabled = True
                 view_dimensions_row.enabled = True
                 keep_cameras_row.enabled = True
@@ -240,10 +232,8 @@ class SomaPanel(bpy.types.Panel):
                 render_view_buttons_row.enabled = True
                 render_animations_buttons_row.enabled = True
 
-            # The soma mesh is not in the scene
+            # The soma mesh is not in the scene, then deactivate the buttons
             else:
-
-                # Deactivate the buttons
                 save_soma_mesh_buttons_column.enabled = False
                 view_dimensions_row.enabled = False
                 keep_cameras_row.enabled = False
@@ -251,10 +241,8 @@ class SomaPanel(bpy.types.Panel):
                 render_view_buttons_row.enabled = False
                 render_animations_buttons_row.enabled = False
 
-        # No morphology is loaded
+        # No morphology is loaded, then deactivate the buttons
         else:
-
-            # Deactivate the buttons
             save_soma_mesh_buttons_column.enabled = False
             view_dimensions_row.enabled = False
             keep_cameras_row.enabled = False
@@ -301,18 +289,21 @@ class ReconstructSomaOperator(bpy.types.Operator):
             A given event for the panel.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or \
-                self.timer_limits > context.scene.NMV_SimulationSteps:
+                self.timer_limits > scene.NMV_SimulationSteps:
 
             # Set the reconstruction flag to on
             global is_soma_reconstructed
             is_soma_reconstructed = True
 
             # Get the reconstruction time to update the UI
-            context.scene.NMV_SomaReconstructionTime = time.time() - self.reconstruction_time
+            scene.NMV_SomaReconstructionTime = time.time() - self.reconstruction_time
             nmv.logger.info('Soma reconstructed in [%f] seconds' %
-                            context.scene.NMV_MorphologyLoadingTime)
+                            scene.NMV_MorphologyLoadingTime)
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -331,11 +322,11 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Update the progress shell
             nmv.utilities.show_progress(
-                'Simulation', self.timer_limits, context.scene.NMV_SimulationSteps)
+                'Simulation', self.timer_limits, scene.NMV_SimulationSteps)
 
             # Update the progress bar
-            context.scene.NMV_SomaSimulationProgress = \
-                int(100.0 * self.timer_limits / context.scene.NMV_SimulationSteps)
+            scene.NMV_SomaSimulationProgress = \
+                int(100.0 * self.timer_limits / scene.NMV_SimulationSteps)
 
             # Upgrade the timer limits
             self.timer_limits += 1
@@ -357,11 +348,14 @@ class ReconstructSomaOperator(bpy.types.Operator):
             Panel context.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
         # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+        loading_result = nmv.interface.ui.load_morphology(self, scene)
 
         # If the result is None, report the issue
         if loading_result is None:
@@ -384,9 +378,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Get the reconstruction time to update the UI
             self.reconstruction_time = time.time() - self.reconstruction_time
-            context.scene.NMV_SomaReconstructionTime = self.reconstruction_time
+            scene.NMV_SomaReconstructionTime = self.reconstruction_time
             nmv.logger.info('Soma reconstructed in [%f] seconds' %
-                            context.scene.NMV_MorphologyLoadingTime)
+                            scene.NMV_MorphologyLoadingTime)
 
             # Set the reconstruction flag to on
             global is_soma_reconstructed
@@ -440,6 +434,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
             Panel context.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Multi-threading
         wm = context.window_manager
         wm.event_timer_remove(self.event_timer)
@@ -453,7 +450,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
         # Show the progress, Done
         nmv.utilities.show_progress(
-            'Simulation', self.timer_limits, context.scene.NMV_SimulationSteps, done=True)
+            'Simulation', self.timer_limits, scene.NMV_SimulationSteps, done=True)
 
         if bpy.context.scene.NMV_SomaProfile == \
                 nmv.enums.Soma.Profile.PROFILE_POINTS_ONLY:
@@ -492,13 +489,16 @@ class RenderSomaFront(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        nmv.logger.log(context.scene.NMV_NMV_NMV_OutputDirectory)
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        nmv.logger.log(scene.NMV_NMV_NMV_OutputDirectory)
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -508,12 +508,12 @@ class RenderSomaFront(bpy.types.Operator):
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
-            view_extent=context.scene.NMV_ViewDimensions,
+            view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.FRONT,
-            image_resolution=context.scene.NMV_SomaFrameResolution,
+            image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.NMV_KeepSomaCameras)
+            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Rendering Soma Done')
@@ -544,12 +544,15 @@ class RenderSomaSide(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -559,12 +562,12 @@ class RenderSomaSide(bpy.types.Operator):
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
-            view_extent=context.scene.NMV_ViewDimensions,
+            view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.SIDE,
-            image_resolution=context.scene.NMV_SomaFrameResolution,
+            image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.NMV_KeepSomaCameras)
+            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -595,12 +598,15 @@ class RenderSomaTop(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -610,12 +616,12 @@ class RenderSomaTop(bpy.types.Operator):
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
-            view_extent=context.scene.NMV_ViewDimensions,
+            view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.TOP,
-            image_resolution=context.scene.NMV_SomaFrameResolution,
+            image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context.scene.NMV_KeepSomaCameras)
+            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -656,6 +662,9 @@ class RenderSoma360(bpy.types.Operator):
             A given event for the panel.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > 360:
 
@@ -679,16 +688,16 @@ class RenderSoma360(bpy.types.Operator):
             nmv.rendering.SomaRenderer.render_at_angle(
                 soma_mesh=nmv.interface.ui_soma_mesh,
                 angle=self.timer_limits,
-                view_extent=context.scene.NMV_ViewDimensions,
+                view_extent=scene.NMV_ViewDimensions,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_SomaFrameResolution,
+                image_resolution=scene.NMV_SomaFrameResolution,
                 image_name=image_name)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
 
             # Update the progress bar
-            context.scene.NMV_SomaRenderingProgress = int(100 * self.timer_limits / 360.0)
+            scene.NMV_SomaRenderingProgress = int(100 * self.timer_limits / 360.0)
 
             # Upgrade the timer limits
             self.timer_limits += 1
@@ -707,12 +716,15 @@ class RenderSoma360(bpy.types.Operator):
             Panel context.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -800,7 +812,7 @@ class RenderSomaProgressive(bpy.types.Operator):
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or \
-                self.timer_limits > context.scene.NMV_SimulationSteps:
+                self.timer_limits > scene.NMV_SimulationSteps:
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -825,17 +837,17 @@ class RenderSomaProgressive(bpy.types.Operator):
             nmv.rendering.SomaRenderer.render_at_angle(
                 soma_mesh=nmv.interface.ui_soma_mesh,
                 angle=0.0,
-                view_extent=context.scene.NMV_ViewDimensions,
+                view_extent=scene.NMV_ViewDimensions,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_SomaFrameResolution,
+                image_resolution=scene.NMV_SomaFrameResolution,
                 image_name=image_name)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering',
-                                        self.timer_limits, context.scene.NMV_SimulationSteps)
+                                        self.timer_limits, scene.NMV_SimulationSteps)
 
             # Update the progress bar
-            context.scene.NMV_SomaRenderingProgress = self.timer_limits
+            scene.NMV_SomaRenderingProgress = self.timer_limits
 
             # Upgrade the timer limits
             self.timer_limits += 1
@@ -859,7 +871,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -880,7 +892,7 @@ class RenderSomaProgressive(bpy.types.Operator):
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+        loading_result = nmv.interface.ui.load_morphology(self, scene)
 
         # If the result is None, report the issue
         if loading_result is None:
@@ -913,6 +925,9 @@ class RenderSomaProgressive(bpy.types.Operator):
             Panel context.
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Multi-threading
         wm = context.window_manager
         wm.event_timer_remove(self.event_timer)
@@ -926,7 +941,7 @@ class RenderSomaProgressive(bpy.types.Operator):
 
         # Show the progress, Done
         nmv.utilities.show_progress(
-            'Rendering', self.timer_limits, context.scene.NMV_SimulationSteps, done=True)
+            'Rendering', self.timer_limits, scene.NMV_SimulationSteps, done=True)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Rendering Done')
@@ -959,12 +974,15 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
             {'FINISHED'}
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the meshes will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1005,12 +1023,15 @@ class SaveSomaMeshPLY(bpy.types.Operator):
             {'FINISHED'}
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the meshes will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1052,12 +1073,15 @@ class SaveSomaMeshSTL(bpy.types.Operator):
             {'FINISHED'}
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the meshes will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1098,12 +1122,15 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
             {'FINISHED'}
         """
 
+        # Get a reference to the scene
+        scene = context.scene
+
         # Ensure that there is a valid directory where the meshes will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
