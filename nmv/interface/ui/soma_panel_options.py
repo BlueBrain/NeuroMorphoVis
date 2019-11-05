@@ -58,6 +58,13 @@ bpy.types.Scene.NMV_SomaProfile = bpy.props.EnumProperty(
     name='Profile',
     default=nmv.enums.Soma.Profile.ARBORS_ONLY)
 
+# Reconstruction time
+bpy.types.Scene.NMV_SomaReconstructionTime = bpy.props.FloatProperty(
+    name="Generation Time (Sec)",
+    description="The time it takes to load the morphology from file and draw it to the viewport",
+    default=0, min=0, max=1000000)
+
+
 # Soma color option
 bpy.types.Scene.NMV_SomaBaseColor = bpy.props.FloatVectorProperty(
     name="Soma Base Color", subtype='COLOR',
@@ -85,8 +92,8 @@ bpy.types.Scene.NMV_SubdivisionLevel = bpy.props.IntProperty(
 # Simulation step option
 bpy.types.Scene.NMV_SimulationSteps = bpy.props.IntProperty(
     name="Simulation Steps",
-    description="The number of steps required to do the simulation",
-    default=100, min=10, max=1000)
+    description="The number of time steps required to perform the simulation, by default 100",
+    default=100, min=10, max=300)
 
 # Soma simulation progress bar
 bpy.types.Scene.NMV_SomaSimulationProgress = bpy.props.IntProperty(

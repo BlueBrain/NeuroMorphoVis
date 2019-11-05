@@ -513,7 +513,7 @@ class RenderMorphology360(bpy.types.Operator):
 
     # Timer parameters
     event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
+    timer_limits = 0
 
     # Output data
     output_directory = None

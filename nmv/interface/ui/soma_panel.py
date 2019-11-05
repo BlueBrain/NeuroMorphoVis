@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import time
+
 # Blender imports
 import bpy
 from mathutils import Vector
@@ -31,6 +34,9 @@ import nmv.rendering
 import nmv.scene
 import nmv.utilities
 from .soma_panel_options import *
+
+# A global flag to indicate if the soma is reconstructed or not
+is_soma_reconstructed = False
 
 
 ####################################################################################################
@@ -101,7 +107,13 @@ class SomaPanel(bpy.types.Panel):
 
             # Pass options from UI to system
             nmv.interface.ui_options.soma.subdivision_level = context.scene.NMV_SubdivisionLevel
-            nmv.interface.ui_options.soma.irregular_subdivisions = context.scene.NMV_IrregularSubdivisions
+            nmv.interface.ui_options.soma.irregular_subdivisions = \
+                context.scene.NMV_IrregularSubdivisions
+
+            # Simulation steps
+            simulation_steps_row = layout.row()
+            simulation_steps_row.prop(context.scene, 'NMV_SimulationSteps')
+            nmv.interface.ui_options.soma.simulation_steps = context.scene.NMV_SimulationSteps
 
         else:
             pass
@@ -142,6 +154,16 @@ class SomaPanel(bpy.types.Panel):
             soma_simulation_progress_row = layout.row()
             soma_simulation_progress_row.prop(context.scene, 'NMV_SomaSimulationProgress')
             soma_simulation_progress_row.enabled = False
+
+        # Report the stats
+        global is_soma_reconstructed
+        if is_soma_reconstructed:
+            soma_stats_row = layout.row()
+            soma_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+
+            reconstruction_time_row = layout.row()
+            reconstruction_time_row.prop(context.scene, 'NMV_SomaReconstructionTime')
+            reconstruction_time_row.enabled = False
 
         # Soma rendering options
         quick_rendering_row = layout.row()
@@ -256,12 +278,14 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
     # Timer parameters
     event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
+    timer_limits = 0
 
+    # Builder parameters
     soma_builder = None
     soma_sphere_object = None
-    min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
-    max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
+
+    # Reconstruction time
+    reconstruction_time = 0
 
     ################################################################################################
     # @modal
@@ -278,7 +302,17 @@ class ReconstructSomaOperator(bpy.types.Operator):
         """
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > self.max_simulation_limit:
+        if event.type in {'RIGHTMOUSE', 'ESC'} or \
+                self.timer_limits > context.scene.NMV_SimulationSteps:
+
+            # Set the reconstruction flag to on
+            global is_soma_reconstructed
+            is_soma_reconstructed = True
+
+            # Get the reconstruction time to update the UI
+            context.scene.NMV_SomaReconstructionTime = time.time() - self.reconstruction_time
+            nmv.logger.info('Soma reconstructed in [%f] seconds' %
+                            context.scene.NMV_MorphologyLoadingTime)
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -297,7 +331,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Update the progress shell
             nmv.utilities.show_progress(
-                'Simulation', self.timer_limits, self.max_simulation_limit)
+                'Simulation', self.timer_limits, context.scene.NMV_SimulationSteps)
 
             # Update the progress bar
             context.scene.NMV_SomaSimulationProgress = self.timer_limits
@@ -333,8 +367,12 @@ class ReconstructSomaOperator(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
+        # Reconstruction time
+        self.reconstruction_time = time.time()
+
+        # MetaBall reconstruction
         if bpy.context.scene.NMV_SomaReconstructionMethod == \
-            nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+                nmv.enums.Soma.ReconstructionMethod.META_BALLS:
 
             # Create a some builder
             self.soma_builder = nmv.builders.SomaMetaBuilder(
@@ -342,11 +380,25 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Reconstruct the soma in a single step
             self.soma_builder.reconstruct_soma_mesh()
+
+            # Get the reconstruction time to update the UI
+            self.reconstruction_time = time.time() - self.reconstruction_time
+            context.scene.NMV_SomaReconstructionTime = self.reconstruction_time
+            nmv.logger.info('Soma reconstructed in [%f] seconds' %
+                            context.scene.NMV_MorphologyLoadingTime)
+
+            # Set the reconstruction flag to on
+            global is_soma_reconstructed
+            is_soma_reconstructed = True
+
+            # View all the objects in the scene
+            nmv.scene.ops.view_all_scene()
+
             return {'FINISHED'}
 
         else:
 
-            # Create a some builder
+            # SoftBody reconstruction
             self.soma_builder = nmv.builders.SomaSoftBodyBuilder(
                 nmv.interface.ui_morphology, nmv.interface.ui_options)
 
@@ -400,7 +452,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
         # Show the progress, Done
         nmv.utilities.show_progress(
-            'Simulation', self.timer_limits, self.max_simulation_limit, done=True)
+            'Simulation', self.timer_limits, context.scene.NMV_SimulationSteps, done=True)
 
         if bpy.context.scene.NMV_SomaProfile == \
                 nmv.enums.Soma.Profile.PROFILE_POINTS_ONLY:
@@ -583,7 +635,7 @@ class RenderSoma360(bpy.types.Operator):
 
     # Timer parameters
     event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
+    timer_limits = 0
 
     # Output data
     output_directory = None
@@ -715,7 +767,7 @@ class RenderSomaProgressive(bpy.types.Operator):
 
     # Timer parameters
     event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
+    timer_limits = 0
 
     # Output data
     output_directory = None
@@ -723,11 +775,9 @@ class RenderSomaProgressive(bpy.types.Operator):
     # Morphology parameters
     morphology_object = None
 
-    # Meshy soma builder parameters
-    soma_softbody_builder = None
+    # Soma builder parameters
+    soma_soft_body_builder = None
     soma_sphere_object = None
-    min_simulation_limit = nmv.consts.Simulation.MIN_FRAME
-    max_simulation_limit = nmv.consts.Simulation.MAX_FRAME
 
     ################################################################################################
     # @modal
@@ -748,7 +798,8 @@ class RenderSomaProgressive(bpy.types.Operator):
         scene = context.scene
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > self.max_simulation_limit:
+        if event.type in {'RIGHTMOUSE', 'ESC'} or \
+                self.timer_limits > context.scene.NMV_SimulationSteps:
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -779,7 +830,8 @@ class RenderSomaProgressive(bpy.types.Operator):
                 image_name=image_name)
 
             # Update the progress shell
-            nmv.utilities.show_progress('Rendering', self.timer_limits, self.max_simulation_limit)
+            nmv.utilities.show_progress('Rendering',
+                                        self.timer_limits, context.scene.NMV_SimulationSteps)
 
             # Update the progress bar
             context.scene.NMV_SomaRenderingProgress = self.timer_limits
@@ -835,7 +887,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create a some builder object
-        self.soma_softbody_builder = nmv.builders.SomaSoftBodyBuilder(
+        self.soma_soft_body_builder = nmv.builders.SomaSoftBodyBuilder(
             nmv.interface.ui_morphology, nmv.interface.ui_options)
 
         # Build the basic profile of the some from the soft body operation, but don't run the
@@ -873,7 +925,7 @@ class RenderSomaProgressive(bpy.types.Operator):
 
         # Show the progress, Done
         nmv.utilities.show_progress(
-            'Rendering', self.timer_limits, self.max_simulation_limit, done=True)
+            'Rendering', self.timer_limits, context.scene.NMV_SimulationSteps, done=True)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Rendering Done')

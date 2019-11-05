@@ -790,7 +790,7 @@ class RenderMesh360(bpy.types.Operator):
 
     # Timer parameters
     event_timer = None
-    timer_limits = bpy.props.IntProperty(default=0)
+    timer_limits = 0
 
     # Collect a list of the scene objects (meshes) to be rendered before starting the rendering loop
     scene_objects = list()

@@ -215,19 +215,19 @@ ui_global_analysis_items = [
     # Arborization items
     ################################################################################################
     AnalysisItem(variable='NumberApicalDendrites',
-                 name='# Apical Dendrites',
+                 name='Apical Dendrites',
                  kernel=kernel_global_number_apical_dendrites,
                  description='The total number of apical dendrites in the morphology',
                  data_format='INT'),
 
     AnalysisItem(variable='NumberBasalDendrites',
-                 name='# Basal Dendrites',
+                 name='Basal Dendrites',
                  kernel=kernel_global_number_basal_dendrites,
                  description='The total number of basal dendrites in the morphology',
                  data_format='INT'),
 
     AnalysisItem(variable='NumberAxons',
-                 name='# Axons',
+                 name='Axons',
                  kernel=kernel_global_number_axons,
                  description='The total number of axons in the morphology',
                  data_format='INT'),
@@ -235,6 +235,6 @@ ui_global_analysis_items = [
     AnalysisItem(variable='NumberNeurites',
                  name='Total # Neurites',
                  kernel=kernel_global_total_number_neurites,
-                 description='The total number of all the neurites in the morphology',
+                 description='The total number of all the arbors (or neurites) in the morphology',
                  data_format='INT'),
 ]

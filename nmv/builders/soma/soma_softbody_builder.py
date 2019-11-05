@@ -868,18 +868,18 @@ class SomaSoftBodyBuilder:
         soma_soft_body = self.build_soma_soft_body(apply_shader=apply_shader)
 
         # Update the frame based on the soft body simulation
-        for frame_index in range(nmv.consts.Simulation.MIN_FRAME, nmv.consts.Simulation.MAX_FRAME):
+        for frame_index in range(0, self.options.soma.simulation_steps):
 
             # Set the frame index
             bpy.context.scene.frame_set(frame_index)
 
             # Update the progress shell
             nmv.utilities.show_progress(
-                '* Simulation ', frame_index, nmv.consts.Simulation.MAX_FRAME)
+                '* Simulation ', frame_index, self.options.soma.simulation_steps)
 
         # Report process done
         nmv.utilities.show_progress(
-            '* Simulation ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME,
+            '* Simulation ', self.options.soma.simulation_steps, self.options.soma.simulation_steps,
             done=True)
 
         # Build the soma mesh from the soft body object after deformation
@@ -911,17 +911,18 @@ class SomaSoftBodyBuilder:
         soma_soft_body = self.build_soma_based_on_profile_points_only(apply_shader=apply_shader)
 
         # Update the frame based on the soft body simulation
-        for frame_index in range(nmv.consts.Simulation.MIN_FRAME, nmv.consts.Simulation.MAX_FRAME):
+        for frame_index in range(0, self.options.soma.simulation_steps):
 
             # Set the frame index
             bpy.context.scene.frame_set(frame_index)
 
             # Update the progress shell
-            nmv.utilities.show_progress('* Simulation ', frame_index, nmv.consts.Simulation.MAX_FRAME)
+            nmv.utilities.show_progress('* Simulation ',
+                                        frame_index, self.options.soma.simulation_steps)
 
         # Report process done
         nmv.utilities.show_progress(
-            '* Simulation ', nmv.consts.Simulation.MAX_FRAME, nmv.consts.Simulation.MAX_FRAME)
+            '* Simulation ', self.options.soma.simulation_steps, self.options.soma.simulation_steps)
 
         # Build the soma mesh from the soft body object after deformation
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)

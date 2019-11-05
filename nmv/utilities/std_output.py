@@ -17,8 +17,10 @@
 
 # System imports
 import sys
+import tempfile
 
-std_hook = None
+stdout_hook = None
+stderr_hook = None
 
 
 ####################################################################################################
@@ -29,9 +31,16 @@ def disable_std_output():
     """
 
     # Hooks the stdout until further notice
-    global hook
-    hook = sys.stdout
-    sys.stdout = open('trash.output', 'w')
+    global stdout_hook
+    global stderr_hook
+
+    stdout_hook = sys.stdout
+    stderr_hook = sys.stderr
+
+    temporary_directory = tempfile.gettempdir()
+
+    sys.stdout = open('%s/nmv-stdout.output' % temporary_directory, 'w')
+    sys.stderr = open('%s/nmv-stderr.output' % temporary_directory, 'w')
 
 
 ####################################################################################################
@@ -41,8 +50,11 @@ def enable_std_output():
     """Re-enable stdout again.
     """
 
-    global hook
-    if hook is None:
+    global stdout_hook
+    global stderr_hook
+
+    if stdout_hook is None:
         return
     else:
-        sys.stdout = hook
+        sys.stdout = stdout_hook
+        sys.stderr = stderr_hook

@@ -458,7 +458,9 @@ def delete_object_in_scene(scene_object):
     select_object(scene_object)
 
     # Delete the selected object
+    nmv.utilities.disable_std_output()
     bpy.ops.object.delete(use_global=False)
+    nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -481,7 +483,9 @@ def delete_list_objects(object_list):
         select_object(scene_object)
 
         # Delete the selected object
+        nmv.utilities.disable_std_output()
         bpy.ops.object.delete(use_global=False)
+        nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -500,8 +504,9 @@ def delete_all():
         # Select this particular object, to highlight it
         select_object(scene_object)
 
-        # Delete the selected object
+        nmv.utilities.disable_std_output()
         bpy.ops.object.delete(use_global=False)
+        nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
