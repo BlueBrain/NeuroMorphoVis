@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -238,24 +238,3 @@ ui_global_analysis_items = [
                  description='The total number of all the neurites in the morphology',
                  data_format='INT'),
 ]
-
-
-
-# compute histograms and distributions
-'''
-radii or sections length
-
-- histogram 
-- radius distance from soma 
-
-
-number of samples 
-- per section (histogram)
-- per arbor (bar chart)
-
-
-sections length
-- 
-
-
-'''
