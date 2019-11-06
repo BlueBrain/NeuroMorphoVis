@@ -692,6 +692,20 @@ class SkeletonBuilder:
             A list of all the drawn objects in the morphology.
         """
 
+        # The adaptive resampling is quite important to prevent breaking the structure
+        if self.options.morphology.resampling_method == \
+                nmv.enums.Skeletonization.Resampling.ADAPTIVE:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
+        elif self.options.morphology.resampling_method == \
+                nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
+                  self.options.morphology.resampling_step])
+        else:
+            pass
+
+
         # A list of objects (references to drawn segments) that compose the morphology
         morphology_objects = []
 

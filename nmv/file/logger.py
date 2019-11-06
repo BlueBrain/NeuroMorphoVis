@@ -167,3 +167,37 @@ class Logger:
 
         # Log the string
         self.log('\t\t* %s' % log_string)
+
+    ################################################################################################
+    # @warning
+    ################################################################################################
+    def warning(self,
+                *args):
+        """Logs a warning.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t\t* WARNING: %s' % log_string)
+
+    ################################################################################################
+    # @error
+    ################################################################################################
+    def error(self,
+              *args):
+        """Logs an error.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t\t* ERROR: %s' % log_string)

@@ -112,7 +112,7 @@ class UnionBuilder:
 
             # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections])
+                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites

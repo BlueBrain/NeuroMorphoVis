@@ -22,18 +22,13 @@
 ####################################################################################################
 
 # System imports
-import sys, os, imp
-
-# NeuroMorphoVis version
-v = open("%s/.version" % os.path.dirname(os.path.realpath(__file__)), "r")
-version = v.read()
-version = version.split(' ')
-v.close()
+import sys
+import os
+import imp
 
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2019, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = version
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -88,12 +83,13 @@ def register():
 
     # Import the modules
     import nmv.interface
+    import nmv.utilities
 
     # Reloading the modules
     imp.reload(nmv.interface)
 
     nmv.logger.header('Loading NeuroMorphoVis')
-    nmv.logger.info('Version [%s]' % str(__version__))
+    nmv.logger.info('Version [%s]' % str(nmv.utilities.get_nmv_version()))
     nmv.logger.info('Copyrights (C) Marwan Abdellah, Blue Brain Project (BBP) - (EPFL)')
 
     # Register panels

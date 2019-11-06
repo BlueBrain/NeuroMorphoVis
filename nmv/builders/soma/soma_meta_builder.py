@@ -21,7 +21,6 @@ import random
 # Blender imports
 import bpy
 
-import nmv
 import nmv.bmeshi
 import nmv.consts
 import nmv.enums
@@ -47,16 +46,13 @@ class SomaMetaBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options,
-                 irregular_subdivisions=False):
+                 options):
         """Constructor
 
         :param morphology:
             A given morphology.
         :param options:
             System options.
-        :param irregular_subdivisions:
-            Force the soma to make irregular subdivisions for the pulled faces.
         """
 
         # Morphology
@@ -140,6 +136,8 @@ class SomaMetaBuilder:
         nmv.scene.deselect_all()
 
         # Select the soma object
+        # Note the conversion from the meta object to the mesh object adds automatically '.001'
+        # to the object name, therefore we must rename it
         self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma.001']
         self.meta_mesh.name = self.morphology.label
 

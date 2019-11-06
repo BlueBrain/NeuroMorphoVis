@@ -101,6 +101,12 @@ class MorphologyOptions:
         # Articulations color
         self.articulation_color = nmv.enums.Color.ARTICULATION
 
+        # Resampling method
+        self.resampling_method = nmv.enums.Skeletonization.Resampling.NONE
+
+        # Resampling step
+        self.resampling_step = 1.0
+
         # The radii of the sections (as specified in the morphology file, scaled with a given
         # scale factor, or constant at given fixed value)
         self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED

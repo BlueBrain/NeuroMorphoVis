@@ -15,14 +15,11 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import os, sys, bpy
-
 # Blender imports
+import bpy
 from mathutils import Vector
 
-# Internal impots
-import nmv
+# Internal imports
 import nmv.bbox
 import nmv.mesh
 import nmv.utilities
@@ -63,6 +60,7 @@ def deselect_object(scene_object):
 
 
 ####################################################################################################
+# @get_active_object
 # @get_active_object
 ####################################################################################################
 def get_active_object():
@@ -164,7 +162,9 @@ def clear_default_scene():
             select_object(scene_object)
 
             # Delete the object
+            nmv.utilities.disable_std_output()
             bpy.ops.object.delete()
+            nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -184,8 +184,10 @@ def clear_scene():
     for scene_object in bpy.context.scene.objects:
         select_object(scene_object)
 
-    # Delete all the objects
+    # Delete the object
+    nmv.utilities.disable_std_output()
     bpy.ops.object.delete()
+    nmv.utilities.enable_std_output()
 
     # Unlink all the objects in all the layers
     #for scene in bpy.data.scenes:
@@ -228,7 +230,9 @@ def clear_lights():
             select_object(scene_object)
 
             # Delete the object
+            nmv.utilities.disable_std_output()
             bpy.ops.object.delete()
+            nmv.utilities.enable_std_output()
 
     # Select all the light, unlink them and clear their data
     for scene_lamp in bpy.data.lamps:

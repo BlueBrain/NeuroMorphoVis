@@ -197,6 +197,50 @@ class Skeletonization:
                 return Skeletonization.Branching.ANGLES
 
     ################################################################################################
+    # @Resampling
+    ################################################################################################
+    class Resampling:
+        """Resampling method
+        """
+
+        # Do not resample the section
+        NONE = 'RESAMPLING_NONE'
+
+        # Use adaptive resampling
+        ADAPTIVE = 'RESAMPLING_ADAPTIVE'
+
+        # Resample the section at a fixed step
+        FIXED_STEP = 'RESAMPLING_FIXED_STEP'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # None
+            if argument == 'none':
+                return Skeletonization.Resampling.NONE
+
+            # Adaptive
+            elif argument == 'adaptive':
+                return Skeletonization.Resampling.ADAPTIVE
+
+            # Fixed step
+            elif argument == 'fixed':
+                return Skeletonization.Resampling.FIXED_STEP
+
+            # By default none
+            else:
+                return Skeletonization.Resampling.NONE
+
+    ################################################################################################
     # @ArborsRadii
     ################################################################################################
     class ArborsRadii:

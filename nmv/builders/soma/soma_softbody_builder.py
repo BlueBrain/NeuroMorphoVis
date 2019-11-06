@@ -62,7 +62,7 @@ class SomaSoftBodyBuilder:
         # Morphology
         self.morphology = morphology
 
-        # All the options of the project (an instance of MeshyOptions)
+        # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
 
         # Force the soma to make irregular subdivisions for the pulled faces.
