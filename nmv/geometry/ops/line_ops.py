@@ -25,6 +25,11 @@ import nmv
 import nmv.scene
 import nmv.geometry
 
+class PolyLine:
+    def __init__(self):
+        self.samples = list()
+        self.material_index = 0
+
 
 ####################################################################################################
 # @compute_section_centroid_from_poly_line_data
@@ -55,6 +60,100 @@ def compute_section_centroid_from_poly_line_data(poly_line_data):
 
     # Return the centroid
     return centroid
+
+
+####################################################################################################
+# @create_poly_lines_object_base
+####################################################################################################
+def create_poly_lines_object_base(name='poly_lines',
+                                  bevel_object=None,
+                                  caps=True,
+                                  texture_size=5.0):
+    """Creates an empty object that can be used to append multiple poly-lines and draw them in a
+    single step very efficiently.
+
+    NOTE: The poly-lines will be added later to the resulting object, this is just the base object.
+
+    :param name:
+        Poly-line object name.
+    :param bevel_object:
+        A given bevel object used to solidify the poly-line.
+    :param caps:
+        A flag indicating whether the caps will be closed or open.
+    :param texture_size:
+        The size of the bump map of the assigned texture.
+    :return:
+        A reference to the created poly-lines object.
+    """
+    # Create the object as a new curve
+    poly_lines_object = bpy.data.curves.new(name=name, type='CURVE')
+
+    # The line is drawn in 3D
+    poly_lines_object.dimensions = '3D'
+
+    # Fill the line
+    poly_lines_object.fill_mode = 'FULL'
+
+    # The thickness of the line should be by default set to 1.0. This value will be scaled later
+    # at the two points of the line.
+    poly_lines_object.bevel_depth = 1.0
+
+    # Adjust the texture coordinates of the poly-line
+    # NOTE: The value 5 has been chosen after trial-and-error
+    poly_lines_object.use_auto_texspace = False
+    poly_lines_object.texspace_size[0] = texture_size
+    poly_lines_object.texspace_size[1] = texture_size
+    poly_lines_object.texspace_size[2] = texture_size
+
+    # Use caps if requested
+    poly_lines_object.use_fill_caps = caps
+
+    # If a bevel object is given, use it for scaling the diameter of the poly-line
+    if bevel_object is not None:
+        poly_lines_object.bevel_object = bevel_object
+
+    # Return a reference to the created object
+    return poly_lines_object
+
+
+####################################################################################################
+# @append_poly_line_to_base_object
+####################################################################################################
+def append_poly_line_to_base_object(base_object,
+                                    poly_line,
+                                    poly_line_type='NURBS'):
+    """Creates a poly-line object and appends to the aggregate poly-lines-object that is created
+    before.
+
+    :param base_object:
+        A previously created poly-lines object where we going to append a new poly-line object
+        constructed from the given poly_line_data.
+    :param poly_line:
+        The new poly-line data that will be used to create the new poly-line object that will be
+        appended to the given base_object.
+    :param poly_line_type:
+        The type of the poly-line: ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS']
+    """
+
+    # Create a new poly-line object integrated into the base object
+    poly_line_object = base_object.splines.new(poly_line_type)
+
+    # Define the number of samples of the poly-line object
+    # NOTE: Use n-1 points because once the poly-line is created it has already one point added
+
+    poly_line_object.points.add(len(poly_line.samples) - 1)
+
+    # Define the material for this poly-line
+    poly_line_object.material_index = poly_line.material_index
+
+    # Add the points (or the samples) and their radii to the poly-line curve object
+    for i, poly_line_sample in enumerate(poly_line.samples):
+
+        # Sample coordinates
+        poly_line_object.points[i].co = poly_line_sample[0]
+
+        # Sample radius
+        poly_line_object.points[i].radius = poly_line_sample[1]
 
 
 ####################################################################################################

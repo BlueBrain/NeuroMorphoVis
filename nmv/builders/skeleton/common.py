@@ -1,0 +1,109 @@
+####################################################################################################
+# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
+
+# Blender imports
+import bpy
+
+# Internal imports
+import nmv.enums
+import nmv.shading
+import nmv.skeleton
+
+
+####################################################################################################
+# @create_skeleton_materials_and_illumination
+####################################################################################################
+def create_skeleton_materials_and_illumination(builder):
+    """Creates the materials of the entire morphology skeleton and the accompanying illumination.
+
+    NOTE: The created materials are stored in member variables of the given builder.
+
+    :param builder:
+        A given skeleton builder.
+    """
+
+    # Clear all the materials that are already present in the scene
+    for material in bpy.data.materials:
+        if 'soma_skeleton' in material.name or \
+           'axon_skeleton' in material.name or \
+           'basal_dendrites_skeleton' in material.name or \
+           'apical_dendrite_skeleton' in material.name or \
+           'articulation' in material.name:
+            material.user_clear()
+            bpy.data.materials.remove(material)
+
+    # Soma
+    builder.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
+        name='soma_skeleton', material_type=builder.options.morphology.material,
+        color=builder.options.morphology.soma_color)
+
+    # Axon
+    builder.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
+        name='axon_skeleton', material_type=builder.options.morphology.material,
+        color=builder.options.morphology.axon_color)
+
+    # Basal dendrites
+    builder.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
+        name='basal_dendrites_skeleton', material_type=builder.options.morphology.material,
+        color=builder.options.morphology.basal_dendrites_color)
+
+    # Apical dendrite
+    builder.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
+        name='apical_dendrite_skeleton', material_type=builder.options.morphology.material,
+        color=builder.options.morphology.apical_dendrites_color)
+
+    # Articulations, ONLY, for the articulated reconstruction method
+    if builder.options.morphology.reconstruction_method == \
+            nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+        builder.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='articulation', material_type=builder.options.morphology.material,
+            color=builder.options.morphology.articulation_color)
+
+    # Create an illumination specific for the given material
+    nmv.shading.create_material_specific_illumination(builder.options.morphology.material)
+
+
+####################################################################################################
+# @resample_skeleton_sections
+####################################################################################################
+def resample_skeleton_sections(builder):
+    """Resamples the sections of the morphology skeleton before drawing it.
+
+    NOTE: This resampling process is performed on a per-section basis, so the first and last samples
+    of the section are left intact.
+
+    :param builder:
+        A given skeleton builder.
+    """
+
+    nmv.logger.info('Resampling section')
+
+    # The adaptive resampling is quite important to prevent breaking the structure
+    if builder.options.morphology.resampling_method == \
+            nmv.enums.Skeletonization.Resampling.ADAPTIVE:
+        nmv.logger.detail('Adaptive resampling')
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.resample_section_adaptively])
+    elif builder.options.morphology.resampling_method == \
+            nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+        nmv.logger.detail('Fixed step resampling [%f]' %
+                          builder.options.morphology.resampling_step)
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
+              builder.options.morphology.resampling_step])
+    else:
+        nmv.logger.detail('Resampling ignored')
