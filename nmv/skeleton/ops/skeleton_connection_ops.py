@@ -747,7 +747,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
     # Verify dendrite by dendrite
     for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
 
-        nmv.logger.info('Basal dendrite [%d] connectivity to soma' % i_basal_dendrite)
+        nmv.logger.info('Basal dendrite [%d]' % i_basal_dendrite)
 
         # If the basal dendrite is starting inside the soma, then disconnect it
         # NOTE: The negative sample must be removed a priori for this filter to work
@@ -790,8 +790,8 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # Mark the basal dendrite connected to the soma
         basal_dendrite.connected_to_soma = True
 
-        nmv.logger.detail('NOTE: The basal dendrite [%d] @ section [%d] is connected to the soma' %
-                          (i_basal_dendrite, basal_dendrite.id))
+        # Connected
+        nmv.logger.detail('Connected to soma')
 
     for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
 

@@ -19,7 +19,6 @@
 import bpy
 
 # Internal imports
-import nmv
 import nmv.bbox
 import nmv.builders
 import nmv.consts
@@ -31,8 +30,8 @@ import nmv.scene
 import nmv.skeleton
 import nmv.rendering
 import nmv.utilities
+from .morphology_panel_options import *
 
-from .morphology_panel_ops import *
 
 ####################################################################################################
 # @MorphologyPanel
