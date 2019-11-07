@@ -30,6 +30,43 @@ class Arbors:
         pass
 
     ################################################################################################
+    # @Edges
+    ################################################################################################
+    class Edges:
+        """Arbors edges
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # Sharp edges
+        SHARP = 'ARBORS_EDGES_SHARP'
+
+        # Curvy edges
+        CURVY = 'ARBORS_EDGES_CURVY'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Sharp edges
+            if argument == 'sharp':
+                return Arbors.Edges.SHARP
+
+            # Curvy
+            elif argument == 'curvy':
+                return Arbors.Edges.CURVY
+
+            # By default, use the sharp edges
+            else:
+                return Arbors.Edges.SHARP
+
+    ################################################################################################
     # @Radii
     ################################################################################################
     class Radii:
@@ -186,5 +223,7 @@ class Arbors:
              'Straight',
              'Represent each section by a single segment that connects its terminals (artistic)')
         ]
+
+
 
 

@@ -134,6 +134,12 @@ def set_reconstruction_options(layout,
         resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
         options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
+    # Morphology edges
+    edges_row = layout.row()
+    edges_row.label(text='Edges:')
+    edges_row.prop(scene, 'NMV_MorphologyEdges', expand=True)
+    options.morphology.edges = scene.NMV_MorphologyEdges
+
     # Reconstruction technique
     technique = scene.NMV_MorphologyReconstructionTechnique
     if technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:

@@ -83,11 +83,16 @@ bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
     description="Branching order for the apical dendrite",
     default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
-# Display bounding box info
-bpy.types.Scene.NMV_DisplayBoundingBox = bpy.props.BoolProperty(
-    name="Display Bounding Box Info",
-    description="Displays the bounding box of the morphology",
-    default=False)
+# Edges
+bpy.types.Scene.NMV_MorphologyEdges = bpy.props.EnumProperty(
+    items=[(nmv.enums.Arbors.Edges.SHARP,
+            'Sharp',
+            'Make the edges between the segments sharp'),
+           (nmv.enums.Arbors.Edges.CURVY,
+            'Curvy',
+            'Make the edges between the segments soft and curvy')],
+    name='Edges',
+    default=nmv.enums.Arbors.Edges.SHARP)
 
 # Morphology material
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(

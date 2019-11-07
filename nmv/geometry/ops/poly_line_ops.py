@@ -24,6 +24,7 @@ from mathutils import Vector, Matrix
 import nmv
 import nmv.scene
 import nmv.geometry
+import nmv.enums
 
 
 ####################################################################################################
@@ -184,7 +185,7 @@ def draw_poly_line(poly_line_data,
 ####################################################################################################
 def draw_poly_lines_in_single_object(poly_lines,
                                      object_name='poly_lines',
-                                     poly_line_type='POLY',
+                                     edges=nmv.enums.Arbors.Edges.SHARP,
                                      bevel_object=None,
                                      materials=None,
                                      poly_line_caps=True,
@@ -196,7 +197,7 @@ def draw_poly_lines_in_single_object(poly_lines,
         A list of poly-lines of type PolyLine.
     :param object_name:
         The name of the drawn object.
-    :param poly_line_type:
+    :param edges:
         The type of the poly-line: ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS']
     :param bevel_object:
         A given bevel object to shape the cross-section of the poly-lines.
@@ -242,9 +243,15 @@ def draw_poly_lines_in_single_object(poly_lines,
         for material in materials:
             poly_lines_object.materials.append(material)
 
+    if edges == nmv.enums.Arbors.Edges.SHARP:
+        poly_line_type = 'POLY'
+    else:
+        poly_line_type = 'NURBS'
+
     # Append the poly-lines
     for poly_line in poly_lines:
-        append_poly_line_to_base_object(base_object=poly_lines_object, poly_line=poly_line)
+        append_poly_line_to_base_object(
+            base_object=poly_lines_object, poly_line=poly_line, poly_line_type=poly_line_type)
 
     # Create the aggregate object to be linked to the scene later
     aggregate_poly_lines_object = bpy.data.objects.new(

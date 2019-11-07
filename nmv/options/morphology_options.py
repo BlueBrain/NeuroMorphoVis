@@ -63,7 +63,10 @@ class MorphologyOptions:
         self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
-        self.branching = nmv.enums.Skeletonization.Branching.ANGLES
+        self.branching = nmv.enums.Skeletonization.Branching.RADII
+
+        # Morphology edge styles
+        self.edges = nmv.enums.Arbors.Edges.SHARP
 
         # The arbors connectivity to the soma
         self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
@@ -191,6 +194,9 @@ class MorphologyOptions:
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeletonization.Branching.RADII
+
+        # Morphology edge styles
+        self.edges = nmv.enums.Arbors.Edges.SHARP
 
         # The arbors connectivity to the soma
         self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN

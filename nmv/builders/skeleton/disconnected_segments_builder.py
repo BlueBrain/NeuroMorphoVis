@@ -234,7 +234,8 @@ class DisconnectedSegmentsBuilder:
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
             poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            poly_line_type='POLY', bevel_object=bevel_object, materials=self.skeleton_materials)
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
 
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
