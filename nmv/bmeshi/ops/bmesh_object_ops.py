@@ -48,6 +48,76 @@ def convert_to_mesh_object(bmesh_object,
 
 
 ####################################################################################################
+# @join_bmeshes_list
+####################################################################################################
+def join_bmeshes_list(bmeshes_list,
+                      normal_update=False):
+    """Takes as input a list of bm references and outputs a single merged bmesh.
+
+    :param bmeshes_list:
+        A list of bmeshes to be joint.
+    :param normal_update:
+        Force normal calculations
+    :return:
+        A single merged bmesh.
+    """
+
+    # Merged bmesh object
+    merged_bmesh = bmesh.new()
+
+    # Vertices list
+    add_vert = merged_bmesh.verts.new
+
+    # Faces list
+    add_face = merged_bmesh.faces.new
+
+    # Edges list
+    add_edge = merged_bmesh.edges.new
+
+    # For every bmesh entry in the list
+    for i_bmesh in bmeshes_list:
+
+        # Get the current offset of the vertices
+        offset = len(merged_bmesh.verts)
+
+        # Append the vertices
+        for v in i_bmesh.verts:
+            add_vert(v.co)
+
+        # Update the lookup table
+        merged_bmesh.verts.index_update()
+        merged_bmesh.verts.ensure_lookup_table()
+
+        # Append the vertices
+        if i_bmesh.faces:
+            for face in i_bmesh.faces:
+                add_face(tuple(merged_bmesh.verts[i.index+offset] for i in face.verts))
+
+            # Update the faces
+            merged_bmesh.faces.index_update()
+
+        # Append the edges
+        if i_bmesh.edges:
+            for edge in i_bmesh.edges:
+                edge_seq = tuple(merged_bmesh.verts[i.index+offset] for i in edge.verts)
+                try:
+                    add_edge(edge_seq)
+                except ValueError:
+                    # Edge exists!, pass
+                    pass
+
+            # Update the edges
+            merged_bmesh.edges.index_update()
+
+    # Update the normal
+    if normal_update:
+        merged_bmesh.normal_update()
+
+    # Return a reference to the merged bmesh
+    return merged_bmesh
+
+
+####################################################################################################
 # @convert_from_mesh_object
 ####################################################################################################
 def convert_from_mesh_object(mesh_object):

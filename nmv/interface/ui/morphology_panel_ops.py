@@ -136,11 +136,7 @@ def set_reconstruction_options(layout,
 
     # Reconstruction technique
     technique = scene.NMV_MorphologyReconstructionTechnique
-    if technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED or \
-       technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL or \
-       technique == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED or \
-       technique == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
-
+    if technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
         # Morphology reconstruction techniques option
         skeleton_style_row = layout.row()
         skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')

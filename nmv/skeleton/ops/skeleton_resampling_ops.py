@@ -183,11 +183,7 @@ def resample_section_at_fixed_step(section,
                          (section.get_type_string(), section.id))
         return
 
-    # If the section has less then two samples, then return
-    if len(section.samples) == 2:
-        return
-
-    # If the section length is less than the sampling step
+    # If the section length is less than the sampling step, then adaptively resample it
     if nmv.skeleton.compute_section_length(section=section) < sampling_step:
 
         # Get a good sampling step that would match this small section
@@ -197,8 +193,6 @@ def resample_section_at_fixed_step(section,
 
         # Resample the section at this sampling step
         resample_section_at_fixed_step(section=section, sampling_step=section_step)
-
-        # Done
         return
 
     # Sample index
@@ -208,7 +202,7 @@ def resample_section_at_fixed_step(section,
     while True:
 
         # Break if we reach the last sample
-        if i >= len(section.samples) - 2:
+        if i >= len(section.samples) - 1:
             break
 
         # Compute the distance between the current sample and the next one
@@ -216,6 +210,9 @@ def resample_section_at_fixed_step(section,
 
         # If the distance is less than the resampling step, then remove this sample  at [i + 1]
         if distance < sampling_step:
+
+            if i >= len(section.samples) - 2:
+                break
 
             # Remove the sample
             section.samples.remove(section.samples[i + 1])
@@ -246,7 +243,7 @@ def resample_section_at_fixed_step(section,
             i += 1
 
             # Break if we reach the last sample
-            if i >= len(section.samples) - 2:
+            if i >= len(section.samples) - 1:
                 break
 
     # After resampling the section, update the logical indexes of the samples

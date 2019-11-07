@@ -201,20 +201,19 @@ class SamplesBuilder:
             Prefix to name each sphere object after linking it to the scene.
         """
 
-        # Sphere by sphere
-        for i, item in enumerate(sphere_list):
+        joint_bmesh = nmv.bmeshi.join_bmeshes_list(bmeshes_list=sphere_list)
 
-            # Link the bmesh spheres to the scene
-            sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(item, prefix)
+        # Link the bmesh spheres to the scene
+        sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, prefix)
 
-            # Smooth shading
-            nmv.mesh.shade_smooth_object(sphere_mesh)
+        # Smooth shading
+        nmv.mesh.shade_smooth_object(sphere_mesh)
 
-            # Assign the material
-            nmv.shading.set_material_to_object(sphere_mesh, materials_list[i % 2])
+        # Assign the material
+        nmv.shading.set_material_to_object(sphere_mesh, materials_list[0])
 
-            # Append the sphere mesh to the morphology objects
-            self.morphology_objects.append(sphere_mesh)
+        # Append the sphere mesh to the morphology objects
+        self.morphology_objects.append(sphere_mesh)
 
     ################################################################################################
     # @draw_morphology_skeleton
