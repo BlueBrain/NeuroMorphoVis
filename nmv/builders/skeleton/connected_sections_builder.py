@@ -105,33 +105,6 @@ class ConnectedSectionsBuilder:
         self.skeleton_materials.extend(self.axon_materials)
 
     ################################################################################################
-    # @construct_tree_poly_lines
-    ################################################################################################
-    def construct_tree_poly_lines(self,
-                                  root,
-                                  poly_lines_list=[],
-                                  max_branching_level=nmv.consts.Math.INFINITY):
-        """Creates a list of poly-lines corresponding to all the sections in the given tree.
-
-        :param root:
-            Arbor root, or children sections.
-        :param poly_lines_list:
-            A list that will combine all the constructed poly-lines.
-        :param branching_level:
-            Current branching level of the arbor.
-        :param max_branching_level:
-            The maximum branching level given by the user.
-        """
-
-        # If the section is None, simply return
-        if root is None:
-            return
-
-        # Construct the poly-line objects
-        nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-            root=root, poly_lines_data=poly_lines_list, max_branching_level=max_branching_level)
-
-    ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self):
@@ -202,7 +175,8 @@ class ConnectedSectionsBuilder:
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
             poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            edges=self.options.morphology.edges, bevel_object=bevel_object, materials=self.skeleton_materials)
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
 
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)

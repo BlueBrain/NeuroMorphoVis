@@ -230,8 +230,6 @@ class DisconnectedSectionsBuilder:
             Arbor root.
         :param material_list:
             Sphere material.
-        :param sphere_objects:
-            A list of all the drawn spheres.
         :param branching_level:
             Current branching level.
         :param max_branching_level:
@@ -241,6 +239,10 @@ class DisconnectedSectionsBuilder:
         # Ignore the drawing if the root section is None
         if root is None:
             return
+
+        # Draw the root sample as a sphere
+        self.articulations_spheres.append(nmv.bmeshi.create_ico_sphere(
+            root.samples[0].radius * 1.025, location=root.samples[0].point, subdivisions=3))
 
         # Increment the branching level
         branching_level += 1
