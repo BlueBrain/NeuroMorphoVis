@@ -20,3 +20,4 @@ from .common import *
 from .disconnected_sections_builder import *
 from .disconnected_segments_builder import *
 from .samples_builder import *
+from .connected_sections_builder import *

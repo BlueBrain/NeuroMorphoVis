@@ -20,7 +20,6 @@ import copy
 
 # Blender imports
 import bpy
-from mathutils import Vector, Matrix
 
 # Internal imports
 import nmv.mesh
@@ -29,15 +28,14 @@ import nmv.skeleton
 import nmv.consts
 import nmv.geometry
 import nmv.scene
-import nmv.bmeshi
-import nmv.shading
 
 
 ####################################################################################################
 # @DisconnectedSectionsBuilder
 ####################################################################################################
-class DisconnectedSectionsBuilder:
-    """Builds and draws the morphology as a series of disconnected sections.
+class ConnectedSectionsBuilder:
+    """Builds and draws the morphology as a series of connected sections like a stream from the
+    root section to the leaf on every arbor.
     """
 
     ################################################################################################
@@ -135,187 +133,11 @@ class DisconnectedSectionsBuilder:
         # If the section is None, simply return
         if root is None:
             return
+        poly_data = list()
 
-        # Increment the branching level
-        branching_level += 1
-
-        # Return if we exceed the maximum branching level
-        if branching_level > max_branching_level:
-            return
-
-        # Construct the poly-line
-        poly_line = nmv.geometry.PolyLine(
-            name='%s_%d' % (prefix, branching_level),
-            samples=nmv.skeleton.get_section_poly_line(section=root),
-            material_index=material_start_index + (branching_level % 2))
-
-        # Add the poly-line to the poly-lines list
-        poly_lines_list.append(poly_line)
-
-        # Process the children, section by section
-        for child in root.children:
-            self.construct_tree_poly_lines(root=child,
-                                           poly_lines_list=poly_lines_list,
-                                           branching_level=branching_level,
-                                           max_branching_level=max_branching_level,
-                                           material_start_index=material_start_index)
-
-    ################################################################################################
-    # @draw_section_terminal_as_sphere
-    ################################################################################################
-    def draw_section_terminal_as_sphere(self,
-                                        section):
-        """Draws a joint between the different sections along the arbor.
-
-        :param section:
-            Section geometry.
-        """
-
-        # Get the section data arranged in a poly-line format
-        section_data = nmv.skeleton.ops.get_section_poly_line(section)
-
-        # Access the last item
-        section_terminal = section_data[-1]
-
-        # Get a Vector(()) for the coordinates of the terminal
-        point = section_terminal[0]
-        point = Vector((point[0], point[1], point[2]))
-
-        # Get terminal radius
-        radius = section_terminal[1]
-
-        # Get the radius for the first samples of the children and use it if it's bigger than the
-        # radius of the last sample of the parent terminal.
-        for child in section.children:
-
-            # Get the first sample along the child section
-            child_data = nmv.skeleton.ops.get_section_poly_line(child)
-
-            # Verify the radius of the child
-            child_radius = child_data[0][1]
-
-            # If the radius of the child is bigger, then set the radius of the joint to the
-            # radius of the child
-            if child_radius > radius:
-                radius = child_radius
-
-        # If we scale the morphology, we should account for that in the spheres to
-        sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
-            sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
-            sphere_radius = self.options.morphology.sections_fixed_radii_value
-
-        # Create the sphere based on the largest radius
-        section_terminal_sphere = nmv.geometry.create_uv_sphere(
-            radius=sphere_radius * 1.125, location=point, subdivisions=16,
-            name='joint_%d' % section.id, color=self.options.morphology.articulation_color)
-
-        # Return a reference to the terminal sphere
-        return section_terminal_sphere
-
-    ################################################################################################
-    # @draw_section_as_disconnected_segments
-    ################################################################################################
-    def draw_section_terminals_as_spheres(self,
-                                          root,
-                                          material_list=None,
-                                          sphere_objects=[],
-                                          branching_level=0,
-                                          max_branching_level=nmv.consts.Math.INFINITY):
-        """Draws the terminals of a given arbor as spheres.
-
-        :param root:
-            Arbor root.
-        :param material_list:
-            Sphere material.
-        :param sphere_objects:
-            A list of all the drawn spheres.
-        :param branching_level:
-            Current branching level.
-        :param max_branching_level:
-            Maximum branching level the section can grow up to: infinity.
-        """
-
-        # Ignore the drawing if the root section is None
-        if root is None:
-            return
-
-        # Increment the branching level
-        branching_level += 1
-
-        # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
-            return
-
-        # Make sure that the arbor exist
-        if root is not None:
-
-            # Draw the section terminal sphere
-            section_terminal_sphere = self.draw_section_terminal_as_sphere(root)
-
-            # Assign the material to the sphere
-            nmv.shading.set_material_to_object(section_terminal_sphere, material_list[0])
-
-            # Add the sphere to the list of the spheres objects
-            sphere_objects.append(section_terminal_sphere)
-
-            # Draw the children sections
-            for child in root.children:
-                self.draw_section_terminals_as_spheres(
-                    child, sphere_objects=sphere_objects, material_list=material_list,
-                    branching_level=branching_level, max_branching_level=max_branching_level)
-
-    ################################################################################################
-    # @draw_section_as_disconnected_segments
-    ################################################################################################
-    def draw_articulations(self):
-        """
-
-        :return:
-        """
-        # Draw the articulations
-        # Draw the axon joints
-        if not self.options.morphology.ignore_axon:
-            axon_spheres_objects = []
-            self.draw_section_terminals_as_spheres(
-                root=self.morphology.axon,
-                sphere_objects=axon_spheres_objects,
-                max_branching_level=self.options.morphology.axon_branch_order,
-                material_list=self.articulation_materials)
-
-            # Extend the morphology objects list
-            self.morphology_objects.extend(axon_spheres_objects)
-
-        # Draw the basal dendrites joints
-        if not self.options.morphology.ignore_basal_dendrites:
-
-            # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
-
-                basal_dendrites_spheres_objects = []
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    # Draw the basal dendrites as a set connected sections
-                    self.draw_section_terminals_as_spheres(
-                        root=basal_dendrite,
-                        sphere_objects=basal_dendrites_spheres_objects,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.articulation_materials)
-
-                # Extend the morphology objects list
-                self.morphology_objects.extend(basal_dendrites_spheres_objects)
-
-        # Draw the apical dendrite joints
-        if not self.options.morphology.ignore_apical_dendrite:
-            apical_dendrite_spheres_objects = []
-            self.draw_section_terminals_as_spheres(
-                root=self.morphology.apical_dendrite,
-                sphere_objects=apical_dendrite_spheres_objects,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.articulation_materials)
-
-            # Extend the morphology objects list
-            self.morphology_objects.extend(apical_dendrite_spheres_objects)
+        nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+            root=root, poly_lines_data=poly_lines_list,
+            poly_line_data=poly_data, max_branching_level=max_branching_level)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -327,7 +149,7 @@ class DisconnectedSectionsBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
+        nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
@@ -390,11 +212,6 @@ class DisconnectedSectionsBuilder:
 
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
-
-        # For the articulated sections, draw the spheres
-        if self.options.morphology.reconstruction_method == \
-                nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
-            self.draw_articulations()
 
         # Draw the soma
         nmv.builders.skeleton.draw_soma(builder=self)

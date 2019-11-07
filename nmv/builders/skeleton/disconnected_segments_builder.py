@@ -172,7 +172,7 @@ class DisconnectedSegmentsBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
+        nmv.logger.header('Building skeleton using DisconnectedSegmentsBuilder')
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it

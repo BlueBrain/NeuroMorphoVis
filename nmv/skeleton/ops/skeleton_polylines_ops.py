@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System import
+import copy
+
 # Blender imports
 from mathutils import Vector, Matrix, bvhtree
 import bmesh
@@ -108,6 +111,56 @@ def get_section_poly_line(section,
 
     # Return the poly-line list
     return poly_line
+
+
+####################################################################################################
+# @get_section_poly_line
+####################################################################################################
+def get_arbor_poly_lines_as_connected_sections(root,
+                                               poly_lines_data=[],
+                                               poly_line_data=[],
+                                               branching_level=0,
+                                               max_branching_level=nmv.consts.Math.INFINITY):
+    # Ignore the drawing if the section is None
+    if root is None:
+        return
+
+    # Increment the branching level
+    branching_level += 1
+
+    # Get a list of all the poly-line that corresponds to the given section
+    section_poly_line = get_section_poly_line(section=root)
+
+    # Extend the polyline samples for final mesh building
+    poly_line_data.extend(section_poly_line)
+
+    # If the section does not have any children, then draw the section and clean the list
+    if not root.has_children() or branching_level >= max_branching_level:
+
+        # Polyline name
+        poly_line_name = '%s_%d' % (root.get_type_prefix(), root.id)
+
+        # Construct the poly-line
+        import nmv.geometry
+        poly_line = nmv.geometry.PolyLine(
+            name='%s_%d' % (poly_line_name, branching_level),
+            samples=copy.deepcopy(poly_line_data),
+            material_index=0 + (branching_level % 2))
+
+        # Append the polyline to the list, and copy the data before clearing the list
+        poly_lines_data.append(poly_line)
+
+        # Clean @poly_line_data to collect the data from the remaining sections
+        poly_line_data[:] = []
+
+        # If no more branching is required, then exit the loop
+        return
+
+    # Iterate over the children sections and draw them, if any
+    for child in root.children:
+        get_arbor_poly_lines_as_connected_sections(
+            root=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
+            branching_level=branching_level, max_branching_level=max_branching_level)
 
 
 ####################################################################################################

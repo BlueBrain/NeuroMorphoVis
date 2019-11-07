@@ -137,13 +137,18 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
                 morphology=nmv.interface.ui_morphology, options= nmv.interface.ui_options)
 
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS or \
+                method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
             skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of spheres, where each SPHERE represents a sample
         elif method == nmv.enums.Skeletonization.Method.SAMPLES:
             skeleton_builder = nmv.builders.SamplesBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL:
+            skeleton_builder = nmv.builders.ConnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         else:
