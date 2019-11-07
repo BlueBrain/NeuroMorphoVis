@@ -147,21 +147,17 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             skeleton_builder = nmv.builders.SamplesBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL:
+        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
             skeleton_builder = nmv.builders.ConnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
+        # Default: DisconnectedSectionsBuilder
         else:
-            pass
-
-        #builder = nmv.builders.SkeletonBuilder(
-        #    nmv.interface.ui_morphology, nmv.interface.ui_options)
+            skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = skeleton_builder.draw_morphology_skeleton()
-
-        # View all the objects in the scene
-        # nmv.scene.ops.view_all_scene()
 
         # Confirm operation done
         return {'FINISHED'}

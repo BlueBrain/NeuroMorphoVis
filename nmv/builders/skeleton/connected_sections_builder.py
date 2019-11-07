@@ -110,10 +110,7 @@ class ConnectedSectionsBuilder:
     def construct_tree_poly_lines(self,
                                   root,
                                   poly_lines_list=[],
-                                  branching_level=0,
-                                  max_branching_level=nmv.consts.Math.INFINITY,
-                                  prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                                  material_start_index=0):
+                                  max_branching_level=nmv.consts.Math.INFINITY):
         """Creates a list of poly-lines corresponding to all the sections in the given tree.
 
         :param root:
@@ -124,20 +121,15 @@ class ConnectedSectionsBuilder:
             Current branching level of the arbor.
         :param max_branching_level:
             The maximum branching level given by the user.
-        :param prefix:
-            The prefix that is prepended to the name of the poly-line.
-        :param material_start_index:
-            An index that indicates which material to be used for which arbor.
         """
 
         # If the section is None, simply return
         if root is None:
             return
-        poly_data = list()
 
+        # Construct the poly-line objects
         nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-            root=root, poly_lines_data=poly_lines_list,
-            poly_line_data=poly_data, max_branching_level=max_branching_level)
+            root=root, poly_lines_data=poly_lines_list, max_branching_level=max_branching_level)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -175,35 +167,31 @@ class ConnectedSectionsBuilder:
         if not self.options.morphology.ignore_apical_dendrite:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
-                self.construct_tree_poly_lines(
+
+                # Construct the poly-line objects
+                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.apical_dendrite,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
                 nmv.logger.detail('Axon')
-                self.construct_tree_poly_lines(
+                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.axon,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
-                    self.construct_tree_poly_lines(
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=basal_dendrite,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Arbors.AXON_PREFIX,
-                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(

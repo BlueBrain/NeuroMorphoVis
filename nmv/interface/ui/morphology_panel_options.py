@@ -163,17 +163,9 @@ bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
            (nmv.enums.Skeletonization.Method.SAMPLES,
             'Samples',
             "Each sample is drawn as a sphere (this approach is very time consuming)"),
-           (nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL,
-            'Connected Sections (Original)',
-            "The sections of a single arbor are connected together"),
-           (nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED,
-            'Connected Sections (Repaired)',
-            "The morphology is repaired and fully reconstructed "),
-           (nmv.enums.Skeletonization.Method.CONNECTED_SKELETON,
-            'Connected Skeleton',
-            "The arbors of the entire morphology are drawn as a single object. "
-            "This method could be used to draw thousands of morphologies at once")
-           ],
+           (nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS,
+            'Connected Sections',
+            "The sections of a single arbor are connected together")],
     name="Method",
     default=nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS)
 

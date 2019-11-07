@@ -30,6 +30,65 @@ class Skeletonization:
         pass
 
     ################################################################################################
+    # @Method
+    ################################################################################################
+    class Method:
+
+        # Connect the original sections without repairing any artifacts in the morphology
+        CONNECTED_SECTIONS = 'SKELETONIZATION_CONNECTED_SECTION'
+
+        # Disconnect the sections and draw each of them as an independent object
+        DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
+
+        # Connected skeleton where all the skeleton lines will be connected together in a one object
+        CONNECTED_SKELETON = 'SKELETONIZATION_CONNECTED_SKELETON'
+
+        # Samples
+        SAMPLES = 'SKELETONIZATION_SAMPLES'
+
+        # Similar to DISCONNECTED_SECTIONS, and add an articulation sphere to connect the sections
+        ARTICULATED_SECTIONS = 'SKELETONIZATION_ARTICULATED_SECTIONS'
+
+        # Disconnect the segments and draw each of them as an independent object
+        DISCONNECTED_SEGMENTS = 'SKELETONIZATION_DISCONNECTED_SEGMENTS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Disconnected segments
+            if argument == 'disconnected-segments':
+                return Skeletonization.Method.DISCONNECTED_SEGMENTS
+
+                # Connected sections
+            elif argument == 'samples':
+                return Skeletonization.Method.SAMPLES
+
+            # Disconnected sections
+            elif argument == 'disconnected-sections':
+                return Skeletonization.Method.DISCONNECTED_SECTIONS
+
+            # Articulated sections
+            elif argument == 'articulated-sections':
+                return Skeletonization.Method.ARTICULATED_SECTIONS
+
+            # Connected sections
+            elif argument == 'connected-sections':
+                return Skeletonization.Method.CONNECTED_SECTIONS
+
+            # Default
+            else:
+                return Skeletonization.Method.DISCONNECTED_SECTIONS
+
+    ################################################################################################
     # @Skeleton
     ################################################################################################
     class Skeleton:
@@ -86,78 +145,6 @@ class Skeletonization:
             # By default use the original skeleton
             else:
                 return Skeletonization.Skeleton.ORIGINAL
-
-    ################################################################################################
-    # @Method
-    ################################################################################################
-    class Method:
-
-        # Connect the original sections without repairing any artifacts in the morphology
-        CONNECTED_SECTION_ORIGINAL = 'SKELETONIZATION_CONNECTED_SECTION_ORIGINAL'
-
-        # Connect the original sections after repairing the artifacts in the morphology
-        CONNECTED_SECTION_REPAIRED = 'SKELETONIZATION_CONNECTED_SECTION_REPAIRED'
-
-        # Disconnect the sections and draw each of them as an independent object
-        DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
-
-        # Connected skeleton where all the skeleton lines will be connected together in a one object
-        CONNECTED_SKELETON = 'SKELETONIZATION_CONNECTED_SKELETON'
-
-        # Samples
-        SAMPLES = 'SKELETONIZATION_SAMPLES'
-
-        # Similar to DISCONNECTED_SECTIONS, and add an articulation sphere to connect the sections
-        ARTICULATED_SECTIONS = 'SKELETONIZATION_ARTICULATED_SECTIONS'
-
-        # Disconnect the segments and draw each of them as an independent object
-        DISCONNECTED_SEGMENTS = 'SKELETONIZATION_DISCONNECTED_SEGMENTS'
-
-        # Draw the skeleton and disconnect the secondary branching arbors using original morphology
-        DISCONNECTED_SKELETON_ORIGINAL = 'SKELETONIZATION_DISCONNECTED_SKELETON_ORIGINAL'
-
-        # Draw the skeleton and disconnect the secondary branches after repairing the arbors
-        DISCONNECTED_SKELETON_REPAIRED = 'SKELETONIZATION_DISCONNECTED_SKELETON_REPAIRED'
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
-
-        ############################################################################################
-        # @get_enum
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-
-            # Disconnected segments
-            if argument == 'disconnected-segments':
-                return Skeletonization.Method.DISCONNECTED_SEGMENTS
-
-                # Connected sections
-            elif argument == 'samples':
-                return Skeletonization.Method.SAMPLES
-
-            # Disconnected sections
-            elif argument == 'disconnected-sections':
-                return Skeletonization.Method.DISCONNECTED_SECTIONS
-
-            # Articulated sections
-            elif argument == 'articulated-sections':
-                return Skeletonization.Method.ARTICULATED_SECTIONS
-
-            # Connected sections
-            elif argument == 'connected-sections':
-                return Skeletonization.Method.CONNECTED_SECTION_ORIGINAL
-
-            # Connected sections
-            elif argument == 'connected-sections-repaired':
-                return Skeletonization.Method.CONNECTED_SECTION_REPAIRED
-
-            # Default
-            else:
-                return Skeletonization.Method.CONNECTED_SECTION_ORIGINAL
 
     ################################################################################################
     # @Branching

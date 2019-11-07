@@ -166,6 +166,29 @@ class Section:
             return 'Unknown Branch'
 
     ################################################################################################
+    # @get_material_index
+    ################################################################################################
+    def get_material_index(self):
+        """Returns the material index that is used to create a corresponding colored material
+        to be applied to the corresponding object when reconstructed in the scene.
+
+        :return:
+            Material index.
+        """
+
+        import nmv.enums
+
+        if str(self.type) == '2':
+            return nmv.enums.Color.AXON_MATERIAL_START_INDEX
+        elif str(self.type) == '3':
+            return nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX
+        elif str(self.type) == '4':
+            return nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX
+        else:
+            # By default, use the basal dendrites colors
+            return nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX
+
+    ################################################################################################
     # @is_axon
     ################################################################################################
     def is_axon(self):

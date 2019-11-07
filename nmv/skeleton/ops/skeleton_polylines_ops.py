@@ -114,6 +114,48 @@ def get_section_poly_line(section,
 
 
 ####################################################################################################
+# @get_connected_poly_line
+####################################################################################################
+def get_connected_poly_line(section,
+                            transform=None):
+    """Get the poly-line list or a series of points that reflect a connected stream passing by
+    the given section. This function is different from the @get_section_poly_line one as it ignore
+    the duplicated points along the arbor at the beginning and end of the section.
+
+    :param section:
+        The geometry of a section.
+    :param transform:
+        Transform the points from local to circuit coordinates, only valid for a circuit.
+    :return:
+        Section data in poly-line format that is suitable for drawing by Blender.
+    """
+
+    # An array containing the data of the section arranged in blender poly-line format
+    poly_line = []
+
+    # Global coordinates transformation, use I if no transform is given
+    if transform is None:
+        transform = Matrix()
+
+    first_sample_index = 0
+    last_sample_index = len(section.samples)
+
+    # Construct the section
+    for i in range(first_sample_index, last_sample_index):
+
+        # Get the coordinates of the sample
+        # point = transform * section.samples[i].point
+
+        point = section.samples[i].point
+
+        # Use the actual radius of the samples reported in the morphology file
+        poly_line.append([(point[0], point[1], point[2], 1), section.samples[i].radius])
+
+    # Return the poly-line list
+    return poly_line
+
+
+####################################################################################################
 # @get_section_poly_line
 ####################################################################################################
 def get_arbor_poly_lines_as_connected_sections(root,
@@ -129,7 +171,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
     branching_level += 1
 
     # Get a list of all the poly-line that corresponds to the given section
-    section_poly_line = get_section_poly_line(section=root)
+    section_poly_line = get_connected_poly_line(section=root)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_poly_line)
@@ -145,7 +187,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
         poly_line = nmv.geometry.PolyLine(
             name='%s_%d' % (poly_line_name, branching_level),
             samples=copy.deepcopy(poly_line_data),
-            material_index=0 + (branching_level % 2))
+            material_index=root.get_material_index() + (branching_level % 2))
 
         # Append the polyline to the list, and copy the data before clearing the list
         poly_lines_data.append(poly_line)
@@ -157,7 +199,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
         return
 
     # Iterate over the children sections and draw them, if any
-    for child in root.children:
+    for i, child in enumerate(root.children):
         get_arbor_poly_lines_as_connected_sections(
             root=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
             branching_level=branching_level, max_branching_level=max_branching_level)
