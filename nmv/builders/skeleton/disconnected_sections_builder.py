@@ -79,6 +79,9 @@ class DisconnectedSectionsBuilder:
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
 
+        # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
+        self.articulations_spheres = list()
+
     ################################################################################################
     # @create_single_skeleton_materials_list
     ################################################################################################
@@ -207,12 +210,11 @@ class DisconnectedSectionsBuilder:
             sphere_radius = self.options.morphology.sections_fixed_radii_value
 
         # Create the sphere based on the largest radius
-        section_terminal_sphere = nmv.geometry.create_uv_sphere(
-            radius=sphere_radius * 1.125, location=point, subdivisions=16,
-            name='joint_%d' % section.id, color=self.options.morphology.articulation_color)
+        section_terminal_sphere = nmv.bmeshi.create_ico_sphere(
+            sphere_radius * 1.025, location=point, subdivisions=3)
 
-        # Return a reference to the terminal sphere
-        return section_terminal_sphere
+        # Add the created bmesh sphere to the list
+        self.articulations_spheres.append(section_terminal_sphere)
 
     ################################################################################################
     # @draw_section_as_disconnected_segments
@@ -220,7 +222,6 @@ class DisconnectedSectionsBuilder:
     def draw_section_terminals_as_spheres(self,
                                           root,
                                           material_list=None,
-                                          sphere_objects=[],
                                           branching_level=0,
                                           max_branching_level=nmv.consts.Math.INFINITY):
         """Draws the terminals of a given arbor as spheres.
@@ -252,40 +253,49 @@ class DisconnectedSectionsBuilder:
         if root is not None:
 
             # Draw the section terminal sphere
-            section_terminal_sphere = self.draw_section_terminal_as_sphere(root)
-
-            # Assign the material to the sphere
-            nmv.shading.set_material_to_object(section_terminal_sphere, material_list[0])
-
-            # Add the sphere to the list of the spheres objects
-            sphere_objects.append(section_terminal_sphere)
+            self.draw_section_terminal_as_sphere(root)
 
             # Draw the children sections
             for child in root.children:
                 self.draw_section_terminals_as_spheres(
-                    child, sphere_objects=sphere_objects, material_list=material_list,
+                    child, material_list=material_list,
                     branching_level=branching_level, max_branching_level=max_branching_level)
+
+    ################################################################################################
+    # @link_and_shade_articulation_spheres
+    ################################################################################################
+    def link_and_shade_articulation_spheres(self):
+        """Links the articulation spheres to the scene.
+        """
+
+        joint_bmesh = nmv.bmeshi.join_bmeshes_list(bmeshes_list=self.articulations_spheres)
+
+        # Link the bmesh spheres to the scene
+        articulations_spheres = \
+            nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, 'articulations')
+
+        # Smooth shading
+        nmv.mesh.shade_smooth_object(articulations_spheres)
+
+        # Assign the material
+        nmv.shading.set_material_to_object(articulations_spheres, self.articulation_materials[0])
+
+        # Append the sphere mesh to the morphology objects
+        self.morphology_objects.append(articulations_spheres)
 
     ################################################################################################
     # @draw_section_as_disconnected_segments
     ################################################################################################
     def draw_articulations(self):
+        """Draws the articulations at the branching points.
         """
 
-        :return:
-        """
-        # Draw the articulations
         # Draw the axon joints
         if not self.options.morphology.ignore_axon:
-            axon_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
-                sphere_objects=axon_spheres_objects,
                 max_branching_level=self.options.morphology.axon_branch_order,
                 material_list=self.articulation_materials)
-
-            # Extend the morphology objects list
-            self.morphology_objects.extend(axon_spheres_objects)
 
         # Draw the basal dendrites joints
         if not self.options.morphology.ignore_basal_dendrites:
@@ -298,24 +308,19 @@ class DisconnectedSectionsBuilder:
                     # Draw the basal dendrites as a set connected sections
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
-                        sphere_objects=basal_dendrites_spheres_objects,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.articulation_materials)
-
-                # Extend the morphology objects list
-                self.morphology_objects.extend(basal_dendrites_spheres_objects)
 
         # Draw the apical dendrite joints
         if not self.options.morphology.ignore_apical_dendrite:
             apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
-                sphere_objects=apical_dendrite_spheres_objects,
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.articulation_materials)
 
-            # Extend the morphology objects list
-            self.morphology_objects.extend(apical_dendrite_spheres_objects)
+        # Link and shade the articulation spheres
+        self.link_and_shade_articulation_spheres()
 
     ################################################################################################
     # @draw_morphology_skeleton
