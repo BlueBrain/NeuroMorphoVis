@@ -23,7 +23,7 @@ import os
 # @_version_
 ####################################################################################################
 def get_nmv_version():
-    """Get NeuroMorphoVis version.
+    """Gets NeuroMorphoVis version.
 
     :return:
         NeuroMorphoVis version tuple.

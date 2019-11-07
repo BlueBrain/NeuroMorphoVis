@@ -130,12 +130,25 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a valid morphology file')
             return {'FINISHED'}
 
-        # Create a skeletonizer object to build the morphology skeleton
-        builder = nmv.builders.SkeletonBuilder(
-            nmv.interface.ui_morphology, nmv.interface.ui_options)
+        # Create a skeleton builder object to build the morphology skeleton
+        method = nmv.interface.ui_options.morphology.reconstruction_method
+        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+            skeleton_builder = nmv.builders.DisconnectedSegmentsBuilder(
+                morphology=nmv.interface.ui_morphology, options= nmv.interface.ui_options)
+
+        # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
+        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
+            skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+        else:
+            pass
+
+        #builder = nmv.builders.SkeletonBuilder(
+        #    nmv.interface.ui_morphology, nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
-        nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
+        nmv.interface.ui_reconstructed_skeleton = skeleton_builder.draw_morphology_skeleton()
 
         # View all the objects in the scene
         # nmv.scene.ops.view_all_scene()

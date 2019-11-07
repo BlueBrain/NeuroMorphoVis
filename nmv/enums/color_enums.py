@@ -52,3 +52,15 @@ class Color:
 
     # Nuclei color
     NUCLEI = Vector((0.75, 0.41, 0.77))
+
+    # The soma materials are found at the indices 0 and 1
+    SOMA_MATERIAL_START_INDEX = 0
+
+    # The apical dendrites materials are found at the indices 2 and 3
+    APICAL_DENDRITE_MATERIAL_START_INDEX = 2
+
+    # The basal dendrites materials are found at the indices 0 and 1
+    BASAL_DENDRITES_MATERIAL_START_INDEX = 4
+
+    # The axon materials are found at the indices 0 and 1
+    AXON_MATERIAL_START_INDEX = 6

@@ -23,6 +23,7 @@ import nmv
 import nmv.consts
 import nmv.file
 import nmv.skeleton
+import nmv.utilities
 
 
 ####################################################################################################
@@ -239,7 +240,9 @@ class H5Reader:
         try:
 
             # Read the point list from the points directory
+            nmv.utilities.disable_std_output()
             self.points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
+            nmv.utilities.enable_std_output()
 
         except ImportError:
 
@@ -252,7 +255,9 @@ class H5Reader:
         try:
 
             # Get the structure list from the structures directory
+            nmv.utilities.disable_std_output()
             self.structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
+            nmv.utilities.enable_std_output()
 
         except ImportError:
 

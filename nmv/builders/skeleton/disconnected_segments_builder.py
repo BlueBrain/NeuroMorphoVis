@@ -31,10 +31,10 @@ import nmv.scene
 
 
 ####################################################################################################
-# @DisconnectedSectionsBuilder
+# @DisconnectedSegmentsBuilder
 ####################################################################################################
-class DisconnectedSectionsBuilder:
-    """Builds and draws the morphology as a series of disconnected sections.
+class DisconnectedSegmentsBuilder:
+    """Builds and draws the morphology as a series of disconnected segments for analysis.
     """
 
     ################################################################################################
@@ -140,14 +140,18 @@ class DisconnectedSectionsBuilder:
         if branching_level > max_branching_level:
             return
 
-        # Construct the poly-line
-        poly_line = nmv.geometry.PolyLine(
-            name='%s_%d' % (prefix, branching_level),
-            samples=nmv.skeleton.get_section_poly_line(section=root),
-            material_index=material_start_index + (branching_level % 2))
+        # Get a list of segments poly-lines samples
+        segments_poly_lines = nmv.skeleton.get_segments_poly_lines(section=root)
 
-        # Add the poly-line to the poly-lines list
-        poly_lines_list.append(poly_line)
+        # Construct the poly-line
+        for i, segment_poly_line in enumerate(segments_poly_lines):
+            poly_line = nmv.geometry.PolyLine(
+                name='%s_%d_%d' % (prefix, branching_level, i),
+                samples=segment_poly_line,
+                material_index=material_start_index + (i % 2))
+
+            # Add the poly-line to the poly-lines list
+            poly_lines_list.append(poly_line)
 
         # Process the children, section by section
         for child in root.children:

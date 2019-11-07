@@ -27,7 +27,54 @@ import nmv.scene
 
 
 ####################################################################################################
-# @get_section_data_in_poly_line_format
+# @get_segments_poly_lines
+####################################################################################################
+def get_segments_poly_lines(section,
+                            transform=None):
+    """Get a list of poly-lines that reflect the segments of a single section.
+
+    :param section:
+        The geometry of a section.
+    :param transform:
+        Transform the points from local to circuit coordinates, only valid for a circuit.
+    :return:
+        Section data in poly-line format that is suitable for drawing by Blender.
+    """
+
+    # A list of all the poly-lines of all the segments that are found in the given section
+    segments_poly_lines = list()
+
+    for i in range(len(section.samples) - 1):
+
+        # An array containing the data of the segment arranged in blender poly-line format
+        segment_poly_line = []
+
+        # Global coordinates transformation, use I if no transform is given
+        if transform is None:
+            transform = Matrix()
+
+        # Get the coordinates of the sample
+        # point_0 = transform * section.samples[i].point
+        # point_1 = transform * section.samples[i + 1].point
+
+        point_0 = section.samples[i].point
+        point_1 = section.samples[i + 1].point
+
+        # Use the actual radius of the samples reported in the morphology file
+        segment_poly_line.append([(point_0[0], point_0[1], point_0[2], 1),
+                                  section.samples[i].radius])
+        segment_poly_line.append([(point_1[0], point_1[1], point_1[2], 1),
+                                  section.samples[i + 1].radius])
+
+        # Append the segment poly-line data to this final list
+        segments_poly_lines.append(segment_poly_line)
+
+    # Return the segments poly-lines list
+    return segments_poly_lines
+
+
+####################################################################################################
+# @get_section_poly_line
 ####################################################################################################
 def get_section_poly_line(section,
                           transform=None):
@@ -52,7 +99,7 @@ def get_section_poly_line(section,
     for i in range(len(section.samples)):
 
         # Get the coordinates of the sample
-        #point = transform * section.samples[i].point
+        # point = transform * section.samples[i].point
 
         point = section.samples[i].point
 

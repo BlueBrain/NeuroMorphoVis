@@ -69,6 +69,12 @@ bpy.types.Scene.NMV_MorphologyLoadingTime = bpy.props.FloatProperty(
     description="The time it takes to load the morphology from file and draw it to the viewport",
     default=0, min=0, max=1000000)
 
+# Drawing time
+bpy.types.Scene.NMV_MorphologyDrawingTime = bpy.props.FloatProperty(
+    name="Drawing Morphology (Sec)",
+    description="The time it takes to draw the morphology after loading it",
+    default=0, min=0, max=1000000)
+
 # Output directory
 bpy.types.Scene.NMV_OutputDirectory = bpy.props.StringProperty(
     name="Output Directory",

@@ -102,6 +102,10 @@ class IOPanel(bpy.types.Panel):
             loading_time_row.prop(scene, 'NMV_MorphologyLoadingTime')
             loading_time_row.enabled = False
 
+            drawing_time_row = layout.row()
+            drawing_time_row.prop(scene, 'NMV_MorphologyDrawingTime')
+            drawing_time_row.enabled = False
+
         # Output options
         output_data_options_row = layout.row()
         output_data_options_row.label(text='Output Options:', icon='SCRIPT')
@@ -185,6 +189,7 @@ class LoadMorphology(bpy.types.Operator):
         """
 
         # Clear the scene
+        import nmv.scene
         nmv.scene.ops.clear_scene()
 
         # Load the images
@@ -193,29 +198,43 @@ class LoadMorphology(bpy.types.Operator):
         logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
         logo_tex.extension = 'CLIP'
 
-        # Morphology loading time
-        start_time = time.time()
-
         # Load the morphology file
+        start_time = time.time()
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+        loading_time = time.time()
+        context.scene.NMV_MorphologyLoadingTime = loading_time - start_time
+        nmv.logger.info('Morphology loaded in [%f] seconds' %
+                        context.scene.NMV_MorphologyLoadingTime)
 
         # If the result is None, report the issue
         if loading_result is None:
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
-        # Plot the morphology (whatever issues it contains)
-        nmv.interface.ui_options.morphology.reconstruction_method = \
-            nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
-        nmv.interface.ui.sketch_morphology_skeleton_guide(
+        # Clear the scene
+        import nmv.scene
+        nmv.scene.clear_scene()
+
+        # Create a skeletonizer object to build the morphology skeleton
+        import nmv.builders
+        builder = nmv.builders.DisconnectedSegmentsBuilder(
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))
 
-        # Report the morphology loading time
-        end_time = time.time()
-        context.scene.NMV_MorphologyLoadingTime = end_time - start_time
-        nmv.logger.info('Morphology loaded in [%f] seconds' %
-                        context.scene.NMV_MorphologyLoadingTime)
+        # Draw the morphology skeleton and return a list of all the reconstructed objects
+        nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
+
+        drawing_time = time.time()
+        context.scene.NMV_MorphologyDrawingTime = drawing_time - loading_time
+        nmv.logger.info('Morphology drawn in [%f] seconds' %
+                        context.scene.NMV_MorphologyDrawingTime)
+
+        # Plot the morphology (whatever issues it contains)
+        #nmv.interface.ui_options.morphology.reconstruction_method = \
+        #    nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
+        #nmv.interface.ui.sketch_morphology_skeleton_guide(
+        #    morphology=nmv.interface.ui_morphology,
+        #    options=copy.deepcopy(nmv.interface.ui_options))
 
         # Switch to the orthographic mode
         # bpy.ops.view3d.view_persportho()
