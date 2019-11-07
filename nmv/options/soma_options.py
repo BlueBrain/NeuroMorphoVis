@@ -36,7 +36,7 @@ class SomaOptions:
         self.method = nmv.enums.Soma.ReconstructionMethod.META_BALLS
 
         # Meta ball resolution in case of using the MetaBall generation approach
-        self.meta_ball_resolution = 0.1
+        self.meta_ball_resolution = 0.99
 
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT

@@ -227,6 +227,9 @@ class SamplesBuilder:
 
         nmv.logger.header('Building skeleton using SamplesBuilder')
 
+        nmv.logger.info('Updating Radii')
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
 

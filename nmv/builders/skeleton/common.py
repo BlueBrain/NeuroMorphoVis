@@ -79,10 +79,34 @@ def create_skeleton_materials_and_illumination(builder):
 
 
 ####################################################################################################
+# @update_sections_branching
+####################################################################################################
+def update_sections_branching(builder):
+    """Updates the sections at the branching points and label them to primary or secondary based
+    on their angles and radii.
+
+    :param builder:
+        A given skeleton builder.
+    """
+
+    # Label the primary and secondary sections based on angles
+    if builder.options.mesh.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology,
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+
+    # Label the primary and secondary sections based on radii
+    else:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology,
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+
+
+####################################################################################################
 # @resample_skeleton_sections
 ####################################################################################################
 def resample_skeleton_sections(builder):
-    """Resamples the sections of the morphology skeleton before drawing it.
+    """Re-samples the sections of the morphology skeleton before drawing it.
 
     NOTE: This resampling process is performed on a per-section basis, so the first and last samples
     of the section are left intact.

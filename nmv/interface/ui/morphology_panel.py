@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import time
+
 # Blender imports
 import bpy
 
@@ -32,6 +35,7 @@ import nmv.rendering
 import nmv.utilities
 from .morphology_panel_options import *
 
+is_morphology_reconstructed = False
 
 ####################################################################################################
 # @MorphologyPanel
@@ -84,6 +88,13 @@ class MorphologyPanel(bpy.types.Panel):
         reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
         reconstruct_morphology_button_row.enabled = True
 
+        if is_morphology_reconstructed:
+            morphology_stats_row = layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            reconstruction_time_row = layout.row()
+            reconstruction_time_row.prop(context.scene, 'NMV_MorphologyReconstructionTime')
+            reconstruction_time_row.enabled = False
+
         # Set the rendering options
         nmv.interface.ui.morphology_panel_ops.set_rendering_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
@@ -130,6 +141,9 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a valid morphology file')
             return {'FINISHED'}
 
+        # Start reconstruction
+        start_time = time.time()
+
         # Create a skeleton builder object to build the morphology skeleton
         method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
@@ -158,6 +172,14 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = skeleton_builder.draw_morphology_skeleton()
+
+        # Morphology reconstructed
+        reconstruction_time = time.time()
+        global is_morphology_reconstructed
+        is_morphology_reconstructed = True
+        context.scene.NMV_MorphologyReconstructionTime = reconstruction_time - start_time
+        nmv.logger.info('Morphology skeleton reconstructed in [%f] seconds' %
+                        context.scene.NMV_MorphologyReconstructionTime)
 
         # Confirm operation done
         return {'FINISHED'}

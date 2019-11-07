@@ -174,6 +174,9 @@ class DisconnectedSegmentsBuilder:
 
         nmv.logger.header('Building skeleton using DisconnectedSegmentsBuilder')
 
+        nmv.logger.info('Updating Radii')
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(

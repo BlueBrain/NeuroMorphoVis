@@ -143,6 +143,12 @@ class ConnectedSectionsBuilder:
 
         nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
 
+        nmv.logger.info('Updating Radii')
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
+        nmv.logger.info('Updating Branching to Primary / Secondary')
+        nmv.builders.skeleton.update_sections_branching(builder=self)
+
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(

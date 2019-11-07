@@ -306,3 +306,9 @@ bpy.types.Scene.NMV_MorphologyCloseUpDimensions = bpy.props.FloatProperty(
     name="Dimensions",
     default=20, min=5, max=100,
     description="The dimensions of the view that will be rendered in microns")
+
+# Reconstruction time
+bpy.types.Scene.NMV_MorphologyReconstructionTime = bpy.props.FloatProperty(
+    name="Reconstruction (Sec)",
+    description="The time it takes to reconstruct the morphology and draw it to the viewport",
+    default=0, min=0, max=1000000)
