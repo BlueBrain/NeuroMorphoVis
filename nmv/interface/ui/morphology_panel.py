@@ -141,6 +141,11 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
+        # Draw the morphology as a set of spheres, where each SPHERE represents a sample
+        elif method == nmv.enums.Skeletonization.Method.SAMPLES:
+            skeleton_builder = nmv.builders.SamplesBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
         else:
             pass
 

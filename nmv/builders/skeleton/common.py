@@ -22,6 +22,7 @@ import bpy
 import nmv.enums
 import nmv.shading
 import nmv.skeleton
+import nmv.mesh
 
 
 ####################################################################################################
@@ -107,3 +108,85 @@ def resample_skeleton_sections(builder):
               builder.options.morphology.resampling_step])
     else:
         nmv.logger.detail('Resampling ignored')
+
+
+####################################################################################################
+# @draw_soma
+####################################################################################################
+def draw_soma(builder):
+    """Draws the soma.
+
+    :param builder:
+        A given skeleton builder.
+    """
+
+    # Draw the soma as a sphere object
+    nmv.logger.info('Constructing soma')
+    if builder.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
+
+        # Draw the soma sphere
+        nmv.logger.detail('Symbolic sphere')
+        soma_sphere = builder.draw_soma_sphere()
+
+        # Smooth shade the sphere to look nice
+        nmv.mesh.ops.shade_smooth_object(soma_sphere)
+
+        # Add the soma sphere to the morphology objects to keep track on it
+        builder.morphology_objects.append(soma_sphere)
+
+    # Or as a reconstructed profile using the soma builder
+    elif builder.options.morphology.soma_representation == nmv.enums.Soma.Representation.SOFT_BODY:
+
+        # Create a soma builder object
+        nmv.logger.detail('SoftBody')
+        soma_builder_object = nmv.builders.SomaSoftBodyBuilder(builder.morphology, builder.options)
+
+        # Reconstruct the three-dimensional profile of the soma mesh without applying the
+        # default shader to it,
+        # since we need to use the shader specified in the morphology options
+        soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+        # Apply the shader given in the morphology options, not the one in the soma toolbox
+        nmv.shading.set_material_to_object(soma_mesh, builder.soma_materials[0])
+
+        # Add the soma mesh to the morphology objects
+        builder.morphology_objects.append(soma_mesh)
+
+    elif builder.options.morphology.soma_representation == \
+            nmv.enums.Soma.Representation.META_BALLS:
+
+        # Create the MetaBuilder
+        nmv.logger.detail('MetaBall')
+        soma_builder_object = nmv.builders.SomaMetaBuilder(builder.morphology, builder.options)
+
+        # Reconstruct the soma, don't apply the default shader and use the one from the
+        # morphology panel
+        soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+        # Apply the shader given in the morphology options, not the one in the soma toolbox
+        nmv.shading.set_material_to_object(soma_mesh, builder.soma_materials[0])
+
+        # Add the soma mesh to the morphology objects
+        builder.morphology_objects.append(soma_mesh)
+
+    # Otherwise, ignore the soma drawing
+    else:
+        nmv.logger.detail('Ignoring soma')
+
+
+####################################################################################################
+# @transform_to_global_coordinates
+####################################################################################################
+def transform_to_global_coordinates(builder):
+
+    # Transform the arbors to the global coordinates if required for a circuit
+    if builder.options.morphology.global_coordinates and \
+            builder.options.morphology.blue_config is not None and \
+            builder.options.morphology.gid is not None:
+        # Transforming
+        nmv.logger.log('Transforming morphology to global coordinates ')
+        nmv.skeleton.ops.transform_morphology_to_global_coordinates(
+            morphology_objects=builder.morphology_objects,
+            blue_config=builder.options.morphology.blue_config,
+            gid=builder.options.morphology.gid)
+

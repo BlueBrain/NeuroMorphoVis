@@ -28,6 +28,7 @@ import nmv.skeleton
 import nmv.consts
 import nmv.geometry
 import nmv.scene
+import nmv.shading
 
 
 ####################################################################################################
@@ -192,9 +193,8 @@ class DisconnectedSegmentsBuilder:
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
 
-        nmv.logger.info('Constructing poly-lines')
-
         # Apical dendrite
+        nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrite:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
@@ -236,9 +236,15 @@ class DisconnectedSegmentsBuilder:
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
 
-        # Select the morphology
-        nmv.scene.set_active_object(morphology_object)
+        # Draw the soma
+        nmv.builders.skeleton.draw_soma(builder=self)
 
-        # Done
+        # Transforming to global coordinates
+        nmv.builders.skeleton.transform_to_global_coordinates(builder=self)
+
+        # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
+        return self.morphology_objects
+
+
 

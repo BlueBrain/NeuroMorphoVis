@@ -28,13 +28,18 @@ import nmv.skeleton
 import nmv.consts
 import nmv.geometry
 import nmv.scene
+import nmv.bmeshi
+import nmv.shading
 
 
 ####################################################################################################
-# @DisconnectedSectionsBuilder
+# @SamplesBuilder
 ####################################################################################################
-class DisconnectedSectionsBuilder:
-    """Builds and draws the morphology as a series of disconnected sections.
+class SamplesBuilder:
+    """Builds and draws the morphology as a series of samples where each sample is represented by
+    a sphere.
+
+    NOTE: We use bmeshes to generate the spheres and then link them to the scene all at once.
     """
 
     ################################################################################################
@@ -104,58 +109,112 @@ class DisconnectedSectionsBuilder:
         self.skeleton_materials.extend(self.axon_materials)
 
     ################################################################################################
-    # @construct_tree_poly_lines
+    # @draw_section_samples_as_spheres
     ################################################################################################
-    def construct_tree_poly_lines(self,
-                                  root,
-                                  poly_lines_list=[],
-                                  branching_level=0,
-                                  max_branching_level=nmv.consts.Math.INFINITY,
-                                  prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                                  material_start_index=0):
-        """Creates a list of poly-lines corresponding to all the sections in the given tree.
+    def draw_section_samples_as_spheres(self,
+                                        section):
+        """Draw the section samples as a set of spheres.
+
+        :param section:
+            A given section to draw.
+        :return:
+            List of spheres of the section.
+        """
+        output = list()
+        for sample in section.samples:
+            sphere = nmv.bmeshi.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=3)
+            output.append(sphere)
+        return output
+
+    ################################################################################################
+    # @draw_sections_as_spheres
+    ################################################################################################
+    def draw_sections_as_spheres(self,
+                                 root,
+                                 name,
+                                 material_list=[],
+                                 sphere_objects=[],
+                                 branching_level=0,
+                                 max_branching_level=nmv.consts.Math.INFINITY):
+        """Draw the section as a list of spheres.
 
         :param root:
-            Arbor root, or children sections.
-        :param poly_lines_list:
-            A list that will combine all the constructed poly-lines.
-        :param branching_level:
+            Root section of the tree to be drawn.
+        :param name:
+            Prefix for labeling the spheres.
+        :param material_list:
+            A list of materials specific to the type of arbor being drawn.
+        :param sphere_objects:
+            A list of the drawn spheres.
+         :param branching_level:
             Current branching level of the arbor.
         :param max_branching_level:
             The maximum branching level given by the user.
-        :param prefix:
-            The prefix that is prepended to the name of the poly-line.
-        :param material_start_index:
-            An index that indicates which material to be used for which arbor.
+        :return:
         """
 
-        # If the section is None, simply return
+        # Ignore the drawing if the root section is None
         if root is None:
             return
 
         # Increment the branching level
         branching_level += 1
 
-        # Return if we exceed the maximum branching level
+        # Stop drawing at the maximum branching level
         if branching_level > max_branching_level:
             return
 
-        # Construct the poly-line
-        poly_line = nmv.geometry.PolyLine(
-            name='%s_%d' % (prefix, branching_level),
-            samples=nmv.skeleton.get_section_poly_line(section=root),
-            material_index=material_start_index + (branching_level % 2))
+        # Make sure that the arbor exist
+        if root is not None:
 
-        # Add the poly-line to the poly-lines list
-        poly_lines_list.append(poly_line)
+            section_name = '%s_%d' % (name, root.id)
+            drawn_spheres = self.draw_section_samples_as_spheres(root)
 
-        # Process the children, section by section
-        for child in root.children:
-            self.construct_tree_poly_lines(root=child,
-                                           poly_lines_list=poly_lines_list,
-                                           branching_level=branching_level,
-                                           max_branching_level=max_branching_level,
-                                           material_start_index=material_start_index)
+            # Add the drawn segments to the 'segments_objects'
+            sphere_objects.extend(drawn_spheres)
+
+            # Draw the children sections
+            for child in root.children:
+                self.draw_sections_as_spheres(
+                    root=child,
+                    branching_level=branching_level,
+                    max_branching_level=max_branching_level,
+                    name=name,
+                    material_list=material_list,
+                    sphere_objects=sphere_objects)
+
+    ################################################################################################
+    # @link_and_shade_spheres
+    ################################################################################################
+    def link_and_shade_spheres(self,
+                               sphere_list,
+                               materials_list,
+                               prefix):
+        """Links the added sphere to the scene.
+
+        :param sphere_list:
+            A list of sphere to be linked to the scene and shaded with the corresponding materials.
+        :param materials_list:
+            A list of materials to be applied to the spheres after being linked to the scene.
+        :param prefix:
+            Prefix to name each sphere object after linking it to the scene.
+        """
+
+        # Sphere by sphere
+        for i, item in enumerate(sphere_list):
+
+            # Link the bmesh spheres to the scene
+            sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(item, prefix)
+
+            # Smooth shading
+            nmv.mesh.shade_smooth_object(sphere_mesh)
+
+            # Assign the material
+            nmv.shading.set_material_to_object(sphere_mesh, materials_list[i % 2])
+
+            # Append the sphere mesh to the morphology objects
+            self.morphology_objects.append(sphere_mesh)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -167,17 +226,7 @@ class DisconnectedSectionsBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
-
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        nmv.scene.hide_object(bevel_object)
-
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        nmv.logger.header('Building skeleton using SamplesBuilder')
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -185,52 +234,58 @@ class DisconnectedSectionsBuilder:
         # Resample the sections of the morphology skeleton
         nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
-        # A list of all the skeleton poly-lines
-        skeleton_poly_lines = list()
-
         # Apical dendrite
-        nmv.logger.info('Constructing poly-lines')
+        nmv.logger.info('Constructing spheres')
         if not self.options.morphology.ignore_apical_dendrite:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_list=skeleton_poly_lines,
+                apical_dendrite_spheres = list()
+                self.draw_sections_as_spheres(
+                    self.morphology.apical_dendrite,
+                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+                    material_list=self.apical_dendrite_materials,
+                    sphere_objects=apical_dendrite_spheres)
+
+                # Link the spheres and shade
+                self.link_and_shade_spheres(sphere_list=apical_dendrite_spheres,
+                                            materials_list=self.apical_dendrite_materials,
+                                            prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX)
 
         # Axon
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
                 nmv.logger.detail('Axon')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.axon,
-                    poly_lines_list=skeleton_poly_lines,
+                axon_spheres = list()
+                self.draw_sections_as_spheres(
+                    self.morphology.axon,
+                    name=nmv.consts.Arbors.AXON_PREFIX,
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+                    material_list=self.axon_materials,
+                    sphere_objects=axon_spheres)
+
+                # Link the spheres and shade
+                self.link_and_shade_spheres(sphere_list=axon_spheres,
+                                            materials_list=self.axon_materials,
+                                            prefix=nmv.consts.Arbors.AXON_PREFIX)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
-                    self.construct_tree_poly_lines(
-                        root=basal_dendrite,
-                        poly_lines_list=skeleton_poly_lines,
+                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    basal_dendrites_spheres = list()
+                    self.draw_sections_as_spheres(
+                        basal_dendrite, name=dendrite_name,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Arbors.AXON_PREFIX,
-                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+                        material_list=self.basal_dendrites_materials,
+                        sphere_objects=basal_dendrites_spheres)
 
-        # Draw the poly-lines as a single object
-        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-            poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            poly_line_type='POLY', bevel_object=bevel_object, materials=self.skeleton_materials)
-
-        # Append it to the morphology objects
-        self.morphology_objects.append(morphology_object)
-
+                    # Link the spheres and shade
+                    self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
+                                                materials_list=self.basal_dendrites_materials,
+                                                prefix=dendrite_name)
         # Draw the soma
         nmv.builders.skeleton.draw_soma(builder=self)
 
