@@ -109,8 +109,8 @@ def compute_arbor_bounding_box(arbor):
     """
 
     # Initialize the min and max points
-    p_min = Vector((100000000000, 100000000000, 100000000000))
-    p_max = Vector((-100000000000, -100000000000, -100000000000))
+    p_min = Vector((1e10, 1e10, 1e10))
+    p_max = Vector((-1e10, -1e10, -1e10))
 
     # Compute the arbor bounding box
     compute_sections_bounding_box(arbor=arbor, p_min=p_min, p_max=p_max)

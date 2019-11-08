@@ -72,6 +72,23 @@ def kernel_total_number_trifurcations(morphology):
 
 
 ####################################################################################################
+# @kernel_maximum_path_distance
+####################################################################################################
+def kernel_maximum_path_distance(morphology):
+    """Compute the maximum path distance from the soma along all the arbors till their last sample.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_path_distance_of_arbor,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+
+####################################################################################################
 # @kernel_maximum_branching_order
 ####################################################################################################
 def kernel_maximum_branching_order(morphology):

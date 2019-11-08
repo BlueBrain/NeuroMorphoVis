@@ -134,7 +134,7 @@ def compute_maximum_branching_order_of_arbor(arbor):
         The maximum branching order of the given arbor.
     """
 
-    # A list that will contain a count of each
+    # A list that will collect the branching orders
     branching_orders = list()
 
     # Apply the operation per section
@@ -145,3 +145,37 @@ def compute_maximum_branching_order_of_arbor(arbor):
 
     # Return the maximum branching order of the arbor
     return max(branching_orders)
+
+
+####################################################################################################
+# @compute_maximum_path_distance_of_arbor
+####################################################################################################
+def compute_maximum_path_distance_of_arbor(arbor):
+    """Compute the maximum path distance from the soma along all the arbors till their last sample.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The maximum path distance from the soma along all the arbors till their last sample.
+    """
+
+    # Compute the maximum branching order
+    maximum_branching_order = compute_maximum_branching_order_of_arbor(arbor)
+
+    # A list that will collect the distances along each path on the arbor.
+    paths_distances = list()
+
+    # NOTE: This variable (or list) is used to sum up the values recursively
+    path_distance = list()
+    path_distance.append(0)
+
+    # Apply the operation per section
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.get_maximum_path_distance,
+          paths_distances, maximum_branching_order, path_distance])
+
+    print(paths_distances)
+
+    # Return the maximum branching order of the arbor
+    return max(paths_distances)

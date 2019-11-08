@@ -37,7 +37,7 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='TotalNumberSections',
                  name='Total # Sections',
                  kernel=kernel_total_number_sections,
-                 description='The total number of sections',
+                 description='The total number of sections (or branches)',
                  data_format='INT'),
 
     AnalysisItem(variable='MaximumBranchingOrder',
@@ -57,6 +57,13 @@ ui_per_arbor_analysis_items = [
                  kernel=kernel_total_number_trifurcations,
                  description='The total number of trifurcations',
                  data_format='INT'),
+
+    AnalysisItem(variable='MaximumPathDistance',
+                 name='Max. Path Distance',
+                 kernel=kernel_maximum_path_distance,
+                 description='The maximum distance along an arbor from its root sample to its '
+                             'most far leaf',
+                 data_format='FLOAT'),
 
     AnalysisItem(variable='MinNumberSamplePerSection',
                  name='Min. # Samples / Section',
@@ -257,8 +264,9 @@ ui_global_analysis_items = [
                  data_format='INT'),
 
     AnalysisItem(variable='NumberNeurites',
-                 name='Total # Neurites',
+                 name='Total # Stems',
                  kernel=kernel_global_total_number_neurites,
-                 description='The total number of all the arbors (or neurites) in the morphology',
+                 description='The total number of all the arbors (or stems) that emanate from the '
+                             'soma in the morphology',
                  data_format='INT'),
 ]

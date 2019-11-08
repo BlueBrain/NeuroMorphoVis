@@ -107,6 +107,9 @@ class Morphology:
         # Morphology full bounding box
         self.bounding_box = None
 
+        # Relaxed bounding box
+        self.relaxed_bounding_box = None
+
         # Morphology unified bounding box
         self.unified_bounding_box = None
 
@@ -245,6 +248,10 @@ class Morphology:
         # Get the joint bounding box from the list
         morphology_bounding_box = nmv.bbox.extend_bounding_boxes(morphology_bounding_boxes)
 
+        # Save the morphology bounding box
+        self.bounding_box = copy.deepcopy(morphology_bounding_box)
+
+        '''
         # Extend the bounding box a little to verify the results
         morphology_bounding_box.p_min[0] -= 5
         morphology_bounding_box.p_min[1] -= 5
@@ -257,11 +264,11 @@ class Morphology:
         morphology_bounding_box.bounds[2] += 10
 
         # Save the morphology bounding box
-        self.bounding_box = morphology_bounding_box
+        self.relaxed_bounding_box = copy.deepcopy(morphology_bounding_box)
 
         # Compute the unified bounding box
-        self.unified_bounding_box = nmv.bbox.compute_unified_bounding_box(self.bounding_box)
-
+        self.unified_bounding_box = nmv.bbox.compute_unified_bounding_box(self.relaxed_bounding_box)
+        '''
     ################################################################################################
     # @fix_arbor_first_section
     ################################################################################################

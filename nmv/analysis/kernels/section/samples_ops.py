@@ -18,6 +18,9 @@
 # System imports
 import copy
 
+# Internal imports
+import nmv
+
 
 ####################################################################################################
 # @compute_number_of_samples_per_section
@@ -263,4 +266,30 @@ def get_maximum_branching_order(section,
         analysis_data.append(copy.deepcopy(section.branching_order))
 
 
+####################################################################################################
+# @get_maximum_path_distance
+####################################################################################################
+def get_maximum_path_distance(section,
+                              analysis_data,
+                              maximum_branching_order,
+                              path_distance):
+    """Gets the maximum branching order of the arbor.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Get a reference to the current distance
+
+
+    # Compute the section length
+    section_length = nmv.analysis.compute_section_length(section=section)
+
+    path_distance[0] += section_length
+
+    if not section.has_children():
+        analysis_data.append(copy.deepcopy(path_distance[0]))
+        path_distance[0] -= section_length
 

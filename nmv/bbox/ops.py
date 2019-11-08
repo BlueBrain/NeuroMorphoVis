@@ -44,12 +44,8 @@ def extend_bounding_boxes(bounding_boxes_list):
     """
 
     # Initialize the min and max points
-    p_min = Vector((nmv.consts.Math.INFINITY,
-                    nmv.consts.Math.INFINITY,
-                    nmv.consts.Math.INFINITY))
-    p_max = Vector((-1 * nmv.consts.Math.INFINITY,
-                    -1 * nmv.consts.Math.INFINITY,
-                    -1 * nmv.consts.Math.INFINITY))
+    p_min = Vector((1e10, 1e10, 1e10))
+    p_max = Vector((-1e10, -1e10, -1e10))
 
     for bounding_box in bounding_boxes_list:
         if bounding_box.p_min[0] < p_min[0]:
