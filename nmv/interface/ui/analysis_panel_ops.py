@@ -185,6 +185,9 @@ def add_analysis_groups_to_panel(morphology,
         Blender context.
     """
 
+    # Bounding box information
+    add_bounding_box_information_to_panel(morphology=morphology, layout=layout, scene=context.scene)
+
     # Morphology
     add_analysis_group_to_panel(prefix='Morphology', layout=layout, context=context)
 
@@ -212,6 +215,85 @@ def add_analysis_groups_to_panel(morphology,
         # Add the analysis results to the panel
         add_analysis_group_to_panel(
             prefix=morphology.axon.get_type_prefix(), layout=layout, context=context)
+
+
+####################################################################################################
+# @add_bounding_box_information_to_panel
+####################################################################################################
+def add_bounding_box_information_to_panel(morphology,
+                                          layout,
+                                          scene):
+    """Computes the bounding box information of the morphology and adds them to the analysis panel.
+
+    :param morphology:
+        The input morphology being analyzed.
+    :param layout:
+        Panel layout.
+    :param scene:
+        Context scene.
+    """
+
+    # Draw the bounding box
+    bounding_box_p_row = layout.row()
+    bounding_box_p_min_row = bounding_box_p_row.column(align=True)
+    bounding_box_p_min_row.label(text='BBox PMin:')
+    bounding_box_p_min_row.prop(scene, 'NMV_BBoxPMinX')
+    bounding_box_p_min_row.prop(scene, 'NMV_BBoxPMinY')
+    bounding_box_p_min_row.prop(scene, 'NMV_BBoxPMinZ')
+    bounding_box_p_min_row.enabled = False
+
+    bounding_box_p_max_row = bounding_box_p_row.column(align=True)
+    bounding_box_p_max_row.label(text='BBox PMax:')
+    bounding_box_p_max_row.prop(scene, 'NMV_BBoxPMaxX')
+    bounding_box_p_max_row.prop(scene, 'NMV_BBoxPMaxY')
+    bounding_box_p_max_row.prop(scene, 'NMV_BBoxPMaxZ')
+    bounding_box_p_max_row.enabled = False
+
+    bounding_box_data_row = layout.row()
+    bounding_box_center_row = bounding_box_data_row.column(align=True)
+    bounding_box_center_row.label(text='BBox Center:')
+    bounding_box_center_row.prop(scene, 'NMV_BBoxCenterX')
+    bounding_box_center_row.prop(scene, 'NMV_BBoxCenterY')
+    bounding_box_center_row.prop(scene, 'NMV_BBoxCenterZ')
+    bounding_box_center_row.enabled = False
+
+    bounding_box_bounds_row = bounding_box_data_row.column(align=True)
+    bounding_box_bounds_row.label(text='BBox Bounds:')
+    bounding_box_bounds_row.prop(scene, 'NMV_BoundsX')
+    bounding_box_bounds_row.prop(scene, 'NMV_BoundsY')
+    bounding_box_bounds_row.prop(scene, 'NMV_BoundsZ')
+    bounding_box_bounds_row.enabled = False
+
+
+####################################################################################################
+# @analyze_bounding_box
+####################################################################################################
+def analyze_bounding_box(morphology,
+                         scene):
+    """Analyzes the bounding nox of the morphology and copies the results to the context variables.
+
+    :param morphology:
+        Given morphology to be analyzed.
+    :param scene:
+        Context scene.
+    """
+
+    # Computes the bounding box to double confirm the results
+    morphology.compute_bounding_box()
+
+    # Copy the values to the context variables
+    scene.NMV_BBoxPMinX = morphology.bounding_box.p_min[0]
+    scene.NMV_BBoxPMinY = morphology.bounding_box.p_min[1]
+    scene.NMV_BBoxPMinZ = morphology.bounding_box.p_min[2]
+    scene.NMV_BBoxPMaxX = morphology.bounding_box.p_max[0]
+    scene.NMV_BBoxPMaxY = morphology.bounding_box.p_max[1]
+    scene.NMV_BBoxPMaxZ = morphology.bounding_box.p_max[2]
+    scene.NMV_BBoxCenterX = morphology.bounding_box.center[0]
+    scene.NMV_BBoxCenterY = morphology.bounding_box.center[1]
+    scene.NMV_BBoxCenterZ = morphology.bounding_box.center[2]
+    scene.NMV_BoundsX = morphology.bounding_box.bounds[0]
+    scene.NMV_BoundsY = morphology.bounding_box.bounds[1]
+    scene.NMV_BoundsZ = morphology.bounding_box.bounds[2]
 
 
 ####################################################################################################
@@ -248,6 +330,9 @@ def analyze_morphology(morphology,
         # Apply the per-arbor analysis filters and update the results
         for item in nmv.analysis.ui_per_arbor_analysis_items:
             item.apply_per_arbor_analysis_kernel(morphology=morphology, context=context)
+
+        # Bounding box
+        analyze_bounding_box(morphology=morphology, scene=context.scene)
 
         # Morphology is analyzed
         return True

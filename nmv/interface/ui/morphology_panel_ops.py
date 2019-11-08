@@ -119,58 +119,45 @@ def set_reconstruction_options(layout,
     morphology_reconstruction_row = layout.row()
     morphology_reconstruction_row.prop(
         scene, 'NMV_MorphologyReconstructionTechnique', icon='FORCE_CURVE')
-
-    # Pass options from UI to system
     options.morphology.reconstruction_method = scene.NMV_MorphologyReconstructionTechnique
-
-    # Sections resampling
-    resampling_row = layout.row()
-    resampling_row.prop(scene, 'NMV_MorphologyResampling')
-    options.morphology.resampling_method = scene.NMV_MorphologyResampling
-
-    # If Fixed Step resampling method is selected, add the sampling step
-    if scene.NMV_MorphologyResampling == nmv.enums.Skeletonization.Resampling.FIXED_STEP:
-        resampling_step_row = layout.row()
-        resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
-        options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
-
-    # Morphology edges
-    edges_row = layout.row()
-    edges_row.label(text='Edges:')
-    edges_row.prop(scene, 'NMV_MorphologyEdges', expand=True)
-    options.morphology.edges = scene.NMV_MorphologyEdges
 
     # Reconstruction technique
     technique = scene.NMV_MorphologyReconstructionTechnique
     if technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
         # Morphology reconstruction techniques option
         skeleton_style_row = layout.row()
+        skeleton_style_row.label(text='Skeleton Style:')
         skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')
-
-        # Pass options from UI to system
         options.morphology.arbor_style = scene.NMV_ArborsStyle
 
         # Morphology branching
         branching_row = layout.row()
         branching_row.label(text='Branching:')
         branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
-
-        # Pass options from UI to system
         options.morphology.branching = scene.NMV_MorphologyBranching
 
         # Morphology branching
         arbor_to_soma_connection_row = layout.row()
         arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
-
-        # Pass options from UI to system
         options.morphology.arbors_to_soma_connection = scene.NMV_SomaConnectionToRoot
+
+    # Sections resampling
+    resampling_row = layout.row()
+    resampling_row.label(text='Resampling:')
+    resampling_row.prop(scene, 'NMV_MorphologyResampling')
+    options.morphology.resampling_method = scene.NMV_MorphologyResampling
+
+    # If Fixed Step resampling method is selected, add the sampling step
+    if scene.NMV_MorphologyResampling == nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+        resampling_step_row = layout.row()
+        resampling_step_row.label(text='Resampling Step:')
+        resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
+        options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
     # Arbor quality option
     arbor_quality_row = layout.row()
     arbor_quality_row.label(text='Arbor Quality:')
     arbor_quality_row.prop(scene, 'NMV_ArborQuality')
-
-    # Pass options from UI to system
     options.morphology.bevel_object_sides = scene.NMV_ArborQuality
 
     # Sections diameters option
@@ -179,51 +166,36 @@ def set_reconstruction_options(layout,
 
     # Radii as specified in the morphology file
     if scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED:
-
-        # Pass options from UI to system
-
         options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
-
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = False
         options.morphology.sections_radii_scale = 1.0
 
     # Fixed diameter
     elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
-
         fixed_diameter_row = layout.row()
         fixed_diameter_row.label(text='Fixed Radius Value:')
         fixed_diameter_row.prop(scene, 'NMV_FixedRadiusValue')
-
         options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.FIXED
-
-        # Pass options from UI to system
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
         options.morphology.sections_fixed_radii_value = scene.NMV_FixedRadiusValue
 
     # Scaled diameter
     elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
-
         scaled_diameter_row = layout.row()
         scaled_diameter_row.label(text='Radius Scale Factor:')
         scaled_diameter_row.prop(scene, 'NMV_RadiusScaleValue')
-
         options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.SCALED
-
-        # Pass options from UI to system
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
         options.morphology.sections_radii_scale = scene.NMV_RadiusScaleValue
 
     # Filtered
     elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
-
         filtered_diameter_row = layout.row()
         filtered_diameter_row.label(text='Radius Threshold:')
         filtered_diameter_row.prop(scene, 'NMV_FilteredRadiusThreshold')
-
-        # Pass options from UI to system
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
         options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.FILTERED
@@ -255,8 +227,6 @@ def set_color_options(layout,
     # Morphology material
     morphology_material_row = layout.row()
     morphology_material_row.prop(scene, 'NMV_MorphologyMaterial')
-
-    # Pass options from UI to system
     options.morphology.material = scene.NMV_MorphologyMaterial
 
     # If we use the connected skeleton, we should use only a single color for the entire skeleton
@@ -265,8 +235,6 @@ def set_color_options(layout,
 
         neuron_color_row = layout.row()
         neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-
-        # Pass options from UI to system
         color = scene.NMV_NeuronMorphologyColor
         options.morphology.axon_color = Vector((color.r, color.g, color.b))
         options.morphology.basal_dendrites_color = Vector((color.r, color.g, color.b))
@@ -278,8 +246,6 @@ def set_color_options(layout,
         soma_color_row.prop(scene, 'NMV_SomaColor')
         if not scene.NMV_BuildSoma:
             soma_color_row.enabled = False
-
-        # Pass options from UI to system
         soma_color_value = Vector((scene.NMV_SomaColor.r, scene.NMV_SomaColor.g, scene.NMV_SomaColor.b))
         options.morphology.soma_color = soma_color_value
 
@@ -316,8 +282,6 @@ def set_color_options(layout,
 
                 neuron_color_row = layout.row()
                 neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-
-                # Pass options from UI to system
                 color = scene.NMV_NeuronMorphologyColor
                 options.morphology.soma_color = Vector((color.r, color.g, color.b))
                 options.morphology.axon_color = Vector((color.r, color.g, color.b))

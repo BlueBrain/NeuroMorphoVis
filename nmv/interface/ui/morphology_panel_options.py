@@ -83,17 +83,6 @@ bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
     description="Branching order for the apical dendrite",
     default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
 
-# Edges
-bpy.types.Scene.NMV_MorphologyEdges = bpy.props.EnumProperty(
-    items=[(nmv.enums.Arbors.Edges.SHARP,
-            'Sharp',
-            'Make the edges between the segments sharp'),
-           (nmv.enums.Arbors.Edges.CURVY,
-            'Curvy',
-            'Make the edges between the segments soft and curvy')],
-    name='Edges',
-    default=nmv.enums.Arbors.Edges.SHARP)
-
 # Morphology material
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shading.MATERIAL_ITEMS,
@@ -177,7 +166,7 @@ bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
 # Arbors style
 bpy.types.Scene.NMV_ArborsStyle = bpy.props.EnumProperty(
     items=nmv.enums.Arbors.Style.MORPHOLOGY_STYLE_ITEMS,
-    name="Skeleton Style",
+    name="",
     default=nmv.enums.Arbors.Style.ORIGINAL)
 
 # Branching, is it based on angles or radii
@@ -225,12 +214,12 @@ bpy.types.Scene.NMV_SectionsRadii = bpy.props.EnumProperty(
            (nmv.enums.Skeletonization.ArborsRadii.FILTERED,
             'Filtered',
             "Filter section with lower values than the threshold"), ],
-    name="Sections Radii",
+    name="Radii",
     default=nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED)
 
 # Fixed section radius value
 bpy.types.Scene.NMV_FixedRadiusValue = bpy.props.FloatProperty(
-    name="Value (micron)",
+    name="Value (μm)",
     description="The value of the radius in microns between (0.05 and 5.0) microns",
     default=1.0, min=0.05, max=5.0)
 
@@ -260,12 +249,12 @@ bpy.types.Scene.NMV_MorphologyResampling = bpy.props.EnumProperty(
             'Use fixed resampling step to resample the section. '
             'With high resampling steps, some of the spatial features of the sections could '
             'be gone')],
-    name='Resampling',
+    name='',
     default=nmv.enums.Skeletonization.Resampling.NONE)
 
 # Resampling step
 bpy.types.Scene.NMV_MorphologyResamplingStep = bpy.props.FloatProperty(
-    name="Resampling Step",
+    name="Value (μm)",
     description="The resampling step in case the Fixed Step method is selected",
     default=1.0, min=0.05, max=10.0)
 

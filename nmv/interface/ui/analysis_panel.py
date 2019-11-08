@@ -31,6 +31,8 @@ import nmv.skeleton
 import nmv.scene
 import nmv.utilities
 
+from .analysis_panel_options import *
+
 
 ####################################################################################################
 # @AnalysisPanel

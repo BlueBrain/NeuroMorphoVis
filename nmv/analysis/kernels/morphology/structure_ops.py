@@ -21,10 +21,10 @@ import nmv.analysis
 
 
 ####################################################################################################
-# @kernel_global_number_apical_dendrites
+# @kernel_total_number_samples
 ####################################################################################################
-def kernel_global_number_apical_dendrites(morphology):
-    """Counts the number of apical dendrites of the morphology.
+def kernel_total_number_sections(morphology):
+    """Compute the total number of sections of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -32,14 +32,16 @@ def kernel_global_number_apical_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.apical_dendrite is None else 1
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_number_of_sections_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_global_number_basal_dendrites
+# @kernel_total_number_bifurcations
 ####################################################################################################
-def kernel_global_number_basal_dendrites(morphology):
-    """Counts the number of basal dendrites of the morphology.
+def kernel_total_number_bifurcations(morphology):
+    """Compute the total number of bifurcations of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -47,14 +49,16 @@ def kernel_global_number_basal_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return len(morphology.dendrites)
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_number_of_bifurcations_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_global_number_axons
+# @kernel_total_number_trifurcations
 ####################################################################################################
-def kernel_global_number_axons(morphology):
-    """Counts the number of axons dendrites of the morphology.
+def kernel_total_number_trifurcations(morphology):
+    """Compute the total number of bifurcations of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -62,14 +66,16 @@ def kernel_global_number_axons(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.axon is None else 1
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_number_of_trifurcations_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_global_total_number_neurites
+# @kernel_maximum_branching_order
 ####################################################################################################
-def kernel_global_total_number_neurites(morphology):
-    """Counts the total number of neurites of the morphology.
+def kernel_maximum_branching_order(morphology):
+    """Computes the maximum branching order of the morphology per arbor.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -77,8 +83,6 @@ def kernel_global_total_number_neurites(morphology):
         The result of the analysis operation.
     """
 
-    return kernel_global_number_apical_dendrites(morphology) + \
-           kernel_global_number_basal_dendrites(morphology) + \
-           kernel_global_number_axons(morphology)
-
-
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_maximum_branching_order_of_arbor,
+                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)

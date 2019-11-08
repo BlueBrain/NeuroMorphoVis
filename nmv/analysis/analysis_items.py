@@ -34,6 +34,30 @@ ui_per_arbor_analysis_items = [
                  description='The total number of samples',
                  data_format='INT'),
 
+    AnalysisItem(variable='TotalNumberSections',
+                 name='Total # Sections',
+                 kernel=kernel_total_number_sections,
+                 description='The total number of sections',
+                 data_format='INT'),
+
+    AnalysisItem(variable='MaximumBranchingOrder',
+                 name='Max. Branching Order',
+                 kernel=kernel_maximum_branching_order,
+                 description='The maximum branching order',
+                 data_format='INT'),
+
+    AnalysisItem(variable='TotalNumberBifurcations',
+                 name='Total # Bifurcations',
+                 kernel=kernel_total_number_bifurcations,
+                 description='The total number of bifurcations',
+                 data_format='INT'),
+
+    AnalysisItem(variable='TotalNumberTrifurcations',
+                 name='Total # Trifurcations',
+                 kernel=kernel_total_number_trifurcations,
+                 description='The total number of trifurcations',
+                 data_format='INT'),
+
     AnalysisItem(variable='MinNumberSamplePerSection',
                  name='Min. # Samples / Section',
                  kernel=kernel_minimum_number_samples_per_section,

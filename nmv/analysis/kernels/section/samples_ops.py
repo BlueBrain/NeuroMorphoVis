@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import copy
+
 
 ####################################################################################################
 # @compute_number_of_samples_per_section
@@ -188,3 +191,76 @@ def get_samples_radii_and_distance_to_soma_of_section(section,
 
     for i_sample in section.samples:
         analysis_data.append([i_sample.radius, i_sample.point.length])
+
+
+####################################################################################################
+# @count_section
+####################################################################################################
+def count_section(section,
+                  analysis_data):
+    """Counts this section and adds 1 to the analysis data to account for its count in the final
+    results.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    analysis_data.append(1)
+
+
+####################################################################################################
+# @count_bifurcations
+####################################################################################################
+def count_bifurcations(section,
+                       analysis_data):
+    """Checks if the section has bifurcations at its end or not. If yes, it adds one to the
+    analysis data, otherwise None.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    if len(section.children) == 2:
+        analysis_data.append(1)
+
+
+####################################################################################################
+# @count_trifurcations
+####################################################################################################
+def count_trifurcations(section,
+                        analysis_data):
+    """Checks if the section has trifurcations at its end or not. If yes, it adds one to the
+    analysis data, otherwise None.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    if len(section.children) == 3:
+        analysis_data.append(1)
+
+
+####################################################################################################
+# @get_maximum_branching_order
+####################################################################################################
+def get_maximum_branching_order(section,
+                                analysis_data):
+    """Gets the maximum branching order of the arbor.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    if not section.has_children():
+        analysis_data.append(copy.deepcopy(section.branching_order))
+
+
+
