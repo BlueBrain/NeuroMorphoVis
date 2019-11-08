@@ -497,8 +497,8 @@ class RenderSomaFront(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        nmv.logger.log(scene.NMV_NMV_NMV_OutputDirectory)
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        nmv.logger.log(scene.NMV_NMV_OutputDirectory)
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -552,7 +552,7 @@ class RenderSomaSide(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -606,7 +606,7 @@ class RenderSomaTop(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -724,7 +724,7 @@ class RenderSoma360(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -871,7 +871,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -982,7 +982,7 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1031,7 +1031,7 @@ class SaveSomaMeshPLY(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1081,7 +1081,7 @@ class SaveSomaMeshSTL(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -1130,7 +1130,7 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(scene.NMV_NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 

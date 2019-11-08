@@ -154,7 +154,7 @@ class ExportAnalysisResults(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.Scene.NMV_NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(context.Scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
