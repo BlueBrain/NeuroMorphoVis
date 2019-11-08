@@ -389,7 +389,7 @@ class RenderMorphology360(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.Scene.NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -461,7 +461,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(context.Scene.NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -521,7 +521,7 @@ class SaveMorphologySWC(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -565,7 +565,7 @@ class SaveMorphologySegments(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
@@ -609,7 +609,7 @@ class SaveMorphologyBLEND(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.file_ops.path_exists(context.Scene.NMV_OutputDirectory):
+        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 

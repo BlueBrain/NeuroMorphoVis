@@ -130,9 +130,9 @@ class Section:
         """Returns a string prefix that is used to register UI components.
 
         These components are accessible from the following calls:
-            * bpy.context.Scene.NMV_Axon[SOME_VARIABLE] for axons
-            * bpy.context.Scene.NMV_BasalDendrite[NUMBER][SOME_VARIABLE] for basal dendrites
-            * bpy.context.Scene.NMV_ApicalDendrite[SOME_VARIABLE] for apical dendrites
+            * bpy.context.scene.NMV_Axon[SOME_VARIABLE] for axons
+            * bpy.context.scene.NMV_BasalDendrite[NUMBER][SOME_VARIABLE] for basal dendrites
+            * bpy.context.scene.NMV_ApicalDendrite[SOME_VARIABLE] for apical dendrites
         :return:
             String that reflects the type of the section, or which arbor it belongs to.
         """
