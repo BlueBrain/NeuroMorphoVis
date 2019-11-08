@@ -47,7 +47,7 @@ def kernel_global_number_basal_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return len(morphology.dendrites)
+    return 0 if morphology.dendrites is None else len(morphology.dendrites)
 
 
 ####################################################################################################
