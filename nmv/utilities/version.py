@@ -36,10 +36,10 @@ def get_nmv_version():
     for line in version_file:
         if '"version":' in line:
             string = line.split('\"version\": (')[1].split(')')[0].split(', ')
-            version_string = '%d.%d.%d' % (int(string[0]), int(string[1]), int(string[2]))
+            version = (int(string[0]), int(string[1]), int(string[2]))
             break
     version_file.close()
-    return version_string
+    return version
 
 
 ####################################################################################################
