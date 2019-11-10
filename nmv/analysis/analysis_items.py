@@ -245,23 +245,44 @@ ui_global_analysis_items = [
     ################################################################################################
     # Soma items
     ################################################################################################
-    AnalysisItem(variable='ReportedSomaRadius',
-                 name='Soma Radius',
-                 kernel=kernel_global_get_soma_radius,
+    AnalysisItem(variable='SomaReportedRadius',
+                 name='Soma Reported Radius',
+                 kernel=kernel_soma_get_reported_mean_radius,
                  description='The radius of the soma as reported in the morphology file',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='SomaMinimumRadius',
+                 name='Soma Min. Radius',
+                 kernel=kernel_soma_get_minimum_radius,
+                 description='The minimum radius of the soma as based on the reported profile '
+                             'points and the root samples of all the connected arbors (or stems)',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='SomaMaximumRadius',
+                 name='Soma Max. Radius',
+                 kernel=kernel_soma_get_maximum_radius,
+                 description='The maximum radius of the soma as based on the reported profile '
+                             'points and the root samples of all the connected arbors (or stems)',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='ReportedSomaSurfaceArea',
                  name='Soma Surface Area',
-                 kernel=kernel_global_get_soma_surface_area,
-                 description='The surface area of the soma as reported in the morphology file',
+                 kernel=kernel_soma_get_average_surface_area,
+                 description='The surface area of the soma as reported in the morphology file '
+                             'in mμ²',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='ReportedSomaVolume',
                  name='Soma Volume',
-                 kernel=kernel_global_get_soma_volume,
-                 description='The volume of the soma as reported in the morphology file',
+                 kernel=kernel_soma_get_average_volume,
+                 description='The volume of the soma as reported in the morphology file in mμ³',
                  data_format='FLOAT'),
+
+    AnalysisItem(variable='NumberProfilePoints',
+                 name='# Profile Points',
+                 kernel=kernel_soma_count_profile_points,
+                 description='The radius of the soma as reported in the morphology file',
+                 data_format='INT'),
 
     ################################################################################################
     # Arborization items
@@ -287,9 +308,14 @@ ui_global_analysis_items = [
     AnalysisItem(variable='NumberNeurites',
                  name='Total # Neurites',
                  kernel=kernel_global_total_number_neurites,
-                 description='The total number of all the arbors (or stems) that emanate from the '
-                             'soma in the morphology',
+                 description='The total number of the arbors in the morphology '
+                             'whether connected to the soma or not',
                  data_format='INT'),
 
-
+    AnalysisItem(variable='NumberStems',
+                 name='Total # Stems',
+                 kernel=kernel_global_total_number_stems,
+                 description='The total number of stems or the arbors that emanate from the '
+                             'soma in the morphology',
+                 data_format='INT'),
 ]

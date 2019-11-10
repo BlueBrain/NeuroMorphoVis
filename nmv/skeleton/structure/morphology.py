@@ -99,6 +99,9 @@ class Morphology:
         # Morphology type
         self.mtype = mtype
 
+        # Number of stems as reported in the morphology file
+        self.number_stems = 0
+
         # Morphology label (will be morphology name or gid)
         self.label = label
         if gid is not None:

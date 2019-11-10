@@ -21,10 +21,10 @@ import nmv.analysis
 
 
 ####################################################################################################
-# @kernel_global_number_apical_dendrites
+# @kernel_soma_get_reported_mean_radius
 ####################################################################################################
-def kernel_global_number_apical_dendrites(morphology):
-    """Counts the number of apical dendrites of the morphology.
+def kernel_soma_get_reported_mean_radius(morphology):
+    """Get the mean radius of the soma as reported in the morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -32,14 +32,15 @@ def kernel_global_number_apical_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.apical_dendrite is None else 1
+    return morphology.soma.mean_radius
 
 
 ####################################################################################################
-# @kernel_global_number_basal_dendrites
+# @kernel_soma_get_minimum_radius
 ####################################################################################################
-def kernel_global_number_basal_dendrites(morphology):
-    """Counts the number of basal dendrites of the morphology.
+def kernel_soma_get_minimum_radius(morphology):
+    """Get the minimum radius of the soma as based on the reported profile points and the root
+    samples of all the connected arbors (or stems).
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -47,14 +48,15 @@ def kernel_global_number_basal_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.dendrites is None else len(morphology.dendrites)
+    return morphology.soma.smallest_radius
 
 
 ####################################################################################################
-# @kernel_global_number_axons
+# @kernel_soma_get_maximum_radius
 ####################################################################################################
-def kernel_global_number_axons(morphology):
-    """Counts the number of axons dendrites of the morphology.
+def kernel_soma_get_maximum_radius(morphology):
+    """Get the maximum radius of the soma as based on the reported profile points and the root
+    samples of all the connected arbors (or stems).
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -62,14 +64,14 @@ def kernel_global_number_axons(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.axon is None else 1
+    return morphology.soma.largest_radius
 
 
 ####################################################################################################
-# @kernel_global_total_number_neurites
+# @kernel_soma_get_average_surface_area
 ####################################################################################################
-def kernel_global_total_number_neurites(morphology):
-    """Counts the total number of neurites of the morphology.
+def kernel_soma_get_average_surface_area(morphology):
+    """Get the average surface area of the soma based on the mean radius reported in the morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -77,16 +79,14 @@ def kernel_global_total_number_neurites(morphology):
         The result of the analysis operation.
     """
 
-    return kernel_global_number_apical_dendrites(morphology) + \
-           kernel_global_number_basal_dendrites(morphology) + \
-           kernel_global_number_axons(morphology)
+    return 4 * 3.14 * (morphology.soma.mean_radius * morphology.soma.mean_radius)
 
 
 ####################################################################################################
-# @kernel_global_total_number_stems
+# @kernel_global_get_soma_volume
 ####################################################################################################
-def kernel_global_total_number_stems(morphology):
-    """Counts the total number of stems in the morphology.
+def kernel_soma_get_average_volume(morphology):
+    """Get the volume of the soma based on its mean radius as reported in the morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -94,5 +94,20 @@ def kernel_global_total_number_stems(morphology):
         The result of the analysis operation.
     """
 
-    return morphology.number_stems
+    radius = morphology.soma.mean_radius
+    return (3.0 / 4.0) * 3.14 * (radius * radius * radius)
 
+
+####################################################################################################
+# @kernel_soma_get_reported_mean_radius
+####################################################################################################
+def kernel_soma_count_profile_points(morphology):
+    """Count the profile points of the soma as reported in the morphology file.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return len(morphology.soma.profile_points)
