@@ -79,3 +79,6 @@ class Paths:
 
     # The directory where the low quality nuclei are located
     NUCLEI_MESHES_LQ_DIRECTORY = '%s/../../data/nuclei-meshes/lq' % current_directory
+
+    # The directory where all the fonts will be loaded from
+    FONTS_DIRECTORY = '%s/../../data/fonts' % current_directory

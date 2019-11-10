@@ -79,12 +79,14 @@ class AnalysisPanel(bpy.types.Panel):
             export_analysis_row = layout.row()
             export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
+            export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
 
 
 ####################################################################################################
-# @SaveSomaMeshBlend
+# @cExportAnalysisResults
 ####################################################################################################
 class ExportAnalysisResults(bpy.types.Operator):
     """Export the analysis results into a file"""
@@ -132,6 +134,92 @@ class ExportAnalysisResults(bpy.types.Operator):
 
 
 ####################################################################################################
+# @cExportAnalysisResults
+####################################################################################################
+class CreateNeuronCard(bpy.types.Operator):
+    """Export the analysis results into a file"""
+
+    # Operator parameters
+    bl_idname = "nmv.create_neuron_card"
+    bl_label = "Create Neuron Card"
+
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+        '''
+        # Ensure that there is a valid directory where the images will be written to
+        if nmv.interface.ui_options.io.output_directory is None:
+            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
+            return {'FINISHED'}
+
+        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
+            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+            return {'FINISHED'}
+
+        # Verify the output directory
+        nmv.interface.validate_output_directory(self, context.scene)
+
+        # Create the analysis directory if it does not exist
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):
+            nmv.file.ops.clean_and_create_directory(
+                nmv.interface.ui_options.io.analysis_directory)
+
+        # Export the analysis results
+        nmv.interface.ui.export_analysis_results(
+            morphology=nmv.interface.ui_morphology,
+            directory=nmv.interface.ui_options.io.analysis_directory)
+        '''
+
+        from PIL import Image, ImageDraw, ImageFont
+
+        # Create image
+        image = Image.new('RGB', (800, 600), color=(255, 255, 255))
+
+        # Load the font
+        helvetica_font = ImageFont.truetype('%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY,
+                                                       'helvetica-light.ttf'), 15)
+
+        # Draw the image and return a handle to it
+        image_handle = ImageDraw.Draw(image)
+
+        # Add text to the image
+        # image_handle.text((20, 20), "Hello World", font=helvetica_font, fill=(0, 0, 0))
+
+
+        for i, item in enumerate(nmv.analysis.ui_global_analysis_items):
+
+            result = getattr(context.scene, '%s' % item.variable)
+
+            string = item.name + ': ' + str(result)
+            image_handle.text((20, (i + 1) * 20),
+                              string, font=helvetica_font, fill=(0, 0, 0))
+
+
+
+        # Save the image to file
+        image.save('image.png')
+
+
+
+
+
+
+
+
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -142,6 +230,7 @@ def register_panel():
     bpy.utils.register_class(AnalysisPanel)
 
     # Export analysis button
+    bpy.utils.register_class(CreateNeuronCard)
     bpy.utils.register_class(ExportAnalysisResults)
 
 
@@ -156,4 +245,5 @@ def unregister_panel():
     bpy.utils.unregister_class(AnalysisPanel)
 
     # Export analysis button
+    bpy.utils.unregister_class(CreateNeuronCard)
     bpy.utils.unregister_class(ExportAnalysisResults)
