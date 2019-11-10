@@ -267,7 +267,7 @@ def rotate_face_from_center_to_point(bmesh_object,
     direction = delta.normalized()
 
     # Compute the rotation angle
-    rotation_angle = math.acos(face.normal.dot(direction) * 3.14 / 180)
+    rotation_angle = math.acos(face.normal.dot(direction) * 3.14 / 180.0)
 
     # Compute the rotation axis
     rotation_axis = face.normal.cross(direction).normalized()

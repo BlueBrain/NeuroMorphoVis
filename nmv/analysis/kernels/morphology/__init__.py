@@ -23,3 +23,4 @@ from .volume_ops import *
 from .global_ops import *
 from .structure_ops import *
 from .soma_ops import *
+from .angle_ops import *

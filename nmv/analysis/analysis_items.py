@@ -108,6 +108,51 @@ ui_per_arbor_analysis_items = [
                  data_format='INT'),
 
     ################################################################################################
+    # Angle-related items
+    ################################################################################################
+    AnalysisItem(variable='MinimumLocalBifurcationAngle',
+                 name='Min. Local Bifurcation Angle',
+                 kernel=kernel_minimum_local_bifurcation_angle,
+                 description='The minimum local bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    AnalysisItem(variable='MaximumLocalBifurcationAngle',
+                 name='Max. Local Bifurcation Angle',
+                 kernel=kernel_maximum_local_bifurcation_angle,
+                 description='The minimum local bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    AnalysisItem(variable='AverageLocalBifurcationAngle',
+                 name='Avg. Local Bifurcation Angle',
+                 kernel=kernel_average_local_bifurcation_angle,
+                 description='The average local bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    AnalysisItem(variable='MinimumGlobalBifurcationAngle',
+                 name='Min. Global Bifurcation Angle',
+                 kernel=kernel_minimum_global_bifurcation_angle,
+                 description='The minimum global bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    AnalysisItem(variable='MaximumGlobalBifurcationAngle',
+                 name='Max. Global Bifurcation Angle',
+                 kernel=kernel_maximum_global_bifurcation_angle,
+                 description='The minimum global bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    AnalysisItem(variable='AverageGlobalBifurcationAngle',
+                 name='Avg. Global Bifurcation Angle',
+                 kernel=kernel_average_global_bifurcation_angle,
+                 description='The average global bifurcation angle',
+                 data_format='FLOAT',
+                 unit='ROTATION'),
+
+    ################################################################################################
     # Length-related items
     ################################################################################################
     AnalysisItem(variable='TotalLength',

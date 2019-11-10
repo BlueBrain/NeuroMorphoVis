@@ -61,7 +61,7 @@ def branches_intersect(branch_1,
     arc_length = scaled_point_1.angle(scaled_point_2) * soma_radius
 
     # If the distance between the centers is less than the radii sum, then they intersect
-    if arc_length < (scaled_radius1 + scaled_radius2) :
+    if arc_length < (scaled_radius1 + scaled_radius2):
 
         # Positive intersection
         return True
