@@ -422,7 +422,8 @@ class MeshPanel(bpy.types.Panel):
 
         # Which skeletonization technique to use
         skeletonization_row = layout.row()
-        skeletonization_row.prop(context.scene, 'NMV_SkeletonizationTechnique', icon='CURVE_BEZCURVE')
+        skeletonization_row.prop(context.scene,
+                                 'NMV_SkeletonizationTechnique', icon='CURVE_BEZCURVE')
         nmv.interface.ui_options.mesh.skeletonization = context.scene.NMV_SkeletonizationTechnique
 
         # Draw the meshing options

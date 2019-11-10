@@ -37,6 +37,10 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
             'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
             'composed of multiple mesh objects, where each object is a watertight component. '
             'This method is used to reconstruct high fidelity volumes from the generated meshes.'),
+           (nmv.enums.Meshing.Technique.SPACE_FILLING,
+            'Space Filling',
+            'The space filling method fills all the morphology with tubes and spheres at the '
+            'articulation points between the different sections'),
            (nmv.enums.Meshing.Technique.SKINNING,
             'Skinning',
             'Skinning uses the skin modifier to reconstruct the branches. This approach is '

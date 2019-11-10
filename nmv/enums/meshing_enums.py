@@ -115,8 +115,8 @@ class Meshing:
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
 
-        # Extrusion meshing
-        EXTRUSION = 'MESHING_TECHNIQUE_EXTRUSION'
+        # Space filling meshing
+        SPACE_FILLING = 'MESHING_TECHNIQUE_SPACE_FILLING'
 
         # Skinning
         SKINNING = 'MESHING_TECHNIQUE_SKINNING'
@@ -149,8 +149,8 @@ class Meshing:
                 return Meshing.Technique.BRIDGING
 
             # Extrusion
-            elif argument == 'extrusion':
-                return Meshing.Technique.EXTRUSION
+            elif argument == 'space-filling':
+                return Meshing.Technique.SPACE_FILLING
 
             # Skinning
             elif argument == 'skinning':
