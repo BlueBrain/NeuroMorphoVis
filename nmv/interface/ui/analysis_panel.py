@@ -67,10 +67,6 @@ class AnalysisPanel(bpy.types.Panel):
         # Get a reference to the panel layout
         layout = self.layout
 
-        # Morphology analysis button
-        analyze_morphology_column = layout.column(align=True)
-        analyze_morphology_column.operator('nmv.analyze_morphology', icon='MESH_DATA')
-
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its arbors count
         if context.scene.NMV_MorphologyAnalyzed:
@@ -85,45 +81,6 @@ class AnalysisPanel(bpy.types.Panel):
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
-
-
-####################################################################################################
-# @SaveSomaMeshBlend
-####################################################################################################
-class AnalyzeMorphology(bpy.types.Operator):
-    """Analyze the morphology skeleton, detect the artifacts and report them"""
-
-    # Operator parameters
-    bl_idname = "nmv.analyze_morphology"
-    bl_label = "Analyze Morphology"
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self,
-                context):
-        """Executes the operator.
-
-        :param context:
-            Blender context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
-
-        # If the result is None, report the issue
-        if loading_result is None:
-            self.report({'ERROR'}, 'Please select a morphology file')
-            return {'FINISHED'}
-
-        # Register the analysis components, apply the kernel functions and update the UI
-        context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(
-            morphology=nmv.interface.ui_morphology, context=context)
-
-        # Operator done
-        return {'FINISHED'}
 
 
 ####################################################################################################
@@ -184,9 +141,6 @@ def register_panel():
     # Morphology analysis panel
     bpy.utils.register_class(AnalysisPanel)
 
-    # Morphology analysis button
-    bpy.utils.register_class(AnalyzeMorphology)
-
     # Export analysis button
     bpy.utils.register_class(ExportAnalysisResults)
 
@@ -200,9 +154,6 @@ def unregister_panel():
 
     # Morphology analysis panel
     bpy.utils.unregister_class(AnalysisPanel)
-
-    # Morphology analysis button
-    bpy.utils.unregister_class(AnalyzeMorphology)
 
     # Export analysis button
     bpy.utils.unregister_class(ExportAnalysisResults)

@@ -191,7 +191,7 @@ def load_morphology(panel_object,
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
 
         # Pass options from UI to system
-        nmv.interface.ui_options.morphology.blue_config = context_scene.CircuitFile
+        nmv.interface.ui_options.morphology.blue_config = context_scene.NMV_CircuitFile
         nmv.interface.ui_options.morphology.gid = context_scene.NMV_Gid
 
         # Update the morphology label
@@ -284,15 +284,15 @@ def render_morphology_image(panel_object,
     panel_object.report({'INFO'}, 'Rendering ... Wait')
 
     # Compute the bounding box for a close up view
-    if context_scene.MorphologyRenderingView == \
+    if context_scene.NMV_MorphologyRenderingView == \
             nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.MeshCloseUpSize)
+            extent=context_scene.NMV_MeshCloseUpSize)
 
     # Compute the bounding box for a mid shot view
-    elif context_scene.MorphologyRenderingView == \
+    elif context_scene.NMV_MorphologyRenderingView == \
             nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
 
         # Compute the bounding box for the available meshes only
@@ -316,17 +316,17 @@ def render_morphology_image(panel_object,
         view_prefix = ''
 
     # Render at a specific resolution
-    if context_scene.RenderingType == \
+    if context_scene.NMV_RenderingType == \
             nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION:
 
         # Render the image
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=view,
-            image_resolution=context_scene.MorphologyFrameResolution,
+            image_resolution=context_scene.NMV_MorphologyFrameResolution,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Render at a specific scale factor
     else:
@@ -335,10 +335,10 @@ def render_morphology_image(panel_object,
         nmv.rendering.render_to_scale(
             bounding_box=bounding_box,
             camera_view=view,
-            image_scale_factor=context_scene.MorphologyFrameScaleFactor,
+            image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')
@@ -372,14 +372,14 @@ def render_mesh_image(panel_object,
     panel_object.report({'INFO'}, 'Rendering ... Wait')
 
     # Compute the bounding box for a close up view
-    if context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+    if context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.MeshCloseUpSize)
+            extent=context_scene.NMV_MeshCloseUpSize)
 
     # Compute the bounding box for a mid shot view
-    elif context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+    elif context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
 
         # Compute the bounding box for the available meshes only
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -402,17 +402,17 @@ def render_mesh_image(panel_object,
         view_prefix = 'FRONT'
 
     # Render at a specific resolution
-    if context_scene.MeshRenderingResolution == \
+    if context_scene.NMV_MeshRenderingResolution == \
             nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
         # Render the image
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=view,
-            image_resolution=context_scene.MeshFrameResolution,
+            image_resolution=context_scene.NMV_MeshFrameResolution,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Render at a specific scale factor
     else:
@@ -421,10 +421,10 @@ def render_mesh_image(panel_object,
         nmv.rendering.render_to_scale(
             bounding_box=bounding_box,
             camera_view=view,
-            image_scale_factor=context_scene.MeshFrameScaleFactor,
+            image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')

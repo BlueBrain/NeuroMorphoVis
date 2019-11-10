@@ -245,6 +245,10 @@ class LoadMorphology(bpy.types.Operator):
         # View all the objects in the scene
         bpy.ops.view3d.view_selected()
 
+        # Analyze the morphology once loaded as wekk
+        context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(
+            morphology=nmv.interface.ui_morphology, context=context)
+
         return {'FINISHED'}
 
 
