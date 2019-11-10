@@ -243,6 +243,27 @@ ui_per_arbor_analysis_items = [
 ui_global_analysis_items = [
 
     ################################################################################################
+    # Soma items
+    ################################################################################################
+    AnalysisItem(variable='ReportedSomaRadius',
+                 name='Soma Radius',
+                 kernel=kernel_global_get_soma_radius,
+                 description='The radius of the soma as reported in the morphology file',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='ReportedSomaSurfaceArea',
+                 name='Soma Surface Area',
+                 kernel=kernel_global_get_soma_surface_area,
+                 description='The surface area of the soma as reported in the morphology file',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='ReportedSomaVolume',
+                 name='Soma Volume',
+                 kernel=kernel_global_get_soma_volume,
+                 description='The volume of the soma as reported in the morphology file',
+                 data_format='FLOAT'),
+
+    ################################################################################################
     # Arborization items
     ################################################################################################
     AnalysisItem(variable='NumberApicalDendrites',
@@ -264,9 +285,11 @@ ui_global_analysis_items = [
                  data_format='INT'),
 
     AnalysisItem(variable='NumberNeurites',
-                 name='Total # Stems',
+                 name='Total # Neurites',
                  kernel=kernel_global_total_number_neurites,
                  description='The total number of all the arbors (or stems) that emanate from the '
                              'soma in the morphology',
                  data_format='INT'),
+
+
 ]

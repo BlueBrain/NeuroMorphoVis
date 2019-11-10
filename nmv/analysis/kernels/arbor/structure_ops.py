@@ -175,7 +175,5 @@ def compute_maximum_path_distance_of_arbor(arbor):
           nmv.analysis.get_maximum_path_distance,
           paths_distances, maximum_branching_order, path_distance])
 
-    print(paths_distances)
-
     # Return the maximum branching order of the arbor
     return max(paths_distances)

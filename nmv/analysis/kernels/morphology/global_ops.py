@@ -21,6 +21,52 @@ import nmv.analysis
 
 
 ####################################################################################################
+# @kernel_global_get_soma_radius
+####################################################################################################
+def kernel_global_get_soma_radius(morphology):
+    """Get the radius of the soma as reported in the morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return morphology.soma.mean_radius
+
+
+####################################################################################################
+# @kernel_global_get_soma_surface_area
+####################################################################################################
+def kernel_global_get_soma_surface_area(morphology):
+    """Get the surface area of the soma as reported in the morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return 4 * 3.14 * (morphology.soma.mean_radius * morphology.soma.mean_radius)
+
+
+####################################################################################################
+# @kernel_global_get_soma_volume
+####################################################################################################
+def kernel_global_get_soma_volume(morphology):
+    """Get the volume of the soma as reported in the morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    radius = morphology.soma.mean_radius
+    return (3.0 / 4.0) * 3.14 * (radius * radius * radius)
+
+
+####################################################################################################
 # @kernel_global_number_apical_dendrites
 ####################################################################################################
 def kernel_global_number_apical_dendrites(morphology):

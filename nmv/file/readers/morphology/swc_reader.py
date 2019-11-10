@@ -304,12 +304,6 @@ class SWCReader:
         for i_sample in initial_samples_list:
             self.samples_list[i_sample[0]] = i_sample
 
-        # Construct the connected paths from the samples list
-        self.build_connected_paths_from_samples()
-
-        # Construct the individual sections from the paths
-        self.build_sections_from_paths()
-
     ################################################################################################
     # @get_nmv_sample_from_samples_list
     ################################################################################################
@@ -620,6 +614,12 @@ class SWCReader:
 
         # Read all the samples from the morphology file an store them into a list
         self.read_samples()
+
+        # Construct the connected paths from the samples list
+        self.build_connected_paths_from_samples()
+
+        # Construct the individual sections from the paths
+        self.build_sections_from_paths()
 
         # Build the basal dendrites
         basal_dendrites_arbors = self.build_arbors_from_samples(
