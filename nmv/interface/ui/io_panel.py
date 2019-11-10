@@ -217,7 +217,7 @@ class LoadMorphology(bpy.types.Operator):
 
         # Create a skeletonizer object to build the morphology skeleton
         import nmv.builders
-        builder = nmv.builders.DisconnectedSegmentsBuilder(
+        builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))
 
@@ -229,21 +229,11 @@ class LoadMorphology(bpy.types.Operator):
         nmv.logger.info('Morphology drawn in [%f] seconds' %
                         context.scene.NMV_MorphologyDrawingTime)
 
-        # Plot the morphology (whatever issues it contains)
-        #nmv.interface.ui_options.morphology.reconstruction_method = \
-        #    nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
-        #nmv.interface.ui.sketch_morphology_skeleton_guide(
-        #    morphology=nmv.interface.ui_morphology,
-        #    options=copy.deepcopy(nmv.interface.ui_options))
-
-        # Switch to the orthographic mode
-        # bpy.ops.view3d.view_persportho()
-
         # Switch to the top view
-        # bpy.ops.view3d.viewnumpad(type='TOP')
+        nmv.scene.view_axis()
 
         # View all the objects in the scene
-        bpy.ops.view3d.view_selected()
+        nmv.scene.ops.view_all_scene()
 
         # Analyze the morphology once loaded as wekk
         context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(

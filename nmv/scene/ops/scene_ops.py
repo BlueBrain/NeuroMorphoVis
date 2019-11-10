@@ -26,6 +26,22 @@ import nmv.utilities
 
 
 ####################################################################################################
+# @view_axis
+####################################################################################################
+def view_axis(axis='TOP'):
+    """View the axis in the view.
+
+    :param axis:
+        An enum in ['LEFT', 'RIGHT', 'BOTTOM', 'TOP', 'FRONT', 'BACK'].
+    """
+
+    if nmv.utilities.is_blender_280():
+        bpy.ops.view3d.view_axis(type=axis)
+    else:
+        bpy.ops.view3d.viewnumpad(type=axis)
+
+
+####################################################################################################
 # @select_object
 ####################################################################################################
 def select_object(scene_object):

@@ -183,7 +183,7 @@ class CreateNeuronCard(bpy.types.Operator):
         from PIL import Image, ImageDraw, ImageFont
 
         # Create image
-        image = Image.new('RGB', (800, 600), color=(255, 255, 255))
+        image = Image.new('RGB', (2000, 2000), color=(255, 255, 255))
 
         # Load the font
         helvetica_font = ImageFont.truetype('%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY,
@@ -195,16 +195,26 @@ class CreateNeuronCard(bpy.types.Operator):
         # Add text to the image
         # image_handle.text((20, 20), "Hello World", font=helvetica_font, fill=(0, 0, 0))
 
+        i = 1
 
-        for i, item in enumerate(nmv.analysis.ui_global_analysis_items):
-
+        # Global
+        for item in nmv.analysis.ui_global_analysis_items:
             result = getattr(context.scene, '%s' % item.variable)
-
             string = item.name + ': ' + str(result)
-            image_handle.text((20, (i + 1) * 20),
+            image_handle.text((20, i * 20),
                               string, font=helvetica_font, fill=(0, 0, 0))
+            i += 1
+
+        image_handle.line((0, 0) + image.size, fill=128)
 
 
+        # Morphology
+        for item in nmv.analysis.ui_per_arbor_analysis_items:
+            result = getattr(context.scene, 'Morphology%s' % item.variable)
+            string = item.name + ': ' + str(result)
+            image_handle.text((20, i * 20),
+                              string, font=helvetica_font, fill=(0, 0, 0))
+            i += 1
 
         # Save the image to file
         image.save('image.png')
