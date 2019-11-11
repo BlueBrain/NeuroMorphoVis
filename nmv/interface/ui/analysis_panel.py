@@ -205,13 +205,14 @@ class CreateNeuronCard(bpy.types.Operator):
         top_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
                                                         'TOP', nmv.interface.ui_options.morphology.label))
 
-        final_image_width = front_image.size[0] + side_image.size[0]
-        final_image_height = front_image.size[1] + top_image.size[1]
-        final_image = Image.new('RGB', (final_image_width, final_image_height))
+        final_image_width = front_image.size[0] + side_image.size[0] + 50
+        final_image_height = front_image.size[1] + top_image.size[1] + 50
+        final_image = Image.new('RGB', (final_image_width, final_image_height),
+                                color=(255, 255, 255))
 
         final_image.paste(front_image, (0, 0))
-        final_image.paste(side_image, (front_image.size[0], 0))
-        final_image.paste(top_image, (0, front_image.size[1]))
+        final_image.paste(side_image, (front_image.size[0] + 50, 0))
+        final_image.paste(top_image, (0, front_image.size[1] + 50))
 
         final_image.save('%s/%s.png' % (nmv.interface.ui_options.io.analysis_directory,
                                     nmv.interface.ui_options.morphology.label))

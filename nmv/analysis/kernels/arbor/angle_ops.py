@@ -43,7 +43,9 @@ def compute_minimum_local_bifurcation_angle_of_arbor(arbor):
           sections_bifurcation_angles])
 
     # Return the minimum local bifurcation angle
-    return min(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles) > 0:
+        return min(sections_bifurcation_angles)
+    return 0.0
 
 
 ####################################################################################################
@@ -68,7 +70,9 @@ def compute_maximum_local_bifurcation_angle_of_arbor(arbor):
           sections_bifurcation_angles])
 
     # Return the minimum local bifurcation angle
-    return max(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles) > 0:
+        return max(sections_bifurcation_angles)
+    return 0.0
 
 
 ####################################################################################################
@@ -102,7 +106,10 @@ def compute_average_local_bifurcation_angle_of_arbor(arbor):
         arbor_total_bifurcation_angle += angle
 
     # Return the total section surface area
-    return arbor_total_bifurcation_angle / len(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles) > 0:
+        return arbor_total_bifurcation_angle / len(sections_bifurcation_angles)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -127,7 +134,10 @@ def compute_minimum_global_bifurcation_angle_of_arbor(arbor):
           sections_bifurcation_angles])
 
     # Return the minimum local bifurcation angle
-    return min(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles):
+        return min(sections_bifurcation_angles)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -186,4 +196,7 @@ def compute_average_global_bifurcation_angle_of_arbor(arbor):
         arbor_total_bifurcation_angle += angle
 
     # Return the total section surface area
-    return arbor_total_bifurcation_angle / len(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles):
+        return arbor_total_bifurcation_angle / len(sections_bifurcation_angles)
+    else:
+        return 0.0
