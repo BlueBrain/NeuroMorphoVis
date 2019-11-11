@@ -264,10 +264,7 @@ class SWCReader:
 
             # If the sample type doesn't match a soma, an axon, a basal dendrite or an apical
             # dendrite, just consider it a basal dendrite
-            if not sample_type == nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE or \
-                    not sample_type == nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE or \
-                    not sample_type == nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE or \
-                    not sample_type == nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE:
+            if sample_type > 4:
                 sample_type = nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE
 
                 # Get the X-coordinate
