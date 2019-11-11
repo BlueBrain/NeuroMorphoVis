@@ -50,9 +50,6 @@ class AnalysisPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
-    # Register a variable that indicates that the morphology is analyzed to be able to update the UI
-    bpy.types.Scene.NMV_MorphologyAnalyzed = bpy.props.BoolProperty(default=False)
-
     ################################################################################################
     # @draw
     ################################################################################################
