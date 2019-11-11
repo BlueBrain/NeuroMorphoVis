@@ -37,7 +37,8 @@ bpy.types.Scene.NMV_InputSource = bpy.props.EnumProperty(
 bpy.types.Scene.NMV_MorphologyFile = bpy.props.StringProperty(
     name="Morphology File",
     description="Select a specific morphology to mesh",
-    default='Select File', maxlen=2048, subtype='FILE_PATH')
+    default='/home/abdellah/Downloads/4E-12-traced-10.CNG.swc', maxlen=2048, subtype='FILE_PATH')
+    # default='Select File', maxlen=2048, subtype='FILE_PATH')
 
 # Morphology directory
 bpy.types.Scene.NMV_MorphologyDirectory = bpy.props.StringProperty(

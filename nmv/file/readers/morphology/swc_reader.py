@@ -122,7 +122,8 @@ class SWCReader:
                 path.append(sample_i[0])
 
                 # Append the path to the paths list
-                self.paths.append(path)
+                if len(path) > 0:
+                    self.paths.append(path)
 
                 # Clear the path list to search for a new path
                 path = list()
@@ -134,7 +135,8 @@ class SWCReader:
             if index > len(self.samples_list) - 2:
 
                 # Append the last path
-                self.paths.append(path)
+                if len(path) > 0:
+                    self.paths.append(path)
 
                 # Then break
                 break
