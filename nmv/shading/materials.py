@@ -416,11 +416,12 @@ def create_lambert_ward_material(name,
         line_material.diffuse_color = color
 
         # Zero-metallic and roughness
-        line_material.roughness = 1.0
-        line_material.metallic = 0.5
+        line_material.roughness = 0.0
+        line_material.metallic = 0.0
 
         # Return a reference to the material
         return line_material
+
     else:
         current_scene.render.engine = 'BLENDER_RENDER'
 
