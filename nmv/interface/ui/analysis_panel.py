@@ -69,7 +69,7 @@ class AnalysisPanel(bpy.types.Panel):
 
         # The morphology must be loaded to the UI and analyzed to be able to draw the analysis
         # components based on its arbors count
-        if context.scene.NMV_MorphologyAnalyzed:
+        if nmv.interface.ui_morphology is not None:
 
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_groups_to_panel(

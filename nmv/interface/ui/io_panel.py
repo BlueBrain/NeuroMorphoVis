@@ -235,7 +235,7 @@ class LoadMorphology(bpy.types.Operator):
         # View all the objects in the scene
         nmv.scene.ops.view_all_scene()
 
-        # Analyze the morphology once loaded as wekk
+        # Analyze the morphology once loaded as well
         context.scene.NMV_MorphologyAnalyzed = nmv.interface.analyze_morphology(
             morphology=nmv.interface.ui_morphology, context=context)
 

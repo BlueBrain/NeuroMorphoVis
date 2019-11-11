@@ -59,7 +59,7 @@ def compute_sections_local_bifurcation_angles(section,
 
             vector_1 = vector_1.normalized()
             vector_2 = vector_2.normalized()
-            angle = vector_1.angle(vector_2 * 3.14 / 180.0)
+            angle = vector_1.angle(vector_2)
 
             sections_local_angles.append(angle)
 
@@ -106,4 +106,4 @@ def compute_sections_global_bifurcation_angles(section,
             vector_2 = vector_2.normalized()
             angle = vector_1.angle(vector_2)
 
-            sections_global_angles.append(angle * 3.14 / 180.0)
+            sections_global_angles.append(angle)
