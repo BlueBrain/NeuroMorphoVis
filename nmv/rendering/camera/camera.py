@@ -146,10 +146,6 @@ class Camera:
         # Activate the camera for rendering
         self.set_active()
 
-        # Switch the rendering engine to cycles to be able to create the material
-        # if not bpy.context.scene.render.engine == 'CYCLES':
-        #    bpy.context.scene.render.engine = 'CYCLES'
-
         # Set the image file name
         bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
 
@@ -310,9 +306,6 @@ class Camera:
         bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale) * 2
         bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale) * 2
 
-        # Set the background to be transparent
-        bpy.context.scene.cycles.film_transparent = True
-
     ################################################################################################
     # @update_camera_resolution_to_scale
     ################################################################################################
@@ -398,12 +391,6 @@ class Camera:
         # Set the image resolution
         bpy.context.scene.render.resolution_x = int(scale_factor * x_bounds) * 2
         bpy.context.scene.render.resolution_y = int(scale_factor * y_bounds) * 2
-
-        # Use Cycles renderer
-        bpy.context.scene.render.engine = 'CYCLES'
-
-        # Set the background to be transparent
-        bpy.context.scene.cycles.film_transparent = True
 
     ################################################################################################
     # @setup_camera_for_scene

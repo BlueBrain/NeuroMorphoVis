@@ -139,13 +139,16 @@ class SomaMetaBuilder:
         # Note the conversion from the meta object to the mesh object adds automatically '.001'
         # to the object name, therefore we must rename it
         self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma.001']
-        self.meta_mesh.name = self.morphology.label
+        self.meta_mesh.name = self.morphology.label + '_soma'
 
         # Re-select it again to be able to perform post-processing operations in it
         nmv.scene.select_object(self.meta_mesh)
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
+
+        # Decimate the mesh to remove any artifacts
+        nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh,decimation_ratio=0.25)
 
     ################################################################################################
     # @assign_material_to_mesh

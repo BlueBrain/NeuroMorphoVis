@@ -331,7 +331,7 @@ def analyze_morphology(morphology,
         for item in nmv.analysis.ui_per_arbor_analysis_items:
             item.apply_per_arbor_analysis_kernel(morphology=morphology, context=context)
 
-        # Bounding box
+        # Analyze the bounding box information
         analyze_bounding_box(morphology=morphology, scene=context.scene)
 
         # Morphology is analyzed

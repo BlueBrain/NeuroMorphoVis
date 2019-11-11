@@ -295,8 +295,8 @@ def render_morphology_image(panel_object,
     elif context_scene.NMV_MorphologyRenderingView == \
             nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
 
-        # Compute the bounding box for the available meshes only
-        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+        # Compute the bounding box for the available curves and meshes
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
 
     # Compute the bounding box for the wide shot view that correspond to the whole morphology
     else:

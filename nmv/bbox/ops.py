@@ -228,6 +228,31 @@ def compute_scene_bounding_box_for_meshes():
 
 
 ####################################################################################################
+# @compute_scene_bounding_box_for_curves_and_meshes
+####################################################################################################
+def compute_scene_bounding_box_for_curves_and_meshes():
+    """Compute the bounding box of all the 'curves' and 'meshes'in the scene.
+
+    NOTE: This function considers only 'CURVE' and 'MESH' types and ignores the cameras for example.
+
+    :return:
+        A reference to the bounding box of the scene.
+    """
+
+    # Select all the objects that are meshes or curves
+    objects = []
+    for scene_object in bpy.data.objects:
+        if scene_object.type in ['CURVE'] or scene_object.type in ['MESH']:
+            objects.append(scene_object)
+
+    # Returns the bounding box of a group of objects
+    bounding_box = get_objects_bounding_box(objects)
+
+    # Return a reference to the bounding box of the scene
+    return bounding_box
+
+
+####################################################################################################
 # @get_scene_bounding_box
 ####################################################################################################
 def compute_scene_bounding_box():
