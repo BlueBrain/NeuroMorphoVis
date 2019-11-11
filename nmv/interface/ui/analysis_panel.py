@@ -24,6 +24,7 @@ import bpy
 
 import nmv.consts
 import nmv.analysis
+import nmv.builders
 import nmv.enums
 import nmv.file
 import nmv.interface
@@ -153,7 +154,7 @@ class CreateNeuronCard(bpy.types.Operator):
         :return:
             'FINISHED'
         """
-        '''
+
         # Ensure that there is a valid directory where the images will be written to
         if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
@@ -175,9 +176,45 @@ class CreateNeuronCard(bpy.types.Operator):
         nmv.interface.ui.export_analysis_results(
             morphology=nmv.interface.ui_morphology,
             directory=nmv.interface.ui_options.io.analysis_directory)
-        '''
+
+
+        # Resolution scale
+        resolution_scale = 5
+
+        # Clear the scene
+        nmv.scene.clear_scene()
+
+        # Create a skeletonizer object to build the morphology skeleton
+        builder = nmv.builders.SkeletonBuilder(nmv.interface.ui_morphology, nmv.interface.ui_options)
+
+        # Draw the morphology skeleton and return a list of all the reconstructed objects
+        nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
+
+        # Render the front, side, top
+        nmv.interface.render_morphology_image_for_catalogue(resolution_scale_factor=resolution_scale, view='FRONT')
+        nmv.interface.render_morphology_image_for_catalogue(resolution_scale_factor=resolution_scale, view='SIDE')
+        nmv.interface.render_morphology_image_for_catalogue(resolution_scale_factor=resolution_scale, view='TOP')
 
         from PIL import Image, ImageDraw, ImageFont
+
+        # Front, side and top images
+        front_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
+                                                          'FRONT', nmv.interface.ui_options.morphology.label))
+        side_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
+                                                         'SIDE', nmv.interface.ui_options.morphology.label))
+        top_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
+                                                        'TOP', nmv.interface.ui_options.morphology.label))
+
+        final_image_width = front_image.size[0] + side_image.size[0]
+        final_image_height = front_image.size[1] + top_image.size[1]
+        final_image = Image.new('RGB', (final_image_width, final_image_height))
+
+        final_image.paste(front_image, (0, 0))
+        final_image.paste(side_image, (front_image.size[0], 0))
+        final_image.paste(top_image, (0, front_image.size[1]))
+
+        final_image.save('%s/%s.png' % (nmv.interface.ui_options.io.analysis_directory,
+                                    nmv.interface.ui_options.morphology.label))
 
         # Create image
         image = Image.new('RGB', (2000, 2000), color=(255, 255, 255))

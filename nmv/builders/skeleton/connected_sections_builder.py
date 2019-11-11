@@ -194,4 +194,3 @@ class ConnectedSectionsBuilder:
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
         return self.morphology_objects
-

@@ -257,7 +257,7 @@ def validate_output_directory(panel_object,
 
 
 ####################################################################################################
-# @render_mesh_image
+# @render_morphology_image
 ####################################################################################################
 def render_morphology_image(panel_object,
                             context_scene,
@@ -428,3 +428,42 @@ def render_mesh_image(panel_object,
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')
+
+
+####################################################################################################
+# @render_morphology_image
+####################################################################################################
+def render_morphology_image_for_catalogue(resolution_scale_factor=10,
+                                          view='FRONT'):
+    """Renders an image of the morphology reconstructed in the scene.
+
+    :param resolution_scale_factor:
+        The scale factor that will determine the resolution.
+    :param view:
+        Rendering view.
+    """
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+
+    # Compute the bounding box for the available curves and meshes
+    bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+    # Get the view prefix
+    if view == nmv.enums.Camera.View.FRONT:
+        view_prefix = 'FRONT'
+    elif view == nmv.enums.Camera.View.SIDE:
+        view_prefix = 'SIDE'
+    elif view == nmv.enums.Camera.View.TOP:
+        view_prefix = 'TOP'
+    else:
+        view_prefix = ''
+
+    # Render the image
+    nmv.rendering.render_to_scale(
+        bounding_box=bounding_box,
+        camera_view=view,
+        image_scale_factor=resolution_scale_factor,
+        image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+        image_directory=nmv.interface.ui_options.io.analysis_directory)
