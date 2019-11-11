@@ -177,7 +177,6 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology,
             directory=nmv.interface.ui_options.io.analysis_directory)
 
-
         # Resolution scale
         resolution_scale = 5
 
