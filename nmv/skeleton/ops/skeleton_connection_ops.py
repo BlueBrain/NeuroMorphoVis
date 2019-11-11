@@ -576,16 +576,17 @@ def find_nearest_basal_dendritic_sample_to_basal_dendrite(morphology,
     # The initial value is set to None to indicate no samples found so far
     nearest_sample = None
 
-    for dendrite in morphology.dendrites:
+    if morphology.dendrites is not None:
+        for dendrite in morphology.dendrites:
 
-        # If the @basal_dendrite is the same as the @dendrite, then skip the check
-        if dendrite.id == basal_dendrite.id:
-            continue
+            # If the @basal_dendrite is the same as the @dendrite, then skip the check
+            if dendrite.id == basal_dendrite.id:
+                continue
 
-        # Find the nearest sample between the dendrite initial sample and the other basal dendrite
-        nearest_sample = find_nearest_sample_along_section(
-            point=basal_dendrite.samples[0].point, section=dendrite,
-            nearest_sample_found=nearest_sample)
+            # Find the nearest sample between the dendrite initial sample and the other basal dendrite
+            nearest_sample = find_nearest_sample_along_section(
+                point=basal_dendrite.samples[0].point, section=dendrite,
+                nearest_sample_found=nearest_sample)
 
     # Return the nearest sample found
     return nearest_sample

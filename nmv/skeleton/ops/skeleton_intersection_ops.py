@@ -240,13 +240,14 @@ def axon_intersects_dendrites(axon,
     """
 
     # Check if the axon intersects with any dendrite
-    for dendrite in dendrites:
+    if dendrites is not None:
+        for dendrite in dendrites:
 
-        # Branch intersection test
-        if branches_intersect(dendrite, axon, soma_radius):
+            # Branch intersection test
+            if branches_intersect(dendrite, axon, soma_radius):
 
-            # Intersection happens
-            return True
+                # Intersection happens
+                return True
 
     # No intersection
     return False

@@ -501,14 +501,15 @@ class BBPReader:
 
         # List of all profile points of the axon
         dendrites_profile_points_data = []
-        for dendrite in bbp_dendrites:
+        if bbp_dendrites is not None:
+            for dendrite in bbp_dendrites:
 
-            # The profile points are only available for root sections
-            if dendrite.parent() is None:
-                dendrites_profile_points_data.append([Vector((dendrite.samples()[0][0],
-                                                              dendrite.samples()[0][1],
-                                                              dendrite.samples()[0][2])),
-                                                      dendrite.samples()[0][3] / 2.0, 2])
+                # The profile points are only available for root sections
+                if dendrite.parent() is None:
+                    dendrites_profile_points_data.append([Vector((dendrite.samples()[0][0],
+                                                                  dendrite.samples()[0][1],
+                                                                  dendrite.samples()[0][2])),
+                                                          dendrite.samples()[0][3] / 2.0, 2])
         return dendrites_profile_points_data
 
     ################################################################################################
@@ -591,13 +592,14 @@ class BBPReader:
         """
 
         dendrites_starting_points = []
-        for dendrite in bbp_dendrites:
+        if bbp_dendrites is not None:
+            for dendrite in bbp_dendrites:
 
-            # Only consider the roots
-            if dendrite.parent() is None:
-                dendrites_starting_points.append(Vector((dendrite.samples()[0][0],
-                                                         dendrite.samples()[0][1],
-                                                         dendrite.samples()[0][2])))
+                # Only consider the roots
+                if dendrite.parent() is None:
+                    dendrites_starting_points.append(Vector((dendrite.samples()[0][0],
+                                                             dendrite.samples()[0][1],
+                                                             dendrite.samples()[0][2])))
         return dendrites_starting_points
 
     ################################################################################################
@@ -614,11 +616,12 @@ class BBPReader:
         """
 
         dendrites_starting_radii = []
-        for dendrite in bbp_dendrites:
+        if bbp_dendrites is not None:
+            for dendrite in bbp_dendrites:
 
-            # Only consider the roots
-            if dendrite.parent() is None:
-                dendrites_starting_radii.append(dendrite.samples()[0][3] / 2.0)
+                # Only consider the roots
+                if dendrite.parent() is None:
+                    dendrites_starting_radii.append(dendrite.samples()[0][3] / 2.0)
         return dendrites_starting_radii
 
     ################################################################################################

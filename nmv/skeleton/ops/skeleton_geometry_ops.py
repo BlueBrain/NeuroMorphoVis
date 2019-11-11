@@ -142,9 +142,10 @@ def compute_full_morphology_bounding_box(morphology):
 
     # Compute basal dendrites bounding boxes
     basal_dendrites_bounding_boxes = []
-    for dendrite in morphology.dendrites:
-        basal_dendrite_bounding_box = compute_arbor_bounding_box(dendrite)
-        basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
+    if morphology.dendrites is not None:
+        for dendrite in morphology.dendrites:
+            basal_dendrite_bounding_box = compute_arbor_bounding_box(dendrite)
+            basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
 
     # Compute apical dendrite bounding box, if exists
     apical_dendrite_bounding_box = None
