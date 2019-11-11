@@ -205,54 +205,107 @@ class CreateNeuronCard(bpy.types.Operator):
         top_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
                                                         'TOP', nmv.interface.ui_options.morphology.label))
 
-        final_image_width = front_image.size[0] + side_image.size[0] + 50
+        final_image_width = front_image.size[0] + side_image.size[0] + 50 + 2500
         final_image_height = front_image.size[1] + top_image.size[1] + 50
         final_image = Image.new('RGB', (final_image_width, final_image_height),
                                 color=(255, 255, 255))
+
+        # Load the font
+        helvetica_font = ImageFont.truetype('%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY,
+                                                       'helvetica-light.ttf'), 120)
+
+        # Draw the image and return a handle to it
+        image_handle = ImageDraw.Draw(final_image)
 
         final_image.paste(front_image, (0, 0))
         final_image.paste(side_image, (front_image.size[0] + 50, 0))
         final_image.paste(top_image, (0, front_image.size[1] + 50))
 
-        final_image.save('%s/%s.png' % (nmv.interface.ui_options.io.analysis_directory,
-                                    nmv.interface.ui_options.morphology.label))
-
-        # Create image
-        image = Image.new('RGB', (2000, 2000), color=(255, 255, 255))
+        image_handle.text((0, 0),
+                          nmv.interface.ui_morphology.label, font=helvetica_font, fill=(0, 0, 0))
 
         # Load the font
         helvetica_font = ImageFont.truetype('%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY,
-                                                       'helvetica-light.ttf'), 15)
+                                                       'helvetica-light.ttf'), 75)
 
-        # Draw the image and return a handle to it
-        image_handle = ImageDraw.Draw(image)
+        y_shift = 120
 
-        # Add text to the image
-        # image_handle.text((20, 20), "Hello World", font=helvetica_font, fill=(0, 0, 0))
+        # Text area width
+        text_area_width = 1500
 
         i = 1
-
-        # Global
         for item in nmv.analysis.ui_global_analysis_items:
-            result = getattr(context.scene, '%s' % item.variable)
-            string = item.name + ': ' + str(result)
-            image_handle.text((20, i * 20),
-                              string, font=helvetica_font, fill=(0, 0, 0))
+
+            # Get the name of the property
+            property_name = item.name
+
+            # If it contains '#', replace it by 'Number of'
+            property_name = property_name.replace('#', 'Number of')
+
+            # If it contains '/', replace it by 'per'
+            property_name = property_name.replace('/', 'per')
+
+            # Get the property value
+            property_value = getattr(context.scene, '%s' % item.variable)
+
+            if item.data_format == 'FLOAT':
+                property_value = format(property_value, '.3f')
+
+            # Compute the size of the text
+            text_width, text_height = image_handle.textsize(property_name, helvetica_font)
+
+            # Where the text should start
+            text_starting_pixel = front_image.size[0] + 50 + side_image.size[0] + 50
+
+            # Alignment
+            x_alignment = text_starting_pixel + text_area_width - text_width
+
+            image_handle.text((x_alignment, i * y_shift), property_name + ": ", font=helvetica_font,
+                              fill=(0, 0, 0))
+
+            image_handle.text((text_area_width + text_starting_pixel + 50, i * y_shift),
+                              str(property_value), font=helvetica_font, fill=(0, 0, 0))
+
             i += 1
-
-        image_handle.line((0, 0) + image.size, fill=128)
-
 
         # Morphology
         for item in nmv.analysis.ui_per_arbor_analysis_items:
-            result = getattr(context.scene, 'Morphology%s' % item.variable)
-            string = item.name + ': ' + str(result)
-            image_handle.text((20, i * 20),
-                              string, font=helvetica_font, fill=(0, 0, 0))
+
+            # Get the name of the property
+            property_name = item.name
+
+            # If it contains '#', replace it by 'Number of'
+            property_name = property_name.replace('#', 'Number of')
+
+            # If it contains '/', replace it by 'per'
+            property_name = property_name.replace('/', 'per')
+
+            # Get the property value
+            property_value = getattr(context.scene, 'Morphology%s' % item.variable)
+
+            if item.data_format == 'FLOAT':
+                property_value = format(property_value, '.3f')
+
+            # Compute the size of the text
+            text_width, text_height = image_handle.textsize(property_name, helvetica_font)
+
+            # Where the text should start
+            text_starting_pixel = front_image.size[0] + 50 + side_image.size[0] + 50
+
+            # Alignment
+            x_alignment = text_starting_pixel + text_area_width - text_width
+
+            image_handle.text((x_alignment, i * y_shift), property_name + ": ", font=helvetica_font,
+                              fill=(0, 0, 0))
+
+            image_handle.text((text_area_width + text_starting_pixel + 50, i * y_shift),
+                              str(property_value), font=helvetica_font, fill=(0, 0, 0))
+
             i += 1
 
-        # Save the image to file
-        image.save('image.png')
+        # Save the final image
+        final_image.save('%s/%s.png' % (nmv.interface.ui_options.io.analysis_directory,
+                                    nmv.interface.ui_options.morphology.label))
 
 
 

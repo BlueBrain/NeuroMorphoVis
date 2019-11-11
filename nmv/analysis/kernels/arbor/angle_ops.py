@@ -162,7 +162,10 @@ def compute_maximum_global_bifurcation_angle_of_arbor(arbor):
           sections_bifurcation_angles])
 
     # Return the minimum local bifurcation angle
-    return max(sections_bifurcation_angles)
+    if len(sections_bifurcation_angles) > 0:
+        return max(sections_bifurcation_angles)
+    else:
+        return 0.0
 
 
 ####################################################################################################
