@@ -240,13 +240,14 @@ def axon_intersects_dendrites(axon,
     """
 
     # Check if the axon intersects with any dendrite
-    for dendrite in dendrites:
+    if dendrites is not None:
+        for dendrite in dendrites:
 
-        # Branch intersection test
-        if branches_intersect(dendrite, axon, soma_radius):
+            # Branch intersection test
+            if branches_intersect(dendrite, axon, soma_radius):
 
-            # Intersection happens
-            return True
+                # Intersection happens
+                return True
 
     # No intersection
     return False
@@ -330,26 +331,27 @@ def basal_dendrite_intersects_basal_dendrite(dendrite,
     """
 
     # Check if the primary dendrite intersects with any of the other secondary dendrites
-    for secondary_dendrite in dendrites:
+    if dendrites is not None:
+        for secondary_dendrite in dendrites:
 
-        # The dendrite cannot intersect with itself, continue
-        if dendrite.id == secondary_dendrite.id:
-            continue
+            # The dendrite cannot intersect with itself, continue
+            if dendrite.id == secondary_dendrite.id:
+                continue
 
-        # Check the intersection between the primary and the secondary dendrites
-        if branches_intersect(dendrite, secondary_dendrite, soma_radius):
+            # Check the intersection between the primary and the secondary dendrites
+            if branches_intersect(dendrite, secondary_dendrite, soma_radius):
 
-            # If the radius of the primary dendrite is less than the secondary one, then the
-            # intersection is true
-            primary_radius = dendrite.samples[0].radius
-            secondary_radius = secondary_dendrite.samples[0].radius
+                # If the radius of the primary dendrite is less than the secondary one, then the
+                # intersection is true
+                primary_radius = dendrite.samples[0].radius
+                secondary_radius = secondary_dendrite.samples[0].radius
 
-            # Compare the radii
-            if primary_radius < secondary_radius:
+                # Compare the radii
+                if primary_radius < secondary_radius:
 
-                # The primary dendrite intersects with the secondary one and has less radius,
-                # then the intersection exists
-                return True
+                    # The primary dendrite intersects with the secondary one and has less radius,
+                    # then the intersection exists
+                    return True
 
     # No intersection
     return False

@@ -396,8 +396,9 @@ class Morphology:
             self.fix_arbor(self.apical_dendrite)
 
         # Fix the basal dendrites
-        for basal_dendrite in self.dendrites:
-            self.fix_arbor(basal_dendrite)
+        if self.dendrites is not None:
+            for basal_dendrite in self.dendrites:
+                self.fix_arbor(basal_dendrite)
 
     ################################################################################################
     # @set_section_branching_order
