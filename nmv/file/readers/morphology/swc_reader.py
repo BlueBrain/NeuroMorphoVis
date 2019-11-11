@@ -47,6 +47,9 @@ class SWCReader:
         # Set the path to the given h5 file
         self.morphology_file = swc_file
 
+        # The samples list parsed from the morphology file
+        self.parsed_samples_list = list()
+
         # A list of all the samples parsed from the morphology file, to be used as a lookup table
         # to construct the morphology skeleton directly
         # http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
@@ -119,7 +122,8 @@ class SWCReader:
                 path.append(sample_i[0])
 
                 # Append the path to the paths list
-                self.paths.append(path)
+                if len(path) > 0:
+                    self.paths.append(path)
 
                 # Clear the path list to search for a new path
                 path = list()
@@ -131,7 +135,8 @@ class SWCReader:
             if index > len(self.samples_list) - 2:
 
                 # Append the last path
-                self.paths.append(path)
+                if len(path) > 0:
+                    self.paths.append(path)
 
                 # Then break
                 break
@@ -213,11 +218,9 @@ class SWCReader:
         # Open the file, read it line by line and store the result in list.
         morphology_file = open(self.morphology_file, 'r')
 
-        initial_samples_list = list()
-
         # Add a dummy sample to the list at index 0 to match the indices
         # The zeroth sample always defines the soma parameters, and it is parsed independently
-        initial_samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
+        self.parsed_samples_list.append([0, 0, 0.0, 0.0, 0.0, 0.0, 0])
 
         # Translation vector in case the file is not centered at the origin
         translation = Vector((0.0, 0.0, 0.0))
@@ -259,7 +262,15 @@ class SWCReader:
             # Get the branch type
             sample_type = int(data[nmv.consts.Arbors.SWC_SAMPLE_TYPE_IDX])
 
-            # Get the X-coordinate
+            # If the sample type doesn't match a soma, an axon, a basal dendrite or an apical
+            # dendrite, just consider it a basal dendrite
+            if not sample_type == nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE or \
+                    not sample_type == nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE or \
+                    not sample_type == nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE or \
+                    not sample_type == nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE:
+                sample_type = nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE
+
+                # Get the X-coordinate
             x = float(data[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX])
 
             # Get the Y-coordinate
@@ -287,11 +298,11 @@ class SWCReader:
             z = z - translation[2]
 
             # Add the sample to the list
-            initial_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+            self.parsed_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
 
         # Search for the largest index of the samples
         largest_index = 0
-        for i_sample in initial_samples_list:
+        for i_sample in self.parsed_samples_list:
             if i_sample[0] > largest_index:
                 largest_index = i_sample[0]
 
@@ -301,14 +312,33 @@ class SWCReader:
 
         # Set the samples at their corresponding indices to make it easy to index them, and keep
         # the rest to Null and double check them later
-        for i_sample in initial_samples_list:
+        for i_sample in self.parsed_samples_list:
             self.samples_list[i_sample[0]] = i_sample
 
-        # Construct the connected paths from the samples list
-        self.build_connected_paths_from_samples()
+    ################################################################################################
+    # @get_number_stems_from_samples_list
+    ################################################################################################
+    def get_number_stems_from_samples_list(self):
+        """Gets the total number of stems or the branches that emanate from the soma directly.
 
-        # Construct the individual sections from the paths
-        self.build_sections_from_paths()
+        NOTE:
+            The samples list has the followign structure
+                parsed_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
+        :return:
+            The total number of stems or the branches that emanate from the soma directly.
+        """
+
+        # By definition, a stem sample would have a parent index of 1 and any other type
+        # than that of a soma
+        number_stems = 0
+
+        # Filter the samples
+        for sample in self.parsed_samples_list:
+            if not sample[1] == 1 and sample[-1] == 1:
+                number_stems += 1
+
+        # Return the result
+        return number_stems
 
     ################################################################################################
     # @get_nmv_sample_from_samples_list
@@ -621,6 +651,12 @@ class SWCReader:
         # Read all the samples from the morphology file an store them into a list
         self.read_samples()
 
+        # Construct the connected paths from the samples list
+        self.build_connected_paths_from_samples()
+
+        # Construct the individual sections from the paths
+        self.build_sections_from_paths()
+
         # Build the basal dendrites
         basal_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
@@ -688,6 +724,9 @@ class SWCReader:
         nmv_morphology = nmv.skeleton.Morphology(
             soma=soma, axon=axon_arbor, dendrites=basal_dendrites_arbors,
             apical_dendrite=apical_dendrite_arbor, label=label)
+
+        # Add the number of stems to the morphology
+        nmv_morphology.number_stems = self.get_number_stems_from_samples_list()
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology
