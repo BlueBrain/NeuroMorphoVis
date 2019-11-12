@@ -446,23 +446,108 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "nmv.render_morphology_progressive"
-    bl_label = "Progressive"
+    bl_label = "360"
+
+    # Timer parameters
+    event_timer = None
+    timer_limits = 0
+
+    # Output data
+    output_directory = None
 
     ################################################################################################
-    # @execute
+    # @modal
     ################################################################################################
-    def execute(self, context):
-        """Executes the operator.
+    def modal(self, context, event):
+        """
+        Threading and non-blocking handling.
 
-        :param context: Context.
-        :return: 'FINISHED'
+        :param context: Panel context.
+        :param event: A given event for the panel.
         """
 
         # Get a reference to the scene
         scene = context.scene
 
+        # Cancelling event, if using right click or exceeding the time limit of the simulation
+        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > bpy.context.scene.frame_end:
+
+            # Reset the timer limits
+            self.timer_limits = 0
+
+            # Refresh the panel context
+            self.cancel(context)
+
+            # Done
+            return {'FINISHED'}
+
+        # Timer event, where the function is executed here on a per-frame basis
+        if event.type == 'TIMER':
+
+            bpy.context.scene.frame_set(self.timer_limits)
+
+            # Set the frame name
+            image_name = 'frame_%s' % '{0:05d}'.format(self.timer_limits)
+
+            # Compute the bounding box for a close up view
+            if context.scene.NMV_MorphologyRenderingView == \
+                    nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+
+                # Compute the bounding box for a close up view
+                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
+                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
+
+            # Compute the bounding box for a mid-shot view
+            elif context.scene.NMV_MorphologyRenderingView == \
+                    nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+
+                # Compute the bounding box for the available meshes only
+                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+            # Compute the bounding box for the wide-shot view that corresponds to the whole
+            # morphology
+            else:
+
+                # Compute the full morphology bounding box
+                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
+                    morphology=nmv.interface.ui_morphology)
+
+            # Stretch the bounding box by few microns
+            rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+
+            # Render a frame
+            nmv.rendering.renderer.render(
+                bounding_box=rendering_bbox,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_resolution=context.scene.NMV_MorphologyFrameResolution,
+                image_name=image_name,
+                image_directory=self.output_directory)
+
+            # Update the progress shell
+            nmv.utilities.show_progress('Rendering', self.timer_limits, bpy.context.scene.frame_end)
+
+            # Update the progress bar
+            context.scene.NMV_MorphologyRenderingProgress = \
+                int(100 * self.timer_limits / float(bpy.context.scene.frame_end))
+
+            # Upgrade the timer limits
+            self.timer_limits += 1
+
+        # Next frame
+        return {'PASS_THROUGH'}
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+        """
+        Execute the operator.
+
+        :param context: Panel context.
+        """
+
         # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.output.output_directory is None:
+        if nmv.interface.ui_options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
@@ -471,26 +556,45 @@ class RenderMorphologyProgressive(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
-        if not file_ops.path_exists(nmv.interface.ui_options.output.sequences_directory):
-            file_ops.clean_and_create_directory(nmv.interface.ui_options.output.sequences_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
+            nmv.file.ops.clean_and_create_directory(
+                nmv.interface.ui_options.io.sequences_directory)
+
+        # Create a specific directory for this mesh
+        self.output_directory = '%s/%s_morphology_progressive' % \
+                                (nmv.interface.ui_options.io.sequences_directory,
+                                 nmv.interface.ui_options.morphology.label)
+        nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Clear the scene
-        nmv.scene.ops.clear_scene()
+        nmv.scene.clear_scene()
 
-        # NOTE: To render a progressive reconstruction sequence, this requires setting the
-        # morphology progressive rendering flag to True and then passing the nmv.interface.ui_options
-        # to the morphology builder and disabling it after the rendering
-        nmv.interface.ui_options.morphology.render_progressive = True
+        # Reconstruct the morphology using the progressive builder
+        progressive_builder = nmv.builders.ProgressiveBuilder(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        progressive_builder.draw_morphology_skeleton()
 
-        # Create a skeleton builder object
-        morphology_builder = skeleton_builder.SkeletonBuilder(
-            ui_interface.morphology, nmv.interface.ui_options)
+        # Use the event timer to update the UI during the soma building
+        wm = context.window_manager
+        self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
+        wm.modal_handler_add(self)
 
-        # Reconstruct the morphology
-        morphology_skeleton_objects = morphology_builder.draw_morphology_skeleton()
+        # Done
+        return {'RUNNING_MODAL'}
 
-        # Setting the progressive rendering flag to False (default value)
-        nmv.interface.ui_options.morphology.render_progressive = False
+    ################################################################################################
+    # @cancel
+    ################################################################################################
+    def cancel(self, context):
+        """
+        Cancel the panel processing and return to the interaction mode.
+
+        :param context: Panel context.
+        """
+
+        # Multi-threading
+        wm = context.window_manager
+        wm.event_timer_remove(self.event_timer)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Morphology Rendering Done')
