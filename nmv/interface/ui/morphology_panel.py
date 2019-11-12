@@ -446,7 +446,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "nmv.render_morphology_progressive"
-    bl_label = "360"
+    bl_label = "Progressive"
 
     # Timer parameters
     event_timer = None
