@@ -155,6 +155,7 @@ class ConnectedSectionsBuilder:
                 nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.apical_dendrite,
                     poly_lines_data=skeleton_poly_lines,
+                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
@@ -164,6 +165,7 @@ class ConnectedSectionsBuilder:
                 nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.axon,
                     poly_lines_data=skeleton_poly_lines,
+                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                     max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
@@ -174,6 +176,7 @@ class ConnectedSectionsBuilder:
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=basal_dendrite,
                         poly_lines_data=skeleton_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
         # Draw the poly-lines as a single object

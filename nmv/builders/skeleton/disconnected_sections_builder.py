@@ -206,8 +206,8 @@ class DisconnectedSectionsBuilder:
         sphere_radius = radius
         if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
-            sphere_radius = self.options.morphology.sections_fixed_radii_value
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
+            sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
         section_terminal_sphere = nmv.bmeshi.create_ico_sphere(

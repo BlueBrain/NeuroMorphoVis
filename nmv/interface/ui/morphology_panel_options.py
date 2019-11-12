@@ -202,26 +202,57 @@ bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(
 
 # Section radius
 bpy.types.Scene.NMV_SectionsRadii = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED,
-            'As Specified in Morphology',
-            "Use the cross-sectional radii reported in the morphology file"),
-           (nmv.enums.Skeletonization.ArborsRadii.FIXED,
-            'At a Fixed Diameter',
-            "Set all the arbors to a fixed radius"),
+    items=[(nmv.enums.Skeletonization.ArborsRadii.ORIGINAL,
+            'Original',
+            "Set the radii of the samples to the original ones reported in the morphology file"),
+           (nmv.enums.Skeletonization.ArborsRadii.UNIFIED,
+            'Unified',
+            "Set the radii of all the samples in the entire morphology to a unified value given "
+            "by the user"),
+           (nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE,
+            'Type Unified',
+            "Set the radii of all the samples in the (axon, apical dendrite and basal dendrites) "
+            "to a unified value (to axon, apical dendrite and basal dendrites) given by the user"),
            (nmv.enums.Skeletonization.ArborsRadii.SCALED,
-            'With Scale Factor',
-            "Scale all the arbors using a specified scale factor"),
+            'Scaled',
+            "Scale the radii of all the samples in the morphology with a scale factor given "
+            "by the user"),
            (nmv.enums.Skeletonization.ArborsRadii.FILTERED,
             'Filtered',
-            "Filter section with lower values than the threshold"), ],
+            "Filter the samples with radii lower than a given threshold"), ],
     name="Radii",
-    default=nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED)
+    default=nmv.enums.Skeletonization.ArborsRadii.ORIGINAL)
 
-# Fixed section radius value
-bpy.types.Scene.NMV_FixedRadiusValue = bpy.props.FloatProperty(
+# Unified radius value
+bpy.types.Scene.NMV_UnifiedRadiusValue = bpy.props.FloatProperty(
+    name="Value (μm)",
+    description="The value of the unified radius in microns between (0.05 and 5.0) microns",
+    default=1.0, min=0.05, max=5.0)
+
+# Unified radius value for the axon
+bpy.types.Scene.NMV_AxonUnifiedRadiusValue = bpy.props.FloatProperty(
     name="Value (μm)",
     description="The value of the radius in microns between (0.05 and 5.0) microns",
     default=1.0, min=0.05, max=5.0)
+
+# Unified radius value for the apical dendrite
+bpy.types.Scene.NMV_ApicalDendriteUnifiedRadiusValue = bpy.props.FloatProperty(
+    name="Value (μm)",
+    description="The value of the radius in microns between (0.05 and 5.0) microns",
+    default=1.0, min=0.05, max=5.0)
+
+# Unified radius value for the basal dendrites
+bpy.types.Scene.NMV_BasalDendritesUnifiedRadiusValue = bpy.props.FloatProperty(
+    name="Value (μm)",
+    description="The value of the radius in microns between (0.05 and 5.0) microns",
+    default=1.0, min=0.05, max=5.0)
+
+# Unified radius value for the axon
+bpy.types.Scene.NMV_AxonUnifiedRadiusValue = bpy.props.FloatProperty(
+    name="Value (μm)",
+    description="The value of the radius in microns between (0.05 and 5.0) microns",
+    default=1.0, min=0.05, max=5.0)
+
 
 # Threshold value for the radius
 bpy.types.Scene.NMV_FilteredRadiusThreshold = bpy.props.FloatProperty(

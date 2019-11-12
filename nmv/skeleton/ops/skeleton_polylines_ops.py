@@ -117,6 +117,7 @@ def get_section_poly_line(section,
 # @get_connected_poly_line
 ####################################################################################################
 def get_connected_poly_line(section,
+                            connection_to_soma=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
                             transform=None):
     """Get the poly-line list or a series of points that reflect a connected stream passing by
     the given section. This function is different from the @get_section_poly_line one as it ignore
@@ -124,6 +125,11 @@ def get_connected_poly_line(section,
 
     :param section:
         The geometry of a section.
+    :param connection_to_soma:
+        A flag that indicates that this section is a root and is connected to the origin.
+        If this flag is activated, we will add few more samples between the origin and the first
+        sample on the section to the returned poly-line.
+        By default, this flag is set to False.
     :param transform:
         Transform the points from local to circuit coordinates, only valid for a circuit.
     :return:
@@ -139,6 +145,25 @@ def get_connected_poly_line(section,
 
     first_sample_index = 0
     last_sample_index = len(section.samples)
+
+    # If this section is a ROOT and is requested by the user to be connected to the origin,
+    # add few extra samples from the origin to the first sample of the given root section
+    if section.is_root() and connection_to_soma == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
+
+        # Get the direction from the origin to the first sample of the section
+        direction = section.samples[0].point.normalized()
+
+        # Get the distance from the origin to the first sample of the section
+        distance = section.samples[0].point.length
+
+        # Number of samples required to connect the origin to the soma to the first sample
+        number_samples = int(distance / section.samples[0].radius)
+
+        # Add the 'auxiliary' samples to the poly-line and use the same radius of the first
+        # sample on the section
+        for i in range(number_samples):
+            point = Vector((0.0, 0.0, 0.0)) + i * direction
+            poly_line.append([(point[0], point[1], point[2], 1), section.samples[0].radius])
 
     # Construct the section
     for i in range(first_sample_index, last_sample_index):
@@ -162,6 +187,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
                                                poly_lines_data=[],
                                                poly_line_data=[],
                                                branching_level=0,
+                                               connection_to_soma=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
                                                max_branching_level=nmv.consts.Math.INFINITY):
     # Ignore the drawing if the section is None
     if root is None:
@@ -171,7 +197,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
     branching_level += 1
 
     # Get a list of all the poly-line that corresponds to the given section
-    section_poly_line = get_connected_poly_line(section=root)
+    section_poly_line = get_connected_poly_line(section=root, connection_to_soma=connection_to_soma)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_poly_line)

@@ -110,15 +110,23 @@ class MorphologyOptions:
         # Resampling step
         self.resampling_step = 1.0
 
-        # The radii of the sections (as specified in the morphology file, scaled with a given
-        # scale factor, or constant at given fixed value)
-        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+        # The radii of the samples defined per section
+        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0
 
-        # A fixed and unified value for the radii of all the sections in the morphology
-        self.sections_fixed_radii_value = 1.0
+        # A unified value for the radii of all the sections in the morphology
+        self.samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the axon sections
+        self.axon_samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the apical dendrite sections
+        self.apical_dendrite_samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the basal dendrites sections
+        self.basal_dendrites_samples_unified_radii_value = 1.0
 
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000
@@ -236,13 +244,13 @@ class MorphologyOptions:
 
         # The radii of the sections (as specified in the morphology file, scaled with a given
         # scale factor, or constant at given fixed value)
-        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0
 
         # A fixed and unified value for the radii of all the sections in the morphology
-        self.sections_fixed_radii_value = 1.0
+        self.samples_unified_radii_value = 1.0
 
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000

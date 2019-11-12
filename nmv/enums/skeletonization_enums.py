@@ -234,13 +234,16 @@ class Skeletonization:
         """Radii of the samples along the arbors
         """
 
-        # Set the radii of the arbors as specified in the morphology file
-        AS_SPECIFIED = 'ARBORS_RADII_AS_SPECIFIED'
+        # Use the original radii that were reported in the morphology file
+        ORIGINAL = 'ARBORS_RADII_ORIGINAL'
 
-        # Set the radii of the arbors to a fixed value
-        FIXED = 'ARBORS_RADII_FIXED'
+        # Set the radii of all the samples in the morphology to a unified value given by the user
+        UNIFIED = 'ARBORS_RADII_UNIFIED'
 
-        # Scale the radii of the arbors using a constant factor
+        # Set the radii of all the samples in a given arbor type to a unified value given by users
+        UNIFIED_PER_ARBOR_TYPE = 'ARBORS_RADII_UNIFIED_PER_ARBOR_TYPE'
+
+        # Scale the radii of the samples in the entire morphology using a user-defined scale factor
         SCALED = 'ARBORS_RADII_SCALED'
 
         # Filter the radii at a given threshold radius
@@ -260,7 +263,7 @@ class Skeletonization:
 
             # As specified in the morphology file
             if argument == 'default':
-                return Skeletonization.ArborsRadii.AS_SPECIFIED
+                return Skeletonization.ArborsRadii.ORIGINAL
 
             # Scaled
             elif argument == 'scaled':
@@ -268,7 +271,7 @@ class Skeletonization:
 
             # Fixed
             elif argument == 'fixed':
-                return Skeletonization.ArborsRadii.FIXED
+                return Skeletonization.ArborsRadii.UNIFIED
 
             # Filtered
             elif argument == 'filtered':
@@ -276,7 +279,7 @@ class Skeletonization:
 
             # By default, as specified in the morphology file
             else:
-                return Skeletonization.ArborsRadii.AS_SPECIFIED
+                return Skeletonization.ArborsRadii.ORIGINAL
 
     ################################################################################################
     # @Rendering

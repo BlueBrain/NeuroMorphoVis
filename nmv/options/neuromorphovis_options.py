@@ -180,11 +180,11 @@ class NeuroMorphoVisOptions:
         self.morphology.bevel_object_sides = arguments.bevel_sides
 
         # Sections radii
-        # Fixed radius across all the arbors
-        if arguments.sections_radii == 'fixed':
+        # Unified radius across all the arbors
+        if arguments.sections_radii == 'unified':
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = True
-            self.morphology.sections_fixed_radii_value = arguments.fixed_section_radius
+            self.morphology.samples_unified_radii_value = arguments.fixed_section_radius
 
         # Scaled radii w.r.t the given in the morphology file
         elif arguments.sections_radii == 'scaled':

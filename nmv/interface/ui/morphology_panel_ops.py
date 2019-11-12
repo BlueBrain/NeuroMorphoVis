@@ -165,21 +165,45 @@ def set_reconstruction_options(layout,
     sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
 
     # Radii as specified in the morphology file
-    if scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED:
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+    if scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.ORIGINAL:
+        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.ORIGINAL
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = False
         options.morphology.sections_radii_scale = 1.0
 
-    # Fixed diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+    # Unified diameter
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
         fixed_diameter_row = layout.row()
         fixed_diameter_row.label(text='Fixed Radius Value:')
-        fixed_diameter_row.prop(scene, 'NMV_FixedRadiusValue')
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.FIXED
+        fixed_diameter_row.prop(scene, 'NMV_UnifiedRadiusValue')
+        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.UNIFIED
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
-        options.morphology.sections_fixed_radii_value = scene.NMV_FixedRadiusValue
+        options.morphology.samples_unified_radii_value = scene.NMV_UnifiedRadiusValue
+
+    # Unified diameter per arbor type
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE:
+        options.morphology.arbors_radii = \
+            nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE
+        options.morphology.scale_sections_radii = False
+        options.morphology.unify_sections_radii = True
+
+        axon_radius_row = layout.row()
+        axon_radius_row.label(text='Axon Radius:')
+        axon_radius_row.prop(scene, 'NMV_AxonUnifiedRadiusValue')
+        options.morphology.axon_samples_unified_radii_value = scene.NMV_AxonUnifiedRadiusValue
+
+        apical_dendrite_radius_row = layout.row()
+        apical_dendrite_radius_row.label(text='Apical Dendrite Radius:')
+        apical_dendrite_radius_row.prop(scene, 'NMV_ApicalDendriteUnifiedRadiusValue')
+        options.morphology.apical_dendrite_samples_unified_radii_value = \
+            scene.NMV_ApicalDendriteUnifiedRadiusValue
+
+        basal_dendrites_radius_row = layout.row()
+        basal_dendrites_radius_row.label(text='Basal Dendrites Radius:')
+        basal_dendrites_radius_row.prop(scene, 'NMV_BasalDendritesUnifiedRadiusValue')
+        options.morphology.basal_dendrites_samples_unified_radii_value = \
+            scene.NMV_BasalDendritesUnifiedRadiusValue
 
     # Scaled diameter
     elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.SCALED:

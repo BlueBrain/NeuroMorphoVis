@@ -197,12 +197,15 @@ class CreateNeuronCard(bpy.types.Operator):
         from PIL import Image, ImageDraw, ImageFont
 
         # Front, side and top images
-        front_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
-                                                          'FRONT', nmv.interface.ui_options.morphology.label))
-        side_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
-                                                         'SIDE', nmv.interface.ui_options.morphology.label))
-        top_image = Image.open('%s/MORPHOLOGY_%s_%s.png' % (nmv.interface.ui_options.io.analysis_directory,
-                                                        'TOP', nmv.interface.ui_options.morphology.label))
+        front_image = Image.open('%s/MORPHOLOGY_%s_%s.png' %
+                                 (nmv.interface.ui_options.io.analysis_directory,
+                                  'FRONT', nmv.interface.ui_options.morphology.label))
+        side_image = Image.open('%s/MORPHOLOGY_%s_%s.png' %
+                                (nmv.interface.ui_options.io.analysis_directory,
+                                 'SIDE', nmv.interface.ui_options.morphology.label))
+        top_image = Image.open('%s/MORPHOLOGY_%s_%s.png' %
+                               (nmv.interface.ui_options.io.analysis_directory,
+                                'TOP', nmv.interface.ui_options.morphology.label))
 
         final_image_width = front_image.size[0] + side_image.size[0] + 50 + 2500
         final_image_height = front_image.size[1] + top_image.size[1] + 50
