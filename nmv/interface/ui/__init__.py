@@ -16,8 +16,8 @@
 ####################################################################################################
 
 from .common import *
+from .data import *
 from .about_panel import *
-from .ui_data import *
 from .io_panel import *
 from .soma_panel import *
 from .analysis_panel import *
