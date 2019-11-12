@@ -157,7 +157,7 @@ def get_connected_poly_line(section,
         distance = section.samples[0].point.length
 
         # Number of samples required to connect the origin to the soma to the first sample
-        number_samples = int(distance / section.samples[0].radius)
+        number_samples = 5 # int(distance / section.samples[0].radius)
 
         # Add the 'auxiliary' samples to the poly-line and use the same radius of the first
         # sample on the section

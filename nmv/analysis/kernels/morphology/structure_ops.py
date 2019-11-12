@@ -105,6 +105,10 @@ def kernel_maximum_branching_order(morphology):
                                         nmv.analysis.compute_maximum_branching_order_of_arbor,
                                         nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
+    # Axon
+    if result.axon_result is not None:
+        morphology.axon.maximum_branching_order = result.axon_result
+
     # Apical dendrite
     if result.apical_dendrite_result is not None:
         morphology.apical_dendrite.maximum_branching_order = result.apical_dendrite_result
@@ -113,10 +117,6 @@ def kernel_maximum_branching_order(morphology):
     if result.basal_dendrites_result is not None:
         for i in range(len(result.basal_dendrites_result)):
             morphology.dendrites[i].maximum_branching_order = result.basal_dendrites_result[i]
-
-    # Axon
-    if result.axon_result is not None:
-        morphology.axon.maximum_branching_order = result.axon_result
 
     # Pass the analysis results to the morphology
     morphology.maximum_branching_order = result
