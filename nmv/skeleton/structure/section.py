@@ -104,6 +104,9 @@ class Section:
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
+        # Initial value for the maximum branching level
+        self.maximum_branching_order = 100
+
     ################################################################################################
     # @get_type_string
     ################################################################################################

@@ -125,6 +125,9 @@ class Morphology:
         # Build the samples lists
         self.build_samples_lists()
 
+        # Maximum branching order
+        self.maximum_branching_order = 100
+
     ################################################################################################
     # @build_samples_lists_recursively
     ################################################################################################
