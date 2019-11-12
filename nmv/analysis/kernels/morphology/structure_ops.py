@@ -75,7 +75,7 @@ def kernel_total_number_trifurcations(morphology):
 # @kernel_maximum_path_distance
 ####################################################################################################
 def kernel_maximum_path_distance(morphology):
-    """Compute the maximum path distance from the soma along all the arbors till their last sample.
+    """Computes the maximum path distance from the soma along all the arbors till their last sample.
 
     :param morphology:
         A given morphology skeleton to analyse.
