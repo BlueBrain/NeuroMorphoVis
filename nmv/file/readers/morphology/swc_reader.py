@@ -234,6 +234,7 @@ class SWCReader:
         for line in string_list:
 
             # Ignore lines with comments that have '#'
+            # TODO: Possibly a bug
             if '#' in line:
                 continue
 

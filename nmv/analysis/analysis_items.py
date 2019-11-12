@@ -31,7 +31,7 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='TotalNumberSamples',
                  name='Total # Samples',
                  kernel=kernel_total_number_samples,
-                 description='The total number of samples',
+                 description='The total number of samples (or digitized points)',
                  data_format='INT'),
 
     AnalysisItem(variable='TotalNumberSections',
@@ -55,7 +55,8 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='TotalNumberTrifurcations',
                  name='Total # Trifurcations',
                  kernel=kernel_total_number_trifurcations,
-                 description='The total number of trifurcations',
+                 description='The total number of trifurcations (or sections with three '
+                             'children)',
                  data_format='INT'),
 
     AnalysisItem(variable='MaximumPathDistance',
@@ -68,31 +69,31 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='MinNumberSamplePerSection',
                  name='Min. # Samples / Section',
                  kernel=kernel_minimum_number_samples_per_section,
-                 description='The least number of samples per section',
+                 description='The lowest number of samples a section has',
                  data_format='INT'),
 
     AnalysisItem(variable='MaxNumberSamplePerSection',
                  name='Max. # Samples / Section',
                  kernel=kernel_maximum_number_samples_per_section,
-                 description='The largest number of samples per section',
+                 description='The largest number of samples a section has',
                  data_format='INT'),
 
     AnalysisItem(variable='AvgNumberSamplePerSection',
                  name='Avg. # Samples / Section',
                  kernel=kernel_average_number_samples_per_section,
-                 description='The Average number of samples per  section',
+                 description='The average number of samples per section',
                  data_format='INT'),
 
     AnalysisItem(variable='MinSampleRadius',
                  name='Min. Sample Radius',
                  kernel=kernel_minimum_sample_radius,
-                 description='The minimum sample radius',
+                 description='The radius of the smallest sample',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='MaxSampleRadius',
                  name='Max. Sample Radius',
                  kernel=kernel_maximum_sample_radius,
-                 description='The maximum sample radius',
+                 description='The radius of the largest sample',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='AvgSampleRadius',
@@ -104,7 +105,7 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='ZeroRadiiSamples',
                  name='Zero-radius Samples',
                  kernel=kernel_number_zero_radius_samples,
-                 description='The total number of zero-radius samples',
+                 description='The total number of zero-radii samples (epsilon value 1e-3 or 1 nm)',
                  data_format='INT'),
 
     ################################################################################################
@@ -113,42 +114,48 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='MinimumLocalBifurcationAngle',
                  name='Min. Local Bifurcation Angle',
                  kernel=kernel_minimum_local_bifurcation_angle,
-                 description='The minimum local bifurcation angle',
+                 description='The minimum local bifurcation angle (computed from the first two '
+                             'samples along the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
     AnalysisItem(variable='MaximumLocalBifurcationAngle',
                  name='Max. Local Bifurcation Angle',
                  kernel=kernel_maximum_local_bifurcation_angle,
-                 description='The minimum local bifurcation angle',
+                 description='The minimum local bifurcation angle (computed from the first two '
+                             'samples along the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
     AnalysisItem(variable='AverageLocalBifurcationAngle',
                  name='Avg. Local Bifurcation Angle',
                  kernel=kernel_average_local_bifurcation_angle,
-                 description='The average local bifurcation angle',
+                 description='The average local bifurcation angle (computed from the first two '
+                             'samples along the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
     AnalysisItem(variable='MinimumGlobalBifurcationAngle',
                  name='Min. Global Bifurcation Angle',
                  kernel=kernel_minimum_global_bifurcation_angle,
-                 description='The minimum global bifurcation angle',
+                 description='The minimum global bifurcation angle (computed from the first and '
+                             'last samples of the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
     AnalysisItem(variable='MaximumGlobalBifurcationAngle',
                  name='Max. Global Bifurcation Angle',
                  kernel=kernel_maximum_global_bifurcation_angle,
-                 description='The minimum global bifurcation angle',
+                 description='The minimum global bifurcation angle (computed from the first and '
+                             'last samples of the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
     AnalysisItem(variable='AverageGlobalBifurcationAngle',
                  name='Avg. Global Bifurcation Angle',
                  kernel=kernel_average_global_bifurcation_angle,
-                 description='The average global bifurcation angle',
+                 description='The average global bifurcation angle (computed from the first and '
+                             'last samples of the section)',
                  data_format='FLOAT',
                  unit='ROTATION'),
 
@@ -158,7 +165,7 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='TotalLength',
                  name='Total Length',
                  kernel=kernel_total_length,
-                 description='Total length',
+                 description='The total length',
                  data_format='FLOAT',
                  unit='LENGTH'),
 
@@ -187,7 +194,7 @@ ui_per_arbor_analysis_items = [
                  name='Short Sections',
                  kernel=kernel_short_sections,
                  description='The total number of short sections '
-                             '(length is smaller than the sum of the terminal samples radii)',
+                             '(length is smaller than the sum of the radii of the terminal samples)',
                  data_format='INT'),
 
     AnalysisItem(variable='MinSegmentLength',
@@ -314,13 +321,13 @@ ui_global_analysis_items = [
                  name='Soma Surface Area',
                  kernel=kernel_soma_get_average_surface_area,
                  description='The surface area of the soma as reported in the morphology file '
-                             'in mμ²',
+                             'in μm²',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='ReportedSomaVolume',
                  name='Soma Volume',
                  kernel=kernel_soma_get_average_volume,
-                 description='The volume of the soma as reported in the morphology file in mμ³',
+                 description='The volume of the soma as reported in the morphology file in μm³',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='NumberProfilePoints',

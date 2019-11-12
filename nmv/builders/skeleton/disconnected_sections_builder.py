@@ -274,7 +274,7 @@ class DisconnectedSectionsBuilder:
 
         # Link the bmesh spheres to the scene
         articulations_spheres = \
-            nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, 'articulations')
+            nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, '%s_articulations' % self.morphology.label)
 
         # Smooth shading
         nmv.mesh.shade_smooth_object(articulations_spheres)
