@@ -189,7 +189,7 @@ def compute_scene_bounding_box_for_curves():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['CURVE']:
             objects.append(scene_object)
@@ -214,10 +214,11 @@ def compute_scene_bounding_box_for_meshes():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['MESH']:
-            if 'spine' in scene_object.name: continue
+            if 'spine' in scene_object.name:
+                continue
             objects.append(scene_object)
 
     # Returns the bounding box of a group of objects
@@ -240,7 +241,7 @@ def compute_scene_bounding_box_for_curves_and_meshes():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['CURVE'] or scene_object.type in ['MESH']:
             objects.append(scene_object)
@@ -265,7 +266,7 @@ def compute_scene_bounding_box():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['MESH', 'CURVE']:
             objects.append(scene_object)
@@ -435,7 +436,7 @@ def draw_bounding_box(bbox,
     p_6 = Vector((bbox.p_max[0], bbox.p_max[1], bbox.p_max[2]))
     p_7 = Vector((bbox.p_min[0], bbox.p_max[1], bbox.p_max[2]))
 
-    point_list = []
+    point_list = list()
     point_list.append([p_0, p_1])
     point_list.append([p_1, p_2])
     point_list.append([p_2, p_3])
