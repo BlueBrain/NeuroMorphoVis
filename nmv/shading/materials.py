@@ -652,6 +652,8 @@ def create_materials(material_type,
         sections or segments.
     """
 
+    bpy.context.scene.world.color = (10, 10, 10)
+
     # A list of the created materials
     materials_list = []
     for i in range(2):

@@ -80,7 +80,7 @@ def is_blender_280():
     """Checks if the used version of Blender is greater than 2.8 or not.
 
     :return:
-        True if this version of Blender is 2.8, otherwise False.
+        True if this version of Blender is 2.8 or greater to work with the new API, otherwise False.
     """
 
     if get_blender_version() >= (2, 80, 0):
