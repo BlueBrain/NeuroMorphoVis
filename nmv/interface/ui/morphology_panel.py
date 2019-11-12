@@ -503,6 +503,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
                 # Compute the bounding box for the available meshes only
                 rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+                # Compute bounding box for the current selection of arbors
 
             # Compute the bounding box for the wide-shot view that corresponds to the whole
             # morphology
