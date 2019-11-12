@@ -28,6 +28,7 @@ import nmv.enums
 import nmv.interface
 import nmv.scene
 import nmv.utilities
+import nmv.consts
 from .io_panel_options import *
 
 
@@ -193,9 +194,9 @@ class LoadMorphology(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Load the images
-        images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
         logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
-        logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
+        logo_tex.image = bpy.data.images.load("%s/%s" % (nmv.consts.Paths.IMAGES_PATH,
+                                                         'nmv-logo.png'))
         logo_tex.extension = 'CLIP'
 
         # Load the morphology file
