@@ -356,6 +356,11 @@ bpy.types.Scene.NMV_MorphologyCloseUpDimensions = bpy.props.FloatProperty(
     default=20, min=5, max=100,
     description="The dimensions of the view that will be rendered in microns")
 
+# Morphology rendering progress
+bpy.types.Scene.NMV_MorphologyRenderingProgress = bpy.props.IntProperty(
+    name="Rendering Progress",
+    default=0, min=0, max=100, subtype='PERCENTAGE')
+
 # Reconstruction time
 bpy.types.Scene.NMV_MorphologyReconstructionTime = bpy.props.FloatProperty(
     name="Reconstruction (Sec)",

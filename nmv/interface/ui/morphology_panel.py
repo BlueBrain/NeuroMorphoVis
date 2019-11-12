@@ -37,6 +37,7 @@ from .morphology_panel_options import *
 
 is_morphology_reconstructed = False
 
+
 ####################################################################################################
 # @MorphologyPanel
 ####################################################################################################
@@ -324,15 +325,15 @@ class RenderMorphology360(bpy.types.Operator):
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
 
             # Compute the bounding box for a close up view
-            if context.scene.MorphologyRenderingView == \
+            if context.scene.NMV_MorphologyRenderingView == \
                     nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
 
                 # Compute the bounding box for a close up view
                 rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=context.scene.MorphologyCloseUpDimensions)
+                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
 
             # Compute the bounding box for a mid-shot view
-            elif context.scene.MorphologyRenderingView == \
+            elif context.scene.NMV_MorphologyRenderingView == \
                     nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
 
                 # Compute the bounding box for the available meshes only
@@ -359,14 +360,14 @@ class RenderMorphology360(bpy.types.Operator):
                 angle=self.timer_limits,
                 bounding_box=bounding_box_360,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.MorphologyFrameResolution,
+                image_resolution=context.scene.NMV_MorphologyFrameResolution,
                 image_name=image_name)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
 
             # Update the progress bar
-            context.scene.SomaRenderingProgress = int(100 * self.timer_limits / 360.0)
+            context.scene.NMV_MorphologyRenderingProgress = int(100 * self.timer_limits / 360.0)
 
             # Upgrade the timer limits
             self.timer_limits += 1

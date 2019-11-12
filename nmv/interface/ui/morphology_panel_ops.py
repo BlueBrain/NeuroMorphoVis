@@ -239,7 +239,7 @@ def set_color_options(layout,
     :param layout:
         Panel layout.
     :param scene:
-        Context scene.NMV_
+        Context scene.
     :param options:
         System options.
     """
@@ -447,6 +447,10 @@ def set_rendering_options(layout,
     render_animations_buttons_row.operator('nmv.render_morphology_progressive', icon='FORCE_HARMONIC')
     render_animations_buttons_row.enabled = True
 
+    # Progress bar
+    progress_bar_row = layout.row()
+    progress_bar_row.prop(scene, 'NMV_MorphologyRenderingProgress')
+    progress_bar_row.enabled = False
 
 ####################################################################################################
 # set_export_options
