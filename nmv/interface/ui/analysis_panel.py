@@ -184,7 +184,7 @@ class CreateNeuronCard(bpy.types.Operator):
         nmv.scene.clear_scene()
 
         # Create a skeletonizer object to build the morphology skeleton
-        builder = nmv.builders.SkeletonBuilder(nmv.interface.ui_morphology, nmv.interface.ui_options)
+        builder = nmv.builders.DisconnectedSectionsBuilder(nmv.interface.ui_morphology, nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()

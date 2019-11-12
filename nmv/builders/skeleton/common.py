@@ -90,7 +90,7 @@ def update_sections_branching(builder):
     """
 
     # Label the primary and secondary sections based on angles
-    if builder.options.mesh.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+    if builder.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology,
               nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])

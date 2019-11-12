@@ -40,6 +40,9 @@ class Skeletonization:
         # Disconnect the sections and draw each of them as an independent object
         DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
 
+        # Progressive reconstruction of the morphology
+        PROGRESSIVE = 'SKELETONIZATION_PROGRESSIVE'
+
         # Connected skeleton where all the skeleton lines will be connected together in a one object
         CONNECTED_SKELETON = 'SKELETONIZATION_CONNECTED_SKELETON'
 
@@ -68,9 +71,13 @@ class Skeletonization:
             if argument == 'disconnected-segments':
                 return Skeletonization.Method.DISCONNECTED_SEGMENTS
 
-                # Connected sections
+            # Connected sections
             elif argument == 'samples':
                 return Skeletonization.Method.SAMPLES
+
+            # Connected sections
+            elif argument == 'progressive':
+                return Skeletonization.Method.PROGRESSIVE
 
             # Disconnected sections
             elif argument == 'disconnected-sections':

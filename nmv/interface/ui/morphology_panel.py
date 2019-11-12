@@ -166,6 +166,10 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             skeleton_builder = nmv.builders.ConnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
+        elif method == nmv.enums.Skeletonization.Method.PROGRESSIVE:
+            skeleton_builder = nmv.builders.ProgressiveBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
         # Default: DisconnectedSectionsBuilder
         else:
             skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
@@ -621,8 +625,7 @@ class SaveMorphologyBLEND(bpy.types.Operator):
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
-        nmv.file.export_object_to_blend_file(
-            mesh_object=None,
+        nmv.file.export_scene_to_blend_file(
             output_directory=nmv.interface.ui_options.io.morphologies_directory,
             output_file_name=nmv.interface.ui_morphology.label)
 
