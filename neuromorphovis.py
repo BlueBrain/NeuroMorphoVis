@@ -24,11 +24,12 @@ __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
 
+####################################################################################################
+
 # System imports
 import os
 import sys
 import subprocess
-
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['nmv/interface/cli', 'nmv/file/ops', 'nmv/slurm']

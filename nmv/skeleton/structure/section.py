@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.enums
+
 
 ####################################################################################################
 # Section
@@ -178,8 +181,6 @@ class Section:
         :return:
             Material index.
         """
-
-        import nmv.enums
 
         if str(self.type) == '2':
             return nmv.enums.Color.AXON_MATERIAL_START_INDEX
