@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.enums
+
 
 ####################################################################################################
 # Section
@@ -104,6 +107,9 @@ class Section:
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
+        # Initial value for the maximum branching level
+        self.maximum_branching_order = 100
+
     ################################################################################################
     # @get_type_string
     ################################################################################################
@@ -175,8 +181,6 @@ class Section:
         :return:
             Material index.
         """
-
-        import nmv.enums
 
         if str(self.type) == '2':
             return nmv.enums.Color.AXON_MATERIAL_START_INDEX

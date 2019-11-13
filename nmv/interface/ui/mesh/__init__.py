@@ -15,12 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .common import *
-from .data import *
-from .about import *
-from .edit import *
-from .io import *
-from .soma import *
-from .analysis import *
-from .mesh import *
-from .morphology import *
+from .mesh_panel import *
+from .mesh_panel_options import *
+

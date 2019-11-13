@@ -17,6 +17,7 @@
 
 # System imports
 import time
+import copy
 
 # Blender imports
 import bpy
@@ -455,6 +456,9 @@ class RenderMorphologyProgressive(bpy.types.Operator):
     # Output data
     output_directory = None
 
+    # The bounding box of the morphology
+    morphology_bounding_box = None
+
     ################################################################################################
     # @modal
     ################################################################################################
@@ -484,41 +488,15 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         # Timer event, where the function is executed here on a per-frame basis
         if event.type == 'TIMER':
 
+            # Update the frame number
             bpy.context.scene.frame_set(self.timer_limits)
 
             # Set the frame name
             image_name = 'frame_%s' % '{0:05d}'.format(self.timer_limits)
 
-            # Compute the bounding box for a close up view
-            if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
-
-                # Compute the bounding box for a close up view
-                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
-
-            # Compute the bounding box for a mid-shot view
-            elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
-
-                # Compute the bounding box for the available meshes only
-                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
-                # Compute bounding box for the current selection of arbors
-
-            # Compute the bounding box for the wide-shot view that corresponds to the whole
-            # morphology
-            else:
-
-                # Compute the full morphology bounding box
-                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                    morphology=nmv.interface.ui_morphology)
-
-            # Stretch the bounding box by few microns
-            rendering_bbox.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
             # Render a frame
             nmv.rendering.renderer.render(
-                bounding_box=rendering_bbox,
+                bounding_box=self.morphology_bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_resolution=context.scene.NMV_MorphologyFrameResolution,
                 image_name=image_name,
@@ -536,6 +514,41 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
         # Next frame
         return {'PASS_THROUGH'}
+
+    ################################################################################################
+    # @compute_morphology_bounding_box_for_progressive_reconstruction
+    ################################################################################################
+    def compute_morphology_bounding_box_for_progressive_reconstruction(self,
+                                                                       context):
+        """Computes the bounding box of the reconstructed morphology from the progressive builder.
+
+        :param context:
+            Blender context.
+        """
+
+        # Move to the last frame to get the bounding box of all the drawn objects
+        bpy.context.scene.frame_set(bpy.context.scene.frame_end)
+
+        # Morphology view
+        view = context.scene.NMV_MorphologyRenderingView
+
+        # Compute the bounding box for a close up view
+        if view == nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+            self.morphology_bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
+
+        # Compute the bounding box for a mid-shot view
+        elif view == nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+            self.morphology_bounding_box = copy.deepcopy(
+                nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes())
+
+        # The bounding box for the wide-shot view that corresponds to the whole morphology
+        else:
+            self.morphology_bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                    morphology=nmv.interface.ui_morphology)
+
+        # Stretch the bounding box by few microns
+        self.morphology_bounding_box.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
     ################################################################################################
     # @execute
@@ -574,6 +587,9 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         progressive_builder = nmv.builders.ProgressiveBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
         progressive_builder.draw_morphology_skeleton()
+
+        # Compute the bounding box of the morphology directly after the reconstruction
+        self.compute_morphology_bounding_box_for_progressive_reconstruction(context=context)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager

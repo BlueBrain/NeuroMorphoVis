@@ -28,6 +28,7 @@ import nmv.enums
 import nmv.interface
 import nmv.scene
 import nmv.utilities
+import nmv.consts
 from .io_panel_options import *
 
 
@@ -193,9 +194,9 @@ class LoadMorphology(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Load the images
-        images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
         logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
-        logo_tex.image = bpy.data.images.load("%s/%s" % (images_path, 'nmv-logo.png'))
+        logo_tex.image = bpy.data.images.load("%s/%s" % (nmv.consts.Paths.IMAGES_PATH,
+                                                         'nmv-logo.png'))
         logo_tex.extension = 'CLIP'
 
         # Load the morphology file
@@ -237,6 +238,21 @@ class LoadMorphology(bpy.types.Operator):
 
         # Analyze the morphology once loaded as well
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
+
+        if nmv.interface.ui_morphology.axon is not None:
+            context.scene.NMV_AxonBranchingLevel = \
+                nmv.interface.ui_morphology.axon.maximum_branching_order
+
+        if nmv.interface.ui_morphology.apical_dendrite is not None:
+            context.scene.NMV_ApicalDendriteBranchingLevel = \
+                nmv.interface.ui_morphology.apical_dendrite.maximum_branching_order
+
+        if nmv.interface.ui_morphology.dendrites is not None:
+            max_branching_order = 0
+            for dendrite in nmv.interface.ui_morphology.dendrites:
+                if dendrite.maximum_branching_order > max_branching_order:
+                    max_branching_order = dendrite.maximum_branching_order
+            context.scene.NMV_BasalDendritesBranchingLevel = max_branching_order
 
         return {'FINISHED'}
 
