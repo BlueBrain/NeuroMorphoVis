@@ -988,6 +988,8 @@ def connect_arbor_to_soma(soma_mesh,
     # Deselect all the vertices of the parent mesh, for safety reasons
     # nmv.mesh.ops.deselect_all_vertices(soma_mesh)
 
+    return soma_mesh
+
 
 ####################################################################################################
 # @get_soma_to_root_section_connection_extent

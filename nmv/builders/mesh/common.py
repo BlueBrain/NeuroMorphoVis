@@ -261,8 +261,8 @@ def connect_arbors_to_soma(builder):
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:
                 nmv.logger.info('Apical dendrite')
-                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh,
-                                                       builder.morphology.apical_dendrite)
+                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
+                    builder.soma_mesh, builder.morphology.apical_dendrite)
 
         # Connecting basal dendrites
         if not builder.options.morphology.ignore_basal_dendrites:
@@ -273,7 +273,8 @@ def connect_arbors_to_soma(builder):
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(builder.morphology.dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
-                    nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, basal_dendrite)
+                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
+                        builder.soma_mesh, basal_dendrite)
 
         # Connecting axon
         if not builder.options.morphology.ignore_axon:
@@ -281,7 +282,8 @@ def connect_arbors_to_soma(builder):
             # Create the apical dendrite mesh
             if builder.morphology.axon is not None:
                 nmv.logger.info('Axon')
-                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, builder.morphology.axon)
+                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
+                    builder.soma_mesh, builder.morphology.axon)
 
     # Adjust the texture mapping after connecting the meshes together
     adjust_texture_mapping_of_all_meshes(builder=builder)

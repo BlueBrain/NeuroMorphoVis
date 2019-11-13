@@ -565,6 +565,9 @@ def join_mesh_objects(mesh_list,
     if len(mesh_list) == 1:
         return mesh_list[0]
 
+    # Switch to the object mode
+    bpy.ops.object.mode_set(mode='OBJECT')
+
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
 
@@ -572,12 +575,13 @@ def join_mesh_objects(mesh_list,
     for mesh_object in mesh_list:
 
         if mesh_object.type == 'MESH':
-            
+
             # Select the mesh object
             nmv.scene.select_object(mesh_object)
 
     # Set the 0th mesh to be active
-    nmv.scene.set_active_object(mesh_list[0])
+    # TODO: Verify on Blender 2.79
+    # nmv.scene.set_active_object(mesh_list[0])
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     # bpy.ops.object.parent_set()
