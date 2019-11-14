@@ -17,6 +17,7 @@
 
 # System imports
 import os
+import sys
 
 # Blender imports
 import bpy
@@ -230,6 +231,54 @@ def load_morphology(panel_object,
         return None
 
     return 'NEW_MORPHOLOGY_LOADED'
+
+
+####################################################################################################
+# @configure_output_directory
+####################################################################################################
+def configure_output_directory(options,
+                               context=None):
+    """Configures the output directory after loading the data.
+
+    :param options:
+        System options.
+    :param context:
+        Context.
+    """
+
+    # If the output directory is not set
+    if options.io.output_directory is None:
+
+        # Suggest an output directory at the home folder
+        suggested_output_folder = '%s/neuromorphovis-output' % os.path.expanduser('~')
+
+        # Check if the output directory already exists or not
+        if os.path.exists(suggested_output_folder):
+
+            # Update the system options
+            nmv.interface.ui_options.io.output_directory = suggested_output_folder
+
+            # Update the UI
+            context.scene.NMV_OutputDirectory = suggested_output_folder
+
+        # Otherwise, create it
+        else:
+
+            # Try to create the directory there
+            try:
+
+                # Create the directory
+                os.mkdir(suggested_output_folder)
+
+                # Update the system options
+                nmv.interface.ui_options.io.output_directory = suggested_output_folder
+
+                # Update the UI
+                context.scene.NMV_OutputDirectory = suggested_output_folder
+
+            # Voila
+            except ValueError:
+                pass
 
 
 ####################################################################################################

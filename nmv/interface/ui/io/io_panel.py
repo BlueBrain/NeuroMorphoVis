@@ -236,6 +236,9 @@ class LoadMorphology(bpy.types.Operator):
         # View all the objects in the scene
         nmv.scene.ops.view_all_scene()
 
+        # Configure the output directory
+        nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
+
         # Analyze the morphology once loaded as well
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
 
