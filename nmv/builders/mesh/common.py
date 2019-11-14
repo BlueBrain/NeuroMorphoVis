@@ -137,7 +137,6 @@ def reconstruct_soma_mesh(builder):
     if builder.options.mesh.soma_reconstruction_technique == \
             nmv.enums.Soma.Representation.META_BALLS:
 
-        print('Mata')
         # If the soma is connected to the root arbors
         soma_builder_object = nmv.builders.SomaMetaBuilder(
             morphology=builder.morphology, options=builder.options)
@@ -146,7 +145,7 @@ def reconstruct_soma_mesh(builder):
         builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 
     else:
-        print('Soft')
+
         # If the soma is connected to the root arbors
         soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
             morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
