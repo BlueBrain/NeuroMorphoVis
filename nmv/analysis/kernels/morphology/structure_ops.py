@@ -72,6 +72,23 @@ def kernel_total_number_trifurcations(morphology):
 
 
 ####################################################################################################
+# @kernel_total_number_terminal_tips
+####################################################################################################
+def kernel_total_number_terminal_tips(morphology):
+    """Compute the total number of terminal tips of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_total_number_of_terminal_tips_of_arbor,
+                                      nmv.analysis.compute_total_analysis_result_of_morphology)
+
+
+####################################################################################################
 # @kernel_maximum_path_distance
 ####################################################################################################
 def kernel_maximum_path_distance(morphology):

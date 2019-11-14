@@ -26,6 +26,15 @@ from nmv.analysis.kernels.morphology import *
 ui_per_arbor_analysis_items = [
 
     ################################################################################################
+    # Generic items
+    ################################################################################################
+    AnalysisItem(variable='NumberTips',
+                 name='Total # Tips',
+                 kernel=kernel_total_number_terminal_tips,
+                 description='The total number number of terminal tips',
+                 data_format='INT'),
+
+    ################################################################################################
     # Samples-related items
     ################################################################################################
     AnalysisItem(variable='TotalNumberSamples',
@@ -371,3 +380,4 @@ ui_global_analysis_items = [
                              'soma in the morphology',
                  data_format='INT'),
 ]
+

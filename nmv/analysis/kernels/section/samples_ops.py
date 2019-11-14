@@ -250,6 +250,24 @@ def count_trifurcations(section,
 
 
 ####################################################################################################
+# @count_trifurcations
+####################################################################################################
+def compute_terminal_tips(section,
+                          analysis_data):
+    """Checks if the section is a leaf or not. If yes, adds one to the result to account for a
+    terminal tip.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    if section.is_leaf():
+        analysis_data.append(1)
+
+
+####################################################################################################
 # @get_maximum_branching_order
 ####################################################################################################
 def get_maximum_branching_order(section,
@@ -282,7 +300,6 @@ def get_maximum_path_distance(section,
     """
 
     # Get a reference to the current distance
-
 
     # Compute the section length
     section_length = nmv.analysis.compute_section_length(section=section)

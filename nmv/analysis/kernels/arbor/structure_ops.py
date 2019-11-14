@@ -177,3 +177,30 @@ def compute_maximum_path_distance_of_arbor(arbor):
 
     # Return the maximum branching order of the arbor
     return max(paths_distances)
+
+
+####################################################################################################
+# @compute_total_number_of_terminal_tips_of_arbor
+####################################################################################################
+def compute_total_number_of_terminal_tips_of_arbor(arbor):
+    """Analyse the total number of terminal tips of the given morphology.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The total number of tips in the arbor.
+    """
+
+    # A list that will contain the number of terminal tips
+    tips = list()
+
+    # Apply the operation per section
+    nmv.skeleton.ops.apply_operation_to_arbor(*[arbor, nmv.analysis.compute_terminal_tips, tips])
+
+    # Calculate the total
+    total_tips = 0
+    for tip in tips:
+        total_tips += tip
+
+    # Return the total
+    return total_tips

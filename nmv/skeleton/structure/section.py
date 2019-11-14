@@ -245,6 +245,19 @@ class Section:
         return False
 
     ################################################################################################
+    # @is_leaf
+    ################################################################################################
+    def is_leaf(self):
+        """Checks if the section is leaf (last branch in a tree) in the tree or not.
+
+        :return:
+            True if the section is leaf and False otherwise.
+        """
+        if len(self.children) > 0:
+            return False
+        return True
+
+    ################################################################################################
     # @has_children
     ################################################################################################
     def has_children(self):
