@@ -103,6 +103,11 @@ class SomaPanel(bpy.types.Panel):
             stiffness_row.prop(scene, 'NMV_Stiffness')
             soma_options.stiffness = scene.NMV_Stiffness
 
+            # Radius scale factor
+            radius_scale_factor_row = layout.row()
+            radius_scale_factor_row.prop(scene, 'NMV_SomaRadiusScaleFactor')
+            soma_options.radius_scale_factor = scene.NMV_SomaRadiusScaleFactor
+
             # Ico-sphere subdivision level option
             subdivision_level_row = layout.row()
             subdivision_level_row.prop(scene, 'NMV_SubdivisionLevel')

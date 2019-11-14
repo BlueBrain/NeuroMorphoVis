@@ -38,6 +38,9 @@ class SomaOptions:
         # Meta ball resolution in case of using the MetaBall generation approach
         self.meta_ball_resolution = 0.99
 
+        # Radius scale factor
+        self.radius_scale_factor = 0.5
+
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT
 

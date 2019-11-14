@@ -76,6 +76,13 @@ bpy.types.Scene.NMV_SomaMaterial = bpy.props.EnumProperty(
     name="Material",
     default=nmv.enums.Shading.LAMBERT_WARD)
 
+# Soma scale factor
+bpy.types.Scene.NMV_SomaRadiusScaleFactor = bpy.props.FloatProperty(
+    name="Radius Scale Factor",
+    description="This scale factor is used to scale the initial radius of the soma before applying "
+                "the soft body construction. It ranges from 0.25to 0.9",
+    default=0.5, min=0.25, max=0.9)
+
 # Soft body stiffness option
 bpy.types.Scene.NMV_Stiffness = bpy.props.FloatProperty(
     name="Stiffness",
