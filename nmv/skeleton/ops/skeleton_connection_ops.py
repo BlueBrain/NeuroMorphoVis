@@ -885,10 +885,10 @@ def connect_single_child(section):
 
 
 ####################################################################################################
-# @connect_arbor_to_soma
+# @connect_arbor_to_soft_body_soma
 ####################################################################################################
-def connect_arbor_to_soma(soma_mesh,
-                          arbor):
+def connect_arbor_to_soft_body_soma(soma_mesh,
+                                    arbor):
     """
     Connects the root section of a given arbor to the soma at its initial segment.
     This function checks if the arbor mesh is 'logically' connected to the soma or not, following
@@ -902,6 +902,7 @@ def connect_arbor_to_soma(soma_mesh,
     :param arbor:
         The mesh object of the arbor.
     :return:
+        A reference to the soma mesh after the connection.
     """
 
     # If the arbor is not valid
@@ -921,21 +922,6 @@ def connect_arbor_to_soma(soma_mesh,
     branch_starting_point = arbor.samples[0].point
     branch_direction = arbor.samples[0].point.normalized()
     intersection_point = branch_starting_point - 0.75 * branch_direction
-
-    """
-    # TODO: This clipping approach is not valida with newer versions of blender! 
-    # Construct a clipping plane and rotate it towards the origin
-    # plane_name = 'intersection_plane_%d' % arbor.id
-    clipping_plane = mesh_objects.create_plane(
-        radius=2.0, location=intersection_point, name=plane_name)
-    nmv.mesh.ops.rotate_face_towards_point(clipping_plane, Vector((0, 0, 0)))
-
-    # Clip the arbor mesh and return a reference to the result
-    section_mesh = nmv.mesh.ops.intersect_mesh_objects(arbor.mesh, clipping_plane)
-    
-    # Delete the clipping plane to clean the scene
-    nmv.scene.ops.delete_list_objects([clipping_plane])
-    """
 
     # Get the nearest face on the mesh surface to the intersection point
     soma_mesh_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
@@ -992,6 +978,55 @@ def connect_arbor_to_soma(soma_mesh,
     # nmv.mesh.ops.deselect_all_vertices(soma_mesh)
 
     return soma_mesh
+
+
+
+####################################################################################################
+# @get_soma_to_root_section_connection_extent
+####################################################################################################
+def connect_arbor_to_meta_ball_soma(soma_mesh,
+                                    arbor):
+    """Connects the root section of a given arbor to the soma at its initial segment.
+    This function checks if the arbor mesh is 'logically' connected to the soma or not, following
+    to the initial validation steps that determines if the arbor has a valid connection point to
+    the soma or not.
+    If the arbor is 'logically' connected to the soma, this function returns immediately.
+    The arbor is a Section object, see Section() @ section.py.
+
+    :param soma_mesh:
+        The mesh object of the soma.
+    :param arbor:
+        The mesh object of the arbor.
+    :return:
+        A reference to the soma mesh after the connection.
+    """
+
+    # If the arbor is not valid
+    if arbor is None:
+        # Return
+        return
+
+    # Verify if the arbor is connected to the soma or not
+    if not arbor.connected_to_soma:
+        nmv.logger.log('\t\t * WARNING: The neurite [%s: %d] is not connected to the soma' %
+                       (arbor.get_type_string(), arbor.id))
+        return
+
+    # Simply apply a union operator and remove the duplicate object
+
+    # Union the ith mesh object
+    soma_mesh = nmv.mesh.ops.union_mesh_objects(soma_mesh, arbor.mesh)
+
+    # Switch to edit mode to REMOVE THE DOUBLES
+    # TODO: Use the remove doubles function
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles()
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the other mesh
+    nmv.scene.ops.delete_list_objects([arbor.mesh])
 
 
 ####################################################################################################

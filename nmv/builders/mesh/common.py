@@ -133,12 +133,26 @@ def reconstruct_soma_mesh(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    # If the soma is connected to the root arbors
-    soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
-        morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
+    print(builder.options.mesh.soma_reconstruction_technique)
+    if builder.options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.META_BALLS:
 
-    # Reconstruct the soma mesh
-    builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+        print('Mata')
+        # If the soma is connected to the root arbors
+        soma_builder_object = nmv.builders.SomaMetaBuilder(
+            morphology=builder.morphology, options=builder.options)
+
+        # Reconstruct the soma mesh
+        builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+    else:
+        print('Soft')
+        # If the soma is connected to the root arbors
+        soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
+            morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
+
+        # Reconstruct the soma mesh
+        builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 
     # Apply the shader to the reconstructed soma mesh
     nmv.shading.set_material_to_object(builder.soma_mesh, builder.soma_materials[0])
@@ -261,8 +275,14 @@ def connect_arbors_to_soma(builder):
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:
                 nmv.logger.info('Apical dendrite')
-                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
-                    builder.soma_mesh, builder.morphology.apical_dendrite)
+
+                if builder.options.mesh.soma_reconstruction_technique == \
+                        nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma(
+                        builder.soma_mesh, builder.morphology.apical_dendrite)
+                else:
+                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
+                        builder.soma_mesh, builder.morphology.apical_dendrite)
 
         # Connecting basal dendrites
         if not builder.options.morphology.ignore_basal_dendrites:
@@ -273,8 +293,14 @@ def connect_arbors_to_soma(builder):
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(builder.morphology.dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
-                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
-                        builder.soma_mesh, basal_dendrite)
+
+                    if builder.options.mesh.soma_reconstruction_technique == \
+                            nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+                        builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma(
+                            builder.soma_mesh, basal_dendrite)
+                    else:
+                        builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
+                            builder.soma_mesh, basal_dendrite)
 
         # Connecting axon
         if not builder.options.morphology.ignore_axon:
@@ -282,8 +308,14 @@ def connect_arbors_to_soma(builder):
             # Create the apical dendrite mesh
             if builder.morphology.axon is not None:
                 nmv.logger.info('Axon')
-                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soma(
-                    builder.soma_mesh, builder.morphology.axon)
+
+                if builder.options.mesh.soma_reconstruction_technique == \
+                        nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma(
+                        builder.soma_mesh, builder.morphology.axon)
+                else:
+                    builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
+                        builder.soma_mesh, builder.morphology.axon)
 
     # Adjust the texture mapping after connecting the meshes together
     adjust_texture_mapping_of_all_meshes(builder=builder)

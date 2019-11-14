@@ -59,6 +59,20 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
             'level for the axons when using this technique.')],
     name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
+# Build soma
+bpy.types.Scene.NMV_MeshingSomaReconstructionTechnique = bpy.props.EnumProperty(
+    items=[(nmv.enums.Soma.Representation.META_BALLS,
+            'Meta Balls',
+            'Reconstruct a rough shape of the soma using MetaBalls. '
+            'This approach is real-time and can reconstruct good shapes for the somata, but '
+            'more accurate profiles could be reconstructed with the Soft Body option'),
+           (nmv.enums.Soma.Representation.SOFT_BODY,
+            'Soft Body',
+            'Reconstruct a 3D profile of the soma using Soft Body physics.'
+            'This method takes few seconds to reconstruct a soma mesh')],
+    name='',
+    default=nmv.enums.Soma.Representation.SOFT_BODY)
+
 # Skeleton style
 bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
     items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,

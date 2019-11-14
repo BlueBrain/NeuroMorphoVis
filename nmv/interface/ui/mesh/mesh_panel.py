@@ -420,6 +420,13 @@ class MeshPanel(bpy.types.Panel):
         meshing_method_row.prop(context.scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.NMV_MeshingTechnique
 
+        # Which technique to use to reconstruct the soma
+        meshing_soma_technique_row = layout.row()
+        meshing_soma_technique_row.prop(
+            context.scene, 'NMV_MeshingSomaReconstructionTechnique', icon='OUTLINER_OB_EMPTY')
+        nmv.interface.ui_options.mesh.soma_reconstruction_technique = \
+            context.scene.NMV_MeshingSomaReconstructionTechnique
+
         # Which skeletonization technique to use
         skeletonization_row = layout.row()
         skeletonization_row.prop(context.scene,

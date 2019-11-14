@@ -55,6 +55,9 @@ class MeshOptions:
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
 
+        # Soma reconstruction technique
+        self.soma_reconstruction_technique = nmv.enums.Soma.ReconstructionMethod.META_BALLS
+
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
 
