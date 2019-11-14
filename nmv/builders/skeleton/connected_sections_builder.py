@@ -105,42 +105,78 @@ class ConnectedSectionsBuilder:
         self.skeleton_materials.extend(self.axon_materials)
 
     ################################################################################################
-    # @draw_morphology_skeleton
+    # @create_arbor_component
     ################################################################################################
-    def draw_morphology_skeleton(self):
-        """Reconstruct and draw the morphological skeleton.
-
-        :return
-            A list of all the drawn morphology objects including the soma and arbors.
+    def create_arbor_component(self,
+                               arbor,
+                               bevel_object,
+                               component_name):
         """
 
-        nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
+        :param arbor:
+        :param bevel_object:
+        :param component_name:
+        :return:
+        """
 
-        nmv.logger.info('Updating Radii')
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+        # A list of all the skeleton poly-lines
+        skeleton_poly_lines = list()
 
-        nmv.logger.info('Updating Branching to Primary / Secondary')
-        nmv.builders.skeleton.update_sections_branching(builder=self)
+        # Construct the poly-line objects
+        nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+            root=arbor,
+            poly_lines_data=skeleton_poly_lines,
+            connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+            max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
-        # Update the style of the arbors
-        nmv.skeleton.ops.update_arbors_style(
-            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+        # Draw the poly-lines as a single object
+        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+            poly_lines=skeleton_poly_lines, object_name=component_name,
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        nmv.scene.hide_object(bevel_object)
+        # Append it to the morphology objects
+        self.morphology_objects.append(morphology_object)
 
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+    ################################################################################################
+    # @create_all_arbors_as_single_component
+    ################################################################################################
+    def create_each_arbor_as_separate_component(self,
+                                                bevel_object):
 
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
+        # Apical dendrite
+        nmv.logger.info('Constructing poly-lines')
+        if not self.options.morphology.ignore_apical_dendrite:
+            if self.morphology.apical_dendrite is not None:
+                nmv.logger.detail('Apical dendrite')
+                self.create_arbor_component(arbor=self.morphology.apical_dendrite,
+                                            bevel_object=bevel_object,
+                                            component_name='ApicalDendrite')
 
-        # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        # Axon
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                nmv.logger.detail('Axon')
+                self.create_arbor_component(arbor=self.morphology.axon,
+                                            bevel_object=bevel_object,
+                                            component_name='Axon')
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                    self.create_arbor_component(arbor=basal_dendrite,
+                                                bevel_object=bevel_object,
+                                                component_name='BasalDendrite_%d' % i)
+
+    ################################################################################################
+    # @create_all_arbors_as_single_component
+    ################################################################################################
+    def create_all_arbors_as_single_component(self,
+                                              bevel_object):
+        """Creates all the arbors in the morphology as a single component
+        """
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -187,6 +223,50 @@ class ConnectedSectionsBuilder:
 
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
+
+    ################################################################################################
+    # @draw_morphology_skeleton
+    ################################################################################################
+    def draw_morphology_skeleton(self):
+        """Reconstruct and draw the morphological skeleton.
+
+        :return
+            A list of all the drawn morphology objects including the soma and arbors.
+        """
+
+        nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
+
+        nmv.logger.info('Updating Radii')
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
+        nmv.logger.info('Updating Branching to Primary / Secondary')
+        nmv.builders.skeleton.update_sections_branching(builder=self)
+
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+
+        # Create a static bevel object that you can use to scale the samples along the arbors
+        # of the morphology and then hide it
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        nmv.scene.hide_object(bevel_object)
+
+        # Add the bevel object to the morphology objects because if this bevel is lost we will
+        # lose the rounded structure of the arbors
+        self.morphology_objects.append(bevel_object)
+
+        # Create the skeleton materials
+        self.create_single_skeleton_materials_list()
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+
+        # Create each arbor as a separate component
+        self.create_each_arbor_as_separate_component(bevel_object=bevel_object)
+
+        # Create all the arbors as a single component
+        # self.create_all_arbors_as_single_component(bevel_object=bevel_object)
 
         # Draw the soma
         nmv.builders.skeleton.draw_soma(builder=self)

@@ -161,8 +161,8 @@ def get_connected_poly_line(section,
 
         # Add the 'auxiliary' samples to the poly-line and use the same radius of the first
         # sample on the section
-        for i in range(number_samples):
-            point = Vector((0.0, 0.0, 0.0)) + i * direction
+        for i in range(1, number_samples):
+            point = Vector((0.0, 0.0, 0.0)) + (i * direction)
             poly_line.append([(point[0], point[1], point[2], 1), section.samples[0].radius])
 
     # Construct the section
