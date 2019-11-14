@@ -963,6 +963,9 @@ def connect_arbor_to_soma(soma_mesh,
     # NOTE: This approach could be faster, but we need to get
     # section_face_index = arbor.mesh.data.polygons[-1].index
 
+    # Switch back to the object mode
+    # bpy.ops.object.mode_set(mode='OBJECT')
+
     # Select the face
     nmv.mesh.ops.select_face_vertices(arbor.mesh, section_face_index)
 

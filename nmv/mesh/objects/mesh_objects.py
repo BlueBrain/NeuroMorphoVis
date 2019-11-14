@@ -246,7 +246,7 @@ def create_cube(radius=1,
     nmv.scene.ops.deselect_all()
 
     # Add the cube
-    bpy.ops.mesh.primitive_cube_add(radius=radius, location=location)
+    bpy.ops.mesh.primitive_cube_add(size=radius, location=location)
 
     # Get a reference to it
     cube_mesh = nmv.scene.get_active_object()

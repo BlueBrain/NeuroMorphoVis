@@ -595,5 +595,8 @@ def join_mesh_objects(mesh_list,
     # Rename it
     result_mesh.name = name
 
+    # Update the parent mesh to the resulting one
+    mesh_list[0] = result_mesh
+
     # Return a reference to the resulting mesh
     return result_mesh
