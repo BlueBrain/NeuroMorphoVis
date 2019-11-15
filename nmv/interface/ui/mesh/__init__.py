@@ -17,4 +17,5 @@
 
 from .mesh_panel import *
 from .mesh_panel_options import *
+from .mesh_panel_ops import *
 

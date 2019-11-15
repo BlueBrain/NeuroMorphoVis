@@ -21,11 +21,6 @@ import sys
 # Blender imports
 import bpy
 from mathutils import Vector
-from bpy.props import EnumProperty
-from bpy.props import IntProperty
-from bpy.props import FloatProperty
-from bpy.props import FloatVectorProperty
-from bpy.props import BoolProperty
 
 # Internal imports
 import nmv
@@ -43,6 +38,7 @@ import nmv.skeleton
 import nmv.utilities
 
 from .mesh_panel_options import *
+from .mesh_panel_ops import *
 
 
 ####################################################################################################
@@ -64,64 +60,6 @@ class MeshPanel(bpy.types.Panel):
     # Shown / Hidden rows
     # A list of rows that will be activated or deactivated based on availability of the mesh
     shown_hidden_rows = list()
-
-    ################################################################################################
-    # @draw_spines_options
-    ################################################################################################
-    def draw_spines_options(self,
-                            context):
-        """Draw the spines options.
-
-        :param context:
-            Panel context.
-        """
-
-        # Get a reference to the layout of the panel
-        layout = self.layout
-
-        # Spines meshing options
-        spines_meshing_options_row = layout.row()
-        spines_meshing_options_row.label(text='Spine Options:', icon='MOD_WAVE')
-
-        # Spines
-        spines_row = layout.row()
-        spines_row.label(text='Source:')
-
-        # If you are reading from a BBP circuit
-        if context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
-            spines_row.prop(context.scene, 'NMV_SpinesSourceCircuit', expand=True)
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines = context.scene.NMV_SpinesSourceCircuit
-
-        # Otherwise, it is only random
-        else:
-            spines_row.prop(context.scene, 'NMV_SpinesSourceRandom', expand=True)
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines = context.scene.NMV_SpinesSourceRandom
-
-        # If the spines are not ignored
-        if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
-
-            # Spines quality
-            spines_quality_row = layout.row()
-            spines_quality_row.label(text='Quality:')
-            spines_quality_row.prop(context.scene, 'NMV_SpineMeshQuality', expand=True)
-
-            # Pass options from UI to system
-            nmv.interface.ui_options.mesh.spines_mesh_quality = context.scene.NMV_SpineMeshQuality
-
-            # Percentage in case of random spines
-            if nmv.interface.ui_options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-                # Random percentage
-                spines_percentage_row = layout.row()
-                spines_percentage_row.label(text='Percentage:')
-                spines_percentage_row.prop(context.scene, 'NMV_RandomSpinesPercentage')
-
-                # Pass options from UI to system
-                nmv.interface.ui_options.mesh.random_spines_percentage = \
-                    context.scene.NMV_RandomSpinesPercentage
 
     ################################################################################################
     # @draw_tessellation_options
@@ -304,7 +242,7 @@ class MeshPanel(bpy.types.Panel):
         self.draw_tessellation_options(context)
 
         # Spine options
-        self.draw_spines_options(context)
+        draw_spines_options(layout=self.layout, scene=context.scene)
 
     ################################################################################################
     # @draw_meta_objects_meshing_options
@@ -354,7 +292,7 @@ class MeshPanel(bpy.types.Panel):
         self.draw_tessellation_options(context)
 
         # Spine options
-        self.draw_spines_options(context)
+        draw_spines_options(layout=self.layout, scene=context.scene)
 
     ################################################################################################
     # @draw_piece_wise_meshing_options
@@ -395,7 +333,7 @@ class MeshPanel(bpy.types.Panel):
         self.draw_tessellation_options(context)
 
         # Spine options
-        self.draw_spines_options(context)
+        draw_spines_options(layout=self.layout, scene=context.scene)
 
     ################################################################################################
     # @draw_meshing_options

@@ -36,42 +36,28 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
             'Piecewise Watertight',
             'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
             'composed of multiple mesh objects, where each object is a watertight component. '
-            'This method is used to reconstruct high fidelity volumes from the generated meshes.'),
-           (nmv.enums.Meshing.Technique.SPACE_FILLING,
-            'Space Filling',
-            'The space filling method fills all the morphology with tubes and spheres at the '
-            'articulation points between the different sections'),
+            'This method is used to reconstruct high fidelity volumes from the generated meshes'),
            (nmv.enums.Meshing.Technique.SKINNING,
             'Skinning',
-            'Skinning uses the skin modifier to reconstruct the branches. This approach is '
-            'guaranteed to reconstruct a nice looking branching compared to the other methods and '
-            'also guarantees the fidelity of the mesh, but it does not guarantee watertightness. '
-            'This technique is used when you need meshes for visualization with transparency'),
+            'Skinning (Abdellah et al., 2019) uses the skin modifier to reconstruct the branches. '
+            'This approach is guaranteed to reconstruct a nice looking branching compared to the '
+            'other methods and also guarantees the fidelity of the mesh, but it does not '
+            'guarantee watertightness. This technique is used when you need meshes for '
+            'visualization with transparency'),
            (nmv.enums.Meshing.Technique.UNION,
             'Union',
             'This method uses the union boolean operator to join the different branches together '
             'in a single mesh. It is not guaranteed to generate a watertight or even a valid '
-            'mesh, although it works in 99% of the cases.'),
+            'mesh, although it works in 90% of the cases'),
            (nmv.enums.Meshing.Technique.META_OBJECTS,
-            'Meta Balls',
-            'Creates watertight mesh models using meta balls. This approach is extremely slow if '
-            'the axons are generated, so it is always recommended to use a first order branching '
-            'level for the axons when using this technique.')],
-    name='Meshing Method', default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
-
-# Build soma
-bpy.types.Scene.NMV_MeshingSomaReconstructionTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Soma.Representation.META_BALLS,
-            'Meta Balls',
-            'Reconstruct a rough shape of the soma using MetaBalls. '
-            'This approach is real-time and can reconstruct good shapes for the somata, but '
-            'more accurate profiles could be reconstructed with the Soft Body option'),
-           (nmv.enums.Soma.Representation.SOFT_BODY,
-            'Soft Body',
-            'Reconstruct a 3D profile of the soma using Soft Body physics.'
-            'This method takes few seconds to reconstruct a soma mesh')],
-    name='',
-    default=nmv.enums.Soma.Representation.SOFT_BODY)
+            'MetaBalls',
+            'Creates watertight mesh models using MetaBalls. This approach is extremely slow if '
+            'the axons are included in the meshing process, so it is always recommended to use '
+            'first order branching for the axons when using this technique')],
+    name='Meshing Method',
+    description='The technique that will be used to create the mesh, by default the '
+                'Piecewise Watertight one since it is the fastest one.',
+    default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
 # Skeleton style
 bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
@@ -97,6 +83,21 @@ bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
             'Create a zigzagged and tapered skeleton.')],
     name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
 
+# Build soma
+bpy.types.Scene.NMV_MeshingSomaReconstructionTechnique = bpy.props.EnumProperty(
+    items=[(nmv.enums.Soma.Representation.META_BALLS,
+            'Meta Balls',
+            'Reconstruct a rough shape of the soma using MetaBalls. '
+            'This approach is real-time and can reconstruct good shapes for the somata, but '
+            'more accurate profiles could be reconstructed with the Soft Body option'),
+           (nmv.enums.Soma.Representation.SOFT_BODY,
+            'Soft Body',
+            'Reconstruct a 3D profile of the soma using Soft Body physics.'
+            'This method takes few seconds to reconstruct a soma mesh')],
+    name='',
+    default=nmv.enums.Soma.Representation.SOFT_BODY)
+
+
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = EnumProperty(
     items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,
@@ -112,7 +113,7 @@ bpy.types.Scene.NMV_SomaArborsConnection = EnumProperty(
     default=nmv.enums.Meshing.SomaConnection.DISCONNECTED)
 
 # The skeleton of the union-based meshing algorithm
-bpy.types.Scene.NMV_UnionMethodSkeleton= EnumProperty(
+bpy.types.Scene.NMV_UnionMethodSkeleton = EnumProperty(
     items=[(nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON,
             'Quad',
             'Use a quad skeleton for the union meshing algorithm'),
