@@ -630,7 +630,8 @@ class SomaSoftBodyBuilder:
                             soma_bmesh_sphere, self.morphology.axon, visualize_connection=False)
 
                         # Update the list
-                        roots_and_faces_centroids.append([self.morphology.axon, extrusion_face_centroid])
+                        roots_and_faces_centroids.append(
+                            [self.morphology.axon, extrusion_face_centroid])
 
             # The axon is not connected to soma
             else:

@@ -373,10 +373,10 @@ def bridge_mesh_objects(mesh_object_1,
     # Switch to edit mode to be able to implement the bridging operator
     bpy.ops.object.editmode_toggle()
 
-    # apply the bridging operator
+    # Apply the bridging operator
     bpy.ops.mesh.bridge_edge_loops()
 
-    # switch back to object mode
+    # Switch back to object mode
     bpy.ops.object.editmode_toggle()
 
     # Deselect all the vertices of the parent mesh, mesh_object_1

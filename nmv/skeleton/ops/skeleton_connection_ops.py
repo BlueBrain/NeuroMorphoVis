@@ -931,20 +931,22 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
     nmv.scene.ops.deselect_all()
 
     # Select the soma object
-    nmv.scene.ops.select_objects([soma_mesh])
+    nmv.scene.ops.select_object(soma_mesh)
 
     # Select the face using its obtained index
     nmv.mesh.ops.select_face_vertices(soma_mesh, soma_mesh_face_index)
 
     # Select the section mesh
-    nmv.scene.ops.select_objects([arbor.mesh])
+    nmv.scene.ops.select_object(arbor.mesh)
 
     # Deselect all the vertices of the section mesh, for safety !
     nmv.mesh.ops.deselect_all_vertices(arbor.mesh)
 
     # Get the nearest face on the section mesh
-    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
-        arbor.mesh, intersection_point)
+    # section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(arbor.mesh, intersection_point)
+
+    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(arbor.mesh,
+                                                                         branch_starting_point)
 
     # NOTE: This approach could be faster, but we need to get
     # section_face_index = arbor.mesh.data.polygons[-1].index
@@ -979,6 +981,14 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
 
     return soma_mesh
 
+
+def smooth_mesh_surface_around_point(mesh_object,
+                                     point,
+                                     radius,
+                                     smoothing_iterations):
+
+
+    pass
 
 
 ####################################################################################################
