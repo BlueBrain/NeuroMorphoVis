@@ -305,6 +305,20 @@ class MeshPanel(bpy.types.Panel):
             Panel context.
         """
 
+        # Components
+        components_row = self.layout.row()
+        components_row.label(text='Components:')
+        components_row.prop(context.scene, 'NMV_MeshingPiecewiseComponents', expand=True)
+        # nmv.interface.ui_options.mesh.branching = context.scene.NMV_MeshBranching
+
+        # Which technique to use to reconstruct the soma
+        soma_type_row = self.layout.row()
+        soma_type_row.label(text='Soma:')
+        soma_type_row.prop(
+            context.scene, 'NMV_MeshingPiecewiseSoma', expand=True)
+        nmv.interface.ui_options.mesh.soma_reconstruction_technique = \
+            context.scene.NMV_MeshingPiecewiseSoma
+
         # Edges
         mesh_edges_row = self.layout.row()
         mesh_edges_row.label(text='Edges:')
@@ -319,12 +333,6 @@ class MeshPanel(bpy.types.Panel):
             nmv.interface.ui_options.mesh.surface = context.scene.NMV_SurfaceRoughness
         else:
             nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
-
-        # Mesh branching
-        branching_row = self.layout.row()
-        branching_row.label(text='Branching:')
-        branching_row.prop(context.scene, 'NMV_MeshBranching', expand=True)
-        nmv.interface.ui_options.mesh.branching = context.scene.NMV_MeshBranching
 
         # Connectivity options
         self.draw_connectivity_options(context)
@@ -358,12 +366,7 @@ class MeshPanel(bpy.types.Panel):
         meshing_method_row.prop(context.scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.NMV_MeshingTechnique
 
-        # Which technique to use to reconstruct the soma
-        meshing_soma_technique_row = layout.row()
-        meshing_soma_technique_row.prop(
-            context.scene, 'NMV_MeshingSomaReconstructionTechnique', icon='OUTLINER_OB_EMPTY')
-        nmv.interface.ui_options.mesh.soma_reconstruction_technique = \
-            context.scene.NMV_MeshingSomaReconstructionTechnique
+
 
         # Which skeletonization technique to use
         skeletonization_row = layout.row()

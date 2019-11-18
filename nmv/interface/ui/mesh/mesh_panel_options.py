@@ -54,7 +54,7 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
             'Creates watertight mesh models using MetaBalls. This approach is extremely slow if '
             'the axons are included in the meshing process, so it is always recommended to use '
             'first order branching for the axons when using this technique')],
-    name='Meshing Method',
+    name='Method',
     description='The technique that will be used to create the mesh, by default the '
                 'Piecewise Watertight one since it is the fastest one.',
     default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
@@ -83,10 +83,20 @@ bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
             'Create a zigzagged and tapered skeleton.')],
     name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
 
+bpy.types.Scene.NMV_MeshingPiecewiseComponents = bpy.props.EnumProperty(
+    items=[(nmv.enums.Meshing.PiecewiseComponents.PATHS,
+            'Paths',
+            ''),
+           (nmv.enums.Meshing.PiecewiseComponents.SECTIONS,
+            'Sections',
+            '')],
+    name='Mesh Components',
+    default=nmv.enums.Meshing.PiecewiseComponents.PATHS)
+
 # Build soma
-bpy.types.Scene.NMV_MeshingSomaReconstructionTechnique = bpy.props.EnumProperty(
+bpy.types.Scene.NMV_MeshingPiecewiseSoma = bpy.props.EnumProperty(
     items=[(nmv.enums.Soma.Representation.META_BALLS,
-            'Meta Balls',
+            'MetaBalls',
             'Reconstruct a rough shape of the soma using MetaBalls. '
             'This approach is real-time and can reconstruct good shapes for the somata, but '
             'more accurate profiles could be reconstructed with the Soft Body option'),
@@ -94,7 +104,7 @@ bpy.types.Scene.NMV_MeshingSomaReconstructionTechnique = bpy.props.EnumProperty(
             'Soft Body',
             'Reconstruct a 3D profile of the soma using Soft Body physics.'
             'This method takes few seconds to reconstruct a soma mesh')],
-    name='',
+    name='Soma',
     default=nmv.enums.Soma.Representation.SOFT_BODY)
 
 

@@ -179,11 +179,6 @@ class SomaPanel(bpy.types.Panel):
         view_dimensions_row.prop(scene, 'NMV_ViewDimensions')
         view_dimensions_row.enabled = False
 
-        # Soma view dimensions in micron option
-        keep_cameras_row = layout.row()
-        keep_cameras_row.prop(scene, 'NMV_KeepSomaCameras')
-        keep_cameras_row.enabled = False
-
         # Render view buttons
         render_view_row = layout.row()
         render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')
@@ -198,7 +193,11 @@ class SomaPanel(bpy.types.Panel):
         render_animation_row.label(text='Render Animation:', icon='CAMERA_DATA')
         render_animations_buttons_row = layout.row(align=True)
         render_animations_buttons_row.operator('nmv.render_soma_360', icon='FORCE_MAGNETIC')
-        render_animations_buttons_row.operator('nmv.render_soma_progressive', icon='FORCE_HARMONIC')
+
+        # Progressive rendering is only for the soft body physics
+        if bpy.context.scene.NMV_SomaReconstructionMethod == \
+            nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
+            render_animations_buttons_row.operator('nmv.render_soma_progressive', icon='FORCE_HARMONIC')
 
         # Soma rendering progress bar
         soma_rendering_progress_row = layout.row()
@@ -232,7 +231,6 @@ class SomaPanel(bpy.types.Panel):
             if nmv.scene.ops.is_object_in_scene_by_name(reconstructed_soma_mesh_name):
                 save_soma_mesh_buttons_column.enabled = True
                 view_dimensions_row.enabled = True
-                keep_cameras_row.enabled = True
                 frame_resolution_row.enabled = True
                 render_view_buttons_row.enabled = True
                 render_animations_buttons_row.enabled = True
@@ -241,7 +239,6 @@ class SomaPanel(bpy.types.Panel):
             else:
                 save_soma_mesh_buttons_column.enabled = False
                 view_dimensions_row.enabled = False
-                keep_cameras_row.enabled = False
                 frame_resolution_row.enabled = False
                 render_view_buttons_row.enabled = False
                 render_animations_buttons_row.enabled = False
@@ -250,7 +247,6 @@ class SomaPanel(bpy.types.Panel):
         else:
             save_soma_mesh_buttons_column.enabled = False
             view_dimensions_row.enabled = False
-            keep_cameras_row.enabled = False
             frame_resolution_row.enabled = False
             render_view_buttons_row.enabled = False
             render_animations_buttons_row.enabled = False
@@ -379,7 +375,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
                 nmv.interface.ui_morphology, nmv.interface.ui_options)
 
             # Reconstruct the soma in a single step
-            self.soma_builder.reconstruct_soma_mesh()
+            nmv.interface.ui_soma_mesh = self.soma_builder.reconstruct_soma_mesh()
 
             # Get the reconstruction time to update the UI
             self.reconstruction_time = time.time() - self.reconstruction_time
@@ -517,8 +513,7 @@ class RenderSomaFront(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Rendering Soma Done')
@@ -571,8 +566,7 @@ class RenderSomaSide(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.SIDE,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -625,8 +619,7 @@ class RenderSomaTop(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.TOP,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=scene.NMV_KeepSomaCameras)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')

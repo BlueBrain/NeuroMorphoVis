@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+# Copyright (c) 2019, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,6 +15,11 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .soma_panel import *
-from .soma_panel_options import *
-from .soma_panel_ops import *
+# Blender imports
+import bpy
+
+# Internal modules
+import nmv.consts
+import nmv.enums
+import nmv.utilities
+

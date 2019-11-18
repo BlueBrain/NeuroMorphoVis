@@ -147,8 +147,21 @@ class SomaMetaBuilder:
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
 
-        # Decimate the mesh to remove any artifacts
-        nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh,decimation_ratio=0.25)
+        # Decimate the mesh to remove any bumpy artifacts based on the meta resolution
+        if 0.0 < self.meta_skeleton.resolution < 0.1:
+            iterations = 4
+        elif 0.1 < self.meta_skeleton.resolution < 0.2:
+            iterations = 3
+        elif 0.2 < self.meta_skeleton.resolution < 0.3:
+            iterations = 2
+        elif 0.3 < self.meta_skeleton.resolution < 0.5:
+            iterations = 1
+        else:
+            iterations = 0
+
+        # Apply the decimation operation
+        for i in range(iterations):
+            nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.25)
 
     ################################################################################################
     # @assign_material_to_mesh

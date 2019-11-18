@@ -165,6 +165,43 @@ class Meshing:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
     ################################################################################################
+    # @PiecewiseComponents
+    ################################################################################################
+    class PiecewiseComponents:
+        """Piecewise meshing approach.
+        """
+
+        # Connected sections
+        PATHS = 'PIECEWISE_PATHS'
+
+        # Disconnected sections
+        SECTIONS = 'PIECEWISE_SECTIONS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Paths
+            if argument == 'paths':
+                return Meshing.PiecewiseComponents.PATHS
+
+            # Sections
+            elif argument == 'sections':
+                return Meshing.PiecewiseComponents.SECTIONS
+
+            # By default, use the paths
+            else:
+                return Meshing.PiecewiseComponents.PATHS
+
+    ################################################################################################
     # @Technique
     ################################################################################################
     class SomaConnection:
