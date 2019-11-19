@@ -353,6 +353,15 @@ def connect_arbors_to_soma(builder):
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
         nmv.logger.header('Connecting arbors to soma')
 
+        # Connecting axon
+        if not builder.options.morphology.ignore_axon:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.axon is not None:
+                nmv.logger.info('Axon')
+                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
+                    builder.soma_mesh, builder.morphology.axon)
+
         # Connecting apical dendrite
         if not builder.options.morphology.ignore_apical_dendrite:
 
@@ -374,17 +383,8 @@ def connect_arbors_to_soma(builder):
                     builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
                         builder.soma_mesh, basal_dendrite)
 
-        # Connecting axon
-        if not builder.options.morphology.ignore_axon:
-
-            # Create the apical dendrite mesh
-            if builder.morphology.axon is not None:
-                nmv.logger.info('Axon')
-                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
-                    builder.soma_mesh, builder.morphology.axon)
-
     # Smooth the connections between the soma and the connected curves
-    smooth_arbors_to_soma_connections(builder=builder)
+    # smooth_arbors_to_soma_connections(builder=builder)
 
     # Adjust the texture mapping after connecting the meshes together
     adjust_texture_mapping_of_all_meshes(builder=builder)

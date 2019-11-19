@@ -575,7 +575,8 @@ class SomaSoftBodyBuilder:
                     # Create the extrusion face, where the pulling will occur
                     nmv.logger.info('Apical dendrite')
                     extrusion_face_centroid = self.create_branch_extrusion_face(
-                        soma_bmesh_sphere, self.morphology.apical_dendrite, visualize_connection=False)
+                        soma_bmesh_sphere, self.morphology.apical_dendrite,
+                        visualize_connection=False)
 
                     # Update the list
                     roots_and_faces_centroids.append(
@@ -604,7 +605,8 @@ class SomaSoftBodyBuilder:
                                 soma_bmesh_sphere, dendrite_root, visualize_connection=False)
 
                             # Update the list
-                            roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
+                            roots_and_faces_centroids.append(
+                                [dendrite_root, extrusion_face_centroid])
 
                         # This basal dendrite is not connected to soma
                         else:
@@ -691,8 +693,8 @@ class SomaSoftBodyBuilder:
                     if self.morphology.axon is not None:
 
                         # Check that the profile point does NOT intersect the axon
-                        if nmv.skeleton.ops.point_branch_intersect(profile_point,
-                                self.morphology.axon, self.initial_soma_radius):
+                        if nmv.skeleton.ops.point_branch_intersect(
+                                profile_point, self.morphology.axon, self.initial_soma_radius):
 
                             # Report the intersection
                             nmv.logger.detail(

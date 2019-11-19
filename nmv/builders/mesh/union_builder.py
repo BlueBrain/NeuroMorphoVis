@@ -190,7 +190,7 @@ class UnionBuilder:
         for i, poly_line in enumerate(arbor_poly_lines):
 
             # Resample the poly-line adaptively to preserve the geometry
-            nmv.geometry.resample_poly_line_adaptively(poly_line=poly_line)
+            nmv.geometry.resample_poly_line_adaptively_relaxed(poly_line=poly_line)
 
             # Draw the section, and append the result to the objects list
             arbor_poly_line_objects.append(nmv.skeleton.ops.draw_section_from_poly_line_data(
@@ -396,6 +396,7 @@ class UnionBuilder:
         result, stats = nmv.utilities.profile_function(nmv.builders.connect_arbors_to_soma, self)
         self.profiling_statistics += stats
 
+        return
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
         self.profiling_statistics += stats

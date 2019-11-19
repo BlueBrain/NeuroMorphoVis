@@ -414,6 +414,8 @@ class ReconstructSomaOperator(bpy.types.Operator):
             else:
                 self.soma_sphere_object = self.soma_builder.build_soma_soft_body()
 
+            return {'FINISHED'}
+
             # Use the event timer to update the UI during the soma building
             wm = context.window_manager
             self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
