@@ -119,19 +119,24 @@ def resample_skeleton_sections(builder):
 
     # The adaptive resampling is quite important to prevent breaking the structure
     if builder.options.morphology.resampling_method == \
-            nmv.enums.Skeletonization.Resampling.ADAPTIVE:
-        nmv.logger.detail('Adaptive resampling')
+            nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED:
+        nmv.logger.detail('Relaxed Adaptive Resampling')
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[builder.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
+    elif builder.options.morphology.resampling_method == \
+            nmv.enums.Skeletonization.Resampling.ADAPTIVE_PACKED:
+        nmv.logger.detail('Packed (or Overlapping) Adaptive Resampling')
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.resample_section_adaptively])
     elif builder.options.morphology.resampling_method == \
             nmv.enums.Skeletonization.Resampling.FIXED_STEP:
-        nmv.logger.detail('Fixed step resampling [%f]' %
+        nmv.logger.detail('Fixed Step Resampling with step of [%f] um' %
                           builder.options.morphology.resampling_step)
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
               builder.options.morphology.resampling_step])
     else:
-        nmv.logger.detail('Resampling ignored')
+        pass
 
 
 ####################################################################################################
