@@ -27,6 +27,7 @@ import nmv
 import nmv.consts
 import nmv.enums
 import nmv.scene
+import nmv.geometry
 
 
 ####################################################################################################
@@ -92,7 +93,7 @@ def get_section_poly_line(section,
     """
 
     # An array containing the data of the section arranged in blender poly-line format
-    poly_line = []
+    poly_line = list()
 
     # Global coordinates transformation, use I if no transform is given
     if transform is None:

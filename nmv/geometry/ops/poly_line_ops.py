@@ -28,6 +28,95 @@ import nmv.enums
 
 
 ####################################################################################################
+# @sample_to_point
+####################################################################################################
+def sample_to_point(sample):
+    """Converts a point from the poly-line format to the Vector format
+
+    :param sample:
+        A given sample along the poly-line.
+    :return:
+        A point in a Vector format.
+    """
+
+    return Vector((sample[0][0], sample[0][1], sample[0][2]))
+
+
+####################################################################################################
+# @get_sample_radius
+####################################################################################################
+def get_sample_radius(sample):
+    """Returns the sample radius in float from the poly-line structure.
+
+    :param sample:
+        The given sample.
+    :return:
+        The radius in float.
+    """
+
+    return sample[1]
+
+
+####################################################################################################
+# @point_to_sample
+####################################################################################################
+def point_to_sample(point,
+                    radius=0.0):
+    """Converts a point to a poly-line sample.
+
+    :param point:
+        A given XYZ point.
+    :param radius:
+        The sample radius.
+    :return:
+        The sample in the poly-line format.
+    """
+
+    return [(point[0], point[1], point[2], 1), radius]
+
+
+####################################################################################################
+# @compute_poly_line_length
+####################################################################################################
+def compute_poly_line_length(poly_line):
+    """
+    Computes the length of a given poly-line.
+
+    :param poly_line:
+        A given poly-line to compute its length.
+    :return:
+        Poly-line total length in microns.
+    """
+
+    # Section length
+    poly_line_length = 0.0
+
+    # If the section has less than two samples, then report the error
+    if len(poly_line.samples) < 2:
+
+        # Return 0
+        return poly_line_length
+
+    # Integrate the distance between each two successive samples
+    for i in range(len(poly_line.samples) - 1):
+
+        # Retrieve the points along each segment on the section
+        point_0 = Vector((poly_line.samples[i][0][0],
+                          poly_line.samples[i][0][1],
+                          poly_line.samples[i][0][2]))
+        point_1 = Vector((poly_line.samples[i + 1][0][0],
+                          poly_line.samples[i + 1][0][1],
+                          poly_line.samples[i + 1][0][2]))
+
+        # Update the section length
+        poly_line_length += (sample_to_point(poly_line.samples[i + 1]) -
+                             sample_to_point(poly_line.samples[i])).length
+
+    # Return the section length
+    return poly_line_length
+
+
+####################################################################################################
 # @append_poly_line_to_base_object
 ####################################################################################################
 def append_poly_line_to_base_object(base_object,
@@ -288,4 +377,167 @@ def draw_poly_lines_in_multiple_objects(poly_lines,
     #    poly_lines_list.append(draw_poly_line(poly_line), )
 
 
+####################################################################################################
+# @resample_poly_line_at_fixed_step
+####################################################################################################
+def resample_poly_line_at_fixed_step(poly_line,
+                                     sampling_step=1.0):
+    """Resamples a poly-line (the samples list of the poly-line) at a fixed step.
+    If the poly-line has only two samples, it will never get resampled. If its length is smaller
+    than the sampling step, a convenient sampling step will be computed and used.
 
+    :param poly_line:
+        A given poly-line to be resampled.
+    :param sampling_step:
+        The resampling step, by default 1.0 um.
+    """
+
+    # If the poly-line has no samples, report this as an error and ignore this filter
+    if len(poly_line.samples) == 0:
+        nmv.logger.error('Poly-line [%s] has NO samples, cannot be re-sampled' % poly_line.name)
+        return
+
+    # If the poly-line has ONLY one sample, report this as an error and ignore this filter
+    elif len(poly_line.samples) == 1:
+        nmv.logger.error('Poly-line [%s] has ONE sample, cannot be re-sampled' % poly_line.name)
+        return
+
+    # If the poly-line length is less than the sampling step, then adaptively resample it
+    poly_line_length = compute_poly_line_length(poly_line=poly_line)
+    if poly_line_length < sampling_step:
+
+        # Get a good sampling step that would match this small poly-line
+        number_samples = len(poly_line.samples)
+        convenient_step = poly_line_length / number_samples
+
+        # Resample the poly-line at this sampling step
+        resample_poly_line_at_fixed_step(poly_line=poly_line, sampling_step=convenient_step)
+        return
+
+    # Sample index
+    i = 0
+
+    # Just keep moving along the poly-line till you hit the last sample
+    while True:
+
+        # Break if we reach the last sample
+        if i >= len(poly_line.samples) - 1:
+            break
+
+        # Compute the distance between the current sample and the next one
+        distance = (sample_to_point(poly_line.samples[i + 1]) -
+                    sample_to_point(poly_line.samples[i])).length
+
+        # If the distance is less than the resampling step, then remove this sample at [i + 1]
+        if distance < sampling_step:
+
+            # If this is the last sample, then terminate as we cannot remove the last sample
+            if i >= len(poly_line.samples) - 2:
+                break
+
+            # Remove the sample
+            poly_line.samples.remove(poly_line.samples[i + 1])
+
+            # Proceed to the next sample
+            continue
+
+        # If the sample is at a greater step, then add a new sample exactly at the current step
+        else:
+
+            # Compute the auxiliary sample radius based on the previous and next samples
+            radius = (get_sample_radius(poly_line.samples[i + 1]) +
+                      get_sample_radius(poly_line.samples[i])) / 2.0
+
+            # Compute the direction
+            direction = (sample_to_point(poly_line.samples[i + 1]) -
+                         sample_to_point(poly_line.samples[i])).normalized()
+
+            # Compute the auxiliary sample point, use epsilon for floating point comparison
+            point = sample_to_point(poly_line.samples[i]) + (direction * sampling_step)
+
+            # Update the samples list
+            poly_line.samples.insert(i + 1, point_to_sample(point, radius))
+
+            # Move to the nex sample
+            i += 1
+
+            # Break if we reach the last sample
+            if i >= len(poly_line.samples) - 1:
+                break
+
+
+####################################################################################################
+# @resample_poly_line_adaptively
+####################################################################################################
+def resample_poly_line_adaptively(poly_line):
+    """Adaptively resamples the given poly-line. The adaptive sampling scheme removes the
+    unnecessary samples along the poly-line, or those that overlap based on their positions and
+    radii.
+
+    :param poly_line:
+        A given poly-line to be resampled.
+    """
+
+    # If the poly-line has no samples, report this as an error and ignore this filter
+    if len(poly_line.samples) == 0:
+        nmv.logger.error('Poly-line [%s] has NO samples, cannot be re-sampled' % poly_line.name)
+        return
+
+    # If the poly-line has ONLY one sample, report this as an error and ignore this filter
+    elif len(poly_line.samples) == 1:
+        nmv.logger.error('Poly-line [%s] has ONE sample, cannot be re-sampled' % poly_line.name)
+        return
+
+    # Sample index
+    i = 0
+
+    # Just keep moving along the poly-line till you hit the last sample
+    while True:
+
+        # Break if we reach the last sample
+        if i >= len(poly_line.samples) - 1:
+            break
+
+        # Compute the distance between the current sample and the next one
+        distance = (sample_to_point(poly_line.samples[i + 1]) -
+                    sample_to_point(poly_line.samples[i])).length
+
+        # Get the extent of the sample, where no other samples should be located
+        extent = get_sample_radius(poly_line.samples[i])
+
+        # If the next sample is located within the extent of this sample, then remove it
+        if distance < extent:
+
+            # If this is the last sample, then terminate as we cannot remove the last sample
+            if i >= len(poly_line.samples) - 2:
+                break
+
+            # Remove the sample
+            poly_line.samples.remove(poly_line.samples[i + 1])
+
+            # Proceed to the next sample
+            continue
+
+        # Otherwise, add a new sample at the radius
+        else:
+
+            # Compute the auxiliary sample radius based on the previous and next samples
+            radius = (get_sample_radius(poly_line.samples[i + 1]) +
+                      get_sample_radius(poly_line.samples[i])) / 2.0
+
+            # Compute the direction
+            direction = (sample_to_point(poly_line.samples[i + 1]) -
+                         sample_to_point(poly_line.samples[i])).normalized()
+
+            # Compute the auxiliary sample point, use epsilon for floating point comparison
+            point = sample_to_point(poly_line.samples[i]) + (direction * extent)
+
+            # Update the samples list
+            poly_line.samples.insert(i + 1, point_to_sample(point, radius))
+
+            # Move to the nex sample
+            i += 1
+
+            # Break if we reach the last sample
+            if i >= len(poly_line.samples) - 1:
+                break

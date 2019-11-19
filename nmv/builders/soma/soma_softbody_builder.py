@@ -803,8 +803,9 @@ class SomaSoftBodyBuilder:
         if apply_shader:
 
             # Create the soma material and assign it to the ico-sphere
-            soma_material = nmv.shading.create_material(name='soma',
-                color=self.options.soma.soma_color, material_type=self.options.soma.soma_material)
+            soma_material = nmv.shading.create_material(
+                name='soma', color=self.options.soma.soma_color,
+                material_type=self.options.soma.soma_material)
 
             # Apply the shader to the ico-sphere
             nmv.shading.set_material_to_object(

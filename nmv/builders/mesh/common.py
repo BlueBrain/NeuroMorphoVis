@@ -565,8 +565,6 @@ def collect_morphology_stats(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    nmv.logger.header('Collecting Morphology Stats.')
-
     builder.morphology_statistics += '\tSoma: ' + 'Found \n' \
         if builder.morphology.soma is not None else 'Not Found \n'
     if builder.morphology.apical_dendrite is not None:
