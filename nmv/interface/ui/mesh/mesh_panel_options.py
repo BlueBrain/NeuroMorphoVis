@@ -59,8 +59,23 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
                 'Piecewise Watertight one since it is the fastest one.',
     default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
+
+# Build soma
+bpy.types.Scene.NMV_MeshingPiecewiseFilling = bpy.props.EnumProperty(
+    items=[(nmv.enums.Soma.Representation.META_BALLS,
+            'Connected Sections',
+            'The stems are created using a series of connected sections starting from the root '
+            'section to the leaves. The sections are overlapping at the branching points'),
+           (nmv.enums.Soma.Representation.SOFT_BODY,
+            'Disconnected Sections',
+            'The stems area created using a series of disconnected sections, where each section '
+            'is created as an individual watertight mesh. Additionally, sphers are added at the branching points.')],
+    name='',
+    default=nmv.enums.Soma.Representation.SOFT_BODY)
+
+
 # Skeleton style
-bpy.types.Scene.NMV_SkeletonizationTechnique = EnumProperty(
+bpy.types.Scene.NMV_SkeletonizationTechnique = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
             'Original',
             'Use the original morphology skeleton'),
