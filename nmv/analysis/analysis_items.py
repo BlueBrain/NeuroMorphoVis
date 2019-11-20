@@ -330,13 +330,14 @@ ui_global_analysis_items = [
                  name='Soma Surface Area',
                  kernel=kernel_soma_get_average_surface_area,
                  description='The surface area of the soma as reported in the morphology file '
-                             'in μm²',
+                             'in \u03BCm\u00b2',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='ReportedSomaVolume',
                  name='Soma Volume',
                  kernel=kernel_soma_get_average_volume,
-                 description='The volume of the soma as reported in the morphology file in μm³',
+                 description='The volume of the soma as reported in the morphology file in '
+                             '\u03BCm\u00b3',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='NumberProfilePoints',
