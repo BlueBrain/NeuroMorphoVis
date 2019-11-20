@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import os
+
 # Internal imports
 import nmv
 import nmv.analysis
@@ -213,22 +216,29 @@ def kernel_analyse_segments_lengths(morphology,
     pass
 
 
-
-def kernel_compute_radii_distribution(morphology):
+####################################################################################################
+# @kernel_analyse_samples_radii
+####################################################################################################
+def kernel_samples_radii_distribution(morphology):
 
     # Get the analysis results
     analysis_results = nmv.analysis.get_analysis_lists(
         morphology,
-        nmv.analysis.get_number_of_samples_per_section_of_arbor)
+        nmv.analysis.get_samples_radii_of_arbor)
 
-    import matplotlib.pyplot as plt
+    # Plot the results
+    nmv.analysis.plot_analysis_results(analysis_results)
 
-    fig, ax = plt.subplots()
-    n, bins, patches = ax.hist(analysis_results.axon_result)
-    fig.savefig('/Users/abdellah/neuromorphovis-output/axon-plot.pdf')
 
-    n, bins, patches = ax.hist(analysis_results.apical_dendrite_result)
-    fig.savefig('/Users/abdellah/neuromorphovis-output/apical-plot.pdf')
+    # import matplotlib.pyplot as plt
+
+    # fig, ax = plt.subplots()
+    #n, bins, patches = ax.hist(analysis_results.axon_result)
+    #fig.savefig('%s/neuromorphovis-output/axon-plot.pdf' % os.path.expanduser('~'))
+
+    # print(analysis_results.apical_dendrite_result)
+    # n, bins, patches = ax.hist(analysis_results.apical_dendrite_result)
+    # fig.savefig('%s/neuromorphovis-output/apical-plot.pdf' % os.path.expanduser('~'))
 
 
 

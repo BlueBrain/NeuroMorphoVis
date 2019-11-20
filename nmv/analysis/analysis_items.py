@@ -389,7 +389,7 @@ distributions = [
 
     AnalysisDistribution(
         name='Radii',
-        kernel=kernel_compute_radii_distribution,
+        kernel=kernel_samples_radii_distribution,
         description='The distribution of the radii of all the samples in the morphology',
         data_format='INT'),
 ]

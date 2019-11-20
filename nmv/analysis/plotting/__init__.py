@@ -15,7 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .kernels import *
-from .structs import *
-from .plotting import *
-from .analysis_items import *
+from .distributions import *
