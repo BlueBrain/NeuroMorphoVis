@@ -38,7 +38,7 @@ def clean_and_create_directory(path):
         shutil.rmtree(path)
     try:
         os.mkdir(path)
-    except:
+    except ValueError:
         print('ERROR: cannot create directory %s' % path)
 
 
@@ -59,18 +59,18 @@ def get_files_in_directory(directory,
     """
 
     # A list of all the files that exist in a directory
-    files = []
+    files = list()
 
     # If the extension is not specified
     if file_extension is None:
-        for file in os.listdir(directory):
-            files.append(file)
+        for i_file in os.listdir(directory):
+            files.append(i_file)
 
     # Otherwise, return files that have specific extensions
     else:
-        for file in os.listdir(directory):
-            if file.endswith(file_extension):
-                files.append(file)
+        for i_file in os.listdir(directory):
+            if i_file.endswith(file_extension):
+                files.append(i_file)
 
     # Return the list
     return files
@@ -93,10 +93,10 @@ def write_batch_job_string_to_file(output_directory,
     """
 
     # Set the absolute file path
-    file = '%s/%s.sh' % (output_directory, file_name)
+    file_path = '%s/%s.sh' % (output_directory, file_name)
 
     # Open the file
-    file_handle = open(file, 'w')
+    file_handle = open(file_path, 'w')
 
     # Write the string
     file_handle.write(batch_job_string)

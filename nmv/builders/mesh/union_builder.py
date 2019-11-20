@@ -34,6 +34,7 @@ import nmv.shading
 import nmv.skeleton
 import nmv.scene
 import nmv.utilities
+import nmv.geometry
 
 
 ####################################################################################################
@@ -133,8 +134,8 @@ class UnionBuilder:
     ################################################################################################
     # @build_arbor
     ################################################################################################
-    @staticmethod
-    def build_arbor(arbor,
+    def build_arbor(self,
+                    arbor,
                     caps,
                     bevel_object,
                     max_branching_order,
@@ -164,18 +165,17 @@ class UnionBuilder:
 
         # A list that will contain all the poly-lines gathered from traversing the arbor tree with
         # depth-first traversal
-        arbor_poly_lines_data = list()
+        arbor_poly_lines = list()
 
         # Construct the poly-lines
-        nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
-            section=arbor, poly_lines_data=arbor_poly_lines_data,
-            max_branching_level=max_branching_order)
+        nmv.skeleton.ops.get_connected_sections_poly_lines_recursively(
+            section=arbor, poly_lines=arbor_poly_lines, max_branching_level=max_branching_order)
 
         # If the arbor not connected to the soma, then add a point at the origin
         if not connection_to_soma:
 
-            # Add an auxiliary point at the origin
-            arbor_poly_lines_data[0][0].insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
+            # Add an auxiliary point at the origin to the first poly-line in the list
+            arbor_poly_lines[0].samples.insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
 
         # A list that will contain all the drawn poly-lines to be able to access them later,
         # although we can access them by name
@@ -187,11 +187,14 @@ class UnionBuilder:
             curve_style = 'NURBS'
 
         # For each poly-line in the list, draw it
-        for i, poly_line_data in enumerate(arbor_poly_lines_data):
+        for i, poly_line in enumerate(arbor_poly_lines):
+
+            # Resample the poly-line adaptively to preserve the geometry
+            nmv.geometry.resample_poly_line_adaptively_relaxed(poly_line=poly_line)
 
             # Draw the section, and append the result to the objects list
             arbor_poly_line_objects.append(nmv.skeleton.ops.draw_section_from_poly_line_data(
-                data=poly_line_data[0], name=poly_line_data[1], bevel_object=bevel_object,
+                data=poly_line.samples, name=poly_line.name, bevel_object=bevel_object,
                 caps=False if i == 0 else caps, curve_style=curve_style))
 
         # Convert the section object (poly-lines or tubes) into meshes

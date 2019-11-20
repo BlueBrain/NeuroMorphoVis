@@ -200,8 +200,11 @@ class Skeletonization:
         # Do not resample the section
         NONE = 'RESAMPLING_NONE'
 
-        # Use adaptive resampling
-        ADAPTIVE = 'RESAMPLING_ADAPTIVE'
+        # Adaptive relaxed resampling (samples do NOT touch each other)
+        ADAPTIVE_RELAXED = 'RESAMPLING_ADAPTIVE_RELAXED'
+
+        # Adaptive packed resampling (samples overlap as if we PACK the resampled section)
+        ADAPTIVE_PACKED = 'RESAMPLING_ADAPTIVE_PACKED'
 
         # Resample the section at a fixed step
         FIXED_STEP = 'RESAMPLING_FIXED_STEP'
@@ -222,9 +225,13 @@ class Skeletonization:
             if argument == 'none':
                 return Skeletonization.Resampling.NONE
 
-            # Adaptive
-            elif argument == 'adaptive':
-                return Skeletonization.Resampling.ADAPTIVE
+            # Adaptive relaxed
+            elif argument == 'adaptive-relaxed':
+                return Skeletonization.Resampling.ADAPTIVE_RELAXED
+
+            # Adaptive packed
+            elif argument == 'adaptive-packed':
+                return Skeletonization.Resampling.ADAPTIVE_PACKED
 
             # Fixed step
             elif argument == 'fixed':

@@ -431,8 +431,11 @@ class MetaBuilder:
 
         # Apply skeleton-based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.common.modify_morphology_skeleton, self)
+            nmv.builders.mesh.modify_morphology_skeleton, self)
         self.profiling_statistics += stats
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
         # Initialize the meta object
         result, stats = nmv.utilities.profile_function(
@@ -454,12 +457,12 @@ class MetaBuilder:
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.common.decimate_neuron_mesh, self)
+            nmv.builders.mesh.common.decimate_neuron_mesh, self)
         self.profiling_statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.common.create_skeleton_materials(builder=self)
+        nmv.builders.mesh.common.create_skeleton_materials(builder=self)
 
         # Assign the material to the mesh
         self.assign_material_to_mesh()

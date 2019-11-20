@@ -47,16 +47,13 @@ class SomaSoftBodyBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options,
-                 irregular_subdivisions=False):
+                 options):
         """Constructor
 
         :param morphology:
             A given morphology.
         :param options:
             System options.
-        :param irregular_subdivisions:
-            Force the soma to make irregular subdivisions for the pulled faces.
         """
 
         # Morphology
@@ -64,9 +61,6 @@ class SomaSoftBodyBuilder:
 
         # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
-
-        # Force the soma to make irregular subdivisions for the pulled faces.
-        self.irregular_subdivisions = irregular_subdivisions
 
         # A common vertex group used to store all the vertices that will be grouped for the hooks
         self.vertex_group = None
@@ -326,7 +320,7 @@ class SomaSoftBodyBuilder:
 
         # Link the soma sphere bmesh to the scene using a mesh object
         soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            initial_soma_sphere_bmesh, '%s_soma' % self.options.morphology.label)
+            initial_soma_sphere_bmesh, 'soma')
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_mesh)
@@ -429,10 +423,6 @@ class SomaSoftBodyBuilder:
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_intersecting_sphere(
             initial_soma_sphere, connection_point_on_soma, extrusion_radius)
 
-        # Make a subdivision for extra processing, if the topology is not required to be preserved
-        if self.options.soma.irregular_subdivisions or self.irregular_subdivisions:
-            nmv.bmeshi.ops.subdivide_faces(initial_soma_sphere, faces_indices, cuts=2)
-
         # Get the actual intersecting faces via their indices (this is for smoothing)
         faces_indices = nmv.bmeshi.ops.get_indices_of_faces_fully_intersecting_sphere(
             initial_soma_sphere, connection_point_on_soma, extrusion_radius)
@@ -533,6 +523,94 @@ class SomaSoftBodyBuilder:
         return face_index
 
     ################################################################################################
+    # @subdivide_sphere_at_extrusion_points
+    ################################################################################################
+    def subdivide_at_extrusion_point(self,
+                                     soma_bmesh_sphere,
+                                     branch):
+        """Makes initial subdivision of the initial soma sphere at the extrusion points of the
+        a given arbor to increase the accuracy when performing the pulling operation.
+
+        :param soma_bmesh_sphere:
+            The initial sphere that represents the soma.
+        :param branch:
+            The initial section of a given arbor.
+        """
+
+        # Compute the direction from the origin to the branching point
+        connection_direction = branch.samples[0].point.normalized()
+
+        # Compute the intersecting point on the soma and the difference between that on the soma
+        # and that on the branch starting point
+        connection_point_on_soma = connection_direction * self.initial_soma_radius
+
+        # Compute the extrusion radius that will be applied on the soma_sphere
+        scale_factor = self.initial_soma_radius / branch.samples[0].point.length
+        extrusion_radius = branch.samples[0].radius * scale_factor
+
+        # Select the vertices that intersect with the extrusion sphere to prepare the face for
+        # the extrusion process
+        faces_indices = nmv.bmeshi.ops.get_indices_of_faces_intersecting_sphere(
+            soma_bmesh_sphere, connection_point_on_soma, extrusion_radius)
+
+        # Make a subdivision for extra processing, if the topology is not required to be preserved
+        nmv.bmeshi.ops.subdivide_faces(soma_bmesh_sphere, faces_indices, cuts=2)
+
+    ################################################################################################
+    # @subdivide_sphere_at_extrusion_points
+    ################################################################################################
+    def subdivide_sphere_at_extrusion_points(self,
+                                             soma_bmesh_sphere):
+        """Makes initial subdivision of the initial soma sphere at the extrusion points of the
+        different arbors to increase the accuracy when performing the pulling operation.
+
+        :param soma_bmesh_sphere:
+            The initial sphere that represents the soma.
+        """
+
+        # Apical dendrite
+        if not self.options.morphology.ignore_apical_dendrite:
+
+            # Build towards the apical dendrite, if the apical dendrite is available
+            if self.morphology.apical_dendrite is not None:
+
+                # THe branching order must be greater than zero
+                if self.options.morphology.apical_dendrite_branch_order > 0:
+                    # Create the extrusion face, where the pulling will occur
+                    self.subdivide_at_extrusion_point(
+                        soma_bmesh_sphere, self.morphology.apical_dendrite)
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+
+            # Ensure tha existence of basal dendrites
+            if self.morphology.dendrites is not None:
+
+                # The branching order must be greater than zero
+                if self.options.morphology.basal_dendrites_branch_order > 0:
+
+                    # Build towards the dendrites, if possible
+                    for i, dendrite_root in enumerate(self.morphology.dendrites):
+
+                        # The dendrite must be connected to the soma
+                        if dendrite_root.connected_to_soma:
+
+                            self.subdivide_at_extrusion_point(soma_bmesh_sphere, dendrite_root)
+
+        # Axon
+        if not self.options.morphology.ignore_axon:
+
+            # Ensure that the axon is present
+            if self.morphology.axon is not None:
+
+                # The branching order must be greater than zero
+                if self.options.morphology.axon_branch_order > 0:
+
+                    # The axon must be connected to the soma
+                    if self.morphology.axon.connected_to_soma:
+                        self.subdivide_at_extrusion_point(soma_bmesh_sphere, self.morphology.axon)
+
+    ################################################################################################
     # @build_soma_soft_body
     ################################################################################################
     def build_soma_soft_body(self,
@@ -563,6 +641,9 @@ class SomaSoftBodyBuilder:
         # Keep a list of all the extrusion face centroids, for later
         roots_and_faces_centroids = []
 
+        # Get subdivide the sphere at the initial extrusion points
+        self.subdivide_sphere_at_extrusion_points(soma_bmesh_sphere)
+
         # Apical dendrite
         if not self.options.morphology.ignore_apical_dendrite:
 
@@ -575,7 +656,8 @@ class SomaSoftBodyBuilder:
                     # Create the extrusion face, where the pulling will occur
                     nmv.logger.info('Apical dendrite')
                     extrusion_face_centroid = self.create_branch_extrusion_face(
-                        soma_bmesh_sphere, self.morphology.apical_dendrite, visualize_connection=False)
+                        soma_bmesh_sphere, self.morphology.apical_dendrite,
+                        visualize_connection=False)
 
                     # Update the list
                     roots_and_faces_centroids.append(
@@ -604,7 +686,8 @@ class SomaSoftBodyBuilder:
                                 soma_bmesh_sphere, dendrite_root, visualize_connection=False)
 
                             # Update the list
-                            roots_and_faces_centroids.append([dendrite_root, extrusion_face_centroid])
+                            roots_and_faces_centroids.append(
+                                [dendrite_root, extrusion_face_centroid])
 
                         # This basal dendrite is not connected to soma
                         else:
@@ -691,8 +774,8 @@ class SomaSoftBodyBuilder:
                     if self.morphology.axon is not None:
 
                         # Check that the profile point does NOT intersect the axon
-                        if nmv.skeleton.ops.point_branch_intersect(profile_point,
-                                self.morphology.axon, self.initial_soma_radius):
+                        if nmv.skeleton.ops.point_branch_intersect(
+                                profile_point, self.morphology.axon, self.initial_soma_radius):
 
                             # Report the intersection
                             nmv.logger.detail(
@@ -739,7 +822,7 @@ class SomaSoftBodyBuilder:
         """ Physics """
         # Link the soma sphere to the scene
         soma_sphere_object = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            soma_bmesh_sphere, '%s_soma' % self.options.morphology.label)
+            soma_bmesh_sphere, 'soma')
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_object)
@@ -750,7 +833,7 @@ class SomaSoftBodyBuilder:
         # Create a list to keep track on the indices of the vertices of the extruded faces
         extrusion_faces_vertices_indices = list()
 
-        # Create a list to keep track on the indicies of the extruded faces
+        # Create a list to keep track on the indices of the extruded faces
         faces_indices = list()
 
         # Attach the hooks to the faces that correspond to the branches
@@ -803,8 +886,9 @@ class SomaSoftBodyBuilder:
         if apply_shader:
 
             # Create the soma material and assign it to the ico-sphere
-            soma_material = nmv.shading.create_material(name='soma',
-                color=self.options.soma.soma_color, material_type=self.options.soma.soma_material)
+            soma_material = nmv.shading.create_material(
+                name='soma', color=self.options.soma.soma_color,
+                material_type=self.options.soma.soma_material)
 
             # Apply the shader to the ico-sphere
             nmv.shading.set_material_to_object(

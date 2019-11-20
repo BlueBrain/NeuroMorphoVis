@@ -149,7 +149,7 @@ def reconstruct_soma_mesh(builder):
 
         # If the soma is connected to the root arbors
         soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
-            morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
+            morphology=builder.morphology, options=builder.options)
 
         # Reconstruct the soma mesh
         builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
@@ -353,6 +353,15 @@ def connect_arbors_to_soma(builder):
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
         nmv.logger.header('Connecting arbors to soma')
 
+        # Connecting axon
+        if not builder.options.morphology.ignore_axon:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.axon is not None:
+                nmv.logger.info('Axon')
+                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
+                    builder.soma_mesh, builder.morphology.axon)
+
         # Connecting apical dendrite
         if not builder.options.morphology.ignore_apical_dendrite:
 
@@ -374,17 +383,8 @@ def connect_arbors_to_soma(builder):
                     builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
                         builder.soma_mesh, basal_dendrite)
 
-        # Connecting axon
-        if not builder.options.morphology.ignore_axon:
-
-            # Create the apical dendrite mesh
-            if builder.morphology.axon is not None:
-                nmv.logger.info('Axon')
-                builder.soma_mesh = nmv.skeleton.ops.connect_arbor_to_soft_body_soma(
-                    builder.soma_mesh, builder.morphology.axon)
-
     # Smooth the connections between the soma and the connected curves
-    smooth_arbors_to_soma_connections(builder=builder)
+    # smooth_arbors_to_soma_connections(builder=builder)
 
     # Adjust the texture mapping after connecting the meshes together
     adjust_texture_mapping_of_all_meshes(builder=builder)
@@ -564,8 +564,6 @@ def collect_morphology_stats(builder):
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
     """
-
-    nmv.logger.header('Collecting Morphology Stats.')
 
     builder.morphology_statistics += '\tSoma: ' + 'Found \n' \
         if builder.morphology.soma is not None else 'Not Found \n'

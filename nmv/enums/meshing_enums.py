@@ -33,7 +33,7 @@ class Meshing:
     # @Skeleton
     ################################################################################################
     class Skeleton:
-        """Skeletonization
+        """Skeleton enumerators
         """
 
         # Use the original morphology skeleton
@@ -109,14 +109,8 @@ class Meshing:
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
 
-        # Bridging meshing
-        BRIDGING = 'MESHING_TECHNIQUE_BRIDGING'
-
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
-
-        # Space filling meshing
-        SPACE_FILLING = 'MESHING_TECHNIQUE_SPACE_FILLING'
 
         # Skinning
         SKINNING = 'MESHING_TECHNIQUE_SKINNING'
@@ -144,14 +138,6 @@ class Meshing:
             elif argument == 'union':
                 return Meshing.Technique.UNION
 
-            # Bridging
-            elif argument == 'bridging':
-                return Meshing.Technique.BRIDGING
-
-            # Extrusion
-            elif argument == 'space-filling':
-                return Meshing.Technique.SPACE_FILLING
-
             # Skinning
             elif argument == 'skinning':
                 return Meshing.Technique.SKINNING
@@ -171,7 +157,7 @@ class Meshing:
         """Piecewise meshing approach.
         """
 
-        # Connected sections
+        # Connected sections forming longest path
         PATHS = 'PIECEWISE_PATHS'
 
         # Disconnected sections

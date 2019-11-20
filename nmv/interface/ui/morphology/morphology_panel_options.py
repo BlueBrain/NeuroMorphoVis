@@ -274,10 +274,16 @@ bpy.types.Scene.NMV_MorphologyResampling = bpy.props.EnumProperty(
     items=[(nmv.enums.Skeletonization.Resampling.NONE,
             'None',
             'Do not resample the section at all'),
-           (nmv.enums.Skeletonization.Resampling.ADAPTIVE,
-            'Adaptive',
+           (nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED,
+            'Adaptive Relaxed',
             'Use adaptive resampling to resample the section and remove the unwanted samples '
-            'while preserving the spatial features of the section'),
+            'while preserving the spatial features of the section. The new samples will not be '
+            'touching each other, that is why it is called relaxed'),
+           (nmv.enums.Skeletonization.Resampling.ADAPTIVE_PACKED,
+            'Adaptive Packed',
+            'Use adaptive resampling to resample the section and remove the unwanted samples '
+            'while preserving the spatial features of the section. The new samples will overlap '
+            'as if they pack the section to fill it entirely, and that is why it is called packed'),
            (nmv.enums.Skeletonization.Resampling.FIXED_STEP,
             'Fixed Step',
             'Use fixed resampling step to resample the section. '

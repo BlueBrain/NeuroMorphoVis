@@ -152,7 +152,6 @@ class ProgressiveBuilder:
 
         # If this is what we are looking for, construct the poly-line, add it to the list and return
         if branching_order == root.branching_order:
-            print('Current ', root.branching_order)
             # Construct the poly-line
             poly_line = nmv.geometry.PolyLine(
                 name='%s_%d' % (prefix, root.branching_order),

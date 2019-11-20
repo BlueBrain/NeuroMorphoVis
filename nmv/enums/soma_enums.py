@@ -43,7 +43,7 @@ class Soma:
         SPHERE = 'SOMA_SYMBOLIC_SPHERE'
 
         # Generate soma with MetaBalls
-        META_BALLS = 'SOMA_META_BALLS_MESH'
+        META_BALLS = 'SOMA_METABALLS_MESH'
 
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
         SOFT_BODY = 'SOMA_SOFT_BODY_MESH'
@@ -76,11 +76,11 @@ class Soma:
                 return Soma.Representation.SPHERE
 
             # Soft body reconstruction
-            elif argument == 'meta-balls':
+            elif argument == 'metaballs':
                 return Soma.Representation.META_BALLS
 
             # Soft body reconstruction
-            elif argument == 'soft-body':
+            elif argument == 'softbody':
                 return Soma.Representation.SOFT_BODY
 
             # MetaBalls representation

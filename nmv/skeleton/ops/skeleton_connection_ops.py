@@ -943,16 +943,11 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
     nmv.mesh.ops.deselect_all_vertices(arbor.mesh)
 
     # Get the nearest face on the section mesh
-    # section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(arbor.mesh, intersection_point)
+    # section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+    # arbor.mesh, intersection_point)
 
-    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(arbor.mesh,
-                                                                         branch_starting_point)
-
-    # NOTE: This approach could be faster, but we need to get
-    # section_face_index = arbor.mesh.data.polygons[-1].index
-
-    # Switch back to the object mode
-    # bpy.ops.object.mode_set(mode='OBJECT')
+    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+        arbor.mesh, branch_starting_point)
 
     # Select the face
     nmv.mesh.ops.select_face_vertices(arbor.mesh, section_face_index)
