@@ -222,7 +222,7 @@ class SomaPanel(bpy.types.Panel):
         if nmv.interface.ui_options.morphology.label is not None:
 
             # Get the soma mesh name
-            reconstructed_soma_mesh_name = nmv.interface.ui_options.morphology.label + '_soma'
+            reconstructed_soma_mesh_name = 'soma'
 
             # Does the soma mesh exist in the scene, then activate the buttons
             if nmv.scene.ops.is_object_in_scene_by_name(reconstructed_soma_mesh_name):

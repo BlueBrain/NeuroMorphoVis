@@ -124,7 +124,7 @@ class SomaMetaBuilder:
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
-        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma']
+        self.meta_mesh = bpy.context.scene.objects['soma']
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
@@ -138,8 +138,8 @@ class SomaMetaBuilder:
         # Select the soma object
         # Note the conversion from the meta object to the mesh object adds automatically '.001'
         # to the object name, therefore we must rename it
-        self.meta_mesh = bpy.context.scene.objects[self.morphology.label + '_soma.001']
-        self.meta_mesh.name = self.morphology.label + '_soma'
+        self.meta_mesh = bpy.context.scene.objects['soma.001']
+        self.meta_mesh.name = 'soma'
 
         # Re-select it again to be able to perform post-processing operations in it
         nmv.scene.select_object(self.meta_mesh)
@@ -361,7 +361,7 @@ class SomaMetaBuilder:
         """
 
         # Initialize the MetaObject before emanating towards the branches
-        self.initialize_meta_object(name=self.morphology.label + '_soma')
+        self.initialize_meta_object(name='soma')
 
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()

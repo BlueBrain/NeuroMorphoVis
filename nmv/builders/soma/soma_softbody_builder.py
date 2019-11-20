@@ -320,7 +320,7 @@ class SomaSoftBodyBuilder:
 
         # Link the soma sphere bmesh to the scene using a mesh object
         soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            initial_soma_sphere_bmesh, '%s_soma' % self.options.morphology.label)
+            initial_soma_sphere_bmesh, 'soma')
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_mesh)
@@ -822,7 +822,7 @@ class SomaSoftBodyBuilder:
         """ Physics """
         # Link the soma sphere to the scene
         soma_sphere_object = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            soma_bmesh_sphere, '%s_soma' % self.options.morphology.label)
+            soma_bmesh_sphere, 'soma')
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_object)

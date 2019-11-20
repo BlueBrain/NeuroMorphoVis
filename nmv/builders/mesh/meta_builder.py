@@ -434,6 +434,9 @@ class MetaBuilder:
             nmv.builders.mesh.modify_morphology_skeleton, self)
         self.profiling_statistics += stats
 
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+
         # Initialize the meta object
         result, stats = nmv.utilities.profile_function(
             self.initialize_meta_object, self.options.morphology.label)
