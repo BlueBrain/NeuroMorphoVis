@@ -989,7 +989,7 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
         nmv.file.export_object_to_obj_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            output_file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s_soma' % nmv.interface.ui_morphology.label)
 
         return {'FINISHED'}
 
@@ -1038,7 +1038,7 @@ class SaveSomaMeshPLY(bpy.types.Operator):
         nmv.file.export_object_to_ply_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            output_file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s_soma' % nmv.interface.ui_morphology.label)
 
         return {'FINISHED'}
 
@@ -1088,7 +1088,7 @@ class SaveSomaMeshSTL(bpy.types.Operator):
         nmv.file.export_object_to_stl_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            output_file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s_soma' % nmv.interface.ui_morphology.label)
 
         return {'FINISHED'}
 
@@ -1133,9 +1133,8 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
 
-        # Export the selected soma mesh as an .blend file
-        nmv.file.export_object_to_blend_file(
-            mesh_object=nmv.interface.ui_soma_mesh,
+        # Export the selected soma mesh as a .blend file
+        nmv.file.export_scene_to_blend_file(
             output_directory=nmv.interface.ui_options.io.meshes_directory,
             output_file_name='%s_soma' % nmv.interface.ui_morphology.label)
 
