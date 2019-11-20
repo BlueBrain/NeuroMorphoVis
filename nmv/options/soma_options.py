@@ -47,9 +47,6 @@ class SomaOptions:
         # Subdivision level of the sphere
         self.subdivision_level = nmv.consts.SoftBody.SUBDIVISIONS_DEFAULT
 
-        # Irregular subdivisions for the faces created for extruding the arbors
-        self.irregular_subdivisions = False
-
         # Extrude the arbors from the soma to cover the maximal volume
         self.full_volume_extrusion = True
 

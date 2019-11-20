@@ -396,7 +396,6 @@ class UnionBuilder:
         result, stats = nmv.utilities.profile_function(nmv.builders.connect_arbors_to_soma, self)
         self.profiling_statistics += stats
 
-        return
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
         self.profiling_statistics += stats

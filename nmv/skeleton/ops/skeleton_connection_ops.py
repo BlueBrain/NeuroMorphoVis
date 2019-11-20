@@ -936,13 +936,21 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
     # Select the face using its obtained index
     nmv.mesh.ops.select_face_vertices(soma_mesh, soma_mesh_face_index)
 
-    # Switch to edit mode to be able to select the vertices
-    # bpy.ops.object.mode_set(mode='EDIT')
-    # bpy.ops.mesh.subdivide()
+    # Select the section mesh
+    nmv.scene.ops.select_object(arbor.mesh)
 
-    # bpy.ops.mesh.edge_face_add()
-    # Switch back to the object mode
-    # bpy.ops.object.mode_set(mode='OBJECT')
+    # Deselect all the vertices of the section mesh, for safety !
+    nmv.mesh.ops.deselect_all_vertices(arbor.mesh)
+
+    # Get the nearest face on the section mesh
+    # section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+    # arbor.mesh, intersection_point)
+
+    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+        arbor.mesh, branch_starting_point)
+
+    # Select the face
+    nmv.mesh.ops.select_face_vertices(arbor.mesh, section_face_index)
 
     # Apply a joint operation, for the moment, use 'neuron' as the mesh object, since it will
     # be changed later

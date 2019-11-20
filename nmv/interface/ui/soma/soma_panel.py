@@ -111,10 +111,7 @@ class SomaPanel(bpy.types.Panel):
             # Ico-sphere subdivision level option
             subdivision_level_row = layout.row()
             subdivision_level_row.prop(scene, 'NMV_SubdivisionLevel')
-            irregular_subdivisions_row = layout.row()
-            irregular_subdivisions_row.prop(scene, 'NMV_IrregularSubdivisions')
             soma_options.subdivision_level = scene.NMV_SubdivisionLevel
-            soma_options.irregular_subdivisions = scene.NMV_IrregularSubdivisions
 
         else:
             pass
@@ -413,8 +410,6 @@ class ReconstructSomaOperator(bpy.types.Operator):
                     use_profile_points=True)
             else:
                 self.soma_sphere_object = self.soma_builder.build_soma_soft_body()
-
-            return {'FINISHED'}
 
             # Use the event timer to update the UI during the soma building
             wm = context.window_manager

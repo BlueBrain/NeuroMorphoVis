@@ -149,7 +149,7 @@ def reconstruct_soma_mesh(builder):
 
         # If the soma is connected to the root arbors
         soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
-            morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
+            morphology=builder.morphology, options=builder.options)
 
         # Reconstruct the soma mesh
         builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
