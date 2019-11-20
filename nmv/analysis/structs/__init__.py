@@ -17,3 +17,4 @@
 
 from .analysis_item import *
 from .analysis_result import *
+from .analysis_distribution import *

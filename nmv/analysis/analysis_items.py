@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # Internal imports
-from nmv.analysis.structs import AnalysisItem
+from nmv.analysis.structs import AnalysisItem, AnalysisDistribution
 from nmv.analysis.kernels.morphology import *
 
 
@@ -382,3 +382,14 @@ ui_global_analysis_items = [
                  data_format='INT'),
 ]
 
+####################################################################################################
+# Global analysis items, only applied on a global level not per-arbor level
+####################################################################################################
+distributions = [
+
+    AnalysisDistribution(
+        name='Radii',
+        kernel=kernel_compute_radii_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+]

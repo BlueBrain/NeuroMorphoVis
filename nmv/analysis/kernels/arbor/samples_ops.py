@@ -321,7 +321,7 @@ def get_number_of_samples_per_section_of_arbor(arbor):
     :param arbor:
         A given arbor to get analyzed.
     :return
-        A list of the radii of the samples .
+        A list of the radii of the samples.
     """
 
     # A list that will contain the analysis data

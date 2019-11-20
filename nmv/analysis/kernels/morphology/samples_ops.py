@@ -214,4 +214,21 @@ def kernel_analyse_segments_lengths(morphology,
 
 
 
+def kernel_compute_radii_distribution(morphology):
+
+    # Get the analysis results
+    analysis_results = nmv.analysis.get_analysis_lists(
+        morphology,
+        nmv.analysis.get_number_of_samples_per_section_of_arbor)
+
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(analysis_results.axon_result)
+    fig.savefig('/Users/abdellah/neuromorphovis-output/axon-plot.pdf')
+
+    n, bins, patches = ax.hist(analysis_results.apical_dendrite_result)
+    fig.savefig('/Users/abdellah/neuromorphovis-output/apical-plot.pdf')
+
+
 
