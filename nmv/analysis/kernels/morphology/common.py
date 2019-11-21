@@ -56,9 +56,9 @@ def get_morphology_maximum_branching_order_from_analysis_results(analysis_result
 
 
 ####################################################################################################
-# @compute_total_analysis_result_of_morphology_at_branching_order
+# @compute_total_distribution_of_morphology
 ####################################################################################################
-def compute_total_analysis_result_of_morphology_at_branching_order(analysis_result):
+def compute_total_distribution_of_morphology(analysis_result):
     """Computes the total result with respect to the entire morphology skeleton from the analysis
     results of the existing arbors.
 

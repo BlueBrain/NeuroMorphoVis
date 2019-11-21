@@ -27,7 +27,7 @@ def kernel_total_number_samples_at_branching_order(morphology):
 
     return nmv.analysis.invoke_kernel(
         morphology,
-        nmv.analysis.compute_total_number_samples_of_arbor_at_branching_order,
+        nmv.analysis.compute_total_number_samples_of_arbor_distributions,
         nmv.analysis.compute_total_analysis_result_of_morphology_at_branching_order)
 
 
@@ -249,13 +249,18 @@ def kernel_samples_radii_distribution(morphology):
     # fig.savefig('%s/neuromorphovis-output/apical-plot.pdf' % os.path.expanduser('~'))
 
 
-def kernel_number_of_samples_at_branching_order(morphology):
+####################################################################################################
+# @kernel_analyse_samples_radii
+####################################################################################################
+def kernel_number_of_samples_at_branching_order_distributions(morphology):
 
     analysis_results = nmv.analysis.get_analysis_distributions(
         morphology,
-        nmv.analysis.compute_total_number_samples_of_arbor_at_branching_order)
+        nmv.analysis.compute_total_number_samples_of_arbor_distributions)
 
-    nmv.analysis.compute_total_analysis_result_of_morphology_at_branching_order(analysis_results)
+
+
+    nmv.analysis.compute_total_distribution_of_morphology(analysis_results)
 
     print(analysis_results.axon_result)
 

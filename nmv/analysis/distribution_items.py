@@ -32,7 +32,7 @@ distributions = [
 
     AnalysisDistributionItem(
         name='ss',
-        kernel=kernel_number_of_samples_at_branching_order,
+        kernel=kernel_number_of_samples_at_branching_order_distributions,
         description='sss',
         data_format='INT'
     )

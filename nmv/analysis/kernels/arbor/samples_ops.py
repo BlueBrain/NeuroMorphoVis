@@ -21,87 +21,6 @@ import nmv.skeleton
 
 
 ####################################################################################################
-# @add_distributions
-####################################################################################################
-def add_distributions(analysis_distributions,
-                      maximum_branching_order=None):
-    """Add the distributions computed per arbor or neurite to compute the distribution of the
-     entire morphology.
-
-    :param analysis_distributions:
-        A structure that contains the analysis distributions of the axon, basal and apical
-        dendrites. Note that this struct contains a member for the morphology which will be filled
-        here.
-    :param maximum_branching_order:
-        The maximum branching order of the morphology. If not given, it is automatically computed
-        from the the input distributions.
-    """
-
-    # Make sure that the distributions are not empty
-    if analysis_distributions is None:
-        return
-
-    # Compute the maximum branching order if not given
-    if maximum_branching_order is None:
-
-        # Initially set to Zero
-        maximum_branching_order = 0
-
-        # Every item contains a list of two values: item[0]: branching order, item[1]: value
-        for item in analysis_distributions:
-            if item[0] > maximum_branching_order:
-                maximum_branching_order = item[0]
-
-    # Compile a list that is composed of nested lists equivalent to the maximum branching order
-    compiled_data = list()
-    for i in range(maximum_branching_order):
-        compiled_data.append(0)
-
-    # Sum up
-    for item in analysis_distributions:
-        compiled_data[item[0] - 1] += item[1]
-
-    # Aggregate list
-    aggregate_analysis_data = list()
-    for i, item in enumerate(compiled_data):
-        aggregate_analysis_data.append([i + 1, item])
-
-    # Return the final aggregate list
-    return aggregate_analysis_data
-
-
-####################################################################################################
-# @compute_total_number_samples_of_arbor_at_branching_order
-####################################################################################################
-def compute_total_number_samples_of_arbor_at_branching_order(arbor):
-    """Computes the total number of samples along the given arbor at a given branching order.
-
-    Note that we use the number of segments to account for the number of samples to avoid
-    double-counting the branching points.
-
-    :param arbor:
-        A given arbor to analyze.
-    :return
-        Total number of samples of the arbor.
-    """
-
-    # A list that will be filled with the results recursively
-    analysis_data = list()
-
-    # Compute the number of segments of each section individually
-    nmv.skeleton.ops.apply_operation_to_arbor(
-        *[arbor,
-          nmv.analysis.compute_number_of_samples_per_section_at_branching_order,
-          analysis_data])
-
-    # Aggregate the results
-    aggregate_analysis_data = add_distributions(analysis_data)
-
-    # Return the final aggregate data
-    return aggregate_analysis_data
-
-
-####################################################################################################
 # @compute_total_number_samples_of_arbor
 ####################################################################################################
 def compute_total_number_samples_of_arbor(arbor):
@@ -139,6 +58,35 @@ def compute_total_number_samples_of_arbor(arbor):
 
     # Return the total number of samples of the given arbor
     return total_number_samples
+
+
+####################################################################################################
+# @compute_total_number_samples_of_arbor_distributions
+####################################################################################################
+def compute_total_number_samples_of_arbor_distributions(arbor):
+    """Computes the total number of samples along the given arbor with respect to different
+    branching orders.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Total number of samples of the arbor w.r.t the branching order.
+    """
+
+    # A list that will be filled with the results recursively
+    analysis_data = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_samples_per_section_distributions,
+          analysis_data])
+
+    # Aggregate the results
+    aggregate_analysis_data = nmv.analysis.add_distributions(analysis_data)
+
+    # Return the final aggregate data
+    return aggregate_analysis_data
 
 
 ####################################################################################################
