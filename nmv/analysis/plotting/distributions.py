@@ -30,7 +30,7 @@ def plot_distribution(distribution,
                       normalized=False,
                       color='b'):
     from matplotlib import font_manager as fm, rcParams
-    fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'helvetica-light.ttf')
+    fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'NimbusSanL-Reg.otf')
 
     prop = fm.FontProperties(fname=fpath)
 
@@ -38,7 +38,7 @@ def plot_distribution(distribution,
 
     sns.set_style("whitegrid")
     plt.rcParams['axes.grid'] = 'False'
-    plt.rcParams['font.family'] = prop.get_name()
+    plt.rcParams['font.family'] = 'Arial' #prop.get_name()
     plt.rcParams['font.monospace'] = 'Regular'
     plt.rcParams['font.style'] = 'normal'
 
@@ -81,4 +81,4 @@ def plot_analysis_results(analysis_results):
             plot_distribution(basal_dendrite_result, 'basal_%d' % i)
 
     if analysis_results.axon_result is not None:
-        plot_distribution(analysis_results.axon, 'axon')
+        plot_distribution(analysis_results.axon_result, 'axon')
