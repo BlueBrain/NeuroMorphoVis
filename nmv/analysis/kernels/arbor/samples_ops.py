@@ -20,8 +20,26 @@ import nmv.analysis
 import nmv.skeleton
 
 
-def aggregate_data(analysis_data,
-                   maximum_branching_order=None):
+####################################################################################################
+# @add_distributions
+####################################################################################################
+def add_distributions(analysis_distributions,
+                      maximum_branching_order=None):
+    """Add the distributions computed per arbor or neurite to compute the distribution of the
+     entire morphology.
+
+    :param analysis_distributions:
+        A structure that contains the analysis distributions of the axon, basal and apical
+        dendrites. Note that this struct contains a member for the morphology which will be filled
+        here.
+    :param maximum_branching_order:
+        The maximum branching order of the morphology. If not given, it is automatically computed
+        from the the input distributions.
+    """
+
+    # Make sure that the distributions are not empty
+    if analysis_distributions is None:
+        return
 
     # Compute the maximum branching order if not given
     if maximum_branching_order is None:
@@ -30,7 +48,7 @@ def aggregate_data(analysis_data,
         maximum_branching_order = 0
 
         # Every item contains a list of two values: item[0]: branching order, item[1]: value
-        for item in analysis_data:
+        for item in analysis_distributions:
             if item[0] > maximum_branching_order:
                 maximum_branching_order = item[0]
 
@@ -40,7 +58,7 @@ def aggregate_data(analysis_data,
         compiled_data.append(0)
 
     # Sum up
-    for item in analysis_data:
+    for item in analysis_distributions:
         compiled_data[item[0] - 1] += item[1]
 
     # Aggregate list
@@ -77,7 +95,7 @@ def compute_total_number_samples_of_arbor_at_branching_order(arbor):
           analysis_data])
 
     # Aggregate the results
-    aggregate_analysis_data = aggregate_data(analysis_data)
+    aggregate_analysis_data = add_distributions(analysis_data)
 
     # Return the final aggregate data
     return aggregate_analysis_data
