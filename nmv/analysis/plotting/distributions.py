@@ -37,15 +37,7 @@ def plot_distribution(distribution,
     fm.findSystemFonts(fontpaths=nmv.consts.Paths.FONTS_DIRECTORY,
                        fontext='ttf')
 
-    #print(prop.get_name())
     sns.set(color_codes=True)
-
-    flist = fm.get_fontconfig_fonts()
-
-    l = list()
-    for fname in flist:
-        print(fname)
-        l.append(fm.FontProperties(fname=fname))
 
     font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
     font_files = fm.findSystemFonts(fontpaths=font_dirs)
@@ -53,7 +45,6 @@ def plot_distribution(distribution,
     fm.fontManager.ttflist.extend(font_list)
 
 
-    print('*************')
     sns.set_style("whitegrid")
     plt.rcParams['axes.grid'] = 'False'
     plt.rcParams['font.family'] = 'Arial'
@@ -69,7 +60,6 @@ def plot_distribution(distribution,
     plt.rcParams['figure.titlesize'] = 10
     plt.rcParams['axes.titlesize'] = 10
 
-
     # Convert the distribution list to a numpy array
     np_distribution = np.array(distribution)
 
@@ -84,20 +74,23 @@ def plot_distribution(distribution,
                  hist_kws={"color": color, "lw": 0.5},
                  kde_kws={"color": color, "lw": 0.5})
 
-    # plt.savefig('result.png', dpi=150)
     plt.savefig('%s/neuromorphovis-output/%s-plot.pdf' % (os.path.expanduser('~'), tilte), dpi=150)
 
     # Close figure to reset
     plt.close()
 
+
+####################################################################################################
+# @plot_analysis_results
+####################################################################################################
 def plot_analysis_results(analysis_results):
 
     if analysis_results.apical_dendrite_result is not None:
-        plot_distribution(analysis_results.apical_dendrite_result, 'apical')
+        plot_distribution(analysis_results.apical_dendrite_result, 'apical-dendrite')
 
     if analysis_results.basal_dendrites_result is not None:
         for i, basal_dendrite_result in enumerate(analysis_results.basal_dendrites_result):
-            plot_distribution(basal_dendrite_result, 'basal_%d' % i)
+            plot_distribution(basal_dendrite_result, 'basal-dendrite-%d' % i)
 
     if analysis_results.axon_result is not None:
         plot_distribution(analysis_results.axon_result, 'axon')

@@ -15,25 +15,25 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Internal imports
-from nmv.analysis.structs import AnalysisDistributionItem
-from nmv.analysis.kernels.morphology import *
 
 ####################################################################################################
-# Global analysis items, only applied on a global level not per-arbor level
+# @PlotOptions
 ####################################################################################################
-distributions = [
+class PlotOptions:
+    """The options that are defined by the users specific to certain kind of graph.
+    """
 
-    AnalysisDistributionItem(
-        name='Samples Radii',
-        kernel=kernel_samples_radii_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        """Constructor
+        """
 
-    AnalysisDistributionItem(
-        name='ss',
-        kernel=kernel_number_of_samples_at_branching_order,
-        description='sss',
-        data_format='INT'
-    )
-]
+        # Graph title, by default empty
+        self.title = ''
+
+        # Distribution color, by default red
+        self.color = 'r'
+
+

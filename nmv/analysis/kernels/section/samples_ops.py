@@ -23,6 +23,25 @@ import nmv
 
 
 ####################################################################################################
+# @compute_number_of_samples_per_section_at_branching_order
+####################################################################################################
+def compute_number_of_samples_per_section_at_branching_order(section,
+                                                             analysis_data):
+    """Computes the number of samples of a given section and its branching order.
+    The analysis result will be appended as a list of only pair of items, where the first item in
+    the branching order and the second item is the number of samples. This list will be appended
+    to the given analysis data list.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    analysis_data.append([section.branching_order, len(section.samples)])
+
+
+####################################################################################################
 # @compute_number_of_samples_per_section
 ####################################################################################################
 def compute_number_of_samples_per_section(section,

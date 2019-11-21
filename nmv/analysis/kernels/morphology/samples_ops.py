@@ -23,6 +23,14 @@ import nmv
 import nmv.analysis
 
 
+def kernel_total_number_samples_at_branching_order(morphology):
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_total_number_samples_of_arbor_at_branching_order,
+        nmv.analysis.compute_total_analysis_result_of_morphology_at_branching_order)
+
+
 ####################################################################################################
 # @kernel_total_number_samples
 ####################################################################################################
@@ -170,7 +178,7 @@ def kernel_average_sample_radius(morphology):
 def kernel_analyse_number_of_samples_per_section(morphology, options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_lists(
+    analysis_results = nmv.analysis.get_analysis_distributions(
         morphology,
         nmv.analysis.get_number_of_samples_per_section_of_arbor)
 
@@ -197,7 +205,7 @@ def kernel_analyse_samples_radii(morphology,
                                  options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_lists(morphology,
+    analysis_results = nmv.analysis.get_analysis_distributions(morphology,
                                                        nmv.analysis.get_samples_radii_of_arbor)
 
     # Save the results to text files
@@ -222,7 +230,7 @@ def kernel_analyse_segments_lengths(morphology,
 def kernel_samples_radii_distribution(morphology):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_lists(
+    analysis_results = nmv.analysis.get_analysis_distributions(
         morphology,
         nmv.analysis.get_samples_radii_of_arbor)
 
@@ -240,5 +248,22 @@ def kernel_samples_radii_distribution(morphology):
     # n, bins, patches = ax.hist(analysis_results.apical_dendrite_result)
     # fig.savefig('%s/neuromorphovis-output/apical-plot.pdf' % os.path.expanduser('~'))
 
+
+def kernel_number_of_samples_at_branching_order(morphology):
+
+    analysis_results = nmv.analysis.get_analysis_distributions(
+        morphology,
+        nmv.analysis.compute_total_number_samples_of_arbor_at_branching_order)
+
+    nmv.analysis.compute_total_analysis_result_of_morphology_at_branching_order(analysis_results)
+
+    print(analysis_results.axon_result)
+
+    print(analysis_results.apical_dendrite_result)
+
+    for i in analysis_results.basal_dendrites_result:
+        print(i)
+
+    print(analysis_results.morphology_result)
 
 
