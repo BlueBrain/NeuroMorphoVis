@@ -30,17 +30,35 @@ def plot_distribution(distribution,
                       normalized=False,
                       color='b'):
     from matplotlib import font_manager as fm, rcParams
-    fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'NimbusSanL-Reg.otf')
+    fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'arial.ttf')
 
     prop = fm.FontProperties(fname=fpath)
 
+    fm.findSystemFonts(fontpaths=nmv.consts.Paths.FONTS_DIRECTORY,
+                       fontext='ttf')
+
+    #print(prop.get_name())
     sns.set(color_codes=True)
 
+    flist = fm.get_fontconfig_fonts()
+
+    l = list()
+    for fname in flist:
+        print(fname)
+        l.append(fm.FontProperties(fname=fname))
+
+    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
+    font_list = fm.createFontList(font_files)
+    fm.fontManager.ttflist.extend(font_list)
+
+
+    print('*************')
     sns.set_style("whitegrid")
     plt.rcParams['axes.grid'] = 'False'
-    plt.rcParams['font.family'] = 'Arial' #prop.get_name()
-    plt.rcParams['font.monospace'] = 'Regular'
-    plt.rcParams['font.style'] = 'normal'
+    plt.rcParams['font.family'] = 'Arial'
+    #plt.rcParams['font.monospace'] = 'Regular'
+    #plt.rcParams['font.style'] = 'normal'
 
     plt.rcParams['axes.linewidth'] = 0.0
     plt.rcParams['axes.labelsize'] = 10
@@ -50,6 +68,7 @@ def plot_distribution(distribution,
     plt.rcParams['legend.fontsize'] = 10
     plt.rcParams['figure.titlesize'] = 10
     plt.rcParams['axes.titlesize'] = 10
+
 
     # Convert the distribution list to a numpy array
     np_distribution = np.array(distribution)

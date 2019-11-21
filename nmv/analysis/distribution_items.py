@@ -15,8 +15,18 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .kernels import *
-from .structs import *
-from .plotting import *
-from .analysis_items import *
-from .distribution_items import *
+# Internal imports
+from nmv.analysis.structs import AnalysisDistributionItem
+from nmv.analysis.kernels.morphology import *
+
+####################################################################################################
+# Global analysis items, only applied on a global level not per-arbor level
+####################################################################################################
+distributions = [
+
+    AnalysisDistributionItem(
+        name='Samples Radii',
+        kernel=kernel_samples_radii_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+]

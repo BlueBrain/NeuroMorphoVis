@@ -337,7 +337,6 @@ def analyze_morphology(morphology,
         for distribution in nmv.analysis.distributions:
             distribution.apply_kernel(morphology=morphology)
 
-
         # Morphology is analyzed
         return True
 

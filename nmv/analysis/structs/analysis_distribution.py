@@ -22,10 +22,10 @@ from bpy.props import FloatProperty
 
 
 ####################################################################################################
-# AnalysisItem
+# AnalysisDistributionItem
 ####################################################################################################
-class AnalysisDistribution:
-    """The distribution of a certain analysis.
+class AnalysisDistributionItem:
+    """The distribution of a certain analysis item.
     """
 
     ################################################################################################
@@ -80,8 +80,6 @@ class AnalysisDistribution:
 
         :param morphology:
             A given morphology to analyze.
-        :param context:
-            Blender context for the results to appear in the user interface.
         """
 
         if self.kernel is not None:
