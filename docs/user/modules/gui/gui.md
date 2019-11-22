@@ -8,7 +8,7 @@ To make it accessible to end users with minimal programming knowledge or even wi
 </p>
 
 ## Landing 
-After loading it from the [Add-ons](https://docs.blender.org/manual/fi/dev/preferences/addons.html) manager of Blender, _NeuroMorphoVis_ will appear as a new tab on the left side of Blender. 
+After loading it from the [Add-ons](https://docs.blender.org/manual/fi/dev/editors/preferences/addons.html?highlight=addons) manager of Blender, _NeuroMorphoVis_ will appear as a new tab on the left side of Blender. 
 
 <p align="center">
 	<img src="images/gui-landing.jpg" width="800">
