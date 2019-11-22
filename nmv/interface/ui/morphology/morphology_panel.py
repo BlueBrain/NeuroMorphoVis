@@ -38,6 +38,8 @@ from .morphology_panel_options import *
 
 is_morphology_reconstructed = False
 
+morphology_builder = None
+
 
 ####################################################################################################
 # @MorphologyPanel
@@ -146,38 +148,40 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         # Start reconstruction
         start_time = time.time()
 
+        global morphology_builder
+
         # Create a skeleton builder object to build the morphology skeleton
         method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
-            skeleton_builder = nmv.builders.DisconnectedSegmentsBuilder(
+            morphology_builder = nmv.builders.DisconnectedSegmentsBuilder(
                 morphology=nmv.interface.ui_morphology, options= nmv.interface.ui_options)
 
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
         elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS or \
                 method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
-            skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
+            morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of spheres, where each SPHERE represents a sample
         elif method == nmv.enums.Skeletonization.Method.SAMPLES:
-            skeleton_builder = nmv.builders.SamplesBuilder(
+            morphology_builder = nmv.builders.SamplesBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
-            skeleton_builder = nmv.builders.ConnectedSectionsBuilder(
+            morphology_builder = nmv.builders.ConnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         elif method == nmv.enums.Skeletonization.Method.PROGRESSIVE:
-            skeleton_builder = nmv.builders.ProgressiveBuilder(
+            morphology_builder = nmv.builders.ProgressiveBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Default: DisconnectedSectionsBuilder
         else:
-            skeleton_builder = nmv.builders.DisconnectedSectionsBuilder(
+            morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
-        nmv.interface.ui_reconstructed_skeleton = skeleton_builder.draw_morphology_skeleton()
+        nmv.interface.ui_reconstructed_skeleton = morphology_builder.draw_morphology_skeleton()
 
         # Morphology reconstructed
         reconstruction_time = time.time()
@@ -658,8 +662,9 @@ class SaveMorphologySWC(bpy.types.Operator):
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
+        global morphology_builder
         nmv.file.write_morphology_to_swc_file(
-            nmv.interface.ui_morphology, nmv.interface.ui_options.io.morphologies_directory)
+            morphology_builder.morphology, nmv.interface.ui_options.io.morphologies_directory)
 
         return {'FINISHED'}
 

@@ -262,13 +262,13 @@ def kernel_number_of_samples_at_branching_order_distributions(morphology):
 
     nmv.analysis.compute_total_distribution_of_morphology(analysis_results)
 
-    print(analysis_results.axon_result)
+    #print(analysis_results.axon_result)
 
-    print(analysis_results.apical_dendrite_result)
+    #print(analysis_results.apical_dendrite_result)
 
-    for i in analysis_results.basal_dendrites_result:
-        print(i)
+    #for i in analysis_results.basal_dendrites_result:
+    #    print(i)
 
-    print(analysis_results.morphology_result)
+    #print(analysis_results.morphology_result)
 
 
