@@ -694,7 +694,7 @@ class SkeletonBuilder:
 
         # The adaptive resampling is quite important to prevent breaking the structure
         if self.options.morphology.resampling_method == \
-                nmv.enums.Skeletonization.Resampling.ADAPTIVE:
+                nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
         elif self.options.morphology.resampling_method == \
