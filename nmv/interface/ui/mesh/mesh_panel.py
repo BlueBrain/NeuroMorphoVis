@@ -366,14 +366,6 @@ class MeshPanel(bpy.types.Panel):
         meshing_method_row.prop(context.scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
         nmv.interface.ui_options.mesh.meshing_technique = context.scene.NMV_MeshingTechnique
 
-
-
-        # Which skeletonization technique to use
-        skeletonization_row = layout.row()
-        skeletonization_row.prop(context.scene,
-                                 'NMV_SkeletonizationTechnique', icon='CURVE_BEZCURVE')
-        nmv.interface.ui_options.mesh.skeletonization = context.scene.NMV_SkeletonizationTechnique
-
         # Draw the meshing options
         if context.scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             self.draw_piece_wise_meshing_options(context)

@@ -295,10 +295,6 @@ class NeuroMorphoVisOptions:
         # Reconstruct neuron mesh for exporting
         self.mesh.reconstruct_neuron_mesh = arguments.reconstruct_neuron_mesh
 
-        # Skeletonization
-        self.mesh.skeletonization = nmv.enums.Meshing.Skeleton.get_enum(
-            arguments.morphology_skeleton)
-
         # Tessellation level (between 0.1 and 1.0)
         self.mesh.tessellation_level = float(arguments.tessellation_level)
 

@@ -300,27 +300,27 @@ bpy.types.Scene.NMV_MorphologyResamplingStep = bpy.props.FloatProperty(
 
 # Skeleton style
 bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
+    items=[(nmv.enums.Skeleton.Style.ORIGINAL,
             'Original',
             'Use the original morphology skeleton'),
-           (nmv.enums.Meshing.Skeleton.PLANAR,
+           (nmv.enums.Skeleton.Style.PLANAR,
             'Planar',
             'Project the entire morphology skeleton to XY plane'),
-           (nmv.enums.Meshing.Skeleton.PLANAR_ZIGZAG,
+           (nmv.enums.Skeleton.Style.PLANAR_ZIGZAG,
             'Planar Zigzag',
             'Project the entire morphology skeleton to XY plane and zigzag it'),
-           (nmv.enums.Meshing.Skeleton.TAPERED,
+           (nmv.enums.Skeleton.Style.TAPERED,
             'Tapered',
             'Create a tapered morphology skeleton (for artistic purposes).'),
-           (nmv.enums.Meshing.Skeleton.ZIGZAG,
+           (nmv.enums.Skeleton.Style.ZIGZAG,
             'Zigzag',
             'Create a zigzagged skeleton (to simulate the way the neurons look under the '
             'microscope when the intracellular space if filled with some stain). This style is '
             'recommended to create meshes that can be used for machine learning applications.'),
-           (nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG,
+           (nmv.enums.Skeleton.Style.TAPERED_ZIGZAG,
             'Tapered Zigzag',
             'Create a zigzagged and tapered skeleton.')],
-    name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
+    name='Skeleton', default=nmv.enums.Skeleton.Style.ORIGINAL)
 
 # Rendering type
 bpy.types.Scene.NMV_RenderingType = bpy.props.EnumProperty(

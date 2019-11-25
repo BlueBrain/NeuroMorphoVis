@@ -50,7 +50,7 @@ class MeshOptions:
         self.fix_morphology_artifacts = True
 
         # Skeletonization technique
-        self.skeletonization = nmv.enums.Meshing.Skeleton.ORIGINAL
+        self.skeletonization = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
