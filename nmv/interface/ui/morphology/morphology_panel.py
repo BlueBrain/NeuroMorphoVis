@@ -73,9 +73,11 @@ class MorphologyPanel(bpy.types.Panel):
         # Get a reference to the scene
         current_scene = context.scene
 
-        # Set the skeleton options
-        nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+        if nmv.interface.ui_morphology is not None:
+
+            # Set the skeleton options
+            nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
+                layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Set the reconstruction options
         nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(

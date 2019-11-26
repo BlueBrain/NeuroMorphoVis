@@ -219,6 +219,148 @@ def draw_piece_wise_meshing_options(panel,
 
 
 ################################################################################################
+# @draw_skinning_meshing_options
+################################################################################################
+def draw_skinning_meshing_options(panel,
+                                  scene):
+    """Draws the options when the skinning meshing technique is selected.
+
+    :param panel:
+        Blender UI panel.
+    :param scene:
+        Blender scene.
+    """
+
+    # Which technique to use to reconstruct the soma
+    soma_type_row = panel.layout.row()
+    soma_type_row.label(text='Soma:')
+    soma_type_row.prop(scene, 'NMV_MeshingPiecewiseSoma', expand=True)
+    nmv.interface.ui_options.mesh.soma_reconstruction_technique = scene.NMV_MeshingPiecewiseSoma
+
+    # Surface roughness
+    if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+        mesh_surface_row = panel.layout.row()
+        mesh_surface_row.label(text='Surface:')
+        mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
+    else:
+        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+
+    # Connectivity options
+    draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
+
+    # Mesh connectivity options
+    draw_mesh_connectivity_options(panel=panel, scene=scene)
+
+    # Tessellation options
+    draw_tessellation_options(panel=panel, scene=scene)
+
+    # Spine options
+    draw_spines_options(panel=panel, scene=scene)
+
+
+################################################################################################
+# @draw_meta_objects_meshing_options
+################################################################################################
+def draw_meta_objects_meshing_options(panel,
+                                      scene):
+    """Draws the options when the meta objects meshing technique is selected.
+
+    :param panel:
+        Blender UI panel.
+    :param scene:
+        Blender scene.
+    """
+
+    # Tessellation options
+    draw_tessellation_options(panel=panel, scene=scene)
+
+
+################################################################################################
+# @draw_union_meshing_options
+################################################################################################
+def draw_union_meshing_options(panel,
+                               scene):
+    """Draws the options when the union meshing technique is selected.
+
+    :param panel:
+        Blender UI panel.
+    :param scene:
+        Blender scene.
+    """
+
+    # Which technique to use to reconstruct the soma
+    soma_type_row = panel.layout.row()
+    soma_type_row.label(text='Soma:')
+    soma_type_row.prop(scene, 'NMV_MeshingPiecewiseSoma', expand=True)
+    nmv.interface.ui_options.mesh.soma_reconstruction_technique = scene.NMV_MeshingPiecewiseSoma
+
+    # Surface roughness
+    mesh_surface_row = panel.layout.row()
+    mesh_surface_row.label(text='Surface:')
+    mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+
+    # Pass options from UI to system
+    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
+
+    # Edges
+    mesh_edges_row = panel.layout.row()
+    mesh_edges_row.label(text='Edges:')
+    mesh_edges_row.prop(scene, 'NMV_MeshSmoothing', expand=True)
+    nmv.interface.ui_options.mesh.edges = scene.NMV_MeshSmoothing
+
+    # Connectivity options
+    draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
+
+    # Mesh connectivity options
+    draw_mesh_connectivity_options(panel=panel, scene=scene)
+
+    # Tessellation options
+    draw_tessellation_options(panel=panel, scene=scene)
+
+    # Spine options
+    draw_spines_options(panel=panel, scene=scene)
+
+
+################################################################################################
+# @draw_meshing_options
+################################################################################################
+def draw_meshing_options(panel,
+                         scene):
+    """Draw the options of the meshing.
+
+    :param panel:
+        Blender UI panel.
+    :param scene:
+        Blender scene.
+    """
+
+    # Get a reference to the layout of the panel
+    layout = panel.layout
+
+    # Skeleton meshing options
+    skeleton_meshing_options_row = layout.row()
+    skeleton_meshing_options_row.label(text='Meshing Options:', icon='SURFACE_DATA')
+
+    # Which meshing technique to use
+    meshing_method_row = layout.row()
+    meshing_method_row.prop(scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
+    nmv.interface.ui_options.mesh.meshing_technique = scene.NMV_MeshingTechnique
+
+    # Draw the meshing options
+    if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+        draw_piece_wise_meshing_options(panel=panel, scene=scene)
+    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
+        draw_meta_objects_meshing_options(panel=panel, scene=scene)
+    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+        draw_skinning_meshing_options(panel=panel, scene=scene)
+    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
+        draw_union_meshing_options(panel=panel, scene=scene)
+    else:
+        pass
+
+
+################################################################################################
 # @draw_color_options
 ################################################################################################
 def draw_color_options(panel,
@@ -425,138 +567,6 @@ def draw_rendering_options(panel,
     neuron_mesh_rendering_progress_row.prop(scene, 'NMV_NeuronMeshRenderingProgress')
     neuron_mesh_rendering_progress_row.enabled = False
     panel.shown_hidden_rows.append(neuron_mesh_rendering_progress_row)
-
-
-################################################################################################
-# @draw_meshing_options
-################################################################################################
-def draw_meshing_options(panel,
-                         scene):
-    """Draw the options of the meshing.
-
-    :param panel:
-        Blender UI panel.
-    :param scene:
-        Blender scene.
-    """
-
-    # Get a reference to the layout of the panel
-    layout = panel.layout
-
-    # Skeleton meshing options
-    skeleton_meshing_options_row = layout.row()
-    skeleton_meshing_options_row.label(text='Meshing Options:', icon='SURFACE_DATA')
-
-    # Which meshing technique to use
-    meshing_method_row = layout.row()
-    meshing_method_row.prop(scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
-    nmv.interface.ui_options.mesh.meshing_technique = scene.NMV_MeshingTechnique
-
-    # Draw the meshing options
-    if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
-        draw_piece_wise_meshing_options(panel=panel, scene=scene)
-    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
-        draw_meta_objects_meshing_options(panel=panel, scene=scene)
-    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
-        draw_skinning_meshing_options(panel=panel, scene=scene)
-    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION:
-        draw_union_meshing_options(panel=panel, scene=scene)
-    else:
-        pass
-
-
-################################################################################################
-# @draw_skinning_meshing_options
-################################################################################################
-def draw_skinning_meshing_options(panel,
-                                  scene):
-    """Draws the options when the skinning meshing technique is selected.
-
-    :param panel:
-        Blender UI panel.
-    :param scene:
-        Blender scene.
-    """
-
-    # Surface roughness
-    if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-        mesh_surface_row = panel.layout.row()
-        mesh_surface_row.label(text='Surface:')
-        mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
-    else:
-        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
-
-    # Connectivity options
-    draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
-
-    # Mesh connectivity options
-    draw_mesh_connectivity_options(panel=panel, scene=scene)
-
-    # Tessellation options
-    draw_tessellation_options(panel=panel, scene=scene)
-
-    # Spine options
-    draw_spines_options(panel=panel, scene=scene)
-
-
-################################################################################################
-# @draw_meta_objects_meshing_options
-################################################################################################
-def draw_meta_objects_meshing_options(panel,
-                                      scene):
-    """Draws the options when the meta objects meshing technique is selected.
-
-    :param panel:
-        Blender UI panel.
-    :param scene:
-        Blender scene.
-    """
-
-    # Tessellation options
-    draw_tessellation_options(panel=panel, scene=scene)
-
-
-################################################################################################
-# @draw_union_meshing_options
-################################################################################################
-def draw_union_meshing_options(panel,
-                               scene):
-    """Draws the options when the union meshing technique is selected.
-
-    :param panel:
-        Blender UI panel.
-    :param scene:
-        Blender scene.
-    """
-
-    # Surface roughness
-    mesh_surface_row = panel.layout.row()
-    mesh_surface_row.label(text='Surface:')
-    mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-
-    # Pass options from UI to system
-    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
-
-    # Edges
-    mesh_edges_row = panel.layout.row()
-    mesh_edges_row.label(text='Edges:')
-    mesh_edges_row.prop(scene, 'NMV_MeshSmoothing', expand=True)
-
-    # Pass options from UI to system
-    nmv.interface.ui_options.mesh.edges = scene.NMV_MeshSmoothing
-
-    # Connectivity options
-    draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
-
-    # Mesh connectivity options
-    draw_mesh_connectivity_options(panel=panel, scene=scene)
-
-    # Tessellation options
-    draw_tessellation_options(panel=panel, scene=scene)
-
-    # Spine options
-    draw_spines_options(panel=panel, scene=scene)
 
 
 ################################################################################################

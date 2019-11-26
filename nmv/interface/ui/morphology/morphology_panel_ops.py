@@ -126,26 +126,23 @@ def set_reconstruction_options(layout,
         scene, 'NMV_MorphologyReconstructionTechnique', icon='FORCE_CURVE')
     options.morphology.reconstruction_method = scene.NMV_MorphologyReconstructionTechnique
 
-    # Reconstruction technique
-    technique = scene.NMV_MorphologyReconstructionTechnique
-    if technique == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
+    # Morphology reconstruction techniques option
+    skeleton_style_row = layout.row()
+    skeleton_style_row.label(text='Skeleton Style:')
+    skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')
+    options.morphology.arbor_style = scene.NMV_ArborsStyle
 
-        # Morphology reconstruction techniques option
-        skeleton_style_row = layout.row()
-        skeleton_style_row.label(text='Skeleton Style:')
-        skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')
-        options.morphology.arbor_style = scene.NMV_ArborsStyle
+    # Morphology branching
+    branching_row = layout.row()
+    branching_row.label(text='Branching:')
+    branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
+    options.morphology.branching = scene.NMV_MorphologyBranching
 
-        # Morphology branching
-        branching_row = layout.row()
-        branching_row.label(text='Branching:')
-        branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
-        options.morphology.branching = scene.NMV_MorphologyBranching
-
-        # Morphology branching
-        arbor_to_soma_connection_row = layout.row()
-        arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
-        options.morphology.arbors_to_soma_connection = scene.NMV_SomaConnectionToRoot
+    # Morphology branching
+    arbor_to_soma_connection_row = layout.row()
+    arbor_to_soma_connection_row.label(text='Arbors to Soma:')
+    arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
+    options.morphology.arbors_to_soma_connection = scene.NMV_SomaConnectionToRoot
 
     # Sections resampling
     resampling_row = layout.row()
