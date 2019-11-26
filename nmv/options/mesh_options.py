@@ -52,9 +52,6 @@ class MeshOptions:
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
 
-        # Piecewise filling
-        self.piecewise_filling = nmv.enums.Meshing.PiecewiseFilling.PATHS
-
         # Soma reconstruction technique
         self.soma_reconstruction_technique = nmv.enums.Soma.ReconstructionMethod.META_BALLS
 

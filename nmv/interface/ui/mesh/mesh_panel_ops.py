@@ -183,12 +183,6 @@ def draw_piece_wise_meshing_options(panel,
         Blender scene.
     """
 
-    # Components
-    components_row = panel.layout.row()
-    components_row.label(text='Filling:')
-    components_row.prop(scene, 'NMV_MeshingPiecewiseFilling', expand=True)
-    nmv.interface.ui_options.mesh.piecewise_filling = scene.NMV_MeshingPiecewiseFilling
-
     # Which technique to use to reconstruct the soma
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
