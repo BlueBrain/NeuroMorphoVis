@@ -194,7 +194,7 @@ bpy.types.Scene.NMV_SomaConnectionToRoot = bpy.props.EnumProperty(
            (nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
             'All Disconnected',
             'Disconnect all the arbors from the soma')],
-    name='Arbors To Soma',
+    name='',
     default=nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN)
 
 # Arbor quality

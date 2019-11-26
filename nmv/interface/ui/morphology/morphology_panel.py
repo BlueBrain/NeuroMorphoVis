@@ -73,6 +73,7 @@ class MorphologyPanel(bpy.types.Panel):
         # Get a reference to the scene
         current_scene = context.scene
 
+        # The morphology must be loaded to be able to draw these options
         if nmv.interface.ui_morphology is not None:
 
             # Set the skeleton options

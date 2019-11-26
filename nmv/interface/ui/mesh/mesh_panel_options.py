@@ -71,7 +71,7 @@ bpy.types.Scene.NMV_MeshingPiecewiseSoma = bpy.props.EnumProperty(
             'Reconstruct a 3D profile of the soma using Soft Body physics.'
             'This method takes few seconds to reconstruct a soma mesh')],
     name='Soma',
-    default=nmv.enums.Soma.Representation.SOFT_BODY)
+    default=nmv.enums.Soma.Representation.META_BALLS)
 
 
 # Is the soma connected to the first order branches or not !

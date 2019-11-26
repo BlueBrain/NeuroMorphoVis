@@ -71,16 +71,18 @@ def draw_mesh_connectivity_options(panel,
     meshing_options = nmv.interface.ui_options.mesh
 
     # If the soma is connected, then by default, the arbors are connected
-    if meshing_options.soma_connection == nmv.enums.Meshing.SomaConnection.DISCONNECTED:
+    if meshing_options.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+
+        # Objects are connected
+        meshing_options.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
+
+    else:
 
         # Mesh objects connection
         mesh_objects_connection_row = panel.layout.row()
         mesh_objects_connection_row.label(text='Skeleton Objects:')
         mesh_objects_connection_row.prop(scene, 'NMV_MeshObjectsConnection', expand=True)
         meshing_options.neuron_objects_connection = scene.NMV_MeshObjectsConnection
-
-    else:
-        meshing_options.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.DISCONNECTED
 
 
 ####################################################################################################

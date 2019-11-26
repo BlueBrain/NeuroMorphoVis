@@ -16,13 +16,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-__author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2018, Blue Brain Project / EPFL"
-__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__maintainer__  = "Marwan Abdellah"
-__email__       = "marwan.abdellah@epfl.ch"
-__status__      = "Production"
-
 # System imports
 import os
 import sys
@@ -30,19 +23,101 @@ import subprocess
 
 
 def download_blender(directory):
+
+    # Server
+    blender_url = 'https://download.blender.org/release/Blender2.80/'
+
+    # Linux
+    linux_32_version_url = '%s/blender-2.80rc3-linux-glibc224-i686.tar.bz2' % blender_url
+    linux_64_version_url = '%s/blender-2.80rc3-linux-glibc217-x86_64.tar.bz2' % blender_url
+
+    # Windows
+    windows_32_version_url = '%s/blender-2.80rc3-windows32.zip' % blender_url
+    windows_64_version_url = '%s/blender-2.80rc3-windows32.zip' % blender_url
+
+    # Mac
+    mac_osx_version_url = '%s/blender-2.80rc3-macOS.dmg' % blender_url
+
+    shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, linux_64_version_url)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Extract
+    shell_command = 'tar xjfv %s/blender.tar.bz2 -C %s' % (directory, directory)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
+# @install_neuromorphovis
+####################################################################################################
+def install_for_linux(directory):
+
+    # Blender url
+    server = 'https://download.blender.org/release/Blender2.80/'
+    package_name = 'blender-2.80rc3-linux-glibc217-x86_64'
+    blender_url = '%s/%s.tar.bz2' % (server, package_name)
+
+    # Wget (Download)
+    shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, blender_url)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Extract
+    shell_command = 'tar xjfv %s/blender.tar.bz2 -C %s' % (directory, directory)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Moving to blender
+    blender_directory = '%s/blender-neuromorphovis' % directory
+    shell_command = 'mv %s/%s %s' % (directory, package_name, blender_directory)
+    print(shell_command)
+    if os.path.exists(blender_directory):
+        os.rmdir(blender_directory)
+    subprocess.call(shell_command, shell=True)
+
+    # Clone NeuroMorphoVis into the 'addons' directory
+    addons_directory = '%s/blender-neuromorphovis/2.80/scripts/addons/' % directory
+    neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
+    shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Installing dependencies 
+
+def install_for_mac(directory):
     pass
 
 
-def unzip_blender(directory):
+def install_for_windows(directory):
     pass
 
 
-def copy_dependencies(directory):
-    pass
+####################################################################################################
+# @install_neuromorphovis
+####################################################################################################
+def install_neuromorphovis(directory):
+    """Installs NeuroMorphoVis
 
+    :param directory:
+        Installation directory.
+    """
 
-def copy_cloned_nmv(directory):
-    pass
+    # Linux
+    if sys.platform == "linux" or sys.platform == "linux2":
+        install_for_linux(directory)
+
+    # OS X
+    elif sys.platform == "darwin":
+        install_for_mac(directory)
+
+    # Windows
+    elif sys.platform == "win32":
+        install_for_windows(directory)
+
+    else:
+        print('ERROR: Unrecognized operating system %s' % sys.platform)
+        exit(0)
 
 
 ####################################################################################################
@@ -50,4 +125,15 @@ def copy_cloned_nmv(directory):
 ####################################################################################################
 if __name__ == "__main__":
 
-    pass
+    # Current directory
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+
+    # Installation directory
+    install_directory = '%s/../blender-nmv' % current_directory
+
+    # Create the installation directory
+    if not os.path.exists(install_directory):
+        os.mkdir(install_directory)
+
+    # Download blender based on the software
+    install_neuromorphovis(install_directory)

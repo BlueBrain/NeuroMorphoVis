@@ -189,6 +189,9 @@ class LoadMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
+        import nmv.utilities
+        nmv.utilities.pip_wheel('seaborn')
+
         # Clear the scene
         import nmv.scene
         nmv.scene.ops.clear_scene()
@@ -242,6 +245,8 @@ class LoadMorphology(bpy.types.Operator):
         # Analyze the morphology once loaded as well
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
 
+        # TODO: Set the maximum branching order in a near box
+        '''
         if nmv.interface.ui_morphology.axon is not None:
             context.scene.NMV_AxonBranchingLevel = \
                 nmv.interface.ui_morphology.axon.maximum_branching_order
@@ -256,6 +261,7 @@ class LoadMorphology(bpy.types.Operator):
                 if dendrite.maximum_branching_order > max_branching_order:
                     max_branching_order = dendrite.maximum_branching_order
             context.scene.NMV_BasalDendritesBranchingLevel = max_branching_order
+        '''
 
         return {'FINISHED'}
 
