@@ -47,10 +47,21 @@ def draw_soma_to_arbors_connectivity(panel,
         Blender scene.
     """
 
-    soma_connection_row = panel.layout.row()
-    soma_connection_row.label(text='Soma:')
-    soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
-    nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
+    # Only if the soft body soma is used
+    if nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.SOFT_BODY:
+
+        # Add the soma connection
+        soma_connection_row = panel.layout.row()
+        soma_connection_row.label(text='Soma:')
+        soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
+        nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
+
+    else:
+
+        # Disable connectivity
+        nmv.interface.ui_options.mesh.soma_connection = \
+            nmv.enums.Meshing.SomaConnection.DISCONNECTED
 
 
 ################################################################################################
@@ -204,8 +215,11 @@ def draw_piece_wise_meshing_options(panel,
     else:
         nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
-    # Connectivity options
+    # Soma connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
+
+    # Mesh connectivity options
+    draw_mesh_connectivity_options(panel=panel, scene=scene)
 
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)
@@ -483,6 +497,9 @@ def draw_skinning_meshing_options(panel,
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
 
+    # Mesh connectivity options
+    draw_mesh_connectivity_options(panel=panel, scene=scene)
+
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)
 
@@ -538,6 +555,9 @@ def draw_union_meshing_options(panel,
 
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
+
+    # Mesh connectivity options
+    draw_mesh_connectivity_options(panel=panel, scene=scene)
 
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)
