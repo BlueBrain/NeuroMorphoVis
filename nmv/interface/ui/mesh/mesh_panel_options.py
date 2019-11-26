@@ -59,54 +59,19 @@ bpy.types.Scene.NMV_MeshingTechnique = EnumProperty(
                 'Piecewise Watertight one since it is the fastest one.',
     default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
-
-# Build soma
+# Piecewise filling
 bpy.types.Scene.NMV_MeshingPiecewiseFilling = bpy.props.EnumProperty(
-    items=[(nmv.enums.Soma.Representation.META_BALLS,
-            'Connected Sections',
+    items=[(nmv.enums.Meshing.PiecewiseFilling.PATHS,
+            'Paths',
             'The stems are created using a series of connected sections starting from the root '
             'section to the leaves. The sections are overlapping at the branching points'),
-           (nmv.enums.Soma.Representation.SOFT_BODY,
-            'Disconnected Sections',
-            'The stems area created using a series of disconnected sections, where each section '
-            'is created as an individual watertight mesh. Additionally, sphers are added at the branching points.')],
-    name='',
-    default=nmv.enums.Soma.Representation.SOFT_BODY)
-
-
-# Skeleton style
-bpy.types.Scene.NMV_SkeletonizationTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
-            'Original',
-            'Use the original morphology skeleton'),
-           (nmv.enums.Meshing.Skeleton.PLANAR,
-            'Planar',
-            'Project the entire morphology skeleton to XY plane'),
-           (nmv.enums.Meshing.Skeleton.PLANAR_ZIGZAG,
-            'Planar Zigzag',
-            'Project the entire morphology skeleton to XY plane and zigzag it'),
-           (nmv.enums.Meshing.Skeleton.TAPERED,
-            'Tapered',
-            'Create a tapered morphology skeleton (for artistic purposes).'),
-           (nmv.enums.Meshing.Skeleton.ZIGZAG,
-            'Zigzag',
-            'Create a zigzagged skeleton (to simulate the way the neurons look under the '
-            'microscope when the intracellular space if filled with some stain). This style is '
-            'recommended to create meshes that can be used for machine learning applications.'),
-           (nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG,
-            'Tapered Zigzag',
-            'Create a zigzagged and tapered skeleton.')],
-    name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
-
-bpy.types.Scene.NMV_MeshingPiecewiseComponents = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.PiecewiseComponents.PATHS,
-            'Paths',
-            ''),
-           (nmv.enums.Meshing.PiecewiseComponents.SECTIONS,
+           (nmv.enums.Meshing.PiecewiseFilling.PATHS,
             'Sections',
-            '')],
-    name='Mesh Components',
-    default=nmv.enums.Meshing.PiecewiseComponents.PATHS)
+            'The stems area created using a series of disconnected sections, where each section '
+            'is created as an individual watertight mesh. Additionally, spheres are added at the '
+            'branching points')],
+    name='Filling',
+    default=nmv.enums.Meshing.PiecewiseFilling.PATHS)
 
 # Build soma
 bpy.types.Scene.NMV_MeshingPiecewiseSoma = bpy.props.EnumProperty(
@@ -161,14 +126,14 @@ bpy.types.Scene.NMV_MeshSmoothing = EnumProperty(
 
 # Branching, is it based on angles or radii
 bpy.types.Scene.NMV_MeshBranching = EnumProperty(
-    items=[(nmv.enums.Meshing.Branching.ANGLES,
+    items=[(nmv.enums.Skeleton.Branching.ANGLES,
             'Angles',
             'Make the branching based on the angles at branching points'),
-           (nmv.enums.Meshing.Branching.RADII,
+           (nmv.enums.Skeleton.Branching.RADII,
             'Radii',
             'Make the branching based on the radii of the children at the branching points')],
     name='Branching Method',
-    default=nmv.enums.Meshing.Branching.ANGLES)
+    default=nmv.enums.Skeleton.Branching.ANGLES)
 
 # Are the mesh objects connected or disconnected.
 bpy.types.Scene.NMV_MeshObjectsConnection = EnumProperty(

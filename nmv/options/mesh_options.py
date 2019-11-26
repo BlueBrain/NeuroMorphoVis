@@ -49,11 +49,11 @@ class MeshOptions:
         # Fixing morphology artifacts
         self.fix_morphology_artifacts = True
 
-        # Skeletonization technique
-        self.skeletonization = nmv.enums.Meshing.Skeleton.ORIGINAL
-
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
+
+        # Piecewise filling
+        self.piecewise_filling = nmv.enums.Meshing.PiecewiseFilling.PATHS
 
         # Soma reconstruction technique
         self.soma_reconstruction_technique = nmv.enums.Soma.ReconstructionMethod.META_BALLS
@@ -72,9 +72,6 @@ class MeshOptions:
 
         # Edges of the meshes, either hard or smooth
         self.edges = nmv.enums.Meshing.Edges.HARD
-
-        # Branching of the meshes, either based on angles or radii
-        self.branching = nmv.enums.Meshing.Branching.ANGLES
 
         # The shape of the skeleton that is used in the union meshing algorithm
         self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON

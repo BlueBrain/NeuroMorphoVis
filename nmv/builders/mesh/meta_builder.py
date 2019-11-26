@@ -94,6 +94,8 @@ class MetaBuilder:
         # Stats. about the mesh
         self.mesh_statistics = 'MetaBuilder Mesh: \n'
 
+        self.radii_error = list()
+
     ################################################################################################
     # @verify_morphology_skeleton
     ################################################################################################
@@ -203,15 +205,28 @@ class MetaBuilder:
         # Proceed segment by segment
         for i in range(len(samples) - 1):
 
-            if samples[i].radius < self.smallest_radius:
-                self.smallest_radius = samples[i].radius
+            radius_0 = samples[i].radius
+            radius_1 = samples[i + 1].radius
+
+            if radius_0 < 0.1:
+                self.radii_error.append(1.0 - radius_0)
+                radius_0 = 0.1
+
+            if radius_1 < 0.1:
+                radius_1 = 0.1
+
+            if radius_0 < self.smallest_radius:
+                self.smallest_radius = radius_0
+
+            if radius_1 < self.smallest_radius:
+                self.smallest_radius = radius_1
 
             # Create the meta segment
             self.create_meta_segment(
                 p1=samples[i].point,
                 p2=samples[i + 1].point,
-                r1=samples[i].radius * self.magic_scale_factor,
-                r2=samples[i + 1].radius * self.magic_scale_factor)
+                r1=radius_0 * self.magic_scale_factor,
+                r2=radius_1 * self.magic_scale_factor)
 
     ################################################################################################
     # @create_meta_arbor

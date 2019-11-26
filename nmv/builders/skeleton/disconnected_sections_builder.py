@@ -204,9 +204,9 @@ class DisconnectedSectionsBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
@@ -403,7 +403,7 @@ class DisconnectedSectionsBuilder:
 
         # For the articulated sections, draw the spheres
         if self.options.morphology.reconstruction_method == \
-                nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
             self.draw_articulations()
 
         # Draw the soma

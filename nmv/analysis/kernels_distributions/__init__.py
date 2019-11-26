@@ -15,11 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .arbors_enums import *
-from .input_enums import *
-from .camera_enums import *
-from .color_enums import *
-from .meshing_enums import *
-from .shading_enums import *
-from .skeleton_enums import *
-from .soma_enums import *
+from .arbor import *
+from .morphology import *
+from .section import *
+from .functional import *
+from .distributions import *

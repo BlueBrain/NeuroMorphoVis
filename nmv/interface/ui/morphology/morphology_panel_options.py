@@ -145,26 +145,26 @@ bpy.types.Scene.NMV_ArticulationColor = bpy.props.FloatVectorProperty(
 
 # Reconstruction method
 bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS,
+    items=[(nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS,
             'Disconnected Segments',
             "Each segment is an independent object (this approach is time consuming)"),
-           (nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS,
+           (nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS,
             'Disconnected Sections',
             "Each section is an independent object"),
-           (nmv.enums.Skeletonization.Method.PROGRESSIVE,
+           (nmv.enums.Skeleton.Method.PROGRESSIVE,
             'Progressive',
             "Progressive reconstruction of the morphology"),
-           (nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS,
+           (nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS,
             'Articulated Sections',
             "Each section is an independent object, but connected with a pivot"),
-           (nmv.enums.Skeletonization.Method.SAMPLES,
+           (nmv.enums.Skeleton.Method.SAMPLES,
             'Samples',
             "Each sample is drawn as a sphere (this approach is very time consuming)"),
-           (nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS,
+           (nmv.enums.Skeleton.Method.CONNECTED_SECTIONS,
             'Connected Sections',
             "The sections of a single arbor are connected together")],
     name="Method",
-    default=nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS)
+    default=nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS)
 
 # Arbors style
 bpy.types.Scene.NMV_ArborsStyle = bpy.props.EnumProperty(
@@ -174,14 +174,14 @@ bpy.types.Scene.NMV_ArborsStyle = bpy.props.EnumProperty(
 
 # Branching, is it based on angles or radii
 bpy.types.Scene.NMV_MorphologyBranching = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.Branching.ANGLES,
+    items=[(nmv.enums.Skeleton.Branching.ANGLES,
             'Angles',
             'Make the branching based on the angles at branching points'),
-           (nmv.enums.Skeletonization.Branching.RADII,
+           (nmv.enums.Skeleton.Branching.RADII,
             'Radii',
             'Make the branching based on the radii of the children at the branching points')],
     name='Branching Style',
-    default=nmv.enums.Skeletonization.Branching.ANGLES)
+    default=nmv.enums.Skeleton.Branching.ANGLES)
 
 # Soma connection to roots
 bpy.types.Scene.NMV_SomaConnectionToRoot = bpy.props.EnumProperty(
@@ -205,26 +205,26 @@ bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(
 
 # Section radius
 bpy.types.Scene.NMV_SectionsRadii = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.ArborsRadii.ORIGINAL,
+    items=[(nmv.enums.Skeleton.ArborsRadii.ORIGINAL,
             'Original',
             "Set the radii of the samples to the original ones reported in the morphology file"),
-           (nmv.enums.Skeletonization.ArborsRadii.UNIFIED,
+           (nmv.enums.Skeleton.ArborsRadii.UNIFIED,
             'Unified',
             "Set the radii of all the samples in the entire morphology to a unified value given "
             "by the user"),
-           (nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE,
+           (nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE,
             'Type Unified',
             "Set the radii of all the samples in the (axon, apical dendrite and basal dendrites) "
             "to a unified value (to axon, apical dendrite and basal dendrites) given by the user"),
-           (nmv.enums.Skeletonization.ArborsRadii.SCALED,
+           (nmv.enums.Skeleton.ArborsRadii.SCALED,
             'Scaled',
             "Scale the radii of all the samples in the morphology with a scale factor given "
             "by the user"),
-           (nmv.enums.Skeletonization.ArborsRadii.FILTERED,
+           (nmv.enums.Skeleton.ArborsRadii.FILTERED,
             'Filtered',
             "Filter the samples with radii lower than a given threshold"), ],
     name="Radii",
-    default=nmv.enums.Skeletonization.ArborsRadii.ORIGINAL)
+    default=nmv.enums.Skeleton.ArborsRadii.ORIGINAL)
 
 # Unified radius value
 bpy.types.Scene.NMV_UnifiedRadiusValue = bpy.props.FloatProperty(
@@ -271,26 +271,26 @@ bpy.types.Scene.NMV_RadiusScaleValue = bpy.props.FloatProperty(
 
 # Resampling
 bpy.types.Scene.NMV_MorphologyResampling = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.Resampling.NONE,
+    items=[(nmv.enums.Skeleton.Resampling.NONE,
             'None',
             'Do not resample the section at all'),
-           (nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED,
+           (nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED,
             'Adaptive Relaxed',
             'Use adaptive resampling to resample the section and remove the unwanted samples '
             'while preserving the spatial features of the section. The new samples will not be '
             'touching each other, that is why it is called relaxed'),
-           (nmv.enums.Skeletonization.Resampling.ADAPTIVE_PACKED,
+           (nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED,
             'Adaptive Packed',
             'Use adaptive resampling to resample the section and remove the unwanted samples '
             'while preserving the spatial features of the section. The new samples will overlap '
             'as if they pack the section to fill it entirely, and that is why it is called packed'),
-           (nmv.enums.Skeletonization.Resampling.FIXED_STEP,
+           (nmv.enums.Skeleton.Resampling.FIXED_STEP,
             'Fixed Step',
             'Use fixed resampling step to resample the section. '
             'With high resampling steps, some of the spatial features of the sections could '
             'be gone')],
     name='',
-    default=nmv.enums.Skeletonization.Resampling.NONE)
+    default=nmv.enums.Skeleton.Resampling.NONE)
 
 # Resampling step
 bpy.types.Scene.NMV_MorphologyResamplingStep = bpy.props.FloatProperty(
@@ -300,52 +300,52 @@ bpy.types.Scene.NMV_MorphologyResamplingStep = bpy.props.FloatProperty(
 
 # Skeleton style
 bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Skeleton.ORIGINAL,
+    items=[(nmv.enums.Skeleton.Style.ORIGINAL,
             'Original',
             'Use the original morphology skeleton'),
-           (nmv.enums.Meshing.Skeleton.PLANAR,
+           (nmv.enums.Skeleton.Style.TAPERED,
             'Planar',
             'Project the entire morphology skeleton to XY plane'),
-           (nmv.enums.Meshing.Skeleton.PLANAR_ZIGZAG,
+           (nmv.enums.Skeleton.Style.TAPERED,
             'Planar Zigzag',
             'Project the entire morphology skeleton to XY plane and zigzag it'),
-           (nmv.enums.Meshing.Skeleton.TAPERED,
+           (nmv.enums.Skeleton.Style.TAPERED,
             'Tapered',
             'Create a tapered morphology skeleton (for artistic purposes).'),
-           (nmv.enums.Meshing.Skeleton.ZIGZAG,
+           (nmv.enums.Skeleton.Style.ZIGZAG,
             'Zigzag',
             'Create a zigzagged skeleton (to simulate the way the neurons look under the '
             'microscope when the intracellular space if filled with some stain). This style is '
             'recommended to create meshes that can be used for machine learning applications.'),
-           (nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG,
+           (nmv.enums.Skeleton.Style.TAPERED,
             'Tapered Zigzag',
             'Create a zigzagged and tapered skeleton.')],
-    name='Skeleton', default=nmv.enums.Meshing.Skeleton.ORIGINAL)
+    name='Skeleton', default=nmv.enums.Skeleton.Style.ORIGINAL)
 
 # Rendering type
 bpy.types.Scene.NMV_RenderingType = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION,
+    items=[(nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION,
             'Fixed Resolution',
             'Renders a full view of the morphology at a specified resolution'),
-           (nmv.enums.Skeletonization.Rendering.Resolution.TO_SCALE,
+           (nmv.enums.Skeleton.Rendering.Resolution.TO_SCALE,
             'To Scale',
             'Renders an image of the full view at the right scale in (um)')],
     name='Type',
-    default=nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION)
+    default=nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION)
 
 # Rendering view
 bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeletonization.Rendering.View.WIDE_SHOT_VIEW,
+    items=[(nmv.enums.Skeleton.Rendering.View.WIDE_SHOT_VIEW,
             'Wide Shot',
             'Renders an image of the full view'),
-           (nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW,
+           (nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW,
             'Mid Shot',
             'Renders an image of the reconstructed arbors only'),
-           (nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW,
+           (nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW,
             'Close Up',
             'Renders a close up image the focuses on the soma')],
     name='View',
-    default=nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW)
+    default=nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW)
 
 # Frame resolution
 bpy.types.Scene.NMV_MorphologyFrameResolution = bpy.props.IntProperty(

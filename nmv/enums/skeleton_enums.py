@@ -17,10 +17,10 @@
 
 
 ####################################################################################################
-# @Skeletonization
+# @Skeleton
 ####################################################################################################
-class Skeletonization:
-    """Skeletonization enumerators
+class Skeleton:
+    """Skeleton enumerators
     """
 
     ############################################################################################
@@ -96,26 +96,32 @@ class Skeletonization:
                 return Skeletonization.Method.DISCONNECTED_SECTIONS
 
     ################################################################################################
-    # @Skeleton
+    # @Style
     ################################################################################################
-    class Skeleton:
-        """Skeletonization
+    class Style:
+        """The style of the skeleton enumerators
         """
 
         # Use the original morphology skeleton
-        ORIGINAL = 'MESHING_SKELETON_ORIGINAL'
+        ORIGINAL = 'SKELETON_STYLE_ORIGINAL'
+
+        # Project the skeleton to XY plane
+        PLANAR = 'SKELETON_STYLE_PLANAR'
 
         # Create a tapered morphology skeleton
-        TAPERED = 'MESHING_SKELETON_TAPERED'
+        TAPERED = 'SKELETON_STYLE_TAPERED'
 
         # Create a zigzagged morphology skeleton
-        ZIGZAG = 'MESHING_SKELETON_ZIGZAG'
+        ZIGZAG = 'SKELETON_STYLE_ZIGZAG'
 
-        # Create a zigzagged and ta[ered morphology skeleton
-        TAPERED_ZIGZAG = 'MESHING_SKELETON_TAPERED_ZIGZAG'
+        # Project the skeleton to XY plane and make it zigzag
+        PLANAR_ZIGZAG = 'SKELETON_STYLE_PLANAR_ZIGZAG'
+
+        # Create a zigzagged and tapered morphology skeleton
+        TAPERED_ZIGZAG = 'SKELETON_STYLE_TAPERED_ZIGZAG'
 
         # Simplified
-        SIMPLIFIED = 'MESHING_SKELETON_SIMPLIFIED'
+        SIMPLIFIED = 'SKELETON_STYLE_SIMPLIFIED'
 
         ############################################################################################
         # @__init__
@@ -131,27 +137,33 @@ class Skeletonization:
 
             # Original
             if argument == 'original':
-                return Skeletonization.Skeleton.ORIGINAL
+                return Skeletonization.Style.ORIGINAL
+
+            elif argument == 'planar':
+                return Skeletonization.Style.PLANAR
 
             # Tapered
             elif argument == 'tapered':
-                return Skeletonization.Skeleton.TAPERED
+                return Skeletonization.Style.TAPERED
 
             # Zigzag
             elif argument == 'zigzag':
-                return Skeletonization.Skeleton.ZIGZAG
+                return Skeletonization.Style.ZIGZAG
 
             # Tapered zigzag
             elif argument == 'tapered-zigzag':
-                return Skeletonization.Skeleton.TAPERED_ZIGZAG
+                return Skeletonization.Style.TAPERED_ZIGZAG
+
+            elif argument == 'planar-zigzag':
+                return Skeletonization.Style.PLANAR_ZIGZAG
 
             # Tapered zigzag
             elif argument == 'simplified':
-                return Skeletonization.Skeleton.SIMPLIFIED
+                return Skeletonization.Style.SIMPLIFIED
 
             # By default use the original skeleton
             else:
-                return Skeletonization.Skeleton.ORIGINAL
+                return Skeletonization.Style.ORIGINAL
 
     ################################################################################################
     # @Branching

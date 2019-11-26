@@ -69,7 +69,7 @@ def create_skeleton_materials_and_illumination(builder):
 
     # Articulations, ONLY, for the articulated reconstruction method
     if builder.options.morphology.reconstruction_method == \
-            nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+            nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         builder.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='articulation', material_type=builder.options.morphology.material,
             color=builder.options.morphology.articulation_color)
@@ -90,7 +90,7 @@ def update_sections_branching(builder):
     """
 
     # Label the primary and secondary sections based on angles
-    if builder.options.morphology.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+    if builder.options.morphology.branching == nmv.enums.Skeleton.Branching.ANGLES:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology,
               nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
@@ -119,17 +119,17 @@ def resample_skeleton_sections(builder):
 
     # The adaptive resampling is quite important to prevent breaking the structure
     if builder.options.morphology.resampling_method == \
-            nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED:
+            nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
         nmv.logger.detail('Relaxed Adaptive Resampling')
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
     elif builder.options.morphology.resampling_method == \
-            nmv.enums.Skeletonization.Resampling.ADAPTIVE_PACKED:
+            nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
         nmv.logger.detail('Packed (or Overlapping) Adaptive Resampling')
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.resample_section_adaptively])
     elif builder.options.morphology.resampling_method == \
-            nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+            nmv.enums.Skeleton.Resampling.FIXED_STEP:
         nmv.logger.detail('Fixed Step Resampling with step of [%f] um' %
                           builder.options.morphology.resampling_step)
         nmv.skeleton.ops.apply_operation_to_morphology(

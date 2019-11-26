@@ -214,9 +214,9 @@ class SkeletonBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
@@ -694,11 +694,11 @@ class SkeletonBuilder:
 
         # The adaptive resampling is quite important to prevent breaking the structure
         if self.options.morphology.resampling_method == \
-                nmv.enums.Skeletonization.Resampling.ADAPTIVE_RELAXED:
+                nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
         elif self.options.morphology.resampling_method == \
-                nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+                nmv.enums.Skeleton.Resampling.FIXED_STEP:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
                   self.options.morphology.resampling_step])
@@ -999,7 +999,7 @@ class SkeletonBuilder:
         nmv.skeleton.ops.update_arbors_connection_to_soma(morphology=self.morphology)
 
         # Primary and secondary branching
-        if self.options.mesh.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+        if self.options.mesh.branching == nmv.enums.Skeleton.Branching.ANGLES:
 
             # Label the primary and secondary sections based on angles
             nmv.skeleton.ops.apply_operation_to_morphology(
@@ -1119,7 +1119,7 @@ class SkeletonBuilder:
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # Primary and secondary branching
-        if self.options.mesh.branching == nmv.enums.Skeletonization.Branching.ANGLES:
+        if self.options.mesh.branching == nmv.enums.Skeleton.Branching.ANGLES:
 
             # Label the primary and secondary sections based on angles
             nmv.skeleton.ops.apply_operation_to_morphology(
@@ -1268,49 +1268,49 @@ class SkeletonBuilder:
         method = self.options.morphology.reconstruction_method
 
         # Draw the morphology as a set of disconnected tubes, where each SEGMENT is a tube
-        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+        if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_segments(
                 bevel_object=bevel_object))
 
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS:
+        elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_disconnected_sections(
                 bevel_object=bevel_object))
 
         # Draw the morphology as a set of samples
-        elif method == nmv.enums.Skeletonization.Method.SAMPLES:
+        elif method == nmv.enums.Skeleton.Method.SAMPLES:
             morphology_objects.extend(self.draw_morphology_as_spheres())
 
         # Draw the morphology as a set of articulated tubes, where each SECTION is connected to
         # the following one by a sphere
-        elif method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+        elif method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
             morphology_objects.extend(self.draw_morphology_as_articulated_sections(
                 bevel_object=bevel_object))
 
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_ORIGINAL:
+        elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SKELETON_ORIGINAL:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=False, disconnect_skelecton=True))
 
         # Draw the morphology skeleton, where each arbor is disconnected at the bifurcating points
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SKELETON_REPAIRED:
+        elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SKELETON_REPAIRED:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=True, disconnect_skelecton=True))
 
         # Draw the morphology as a set of connected tubes, where each long SECTION along the arbor
         # is represented by a continuous tube
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_ORIGINAL:
+        elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTION_ORIGINAL:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=False))
 
         # Draw the full morphology as a set of connected tubes, where each long SECTION along the
         # arbor is represented by a continuous tube, and the roots are already connected to the
         # origin
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTION_REPAIRED:
+        elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTION_REPAIRED:
             morphology_objects.extend(self.draw_morphology_as_connected_sections(
                 bevel_object=bevel_object, repair_morphology=True))
 
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SKELETON:
+        elif method == nmv.enums.Skeleton.Method.CONNECTED_SKELETON:
             morphology_objects.extend(self.draw_morphology_as_connected_skeleton(
                 bevel_object=bevel_object, repair_morphology=True))
 

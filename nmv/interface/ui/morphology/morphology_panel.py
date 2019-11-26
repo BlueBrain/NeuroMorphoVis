@@ -152,26 +152,26 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
         # Create a skeleton builder object to build the morphology skeleton
         method = nmv.interface.ui_options.morphology.reconstruction_method
-        if method == nmv.enums.Skeletonization.Method.DISCONNECTED_SEGMENTS:
+        if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
             morphology_builder = nmv.builders.DisconnectedSegmentsBuilder(
-                morphology=nmv.interface.ui_morphology, options= nmv.interface.ui_options)
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
-        elif method == nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS or \
-                method == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+        elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS or \
+                method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
             morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of spheres, where each SPHERE represents a sample
-        elif method == nmv.enums.Skeletonization.Method.SAMPLES:
+        elif method == nmv.enums.Skeleton.Method.SAMPLES:
             morphology_builder = nmv.builders.SamplesBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        elif method == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
+        elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
             morphology_builder = nmv.builders.ConnectedSectionsBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        elif method == nmv.enums.Skeletonization.Method.PROGRESSIVE:
+        elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
             morphology_builder = nmv.builders.ProgressiveBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
@@ -335,7 +335,7 @@ class RenderMorphology360(bpy.types.Operator):
 
             # Compute the bounding box for a close up view
             if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+                    nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
 
                 # Compute the bounding box for a close up view
                 rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
@@ -343,7 +343,7 @@ class RenderMorphology360(bpy.types.Operator):
 
             # Compute the bounding box for a mid-shot view
             elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+                    nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
 
                 # Compute the bounding box for the available meshes only
                 rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
@@ -537,12 +537,12 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         view = context.scene.NMV_MorphologyRenderingView
 
         # Compute the bounding box for a close up view
-        if view == nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+        if view == nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
             self.morphology_bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
                     extent=context.scene.NMV_MorphologyCloseUpDimensions)
 
         # Compute the bounding box for a mid-shot view
-        elif view == nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+        elif view == nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
             self.morphology_bounding_box = copy.deepcopy(
                 nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes())
 
