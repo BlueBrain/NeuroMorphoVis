@@ -99,53 +99,6 @@ class PiecewiseBuilder:
         self.mesh_statistics = 'PiecewiseBuilder Mesh: \n'
 
     ################################################################################################
-    # @verify_morphology_skeleton
-    ################################################################################################
-    def verify_morphology_skeleton(self):
-        """Verifies and repairs the morphology if the contain any artifacts that would potentially
-        affect the reconstruction quality of the mesh.
-
-        NOTE: The filters or operations performed in this builder are only specific to it. Other
-        builders might apply a different set of filters.
-        """
-
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
-
-        # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
-        # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The re-sampling filter for the moment
-        # re-samples the morphology sections at 2.5 microns, however this can be improved later
-        # by adding an algorithm that re-samples the section based on its radii.
-        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-
-            # Apply the re-sampling filter on the whole morphology skeleton
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
-
-        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
-        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
-
-        # Primary and secondary branching
-        if self.options.morphology.branching == nmv.enums.Skeleton.Branching.ANGLES:
-
-            # Label the primary and secondary sections based on angles
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-
-        else:
-
-            # Label the primary and secondary sections based on radii
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
-
-    ################################################################################################
     # @build_arbors
     ################################################################################################
     def build_arbors(self,
@@ -377,31 +330,36 @@ class PiecewiseBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.create_skeleton_materials(builder=self)
+        nmv.builders.mesh.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.update_morphology_skeleton, self)
         self.profiling_statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.modify_morphology_skeleton, self)
+            nmv.builders.mesh.modify_morphology_skeleton, self)
         self.profiling_statistics += stats
 
         # Build the soma, with the default parameters
-        result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.reconstruct_soma_mesh, self)
         self.profiling_statistics += stats
 
         # Build the arbors
-        result, stats = nmv.utilities.profile_function(self.reconstruct_arbors_meshes)
+        result, stats = nmv.utilities.profile_function(
+            self.reconstruct_arbors_meshes)
         self.profiling_statistics += stats
 
         # Connect to the soma
-        result, stats = nmv.utilities.profile_function(nmv.builders.connect_arbors_to_soma, self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.connect_arbors_to_soma, self)
         self.profiling_statistics += stats
 
         # Tessellation
-        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.decimate_neuron_mesh, self)
         self.profiling_statistics += stats
 
         # Surface roughness
@@ -410,12 +368,13 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.add_spines_to_surface, self)
         self.profiling_statistics += stats
 
         # Join all the objects into a single object
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.join_mesh_object_into_single_object, self)
+            nmv.builders.mesh.join_mesh_object_into_single_object, self)
         self.profiling_statistics += stats
 
         # Transform to the global coordinates, if required
@@ -424,7 +383,8 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.collect_mesh_stats, self)
         self.profiling_statistics += stats
 
         # Report

@@ -87,6 +87,40 @@ def create_skeleton_materials(builder):
 
 
 ####################################################################################################
+# @update_morphology_skeleton
+####################################################################################################
+def update_morphology_skeleton(builder):
+    """Verifies and repairs the morphology if the contain any artifacts that would potentially
+    affect the reconstruction quality of the mesh.
+
+    NOTE: The filters or operations performed in this builder are only specific to it. Other
+    builders might apply a different set of filters.
+    """
+
+    # Remove the internal samples, or the samples that intersect the soma at the first
+    # section and each arbor
+    nmv.logger.info('Removing Internal Samples')
+    nmv.skeleton.ops.apply_operation_to_morphology(
+        *[builder.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+
+    # Resample the sections of the morphology skeleton
+    nmv.logger.info('Resampling Skeleton')
+    nmv.builders.skeleton.resample_skeleton_sections(builder=builder)
+
+    nmv.logger.info('Updating Radii')
+    nmv.skeleton.update_arbors_radii(
+        morphology=builder.morphology, morphology_options=builder.options.morphology)
+
+    nmv.logger.info('Updating Branching to Primary / Secondary')
+    nmv.builders.skeleton.update_sections_branching(builder=builder)
+
+    # Update the style of the arbors
+    nmv.logger.info('Updating Style')
+    nmv.skeleton.ops.update_arbors_style(
+        morphology=builder.morphology, arbor_style=builder.options.morphology.arbor_style)
+
+
+####################################################################################################
 # @modify_morphology_skeleton
 ####################################################################################################
 def modify_morphology_skeleton(builder):
@@ -130,7 +164,6 @@ def reconstruct_soma_mesh(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    print(builder.options.mesh.soma_reconstruction_technique)
     if builder.options.mesh.soma_reconstruction_technique == \
             nmv.enums.Soma.Representation.META_BALLS:
 

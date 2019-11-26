@@ -47,9 +47,11 @@ def draw_soma_to_arbors_connectivity(panel,
         Blender scene.
     """
 
+    # Meshing options reference
+    meshing_options = nmv.interface.ui_options.mesh
+
     # Only if the soft body soma is used
-    if nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
-            nmv.enums.Soma.Representation.SOFT_BODY:
+    if meshing_options.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
 
         # Add the soma connection
         soma_connection_row = panel.layout.row()
@@ -57,11 +59,9 @@ def draw_soma_to_arbors_connectivity(panel,
         soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
         nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
 
+    # Disable connectivity
     else:
-
-        # Disable connectivity
-        nmv.interface.ui_options.mesh.soma_connection = \
-            nmv.enums.Meshing.SomaConnection.DISCONNECTED
+        meshing_options.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
 
 
 ################################################################################################

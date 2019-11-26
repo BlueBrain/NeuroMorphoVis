@@ -97,9 +97,9 @@ class MetaBuilder:
         self.radii_error = list()
 
     ################################################################################################
-    # @verify_morphology_skeleton
+    # @update_morphology_skeleton
     ################################################################################################
-    def verify_morphology_skeleton(self):
+    def update_morphology_skeleton(self):
         """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
         """
@@ -441,16 +441,13 @@ class MetaBuilder:
         """
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        # Apply skeleton-based operation, if required, to slightly modify the skeleton
+        # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.mesh.modify_morphology_skeleton, self)
+            nmv.builders.mesh.update_morphology_skeleton, self)
         self.profiling_statistics += stats
-
-        # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
         # Initialize the meta object
         result, stats = nmv.utilities.profile_function(

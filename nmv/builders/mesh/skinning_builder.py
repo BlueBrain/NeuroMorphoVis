@@ -118,9 +118,9 @@ class SkinningBuilder:
         self.reindexing_time = 0
 
     ################################################################################################
-    # @verify_morphology_skeleton
+    # @update_morphology_skeleton
     ################################################################################################
-    def verify_morphology_skeleton(self):
+    def update_morphology_skeleton(self):
         """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
 
@@ -128,31 +128,8 @@ class SkinningBuilder:
         builders might apply a different set of filters.
         """
 
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
-
-        # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
-        # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
-        # edges option is selected, the arbors must be re-sampled to avoid any meshing artifacts
-        # after applying the vertex smoothing filter. The re-sampling filter for the moment
-        # re-samples the morphology sections at 2.5 microns, however this can be improved later
-        # by adding an algorithm that re-samples the section based on its radii.
-        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-
-            # Apply the re-sampling filter on the whole morphology skeleton
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
-
-        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
-        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
-
-        # Label the primary and secondary sections based on radii, skinning is agnostic
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+        # Verify and repair the morphology, if required
+        nmv.builders.mesh.update_morphology_skeleton(builder=self)
 
     ################################################################################################
     # @update_section_samples_radii
@@ -496,7 +473,7 @@ class SkinningBuilder:
         nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton

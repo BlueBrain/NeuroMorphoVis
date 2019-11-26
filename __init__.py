@@ -89,7 +89,7 @@ def register():
     imp.reload(nmv.interface)
 
     nmv.logger.header('Loading NeuroMorphoVis')
-    nmv.logger.info('Version [%s]' % str(nmv.utilities.get_nmv_version()))
+    nmv.logger.info('Version %s' % str(nmv.utilities.get_nmv_version()))
     nmv.logger.info('Copyrights (C) Marwan Abdellah, Blue Brain Project (BBP) - (EPFL)')
 
     # Register panels
