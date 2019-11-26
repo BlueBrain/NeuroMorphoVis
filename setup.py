@@ -111,7 +111,7 @@ def install_for_linux(directory):
     for wheel in pip_wheels:
 
         # Command
-        shell_command = '%s install %s' % (pip_executable, wheel)
+        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         print('INSTALL: %s' % shell_command)
         subprocess.call(shell_command, shell=True)
 
@@ -141,20 +141,18 @@ def install_for_mac(directory):
     print(shell_command)
     subprocess.call(shell_command, shell=True)
 
-    # Deatach
-    #shell_command = 'hdiutil attach %s/blender.dmg' % directory
-    #print(shell_command)
-    #subprocess.call(shell_command, shell=True)
+    # Detach
+    shell_command = 'hdiutil detach /Volumes/Blender'
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
 
     # Clone NeuroMorphoVis into the 'addons' directory
-
     blender_app_directory = '%s/Blender.app' % directory
-    addons_directory = '%s/Blender.app/Contents/Resources/2.80/scripts/addons/' % blender_app_directory
+    addons_directory = '%s/Contents/Resources/2.80/scripts/addons/' % blender_app_directory
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
     print(shell_command)
     subprocess.call(shell_command, shell=True)
-
 
     # Blender python
     blender_python_prefix = '%s/Contents/Resources/2.80/python/bin/' % blender_app_directory
@@ -178,12 +176,18 @@ def install_for_mac(directory):
 
     pip_executable = '%s/pip' % blender_python_prefix
 
+      # Removing the previous numpy installation
+    blender_python_wheels = '%s/Contents/Resources/2.80/python/lib/site-packages' % blender_app_directory
+    shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
     # Installing dependencies
     pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     for wheel in pip_wheels:
         # Command
-        shell_command = '%s install %s' % (pip_executable, wheel)
+        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         print('INSTALL: %s' % shell_command)
         subprocess.call(shell_command, shell=True)
 
@@ -231,7 +235,7 @@ if __name__ == "__main__":
     current_directory = os.path.dirname(os.path.realpath(__file__))
 
     # Installation directory
-    install_directory = '%s/../blender-nmv' % current_directory
+    install_directory = '/Users/abdellah/Desktop/tmp' # '%s/../blender-nmv' % current_directory
 
     # Create the installation directory
     if not os.path.exists(install_directory):
