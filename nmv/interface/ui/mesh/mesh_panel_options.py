@@ -81,7 +81,7 @@ bpy.types.Scene.NMV_MeshingPiecewiseSoma = bpy.props.EnumProperty(
             'This approach is real-time and can reconstruct good shapes for the somata, but '
             'more accurate profiles could be reconstructed with the Soft Body option'),
            (nmv.enums.Soma.Representation.SOFT_BODY,
-            'Soft Body',
+            'SoftBody',
             'Reconstruct a 3D profile of the soma using Soft Body physics.'
             'This method takes few seconds to reconstruct a soma mesh')],
     name='Soma',
