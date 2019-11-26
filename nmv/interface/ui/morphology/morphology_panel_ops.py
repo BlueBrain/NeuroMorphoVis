@@ -128,7 +128,7 @@ def set_reconstruction_options(layout,
 
     # Reconstruction technique
     technique = scene.NMV_MorphologyReconstructionTechnique
-    if technique == nmv.enums.Skeletonization.Method.CONNECTED_SECTIONS:
+    if technique == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
 
         # Morphology reconstruction techniques option
         skeleton_style_row = layout.row()
@@ -154,7 +154,7 @@ def set_reconstruction_options(layout,
     options.morphology.resampling_method = scene.NMV_MorphologyResampling
 
     # If Fixed Step resampling method is selected, add the sampling step
-    if scene.NMV_MorphologyResampling == nmv.enums.Skeletonization.Resampling.FIXED_STEP:
+    if scene.NMV_MorphologyResampling == nmv.enums.Skeleton.Resampling.FIXED_STEP:
         resampling_step_row = layout.row()
         resampling_step_row.label(text='Resampling Step:')
         resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
@@ -171,26 +171,26 @@ def set_reconstruction_options(layout,
     sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
 
     # Radii as specified in the morphology file
-    if scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.ORIGINAL:
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.ORIGINAL
+    if scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.ORIGINAL:
+        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = False
         options.morphology.sections_radii_scale = 1.0
 
     # Unified diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
         fixed_diameter_row = layout.row()
         fixed_diameter_row.label(text='Fixed Radius Value:')
         fixed_diameter_row.prop(scene, 'NMV_UnifiedRadiusValue')
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.UNIFIED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
         options.morphology.samples_unified_radii_value = scene.NMV_UnifiedRadiusValue
 
     # Unified diameter per arbor type
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE:
         options.morphology.arbors_radii = \
-            nmv.enums.Skeletonization.ArborsRadii.UNIFIED_PER_ARBOR_TYPE
+            nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
 
@@ -215,23 +215,23 @@ def set_reconstruction_options(layout,
                 scene.NMV_BasalDendritesUnifiedRadiusValue
 
     # Scaled diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.SCALED:
         scaled_diameter_row = layout.row()
         scaled_diameter_row.label(text='Radius Scale Factor:')
         scaled_diameter_row.prop(scene, 'NMV_RadiusScaleValue')
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.SCALED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.SCALED
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
         options.morphology.sections_radii_scale = scene.NMV_RadiusScaleValue
 
     # Filtered
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.FILTERED:
         filtered_diameter_row = layout.row()
         filtered_diameter_row.label(text='Radius Threshold:')
         filtered_diameter_row.prop(scene, 'NMV_FilteredRadiusThreshold')
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
-        options.morphology.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.FILTERED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.FILTERED
         options.morphology.threshold_radius = scene.NMV_FilteredRadiusThreshold
     else:
         nmv.logger.log('ERROR')
@@ -264,7 +264,7 @@ def set_color_options(layout,
 
     # If we use the connected skeleton, we should use only a single color for the entire skeleton
     if scene.NMV_MorphologyReconstructionTechnique == \
-        nmv.enums.Skeletonization.Method.CONNECTED_SKELETON:
+        nmv.enums.Skeleton.Method.CONNECTED_SKELETON:
 
         neuron_color_row = layout.row()
         neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
@@ -372,7 +372,7 @@ def set_color_options(layout,
 
                 # Articulation color option
                 technique = scene.NMV_MorphologyReconstructionTechnique
-                if technique == nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+                if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
                     articulation_color_row = layout.row()
                     articulation_color_row.prop(scene, 'NMV_ArticulationColor')
 
@@ -407,7 +407,7 @@ def set_rendering_options(layout,
     rendering_view_row.prop(scene, 'NMV_MorphologyRenderingView', expand=True)
 
     # Close up view
-    if scene.NMV_MorphologyRenderingView == nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+    if scene.NMV_MorphologyRenderingView == nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
 
         # Rendering close up option
         render_close_up_row = layout.row()
@@ -427,7 +427,7 @@ def set_rendering_options(layout,
         rendering_type_row.prop(scene, 'NMV_RenderingType', expand=True)
 
         # Render at a specific resolution
-        if scene.NMV_RenderingType == nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION:
+        if scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
 
             # Frame resolution option
             frame_resolution_row = layout.row()

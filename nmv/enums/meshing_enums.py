@@ -81,17 +81,17 @@ class Meshing:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
     ################################################################################################
-    # @PiecewiseComponents
+    # @PiecewiseFilling
     ################################################################################################
-    class PiecewiseComponents:
-        """Piecewise meshing approach.
+    class PiecewiseFilling:
+        """The filling of the piecewise meshing.
         """
 
-        # Connected sections forming longest path
-        PATHS = 'PIECEWISE_PATHS'
+        # Fill the skeleton using one mesh per path from a root to a leaf section
+        PATHS = 'PIECEWISE_FILLING_PATHS'
 
-        # Disconnected sections
-        SECTIONS = 'PIECEWISE_SECTIONS'
+        # Fill the skeleton using sections and articulations at the bifurcation points
+        SECTIONS = 'PIECEWISE_FILLING_SECTIONS'
 
         ############################################################################################
         # @__init__
@@ -107,15 +107,15 @@ class Meshing:
 
             # Paths
             if argument == 'paths':
-                return Meshing.PiecewiseComponents.PATHS
+                return Meshing.PiecewiseFilling.PATHS
 
             # Sections
             elif argument == 'sections':
-                return Meshing.PiecewiseComponents.SECTIONS
+                return Meshing.PiecewiseFilling.SECTIONS
 
             # By default, use the paths
             else:
-                return Meshing.PiecewiseComponents.PATHS
+                return Meshing.PiecewiseFilling.PATHS
 
     ################################################################################################
     # @Technique
@@ -227,43 +227,6 @@ class Meshing:
             # By default use hard edges
             else:
                 return Meshing.Edges.HARD
-
-    ################################################################################################
-    # @Branching
-    ################################################################################################
-    class Branching:
-        """Branching method
-        """
-
-        # Make the branching based on the angles between the branches
-        ANGLES = 'ANGLE_BASED_BRANCHING'
-
-        # Make the branching based in the radii between the branches
-        RADII = 'RADII_BASED_BRANCHING'
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
-
-        ############################################################################################
-        # @get_enum
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-
-            # Angle
-            if argument == 'angles':
-                return Meshing.Branching.ANGLES
-
-            # Radii
-            elif argument == 'radii':
-                return Meshing.Branching.RADII
-
-            # By default return angles
-            else:
-                return Meshing.Branching.ANGLES
 
     ################################################################################################
     # @Model

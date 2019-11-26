@@ -103,11 +103,11 @@ class NeuroMorphoVisOptions:
         self.morphology.reconstruct_morphology = arguments.reconstruct_morphology_skeleton
 
         # Morphology skeleton
-        self.morphology.skeleton = nmv.enums.Skeletonization.Skeleton.get_enum(
+        self.morphology.skeleton = nmv.enums.Skeleton.Style.get_enum(
             arguments.morphology_skeleton)
 
         # Morphology reconstruction method
-        self.morphology.reconstruction_method = nmv.enums.Skeletonization.Method.get_enum(
+        self.morphology.reconstruction_method = nmv.enums.Skeleton.Method.get_enum(
            argument=arguments.morphology_reconstruction_algorithm)
 
         # Morphology GID
@@ -207,12 +207,12 @@ class NeuroMorphoVisOptions:
         self.morphology.camera_view = nmv.enums.Camera.View.get_enum(arguments.camera_view)
 
         # Rendering view
-        self.morphology.rendering_view = nmv.enums.Skeletonization.Rendering.View.get_enum(
+        self.morphology.rendering_view = nmv.enums.Skeleton.Rendering.View.get_enum(
             arguments.rendering_view)
 
         # Resolution basis
-        self.morphology.resolution_basis = nmv.enums.Skeletonization.Rendering.Resolution.TO_SCALE if \
-            arguments.render_to_scale else nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+        self.morphology.resolution_basis = nmv.enums.Skeleton.Rendering.Resolution.TO_SCALE if \
+            arguments.render_to_scale else nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION
 
         # Render a close up view of the morphology
         self.morphology.render = arguments.render_neuron_morphology

@@ -131,7 +131,7 @@ class PiecewiseBuilder:
         nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
         # Primary and secondary branching
-        if self.options.mesh.branching == nmv.enums.Meshing.Branching.ANGLES:
+        if self.options.morphology.branching == nmv.enums.Skeleton.Branching.ANGLES:
 
             # Label the primary and secondary sections based on angles
             nmv.skeleton.ops.apply_operation_to_morphology(

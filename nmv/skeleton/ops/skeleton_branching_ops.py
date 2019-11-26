@@ -31,12 +31,12 @@ def update_skeleton_branching(morphology,
         A given morphology skeleton.
     :param branching_method:
         A selected branching method.
-        * nmv.enums.Skeletonization.Branching.ANGLES: based on angles.
-        * nmv.enums.Skeletonization.Branching.RADII: based on radii.
+        * nmv.enums.Skeleton.Branching.ANGLES: based on angles.
+        * nmv.enums.Skeleton.Branching.RADII: based on radii.
     """
 
     # Primary and secondary branching
-    if branching_method == nmv.enums.Skeletonization.Branching.ANGLES:
+    if branching_method == nmv.enums.Skeleton.Branching.ANGLES:
 
         # Label the primary and secondary sections based on angles
         nmv.skeleton.ops.apply_operation_to_morphology(

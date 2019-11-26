@@ -248,9 +248,9 @@ class ProgressiveBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
@@ -404,8 +404,6 @@ class ProgressiveBuilder:
         morphology_maximum_branching_order = \
             nmv.analysis.kernel_maximum_branching_order(self.morphology).morphology_result
 
-        print(morphology_maximum_branching_order)
-
         for i in range(1, morphology_maximum_branching_order):
             skeleton_poly_lines = self.construct_morphology_poly_lines_list_at_branching_order(i)
 
@@ -438,7 +436,7 @@ class ProgressiveBuilder:
 
         # For the articulated sections, draw the spheres
         if self.options.morphology.reconstruction_method == \
-                nmv.enums.Skeletonization.Method.ARTICULATED_SECTIONS:
+                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
             self.draw_articulations()
 
         # Draw the soma
