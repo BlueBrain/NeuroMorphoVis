@@ -83,12 +83,49 @@ def install_for_linux(directory):
     print(shell_command)
     subprocess.call(shell_command, shell=True)
 
-    # Installing dependencies 
+    # Installing dependencies
+    pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
+    # Blender python
+    blender_python_prefix = '%s/2.80/python/bin/' % blender_directory
+    blender_python = '%s/python3.7m' % blender_python_prefix
+
+    # Pip installation
+    get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
+    shell_command = 'wget -O %s/get-pip.py %s' % (blender_python_prefix, get_pip_script_url)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Activate the get-pip.py script
+    get_pip_script = '%s/get-pip.py' % blender_python_prefix
+    shell_command = 'chmod +x %s' % get_pip_script
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    shell_command = '%s %s' % (blender_python, get_pip_script)
+    print('INSTALL: %s' % shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    pip_executable = '%s/pip' % blender_python_prefix
+
+    for wheel in pip_wheels:
+
+        # Command
+        shell_command = '%s install %s' % (pip_executable, wheel)
+        print('INSTALL: %s' % shell_command)
+        subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
+# @install_neuromorphovis
+####################################################################################################
 def install_for_mac(directory):
     pass
 
 
+####################################################################################################
+# @install_neuromorphovis
+####################################################################################################
 def install_for_windows(directory):
     pass
 
