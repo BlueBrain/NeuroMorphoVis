@@ -47,21 +47,11 @@ def draw_soma_to_arbors_connectivity(panel,
         Blender scene.
     """
 
-    # Meshing options reference
-    meshing_options = nmv.interface.ui_options.mesh
-
-    # Only if the soft body soma is used
-    if meshing_options.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
-
-        # Add the soma connection
-        soma_connection_row = panel.layout.row()
-        soma_connection_row.label(text='Soma:')
-        soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
-        nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
-
-    # Disable connectivity
-    else:
-        meshing_options.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
+    # Add the soma connection
+    soma_connection_row = panel.layout.row()
+    soma_connection_row.label(text='Soma:')
+    soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
+    nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
 
 
 ################################################################################################
@@ -263,7 +253,10 @@ def draw_color_options(panel,
         homogeneous_color_row.prop(scene, 'NMV_MeshHomogeneousColor')
 
         # If the homogeneous color flag is set
-        if scene.NMV_MeshHomogeneousColor:
+        if scene.NMV_MeshHomogeneousColor or  nmv.interface.ui_options.mesh.soma_connection == \
+                nmv.enums.Meshing.SomaConnection.CONNECTED and  \
+            nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
+                nmv.enums.Soma.Representation.META_BALLS:
             neuron_color_row = layout.row()
             neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
 

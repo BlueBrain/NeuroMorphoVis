@@ -31,6 +31,7 @@ import nmv.geometry
 import nmv.mesh
 import nmv.scene
 import nmv.skeleton
+import nmv.utilities
 
 
 ####################################################################################################
@@ -885,6 +886,47 @@ def connect_single_child(section):
 
 
 ####################################################################################################
+# @connect_arbor_to_meta_ball_soma
+####################################################################################################
+def connect_arbor_to_meta_ball_soma(soma_mesh,
+                                    arbor):
+    """
+
+    :param soma_mesh:
+    :param arbor:
+    :return:
+    """
+
+    # If the soma mesh is not valid, then return
+    if soma_mesh is None:
+        return
+
+        # If the arbor is not valid, then return
+    if arbor is None:
+        return
+
+    # Simply apply a union operation between the soma and the arbor
+    soma_mesh = nmv.mesh.union_mesh_objects(soma_mesh, arbor.mesh)
+
+    # Remove the doubles
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles()
+    nmv.utilities.enable_std_output()
+
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the other mesh
+    nmv.scene.ops.delete_list_objects([arbor.mesh])
+
+    # Return a reference to the soma mesh to be used later to do it for the rest of the arbors
+    return soma_mesh
+
+
+####################################################################################################
 # @connect_arbor_to_soft_body_soma
 ####################################################################################################
 def connect_arbor_to_soft_body_soma(soma_mesh,
@@ -989,7 +1031,7 @@ def smooth_mesh_surface_around_point(mesh_object,
 ####################################################################################################
 # @get_soma_to_root_section_connection_extent
 ####################################################################################################
-def connect_arbor_to_meta_ball_soma(soma_mesh,
+def connect_arbor_to_meta_sball_soma(soma_mesh,
                                     arbor):
     """Connects the root section of a given arbor to the soma at its initial segment.
     This function checks if the arbor mesh is 'logically' connected to the soma or not, following

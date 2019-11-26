@@ -137,47 +137,4 @@ class Soma:
             else:
                 return Soma.Profile.ARBORS_ONLY
 
-    ################################################################################################
-    # @ReconstructionMethod
-    ################################################################################################
-    class ReconstructionMethod:
-        """Soma reconstruction method enumerators
-        """
-
-        # Use soft body physics
-        SOFT_BODY_PHYSICS = 'SOMA_RECONSTRUCTION_METHOD_SOFT_BODY_PHYSICS'
-
-        # Use meta balls
-        META_BALLS = 'SOMA_RECONSTRUCTION_METHOD_META_BALLS'
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-            """Gets the enumerator from the argument directly.
-
-            :param argument:
-                Reconstruction argument.
-            :return:
-                Soma reconstruction method enumerator.
-            """
-
-            # Arbors only
-            if argument == 'softbody':
-                return Soma.ReconstructionMethod.SOFT_BODY_PHYSICS
-
-            # Profile points only
-            elif argument == 'metaballs':
-                return Soma.ReconstructionMethod.META_BALLS
-
-            # MetaBalls only by default
-            else:
-                return Soma.ReconstructionMethod.META_BALLS
 

@@ -77,13 +77,13 @@ class SomaPanel(bpy.types.Panel):
         reconstruction_method_row = layout.row()
         reconstruction_method_row.prop(scene, 'NMV_SomaReconstructionMethod')
 
-        if scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+        if scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.Representation.META_BALLS:
             reconstruction_method_row = layout.row()
             reconstruction_method_row.prop(scene, 'NMV_SomaMetaBallResolution')
             soma_options.meta_ball_resolution = scene.NMV_SomaMetaBallResolution
 
         elif scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
+                nmv.enums.Soma.Representation.SOFT_BODY:
 
             reconstruction_method_row = layout.row()
             reconstruction_method_row.prop(scene, 'NMV_SomaProfile')
@@ -144,7 +144,7 @@ class SomaPanel(bpy.types.Panel):
 
         # Progress
         if scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
+                nmv.enums.Soma.Representation.SOFT_BODY:
 
             # Soma simulation progress bar
             soma_simulation_progress_row = layout.row()
@@ -193,7 +193,7 @@ class SomaPanel(bpy.types.Panel):
 
         # Progressive rendering is only for the soft body physics
         if bpy.context.scene.NMV_SomaReconstructionMethod == \
-            nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS:
+            nmv.enums.Soma.Representation.SOFT_BODY:
             render_animations_buttons_row.operator('nmv.render_soma_progressive', icon='FORCE_HARMONIC')
 
         # Soma rendering progress bar
@@ -365,7 +365,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
         # MetaBall reconstruction
         if bpy.context.scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.ReconstructionMethod.META_BALLS:
+                nmv.enums.Soma.Representation.META_BALLS:
 
             # Create a some builder
             self.soma_builder = nmv.builders.SomaMetaBuilder(

@@ -33,7 +33,7 @@ class SomaOptions:
         """
 
         # Reconstruction method
-        self.method = nmv.enums.Soma.ReconstructionMethod.META_BALLS
+        self.method = nmv.enums.Soma.Representation.META_BALLS
 
         # Meta ball resolution in case of using the MetaBall generation approach
         self.meta_ball_resolution = 0.99

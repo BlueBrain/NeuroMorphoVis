@@ -233,7 +233,8 @@ class PiecewiseBuilder:
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED and \
+            self.options.mesh.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
         else:
             roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN

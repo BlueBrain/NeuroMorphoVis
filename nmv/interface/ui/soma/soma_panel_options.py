@@ -28,12 +28,12 @@ import nmv.utilities
 ####################################################################################################
 # Reconstruction method
 bpy.types.Scene.NMV_SomaReconstructionMethod = bpy.props.EnumProperty(
-    items=[(nmv.enums.Soma.ReconstructionMethod.META_BALLS,
+    items=[(nmv.enums.Soma.Representation.META_BALLS,
             'MetaBalls',
             'Use MetaBalls to reconstruct a rough estimate of the soma shape in real-time.'
             'This approach is extremely fast compared to the Soft Body method and can be '
             'extremely useful for creating large scale circuits with thousands of neurons'),
-           (nmv.enums.Soma.ReconstructionMethod.SOFT_BODY_PHYSICS,
+           (nmv.enums.Soma.Representation.SOFT_BODY,
             'Soft Body',
             'Use Soft Body physics to reconstruct an accurate shape of the neurons using the '
             'physics engine in Blender. This method takes few seconds to build the soma, but it is '
@@ -41,7 +41,7 @@ bpy.types.Scene.NMV_SomaReconstructionMethod = bpy.props.EnumProperty(
             'the final volume of the reconstructed soma shape. It only creates a highly realistic '
             'shape of the soma though for machine learning purposes')],
     name='Method',
-    default=nmv.enums.Soma.ReconstructionMethod.META_BALLS)
+    default=nmv.enums.Soma.Representation.META_BALLS)
 
 # Metaball resolution
 bpy.types.Scene.NMV_SomaMetaBallResolution = bpy.props.FloatProperty(
