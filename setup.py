@@ -58,7 +58,7 @@ def install_for_linux(directory):
     package_name = 'blender-2.80rc3-linux-glibc217-x86_64'
     blender_url = '%s/%s.tar.bz2' % (server, package_name)
 
-    # Wget (Download)
+    # wet (Download)
     shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, blender_url)
     print(shell_command)
     subprocess.call(shell_command, shell=True)
@@ -117,10 +117,75 @@ def install_for_linux(directory):
 
 
 ####################################################################################################
-# @install_neuromorphovis
+# @install_for_mac
 ####################################################################################################
 def install_for_mac(directory):
-    pass
+
+    # Blender url
+    server = 'https://download.blender.org/release/Blender2.80/'
+    package_name = 'blender-2.80rc3-macOS'
+    blender_url = '%s/%s.dmg' % (server, package_name)
+
+    # curl (Download)
+    shell_command = 'curl %s -o %s/blender.dmg' % (blender_url, directory)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Extract
+    shell_command = 'hdiutil attach %s/blender.dmg' % directory
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Copy the Blender.app
+    shell_command = 'cp -r /Volumes/Blender/Blender.app %s/.' % directory
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Deatach
+    #shell_command = 'hdiutil attach %s/blender.dmg' % directory
+    #print(shell_command)
+    #subprocess.call(shell_command, shell=True)
+
+    # Clone NeuroMorphoVis into the 'addons' directory
+
+    blender_app_directory = '%s/Blender.app' % directory
+    addons_directory = '%s/Blender.app/Contents/Resources/2.80/scripts/addons/' % blender_app_directory
+    neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
+    shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+
+    # Blender python
+    blender_python_prefix = '%s/Contents/Resources/2.80/python/bin/' % blender_app_directory
+    blender_python = '%s/python3.7m' % blender_python_prefix
+
+    # Pip installation
+    get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
+    shell_command = 'curl  %s -o %s/get-pip.py' % (get_pip_script_url, blender_python_prefix)
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    # Activate the get-pip.py script
+    get_pip_script = '%s/get-pip.py' % blender_python_prefix
+    shell_command = 'chmod +x %s' % get_pip_script
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    shell_command = '%s %s' % (blender_python, get_pip_script)
+    print('INSTALL: %s' % shell_command)
+    subprocess.call(shell_command, shell=True)
+
+    pip_executable = '%s/pip' % blender_python_prefix
+
+    # Installing dependencies
+    pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
+
+    for wheel in pip_wheels:
+        # Command
+        shell_command = '%s install %s' % (pip_executable, wheel)
+        print('INSTALL: %s' % shell_command)
+        subprocess.call(shell_command, shell=True)
 
 
 ####################################################################################################
