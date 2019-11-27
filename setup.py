@@ -102,6 +102,12 @@ def install_for_linux(directory):
     print(shell_command)
     subprocess.call(shell_command, shell=True)
 
+    # Removing the previous numpy installation
+    blender_python_wheels = '%s/blender-neuromorphovis/2.80/python/lib/site-packages/' % directory
+    shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+    
     shell_command = '%s %s' % (blender_python, get_pip_script)
     print('INSTALL: %s' % shell_command)
     subprocess.call(shell_command, shell=True)
@@ -176,7 +182,7 @@ def install_for_mac(directory):
 
     pip_executable = '%s/pip' % blender_python_prefix
 
-      # Removing the previous numpy installation
+    # Removing the previous numpy installation
     blender_python_wheels = '%s/Contents/Resources/2.80/python/lib/site-packages' % blender_app_directory
     shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
     print(shell_command)
