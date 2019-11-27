@@ -240,7 +240,7 @@ def invoke_kernel(morphology,
         The function that will aggregate the entire morphology analysis result from the
         individual arbors, for example minimum, maximum, average or total.
     :return:
-        The analysis results as an @AnalysisResult structure.
+        The analysis results as an @MorphologyAnalysisResult structure.
     """
 
     # Apply the analysis operation to the morphology

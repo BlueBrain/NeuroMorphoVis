@@ -189,9 +189,6 @@ class LoadMorphology(bpy.types.Operator):
             'FINISHED'
         """
 
-        import nmv.utilities
-        nmv.utilities.pip_wheel('seaborn')
-
         # Clear the scene
         import nmv.scene
         nmv.scene.ops.clear_scene()

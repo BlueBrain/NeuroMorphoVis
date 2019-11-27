@@ -80,7 +80,7 @@ def apply_analysis_operation_to_morphology(*args):
     """
 
     # A structure to contain the analysis results of the entire morphology
-    analysis_result = nmv.analysis.AnalysisResult()
+    analysis_result = nmv.analysis.MorphologyAnalysisResult()
 
     # The morphology is the first argument
     morphology = args[0]

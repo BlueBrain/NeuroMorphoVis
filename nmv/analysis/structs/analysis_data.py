@@ -17,39 +17,33 @@
 
 
 ####################################################################################################
-# @AnalysisResult
+# @AnalysisData
 ####################################################################################################
-class AnalysisResult:
+class AnalysisData:
+    """Analysis data collected with respect to branching order and radii.
+    """
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
-                 apical_dendrite_result=None,
-                 basal_dendrites_result=None,
-                 axon_result=None,
-                 morphology_result=None):
+                 value=None,
+                 branching_order=None,
+                 radial_distance=None):
         """Constructor
 
-        :param apical_dendrite_result:
-            The analysis result of the apical dendrite.
-        :param basal_dendrites_result:
-            The analysis result of the basal dendrites.
-        :param axon_result:
-            The analysis result of the axon.
-        :param morphology_result:
-            The aggregate analysis result of the entire morphology.
-            This is computed for each respective filter from the results of the individual arbors.
+        :param value:
+            The value obtained from the analysis kernel on every section in the morphology.
+        :param branching_order:
+            The branching order at a specific sample.
+        :param radial_distance:
+             The radial distance from a given sample to the origin
         """
+        # The value obtained from the analysis kernel on every section in the morphology.
+        self.value = value
 
-        # Apical dendrite
-        self.apical_dendrite_result = apical_dendrite_result
+        # The branching order at a specific sample.
+        self.branching_order = branching_order
 
-        # Basal dendrites
-        self.basal_dendrites_result = basal_dendrites_result
-
-        # Axon
-        self.axon_result = axon_result
-
-        # Entire morphology
-        self.morphology_result = morphology_result
+        # The radial distance from a given sample to the origin
+        self.radial_distance = radial_distance

@@ -110,6 +110,9 @@ class Section:
         # Initial value for the maximum branching level
         self.maximum_branching_order = 100
 
+        # The length of the section
+        self.length = 0
+
     ################################################################################################
     # @get_type_string
     ################################################################################################
@@ -300,3 +303,20 @@ class Section:
 
             # Set the sample index according to its order along the section in the samples list
             section_sample.id = i
+
+    ################################################################################################
+    # @compute_length
+    ################################################################################################
+    def compute_length(self):
+        """Computes the length of the section
+        """
+
+        # Re-initialize to zero
+        self.length = 0
+
+        # Add the length of every segment along the section
+        for i in range(len(self.samples) - 1):
+
+            sample_0 = self.samples[i]
+            sample_1 = self.samples[i + 1]
+            self.length += (sample_1.point - sample_0.point).length

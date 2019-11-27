@@ -58,6 +58,28 @@ def compute_number_of_samples_per_section(section,
 
 
 ####################################################################################################
+# @analyze_number_of_samples_per_section
+####################################################################################################
+def analyze_number_of_samples_per_section(section,
+                                          analysis_data):
+    """Computes the number of samples of a given section.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData
+    data.value = len(section.samples)
+    data.branching_order = section.branching_order
+
+    # Add to the collecting list
+    analysis_data.append(data)
+
+
+####################################################################################################
 # @compute_number_of_segments_per_section
 ####################################################################################################
 def compute_number_of_segments_per_section(section,
@@ -71,6 +93,28 @@ def compute_number_of_segments_per_section(section,
     """
 
     analysis_data.append(len(section.samples) - 1)
+
+
+####################################################################################################
+# @analyze_number_of_segments_per_section
+####################################################################################################
+def analyze_number_of_segments_per_section(section,
+                                           analysis_data):
+    """Computes the number of segments of a given section.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData
+    data.value = len(section.samples) - 1
+    data.branching_order = section.branching_order
+
+    # Add to the collecting list
+    analysis_data.append(data)
 
 
 ####################################################################################################
@@ -94,6 +138,36 @@ def compute_number_of_zero_radius_samples_per_section(section,
             number_zero_radii_samples += 1
 
     analysis_data.append(number_zero_radii_samples)
+
+
+####################################################################################################
+# @analyze_number_of_zero_radius_samples_per_section
+####################################################################################################
+def analyze_number_of_zero_radius_samples_per_section(section,
+                                                      analysis_data):
+    """Computes the number of zero radius samples of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Number of zero radii samples
+    number_zero_radii_samples = 0
+
+    # Assume that radii less than 1 nm is already a zero-radius sample
+    for i_sample in section.samples:
+        if i_sample.radius < 1e-3:
+            number_zero_radii_samples += 1
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData
+    data.value = number_zero_radii_samples
+    data.branching_order = section.branching_order
+
+    # Add to the collecting list
+    analysis_data.append(data)
 
 
 ####################################################################################################
@@ -178,6 +252,32 @@ def get_samples_radii_of_section(section,
 
     for i_sample in section.samples:
         analysis_data.append(i_sample.radius)
+
+
+####################################################################################################
+# @analyze_samples_radii_of_section
+####################################################################################################
+def analyze_samples_radii_of_section(section,
+                                     analysis_data):
+    """Gets a list (results will be appended to the @analysis_data list) of the radii of all the
+    samples of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    for i_sample in section.samples:
+
+        # Analysis data
+        data = nmv.analysis.AnalysisData
+        data.value = i_sample.radius
+        data.branching_order = section.branching_order
+        data.radial_distance = i_sample.position.length
+
+        # Add to the collecting list
+        analysis_data.append(data)
 
 
 ####################################################################################################
