@@ -15,12 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import os
-import numpy as np
-import seaborn as sns
-import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
 
 import nmv.consts
 
@@ -29,6 +23,14 @@ def plot_distribution(distribution,
                       tilte,
                       normalized=False,
                       color='b'):
+    import os
+    import numpy as np
+    import seaborn as sns
+    import pandas as pd
+    import matplotlib
+    import matplotlib.pyplot as plt
+
+
     from matplotlib import font_manager as fm, rcParams
     fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'arial.ttf')
 
