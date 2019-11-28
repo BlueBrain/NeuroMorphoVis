@@ -254,9 +254,9 @@ def invoke_kernel(morphology,
 
 
 ####################################################################################################
-# @get_analysis_distributions
+# @compute_distribution
 ####################################################################################################
-def get_analysis_distributions(morphology,
+def compute_distribution(morphology,
                                kernel):
     """Invoke the analysis kernel on the morphology and return the distribution in a form of list.
 

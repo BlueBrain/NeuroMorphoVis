@@ -80,6 +80,12 @@ class SomaOptions:
         # Camera view
         self.camera_view = nmv.enums.Camera.View.FRONT
 
+        # Render the soma to a transparent image
+        self.transparent_film = True
+
+        # Render the soma to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
+
         # Export soma mesh in .ply format
         self.export_ply = False
 

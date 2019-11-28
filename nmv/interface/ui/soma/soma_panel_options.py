@@ -144,3 +144,14 @@ bpy.types.Scene.NMV_SomaRenderingProgress = bpy.props.IntProperty(
     description='Rendering progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
 
+# Transparent background
+bpy.types.Scene.NMV_SomaTransparentBackground = bpy.props.BoolProperty(
+    name="Transparent Background",
+    description="Set transparent background for the rendered image",
+    default=False)
+
+# Background color
+bpy.types.Scene.NMV_SomaBackgroundColor = bpy.props.FloatVectorProperty(
+    name="Background Color",
+    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
+    description="The color of the background of the rendered image")

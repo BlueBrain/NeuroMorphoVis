@@ -22,9 +22,9 @@ from bpy.props import FloatProperty
 
 
 ####################################################################################################
-# AnalysisDistributionItem
+# AnalysisDistribution
 ####################################################################################################
-class AnalysisDistributionItem:
+class AnalysisDistribution:
     """The distribution of a certain analysis item.
     """
 

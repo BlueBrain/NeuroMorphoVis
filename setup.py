@@ -107,7 +107,7 @@ def install_for_linux(directory):
     shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
     print(shell_command)
     subprocess.call(shell_command, shell=True)
-    
+
     shell_command = '%s %s' % (blender_python, get_pip_script)
     print('INSTALL: %s' % shell_command)
     subprocess.call(shell_command, shell=True)

@@ -16,6 +16,7 @@
 ####################################################################################################
 
 # Blender imports
+import bpy
 from mathutils import Vector
 
 # Internal imports
@@ -542,10 +543,21 @@ def draw_rendering_options(panel,
             scale_factor_row.enabled = True
             panel.shown_hidden_rows.append(scale_factor_row)
 
-    # Keep the cameras used for the rendering in the scene
-    keep_cameras_row = layout.row()
-    keep_cameras_row.prop(scene, 'NMV_KeepMeshCameras')
-    keep_cameras_row.enabled = False
+    # Background
+    background_row = layout.row()
+    background_row.prop(scene, 'NMV_MeshTransparentBackground')
+
+    if scene.NMV_MeshTransparentBackground:
+        nmv.interface.ui_options.mesh.transparent_film = True
+    else:
+
+        # Not transparent
+        nmv.interface.ui_options.mesh.transparent_film = False
+
+        # Background color
+        background_color = layout.row()
+        background_color.prop(scene, 'NMV_MeshBackgroundColor')
+        nmv.interface.ui_options.mesh.film_color = scene.NMV_MeshBackgroundColor
 
     # Rendering view
     render_view_row = layout.row()

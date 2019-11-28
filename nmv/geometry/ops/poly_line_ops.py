@@ -348,7 +348,7 @@ def draw_poly_lines_in_single_object(poly_lines,
         aggregate_poly_lines_object.data.splines[0].use_endpoint_u = True
 
     # Link this object to the scene
-    bpy.context.scene.collection.objects.link(aggregate_poly_lines_object)
+    nmv.scene.link_object_to_scene(aggregate_poly_lines_object)
 
     # Return a reference to the created poly-lines object
     return aggregate_poly_lines_object

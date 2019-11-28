@@ -140,6 +140,12 @@ class MeshOptions:
         # The scale factor used to scale the morphology rendering frame, default 1.0
         self.resolution_scale_factor = 1.0
 
+        # Render the mesh to a transparent image
+        self.transparent_film = True
+
+        # Render the mesh to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
+
         # MESH EXPORT ##############################################################################
         # Save the reconstructed mesh as a .ply file to the output directory
         self.export_ply = False

@@ -441,6 +441,22 @@ def set_rendering_options(layout,
             scale_factor_row.prop(scene, 'NMV_MorphologyFrameScaleFactor')
             scale_factor_row.enabled = True
 
+    # Background
+    background_row = layout.row()
+    background_row.prop(scene, 'NMV_MorphologyTransparentBackground')
+
+    if scene.NMV_MorphologyTransparentBackground:
+        nmv.interface.ui_options.morphology.transparent_film = True
+    else:
+
+        # Not transparent
+        nmv.interface.ui_options.morphology.transparent_film = False
+
+        # Background color
+        background_color = layout.row()
+        background_color.prop(scene, 'NMV_MorphologyBackgroundColor')
+        nmv.interface.ui_options.morphology.film_color = scene.NMV_MorphologyBackgroundColor
+
     # Render view buttons
     render_view_row = layout.row()
     render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')

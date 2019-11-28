@@ -175,6 +175,12 @@ class MorphologyOptions:
         # The scale factor used to scale the morphology rendering frame, default 1.0
         self.resolution_scale_factor = 1.0
 
+        # Render the morphology to a transparent image
+        self.transparent_film = True
+
+        # Render the morphology to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
+
         # Export the morphology to .H5 file
         self.export_h5 = False
 

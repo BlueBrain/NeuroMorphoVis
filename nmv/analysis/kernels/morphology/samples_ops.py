@@ -178,7 +178,7 @@ def kernel_average_sample_radius(morphology):
 def kernel_analyse_number_of_samples_per_section(morphology, options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_distributions(
+    analysis_results = nmv.analysis.compute_distribution(
         morphology,
         nmv.analysis.get_number_of_samples_per_section_of_arbor)
 
@@ -205,7 +205,7 @@ def kernel_analyse_samples_radii(morphology,
                                  options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_distributions(morphology,
+    analysis_results = nmv.analysis.compute_distribution(morphology,
                                                        nmv.analysis.get_samples_radii_of_arbor)
 
     # Save the results to text files
@@ -230,7 +230,7 @@ def kernel_analyse_segments_lengths(morphology,
 def kernel_samples_radii_distribution(morphology):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.get_analysis_distributions(
+    analysis_results = nmv.analysis.compute_distribution(
         morphology,
         nmv.analysis.get_samples_radii_of_arbor)
 
@@ -254,7 +254,7 @@ def kernel_samples_radii_distribution(morphology):
 ####################################################################################################
 def kernel_number_of_samples_at_branching_order_distributions(morphology):
 
-    analysis_results = nmv.analysis.get_analysis_distributions(
+    analysis_results = nmv.analysis.compute_distribution(
         morphology,
         nmv.analysis.compute_total_number_samples_of_arbor_distributions)
 

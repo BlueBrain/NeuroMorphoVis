@@ -352,3 +352,16 @@ bpy.types.Scene.NMV_ExportedMeshFormat = bpy.props.EnumProperty(
             'Blender File (.blend)',
             'Export the mesh as a .blend file')],
     name='Format', default=nmv.enums.Meshing.ExportFormat.PLY)
+
+
+# Transparent background
+bpy.types.Scene.NMV_MeshTransparentBackground = bpy.props.BoolProperty(
+    name="Transparent Background",
+    description="Set transparent background for the rendered image",
+    default=False)
+
+# Background color
+bpy.types.Scene.NMV_MeshBackgroundColor = bpy.props.FloatVectorProperty(
+    name="Background Color",
+    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
+    description="The color of the background of the rendered image")

@@ -176,6 +176,22 @@ class SomaPanel(bpy.types.Panel):
         view_dimensions_row.prop(scene, 'NMV_ViewDimensions')
         view_dimensions_row.enabled = False
 
+        # Background
+        background_row = layout.row()
+        background_row.prop(scene, 'NMV_SomaTransparentBackground')
+
+        if scene.NMV_SomaTransparentBackground:
+            nmv.interface.ui_options.soma.transparent_film = True
+        else:
+
+            # Not transparent
+            nmv.interface.ui_options.soma.transparent_film = False
+
+            # Background color
+            background_color = layout.row()
+            background_color.prop(scene, 'NMV_SomaBackgroundColor')
+            nmv.interface.ui_options.soma.film_color = scene.NMV_SomaBackgroundColor
+
         # Render view buttons
         render_view_row = layout.row()
         render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')
@@ -504,6 +520,16 @@ class RenderSomaFront(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
+        # Adjust the background color
+        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
+        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+
+        # Fix the WHITE BUG
+        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
@@ -557,6 +583,16 @@ class RenderSomaSide(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
+        # Adjust the background color
+        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
+        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+
+        # Fix the WHITE BUG
+        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
+           scene.NMV_SomaBackgroundColor[1] > 0.9 and \
+           scene.NMV_SomaBackgroundColor[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
@@ -609,6 +645,16 @@ class RenderSomaTop(bpy.types.Operator):
         # Create the images directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+
+        # Adjust the background color
+        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
+        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+
+        # Fix the WHITE BUG
+        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
@@ -732,6 +778,16 @@ class RenderSoma360(bpy.types.Operator):
                                 (nmv.interface.ui_options.io.sequences_directory,
                                  nmv.interface.ui_options.morphology.label)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
+
+        # Adjust the background color
+        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
+        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+
+        # Fix the WHITE BUG
+        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
+                scene.NMV_SomaBackgroundColor[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager

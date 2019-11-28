@@ -143,6 +143,24 @@ bpy.types.Scene.NMV_ArticulationColor = bpy.props.FloatVectorProperty(
     subtype='COLOR', default=nmv.enums.Color.ARTICULATION, min=0.0, max=1.0,
     description="The color of the articulations in the Articulated Section mode")
 
+# Use single color for the all the objects in the morphology
+bpy.types.Scene.NMV_MorphologyHomogeneousColor = bpy.props.BoolProperty(
+    name="Homogeneous Color",
+    description="Use a single color for rendering all the objects of the morphology",
+    default=False)
+
+# Transparent background
+bpy.types.Scene.NMV_MorphologyTransparentBackground = bpy.props.BoolProperty(
+    name="Transparent Background",
+    description="Set transparent background for the rendered image",
+    default=False)
+
+# Background color
+bpy.types.Scene.NMV_MorphologyBackgroundColor = bpy.props.FloatVectorProperty(
+    name="Background Color",
+    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
+    description="The color of the background of the rendered image")
+
 # Reconstruction method
 bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
     items=[(nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS,

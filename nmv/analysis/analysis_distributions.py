@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # Internal imports
-from nmv.analysis.structs import AnalysisDistributionItem
+from nmv.analysis.structs import AnalysisDistribution
 from nmv.analysis.kernels.morphology import *
 
 ####################################################################################################
@@ -24,14 +24,14 @@ from nmv.analysis.kernels.morphology import *
 ####################################################################################################
 distributions = [
 
-    AnalysisDistributionItem(
+    AnalysisDistribution(
         name='Samples Radii',
         kernel=kernel_samples_radii_distribution,
         description='The distribution of the radii of all the samples in the morphology',
         data_format='INT'),
 
-    AnalysisDistributionItem(
-        name='ss',
+    AnalysisDistribution(
+        name='Number of Samples per Section w.r.t Branching Order',
         kernel=kernel_number_of_samples_at_branching_order_distributions,
         description='sss',
         data_format='INT'
