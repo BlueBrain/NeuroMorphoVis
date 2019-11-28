@@ -21,6 +21,8 @@ import os
 import sys
 import subprocess
 import argparse
+import shutil
+import shlex
 
 
 ####################################################################################################
@@ -36,7 +38,7 @@ def parse_command_line_arguments(arguments=None):
     """
 
     # add all the options
-    description = 'Installing NeuroMorphoVis from scratch. Simply, easy and awesome!' \
+    description = 'Installing NeuroMorphoVis from scratch. Simple, easy and awesome! ' \
                   'This script is valid for *nix-based operating systems including macOSX and ' \
                   'Linux distributions. For windows, you can download a zip package from the ' \
                   'release page. \n' \
@@ -45,14 +47,75 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Blender version. 2.79, 2.80, or 2.81. 2.8 by default.'
     parser.add_argument('--blender-version',
-                        action='store', dest='blender_version', help=arg_help)
+                        action='store', dest='blender_version', default='2.80', help=arg_help)
 
     arg_help = 'Installation directory.'
     parser.add_argument('--install-prefix',
-                        action='store', dest='install_prefix', help=arg_help)
+                        action='store', dest='install_prefix', required=True, help=arg_help)
+
+    arg_help = 'Enable to get a detailed log, otherwise only the basic operations'
+    parser.add_argument('--verbose',
+                        action='store_true', default=False, dest='verbose', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
+
+
+####################################################################################################
+# @run_command
+####################################################################################################
+def run_command(shell_command,
+                verbose=False):
+    """Runs a shell command.
+
+    :param shell_command:
+        A shell command to execute.
+    :param verbose:
+        Flag to print more massages for debugging.
+    """
+
+    if verbose:
+        subprocess.call(shell_command, shell=True)
+        print('\t* SHELL: ' + shell_command)
+    else:
+        devnull = open(os.devnull, 'w')
+        subprocess.call(shlex.split(shell_command), stdout=devnull)#, stderr=devnull)
+
+
+####################################################################################################
+# @log_header
+####################################################################################################
+def log_header(msg):
+    """Header.
+
+    :param msg:
+        Message.
+    """
+    print('* %s' % msg)
+
+
+####################################################################################################
+# @log_process
+####################################################################################################
+def log_process(msg):
+    """Process.
+
+   :param msg:
+       Message.
+   """
+    print('\t* %s' % msg)
+
+
+####################################################################################################
+# @log_detail
+####################################################################################################
+def log_detail(msg):
+    """Detail.
+
+   :param msg:
+       Message.
+   """
+    print('\t\t* %s' % msg)
 
 
 ####################################################################################################
@@ -71,8 +134,8 @@ def install_for_linux(directory, blender_version):
     blender_url = '%s/%s.tar.bz2' % (server, package_name)
 
     # wet (Download)
+    print('Cloning')
     shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, blender_url)
-    print(shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Extract
@@ -137,11 +200,15 @@ def install_for_linux(directory, blender_version):
 ####################################################################################################
 # @install_for_mac
 ####################################################################################################
-def install_for_mac(directory, blender_version):
+def install_for_mac(directory, blender_version, verbose=False):
     """Install NeuroMorphoVis on macOSX operating system.
 
     :param directory:
         Installation directory.
+    :param blender_version
+        The version of Blender.
+    :param verbose:
+        Verbose.
     """
 
     # Server
@@ -149,107 +216,125 @@ def install_for_mac(directory, blender_version):
 
     # Blender url
     if blender_version == '2.79':
+        python_version = '3.5'
         package_name = 'blender-2.79b-macOS-10.6.dmg'
     elif blender_version == '2.80':
-        package_name = 'blender-2.80rc3-macOS'
+        python_version = '3.7'
+        package_name = 'blender-2.80rc3-macOS.dmg'
     elif blender_version == '2.81':
+        python_version = '3.7'
         package_name = 'blender-2.81-macOS.dmg'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
 
-    # Blender url
-    blender_url = '%s/%s.dmg' % (server, package_name)
-    print('Downloading Blender [%s] from %s' % (blender_version, blender_url))
-
     # curl (Download)
+    blender_url = '%s/%s' % (server, package_name)
+    log_process('Downloading Blender [%s] from %s' % (blender_version, blender_url))
     shell_command = 'curl %s -o %s/blender.dmg' % (blender_url, directory)
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Extract
+    log_process('Extracting Blender')
     shell_command = 'hdiutil attach %s/blender.dmg' % directory
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Copy the Blender.app
-    shell_command = 'cp -r /Volumes/Blender/Blender.app %s/.' % directory
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    log_process('Copying Blender')
+    if blender_version == '2.79':
+        shell_command = 'cp -r /Volumes/Blender/Blender %s/.' % directory
+    else:
+        shell_command = 'cp -r /Volumes/Blender/Blender.app %s/.' % directory
+    run_command(shell_command, verbose)
 
     # Detach
+    log_process('Detaching DMG Image')
     shell_command = 'hdiutil detach /Volumes/Blender'
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Clone NeuroMorphoVis into the 'addons' directory
-    blender_app_directory = '%s/Blender.app' % directory
+    log_process('Clone NeuroMorphoVis')
+    if blender_version == '2.79':
+        blender_app_directory = '%s/Blender/blender.app' % directory
+    else:
+        blender_app_directory = '%s/Blender.app' % directory
     addons_directory = '%s/Contents/Resources/%s/scripts/addons/' % (blender_app_directory,
                                                                      blender_version)
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Blender python
     blender_python_prefix = '%s/Contents/Resources/%s/python/bin/' % (blender_app_directory,
                                                                       blender_version)
-    blender_python = '%s/python3.7m' % blender_python_prefix
+    blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
 
     # Pip installation
+    log_process('Installing Dependencies')
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
-    shell_command = 'curl  %s -o %s/get-pip.py' % (get_pip_script_url, blender_python_prefix)
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    shell_command = 'curl %s -o %s/get-pip.py' % (get_pip_script_url, blender_python_prefix)
+    run_command(shell_command, verbose)
 
     # Activate the get-pip.py script
+    log_detail('Installing: pip')
     get_pip_script = '%s/get-pip.py' % blender_python_prefix
     shell_command = 'chmod +x %s' % get_pip_script
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
-
+    run_command(shell_command, verbose)
     shell_command = '%s %s' % (blender_python, get_pip_script)
-    print('INSTALL: ' + shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     pip_executable = '%s/pip' % blender_python_prefix
 
     # Removing the previous numpy installation
-    blender_python_wheels = '%s/Contents/Resources/%s/python/lib/site-packages' % (
-        blender_app_directory, blender_version)
+    log_detail('Uninstalling: numpy')
+    blender_python_wheels = '%s/Contents/Resources/%s/python/lib/python%s/site-packages' % (
+        blender_app_directory, blender_version, python_version)
     shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Installing dependencies
     pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     for wheel in pip_wheels:
+
         # Command
+        log_detail('Installing: %s' % wheel)
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
-        print('INSTALL: %s' % shell_command)
-        subprocess.call(shell_command, shell=True)
+        run_command(shell_command, verbose)
+
+    # Copying the perf file to loade NMV directly
+
+    # Remove the .dmg file
+    log_process('Cleaning')
+    shell_command = 'rm %s/blender.dmg' % directory
+    run_command(shell_command, verbose)
 
 
 ####################################################################################################
 # @install_neuromorphovis
 ####################################################################################################
-def install_neuromorphovis(directory, blender_version):
+def install_neuromorphovis(directory, blender_version, verbose=False):
     """Installs NeuroMorphoVis
 
     :param directory:
         Installation directory.
     :param blender_version:
         The version of Blender.
+    :param verbose:
+        Verbose.
     """
+
+    # Header
+    log_header('Installing Blender for %s' % sys.platform)
+    log_process('Installation Directory: %s' % directory)
 
     # Linux
     if sys.platform == "linux" or sys.platform == "linux2":
-        install_for_linux(directory, blender_version)
+        install_for_linux(directory, blender_version, verbose)
 
     # OS X
     elif sys.platform == "darwin":
-        install_for_mac(directory, blender_version)
+        install_for_mac(directory, blender_version, verbose)
 
     # Windows
     elif sys.platform == "win32":
@@ -270,23 +355,32 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parse_command_line_arguments()
 
-    # Get the current directory
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-
     # Create the installation directory
     if not os.path.exists(args.install_prefix):
         os.mkdir(args.install_prefix)
 
     # Verify blender version
     if args.blender_version == '2.79':
-        print('Blender 2.79')
+        log_header('Blender 2.79')
     elif args.blender_version == '2.80':
-        print('Blender 2.80')
+        log_header('Blender 2.80')
     elif args.blender_version == '2.81':
-        print('Blender 2.81')
+        log_header('Blender 2.81')
     else:
-        print('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81 ')
+        log_header('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81')
         exit(0)
 
+    # Installation directory
+    installation_directory = '%s/neuromorphovis-blender-%s' % (args.install_prefix,
+                                                               args.blender_version)
+
+    # Verify the installation directory
+    if not os.path.exists(installation_directory):
+        os.mkdir(installation_directory)
+    else:
+        pass
+        shutil.rmtree(installation_directory)
+        os.mkdir(installation_directory)
+
     # Download blender based on the software
-    install_neuromorphovis(args.install_prefix, args.blender_version)
+    install_neuromorphovis(installation_directory, args.blender_version, args.verbose)
