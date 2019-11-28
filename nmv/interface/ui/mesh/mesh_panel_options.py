@@ -24,7 +24,6 @@ import nmv.consts
 import nmv.enums
 import nmv.utilities
 
-
 # Meshing technique
 bpy.types.Scene.NMV_MeshingTechnique = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
@@ -348,7 +347,6 @@ bpy.types.Scene.NMV_ExportedMeshFormat = bpy.props.EnumProperty(
             'Export the mesh as a .blend file')],
     name='Format', default=nmv.enums.Meshing.ExportFormat.PLY)
 
-
 # Transparent background
 bpy.types.Scene.NMV_MeshTransparentBackground = bpy.props.BoolProperty(
     name="Transparent Background",
@@ -360,3 +358,5 @@ bpy.types.Scene.NMV_MeshBackgroundColor = bpy.props.FloatVectorProperty(
     name="Background Color",
     subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
     description="The color of the background of the rendered image")
+
+

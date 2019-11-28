@@ -20,38 +20,50 @@
 import os
 import sys
 import subprocess
-
-
-def download_blender(directory):
-
-    # Server
-    blender_url = 'https://download.blender.org/release/Blender2.80/'
-
-    # Linux
-    linux_32_version_url = '%s/blender-2.80rc3-linux-glibc224-i686.tar.bz2' % blender_url
-    linux_64_version_url = '%s/blender-2.80rc3-linux-glibc217-x86_64.tar.bz2' % blender_url
-
-    # Windows
-    windows_32_version_url = '%s/blender-2.80rc3-windows32.zip' % blender_url
-    windows_64_version_url = '%s/blender-2.80rc3-windows32.zip' % blender_url
-
-    # Mac
-    mac_osx_version_url = '%s/blender-2.80rc3-macOS.dmg' % blender_url
-
-    shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, linux_64_version_url)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
-
-    # Extract
-    shell_command = 'tar xjfv %s/blender.tar.bz2 -C %s' % (directory, directory)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+import argparse
 
 
 ####################################################################################################
-# @install_neuromorphovis
+# @parse_command_line_arguments
 ####################################################################################################
-def install_for_linux(directory):
+def parse_command_line_arguments(arguments=None):
+    """Parses the input arguments.
+
+    :param arguments:
+        Command line arguments.
+    :return:
+        Arguments list.
+    """
+
+    # add all the options
+    description = 'Installing NeuroMorphoVis from scratch. Simply, easy and awesome!' \
+                  'This script is valid for *nix-based operating systems including macOSX and ' \
+                  'Linux distributions. For windows, you can download a zip package from the ' \
+                  'release page. \n' \
+                  'NOTE: git, wget or curl must be installed to run this script.'
+    parser = argparse.ArgumentParser(description=description)
+
+    arg_help = 'Blender version. 2.79, 2.80, or 2.81. 2.8 by default.'
+    parser.add_argument('--blender-version',
+                        action='store', dest='blender_version', help=arg_help)
+
+    arg_help = 'Installation directory.'
+    parser.add_argument('--install-prefix',
+                        action='store', dest='install_prefix', help=arg_help)
+
+    # Parse the arguments
+    return parser.parse_args()
+
+
+####################################################################################################
+# @install_for_linux
+####################################################################################################
+def install_for_linux(directory, blender_version):
+    """Install NeuroMorphoVis on Linux operating system.
+
+    :param directory:
+        Installation directory.
+    """
 
     # Blender url
     server = 'https://download.blender.org/release/Blender2.80/'
@@ -125,65 +137,86 @@ def install_for_linux(directory):
 ####################################################################################################
 # @install_for_mac
 ####################################################################################################
-def install_for_mac(directory):
+def install_for_mac(directory, blender_version):
+    """Install NeuroMorphoVis on macOSX operating system.
+
+    :param directory:
+        Installation directory.
+    """
+
+    # Server
+    server = 'https://download.blender.org/release/Blender%s/' % blender_version
 
     # Blender url
-    server = 'https://download.blender.org/release/Blender2.80/'
-    package_name = 'blender-2.80rc3-macOS'
+    if blender_version == '2.79':
+        package_name = 'blender-2.79b-macOS-10.6.dmg'
+    elif blender_version == '2.80':
+        package_name = 'blender-2.80rc3-macOS'
+    elif blender_version == '2.81':
+        package_name = 'blender-2.81-macOS.dmg'
+    else:
+        print('ERROR: Wrong Blender version [%s]' % blender_version)
+        exit(0)
+
+    # Blender url
     blender_url = '%s/%s.dmg' % (server, package_name)
+    print('Downloading Blender [%s] from %s' % (blender_version, blender_url))
 
     # curl (Download)
     shell_command = 'curl %s -o %s/blender.dmg' % (blender_url, directory)
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Extract
     shell_command = 'hdiutil attach %s/blender.dmg' % directory
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Copy the Blender.app
     shell_command = 'cp -r /Volumes/Blender/Blender.app %s/.' % directory
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Detach
     shell_command = 'hdiutil detach /Volumes/Blender'
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Clone NeuroMorphoVis into the 'addons' directory
     blender_app_directory = '%s/Blender.app' % directory
-    addons_directory = '%s/Contents/Resources/2.80/scripts/addons/' % blender_app_directory
+    addons_directory = '%s/Contents/Resources/%s/scripts/addons/' % (blender_app_directory,
+                                                                     blender_version)
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Blender python
-    blender_python_prefix = '%s/Contents/Resources/2.80/python/bin/' % blender_app_directory
+    blender_python_prefix = '%s/Contents/Resources/%s/python/bin/' % (blender_app_directory,
+                                                                      blender_version)
     blender_python = '%s/python3.7m' % blender_python_prefix
 
     # Pip installation
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
     shell_command = 'curl  %s -o %s/get-pip.py' % (get_pip_script_url, blender_python_prefix)
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     # Activate the get-pip.py script
     get_pip_script = '%s/get-pip.py' % blender_python_prefix
     shell_command = 'chmod +x %s' % get_pip_script
-    print(shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     shell_command = '%s %s' % (blender_python, get_pip_script)
-    print('INSTALL: %s' % shell_command)
+    print('INSTALL: ' + shell_command)
     subprocess.call(shell_command, shell=True)
 
     pip_executable = '%s/pip' % blender_python_prefix
 
     # Removing the previous numpy installation
-    blender_python_wheels = '%s/Contents/Resources/2.80/python/lib/site-packages' % blender_app_directory
+    blender_python_wheels = '%s/Contents/Resources/%s/python/lib/site-packages' % (
+        blender_app_directory, blender_version)
     shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
     print(shell_command)
     subprocess.call(shell_command, shell=True)
@@ -201,31 +234,28 @@ def install_for_mac(directory):
 ####################################################################################################
 # @install_neuromorphovis
 ####################################################################################################
-def install_for_windows(directory):
-    pass
-
-
-####################################################################################################
-# @install_neuromorphovis
-####################################################################################################
-def install_neuromorphovis(directory):
+def install_neuromorphovis(directory, blender_version):
     """Installs NeuroMorphoVis
 
     :param directory:
         Installation directory.
+    :param blender_version:
+        The version of Blender.
     """
 
     # Linux
     if sys.platform == "linux" or sys.platform == "linux2":
-        install_for_linux(directory)
+        install_for_linux(directory, blender_version)
 
     # OS X
     elif sys.platform == "darwin":
-        install_for_mac(directory)
+        install_for_mac(directory, blender_version)
 
     # Windows
     elif sys.platform == "win32":
-        install_for_windows(directory)
+        print('This script is only valid for *nix-based operating systems. '
+              'For windows, you can download a zip package from the release page.')
+        exit(0)
 
     else:
         print('ERROR: Unrecognized operating system %s' % sys.platform)
@@ -237,15 +267,26 @@ def install_neuromorphovis(directory):
 ####################################################################################################
 if __name__ == "__main__":
 
-    # Current directory
+    # Parse the arguments
+    args = parse_command_line_arguments()
+
+    # Get the current directory
     current_directory = os.path.dirname(os.path.realpath(__file__))
 
-    # Installation directory
-    install_directory = '/Users/abdellah/Desktop/tmp' # '%s/../blender-nmv' % current_directory
-
     # Create the installation directory
-    if not os.path.exists(install_directory):
-        os.mkdir(install_directory)
+    if not os.path.exists(args.install_prefix):
+        os.mkdir(args.install_prefix)
+
+    # Verify blender version
+    if args.blender_version == '2.79':
+        print('Blender 2.79')
+    elif args.blender_version == '2.80':
+        print('Blender 2.80')
+    elif args.blender_version == '2.81':
+        print('Blender 2.81')
+    else:
+        print('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81 ')
+        exit(0)
 
     # Download blender based on the software
-    install_neuromorphovis(install_directory)
+    install_neuromorphovis(args.install_prefix, args.blender_version)
