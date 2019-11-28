@@ -22,6 +22,7 @@ from mathutils import Vector
 # Internal imports
 import nmv.bbox
 import nmv.mesh
+import nmv.consts
 import nmv.utilities
 
 
@@ -76,7 +77,46 @@ def deselect_object(scene_object):
 
 
 ####################################################################################################
-# @get_active_object
+# @set_background_color
+####################################################################################################
+def set_background_color(color,
+                         transparent=False):
+    """Sets the background image properties.
+
+    :param color:
+        A given color.
+    :param transparent:
+        A flag to indicate if the image is transparent or not. Setting this flag to True overrides
+        the color.
+    """
+
+    # 2.8
+    if nmv.utilities.is_blender_280():
+
+        # Color
+        bpy.context.scene.world.color = color
+
+        # Fix the WHITE BUG
+        if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+
+        # Transparency
+        bpy.context.scene.render.film_transparent = transparent
+
+    # 2.7
+    else:
+
+        # Color
+        bpy.context.scene.world.horizon_color = color
+
+        # Transparency
+        if transparent:
+            bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+        else:
+            bpy.context.scene.render.alpha_mode = 'SKY'
+
+
+####################################################################################################
 # @get_active_object
 ####################################################################################################
 def get_active_object():

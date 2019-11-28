@@ -31,6 +31,7 @@ import nmv.interface
 import nmv.skeleton
 import nmv.bbox
 import nmv.rendering
+import nmv.scene
 
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
@@ -365,15 +366,10 @@ def render_morphology_image(panel_object,
     else:
         view_prefix = ''
 
-    # Adjust the background color
-    bpy.context.scene.render.film_transparent = context_scene.NMV_MorphologyTransparentBackground
-    bpy.context.scene.world.color = context_scene.NMV_MorphologyBackgroundColor
-
-    # Fix the WHITE BUG
-    if context_scene.NMV_MorphologyBackgroundColor[0] > 0.9 and \
-       context_scene.NMV_MorphologyBackgroundColor[1] > 0.9 and \
-       context_scene.NMV_MorphologyBackgroundColor[2] > 0.9:
-        bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+    # Background color
+    nmv.scene.ops.set_background_color(
+        color=context_scene.NMV_MorphologyBackgroundColor,
+        transparent=context_scene.NMV_MorphologyTransparentBackground)
 
     # Render at a specific resolution
     if context_scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
@@ -460,15 +456,10 @@ def render_mesh_image(panel_object,
     else:
         view_prefix = 'FRONT'
 
-    # Adjust the background color
-    bpy.context.scene.render.film_transparent = context_scene.NMV_MeshTransparentBackground
-    bpy.context.scene.world.color = context_scene.NMV_MeshBackgroundColor
-
-    # Fix the WHITE BUG
-    if context_scene.NMV_MeshBackgroundColor[0] > 0.9 and \
-       context_scene.NMV_MeshBackgroundColor[1] > 0.9 and \
-       context_scene.NMV_MeshBackgroundColor[2] > 0.9:
-        bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+    # Background color
+    nmv.scene.ops.set_background_color(
+        color=context_scene.NMV_MeshBackgroundColor,
+        transparent=context_scene.NMV_MeshTransparentBackground)
 
     # Render at a specific resolution
     if context_scene.NMV_MeshRenderingResolution == \

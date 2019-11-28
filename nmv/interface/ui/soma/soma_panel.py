@@ -520,9 +520,9 @@ class RenderSomaFront(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
-        # Adjust the background color
-        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
-        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+        # Background color
+        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Fix the WHITE BUG
         if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
@@ -583,9 +583,9 @@ class RenderSomaSide(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
-        # Adjust the background color
-        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
-        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+        # Background color
+        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Fix the WHITE BUG
         if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
@@ -646,9 +646,9 @@ class RenderSomaTop(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
-        # Adjust the background color
-        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
-        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+        # Background color
+        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Fix the WHITE BUG
         if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
@@ -779,9 +779,9 @@ class RenderSoma360(bpy.types.Operator):
                                  nmv.interface.ui_options.morphology.label)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
-        # Adjust the background color
-        bpy.context.scene.render.film_transparent = scene.NMV_SomaTransparentBackground
-        bpy.context.scene.world.color = scene.NMV_SomaBackgroundColor
+        # Background color
+        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Fix the WHITE BUG
         if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
@@ -922,7 +922,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
+        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
             self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
             return {'FINISHED'}
 
