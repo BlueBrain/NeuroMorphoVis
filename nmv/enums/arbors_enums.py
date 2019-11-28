@@ -30,6 +30,43 @@ class Arbors:
         pass
 
     ################################################################################################
+    # @Edges
+    ################################################################################################
+    class Edges:
+        """Arbors edges
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # Sharp edges
+        SHARP = 'ARBORS_EDGES_SHARP'
+
+        # Curvy edges
+        CURVY = 'ARBORS_EDGES_CURVY'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Sharp edges
+            if argument == 'sharp':
+                return Arbors.Edges.SHARP
+
+            # Curvy
+            elif argument == 'curvy':
+                return Arbors.Edges.CURVY
+
+            # By default, use the sharp edges
+            else:
+                return Arbors.Edges.SHARP
+
+    ################################################################################################
     # @Radii
     ################################################################################################
     class Radii:
@@ -43,7 +80,7 @@ class Arbors:
             pass
 
         # Set the radii of the arbors as specified in the morphology file
-        AS_SPECIFIED = 'ARBORS_RADII_AS_SPECIFIED'
+        ORIGINAL = 'ARBORS_RADII_ORIGINAL'
 
         # Set the radii of the arbors to a fixed value
         FIXED = 'ARBORS_RADII_FIXED'
@@ -67,7 +104,7 @@ class Arbors:
 
             # By default, use the original skeleton radii as specified in the morphology
             else:
-                return Arbors.Radii.AS_SPECIFIED
+                return Arbors.Radii.ORIGINAL
 
     ################################################################################################
     # @Roots
@@ -186,5 +223,7 @@ class Arbors:
              'Straight',
              'Represent each section by a single segment that connects its terminals (artistic)')
         ]
+
+
 
 

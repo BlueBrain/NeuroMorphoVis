@@ -17,9 +17,11 @@
 
 # System imports
 import os
+import sys
 
 # Blender imports
 import bpy
+from mathutils import Vector
 
 # Internal imports
 import nmv
@@ -29,6 +31,7 @@ import nmv.interface
 import nmv.skeleton
 import nmv.bbox
 import nmv.rendering
+import nmv.scene
 
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
@@ -93,15 +96,15 @@ def load_morphology(panel_object,
     global current_morphology_path
 
     # Read the data from a given morphology file either in .h5 or .swc formats
-    if bpy.context.scene.InputSource == nmv.enums.Input.H5_SWC_FILE:
+    if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
 
         #try:
         if True:
             # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.MorphologyFile
+            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
 
             # Ensure that a file has been selected
-            if 'Select File' in context_scene.MorphologyFile:
+            if 'Select File' in context_scene.NMV_MorphologyFile:
                 return None
 
             # If no morphologies are loaded
@@ -109,7 +112,7 @@ def load_morphology(panel_object,
 
                 # Update the morphology label
                 nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
-                    context_scene.MorphologyFile)
+                    context_scene.NMV_MorphologyFile)
 
                 # Load the morphology file
                 # Load the morphology from the file
@@ -123,7 +126,7 @@ def load_morphology(panel_object,
                     nmv.interface.ui_morphology = morphology_object
 
                     # Update the current morphology path
-                    current_morphology_path = context_scene.MorphologyFile
+                    current_morphology_path = context_scene.NMV_MorphologyFile
 
                     # New morphology loaded
                     return 'NEW_MORPHOLOGY_LOADED'
@@ -150,7 +153,7 @@ def load_morphology(panel_object,
 
                     # Update the morphology label
                     nmv.interface.ui_options.morphology.label = \
-                        nmv.file.ops.get_file_name_from_path(context_scene.MorphologyFile)
+                        nmv.file.ops.get_file_name_from_path(context_scene.NMV_MorphologyFile)
 
                     # Load the morphology file
                     # Load the morphology from the file
@@ -164,7 +167,7 @@ def load_morphology(panel_object,
                         nmv.interface.ui_morphology = morphology_object
 
                         # Update the current morphology path
-                        current_morphology_path = context_scene.MorphologyFile
+                        current_morphology_path = context_scene.NMV_MorphologyFile
 
                         # New morphology loaded
                         return 'NEW_MORPHOLOGY_LOADED'
@@ -188,14 +191,14 @@ def load_morphology(panel_object,
             return None
 
     # Read the data from a specific gid in a given circuit
-    elif bpy.context.scene.InputSource == nmv.enums.Input.CIRCUIT_GID:
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
 
         # Pass options from UI to system
-        nmv.interface.ui_options.morphology.blue_config = context_scene.CircuitFile
-        nmv.interface.ui_options.morphology.gid = context_scene.Gid
+        nmv.interface.ui_options.morphology.blue_config = context_scene.NMV_CircuitFile
+        nmv.interface.ui_options.morphology.gid = context_scene.NMV_Gid
 
         # Update the morphology label
-        nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.Gid)
+        nmv.interface.ui_options.morphology.label = 'neuron_' + str(context_scene.NMV_Gid)
 
         # Check if the morphology is loaded before or not
         if current_morphology_label is None:
@@ -233,6 +236,54 @@ def load_morphology(panel_object,
 
 
 ####################################################################################################
+# @configure_output_directory
+####################################################################################################
+def configure_output_directory(options,
+                               context=None):
+    """Configures the output directory after loading the data.
+
+    :param options:
+        System options.
+    :param context:
+        Context.
+    """
+
+    # If the output directory is not set
+    if options.io.output_directory is None:
+
+        # Suggest an output directory at the home folder
+        suggested_output_folder = '%s/neuromorphovis-output' % os.path.expanduser('~')
+
+        # Check if the output directory already exists or not
+        if os.path.exists(suggested_output_folder):
+
+            # Update the system options
+            nmv.interface.ui_options.io.output_directory = suggested_output_folder
+
+            # Update the UI
+            context.scene.NMV_OutputDirectory = suggested_output_folder
+
+        # Otherwise, create it
+        else:
+
+            # Try to create the directory there
+            try:
+
+                # Create the directory
+                os.mkdir(suggested_output_folder)
+
+                # Update the system options
+                nmv.interface.ui_options.io.output_directory = suggested_output_folder
+
+                # Update the UI
+                context.scene.NMV_OutputDirectory = suggested_output_folder
+
+            # Voila
+            except ValueError:
+                pass
+
+
+####################################################################################################
 # @validate_output_directory
 ####################################################################################################
 def validate_output_directory(panel_object,
@@ -251,13 +302,13 @@ def validate_output_directory(panel_object,
         panel_object.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
         return {'FINISHED'}
 
-    if not nmv.file.ops.path_exists(context_scene.OutputDirectory):
+    if not nmv.file.ops.path_exists(context_scene.NMV_OutputDirectory):
         panel_object.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
         return {'FINISHED'}
 
 
 ####################################################################################################
-# @render_mesh_image
+# @render_morphology_image
 ####################################################################################################
 def render_morphology_image(panel_object,
                             context_scene,
@@ -284,19 +335,19 @@ def render_morphology_image(panel_object,
     panel_object.report({'INFO'}, 'Rendering ... Wait')
 
     # Compute the bounding box for a close up view
-    if context_scene.MorphologyRenderingView == \
-            nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+    if context_scene.NMV_MorphologyRenderingView == \
+            nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.MeshCloseUpSize)
+            extent=context_scene.NMV_MeshCloseUpSize)
 
     # Compute the bounding box for a mid shot view
-    elif context_scene.MorphologyRenderingView == \
-            nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+    elif context_scene.NMV_MorphologyRenderingView == \
+            nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
 
-        # Compute the bounding box for the available meshes only
-        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+        # Compute the bounding box for the available curves and meshes
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
 
     # Compute the bounding box for the wide shot view that correspond to the whole morphology
     else:
@@ -315,18 +366,22 @@ def render_morphology_image(panel_object,
     else:
         view_prefix = ''
 
+    # Background color
+    nmv.scene.ops.set_background_color(
+        color=context_scene.NMV_MorphologyBackgroundColor,
+        transparent=context_scene.NMV_MorphologyTransparentBackground)
+
     # Render at a specific resolution
-    if context_scene.RenderingType == \
-            nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION:
+    if context_scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
 
         # Render the image
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=view,
-            image_resolution=context_scene.MorphologyFrameResolution,
+            image_resolution=context_scene.NMV_MorphologyFrameResolution,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Render at a specific scale factor
     else:
@@ -335,10 +390,10 @@ def render_morphology_image(panel_object,
         nmv.rendering.render_to_scale(
             bounding_box=bounding_box,
             camera_view=view,
-            image_scale_factor=context_scene.MorphologyFrameScaleFactor,
+            image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')
@@ -372,14 +427,14 @@ def render_mesh_image(panel_object,
     panel_object.report({'INFO'}, 'Rendering ... Wait')
 
     # Compute the bounding box for a close up view
-    if context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+    if context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.MeshCloseUpSize)
+            extent=context_scene.NMV_MeshCloseUpSize)
 
     # Compute the bounding box for a mid shot view
-    elif context_scene.MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+    elif context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
 
         # Compute the bounding box for the available meshes only
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -401,18 +456,23 @@ def render_mesh_image(panel_object,
     else:
         view_prefix = 'FRONT'
 
+    # Background color
+    nmv.scene.ops.set_background_color(
+        color=context_scene.NMV_MeshBackgroundColor,
+        transparent=context_scene.NMV_MeshTransparentBackground)
+
     # Render at a specific resolution
-    if context_scene.MeshRenderingResolution == \
+    if context_scene.NMV_MeshRenderingResolution == \
             nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
 
         # Render the image
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=view,
-            image_resolution=context_scene.MeshFrameResolution,
+            image_resolution=context_scene.NMV_MeshFrameResolution,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Render at a specific scale factor
     else:
@@ -421,10 +481,49 @@ def render_mesh_image(panel_object,
         nmv.rendering.render_to_scale(
             bounding_box=bounding_box,
             camera_view=view,
-            image_scale_factor=context_scene.MeshFrameScaleFactor,
+            image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.KeepMeshCameras)
+            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')
+
+
+####################################################################################################
+# @render_morphology_image
+####################################################################################################
+def render_morphology_image_for_catalogue(resolution_scale_factor=10,
+                                          view='FRONT'):
+    """Renders an image of the morphology reconstructed in the scene.
+
+    :param resolution_scale_factor:
+        The scale factor that will determine the resolution.
+    :param view:
+        Rendering view.
+    """
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+
+    # Compute the bounding box for the available curves and meshes
+    bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+    # Get the view prefix
+    if view == nmv.enums.Camera.View.FRONT:
+        view_prefix = 'FRONT'
+    elif view == nmv.enums.Camera.View.SIDE:
+        view_prefix = 'SIDE'
+    elif view == nmv.enums.Camera.View.TOP:
+        view_prefix = 'TOP'
+    else:
+        view_prefix = ''
+
+    # Render the image
+    nmv.rendering.render_to_scale(
+        bounding_box=bounding_box,
+        camera_view=view,
+        image_scale_factor=resolution_scale_factor,
+        image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+        image_directory=nmv.interface.ui_options.io.analysis_directory)

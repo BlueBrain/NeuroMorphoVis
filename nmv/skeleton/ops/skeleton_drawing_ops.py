@@ -269,6 +269,53 @@ def extrude_connected_sections(section,
             roots_connection=roots_connection)
 
 
+
+
+def get_connected_sections_poly_lines_recursively(section,
+                                                  poly_lines=[],
+                                                  poly_line_samples=[],
+                                                  branching_level=0,
+                                                  max_branching_level=nmv.consts.Math.INFINITY):
+    # Ignore the drawing if the section is None
+    if section is None:
+        return
+
+    # Increment the branching level
+    branching_level += 1
+
+    # Get a list of all the poly-line samples that corresponds to the given section
+    section_poly_line_samples = nmv.skeleton.ops.get_section_poly_line(section=section)
+
+    # Extend the polyline samples for final mesh building
+    poly_line_samples.extend(section_poly_line_samples)
+
+    # If the section does not have any children, then draw the section and clean the list
+    if not section.has_children() or branching_level >= max_branching_level:
+
+        # Polyline name
+        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
+
+        # Construct the poly-line
+        poly_line = nmv.geometry.PolyLine(
+            name=poly_line_name,
+            samples=copy.deepcopy(poly_line_samples))
+
+        # Append the polyline to the list, and copy the data before clearing the list
+        poly_lines.append(copy.deepcopy(poly_line))
+
+        # Clean @poly_line_data to collect the data from the remaining sections
+        poly_line_samples[:] = []
+
+        # If no more branching is required, then exit the loop
+        return
+
+    # Iterate over the children sections and draw them, if any
+    for child in section.children:
+        get_connected_sections_poly_lines_recursively(
+            section=child, poly_lines=poly_lines, poly_line_samples=poly_line_samples,
+            branching_level=branching_level, max_branching_level=max_branching_level)
+
+
 def get_connected_sections_poly_line_recursively(section,
                                                  poly_lines_data=[],
                                                  poly_line_data=[],
@@ -304,7 +351,6 @@ def get_connected_sections_poly_line_recursively(section,
 
     # Iterate over the children sections and draw them, if any
     for child in section.children:
-
         get_connected_sections_poly_line_recursively(
             section=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
             branching_level=branching_level, max_branching_level=max_branching_level)

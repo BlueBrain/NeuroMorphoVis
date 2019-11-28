@@ -15,16 +15,190 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import os, sys, bpy
-
 # Blender imports
+import bpy
 from mathutils import Vector
 
-# Internal impots
-import nmv
+# Internal imports
 import nmv.bbox
 import nmv.mesh
+import nmv.consts
+import nmv.utilities
+
+
+####################################################################################################
+# @view_axis
+####################################################################################################
+def view_axis(axis='TOP'):
+    """View the axis in the view.
+
+    :param axis:
+        An enum in ['LEFT', 'RIGHT', 'BOTTOM', 'TOP', 'FRONT', 'BACK'].
+    """
+
+    if nmv.utilities.is_blender_280():
+        bpy.ops.view3d.view_axis(type=axis)
+    else:
+        bpy.ops.view3d.viewnumpad(type=axis)
+
+
+####################################################################################################
+# @select_object
+####################################################################################################
+def select_object(scene_object):
+    """Selects a given object in the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param scene_object:
+        A given scene object to be selected.
+    """
+
+    if nmv.utilities.is_blender_280():
+        scene_object.select_set(True)
+    else:
+        scene_object.select = True
+
+
+####################################################################################################
+# @deselect_object
+####################################################################################################
+def deselect_object(scene_object):
+    """Deselects a given object in the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param scene_object:
+        A given scene object to be deselected.
+    """
+
+    if nmv.utilities.is_blender_280():
+        scene_object.select_set(False)
+    else:
+        scene_object.select = False
+
+
+####################################################################################################
+# @set_background_color
+####################################################################################################
+def set_background_color(color,
+                         transparent=False):
+    """Sets the background image properties.
+
+    :param color:
+        A given color.
+    :param transparent:
+        A flag to indicate if the image is transparent or not. Setting this flag to True overrides
+        the color.
+    """
+
+    # 2.8
+    if nmv.utilities.is_blender_280():
+
+        # Color
+        bpy.context.scene.world.color = color
+
+        # Fix the WHITE BUG
+        if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+
+        # Transparency
+        bpy.context.scene.render.film_transparent = transparent
+
+    # 2.7
+    else:
+
+        # Color
+        bpy.context.scene.world.horizon_color = color
+
+        # Transparency
+        if transparent:
+            bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+        else:
+            bpy.context.scene.render.alpha_mode = 'SKY'
+
+
+####################################################################################################
+# @get_active_object
+####################################################################################################
+def get_active_object():
+    """Returns a reference to the active object in the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :return:
+        A reference to the active object in the scene.
+    """
+
+    if nmv.utilities.is_blender_280():
+        return bpy.context.active_object
+    else:
+        return bpy.context.scene.objects.active
+
+
+####################################################################################################
+# @link_object_to_scene
+####################################################################################################
+def link_object_to_scene(input_object):
+    """Links a reconstructed object to the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param input_object:
+        The given object that will be linked to the scene.
+    """
+
+    if nmv.utilities.is_blender_280():
+        bpy.context.scene.collection.objects.link(input_object)
+    else:
+        bpy.context.scene.objects.link(input_object)
+
+
+####################################################################################################
+# @unlink_object_from_scene
+####################################################################################################
+def unlink_object_from_scene(scene_object):
+    """Links a reconstructed object to the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param scene_object:
+        A scene object to be unlinked from the scene.
+    """
+
+    if nmv.utilities.is_blender_280():
+        bpy.context.scene.collection.objects.unlink(scene_object)
+    else:
+        bpy.context.scene.objects.unlink(scene_object)
+
+
+####################################################################################################
+# @hide_object
+####################################################################################################
+def hide_object(scene_object):
+    """Hides a shown object in the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param scene_object:
+        A given object to be seen.
+    """
+
+    if nmv.utilities.is_blender_280():
+        scene_object.hide_viewport = True
+    else:
+        scene_object.hide = True
+
+
+####################################################################################################
+# @unhide_object
+####################################################################################################
+def unhide_object(scene_object):
+    """Shows a hidden object in the scene.
+    NOTE: This function makes the code compatible with Blender 2.7 and 2.8.
+
+    :param scene_object:
+        A given object to be shown.
+    """
+
+    if nmv.utilities.is_blender_280():
+        scene_object.hide_viewport = False
+    else:
+        scene_object.hide = False
 
 
 ####################################################################################################
@@ -41,10 +215,12 @@ def clear_default_scene():
         if scene_object.name == 'Cube' or \
            scene_object.name == 'Lamp' or \
            scene_object.name == 'Camera':
-            scene_object.select = True
+            select_object(scene_object)
 
             # Delete the object
+            nmv.utilities.disable_std_output()
             bpy.ops.object.delete()
+            nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -62,15 +238,17 @@ def clear_scene():
 
     # Select each object in the scene
     for scene_object in bpy.context.scene.objects:
-        scene_object.select = True
+        select_object(scene_object)
 
-    # Delete all the objects
+    # Delete the object
+    nmv.utilities.disable_std_output()
     bpy.ops.object.delete()
+    nmv.utilities.enable_std_output()
 
     # Unlink all the objects in all the layers
-    for scene in bpy.data.scenes:
-        for scene_object in scene.objects:
-            scene.objects.unlink(scene_object)
+    #for scene in bpy.data.scenes:
+    #    for scene_object in scene.objects:
+    #        unlink_object_from_scene(scene_object)
 
     # Select all the meshes, unlink them and clear their data
     for scene_mesh in bpy.data.meshes:
@@ -105,10 +283,12 @@ def clear_lights():
 
         # Object selection
         if 'Lamp' in scene_object.name:
-            scene_object.select = True
+            select_object(scene_object)
 
             # Delete the object
+            nmv.utilities.disable_std_output()
             bpy.ops.object.delete()
+            nmv.utilities.enable_std_output()
 
     # Select all the light, unlink them and clear their data
     for scene_lamp in bpy.data.lamps:
@@ -125,7 +305,7 @@ def select_all():
 
     # Set the '.select' flag of all the objects in the scene to True.
     for scene_object in bpy.context.scene.objects:
-        scene_object.select = True
+        select_object(scene_object)
 
 
 ####################################################################################################
@@ -137,7 +317,7 @@ def deselect_all():
 
     # Set the '.select' flag of all the objects in the scene to False.
     for scene_object in bpy.context.scene.objects:
-        scene_object.select = False
+        deselect_object(scene_object)
 
 
 ####################################################################################################
@@ -152,7 +332,7 @@ def select_objects(object_list):
 
     # Set the '.select' flag of all the objects in the scene to True
     for scene_object in object_list:
-        scene_object.select = True
+        select_object(scene_object)
 
 
 ####################################################################################################
@@ -168,8 +348,23 @@ def select_object_by_name(object_name):
     # Set the '.select' flag of the object to True
     for scene_object in bpy.context.scene.objects:
         if scene_object.name == object_name:
-            scene_object.select = True
+            select_object(scene_object)
 
+
+####################################################################################################
+# @select_object_containing_string
+####################################################################################################
+def select_object_containing_string(search_string):
+    """Select an object in the scene given part of its name.
+
+    :param search_string:
+        The name of first object that contains part of the given string.
+    """
+
+    # Set the '.select' flag of the object to True
+    for scene_object in bpy.context.scene.objects:
+        if search_string in scene_object.name:
+            select_object(scene_object)
 
 ####################################################################################################
 # @deselect_object_by_name
@@ -184,7 +379,7 @@ def deselect_object_by_name(object_name):
     # Set the '.select' flag of the object to False
     for scene_object in bpy.context.scene.objects:
         if scene_object.name == object_name:
-            scene_object.select = False
+            deselect_object(scene_object)
 
 
 ####################################################################################################
@@ -200,7 +395,7 @@ def select_all_meshes_in_scene():
     # Select only the objects of type meshes
     for scene_object in bpy.context.scene.objects:
         if scene_object.type == 'MESH':
-            scene_object.select = True
+            select_object(scene_object)
 
 
 ####################################################################################################
@@ -213,7 +408,7 @@ def deselect_all_meshes_in_scene():
     # Select only the objects of type meshes
     for scene_object in bpy.context.scene.objects:
         if scene_object.type == 'MESH':
-            scene_object.select = False
+            deselect_object(scene_object)
 
 
 ####################################################################################################
@@ -229,7 +424,7 @@ def select_all_curves_in_scene():
     # Deselect only the objects of type curves
     for scene_object in bpy.context.scene.objects:
         if scene_object.type == 'CURVE':
-            scene_object.select = True
+            select_object(scene_object)
 
 
 ####################################################################################################
@@ -242,7 +437,7 @@ def deselect_all_curves_in_scene():
     # Deselect only the objects of type curves
     for scene_object in bpy.context.scene.objects:
         if scene_object.type == 'CURVE':
-            scene_object.select = False
+            deselect_object(scene_object)
 
 
 ####################################################################################################
@@ -320,10 +515,12 @@ def delete_object_in_scene(scene_object):
     deselect_all()
 
     # Select this particular object, to highlight it
-    scene_object.select = True
+    select_object(scene_object)
 
     # Delete the selected object
+    nmv.utilities.disable_std_output()
     bpy.ops.object.delete(use_global=False)
+    nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -343,10 +540,12 @@ def delete_list_objects(object_list):
     for scene_object in object_list:
 
         # Select this particular object, to highlight it
-        scene_object.select = True
+        select_object(scene_object)
 
         # Delete the selected object
+        nmv.utilities.disable_std_output()
         bpy.ops.object.delete(use_global=False)
+        nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -363,10 +562,11 @@ def delete_all():
     for scene_object in bpy.context.scene.objects:
 
         # Select this particular object, to highlight it
-        scene_object.select = True
+        select_object(scene_object)
 
-        # Delete the selected object
+        nmv.utilities.disable_std_output()
         bpy.ops.object.delete(use_global=False)
+        nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -386,10 +586,13 @@ def set_active_object(scene_object):
     deselect_all()
 
     # Select the object
-    scene_object.select = True
+    select_object(scene_object)
 
     # Set it active
-    bpy.context.scene.objects.active = scene_object
+    if nmv.utilities.is_blender_280():
+        bpy.context.view_layer.objects.active = scene_object
+    else:
+        bpy.context.scene.objects.active = scene_object
 
     # Return a reference to the mesh object again for convenience
     return scene_object
@@ -662,7 +865,7 @@ def duplicate_object(original_object,
 
     # Deselect all the objects in the scene
     for scene_object in bpy.context.scene.objects:
-        scene_object.select = False
+        deselect_object(scene_object)
 
     # Duplicate the object
     duplicated_object = original_object.copy()
@@ -678,11 +881,11 @@ def duplicate_object(original_object,
 
     # Link it to the scene
     if link_to_scene:
-        bpy.context.scene.objects.link(duplicated_object)
+        link_object_to_scene(duplicated_object)
 
         # Deselect all the objects in the scene
         for scene_object in bpy.context.scene.objects:
-            scene_object.select = False
+            deselect_object(scene_object)
 
     # Return a reference to the duplicate object
     return duplicated_object
@@ -788,7 +991,10 @@ def view_all_scene():
     """
 
     # Switch to the top view
-    bpy.ops.view3d.viewnumpad(type='TOP')
+    if nmv.utilities.is_blender_280():
+        pass
+    else:
+        bpy.ops.view3d.viewnumpad(type='TOP')
 
     # View all the objects in the scene
     bpy.ops.view3d.view_all()

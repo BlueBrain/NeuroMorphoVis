@@ -22,18 +22,13 @@
 ####################################################################################################
 
 # System imports
-import sys, os, imp
-
-# NeuroMorphoVis version
-v = open("%s/.version" % os.path.dirname(os.path.realpath(__file__)), "r")
-version = v.read()
-version = version.split(' ')
-v.close()
+import sys
+import os
+import imp
 
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2019, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
-__version__     = version
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -47,13 +42,13 @@ bl_info = {
     # The author of this add-on
     "author": "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version": (1, 3, 0),
+    "version": (1, 4, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
-    "blender": (2, 7, 9),
+    "blender": (2, 80, 0),
     # This is where users should look for this add-on.
-    "location": "View 3D > Edit Mode > Tool Shelf",
+    # "location": "View 3D > Edit Mode > Tool Shelf",
     # Description
     "description": "Morphology reconstruction, analysis and visualization to mesh reconstruction. "
                    "The Add-on was developed by the Blue Brain Project (BBP) at Ecole "
@@ -78,36 +73,6 @@ bl_info = {
 # Append the modules path to the system paths to be able to load the internal python modules
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-if "bpy" in locals():
-
-    # Import the modules
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
-    import nmv.interface.ui.about_panel
-
-    # Reloading the modules
-    imp.reload(nmv.interface.ui.about_panel)
-    imp.reload(nmv.interface.ui.io_panel)
-    imp.reload(nmv.interface.ui.analysis_panel)
-    imp.reload(nmv.interface.ui.edit_panel)
-    imp.reload(nmv.interface.ui.morphology_panel)
-    imp.reload(nmv.interface.ui.mesh_panel)
-
-else:
-
-    # Import the modules
-    import nmv.interface.ui.io_panel
-    import nmv.interface.ui.analysis_panel
-    import nmv.interface.ui.edit_panel
-    import nmv.interface.ui.soma_panel
-    import nmv.interface.ui.morphology_panel
-    import nmv.interface.ui.mesh_panel
-    import nmv.interface.ui.about_panel
-
 
 ####################################################################################################
 # @register
@@ -115,6 +80,17 @@ else:
 def register():
     """Register the different modules of the interface.
     """
+
+    # Import the modules
+    import nmv.interface
+    import nmv.utilities
+
+    # Reloading the modules
+    imp.reload(nmv.interface)
+
+    nmv.logger.header('Loading NeuroMorphoVis')
+    nmv.logger.info('Version %s' % str(nmv.utilities.get_nmv_version()))
+    nmv.logger.info('Copyrights (C) Marwan Abdellah, Blue Brain Project (BBP) - (EPFL)')
 
     # Register panels
     nmv.interface.ui.io_panel.register_panel()
@@ -132,6 +108,11 @@ def register():
 def unregister():
     """Unregister the different modules of the interface.
     """
+
+    # Import the modules
+    import nmv.interface
+
+    nmv.logger.header('Unloading NeuroMorphoVis')
 
     # Un-register panels
     nmv.interface.ui.io_panel.unregister_panel()

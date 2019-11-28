@@ -284,7 +284,7 @@ class CircuitSpineBuilder:
         # Link the spines to the scene in a single step
         nmv.logger.info('Linking spines to the scene')
         for spine_object in spines_objects:
-            bpy.context.scene.objects.link(spine_object)
+            nmv.scene.link_object_to_scene(spine_object)
 
         # Link the protrusions to the scene in a single step
         nmv.logger.info('Linking protrusions to the scene')

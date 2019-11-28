@@ -58,6 +58,108 @@ def compute_section_centroid_from_poly_line_data(poly_line_data):
 
 
 ####################################################################################################
+# @create_poly_lines_object_base
+####################################################################################################
+def create_poly_lines_object_base(name='poly_lines',
+                                  bevel_object=None,
+                                  materials_list=None,
+                                  caps=True,
+                                  texture_size=5.0):
+    """Creates an empty object that can be used to append multiple poly-lines and draw them in a
+    single step very efficiently.
+
+    NOTE: The poly-lines will be added later to the resulting object, this is just the base object.
+
+    :param name:
+        Poly-line object name.
+    :param bevel_object:
+        A given bevel object used to solidify the poly-line.
+    :param materials_list:
+        A list of all the skeleton materials.
+    :param caps:
+        A flag indicating whether the caps will be closed or open.
+    :param texture_size:
+        The size of the bump map of the assigned texture.
+    :return:
+        A reference to the created poly-lines object.
+    """
+    # Create the object as a new curve
+    poly_lines_object = bpy.data.curves.new(name=name, type='CURVE')
+
+    # The line is drawn in 3D
+    poly_lines_object.dimensions = '3D'
+
+    # Fill the line
+    poly_lines_object.fill_mode = 'FULL'
+
+    # The thickness of the line should be by default set to 1.0. This value will be scaled later
+    # at the two points of the line.
+    poly_lines_object.bevel_depth = 1.0
+
+    # Adjust the texture coordinates of the poly-line
+    # NOTE: The value 5 has been chosen after trial-and-error
+    poly_lines_object.use_auto_texspace = False
+    poly_lines_object.texspace_size[0] = texture_size
+    poly_lines_object.texspace_size[1] = texture_size
+    poly_lines_object.texspace_size[2] = texture_size
+
+    # Use caps if requested
+    poly_lines_object.use_fill_caps = caps
+
+    # If a bevel object is given, use it for scaling the diameter of the poly-line
+    if bevel_object is not None:
+        poly_lines_object.bevel_object = bevel_object
+
+    # If a list of materials is given, then append it to the skeleton object
+    if materials_list is not None:
+        for material in materials_list:
+            poly_lines_object.materials.append(material)
+
+    # Return a reference to the created object
+    return poly_lines_object
+
+
+####################################################################################################
+# @append_poly_line_to_base_object
+####################################################################################################
+def append_poly_line_to_base_object(base_object,
+                                    poly_line,
+                                    poly_line_type='POLY'):
+    """Creates a poly-line object and appends to the aggregate poly-lines-object that is created
+    before.
+
+    :param base_object:
+        A previously created poly-lines object where we going to append a new poly-line object
+        constructed from the given poly_line_data.
+    :param poly_line:
+        The new poly-line data that will be used to create the new poly-line object that will be
+        appended to the given base_object.
+    :param poly_line_type:
+        The type of the poly-line: ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS']
+    """
+
+    # Create a new poly-line object integrated into the base object
+    poly_line_object = base_object.splines.new(poly_line_type)
+
+    # Define the number of samples of the poly-line object
+    # NOTE: Use n-1 points because once the poly-line is created it has already one point added
+
+    poly_line_object.points.add(len(poly_line.samples) - 1)
+
+    # Define the material for this poly-line
+    poly_line_object.material_index = poly_line.material_index
+
+    # Add the points (or the samples) and their radii to the poly-line curve object
+    for i, poly_line_sample in enumerate(poly_line.samples):
+
+        # Sample coordinates
+        poly_line_object.points[i].co = poly_line_sample[0]
+
+        # Sample radius
+        poly_line_object.points[i].radius = poly_line_sample[1]
+
+
+####################################################################################################
 # @draw_line
 ####################################################################################################
 def draw_line(point1=Vector((0, 0, 0)),
@@ -199,117 +301,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     return line_object
 
 
-####################################################################################################
-# @draw_poly_line
-####################################################################################################
-def draw_poly_line(poly_line_data,
-                   format='SOLID',
-                   name='poly_line',
-                   material=None,
-                   color=None,
-                   bevel_object=None,
-                   caps=True,
-                   curve_style='POLY'):
-    """Draw a poly line (connected segments of lines) with multiple formats.
 
-    :param poly_line_data:
-        The data of the poly-line such as its points and radii.
-    :param format:
-        The format can be SIMPLE or SOLID.
-    :param name:
-        The name of the line.
-    :param material:
-        The material of the line.
-    :param color:
-        The color of the poly-line.
-    :param bevel_object:
-        A given bevel object that would scale the diameter of the poly-line.
-    :param caps:
-        A flag to indicate the line terminals are filled with caps or not.
-    :param curve_style:
-        A parameter to select amongst the following options:
-            ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS'], by default POLY.
-    :return:
-        A reference to the line object.
-    """
-
-    # Setup line data
-    line_data = bpy.data.curves.new(name=name, type='CURVE')
-
-    # The line is drawn in 3D
-    line_data.dimensions = '3D'
-
-    # Fill the line
-    line_data.fill_mode = 'FULL'
-
-    # Setup the spatial data of a SOLID line
-    if format == 'SOLID':
-
-        # The thickness of the line should be by default set to 1.0. This value will be scaled later
-        # at the two points of the line.
-        line_data.bevel_depth = 1.0
-
-        # Adjust the texture coordinates of the poly-line.
-        line_data.use_auto_texspace = False
-        line_data.texspace_size[0] = 5
-        line_data.texspace_size[1] = 5
-        line_data.texspace_size[2] = 5
-
-        # If a bevel object is given, use it for scaling the diameter of the poly-line
-        if bevel_object is not None:
-            line_data.bevel_object = bevel_object
-            line_data.use_fill_caps = caps
-
-    # Setup the spatial data of a SIMPLE line
-    else:
-
-        # The thickness of medium line can be set to 0.1
-        line_data.bevel_depth = 0.1
-
-    # If a material is given, then use it directly
-    if material is not None:
-
-        # Assign it directly to the line data
-        line_data.materials.append(material)
-
-    # Otherwise, check if a color is given.
-    else:
-
-        # Create a material from a given color
-        if color is not None:
-            # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
-            line_material.diffuse_color = color
-            line_data.materials.append(line_material)
-
-    # Add the points along the poly-line
-    # NOTE: add n-1 points to the array, because once the poly-line is created it has already one
-    # point added.
-    # Options: ['POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS']
-    poly_line_strip = line_data.splines.new(curve_style)
-    poly_line_strip.points.add(len(poly_line_data) - 1)
-
-    # Add the points (or the samples) and their radii to the poly-line curve
-    for i, point in enumerate(poly_line_data):
-        poly_line_strip.points[i].co = point[0]
-        poly_line_strip.points[i].radius = point[1]
-
-    # Create a curve that uses the curve_data.
-    line_strip = bpy.data.objects.new(str(name), line_data)
-
-    # For the NURBS, add the end point and use a high interpolation order, 6
-    if curve_style == 'NURBS':
-        line_strip.data.splines[0].order_u = 6
-        line_strip.data.splines[0].use_endpoint_u = True
-
-    # Link this curve to the scene
-    bpy.context.scene.objects.link(line_strip)
-
-    # Assume that the location of the line is set at the origin until further notice
-    line_strip.location = Vector((0, 0, 0))
-
-    # Return a reference to it
-    return line_strip
 
 
 ####################################################################################################
@@ -419,7 +411,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
         line_strip.data.splines[0].use_endpoint_u = True
 
     # Link this curve to the scene
-    bpy.context.scene.objects.link(line_strip)
+    nmv.scene.link_object_to_scene(line_strip)
 
     # Assume that the location of the line is set at the origin until further notice
     line_strip.location = Vector((0, 0, 0))

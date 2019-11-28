@@ -42,8 +42,11 @@ class Soma:
         # Use a symbolic representation, sphere
         SPHERE = 'SOMA_SYMBOLIC_SPHERE'
 
+        # Generate soma with MetaBalls
+        META_BALLS = 'SOMA_METABALLS_MESH'
+
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
-        REALISTIC = 'SOMA_REALISTIC_MESH'
+        SOFT_BODY = 'SOMA_SOFT_BODY_MESH'
 
         ############################################################################################
         # @__init__
@@ -72,25 +75,33 @@ class Soma:
             elif argument == 'sphere':
                 return Soma.Representation.SPHERE
 
-            # Realistic profile
+            # Soft body reconstruction
+            elif argument == 'metaballs':
+                return Soma.Representation.META_BALLS
+
+            # Soft body reconstruction
+            elif argument == 'softbody':
+                return Soma.Representation.SOFT_BODY
+
+            # MetaBalls representation
             else:
-                return Soma.Representation.REALISTIC
+                return Soma.Representation.META_BALLS
 
     ################################################################################################
-    # @ReconstructionMethod
+    # @Profile
     ################################################################################################
-    class ReconstructionMethod:
-        """Soma reconstruction method enumerators
+    class Profile:
+        """Profile enumerators
         """
 
         # Use the profile points only
-        PROFILE_POINTS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_PROFILE_POINTS_ONLY'
+        PROFILE_POINTS_ONLY = 'SOMA_PROFILE_BASED_ON_PROFILE_POINTS_ONLY'
 
         # Use the arbors
-        ARBORS_ONLY = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_ONLY'
+        ARBORS_ONLY = 'SOMA_PROFILE_BASED_ON_ARBORS_ONLY'
 
         # Use the arbors and the profile points
-        COMBINED = 'SOMA_RECONSTRUCTION_METHOD_ARBORS_AND_PROFILE_POINTS'
+        COMBINED = 'SOMA_PROFILE_BASED_ON_ARBORS_AND_PROFILE_POINTS'
 
         ############################################################################################
         # @__init__
@@ -106,23 +117,24 @@ class Soma:
             """Gets the enumerator from the argument directly.
 
             :param argument:
-                Reconstruction argument.
+                Soma profile argument.
             :return:
                 Soma reconstruction method enumerator.
             """
 
             # Arbors only
             if argument == 'arbors':
-                return Soma.ReconstructionMethod.ARBORS_ONLY
+                return Soma.Profile.ARBORS_ONLY
 
             # Profile points only
             elif argument == 'profile':
-                return Soma.ReconstructionMethod.PROFILE_POINTS_ONLY
+                return Soma.Profile.PROFILE_POINTS_ONLY
 
             elif argument == 'combined':
-                return Soma.ReconstructionMethod.COMBINED
+                return Soma.Profile.COMBINED
 
             # Arbors only by default
             else:
-                return Soma.ReconstructionMethod.ARBORS_ONLY
+                return Soma.Profile.ARBORS_ONLY
+
 

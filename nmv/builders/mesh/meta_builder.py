@@ -94,10 +94,12 @@ class MetaBuilder:
         # Stats. about the mesh
         self.mesh_statistics = 'MetaBuilder Mesh: \n'
 
+        self.radii_error = list()
+
     ################################################################################################
-    # @verify_morphology_skeleton
+    # @update_morphology_skeleton
     ################################################################################################
-    def verify_morphology_skeleton(self):
+    def update_morphology_skeleton(self):
         """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
         """
@@ -203,15 +205,28 @@ class MetaBuilder:
         # Proceed segment by segment
         for i in range(len(samples) - 1):
 
-            if samples[i].radius < self.smallest_radius:
-                self.smallest_radius = samples[i].radius
+            radius_0 = samples[i].radius
+            radius_1 = samples[i + 1].radius
+
+            if radius_0 < 0.1:
+                self.radii_error.append(1.0 - radius_0)
+                radius_0 = 0.1
+
+            if radius_1 < 0.1:
+                radius_1 = 0.1
+
+            if radius_0 < self.smallest_radius:
+                self.smallest_radius = radius_0
+
+            if radius_1 < self.smallest_radius:
+                self.smallest_radius = radius_1
 
             # Create the meta segment
             self.create_meta_segment(
                 p1=samples[i].point,
                 p2=samples[i + 1].point,
-                r1=samples[i].radius * self.magic_scale_factor,
-                r2=samples[i + 1].radius * self.magic_scale_factor)
+                r1=radius_0 * self.magic_scale_factor,
+                r2=radius_1 * self.magic_scale_factor)
 
     ################################################################################################
     # @create_meta_arbor
@@ -299,7 +314,7 @@ class MetaBuilder:
         scene = bpy.context.scene
 
         # Link the meta object to the scene
-        scene.objects.link(self.meta_mesh)
+        nmv.scene.link_object_to_scene(self.meta_mesh)
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
@@ -393,7 +408,7 @@ class MetaBuilder:
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
-        self.meta_mesh.select = True
+        nmv.scene.select_object(self.meta_mesh)
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
@@ -426,12 +441,12 @@ class MetaBuilder:
         """
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        # Apply skeleton-based operation, if required, to slightly modify the skeleton
+        # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.common.modify_morphology_skeleton, self)
+            nmv.builders.mesh.update_morphology_skeleton, self)
         self.profiling_statistics += stats
 
         # Initialize the meta object
@@ -454,12 +469,12 @@ class MetaBuilder:
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.common.decimate_neuron_mesh, self)
+            nmv.builders.mesh.common.decimate_neuron_mesh, self)
         self.profiling_statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.common.create_skeleton_materials(builder=self)
+        nmv.builders.mesh.common.create_skeleton_materials(builder=self)
 
         # Assign the material to the mesh
         self.assign_material_to_mesh()

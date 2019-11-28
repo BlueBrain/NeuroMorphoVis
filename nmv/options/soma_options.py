@@ -33,16 +33,19 @@ class SomaOptions:
         """
 
         # Reconstruction method
-        self.method = nmv.enums.Soma.ReconstructionMethod.ARBORS_ONLY
+        self.method = nmv.enums.Soma.Representation.META_BALLS
+
+        # Meta ball resolution in case of using the MetaBall generation approach
+        self.meta_ball_resolution = 0.99
+
+        # Radius scale factor
+        self.radius_scale_factor = 0.5
 
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT
 
         # Subdivision level of the sphere
         self.subdivision_level = nmv.consts.SoftBody.SUBDIVISIONS_DEFAULT
-
-        # Irregular subdivisions for the faces created for extruding the arbors
-        self.irregular_subdivisions = False
 
         # Extrude the arbors from the soma to cover the maximal volume
         self.full_volume_extrusion = True
@@ -76,6 +79,12 @@ class SomaOptions:
 
         # Camera view
         self.camera_view = nmv.enums.Camera.View.FRONT
+
+        # Render the soma to a transparent image
+        self.transparent_film = True
+
+        # Render the soma to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
 
         # Export soma mesh in .ply format
         self.export_ply = False

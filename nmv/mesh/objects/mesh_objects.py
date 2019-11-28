@@ -21,6 +21,7 @@ import bpy
 # Internal modules
 import nmv
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -48,7 +49,7 @@ def create_plane(radius=1,
     bpy.ops.mesh.primitive_plane_add(radius=radius, location=location)
 
     # Get a reference to it, from the current active objects
-    plane_mesh = bpy.context.scene.objects.active
+    plane_mesh = nmv.scene.get_active_object()
 
     # Rename it
     plane_mesh.name = name
@@ -85,7 +86,7 @@ def create_ico_sphere(radius=1,
     bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, size=radius, location=location)
 
     # Get a reference to it, from the current active objects
-    ico_sphere_mesh = bpy.context.scene.objects.active
+    ico_sphere_mesh = nmv.scene.get_active_object()
 
     # Rename it
     ico_sphere_mesh.name = name
@@ -119,11 +120,15 @@ def create_uv_sphere(radius=1,
     nmv.scene.ops.deselect_all()
 
     # Add a new sphere
-    bpy.ops.mesh.primitive_uv_sphere_add(
-        segments=subdivisions, ring_count=16, size=radius, location=location)
+    if nmv.utilities.is_blender_280():
+        bpy.ops.mesh.primitive_uv_sphere_add(
+            segments=subdivisions, ring_count=16, radius=radius, location=location)
+    else:
+        bpy.ops.mesh.primitive_uv_sphere_add(
+            segments=subdivisions, ring_count=16, size=radius, location=location)
 
     # Get a reference to it
-    sphere_mesh = bpy.context.scene.objects.active
+    sphere_mesh = nmv.scene.get_active_object()
 
     # Rename it
     sphere_mesh.name = name
@@ -167,7 +172,7 @@ def create_circle(radius=1,
         vertices=vertices, radius=radius, location=location, fill_type=fill)
 
     # Get a reference to it
-    circle_mesh = bpy.context.scene.objects.active
+    circle_mesh = nmv.scene.get_active_object()
 
     # Rename it
     circle_mesh.name = name
@@ -205,7 +210,7 @@ def create_bezier_circle(radius=1,
 
     # Get a reference to it
     bpy.context.object.data.resolution_u = vertices / 4
-    circle_mesh = bpy.context.scene.objects.active
+    circle_mesh = nmv.scene.get_active_object()
 
     # Set the radius
     circle_mesh.scale[0] = radius
@@ -241,10 +246,10 @@ def create_cube(radius=1,
     nmv.scene.ops.deselect_all()
 
     # Add the cube
-    bpy.ops.mesh.primitive_cube_add(radius=radius, location=location)
+    bpy.ops.mesh.primitive_cube_add(size=radius, location=location)
 
     # Get a reference to it
-    cube_mesh = bpy.context.scene.objects.active
+    cube_mesh = nmv.scene.get_active_object()
 
     # Rename it
     cube_mesh.name = name

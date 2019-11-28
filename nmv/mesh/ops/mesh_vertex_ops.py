@@ -23,6 +23,25 @@ from mathutils import Vector, Matrix
 import nmv
 import nmv.scene
 import nmv.mesh
+import nmv.utilities
+
+
+####################################################################################################
+# @get_vertex_position
+####################################################################################################
+def get_vertex_position(mesh_object,
+                        vertex_index):
+    """Gets the position of a vertex in a given mesh specified by its index.
+
+    :param mesh_object:
+        A mesh object that contains the vertex.
+    :param vertex_index:
+        The index of the vertex.
+    :return:
+        The position of the vertex.
+    """
+
+    return mesh_object.data.vertices[vertex_index].co
 
 
 ####################################################################################################
@@ -214,6 +233,29 @@ def get_faces_vertices_indices(mesh_object,
 
 
 ####################################################################################################
+# @select_vertices
+####################################################################################################
+def select_vertices_within_extent(mesh_object,
+                                  point,
+                                  radius):
+    """Select a set of vertices on a given mesh object within a given extent from a given point.
+
+    :param mesh_object:
+        A given mesh object.
+    :param point:
+        The center of the extent.
+    :param radius:
+        The radius of the extent.
+    """
+
+    index = 0
+    for vertex in mesh_object.data.vertices:
+        if (vertex.co - point).length <= radius:
+            index += 1
+            vertex.select = True
+
+
+####################################################################################################
 # @get_vertices_in_object
 ####################################################################################################
 def get_vertices_in_object(mesh_object):
@@ -296,6 +338,111 @@ def compute_centroid(mesh_object):
 
 
 ####################################################################################################
+# @smooth_selected_vertices
+####################################################################################################
+def remove_doubles_of_selected_vertices(mesh_object,
+                                        distance):
+    """Removes doubles of a group of already selected vertices.
+
+    :param mesh_object:
+        A given mesh object to be smoothed.
+    :param distance:
+        The distance within the doubles will be removed.
+    """
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Remove the double around the selected distance
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles(threshold=distance)
+    nmv.utilities.enable_std_output()
+
+    # Make the normals consistent
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+
+    # Make beauty faces
+    bpy.ops.mesh.beautify_fill()
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
+# @smooth_selected_vertices
+####################################################################################################
+def smooth_selected_vertices(mesh_object,
+                             iterations=1):
+    """Smooths a list of ALREADY selected vertices.
+
+    :param mesh_object:
+        A given mesh object to be smoothed.
+    :param iterations:
+        Number of smoothing iterations
+    """
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Convert the selected faces to triangles to be able to apply the laplacian operator
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+
+    # Remove the doubles
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles(threshold=0.25)
+    nmv.utilities.enable_std_output()
+
+    # Apply the smoothing operation
+    for i in range(iterations):
+        bpy.ops.mesh.vertices_smooth()
+
+    # Make beauty faces
+    bpy.ops.mesh.beautify_fill()
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
+# @laplacian_smooth_selected_vertices
+####################################################################################################
+def laplacian_smooth_selected_vertices(mesh_object,
+                                       iterations=1):
+    """Smooths a list of ALREADY selected vertices using Laplacian smoothing.
+
+    :param mesh_object:
+        A given mesh object to be smoothed.
+    :param iterations:
+        Number of smoothing iterations
+    """
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Convert the selected faces to triangles to be able to apply the laplacian operator
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+
+    # Apply the smoothing operation
+    for i in range(iterations):
+        bpy.ops.mesh.vertices_smooth_laplacian()
+
+    # Make beauty faces
+    bpy.ops.mesh.beautify_fill()
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
 # @compute_centroid_of_vertices
 ####################################################################################################
 def compute_centroid_of_vertices(mesh_object,
@@ -346,7 +493,10 @@ def create_vertex_group(mesh_object,
     """
 
     # Create the vertex group
-    vertex_group = mesh_object.vertex_groups.new(name)
+    if nmv.utilities.is_blender_280():
+        vertex_group = mesh_object.vertex_groups.new(name=name)
+    else:
+        vertex_group = mesh_object.vertex_groups.new(name)
 
     # Return a reference to the vertex group
     return vertex_group
@@ -540,19 +690,3 @@ def get_index_of_nearest_vertex_to_point(mesh_object,
     return nearest_vertex_index
 
 
-####################################################################################################
-# @get_vertex_position
-####################################################################################################
-def get_vertex_position(mesh_object,
-                        vertex_index):
-    """Gets the position of a vertex in a given mesh specified by its index.
-
-    :param mesh_object:
-        A mesh object that contains the vertex.
-    :param vertex_index:
-        The index of the vertex.
-    :return:
-        The position of the vertex.
-    """
-
-    return mesh_object.data.vertices[vertex_index].co

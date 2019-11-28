@@ -109,8 +109,8 @@ def compute_arbor_bounding_box(arbor):
     """
 
     # Initialize the min and max points
-    p_min = Vector((100000000000, 100000000000, 100000000000))
-    p_max = Vector((-100000000000, -100000000000, -100000000000))
+    p_min = Vector((1e10, 1e10, 1e10))
+    p_max = Vector((-1e10, -1e10, -1e10))
 
     # Compute the arbor bounding box
     compute_sections_bounding_box(arbor=arbor, p_min=p_min, p_max=p_max)
@@ -474,20 +474,52 @@ def scale_section_radii(section,
 
 
 ####################################################################################################
-# @fix_section_radii
+# @unify_section_radii
 ####################################################################################################
-def fix_section_radii(section,
-                      fixed_radius):
-    """Fix the radius of all the samples along a given section.
+def unify_section_radii(section,
+                        unified_radius):
+    """Unify the radius of all the samples along a given section.
     :param section:
         A given section to filter.
-    :param fixed_radius:
+    :param unified_radius:
         The radius that will be set to all the samples of the section.
     """
 
     # Set the radius of each section sample to the given fixed radius
     for i_sample in section.samples:
-        i_sample.radius = fixed_radius
+        i_sample.radius = unified_radius
+
+
+####################################################################################################
+# @unify_section_radii_based_on_type
+####################################################################################################
+def unify_section_radii_based_on_type(section,
+                                      axon_section_unified_radius,
+                                      apical_dendrite_section_radius,
+                                      basal_dendrite_section_radius):
+    """Unifies the radius of all the samples along a given section based on its type.
+
+    :param section:
+        A given section to apply the filter to.
+    :param axon_section_unified_radius:
+        The unified radius that will be set to all the samples of the axon.
+    :param apical_dendrite_section_radius:
+        The unified radius that will be set to all the samples of the apical dendrite.
+    :param basal_dendrite_section_radius:
+        The unified radius that will be set to all the samples of the basal dendrites.
+    """
+
+    if section.is_axon():
+        for i_sample in section.samples:
+            i_sample.radius = axon_section_unified_radius
+    elif section.is_apical_dendrite():
+        for i_sample in section.samples:
+            i_sample.radius = apical_dendrite_section_radius
+    elif section.is_basal_dendrite():
+        for i_sample in section.samples:
+            i_sample.radius = basal_dendrite_section_radius
+    else:
+        return
 
 
 ####################################################################################################

@@ -21,6 +21,78 @@ import nmv.analysis
 
 
 ####################################################################################################
+# @get_morphology_maximum_branching_order_from_analysis_results
+####################################################################################################
+def get_morphology_maximum_branching_order_from_analysis_results(analysis_result):
+    """Computes the maximum branching order of the morphology based on the actual computed
+    values from the analysis.
+
+    :param analysis_result:
+        The resulting data from a certain analysis procedure.
+    :return:
+        The maximum branching order of the morphology.
+    """
+
+    maximum_branching_order = 0
+
+    # Apical dendrite
+    if analysis_result.apical_dendrite_result is not None:
+        if len(analysis_result.apical_dendrite_result) > maximum_branching_order:
+            maximum_branching_order = len(analysis_result.apical_dendrite_result)
+
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            if len(basal_dendrite_result) > maximum_branching_order:
+                maximum_branching_order = len(basal_dendrite_result)
+
+    # Axon
+    if analysis_result.axon_result is not None:
+        if len(analysis_result.axon_result) > maximum_branching_order:
+            maximum_branching_order = len(analysis_result.axon_result)
+
+    # Return the maximum branching order
+    return maximum_branching_order
+
+
+####################################################################################################
+# @compute_total_distribution_of_morphology
+####################################################################################################
+def compute_total_distribution_of_morphology(analysis_result):
+    """Computes the total result with respect to the entire morphology skeleton from the analysis
+    results of the existing arbors.
+
+    NOTE: The morphology result is updated in the given analysis result structure.
+
+    :param analysis_result:
+        A structure that contains all the analysis results of the morphology arbors.
+    """
+
+    # Aggregate result of the entire morphology will be computed later
+    maximum_branching_order = \
+        get_morphology_maximum_branching_order_from_analysis_results(analysis_result)
+    analysis_result.morphology_result = list()
+    for i in range(maximum_branching_order):
+        analysis_result.morphology_result.append([i + 1, 0])
+
+    # Apical dendrite
+    if analysis_result.apical_dendrite_result is not None:
+        for item in analysis_result.apical_dendrite_result:
+            analysis_result.morphology_result[item[0] - 1][1] += item[1]
+
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            for item in basal_dendrite_result:
+                analysis_result.morphology_result[item[0] - 1][1] += item[1]
+
+    # Axon
+    if analysis_result.axon_result is not None:
+        for item in analysis_result.axon_result:
+            analysis_result.morphology_result[item[0] - 1][1] += item[1]
+
+
+####################################################################################################
 # @compute_total_analysis_result_of_morphology
 ####################################################################################################
 def compute_total_analysis_result_of_morphology(analysis_result):
@@ -168,7 +240,7 @@ def invoke_kernel(morphology,
         The function that will aggregate the entire morphology analysis result from the
         individual arbors, for example minimum, maximum, average or total.
     :return:
-        The analysis results as an @AnalysisResult structure.
+        The analysis results as an @MorphologyAnalysisResult structure.
     """
 
     # Apply the analysis operation to the morphology
@@ -182,20 +254,19 @@ def invoke_kernel(morphology,
 
 
 ####################################################################################################
-# @get_analysis_lists
+# @compute_distribution
 ####################################################################################################
-def get_analysis_lists(morphology,
-                       kernel):
-    """Invoke the analysis kernel on the morphology and return the lists that contain the analysis
-    results.
+def compute_distribution(morphology,
+                         kernel):
+    """Invoke the analysis kernel on the morphology and return the distribution in a form of list.
 
     :param morphology:
         A given morphology skeleton to analyze.
     :param kernel:
         Analysis kernel that will be applied on the morphology.
     :return:
-        The analysis results as lists. The format of these lists are only known within the section
-        function and the morphology function.
+        The analysis distribution as lists. The format of these lists are only known within the
+        section function and the morphology function.
     """
 
     # Apply the analysis operation to the morphology and return the resulting lists

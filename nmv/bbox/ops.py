@@ -44,12 +44,8 @@ def extend_bounding_boxes(bounding_boxes_list):
     """
 
     # Initialize the min and max points
-    p_min = Vector((nmv.consts.Math.INFINITY,
-                    nmv.consts.Math.INFINITY,
-                    nmv.consts.Math.INFINITY))
-    p_max = Vector((-1 * nmv.consts.Math.INFINITY,
-                    -1 * nmv.consts.Math.INFINITY,
-                    -1 * nmv.consts.Math.INFINITY))
+    p_min = Vector((1e10, 1e10, 1e10))
+    p_max = Vector((-1e10, -1e10, -1e10))
 
     for bounding_box in bounding_boxes_list:
         if bounding_box.p_min[0] < p_min[0]:
@@ -193,7 +189,7 @@ def compute_scene_bounding_box_for_curves():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['CURVE']:
             objects.append(scene_object)
@@ -218,10 +214,36 @@ def compute_scene_bounding_box_for_meshes():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['MESH']:
-            if 'spine' in scene_object.name: continue
+            if 'spine' in scene_object.name:
+                continue
+            objects.append(scene_object)
+
+    # Returns the bounding box of a group of objects
+    bounding_box = get_objects_bounding_box(objects)
+
+    # Return a reference to the bounding box of the scene
+    return bounding_box
+
+
+####################################################################################################
+# @compute_scene_bounding_box_for_curves_and_meshes
+####################################################################################################
+def compute_scene_bounding_box_for_curves_and_meshes():
+    """Compute the bounding box of all the 'curves' and 'meshes'in the scene.
+
+    NOTE: This function considers only 'CURVE' and 'MESH' types and ignores the cameras for example.
+
+    :return:
+        A reference to the bounding box of the scene.
+    """
+
+    # Select all the objects that are meshes or curves
+    objects = list()
+    for scene_object in bpy.data.objects:
+        if scene_object.type in ['CURVE'] or scene_object.type in ['MESH']:
             objects.append(scene_object)
 
     # Returns the bounding box of a group of objects
@@ -244,7 +266,7 @@ def compute_scene_bounding_box():
     """
 
     # Select all the objects that are meshes or curves
-    objects = []
+    objects = list()
     for scene_object in bpy.data.objects:
         if scene_object.type in ['MESH', 'CURVE']:
             objects.append(scene_object)
@@ -382,7 +404,7 @@ def draw_scene_bounding_box():
     # Draw a cube, rename it and then scale it to fit the bounding box
     bpy.ops.mesh.primitive_cube_add(radius=0.5, location=scene_bounding_box.center)
     bpy.context.object.scale = scene_bounding_box.bounds
-    bounding_box = bpy.context.scene.objects.active
+    bounding_box = nmv.scene.get_active_object()
     bounding_box.name = 'scene_bounding_box'
 
     # Return a reference to the bounding box
@@ -414,7 +436,7 @@ def draw_bounding_box(bbox,
     p_6 = Vector((bbox.p_max[0], bbox.p_max[1], bbox.p_max[2]))
     p_7 = Vector((bbox.p_min[0], bbox.p_max[1], bbox.p_max[2]))
 
-    point_list = []
+    point_list = list()
     point_list.append([p_0, p_1])
     point_list.append([p_1, p_2])
     point_list.append([p_2, p_3])

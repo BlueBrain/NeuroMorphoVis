@@ -17,4 +17,6 @@
 
 from .kernels import *
 from .structs import *
+from .plotting import *
 from .analysis_items import *
+from .analysis_distributions import *

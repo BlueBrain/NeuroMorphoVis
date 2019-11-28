@@ -39,7 +39,7 @@ class MorphologyOptions:
         self.reconstruct_morphology = False
 
         # Skeletonization algorithm, ORIGINAL by default
-        self.skeleton = nmv.enums.Skeletonization.Skeleton.ORIGINAL
+        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Arbor style
         self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
@@ -59,11 +59,14 @@ class MorphologyOptions:
         # Morphology label (based on the GID or the morphology file name)
         self.label = None
 
-        # Soma reconstruction technique (IGNORE, SPHERE, or REALISTIC by default)
-        self.soma_representation = nmv.enums.Soma.Representation.REALISTIC
+        # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
+        self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
-        self.branching = nmv.enums.Skeletonization.Branching.ANGLES
+        self.branching = nmv.enums.Skeleton.Branching.RADII
+
+        # Morphology edge styles
+        self.edges = nmv.enums.Arbors.Edges.SHARP
 
         # The arbors connectivity to the soma
         self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
@@ -101,15 +104,29 @@ class MorphologyOptions:
         # Articulations color
         self.articulation_color = nmv.enums.Color.ARTICULATION
 
-        # The radii of the sections (as specified in the morphology file, scaled with a given
-        # scale factor, or constant at given fixed value)
-        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+        # Resampling method
+        self.resampling_method = nmv.enums.Skeleton.Resampling.NONE
+
+        # Resampling step
+        self.resampling_step = 1.0
+
+        # The radii of the samples defined per section
+        self.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0
 
-        # A fixed and unified value for the radii of all the sections in the morphology
-        self.sections_fixed_radii_value = 1.0
+        # A unified value for the radii of all the sections in the morphology
+        self.samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the axon sections
+        self.axon_samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the apical dendrite sections
+        self.apical_dendrite_samples_unified_radii_value = 1.0
+
+        # A particular unified radius given to all the samples of the basal dendrites sections
+        self.basal_dendrites_samples_unified_radii_value = 1.0
 
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000
@@ -122,7 +139,7 @@ class MorphologyOptions:
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
 
         # Selected a method to reconstruct the morphology
-        self.reconstruction_method = nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
+        self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
         # Morphology material
         self.material = nmv.enums.Shading.LAMBERT_WARD
@@ -132,10 +149,10 @@ class MorphologyOptions:
         self.camera_view = nmv.enums.Camera.View.FRONT
 
         # Rendering view
-        self.rendering_view = nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW
+        self.rendering_view = nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW
 
         # Image resolution is based on scale or to a fixed resolution
-        self.resolution_basis = nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+        self.resolution_basis = nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION
 
         # Render a static frame of the skeleton
         self.render = False
@@ -158,6 +175,12 @@ class MorphologyOptions:
         # The scale factor used to scale the morphology rendering frame, default 1.0
         self.resolution_scale_factor = 1.0
 
+        # Render the morphology to a transparent image
+        self.transparent_film = True
+
+        # Render the morphology to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
+
         # Export the morphology to .H5 file
         self.export_h5 = False
 
@@ -175,7 +198,7 @@ class MorphologyOptions:
         """
 
         # Skeletonization algorithm, ORIGINAL by default
-        self.skeleton = nmv.enums.Skeletonization.Skeleton.ORIGINAL
+        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Arbor style
         self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
@@ -184,7 +207,10 @@ class MorphologyOptions:
         self.soma_representation = nmv.enums.Soma.Representation.SPHERE
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
-        self.branching = nmv.enums.Skeletonization.Branching.RADII
+        self.branching = nmv.enums.Skeleton.Branching.RADII
+
+        # Morphology edge styles
+        self.edges = nmv.enums.Arbors.Edges.SHARP
 
         # The arbors connectivity to the soma
         self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
@@ -224,13 +250,13 @@ class MorphologyOptions:
 
         # The radii of the sections (as specified in the morphology file, scaled with a given
         # scale factor, or constant at given fixed value)
-        self.arbors_radii = nmv.enums.Skeletonization.ArborsRadii.AS_SPECIFIED
+        self.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0
 
         # A fixed and unified value for the radii of all the sections in the morphology
-        self.sections_fixed_radii_value = 1.0
+        self.samples_unified_radii_value = 1.0
 
         # Threshold radius, where any section with lower radius values will not drawn
         self.threshold_radius = 100000
@@ -243,7 +269,7 @@ class MorphologyOptions:
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
 
         # Selected a method to reconstruct the morphology
-        self.reconstruction_method = nmv.enums.Skeletonization.Method.DISCONNECTED_SECTIONS
+        self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
         # Morphology material
         self.material = nmv.enums.Shading.LAMBERT_WARD

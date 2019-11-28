@@ -24,6 +24,7 @@ import bpy
 
 # Internal imports
 import nmv
+import nmv.scene
 import nmv.enums
 import nmv.geometry
 import nmv.mesh
@@ -86,6 +87,40 @@ def create_skeleton_materials(builder):
 
 
 ####################################################################################################
+# @update_morphology_skeleton
+####################################################################################################
+def update_morphology_skeleton(builder):
+    """Verifies and repairs the morphology if the contain any artifacts that would potentially
+    affect the reconstruction quality of the mesh.
+
+    NOTE: The filters or operations performed in this builder are only specific to it. Other
+    builders might apply a different set of filters.
+    """
+
+    # Remove the internal samples, or the samples that intersect the soma at the first
+    # section and each arbor
+    nmv.logger.info('Removing Internal Samples')
+    nmv.skeleton.ops.apply_operation_to_morphology(
+        *[builder.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+
+    # Resample the sections of the morphology skeleton
+    nmv.logger.info('Resampling Skeleton')
+    nmv.builders.skeleton.resample_skeleton_sections(builder=builder)
+
+    nmv.logger.info('Updating Radii')
+    nmv.skeleton.update_arbors_radii(
+        morphology=builder.morphology, morphology_options=builder.options.morphology)
+
+    nmv.logger.info('Updating Branching to Primary / Secondary')
+    nmv.builders.skeleton.update_sections_branching(builder=builder)
+
+    # Update the style of the arbors
+    nmv.logger.info('Updating Style')
+    nmv.skeleton.ops.update_arbors_style(
+        morphology=builder.morphology, arbor_style=builder.options.morphology.arbor_style)
+
+
+####################################################################################################
 # @modify_morphology_skeleton
 ####################################################################################################
 def modify_morphology_skeleton(builder):
@@ -98,21 +133,16 @@ def modify_morphology_skeleton(builder):
     """
 
     # Taper the sections if requested
-    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED or \
-       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+    if builder.options.morphology.skeleton == nmv.enums.Skeleton.Style.TAPERED or \
+       builder.options.morphology.skeleton == nmv.enums.Skeleton.Style.TAPERED_ZIGZAG:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.taper_section])
 
     # Zigzag the sections if required
-    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.ZIGZAG or \
-       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.PLANAR_ZIGZAG or \
-       builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.TAPERED_ZIGZAG:
+    if builder.options.morphology.skeleton == nmv.enums.Skeleton.Style.ZIGZAG or \
+       builder.options.morphology.skeleton == nmv.enums.Skeleton.Style.TAPERED_ZIGZAG:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[builder.morphology, nmv.skeleton.ops.zigzag_section])
-
-    if builder.options.mesh.skeletonization == nmv.enums.Meshing.Skeleton.PLANAR:
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[builder.morphology, nmv.skeleton.ops.project_to_xy_plane])
 
 
 ####################################################################################################
@@ -133,12 +163,24 @@ def reconstruct_soma_mesh(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    # If the soma is connected to the root arbors
-    soma_builder_object = nmv.builders.SomaBuilder(
-        morphology=builder.morphology, options=builder.options, irregular_subdivisions=True)
+    if builder.options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.META_BALLS:
 
-    # Reconstruct the soma mesh
-    builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+        # If the soma is connected to the root arbors
+        soma_builder_object = nmv.builders.SomaMetaBuilder(
+            morphology=builder.morphology, options=builder.options)
+
+        # Reconstruct the soma mesh
+        builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+    else:
+
+        # If the soma is connected to the root arbors
+        soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
+            morphology=builder.morphology, options=builder.options)
+
+        # Reconstruct the soma mesh
+        builder.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
 
     # Apply the shader to the reconstructed soma mesh
     nmv.shading.set_material_to_object(builder.soma_mesh, builder.soma_materials[0])
@@ -237,6 +279,93 @@ def adjust_texture_mapping_of_all_meshes(builder, texspace_size=5.0):
 
 
 ####################################################################################################
+# @select_arbor_to_soma_vertices
+####################################################################################################
+def select_arbor_to_soma_vertices(soma_mesh,
+                                  arbor):
+    """Selects a set of vertices to smooth an arbor that is connected to the soma.
+
+    :param soma_mesh:
+        A reference to the mesh object of the soma.
+    :param arbor:
+        A reference to the mesh object of the arbor.
+    """
+
+    # Get the arbor starting point at its initial segment
+    branch_starting_point = arbor.samples[0].point
+
+    # Get its direction
+    branch_direction = arbor.samples[0].point.normalized()
+
+    # The bridging point is computed
+    bridging_point = branch_starting_point - 0.75 * branch_direction
+
+    # The smoothing extent (radius) is assumed to be double that radius of the initial sample
+    smoothing_extent = arbor.samples[0].radius * 2.0
+
+    # Select the vertices that need to be smoothed
+    nmv.mesh.ops.select_vertices_within_extent(
+        mesh_object=soma_mesh, point=bridging_point, radius=smoothing_extent)
+
+
+####################################################################################################
+# @smooth_arbors_to_soma_connections
+####################################################################################################
+def smooth_arbors_to_soma_connections(builder):
+    """Smooths the connectivity between the arbors and the soma.
+
+    :param builder:
+        An object of the builder that is used to reconstruct the neuron mesh.
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Select the soma object
+    nmv.scene.ops.select_object(builder.soma_mesh)
+
+    # Deselect all the vertices of the section mesh, for safety !
+    nmv.mesh.ops.deselect_all_vertices(builder.soma_mesh)
+
+    if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+
+        # Connecting apical dendrite
+        if not builder.options.morphology.ignore_apical_dendrite:
+
+            # There is an apical dendrite
+            if builder.morphology.apical_dendrite is not None:
+                select_arbor_to_soma_vertices(
+                    soma_mesh=builder.soma_mesh, arbor=builder.morphology.apical_dendrite)
+
+        # Connecting basal dendrites
+        if not builder.options.morphology.ignore_basal_dendrites:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.dendrites is not None:
+
+                # Do it dendrite by dendrite
+                for i, basal_dendrite in enumerate(builder.morphology.dendrites):
+                    select_arbor_to_soma_vertices(soma_mesh=builder.soma_mesh, arbor=basal_dendrite)
+
+        # Connecting axon
+        if not builder.options.morphology.ignore_axon:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.axon is not None:
+                select_arbor_to_soma_vertices(
+                    soma_mesh=builder.soma_mesh, arbor=builder.morphology.axon)
+
+    if builder.options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.META_BALLS:
+
+        # Apply the smoothing filter on the selected vertices
+        nmv.mesh.ops.smooth_selected_vertices(mesh_object=builder.soma_mesh, iterations=5)
+
+    # Deselect all the vertices of the final mesh at the end
+    nmv.mesh.ops.deselect_all_vertices(mesh_object=builder.soma_mesh)
+
+
+####################################################################################################
 # @connect_arbors_to_soma
 ####################################################################################################
 def connect_arbors_to_soma(builder):
@@ -252,8 +381,26 @@ def connect_arbors_to_soma(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
+    # Determine the connection function
+    if builder.options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.SOFT_BODY:
+        connection_function = nmv.skeleton.ops.connect_arbor_to_soft_body_soma
+    elif builder.options.mesh.soma_reconstruction_technique == \
+            nmv.enums.Soma.Representation.META_BALLS:
+        connection_function = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma
+    else:
+        return
+
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
         nmv.logger.header('Connecting arbors to soma')
+
+        # Connecting axon
+        if not builder.options.morphology.ignore_axon:
+
+            # Create the apical dendrite mesh
+            if builder.morphology.axon is not None:
+                nmv.logger.info('Axon')
+                builder.soma_mesh = connection_function(builder.soma_mesh, builder.morphology.axon)
 
         # Connecting apical dendrite
         if not builder.options.morphology.ignore_apical_dendrite:
@@ -261,8 +408,8 @@ def connect_arbors_to_soma(builder):
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:
                 nmv.logger.info('Apical dendrite')
-                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh,
-                                                       builder.morphology.apical_dendrite)
+                builder.soma_mesh = connection_function(
+                    builder.soma_mesh, builder.morphology.apical_dendrite)
 
         # Connecting basal dendrites
         if not builder.options.morphology.ignore_basal_dendrites:
@@ -273,15 +420,11 @@ def connect_arbors_to_soma(builder):
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(builder.morphology.dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
-                    nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, basal_dendrite)
+                    builder.soma_mesh = connection_function(
+                        builder.soma_mesh, basal_dendrite)
 
-        # Connecting axon
-        if not builder.options.morphology.ignore_axon:
-
-            # Create the apical dendrite mesh
-            if builder.morphology.axon is not None:
-                nmv.logger.info('Axon')
-                nmv.skeleton.ops.connect_arbor_to_soma(builder.soma_mesh, builder.morphology.axon)
+    # Smooth the connections between the soma and the connected curves
+    smooth_arbors_to_soma_connections(builder=builder)
 
     # Adjust the texture mapping after connecting the meshes together
     adjust_texture_mapping_of_all_meshes(builder=builder)
@@ -461,8 +604,6 @@ def collect_morphology_stats(builder):
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
     """
-
-    nmv.logger.header('Collecting Morphology Stats.')
 
     builder.morphology_statistics += '\tSoma: ' + 'Found \n' \
         if builder.morphology.soma is not None else 'Not Found \n'

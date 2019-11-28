@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.enums
+
 
 ####################################################################################################
 # Section
@@ -104,6 +107,12 @@ class Section:
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
+        # Initial value for the maximum branching level
+        self.maximum_branching_order = 100
+
+        # The length of the section
+        self.length = 0
+
     ################################################################################################
     # @get_type_string
     ################################################################################################
@@ -130,9 +139,9 @@ class Section:
         """Returns a string prefix that is used to register UI components.
 
         These components are accessible from the following calls:
-            * bpy.context.Scene.Axon[SOME_VARIABLE] for axons
-            * bpy.context.Scene.BasalDendrite[NUMBER][SOME_VARIABLE] for basal dendrites
-            * bpy.context.Scene.ApicalDendrite[SOME_VARIABLE] for apical dendrites
+            * bpy.context.scene.NMV_Axon[SOME_VARIABLE] for axons
+            * bpy.context.scene.NMV_BasalDendrite[NUMBER][SOME_VARIABLE] for basal dendrites
+            * bpy.context.scene.NMV_ApicalDendrite[SOME_VARIABLE] for apical dendrites
         :return:
             String that reflects the type of the section, or which arbor it belongs to.
         """
@@ -164,6 +173,27 @@ class Section:
             return 'Apical Dendrite'
         else:
             return 'Unknown Branch'
+
+    ################################################################################################
+    # @get_material_index
+    ################################################################################################
+    def get_material_index(self):
+        """Returns the material index that is used to create a corresponding colored material
+        to be applied to the corresponding object when reconstructed in the scene.
+
+        :return:
+            Material index.
+        """
+
+        if str(self.type) == '2':
+            return nmv.enums.Color.AXON_MATERIAL_START_INDEX
+        elif str(self.type) == '3':
+            return nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX
+        elif str(self.type) == '4':
+            return nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX
+        else:
+            # By default, use the basal dendrites colors
+            return nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX
 
     ################################################################################################
     # @is_axon
@@ -218,6 +248,19 @@ class Section:
         return False
 
     ################################################################################################
+    # @is_leaf
+    ################################################################################################
+    def is_leaf(self):
+        """Checks if the section is leaf (last branch in a tree) in the tree or not.
+
+        :return:
+            True if the section is leaf and False otherwise.
+        """
+        if len(self.children) > 0:
+            return False
+        return True
+
+    ################################################################################################
     # @has_children
     ################################################################################################
     def has_children(self):
@@ -260,3 +303,20 @@ class Section:
 
             # Set the sample index according to its order along the section in the samples list
             section_sample.id = i
+
+    ################################################################################################
+    # @compute_length
+    ################################################################################################
+    def compute_length(self):
+        """Computes the length of the section
+        """
+
+        # Re-initialize to zero
+        self.length = 0
+
+        # Add the length of every segment along the section
+        for i in range(len(self.samples) - 1):
+
+            sample_0 = self.samples[i]
+            sample_1 = self.samples[i + 1]
+            self.length += (sample_1.point - sample_0.point).length

@@ -21,5 +21,5 @@ from .camera_enums import *
 from .color_enums import *
 from .meshing_enums import *
 from .shading_enums import *
-from .skeletonization_enums import *
+from .skeleton_enums import *
 from .soma_enums import *

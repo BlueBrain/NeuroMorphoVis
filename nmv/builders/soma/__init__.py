@@ -15,4 +15,5 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .soma_builder import *
+from .soma_softbody_builder import *
+from .soma_meta_builder import *

@@ -223,3 +223,64 @@ def export_mesh_object(mesh_object,
     # To .blend format
     if blend:
         export_scene_to_blend_file(output_directory, file_name)
+
+
+####################################################################################################
+# @export_object_to_stl_file
+####################################################################################################
+def export_object_to_stl_file(mesh_object,
+                              output_directory,
+                              file_name):
+    """Exports a selected mesh object into an STL file.
+
+     :param mesh_object:
+        An input mesh object to export to a file.
+    :param output_directory:
+        Output directory where the meshes will be saved.
+    :param file_name:
+        Mesh prefix.
+    """
+
+    export_mesh_object(mesh_object=mesh_object, output_directory=output_directory,
+                       file_name=file_name, stl=True)
+
+
+####################################################################################################
+# @export_object_to_ply_file
+####################################################################################################
+def export_object_to_ply_file(mesh_object,
+                              output_directory,
+                              file_name):
+    """Exports a selected mesh object into a PLY file.
+
+     :param mesh_object:
+        An input mesh object to export to a file.
+    :param output_directory:
+        Output directory where the meshes will be saved.
+    :param file_name:
+        Mesh prefix.
+    """
+
+    export_mesh_object(mesh_object=mesh_object, output_directory=output_directory,
+                       file_name=file_name, ply=True)
+
+
+####################################################################################################
+# @export_object_to_obj_file
+####################################################################################################
+def export_object_to_obj_file(mesh_object,
+                              output_directory,
+                              file_name):
+    """Exports a selected mesh object into an OBJ file.
+
+     :param mesh_object:
+        An input mesh object to export to a file.
+    :param output_directory:
+        Output directory where the meshes will be saved.
+    :param file_name:
+        Mesh prefix.
+    """
+
+    export_mesh_object(mesh_object=mesh_object, output_directory=output_directory,
+                       file_name=file_name, obj=True)
+

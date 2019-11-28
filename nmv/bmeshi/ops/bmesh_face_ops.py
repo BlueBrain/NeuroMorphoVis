@@ -267,7 +267,7 @@ def rotate_face_from_center_to_point(bmesh_object,
     direction = delta.normalized()
 
     # Compute the rotation angle
-    rotation_angle = math.acos(face.normal.dot(direction) * 3.14 / 180)
+    rotation_angle = math.acos(face.normal.dot(direction) * 3.14 / 180.0)
 
     # Compute the rotation axis
     rotation_axis = face.normal.cross(direction).normalized()
@@ -548,7 +548,7 @@ def subdivide_faces(bmesh_object,
     # Compile a list of all the edges of the given faces and remove the duplicate edges.
     edges = list()
 
-    # Update the mbesh
+    # Update the bmesh
     bmesh_object.faces.ensure_lookup_table()
 
     # Face by face, from the given list
@@ -569,8 +569,11 @@ def subdivide_faces(bmesh_object,
     subdivided_faces = bmesh.ops.subdivide_edges(bmesh_object, edges=edges, cuts=cuts,
                                                  use_grid_fill=True)
 
+    # Update the bmesh
+    bmesh_object.faces.ensure_lookup_table()
+
     # Filter the faces from the dictionary and get their indices
-    subdivided_faces_indices = []
+    subdivided_faces_indices = list()
     for i in subdivided_faces['geom']:
         if 'BMFace' in str(i):
             subdivided_faces_indices.append(i.index)

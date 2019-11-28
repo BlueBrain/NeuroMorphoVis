@@ -30,76 +30,6 @@ class Meshing:
         pass
 
     ################################################################################################
-    # @Skeleton
-    ################################################################################################
-    class Skeleton:
-        """Skeletonization
-        """
-
-        # Use the original morphology skeleton
-        ORIGINAL = 'MESHING_SKELETON_ORIGINAL'
-
-        # Project the skeleton to XY plane
-        PLANAR = 'MESHING_SKELETON_PLANAR'
-
-        # Create a tapered morphology skeleton
-        TAPERED = 'MESHING_SKELETON_TAPERED'
-
-        # Create a zigzagged morphology skeleton
-        ZIGZAG = 'MESHING_SKELETON_ZIGZAG'
-
-        # Project the skeleton to XY plane and make it zigzag
-        PLANAR_ZIGZAG = 'MESHING_SKELETON_PLANAR_ZIGZAG'
-
-        # Create a zigzagged and tapered morphology skeleton
-        TAPERED_ZIGZAG = 'MESHING_SKELETON_TAPERED_ZIGZAG'
-
-        # Simplified
-        SIMPLIFIED = 'MESHING_SKELETON_SIMPLIFIED'
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
-
-        ############################################################################################
-        # @get_enum
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-
-            # Original
-            if argument == 'original':
-                return Meshing.Skeleton.ORIGINAL
-
-            elif argument == 'planar':
-                return Meshing.Skeleton.PLANAR
-
-            # Tapered
-            elif argument == 'tapered':
-                return Meshing.Skeleton.TAPERED
-
-            # Zigzag
-            elif argument == 'zigzag':
-                return Meshing.Skeleton.ZIGZAG
-
-            # Tapered zigzag
-            elif argument == 'tapered-zigzag':
-                return Meshing.Skeleton.TAPERED_ZIGZAG
-
-            elif argument == 'planar-zigzag':
-                return Meshing.Skeleton.PLANAR_ZIGZAG
-
-            # Tapered zigzag
-            elif argument == 'simplified':
-                return Meshing.Skeleton.SIMPLIFIED
-
-            # By default use the original skeleton
-            else:
-                return Meshing.Skeleton.ORIGINAL
-
-    ################################################################################################
     # @Technique
     ################################################################################################
     class Technique:
@@ -109,14 +39,8 @@ class Meshing:
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
 
-        # Bridging meshing
-        BRIDGING = 'MESHING_TECHNIQUE_BRIDGING'
-
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
-
-        # Extrusion meshing
-        EXTRUSION = 'MESHING_TECHNIQUE_EXTRUSION'
 
         # Skinning
         SKINNING = 'MESHING_TECHNIQUE_SKINNING'
@@ -144,14 +68,6 @@ class Meshing:
             elif argument == 'union':
                 return Meshing.Technique.UNION
 
-            # Bridging
-            elif argument == 'bridging':
-                return Meshing.Technique.BRIDGING
-
-            # Extrusion
-            elif argument == 'extrusion':
-                return Meshing.Technique.EXTRUSION
-
             # Skinning
             elif argument == 'skinning':
                 return Meshing.Technique.SKINNING
@@ -163,6 +79,43 @@ class Meshing:
             # By default use piecewise-watertight
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
+
+    ################################################################################################
+    # @PiecewiseFilling
+    ################################################################################################
+    class PiecewiseFilling:
+        """The filling of the piecewise meshing.
+        """
+
+        # Fill the skeleton using one mesh per path from a root to a leaf section
+        PATHS = 'PIECEWISE_FILLING_PATHS'
+
+        # Fill the skeleton using sections and articulations at the bifurcation points
+        SECTIONS = 'PIECEWISE_FILLING_SECTIONS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Paths
+            if argument == 'paths':
+                return Meshing.PiecewiseFilling.PATHS
+
+            # Sections
+            elif argument == 'sections':
+                return Meshing.PiecewiseFilling.SECTIONS
+
+            # By default, use the paths
+            else:
+                return Meshing.PiecewiseFilling.PATHS
 
     ################################################################################################
     # @Technique
@@ -274,43 +227,6 @@ class Meshing:
             # By default use hard edges
             else:
                 return Meshing.Edges.HARD
-
-    ################################################################################################
-    # @Branching
-    ################################################################################################
-    class Branching:
-        """Branching method
-        """
-
-        # Make the branching based on the angles between the branches
-        ANGLES = 'ANGLE_BASED_BRANCHING'
-
-        # Make the branching based in the radii between the branches
-        RADII = 'RADII_BASED_BRANCHING'
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
-
-        ############################################################################################
-        # @get_enum
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-
-            # Angle
-            if argument == 'angles':
-                return Meshing.Branching.ANGLES
-
-            # Radii
-            elif argument == 'radii':
-                return Meshing.Branching.RADII
-
-            # By default return angles
-            else:
-                return Meshing.Branching.ANGLES
 
     ################################################################################################
     # @Model

@@ -16,13 +16,11 @@
 ####################################################################################################
 
 from .common import *
-from .about_panel import *
-from .ui_data import *
-from .io_panel import *
-from .soma_panel import *
-from .analysis_panel import *
-from .analysis_panel_ops import *
-from .mesh_panel import *
-from .morphology_panel import *
-from .morphology_panel_options import *
-from .edit_panel import *
+from .data import *
+from .about import *
+from .edit import *
+from .io import *
+from .soma import *
+from .analysis import *
+from .mesh import *
+from .morphology import *

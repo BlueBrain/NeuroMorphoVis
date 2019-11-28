@@ -8,6 +8,10 @@ The following people have contributed to NeuroMorphoVis:
 
     Juan Hernando (EPFL)
 
+##### Version 1.4
+
+    Caitlin Monney (EPFL)
+
 ##### Advisors
 
     Ahmet Bilgili (EPFL)

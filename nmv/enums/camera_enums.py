@@ -42,6 +42,18 @@ class Camera:
         def __init__(self):
             pass
 
+        # Front view
+        FRONT = 'CAMERA_FRONT_PROJECTION'
+
+        # Side view
+        SIDE = 'CAMERA_SIDE_PROJECTION'
+
+        # Top view
+        TOP = 'CAMERA_TOP_PROJECTION'
+
+        # Front for 360
+        FRONT_360 = 'FRONT_360_PROJECTION'
+
         ############################################################################################
         # @get_enum
         ############################################################################################
@@ -75,44 +87,6 @@ class Camera:
             else:
                 return Camera.View.FRONT
 
-        # Front view
-        FRONT = 'FRONT'
-
-        # Side view
-        SIDE = 'SIDE'
-
-        # Top view
-        TOP = 'TOP'
-
-        # 360
-        FRONT_360 = 'FRONT_360_VIEW'
-
-        ############################################################################################
-        # @get_enum
-        ############################################################################################
-        @staticmethod
-        def get_enum(argument):
-
-            # Front
-            if argument == 'front':
-                return Camera.View.FRONT
-
-            # Side
-            elif argument == 'side':
-                return Camera.View.SIDE
-
-            # Top
-            elif argument == 'top':
-                return Camera.View.TOP
-
-            # 360 from front view
-            elif argument == '360':
-                return Camera.View.FRONT_360
-
-            # By default, use the front view
-            else:
-                return Camera.View.FRONT
-
     ################################################################################################
     # @Projection
     ################################################################################################
@@ -127,10 +101,10 @@ class Camera:
             pass
 
         # Orthographic
-        ORTHOGRAPHIC = 'ORTHOGRAPHIC_VIEW'
+        ORTHOGRAPHIC = 'CAMERA_ORTHOGRAPHIC_VIEW'
 
         # Perspective
-        PERSPECTIVE = 'PERSPECTIVE_VIEW'
+        PERSPECTIVE = 'CAMERA_PERSPECTIVE_VIEW'
 
         ############################################################################################
         # @get_enum

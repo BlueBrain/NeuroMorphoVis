@@ -31,6 +31,7 @@ import nmv.geometry
 import nmv.mesh
 import nmv.scene
 import nmv.skeleton
+import nmv.utilities
 
 
 ####################################################################################################
@@ -748,7 +749,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
     # Verify dendrite by dendrite
     for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
 
-        nmv.logger.info('Basal dendrite [%d] connectivity to soma' % i_basal_dendrite)
+        nmv.logger.info('Basal dendrite [%d]' % i_basal_dendrite)
 
         # If the basal dendrite is starting inside the soma, then disconnect it
         # NOTE: The negative sample must be removed a priori for this filter to work
@@ -791,8 +792,8 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # Mark the basal dendrite connected to the soma
         basal_dendrite.connected_to_soma = True
 
-        nmv.logger.detail('NOTE: The basal dendrite [%d] @ section [%d] is connected to the soma' %
-                          (i_basal_dendrite, basal_dendrite.id))
+        # Connected
+        nmv.logger.detail('Connected to soma')
 
     for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
 
@@ -885,10 +886,51 @@ def connect_single_child(section):
 
 
 ####################################################################################################
-# @connect_arbor_to_soma
+# @connect_arbor_to_meta_ball_soma
 ####################################################################################################
-def connect_arbor_to_soma(soma_mesh,
-                          arbor):
+def connect_arbor_to_meta_ball_soma(soma_mesh,
+                                    arbor):
+    """
+
+    :param soma_mesh:
+    :param arbor:
+    :return:
+    """
+
+    # If the soma mesh is not valid, then return
+    if soma_mesh is None:
+        return
+
+        # If the arbor is not valid, then return
+    if arbor is None:
+        return
+
+    # Simply apply a union operation between the soma and the arbor
+    soma_mesh = nmv.mesh.union_mesh_objects(soma_mesh, arbor.mesh)
+
+    # Remove the doubles
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles()
+    nmv.utilities.enable_std_output()
+
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the other mesh
+    nmv.scene.ops.delete_list_objects([arbor.mesh])
+
+    # Return a reference to the soma mesh to be used later to do it for the rest of the arbors
+    return soma_mesh
+
+
+####################################################################################################
+# @connect_arbor_to_soft_body_soma
+####################################################################################################
+def connect_arbor_to_soft_body_soma(soma_mesh,
+                                    arbor):
     """
     Connects the root section of a given arbor to the soma at its initial segment.
     This function checks if the arbor mesh is 'logically' connected to the soma or not, following
@@ -902,6 +944,7 @@ def connect_arbor_to_soma(soma_mesh,
     :param arbor:
         The mesh object of the arbor.
     :return:
+        A reference to the soma mesh after the connection.
     """
 
     # If the arbor is not valid
@@ -922,21 +965,6 @@ def connect_arbor_to_soma(soma_mesh,
     branch_direction = arbor.samples[0].point.normalized()
     intersection_point = branch_starting_point - 0.75 * branch_direction
 
-    """
-    # TODO: This clipping approach is not valida with newer versions of blender! 
-    # Construct a clipping plane and rotate it towards the origin
-    # plane_name = 'intersection_plane_%d' % arbor.id
-    clipping_plane = mesh_objects.create_plane(
-        radius=2.0, location=intersection_point, name=plane_name)
-    nmv.mesh.ops.rotate_face_towards_point(clipping_plane, Vector((0, 0, 0)))
-
-    # Clip the arbor mesh and return a reference to the result
-    section_mesh = nmv.mesh.ops.intersect_mesh_objects(arbor.mesh, clipping_plane)
-    
-    # Delete the clipping plane to clean the scene
-    nmv.scene.ops.delete_list_objects([clipping_plane])
-    """
-
     # Get the nearest face on the mesh surface to the intersection point
     soma_mesh_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
         soma_mesh, intersection_point)
@@ -945,23 +973,23 @@ def connect_arbor_to_soma(soma_mesh,
     nmv.scene.ops.deselect_all()
 
     # Select the soma object
-    nmv.scene.ops.select_objects([soma_mesh])
+    nmv.scene.ops.select_object(soma_mesh)
 
     # Select the face using its obtained index
     nmv.mesh.ops.select_face_vertices(soma_mesh, soma_mesh_face_index)
 
     # Select the section mesh
-    nmv.scene.ops.select_objects([arbor.mesh])
+    nmv.scene.ops.select_object(arbor.mesh)
 
     # Deselect all the vertices of the section mesh, for safety !
     nmv.mesh.ops.deselect_all_vertices(arbor.mesh)
 
     # Get the nearest face on the section mesh
-    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
-        arbor.mesh, intersection_point)
+    # section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+    # arbor.mesh, intersection_point)
 
-    # NOTE: This approach could be faster, but we need to get
-    # section_face_index = arbor.mesh.data.polygons[-1].index
+    section_face_index = nmv.mesh.ops.get_index_of_nearest_face_to_point(
+        arbor.mesh, branch_starting_point)
 
     # Select the face
     nmv.mesh.ops.select_face_vertices(arbor.mesh, section_face_index)
@@ -987,6 +1015,65 @@ def connect_arbor_to_soma(soma_mesh,
 
     # Deselect all the vertices of the parent mesh, for safety reasons
     # nmv.mesh.ops.deselect_all_vertices(soma_mesh)
+
+    return soma_mesh
+
+
+def smooth_mesh_surface_around_point(mesh_object,
+                                     point,
+                                     radius,
+                                     smoothing_iterations):
+
+
+    pass
+
+
+####################################################################################################
+# @get_soma_to_root_section_connection_extent
+####################################################################################################
+def connect_arbor_to_meta_sball_soma(soma_mesh,
+                                    arbor):
+    """Connects the root section of a given arbor to the soma at its initial segment.
+    This function checks if the arbor mesh is 'logically' connected to the soma or not, following
+    to the initial validation steps that determines if the arbor has a valid connection point to
+    the soma or not.
+    If the arbor is 'logically' connected to the soma, this function returns immediately.
+    The arbor is a Section object, see Section() @ section.py.
+
+    :param soma_mesh:
+        The mesh object of the soma.
+    :param arbor:
+        The mesh object of the arbor.
+    :return:
+        A reference to the soma mesh after the connection.
+    """
+
+    # If the arbor is not valid
+    if arbor is None:
+        # Return
+        return
+
+    # Verify if the arbor is connected to the soma or not
+    if not arbor.connected_to_soma:
+        nmv.logger.log('\t\t * WARNING: The neurite [%s: %d] is not connected to the soma' %
+                       (arbor.get_type_string(), arbor.id))
+        return
+
+    # Simply apply a union operator and remove the duplicate object
+
+    # Union the ith mesh object
+    soma_mesh = nmv.mesh.ops.union_mesh_objects(soma_mesh, arbor.mesh)
+
+    # Switch to edit mode to REMOVE THE DOUBLES
+    # TODO: Use the remove doubles function
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles()
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the other mesh
+    nmv.scene.ops.delete_list_objects([arbor.mesh])
 
 
 ####################################################################################################
@@ -1247,9 +1334,8 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     # Now, we can safely convert the arbor to a mesh
     mesh_object_2 = nmv.scene.ops.convert_object_to_mesh(arbor_poly_line)
 
-
     # Select mesh_object_1 and set it to be the active object
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     # mesh_face_ops.close_open_faces(mesh_object_1)
@@ -1268,10 +1354,10 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     nmv.mesh.ops.select_face_vertices(mesh_object_1, nearest_face_index_on_mesh_1)
 
     # Deselect mesh_object_1
-    mesh_object_1.select = False
+    nmv.scene.deselect_object(mesh_object_1)
 
     # Select mesh_object_2 and set it to be the active object
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_2)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     nmv.mesh.ops.close_open_faces(mesh_object_2)
@@ -1284,11 +1370,11 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
     nmv.mesh.ops.select_face_vertices(mesh_object_2, nearest_face_index_on_mesh_2)
 
     # Select mesh_object_1 and mesh_object_2
-    mesh_object_1.select = True
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_1)
+    nmv.scene.select_object(mesh_object_2)
 
     # Set the mesh_object_1 to be active
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     bpy.ops.object.parent_set()

@@ -44,6 +44,9 @@ class Color:
     # White
     WHITE = Vector((1.0, 1.0, 1.0))
 
+    # Very white
+    VERY_WHITE = Vector((10.0, 10.0, 10.0))
+
     # Gray
     GRAY = Vector((0.5, 0.5, 0.5))
 

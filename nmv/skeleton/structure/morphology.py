@@ -99,6 +99,9 @@ class Morphology:
         # Morphology type
         self.mtype = mtype
 
+        # Number of stems as reported in the morphology file
+        self.number_stems = 0
+
         # Morphology label (will be morphology name or gid)
         self.label = label
         if gid is not None:
@@ -106,6 +109,9 @@ class Morphology:
 
         # Morphology full bounding box
         self.bounding_box = None
+
+        # Relaxed bounding box
+        self.relaxed_bounding_box = None
 
         # Morphology unified bounding box
         self.unified_bounding_box = None
@@ -118,6 +124,9 @@ class Morphology:
 
         # Build the samples lists
         self.build_samples_lists()
+
+        # Maximum branching order
+        self.maximum_branching_order = 100
 
     ################################################################################################
     # @build_samples_lists_recursively
@@ -245,6 +254,10 @@ class Morphology:
         # Get the joint bounding box from the list
         morphology_bounding_box = nmv.bbox.extend_bounding_boxes(morphology_bounding_boxes)
 
+        # Save the morphology bounding box
+        self.bounding_box = copy.deepcopy(morphology_bounding_box)
+
+        '''
         # Extend the bounding box a little to verify the results
         morphology_bounding_box.p_min[0] -= 5
         morphology_bounding_box.p_min[1] -= 5
@@ -257,11 +270,11 @@ class Morphology:
         morphology_bounding_box.bounds[2] += 10
 
         # Save the morphology bounding box
-        self.bounding_box = morphology_bounding_box
+        self.relaxed_bounding_box = copy.deepcopy(morphology_bounding_box)
 
         # Compute the unified bounding box
-        self.unified_bounding_box = nmv.bbox.compute_unified_bounding_box(self.bounding_box)
-
+        self.unified_bounding_box = nmv.bbox.compute_unified_bounding_box(self.relaxed_bounding_box)
+        '''
     ################################################################################################
     # @fix_arbor_first_section
     ################################################################################################
@@ -386,8 +399,9 @@ class Morphology:
             self.fix_arbor(self.apical_dendrite)
 
         # Fix the basal dendrites
-        for basal_dendrite in self.dendrites:
-            self.fix_arbor(basal_dendrite)
+        if self.dendrites is not None:
+            for basal_dendrite in self.dendrites:
+                self.fix_arbor(basal_dendrite)
 
     ################################################################################################
     # @set_section_branching_order

@@ -34,6 +34,7 @@ import nmv.shading
 import nmv.skeleton
 import nmv.scene
 import nmv.utilities
+import nmv.geometry
 
 
 ####################################################################################################
@@ -87,9 +88,9 @@ class UnionBuilder:
         self.mesh_statistics = 'UnionBuilder Mesh: \n'
 
     ################################################################################################
-    # @verify_morphology_skeleton
+    # @update_morphology_skeleton
     ################################################################################################
-    def verify_morphology_skeleton(self):
+    def update_morphology_skeleton(self):
         """Verifies and repairs the morphology if the contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
 
@@ -112,7 +113,7 @@ class UnionBuilder:
 
             # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_sections])
+                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
@@ -133,8 +134,8 @@ class UnionBuilder:
     ################################################################################################
     # @build_arbor
     ################################################################################################
-    @staticmethod
-    def build_arbor(arbor,
+    def build_arbor(self,
+                    arbor,
                     caps,
                     bevel_object,
                     max_branching_order,
@@ -164,18 +165,17 @@ class UnionBuilder:
 
         # A list that will contain all the poly-lines gathered from traversing the arbor tree with
         # depth-first traversal
-        arbor_poly_lines_data = list()
+        arbor_poly_lines = list()
 
         # Construct the poly-lines
-        nmv.skeleton.ops.get_connected_sections_poly_line_recursively(
-            section=arbor, poly_lines_data=arbor_poly_lines_data,
-            max_branching_level=max_branching_order)
+        nmv.skeleton.ops.get_connected_sections_poly_lines_recursively(
+            section=arbor, poly_lines=arbor_poly_lines, max_branching_level=max_branching_order)
 
         # If the arbor not connected to the soma, then add a point at the origin
         if not connection_to_soma:
 
-            # Add an auxiliary point at the origin
-            arbor_poly_lines_data[0][0].insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
+            # Add an auxiliary point at the origin to the first poly-line in the list
+            arbor_poly_lines[0].samples.insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
 
         # A list that will contain all the drawn poly-lines to be able to access them later,
         # although we can access them by name
@@ -187,11 +187,14 @@ class UnionBuilder:
             curve_style = 'NURBS'
 
         # For each poly-line in the list, draw it
-        for i, poly_line_data in enumerate(arbor_poly_lines_data):
+        for i, poly_line in enumerate(arbor_poly_lines):
+
+            # Resample the poly-line adaptively to preserve the geometry
+            nmv.geometry.resample_poly_line_adaptively_relaxed(poly_line=poly_line)
 
             # Draw the section, and append the result to the objects list
             arbor_poly_line_objects.append(nmv.skeleton.ops.draw_section_from_poly_line_data(
-                data=poly_line_data[0], name=poly_line_data[1], bevel_object=bevel_object,
+                data=poly_line.samples, name=poly_line.name, bevel_object=bevel_object,
                 caps=False if i == 0 else caps, curve_style=curve_style))
 
         # Convert the section object (poly-lines or tubes) into meshes
@@ -370,13 +373,16 @@ class UnionBuilder:
         nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.verify_morphology_skeleton)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
             nmv.builders.modify_morphology_skeleton, self)
         self.profiling_statistics += stats
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
         # Build the soma, with the default parameters
         result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)

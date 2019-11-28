@@ -19,6 +19,10 @@
 import os, platform
 import datetime
 
+TWO_SPACES = '  '
+FOUR_SPACES = '    '
+SIX_SPACES = '      '
+EIGHT_SPACES = '        '
 
 ####################################################################################################
 # @Logger
@@ -132,7 +136,7 @@ class Logger:
         print("")  # Add a new line
         self.line()
         log_string = ''.join(map(str, args))
-        self.log('    * %s' % log_string)
+        self.log('%s* %s' % (FOUR_SPACES, log_string))
         self.line()
 
     ################################################################################################
@@ -150,7 +154,7 @@ class Logger:
         log_string = ''.join(map(str, args))
 
         # Log the string
-        self.log('\t* %s' % log_string)
+        self.log('%s* %s' % (SIX_SPACES, log_string))
 
     ################################################################################################
     # @detail
@@ -167,4 +171,38 @@ class Logger:
         log_string = ''.join(map(str, args))
 
         # Log the string
-        self.log('\t\t* %s' % log_string)
+        self.log('%s* %s' % (EIGHT_SPACES, log_string))
+
+    ################################################################################################
+    # @warning
+    ################################################################################################
+    def warning(self,
+                *args):
+        """Logs a warning.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t\t* WARNING: %s' % log_string)
+
+    ################################################################################################
+    # @error
+    ################################################################################################
+    def error(self,
+              *args):
+        """Logs an error.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('\t\t* ERROR: %s' % log_string)

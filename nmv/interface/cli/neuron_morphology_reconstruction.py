@@ -79,7 +79,7 @@ def reconstruct_neuron_morphology(cli_morphology,
 
         # Compute the bounding box for a close up view
         if cli_options.morphology.rendering_view == \
-                nmv.enums.Skeletonization.Rendering.View.CLOSE_UP_VIEW:
+                nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
@@ -87,7 +87,7 @@ def reconstruct_neuron_morphology(cli_morphology,
 
         # Compute the bounding box for a mid shot view
         elif cli_options.morphology.rendering_view == \
-                nmv.enums.Skeletonization.Rendering.View.MID_SHOT_VIEW:
+                nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
 
             # Compute the bounding box for the available meshes only
             bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
@@ -101,7 +101,7 @@ def reconstruct_neuron_morphology(cli_morphology,
 
         # Render at a specific resolution
         if cli_options.morphology.resolution_basis == \
-                nmv.enums.Skeletonization.Rendering.Resolution.FIXED_RESOLUTION:
+                nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
 
             # Render the image
             nmv.rendering.NeuronSkeletonRenderer.render(

@@ -65,20 +65,31 @@ def update_arbors_radii(morphology,
         Morphology options.
     """
 
-    # Filter the radii of the sections
-    #if morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FILTERED:
-    #    nmv.skeleton.ops.apply_operation_to_morphology(
-    #        *[morphology, nmv.skeleton.ops.filter_section_sub_threshold,
-    #          morphology_options.threshold_radius])
+    # Selected option
+    option = morphology_options.arbors_radii
 
-    if morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.FIXED:
+    # Filtered
+    if option == nmv.enums.Skeleton.ArborsRadii.FILTERED:
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[morphology, nmv.skeleton.ops.fix_section_radii,
-              morphology_options.sections_fixed_radii_value])
+            *[morphology, nmv.skeleton.ops.filter_section_sub_threshold,
+              morphology_options.threshold_radius])
 
-    elif morphology_options.arbors_radii == nmv.enums.Skeletonization.ArborsRadii.SCALED:
+    elif option == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, nmv.skeleton.ops.unify_section_radii,
+              morphology_options.samples_unified_radii_value])
+
+    elif option == nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, nmv.skeleton.ops.unify_section_radii_based_on_type,
+              morphology_options.axon_samples_unified_radii_value,
+              morphology_options.apical_dendrite_samples_unified_radii_value,
+              morphology_options.basal_dendrites_samples_unified_radii_value])
+
+    elif option == nmv.enums.Skeleton.ArborsRadii.SCALED:
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.scale_section_radii,
               morphology_options.sections_radii_scale])
     else:
-        pass
+        return
+

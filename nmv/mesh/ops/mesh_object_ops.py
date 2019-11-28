@@ -70,11 +70,11 @@ def smooth_object(mesh_object,
     bpy.ops.object.modifier_add(type='SUBSURF')
 
     # Set the smoothing level
-    bpy.context.object.modifiers["Subsurf"].levels = level
-    bpy.context.object.modifiers["Subsurf"].use_subsurf_uv = False
+    bpy.context.object.modifiers["Subdivision"].levels = level
+    # bpy.context.object.modifiers["Subdivision"].use_subsurf_uv = False
 
     # Apply the smoothing modifier
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subsurf")
+    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
 
 
 ####################################################################################################
@@ -230,17 +230,17 @@ def joint_meshes(soma_mesh=None,
 
     # Select the soma mesh if not None
     if soma_mesh is not None:
-        soma_mesh.select = True
+        nmv.scene.select_object(soma_mesh)
 
     # Select all the branches meshes
     if len(branches_meshes) > 0:
         for branch_mesh in branches_meshes:
-            branch_mesh.select = True
+            nmv.scene.select_object(branch_mesh)
 
     # Select all the spines meshes
     if len(spines_meshes) > 0:
         for spine_mesh in spines_meshes:
-            spine_mesh.select = True
+            nmv.scene.select_object(spine_mesh)
 
     # Join the meshes together
     bpy.ops.object.join()
@@ -330,7 +330,7 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.scene.ops.deselect_all()
 
     # Select mesh_object_1 and set it to be the active object
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Get the nearest face to the starting point
     indices = nmv.mesh.ops.get_indices_of_nearest_faces_to_point_within_delta(
@@ -342,10 +342,10 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.mesh.ops.select_face_vertices(mesh_object_1, nearest_face_index_on_mesh_1)
 
     # Deselect mesh_object_1
-    mesh_object_1.select = False
+    nmv.scene.deselect_object(mesh_object_1)
 
     # Select mesh_object_2 and set it to be the active object
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_2)
 
     # Close all the open faces (including the caps) to ensure that there are no holes in the mesh
     nmv.mesh.ops.close_open_faces(mesh_object_2)
@@ -358,11 +358,11 @@ def bridge_mesh_objects(mesh_object_1,
     nmv.mesh.ops.select_face_vertices(mesh_object_2, nearest_face_index_on_mesh_2)
 
     # Select mesh_object_1 and mesh_object_2
-    mesh_object_1.select = True
-    mesh_object_2.select = True
+    nmv.scene.select_object(mesh_object_1)
+    nmv.scene.select_object(mesh_object_2)
 
     # Set the mesh_object_1 to be active
-    bpy.context.scene.objects.active = mesh_object_1
+    nmv.scene.set_active_object(mesh_object_1)
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     bpy.ops.object.parent_set()
@@ -373,10 +373,10 @@ def bridge_mesh_objects(mesh_object_1,
     # Switch to edit mode to be able to implement the bridging operator
     bpy.ops.object.editmode_toggle()
 
-    # apply the bridging operator
+    # Apply the bridging operator
     bpy.ops.mesh.bridge_edge_loops()
 
-    # switch back to object mode
+    # Switch back to object mode
     bpy.ops.object.editmode_toggle()
 
     # Deselect all the vertices of the parent mesh, mesh_object_1
@@ -565,6 +565,9 @@ def join_mesh_objects(mesh_list,
     if len(mesh_list) == 1:
         return mesh_list[0]
 
+    # Switch to the object mode
+    bpy.ops.object.mode_set(mode='OBJECT')
+
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
 
@@ -572,12 +575,13 @@ def join_mesh_objects(mesh_list,
     for mesh_object in mesh_list:
 
         if mesh_object.type == 'MESH':
-            
+
             # Select the mesh object
-            mesh_object.select = True
+            nmv.scene.select_object(mesh_object)
 
     # Set the 0th mesh to be active
-    bpy.context.scene.objects.active = mesh_list[0]
+    # TODO: Verify on Blender 2.79
+    # nmv.scene.set_active_object(mesh_list[0])
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     # bpy.ops.object.parent_set()
@@ -586,10 +590,13 @@ def join_mesh_objects(mesh_list,
     bpy.ops.object.join()
 
     # Get a reference to the resulting mesh
-    result_mesh = bpy.context.scene.objects.active
+    result_mesh = nmv.scene.get_active_object()
 
     # Rename it
     result_mesh.name = name
+
+    # Update the parent mesh to the resulting one
+    mesh_list[0] = result_mesh
 
     # Return a reference to the resulting mesh
     return result_mesh

@@ -49,11 +49,11 @@ class MeshOptions:
         # Fixing morphology artifacts
         self.fix_morphology_artifacts = True
 
-        # Skeletonization technique
-        self.skeletonization = nmv.enums.Meshing.Skeleton.ORIGINAL
-
         # Meshing technique
         self.meshing_technique = nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT
+
+        # Soma reconstruction technique
+        self.soma_reconstruction_technique = nmv.enums.Soma.Representation.SOFT_BODY
 
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
@@ -69,9 +69,6 @@ class MeshOptions:
 
         # Edges of the meshes, either hard or smooth
         self.edges = nmv.enums.Meshing.Edges.HARD
-
-        # Branching of the meshes, either based on angles or radii
-        self.branching = nmv.enums.Meshing.Branching.ANGLES
 
         # The shape of the skeleton that is used in the union meshing algorithm
         self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON
@@ -142,6 +139,12 @@ class MeshOptions:
 
         # The scale factor used to scale the morphology rendering frame, default 1.0
         self.resolution_scale_factor = 1.0
+
+        # Render the mesh to a transparent image
+        self.transparent_film = True
+
+        # Render the mesh to image with a specific background
+        self.film_color = nmv.consts.Color.WHITE
 
         # MESH EXPORT ##############################################################################
         # Save the reconstructed mesh as a .ply file to the output directory
