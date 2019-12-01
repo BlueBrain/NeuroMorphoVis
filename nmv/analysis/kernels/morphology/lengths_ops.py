@@ -171,3 +171,21 @@ def kernel_short_sections(morphology):
     return nmv.analysis.invoke_kernel(morphology,
                                       nmv.analysis.compute_number_of_short_sections_of_arbor,
                                       nmv.analysis.compute_total_analysis_result_of_morphology)
+
+
+def kernel_total_arbor_length_distribution(morphology,
+                                           options):
+
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_total_length_of_arbor,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
+
+    # Plot the distribution
+    nmv.analysis.plot_per_arbor_distribution(analysis_results=analysis_results,
+                                             morphology=morphology,
+                                             options=options,
+                                             figure_name='arbor-length',
+                                             x_label='Length (um)',
+                                             title='Neurite Length',
+                                             add_percentage=True)

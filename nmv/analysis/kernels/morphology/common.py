@@ -20,6 +20,26 @@ import nmv
 import nmv.analysis
 
 
+
+def aggregate_arbors_data_to_morphology(analysis_result):
+
+
+    analysis_result.morphology_result = list()
+    if analysis_result.apical_dendrite_result is not None:
+        analysis_result.morphology_result.extend(analysis_result.apical_dendrite_result)
+
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            analysis_result.morphology_result.extend(basal_dendrite_result)
+
+    if analysis_result.axon_result is not None:
+        analysis_result.morphology_result.extend(analysis_result.axon_result)
+
+
+
+
+
+
 ####################################################################################################
 # @get_morphology_maximum_branching_order_from_analysis_results
 ####################################################################################################
@@ -254,10 +274,10 @@ def invoke_kernel(morphology,
 
 
 ####################################################################################################
-# @compute_distribution
+# @compile_data
 ####################################################################################################
-def compute_distribution(morphology,
-                         kernel):
+def compile_data(morphology,
+                 kernel):
     """Invoke the analysis kernel on the morphology and return the distribution in a form of list.
 
     :param morphology:

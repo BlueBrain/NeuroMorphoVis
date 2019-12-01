@@ -429,3 +429,38 @@ def get_maximum_path_distance(section,
         analysis_data.append(copy.deepcopy(path_distance[0]))
         path_distance[0] -= section_length
 
+
+####################################################################################################
+# @get_maximum_path_distance
+####################################################################################################
+def get_samples_radii_data_of_section(section,
+                                      analysis_data):
+    """
+
+    :param section:
+    :param analysis_data:
+    :return:
+    """
+
+    # For every sample along the section
+    for i_sample in section.samples:
+
+        # Analysis data
+        data = nmv.analysis.AnalysisData(
+            value=i_sample.radius,
+            branching_order=section.branching_order,
+            radial_distance=i_sample.point.length)
+
+        # Add to the collecting list
+        analysis_data.append(data)
+
+
+def get_number_of_samples_per_section_data_of_section(section,
+                                                      analysis_data):
+    # Analysis data
+    data = nmv.analysis.AnalysisData(
+        value=len(section.samples),
+        branching_order=section.branching_order)
+
+    # Add to the collecting list
+    analysis_data.append(data)

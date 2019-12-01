@@ -177,6 +177,11 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology,
             directory=nmv.interface.ui_options.io.analysis_directory)
 
+        for distribution in nmv.analysis.distributions:
+            distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
+                                      options=nmv.interface.ui_options)
+
+        '''
         # Resolution scale
         resolution_scale = 5
 
@@ -309,7 +314,7 @@ class CreateNeuronCard(bpy.types.Operator):
         final_image.save('%s/%s.png' % (nmv.interface.ui_options.io.analysis_directory,
                                     nmv.interface.ui_options.morphology.label))
 
-
+        '''
 
 
 

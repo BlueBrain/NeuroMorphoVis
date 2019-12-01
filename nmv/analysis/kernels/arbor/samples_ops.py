@@ -367,10 +367,6 @@ def get_number_of_samples_per_section_of_arbor(arbor):
 
 
 
-
-
-
-
 def compute_distribution_number_samples_per_section_of_arbor(arbor):
 
     # A list that will contain the number of samples per section
@@ -381,3 +377,44 @@ def compute_distribution_number_samples_per_section_of_arbor(arbor):
         *[arbor,
           nmv.analysis.compute_distribution_number_of_samples_per_section,
           data_list])
+
+
+
+####################################################################################################
+# @get_samples_radii_data_of_arbor
+####################################################################################################
+def get_samples_radii_data_of_arbor(arbor):
+    """Gets a list of the number of samples per section of a given arbor.
+
+    :param arbor:
+        A given arbor to get analyzed.
+    :return
+        A list of the radii of the samples.
+    """
+
+    # A list that will contain the analysis data
+    analysis_data = list()
+
+    # Analyse
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.get_samples_radii_data_of_section,
+          analysis_data])
+
+    # Return the list
+    return analysis_data
+
+
+def get_number_of_samples_per_section_data_of_arbor(arbor):
+    # A list that will contain the analysis data
+    analysis_data = list()
+
+    # Analyse
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.get_number_of_samples_per_section_data_of_section,
+          analysis_data])
+
+    # Return the list
+    return analysis_data
+

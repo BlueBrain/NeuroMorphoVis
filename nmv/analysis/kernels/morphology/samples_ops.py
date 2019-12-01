@@ -20,7 +20,9 @@ import os
 
 # Internal imports
 import nmv
+import nmv.consts
 import nmv.analysis
+import nmv.utilities
 
 
 def kernel_total_number_samples_at_branching_order(morphology):
@@ -178,7 +180,7 @@ def kernel_average_sample_radius(morphology):
 def kernel_analyse_number_of_samples_per_section(morphology, options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.compute_distribution(
+    analysis_results = nmv.analysis.compile_data(
         morphology,
         nmv.analysis.get_number_of_samples_per_section_of_arbor)
 
@@ -205,7 +207,7 @@ def kernel_analyse_samples_radii(morphology,
                                  options=None):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.compute_distribution(morphology,
+    analysis_results = nmv.analysis.compile_data(morphology,
                                                        nmv.analysis.get_samples_radii_of_arbor)
 
     # Save the results to text files
@@ -230,7 +232,7 @@ def kernel_analyse_segments_lengths(morphology,
 def kernel_samples_radii_distribution(morphology):
 
     # Get the analysis results
-    analysis_results = nmv.analysis.compute_distribution(
+    analysis_results = nmv.analysis.compile_data(
         morphology,
         nmv.analysis.get_samples_radii_of_arbor)
 
@@ -254,7 +256,7 @@ def kernel_samples_radii_distribution(morphology):
 ####################################################################################################
 def kernel_number_of_samples_at_branching_order_distributions(morphology):
 
-    analysis_results = nmv.analysis.compute_distribution(
+    analysis_results = nmv.analysis.compile_data(
         morphology,
         nmv.analysis.compute_total_number_samples_of_arbor_distributions)
 
@@ -270,5 +272,135 @@ def kernel_number_of_samples_at_branching_order_distributions(morphology):
     #    print(i)
 
     #print(analysis_results.morphology_result)
+
+
+
+
+
+def kernel_total_number_of_samples_per_arbor_distribution(morphology, options):
+
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_total_number_samples_of_arbor,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
+
+    # Plot the distribution
+    nmv.analysis.plot_per_arbor_distribution(analysis_results=analysis_results,
+                                             morphology=morphology,
+                                             options=options,
+                                             figure_name='number-of-samples',
+                                             x_label='Number of Samples',
+                                             title='Number of Samples / Neurite',
+                                             add_percentage=True)
+
+
+def kernel_total_number_of_sections_per_arbor_distribution(morphology,
+                                                           options):
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_total_number_of_sections_of_arbor,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
+
+    # Plot the distribution
+    nmv.analysis.plot_per_arbor_distribution(analysis_results=analysis_results,
+                                             morphology=morphology,
+                                             options=options,
+                                             figure_name='number-of-sections',
+                                             x_label='Number of Sections',
+                                             title='Number of Sections / Neurite',
+                                             add_percentage=True)
+
+
+def kernel_number_samples_per_section(morphology, options):
+
+    # Analysis results
+    analysis_results = nmv.analysis.compile_data(
+        morphology,
+        nmv.analysis.get_number_of_samples_per_section_data_of_arbor)
+
+    # Aggregate
+    nmv.analysis.aggregate_arbors_data_to_morphology(analysis_results)
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    x_data = list()
+    y_data = list()
+
+
+
+    colors = (0, 0, 0)
+
+    for result in analysis_results.morphology_result:
+        print(result.branching_order)
+        x_data.append(result.branching_order)
+        y_data.append(result.value)
+
+    # Create data
+    x = np.asarray(x_data)
+    y = np.asarray(y_data)
+    ''''''
+    # Plot
+    plt.scatter(x, y, c=colors, alpha=0.5)
+    plt.title('Example')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example4.pdf')
+
+    sns.regplot(x=x, y=y, fit_reg=False)
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example5.pdf')
+    # Close figure to reset
+    plt.close()
+
+
+def kernel_samples_radii(morphology, options):
+
+    # Analysis results
+    analysis_results = nmv.analysis.compile_data(
+        morphology,
+        nmv.analysis.get_samples_radii_data_of_arbor)
+
+    # Aggregate
+    nmv.analysis.aggregate_arbors_data_to_morphology(analysis_results)
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+
+    x_data = list()
+    y_data = list()
+    r_data = list()
+
+    for result in analysis_results.morphology_result:
+        x_data.append(result.branching_order)
+        y_data.append(result.value)
+        r_data.append(result.radial_distance)
+
+    # Create data
+    x = np.asarray(x_data)
+    y = np.asarray(y_data)
+    r = np.asarray(r_data)
+
+    colors = (0, 0, 0)
+    '''
+    # Plot
+    plt.scatter(x, y, c=colors, alpha=0.5)
+    plt.title('Example')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example.pdf')
+
+    sns.regplot(x=x, y=y, fit_reg=False)
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example2.pdf')
+
+    sns.regplot(x=r, y=y, fit_reg=False)
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example3.pdf')
+    
+    '''
+
+    #for i in analysis_results.morphology_result:
+    #    print(i.value, i.branching_order)
 
 

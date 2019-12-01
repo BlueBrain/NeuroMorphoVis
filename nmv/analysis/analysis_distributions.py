@@ -26,14 +26,34 @@ distributions = [
 
     AnalysisDistribution(
         name='Samples Radii',
-        kernel=kernel_samples_radii_distribution,
+        kernel=kernel_samples_radii,
         description='The distribution of the radii of all the samples in the morphology',
         data_format='INT'),
 
     AnalysisDistribution(
-        name='Number of Samples per Section w.r.t Branching Order',
-        kernel=kernel_number_of_samples_at_branching_order_distributions,
-        description='sss',
-        data_format='INT'
-    )
+        name='Number of samples per section',
+        kernel=kernel_number_samples_per_section,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+
+
+    AnalysisDistribution(
+        name='Total Number of Samples',
+        kernel=kernel_total_number_of_samples_per_arbor_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+
+    AnalysisDistribution(
+        name='Total Number of Samples',
+        kernel=kernel_total_number_of_sections_per_arbor_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+
+    AnalysisDistribution(
+        name='Total Number of Samples',
+        kernel=kernel_total_arbor_length_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+
+
 ]

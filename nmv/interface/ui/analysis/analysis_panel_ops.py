@@ -334,9 +334,6 @@ def analyze_morphology(morphology,
         # Analyze the bounding box information
         analyze_bounding_box(morphology=morphology, scene=context.scene)
 
-        #for distribution in nmv.analysis.distributions:
-        #    distribution.apply_kernel(morphology=morphology)
-
         # Morphology is analyzed
         return True
 

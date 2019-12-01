@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .colors import *
 from .parser import *
 from .parser import *
 from .installation import *

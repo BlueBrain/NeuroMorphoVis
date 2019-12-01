@@ -17,34 +17,34 @@
 
 
 ####################################################################################################
-# @AnalysisData
+# @rgb_vector_to_hex
 ####################################################################################################
-class AnalysisData:
-    """Analysis data collected with respect to branching order and radii to be able to plot
-    histograms and more informative graphs.
+def rgb_vector_to_hex(rgb):
+    """Converts an rgb color to a hex color.
+
+    :param rgb:
+        A given rgb color.
+    :return:
+        The hex code for a hed color
     """
 
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self,
-                 value=None,
-                 branching_order=None,
-                 radial_distance=None):
-        """Constructor
+    # Return the HEX code of the color
+    return '#%02x%02x%02x' % (int(rgb[0] * 255),
+                              int(rgb[1] * 255),
+                              int(rgb[2] * 255))
 
-        :param value:
-            The value obtained from the analysis kernel on every section in the morphology.
-        :param branching_order:
-            The branching order at a specific sample.
-        :param radial_distance:
-             The radial distance from a given sample to the origin
-        """
-        # The value obtained from the analysis kernel on every section in the morphology.
-        self.value = value
 
-        # The branching order at a specific sample.
-        self.branching_order = branching_order
+####################################################################################################
+# @rgb_to_hex
+####################################################################################################
+def rgb_to_hex(rgb):
+    """Converts an rgb color to a hex color.
 
-        # The radial distance from a given sample to the origin
-        self.radial_distance = radial_distance
+    :param rgb:
+        A given rgb color.
+    :return:
+        The hex code for a hed color
+    """
+
+    # Return the HEX code of the color
+    return '#%02x%02x%02x' % rgb

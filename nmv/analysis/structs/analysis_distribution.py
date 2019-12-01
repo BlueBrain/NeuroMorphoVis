@@ -75,7 +75,8 @@ class AnalysisDistribution:
     # @apply_per_arbor_analysis_kernel
     ################################################################################################
     def apply_kernel(self,
-                     morphology):
+                     morphology,
+                     options):
         """Applies the analysis kernels 'per-arbor' on the entire morphology.
 
         :param morphology:
@@ -85,4 +86,4 @@ class AnalysisDistribution:
         if self.kernel is not None:
 
             # Get the result from applying the kernel on the entire morphology skeleton
-            self.result = self.kernel(morphology)
+            self.result = self.kernel(morphology, options)
