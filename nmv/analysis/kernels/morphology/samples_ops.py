@@ -346,10 +346,10 @@ def kernel_number_samples_per_section(morphology, options):
     plt.title('Example')
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example4.pdf')
+    #    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example4.pdf')
 
     sns.regplot(x=x, y=y, fit_reg=False)
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example5.pdf')
+    #plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example5.pdf')
     # Close figure to reset
     plt.close()
 
