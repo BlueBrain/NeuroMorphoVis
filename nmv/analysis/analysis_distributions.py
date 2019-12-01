@@ -55,5 +55,16 @@ distributions = [
         description='The distribution of the radii of all the samples in the morphology',
         data_format='INT'),
 
+    AnalysisDistribution(
+        name='Maximum Branching Order ',
+        kernel=kernel_maximum_branching_order_distribution,
+        description='The maximum branching order',
+        data_format='INT'),
+
+    AnalysisDistribution(
+        name='Section Length',
+        kernel=kernel_sections_length_range_distribution,
+        description='The maximum branching order',
+        data_format='INT'),
 
 ]

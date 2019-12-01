@@ -35,6 +35,7 @@ def plot_per_arbor_distribution(analysis_results,
     import pandas
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
+    from matplotlib.ticker import MaxNLocator
 
     plt.clf()
 
@@ -123,6 +124,7 @@ def plot_per_arbor_distribution(analysis_results,
 
     # Set figure parameters
     ax.set(xlabel=x_label, title=title)
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     # Save the figure
     plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
@@ -132,6 +134,92 @@ def plot_per_arbor_distribution(analysis_results,
 
     # Close the figures
     plt.close()
+
+
+
+
+def plot_min_avg_max_per_arbor_distribution(minimum_results,
+                                            average_results,
+                                            maximum_results,
+                                            morphology,
+                                            options,
+                                            figure_name=None,
+                                            x_label=None,
+                                            title=None,):
+    # Plotting imports
+    import numpy
+    import seaborn
+    import pandas
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    from matplotlib.ticker import MaxNLocator
+
+    plt.clf()
+
+    # Import the fonts
+    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    font_list = font_manager.createFontList(font_files)
+    font_manager.fontManager.ttflist.extend(font_list)
+
+    # Adjust configuration
+    seaborn.set_style("whitegrid")
+    plt.rcParams['axes.grid'] = 'False'
+    plt.rcParams['font.family'] = 'Arial'
+    plt.rcParams['axes.linewidth'] = 0.0
+    plt.rcParams['axes.labelsize'] = 10
+    plt.rcParams['axes.labelweight'] = 'regular'
+    plt.rcParams['xtick.labelsize'] = 10
+    plt.rcParams['ytick.labelsize'] = 10
+    plt.rcParams['legend.fontsize'] = 10
+    plt.rcParams['axes.titlesize'] = 15
+
+    # X-axis data
+    x_data = list()
+
+    # Y-axis data
+    y_min_data = list()
+    y_avg_data = list()
+    y_max_data = list()
+
+    # Collecting the lists, Axon
+    if minimum_results.axon_result is not None:
+        x_data.append('Axon')
+        y_min_data.append(minimum_results.axon_result)
+        y_avg_data.append(average_results.axon_result)
+        y_max_data.append(maximum_results.axon_result)
+
+        #colors.append(color_codes[0])
+        #total_arbors += 1
+
+    # Basal dendrites
+    number_basals = len(minimum_results.basal_dendrites_result)
+    if minimum_results.basal_dendrites_result is not None:
+        for i in range(number_basals):
+            x_data.append('Basal Dendrite %d' % i)
+            y_min_data.append(minimum_results.basal_dendrites_result[i])
+            y_avg_data.append(average_results.basal_dendrites_result[i])
+            y_max_data.append(maximum_results.basal_dendrites_result[i])
+
+            #colors.append(color_codes[1])
+            #total_arbors += 1
+
+    # Apical dendrite
+    if minimum_results.apical_dendrite_result is not None:
+        x_data.append('Apical Dendrite')
+        y_min_data.append(minimum_results.apical_dendrite_result)
+        y_avg_data.append(average_results.apical_dendrite_result)
+        y_max_data.append(maximum_results.apical_dendrite_result)
+
+        #colors.append(color_codes[2])
+        #total_arbors += 1
+
+
+    print(x_data)
+    print(y_min_data)
+    print(y_avg_data)
+    print(y_max_data)
+    pass
 
 
 def plot_distribution(distribution,

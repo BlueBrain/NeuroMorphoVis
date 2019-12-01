@@ -189,3 +189,43 @@ def kernel_total_arbor_length_distribution(morphology,
                                              x_label='Length (um)',
                                              title='Neurite Length',
                                              add_percentage=True)
+
+
+####################################################################################################
+# @kernel_sections_length_range_distribution
+####################################################################################################
+def kernel_sections_length_range_distribution(morphology,
+                                              options):
+    """Find the minimum section length of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    minimum_results =nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_section_length_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_section_length_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_section_length_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name='sections-length',
+        x_label='Length (um)',
+        title='Section Length')
+
