@@ -31,6 +31,7 @@ import nmv.geometry
 import nmv.scene
 import nmv.bmeshi
 import nmv.shading
+import nmv.rendering
 
 
 ####################################################################################################
@@ -79,6 +80,9 @@ class DisconnectedSectionsBuilder:
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
 
+        # A gray material to highlight the other arbors in colors
+        self.gray_material = None
+
         # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
         self.articulations_spheres = list()
 
@@ -93,6 +97,9 @@ class DisconnectedSectionsBuilder:
         or any individual object.
         """
         nmv.logger.info('Creating materials')
+
+        # Clear teh materials list
+        self.skeleton_materials.clear()
 
         # Create the default material list
         nmv.builders.skeleton.create_skeleton_materials_and_illumination(builder=self)
@@ -109,6 +116,11 @@ class DisconnectedSectionsBuilder:
         # Index: 6 - 7
         self.skeleton_materials.extend(self.axon_materials)
 
+        # Index 8 for the gray color
+        self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
+            name='gray', material_type=self.options.morphology.material,
+            color=Vector((0.5, 0.5, 0.5))))
+
     ################################################################################################
     # @construct_tree_poly_lines
     ################################################################################################
@@ -118,7 +130,8 @@ class DisconnectedSectionsBuilder:
                                   branching_level=0,
                                   max_branching_level=nmv.consts.Math.INFINITY,
                                   prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
-                                  material_start_index=0):
+                                  material_start_index=0,
+                                  highlight=True):
         """Creates a list of poly-lines corresponding to all the sections in the given tree.
 
         :param root:
@@ -146,11 +159,17 @@ class DisconnectedSectionsBuilder:
         if branching_level > max_branching_level:
             return
 
+        # Adjust the material
+        if highlight:
+            material_index = material_start_index + (branching_level % 2)
+        else:
+            material_index = nmv.enums.Color.GRAY_MATERIAL_INDEX
+
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(
             name='%s_%d' % (prefix, branching_level),
             samples=nmv.skeleton.get_section_poly_line(section=root),
-            material_index=material_start_index + (branching_level % 2))
+            material_index=material_index)
 
         # Add the poly-line to the poly-lines list
         poly_lines_list.append(poly_line)
@@ -161,7 +180,8 @@ class DisconnectedSectionsBuilder:
                                            poly_lines_list=poly_lines_list,
                                            branching_level=branching_level,
                                            max_branching_level=max_branching_level,
-                                           material_start_index=material_start_index)
+                                           material_start_index=material_start_index,
+                                           highlight=highlight)
 
     ################################################################################################
     # @draw_section_terminal_as_sphere
@@ -273,8 +293,8 @@ class DisconnectedSectionsBuilder:
         joint_bmesh = nmv.bmeshi.join_bmeshes_list(bmeshes_list=self.articulations_spheres)
 
         # Link the bmesh spheres to the scene
-        articulations_spheres = \
-            nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, '%s_articulations' % self.morphology.label)
+        articulations_spheres = nmv.bmeshi.ops.link_to_new_object_in_scene(
+            joint_bmesh, '%s_articulations' % self.morphology.label)
 
         # Smooth shading
         nmv.mesh.shade_smooth_object(articulations_spheres)
@@ -396,7 +416,8 @@ class DisconnectedSectionsBuilder:
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
             poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            edges=self.options.morphology.edges, bevel_object=bevel_object, materials=self.skeleton_materials)
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
 
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
@@ -415,4 +436,210 @@ class DisconnectedSectionsBuilder:
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
         return self.morphology_objects
+
+
+
+    def draw_highlighted_arbor(self,
+                               highlighted_arbor_key):
+
+        # Clearing the scene
+        nmv.scene.clear_scene()
+
+        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
+
+        nmv.logger.info('Updating Radii')
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
+        # Create a static bevel object that you can use to scale the samples along the arbors
+        # of the morphology and then hide it
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        nmv.scene.hide_object(bevel_object)
+
+        # Add the bevel object to the morphology objects because if this bevel is lost we will
+        # lose the rounded structure of the arbors
+        self.morphology_objects.append(bevel_object)
+
+        # Create the skeleton materials
+        self.create_single_skeleton_materials_list()
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+
+        # A list of all the skeleton poly-lines
+        skeleton_poly_lines = list()
+
+        # Apical dendrite
+        nmv.logger.info('Constructing poly-lines')
+        if not self.options.morphology.ignore_apical_dendrite:
+            if self.morphology.apical_dendrite is not None:
+                nmv.logger.detail('Apical dendrite')
+                self.construct_tree_poly_lines(
+                    root=self.morphology.apical_dendrite,
+                    poly_lines_list=skeleton_poly_lines,
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX,
+                    highlight=True if highlighted_arbor_key == 'color_apical' else False)
+
+        # Axon
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                nmv.logger.detail('Axon')
+                self.construct_tree_poly_lines(
+                    root=self.morphology.axon,
+                    poly_lines_list=skeleton_poly_lines,
+                    max_branching_level=self.options.morphology.axon_branch_order,
+                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX,
+                    highlight=True if highlighted_arbor_key == 'color_axon' else False)
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                    self.construct_tree_poly_lines(
+                        root=basal_dendrite,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        prefix=nmv.consts.Arbors.AXON_PREFIX,
+                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX,
+                        highlight=True if highlighted_arbor_key == 'color_basal_%d' % i else False)
+
+        # Draw the poly-lines as a single object
+        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+            poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
+
+        # Append it to the morphology objects
+        self.morphology_objects.append(morphology_object)
+
+        # For the articulated sections, draw the spheres
+        if self.options.morphology.reconstruction_method == \
+                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
+            self.draw_articulations()
+
+        # Draw the soma
+        nmv.builders.skeleton.draw_soma(builder=self)
+
+        # Transforming to global coordinates
+        nmv.builders.skeleton.transform_to_global_coordinates(builder=self)
+
+        # Return the list of the drawn morphology objects
+        nmv.logger.info('Done')
+        return self.morphology_objects
+
+    def render_highlighted_arbors(self):
+
+        # Set the background to transparent
+        nmv.scene.ops.set_background_color(color=nmv.consts.Color.VERY_WHITE, transparent=False)
+
+        # Set the arbors radii to be fixed to 1.0
+        self.options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED
+        self.options.morphology.samples_unified_radii_value = 1.0
+
+        bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+            morphology=self.morphology)
+
+        images = list()
+        if not self.options.morphology.ignore_apical_dendrite:
+            if self.morphology.apical_dendrite is not None:
+                self.draw_highlighted_arbor(highlighted_arbor_key='color_apical')
+
+                # render
+                # Render the image
+                nmv.rendering.render_to_scale(
+                    bounding_box=bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT,
+                    image_scale_factor=1,
+                    image_name='%s_%s' % (self.options.morphology.label, 'apical'),
+                    image_directory=self.options.io.analysis_directory)
+
+                images.append('%s/%s_%s' % (self.options.io.analysis_directory, self.options.morphology.label, 'apical'))
+
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                self.draw_highlighted_arbor(highlighted_arbor_key='color_axon')
+
+                # Render the image
+                nmv.rendering.render_to_scale(
+                    bounding_box=bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT,
+                    image_scale_factor=1,
+                    image_name='%s_%s' % (self.options.morphology.label, 'axon'),
+                    image_directory=self.options.io.analysis_directory)
+
+                images.append('%s/%s_%s' % (self.options.io.analysis_directory,
+                                            self.options.morphology.label, 'axon'))
+
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    self.draw_highlighted_arbor(highlighted_arbor_key='color_basal_%d' % i)
+
+                    # render
+                    # Render the image
+                    nmv.rendering.render_to_scale(
+                        bounding_box=bounding_box,
+                        camera_view=nmv.enums.Camera.View.FRONT,
+                        image_scale_factor=1,
+                        image_name='%s_%s' % (self.options.morphology.label, 'basal_%d' % i),
+                        image_directory=self.options.io.analysis_directory)
+
+                    images.append('%s/%s_%s' % (self.options.io.analysis_directory,
+                                                self.options.morphology.label, 'basal_%d' % i))
+
+        '''
+        import img2pdf
+        from PIL import Image
+
+        f = open("%s/list.pdf" % self.options.io.analysis_directory, "wb")
+        for image in images:
+            img_path = '%s.png' % image
+            pdf_path = '%s.pdf' % image
+
+            # opening image
+            pimage = Image.open(img_path).convert('RGB')
+
+            #pimage = pimage.quantize(colors=256)
+
+            img_path = '%s.jpeg' % image
+            pimage.save(img_path)
+
+
+            # converting into chunks using img2pdf
+            pdf_bytes = img2pdf.convert(img_path)
+
+            # opening or creating pdf file
+            file = open(pdf_path, "wb")
+
+            # writing pdf files with chunks
+            file.write(pdf_bytes)
+
+            # closing image file
+            pimage.close()
+
+            # closing pdf file
+            file.close()
+
+            f.write(img2pdf.convert(pdf_path))
+
+        f.close()
+        '''
+        5
+        nmv.scene.clear_scene()
+
+
+
+
+
+
+
+
+
+
 

@@ -59,8 +59,11 @@ class Color:
     # The apical dendrites materials are found at the indices 2 and 3
     APICAL_DENDRITE_MATERIAL_START_INDEX = 2
 
-    # The basal dendrites materials are found at the indices 0 and 1
+    # The basal dendrites materials are found at the indices 4 and 5
     BASAL_DENDRITES_MATERIAL_START_INDEX = 4
 
-    # The axon materials are found at the indices 0 and 1
+    # The axon materials are found at the indices 6 and 7
     AXON_MATERIAL_START_INDEX = 6
+
+    # The gray materials are found at the indices 9
+    GRAY_MATERIAL_INDEX = 8
