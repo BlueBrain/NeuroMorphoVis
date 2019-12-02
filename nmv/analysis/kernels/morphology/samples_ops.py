@@ -311,7 +311,8 @@ def kernel_total_number_of_sections_per_arbor_distribution(morphology,
                                              add_percentage=True)
 
 
-def kernel_number_samples_per_section(morphology, options):
+def kernel_number_samples_per_section(morphology,
+                                      options):
 
     # Analysis results
     analysis_results = nmv.analysis.compile_data(
@@ -333,7 +334,6 @@ def kernel_number_samples_per_section(morphology, options):
     colors = (0, 0, 0)
 
     for result in analysis_results.morphology_result:
-        print(result.branching_order)
         x_data.append(result.branching_order)
         y_data.append(result.value)
 
@@ -346,10 +346,17 @@ def kernel_number_samples_per_section(morphology, options):
     plt.title('Example')
     plt.xlabel('x')
     plt.ylabel('y')
-    #    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example4.pdf')
+    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
+                                  morphology.label,
+                                  'example-1.pdf'),
+                bbox_inches='tight')
+    plt.close()
 
     sns.regplot(x=x, y=y, fit_reg=False)
-    #plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example5.pdf')
+    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
+                                  morphology.label,
+                                  'example-2.pdf'),
+                bbox_inches='tight')
     # Close figure to reset
     plt.close()
 

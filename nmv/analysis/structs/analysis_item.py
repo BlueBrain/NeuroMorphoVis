@@ -55,7 +55,7 @@ class AnalysisItem:
                 'INT', 'FLOAT'.
         :param unit:
             The unit of the entry. This could be one of the following options:
-                ‘NONE’, ‘LENGTH’, ‘AREA’, ‘VOLUME’, ‘ROTATION’, ‘TIME’, ‘VELOCITY’, ‘ACCELERATION’.
+                'NONE', 'LENGTH', 'AREA', 'VOLUME', 'ROTATION', 'TIME', 'VELOCITY', 'ACCELERATION'.
         """
 
         # Scene variable for registration

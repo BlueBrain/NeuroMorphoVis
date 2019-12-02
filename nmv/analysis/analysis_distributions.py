@@ -67,4 +67,15 @@ distributions = [
         description='The maximum branching order',
         data_format='INT'),
 
+    AnalysisDistribution(
+        name='Total Arbor Surface Area',
+        kernel=kernel_total_arbor_surface_area_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
+
+    AnalysisDistribution(
+        name='Total Arbor Surface Area',
+        kernel=kernel_total_arbor_volume_distribution,
+        description='The distribution of the radii of all the samples in the morphology',
+        data_format='INT'),
 ]

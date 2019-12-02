@@ -86,3 +86,24 @@ def kernel_average_section_surface_area(morphology):
     return nmv.analysis.invoke_kernel(morphology,
                                       nmv.analysis.compute_average_section_surface_area,
                                       nmv.analysis.compute_average_analysis_result_of_morphology)
+
+####################################################################################################
+# @kernel_maximum_branching_order
+####################################################################################################
+def kernel_total_arbor_surface_area_distribution(morphology,
+                                                 options):
+
+    # Apply the kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_arbor_total_surface_area,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
+
+    # Plot the distribution
+    nmv.analysis.plot_per_arbor_distribution(analysis_results=analysis_results,
+                                             morphology=morphology,
+                                             options=options,
+                                             figure_name='surface-area',
+                                             x_label='Area (\u03BCm\u00b2)',
+                                             title='Neurites Surface Area',
+                                             add_percentage=True)
