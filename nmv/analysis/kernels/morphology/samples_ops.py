@@ -340,7 +340,7 @@ def kernel_number_samples_per_section(morphology,
     # Create data
     x = np.asarray(x_data)
     y = np.asarray(y_data)
-    ''''''
+
     # Plot
     plt.scatter(x, y, c=colors, alpha=0.5)
     plt.title('Example')
@@ -352,10 +352,20 @@ def kernel_number_samples_per_section(morphology,
                 bbox_inches='tight')
     plt.close()
 
-    sns.regplot(x=x, y=y, fit_reg=False)
+    sns.jointplot(x=x, y=y)
+
+    #sns.regplot(x=x, y=y, fit_reg=False)
     plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
                                   morphology.label,
                                   'example-2.pdf'),
+                bbox_inches='tight')
+    # Close figure to reset
+    plt.close()
+
+    sns.violinplot(x=x, y=y)
+    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
+                                  morphology.label,
+                                  'example-3.pdf'),
                 bbox_inches='tight')
     # Close figure to reset
     plt.close()
