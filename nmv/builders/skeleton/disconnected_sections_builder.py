@@ -630,7 +630,7 @@ class DisconnectedSectionsBuilder:
 
         f.close()
         '''
-        5
+        
         nmv.scene.clear_scene()
 
 
