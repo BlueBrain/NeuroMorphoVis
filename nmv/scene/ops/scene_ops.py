@@ -101,6 +101,10 @@ def set_background_color(color,
             bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
 
         # Transparency
+        if transparent:
+            bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+        else:
+            bpy.context.scene.render.image_settings.color_mode = 'RGB'
         bpy.context.scene.render.film_transparent = transparent
 
     # 2.7
@@ -112,8 +116,10 @@ def set_background_color(color,
         # Transparency
         if transparent:
             bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+            bpy.context.scene.render.image_settings.color_mode = 'RGBA'
         else:
             bpy.context.scene.render.alpha_mode = 'SKY'
+            bpy.context.scene.render.image_settings.color_mode = 'RGB'
 
 
 ####################################################################################################

@@ -553,11 +553,12 @@ class DisconnectedSectionsBuilder:
                 nmv.rendering.render_to_scale(
                     bounding_box=bounding_box,
                     camera_view=nmv.enums.Camera.View.FRONT,
-                    image_scale_factor=1,
+                    image_scale_factor=2,
                     image_name='%s_%s' % (self.options.morphology.label, 'apical'),
                     image_directory=self.options.io.analysis_directory)
 
-                images.append('%s/%s_%s' % (self.options.io.analysis_directory, self.options.morphology.label, 'apical'))
+                images.append('%s/%s_%s' % (self.options.io.analysis_directory,
+                                            self.options.morphology.label, 'apical'))
 
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
@@ -567,13 +568,12 @@ class DisconnectedSectionsBuilder:
                 nmv.rendering.render_to_scale(
                     bounding_box=bounding_box,
                     camera_view=nmv.enums.Camera.View.FRONT,
-                    image_scale_factor=1,
+                    image_scale_factor=2,
                     image_name='%s_%s' % (self.options.morphology.label, 'axon'),
                     image_directory=self.options.io.analysis_directory)
 
                 images.append('%s/%s_%s' % (self.options.io.analysis_directory,
                                             self.options.morphology.label, 'axon'))
-
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -586,33 +586,29 @@ class DisconnectedSectionsBuilder:
                     nmv.rendering.render_to_scale(
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
-                        image_scale_factor=1,
+                        image_scale_factor=2,
                         image_name='%s_%s' % (self.options.morphology.label, 'basal_%d' % i),
                         image_directory=self.options.io.analysis_directory)
 
                     images.append('%s/%s_%s' % (self.options.io.analysis_directory,
                                                 self.options.morphology.label, 'basal_%d' % i))
 
-        '''
+
         import img2pdf
         from PIL import Image
 
-        f = open("%s/list.pdf" % self.options.io.analysis_directory, "wb")
+
         for image in images:
+            print(image)
+
             img_path = '%s.png' % image
             pdf_path = '%s.pdf' % image
 
             # opening image
-            pimage = Image.open(img_path).convert('RGB')
-
-            #pimage = pimage.quantize(colors=256)
-
-            img_path = '%s.jpeg' % image
-            pimage.save(img_path)
-
+            image = Image.open(img_path)
 
             # converting into chunks using img2pdf
-            pdf_bytes = img2pdf.convert(img_path)
+            pdf_bytes = img2pdf.convert(image.filename)
 
             # opening or creating pdf file
             file = open(pdf_path, "wb")
@@ -621,16 +617,30 @@ class DisconnectedSectionsBuilder:
             file.write(pdf_bytes)
 
             # closing image file
-            pimage.close()
+            image.close()
 
             # closing pdf file
             file.close()
 
-            f.write(img2pdf.convert(pdf_path))
+        output_stream = "%s/list.pdf" % self.options.io.analysis_directory
+        import sys
+        try:
+            from PyPDF2 import PdfFileReader, PdfFileWriter
+        except ImportError:
+            from pyPdf import PdfFileReader, PdfFileWriter
 
-        f.close()
-        '''
-        
+        pdf_writer = PdfFileWriter()
+
+        for image in images:
+            path = '%s.pdf' % image
+            pdf_reader = PdfFileReader(path)
+            for page in range(pdf_reader.getNumPages()):
+                pdf_writer.addPage(pdf_reader.getPage(page))
+
+        with open(output_stream, 'wb') as fh:
+            pdf_writer.write(fh)
+
+
         nmv.scene.clear_scene()
 
 
