@@ -90,7 +90,7 @@ def set_background_color(color,
         the color.
     """
 
-    # 2.8
+    # 2.80 or higher
     if nmv.utilities.is_blender_280():
 
         # Color
@@ -101,13 +101,15 @@ def set_background_color(color,
             bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
 
         # Transparency
+        bpy.context.scene.render.film_transparent = transparent
+
+        # Image mode to avoid the alpha channel issues
         if transparent:
             bpy.context.scene.render.image_settings.color_mode = 'RGBA'
         else:
             bpy.context.scene.render.image_settings.color_mode = 'RGB'
-        bpy.context.scene.render.film_transparent = transparent
 
-    # 2.7
+    # 2.79
     else:
 
         # Color

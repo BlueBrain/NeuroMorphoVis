@@ -201,6 +201,8 @@ def create_flat_material(name,
     if not current_scene.render.engine == 'CYCLES':
         current_scene.render.engine = 'CYCLES'
 
+    bpy.context.scene.cycles.samples = 16
+
     # Import the material from the library
     material_reference = import_shader(shader_name='flat-material')
 

@@ -537,6 +537,7 @@ class DisconnectedSectionsBuilder:
         nmv.scene.ops.set_background_color(color=nmv.consts.Color.VERY_WHITE, transparent=False)
 
         # Set the arbors radii to be fixed to 1.0
+        self.options.morphology.material = nmv.enums.Shading.FLAT
         self.options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED
         self.options.morphology.samples_unified_radii_value = 1.0
 

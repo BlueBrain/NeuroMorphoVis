@@ -43,16 +43,16 @@ class Camera:
             pass
 
         # Front view
-        FRONT = 'CAMERA_FRONT_PROJECTION'
+        FRONT = 'FRONT'
 
         # Side view
-        SIDE = 'CAMERA_SIDE_PROJECTION'
+        SIDE = 'SIDE'
 
         # Top view
-        TOP = 'CAMERA_TOP_PROJECTION'
+        TOP = 'TOP'
 
         # Front for 360
-        FRONT_360 = 'FRONT_360_PROJECTION'
+        FRONT_360 = 'FRONT_360'
 
         ############################################################################################
         # @get_enum
