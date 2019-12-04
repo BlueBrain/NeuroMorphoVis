@@ -23,6 +23,7 @@ import bpy
 from mathutils import Vector
 
 # Internal imports
+import nmv.analysis
 import nmv.mesh
 import nmv.enums
 import nmv.skeleton
@@ -82,8 +83,6 @@ class DendrogramBuilder:
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
 
-        self.poly_lines = list()
-
     ################################################################################################
     # @create_single_skeleton_materials_list
     ################################################################################################
@@ -132,7 +131,13 @@ class DendrogramBuilder:
         # Resample the sections of the morphology skeleton
         nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
-        nmv.skeleton.compute_morphology_dendrogram(morphology=self.morphology, delta=15)
+        # Get the maximum radius to make it easy to compute the deltas
+        maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
+            morphology=self.morphology).morphology_result
+
+        # Compute the dendrogram of the morphology
+        nmv.skeleton.compute_morphology_dendrogram(
+            morphology=self.morphology, delta=maximum_radius * 2)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -150,6 +155,10 @@ class DendrogramBuilder:
             nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                 self.morphology.axon, skeleton_poly_lines)
 
+        # The soma to stems line
+        center = nmv.skeleton.add_soma_to_stems_line(
+            morphology=self.morphology, poly_lines_data=skeleton_poly_lines)
+
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
         nmv.scene.hide_object(bevel_object)
@@ -159,6 +168,8 @@ class DendrogramBuilder:
             poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
             edges=self.options.morphology.edges, bevel_object=bevel_object,
             materials=self.skeleton_materials)
+
+        nmv.scene.set_object_location(morphology_object, center)
 
         # Always switch to the top view to see the dendrogram quite well
         nmv.scene.view_axis(axis='TOP')

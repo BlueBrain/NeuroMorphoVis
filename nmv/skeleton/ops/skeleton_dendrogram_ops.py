@@ -270,7 +270,6 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
         delta = 0
         for i in range(len(section.samples) - 1):
             delta += (section.samples[i + 1].point - section.samples[i].point).length
-            point = section.samples[i].point
             radius = section.samples[i].radius
             samples.append([(section.dendrogram_x, start_y + delta, 0.0, 1), radius])
 
@@ -309,4 +308,55 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     for child in section.children:
         create_dendrogram_poly_lines_list_of_arbor(
             section=child, poly_lines_data=poly_lines_data, mode=mode)
+
+
+####################################################################################################
+# add_soma_to_stems_line
+####################################################################################################
+def add_soma_to_stems_line(morphology,
+                           poly_lines_data=[]):
+
+    x_values = list()
+    radii = list()
+
+    if morphology.apical_dendrite is not None:
+        x_values.append(morphology.apical_dendrite.dendrogram_x)
+        radii.append(morphology.apical_dendrite.samples[0].radius)
+
+    if morphology.dendrites is not None:
+        for basal_dendrite in morphology.dendrites:
+            x_values.append(basal_dendrite.dendrogram_x)
+            radii.append(basal_dendrite.samples[0].radius)
+
+    if morphology.axon is not None:
+        x_values.append(morphology.axon.dendrogram_x)
+        radii.append(morphology.axon.samples[0].radius)
+
+    # Average radius
+    avg_radius = sum(radii) / len(radii)
+
+    # Final value
+    center = (min(x_values) + max(x_values)) * 0.5
+    center = Vector((-center, -avg_radius * 2.0, 0))
+
+    # Compute the line points
+    point_1 = Vector((min(x_values), -avg_radius, 0))
+    point_2 = Vector((max(x_values), -avg_radius, 0))
+
+    # Construct a simple poly-line with two points at the start and end of the poly-line
+    samples = list()
+
+    samples.append([(point_1[0], point_1[1], point_1[2], 1), avg_radius])
+    samples.append([(point_2[0], point_2[1], point_2[2], 1), avg_radius])
+
+    # Construct the poly-line
+    poly_line = nmv.geometry.PolyLine(name='root', samples=samples, material_index=0)
+
+    # Append the polyline to the list
+    poly_lines_data.append(poly_line)
+
+    return center
+
+
+
 

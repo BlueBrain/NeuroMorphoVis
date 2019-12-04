@@ -76,39 +76,39 @@ class MorphologyPanel(bpy.types.Panel):
         # The morphology must be loaded to be able to draw these options
         if nmv.interface.ui_morphology is not None:
 
+            # Set the reconstruction options
+            nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
+                layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+
             # Set the skeleton options
             nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
                 layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
-        # Set the reconstruction options
-        nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+            # Set the color options
+            nmv.interface.ui.morphology_panel_ops.set_color_options(
+                layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
-        # Set the color options
-        nmv.interface.ui.morphology_panel_ops.set_color_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+            # Reconstruction button
+            quick_reconstruction_row = layout.row()
+            quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
+            reconstruct_morphology_button_row = layout.row()
+            reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
+            reconstruct_morphology_button_row.enabled = True
 
-        # Reconstruction button
-        quick_reconstruction_row = layout.row()
-        quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
-        reconstruct_morphology_button_row = layout.row()
-        reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
-        reconstruct_morphology_button_row.enabled = True
+            if is_morphology_reconstructed:
+                morphology_stats_row = layout.row()
+                morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+                reconstruction_time_row = layout.row()
+                reconstruction_time_row.prop(context.scene, 'NMV_MorphologyReconstructionTime')
+                reconstruction_time_row.enabled = False
 
-        if is_morphology_reconstructed:
-            morphology_stats_row = layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            reconstruction_time_row = layout.row()
-            reconstruction_time_row.prop(context.scene, 'NMV_MorphologyReconstructionTime')
-            reconstruction_time_row.enabled = False
+            # Set the rendering options
+            nmv.interface.ui.morphology_panel_ops.set_rendering_options(
+                layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
-        # Set the rendering options
-        nmv.interface.ui.morphology_panel_ops.set_rendering_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
-
-        # Set the rendering options
-        nmv.interface.ui.morphology_panel_ops.set_export_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+            # Set the rendering options
+            nmv.interface.ui.morphology_panel_ops.set_export_options(
+                layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
