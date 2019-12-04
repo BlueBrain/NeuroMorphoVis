@@ -126,3 +126,72 @@ def compute_dendrogram_x_coordinates_for_parents(section):
 
     # Go recursively
     compute_dendrogram_x_coordinates_for_parents(section=section.parent)
+
+
+####################################################################################################
+# compute_dendrogram_y_coordinates_for_children
+####################################################################################################
+def compute_dendrogram_y_coordinates_for_children(section):
+
+    # The actual Y-coordinate is equivalent to the path length of the section
+    section.dendrogram_y = section.compute_path_length()
+
+    # Go recursively
+    for child in section.children:
+        compute_dendrogram_y_coordinates_for_children(section=child)
+
+
+####################################################################################################
+# compute_arbor_dendrogram
+####################################################################################################
+def compute_arbor_dendrogram(arbor,
+                             delta=10):
+    """Computes the dendrogram of a given arbor and consider the delta between the leaves.
+
+    :param arbor:
+        A given arbor to compute its dendrogram.
+    :param delta:
+        The distance between the leaves.
+    """
+    # Get a list of all the leaf nodes in the arbor
+    leaves = get_arbor_leaves(arbor=arbor)
+
+    # Assuming that the leaves will start at 0.0 on the x-axis
+    for i, leaf in enumerate(leaves):
+
+        # Compute the X-coordinates of the leaves
+        leaf.dendrogram_x = i * delta
+
+    # Compute the X-coordinates of the rest of the arbor tree
+    for leaf in leaves:
+        compute_dendrogram_x_coordinates_for_parents(leaf)
+
+    # Compute the Y-coordinates starting from the parent node
+    compute_dendrogram_y_coordinates_for_children(section=arbor)
+
+
+####################################################################################################
+# compute_morphology_dendrogram
+####################################################################################################
+def compute_morphology_dendrogram(morphology,
+                                  delta):
+    """Computes the dendrogram of the entire morphology.
+
+    :param morphology:
+        A morphology to compute its dendrogram.
+    :param delta:
+        The distance between the leaves.
+    """
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+        compute_arbor_dendrogram(arbor=morphology.apical_dendrite, delta=delta)
+
+    # Basal dendrites
+    if morphology.dendrites is not None:
+        for basal_dendrite in morphology.dendrites:
+            compute_arbor_dendrogram(arbor=basal_dendrite, delta=delta)
+
+    # Axon
+    if morphology.axon is not None:
+        compute_arbor_dendrogram(arbor=morphology.axon, delta=delta)

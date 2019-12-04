@@ -229,31 +229,6 @@ class DendrogramBuilder:
     def draw_arbor_dendrogram(self,
                               arbor):
 
-        # Compute the total number of leaves of the arbor
-        leaves = self.get_leaves_of_arbor(arbor)
-        number_leaves = len(leaves)
-
-        # Assuming that the delta is 4
-        delta = 15
-
-        # Total distance
-        total_width = delta * (number_leaves - 1)
-
-        # Assuming that the leaves will start at 0.0 on the x-axis
-        for i, leaf in enumerate(leaves):
-            print(leaf.branching_order)
-            leaf.dendrogram_x = i * delta
-
-        # Propagate the values upwards in the tree
-        for leaf in leaves:
-            self.compute_dendrogram_x_for_parents(leaf)
-
-        self.propagate_y(arbor)
-
-        print('-')
-        self.plot_path_length(arbor)
-
-        #self.print_dendro(arbor)
         self.draw_dendrogram(arbor)
 
 
@@ -298,6 +273,8 @@ class DendrogramBuilder:
 
         # Resample the sections of the morphology skeleton
         nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+
+        nmv.skeleton.compute_morphology_dendrogram(morphology=self.morphology, delta=15)
 
         if self.morphology.apical_dendrite is not None:
             self.draw_arbor_dendrogram(self.morphology.apical_dendrite)

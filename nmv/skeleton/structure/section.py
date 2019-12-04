@@ -120,7 +120,7 @@ class Section:
         self.dendrogram_x = None
 
         # The Y-coordinate of the dendrogram of this section
-        self.dendrogram_Y = None
+        self.dendrogram_y = None
 
     ################################################################################################
     # @get_type_string
