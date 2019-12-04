@@ -218,7 +218,8 @@ class LoadMorphology(bpy.types.Operator):
 
         # Create a skeletonizer object to build the morphology skeleton
         import nmv.builders
-        builder = nmv.builders.DisconnectedSectionsBuilder(
+        #builder = nmv.builders.DisconnectedSectionsBuilder(
+        builder = nmv.builders.DendrogramBuilder(
             morphology=nmv.interface.ui_morphology,
             options=copy.deepcopy(nmv.interface.ui_options))
 

@@ -320,3 +320,5 @@ class Section:
             sample_0 = self.samples[i]
             sample_1 = self.samples[i + 1]
             self.length += (sample_1.point - sample_0.point).length
+
+        return self.length
