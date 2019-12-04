@@ -15,23 +15,12 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import random
-import time
-
 # Blender imports
-import bpy
-from mathutils import Vector, Matrix
+from mathutils import Vector
 
 # Internal imports
 import nmv
-import nmv.bmeshi
-import nmv.enums
 import nmv.geometry
-import nmv.mesh
-import nmv.scene
-import nmv.skeleton
-import nmv.utilities
 
 
 ####################################################################################################
@@ -132,6 +121,12 @@ def compute_dendrogram_x_coordinates_for_parents(section):
 # compute_dendrogram_y_coordinates_for_children
 ####################################################################################################
 def compute_dendrogram_y_coordinates_for_children(section):
+    """This function computes the Y-coordinates of the dendrogram points starting from a given
+    root section and goes recursively down to the leaves.
+
+    :param section:
+        The root section of the subtree where we are computing the Y-coordinates of the dendrogram.
+    """
 
     # The actual Y-coordinate is equivalent to the path length of the section
     section.dendrogram_y = section.compute_path_length()
@@ -142,16 +137,20 @@ def compute_dendrogram_y_coordinates_for_children(section):
 
 
 ####################################################################################################
-# compute_arbor_dendrogram
+# compute_arbor_dendrogram_individually
 ####################################################################################################
-def compute_arbor_dendrogram(arbor,
-                             delta=10):
-    """Computes the dendrogram of a given arbor and consider the delta between the leaves.
+def compute_arbor_dendrogram_individually(arbor,
+                                          delta=10,
+                                          continuing_index=0):
+    """Computes the dendrogram of a given arbor individually and not as a part of the entire
+    morphology.
 
     :param arbor:
         A given arbor to compute its dendrogram.
     :param delta:
         The distance between the leaves.
+    :param continuing_index:
+        An index that reflects the continuation from one arbor to another.
     """
     # Get a list of all the leaf nodes in the arbor
     leaves = get_arbor_leaves(arbor=arbor)
@@ -160,7 +159,7 @@ def compute_arbor_dendrogram(arbor,
     for i, leaf in enumerate(leaves):
 
         # Compute the X-coordinates of the leaves
-        leaf.dendrogram_x = i * delta
+        leaf.dendrogram_x = (i + continuing_index) * delta
 
     # Compute the X-coordinates of the rest of the arbor tree
     for leaf in leaves:
@@ -171,11 +170,12 @@ def compute_arbor_dendrogram(arbor,
 
 
 ####################################################################################################
-# compute_morphology_dendrogram
+# compute_morphology_dendrogram_per_arbor_individually
 ####################################################################################################
-def compute_morphology_dendrogram(morphology,
-                                  delta):
-    """Computes the dendrogram of the entire morphology.
+def compute_morphology_dendrogram_per_arbor_individually(morphology,
+                                                         delta):
+    """Computes the dendrogram of the entire morphology taking into consideration that each arbor is
+    treated as an individual item.
 
     :param morphology:
         A morphology to compute its dendrogram.
@@ -185,13 +185,128 @@ def compute_morphology_dendrogram(morphology,
 
     # Apical dendrite
     if morphology.apical_dendrite is not None:
-        compute_arbor_dendrogram(arbor=morphology.apical_dendrite, delta=delta)
+        compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite, delta=delta)
 
     # Basal dendrites
     if morphology.dendrites is not None:
         for basal_dendrite in morphology.dendrites:
-            compute_arbor_dendrogram(arbor=basal_dendrite, delta=delta)
+            compute_arbor_dendrogram_individually(arbor=basal_dendrite, delta=delta)
 
     # Axon
     if morphology.axon is not None:
-        compute_arbor_dendrogram(arbor=morphology.axon, delta=delta)
+        compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta)
+
+
+####################################################################################################
+# compute_morphology_dendrogram
+####################################################################################################
+def compute_morphology_dendrogram(morphology,
+                                  delta):
+    """Computes the dendrogram of the entire morphology as a single object considering the shifts
+    required between the different arbors.
+
+    :param morphology:
+        A morphology to compute its dendrogram.
+    :param delta:
+        The distance between the leaves.
+    """
+
+    # This index is used to keep track on the distance between different leaves on different arbors
+    continuing_index = 0
+
+    # Apical dendrite
+    if morphology.apical_dendrite is not None:
+        compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite,
+                                              delta=delta)
+
+        # Add the leaves count 
+        continuing_index = len(get_arbor_leaves(arbor=morphology.apical_dendrite))
+
+    # Basal dendrites
+    if morphology.dendrites is not None:
+        for basal_dendrite in morphology.dendrites:
+            compute_arbor_dendrogram_individually(
+                arbor=basal_dendrite, delta=delta, continuing_index=continuing_index)
+
+            # Add the leaves count 
+            continuing_index += len(get_arbor_leaves(arbor=basal_dendrite))
+
+    # Axon
+    if morphology.axon is not None:
+        compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta,
+                                              continuing_index=continuing_index)
+
+
+####################################################################################################
+# create_dendrogram_poly_lines_list_of_arbor
+####################################################################################################
+def create_dendrogram_poly_lines_list_of_arbor(section,
+                                               poly_lines_data=[],
+                                               mode='NON FLAT'):
+
+    # If the given section is a root, set the start along the Y-axis to zero, otherwise to the path
+    # length of the parent
+    if section.is_root():
+        start_y = 0
+    else:
+        start_y = section.parent.path_length
+    end_y = start_y + section.length
+
+    # The two points that represent the section
+    point_1 = Vector((section.dendrogram_x, start_y, 0))
+    point_2 = Vector((section.dendrogram_x, end_y, 0))
+
+    # Construct a simple poly-line with two points at the start and end of the poly-line
+    samples = list()
+
+    if mode == 'FLAT':
+        samples.append([(point_1[0], point_1[1], point_1[2], 1), 2.0])
+        samples.append([(point_2[0], point_2[1], point_2[2], 1), 2.0])
+    else:
+
+        # Add the first sample
+        samples.append([(point_1[0], point_1[1], point_1[2], 1), section.samples[0].radius])
+
+        delta = 0
+        for i in range(len(section.samples) - 1):
+            delta += (section.samples[i + 1].point - section.samples[i].point).length
+            point = section.samples[i].point
+            radius = section.samples[i].radius
+            samples.append([(section.dendrogram_x, start_y + delta, 0.0, 1), radius])
+
+    # Construct the poly-line
+    poly_line = nmv.geometry.PolyLine(
+        name='section_%s' % str(section.id),
+        samples=samples,
+        material_index=section.get_material_index() + (section.branching_order % 2))
+
+    # Append the polyline to the list
+    poly_lines_data.append(poly_line)
+
+    # Draw the horizontal line
+    if section.has_children():
+
+        number_children = len(section.children)
+
+        for i in range(number_children - 1):
+            child_1 = section.children[i]
+            child_2 = section.children[i + 1]
+
+            samples = list()
+            radius_1 = child_1.samples[0].radius
+            radius_2 = child_2.samples[0].radius
+            samples.append([(child_1.dendrogram_x - radius_1, end_y, 0, 1), radius_1])
+            samples.append([(child_2.dendrogram_x + radius_2, end_y, 0, 1), radius_2])
+            poly_line = nmv.geometry.PolyLine(
+                name='section_%s' % str(section.id),
+                samples=samples,
+                material_index=section.get_material_index() + (section.branching_order % 2))
+
+            # Append the polyline to the list
+            poly_lines_data.append(poly_line)
+
+    # Go recursively
+    for child in section.children:
+        create_dendrogram_poly_lines_list_of_arbor(
+            section=child, poly_lines_data=poly_lines_data, mode=mode)
+

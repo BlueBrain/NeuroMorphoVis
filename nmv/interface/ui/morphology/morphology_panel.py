@@ -178,6 +178,10 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             morphology_builder = nmv.builders.ProgressiveBuilder(
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
+        elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
+            morphology_builder = nmv.builders.DendrogramBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
         # Default: DisconnectedSectionsBuilder
         else:
             morphology_builder = nmv.builders.DisconnectedSectionsBuilder(

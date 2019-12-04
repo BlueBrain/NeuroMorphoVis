@@ -35,25 +35,28 @@ class Skeleton:
     class Method:
 
         # Connect the original sections without repairing any artifacts in the morphology
-        CONNECTED_SECTIONS = 'SKELETONIZATION_CONNECTED_SECTION'
+        CONNECTED_SECTIONS = 'Skeleton.CONNECTED_SECTION'
 
         # Disconnect the sections and draw each of them as an independent object
-        DISCONNECTED_SECTIONS = 'SKELETONIZATION_DISCONNECTED_SECTIONS'
+        DISCONNECTED_SECTIONS = 'Skeleton.DISCONNECTED_SECTIONS'
 
         # Progressive reconstruction of the morphology
-        PROGRESSIVE = 'SKELETONIZATION_PROGRESSIVE'
+        PROGRESSIVE = 'Skeleton.PROGRESSIVE'
 
         # Connected skeleton where all the skeleton lines will be connected together in a one object
-        CONNECTED_SKELETON = 'SKELETONIZATION_CONNECTED_SKELETON'
+        CONNECTED_SKELETON = 'Skeleton.CONNECTED_SKELETON'
 
         # Samples
-        SAMPLES = 'SKELETONIZATION_SAMPLES'
+        SAMPLES = 'Skeleton.SAMPLES'
 
         # Similar to DISCONNECTED_SECTIONS, and add an articulation sphere to connect the sections
-        ARTICULATED_SECTIONS = 'SKELETONIZATION_ARTICULATED_SECTIONS'
+        ARTICULATED_SECTIONS = 'Skeleton.ARTICULATED_SECTIONS'
 
         # Disconnect the segments and draw each of them as an independent object
-        DISCONNECTED_SEGMENTS = 'SKELETONIZATION_DISCONNECTED_SEGMENTS'
+        DISCONNECTED_SEGMENTS = 'Skeleton.DISCONNECTED_SEGMENTS'
+
+        # Dendrogram mode
+        DENDROGRAM = 'Skeleton.DENDROGRAM'
 
         ############################################################################################
         # @__init__
@@ -69,31 +72,35 @@ class Skeleton:
 
             # Disconnected segments
             if argument == 'disconnected-segments':
-                return Skeletonization.Method.DISCONNECTED_SEGMENTS
+                return Skeleton.Method.DISCONNECTED_SEGMENTS
 
             # Connected sections
             elif argument == 'samples':
-                return Skeletonization.Method.SAMPLES
+                return Skeleton.Method.SAMPLES
 
             # Connected sections
             elif argument == 'progressive':
-                return Skeletonization.Method.PROGRESSIVE
+                return Skeleton.Method.PROGRESSIVE
 
             # Disconnected sections
             elif argument == 'disconnected-sections':
-                return Skeletonization.Method.DISCONNECTED_SECTIONS
+                return Skeleton.Method.DISCONNECTED_SECTIONS
 
             # Articulated sections
             elif argument == 'articulated-sections':
-                return Skeletonization.Method.ARTICULATED_SECTIONS
+                return Skeleton.Method.ARTICULATED_SECTIONS
 
             # Connected sections
             elif argument == 'connected-sections':
-                return Skeletonization.Method.CONNECTED_SECTIONS
+                return Skeleton.Method.CONNECTED_SECTIONS
+
+            # Dendrogram
+            elif argument == 'dendrogram':
+                return Skeleton.Method.DENDROGRAM
 
             # Default
             else:
-                return Skeletonization.Method.DISCONNECTED_SECTIONS
+                return Skeleton.Method.DISCONNECTED_SECTIONS
 
     ################################################################################################
     # @Style
@@ -137,33 +144,33 @@ class Skeleton:
 
             # Original
             if argument == 'original':
-                return Skeletonization.Style.ORIGINAL
+                return Skeleton.Style.ORIGINAL
 
             elif argument == 'planar':
-                return Skeletonization.Style.PLANAR
+                return Skeleton.Style.PLANAR
 
             # Tapered
             elif argument == 'tapered':
-                return Skeletonization.Style.TAPERED
+                return Skeleton.Style.TAPERED
 
             # Zigzag
             elif argument == 'zigzag':
-                return Skeletonization.Style.ZIGZAG
+                return Skeleton.Style.ZIGZAG
 
             # Tapered zigzag
             elif argument == 'tapered-zigzag':
-                return Skeletonization.Style.TAPERED_ZIGZAG
+                return Skeleton.Style.TAPERED_ZIGZAG
 
             elif argument == 'planar-zigzag':
-                return Skeletonization.Style.PLANAR_ZIGZAG
+                return Skeleton.Style.PLANAR_ZIGZAG
 
             # Tapered zigzag
             elif argument == 'simplified':
-                return Skeletonization.Style.SIMPLIFIED
+                return Skeleton.Style.SIMPLIFIED
 
             # By default use the original skeleton
             else:
-                return Skeletonization.Style.ORIGINAL
+                return Skeleton.Style.ORIGINAL
 
     ################################################################################################
     # @Branching
@@ -192,15 +199,15 @@ class Skeleton:
 
             # Angles
             if argument == 'radii':
-                return Skeletonization.Branching.ANGLES
+                return Skeleton.Branching.ANGLES
 
             # Radii
             elif argument == 'radii':
-                return Skeletonization.Branching.RADII
+                return Skeleton.Branching.RADII
 
             # By default angles
             else:
-                return Skeletonization.Branching.ANGLES
+                return Skeleton.Branching.ANGLES
 
     ################################################################################################
     # @Resampling
@@ -235,23 +242,23 @@ class Skeleton:
 
             # None
             if argument == 'none':
-                return Skeletonization.Resampling.NONE
+                return Skeleton.Resampling.NONE
 
             # Adaptive relaxed
             elif argument == 'adaptive-relaxed':
-                return Skeletonization.Resampling.ADAPTIVE_RELAXED
+                return Skeleton.Resampling.ADAPTIVE_RELAXED
 
             # Adaptive packed
             elif argument == 'adaptive-packed':
-                return Skeletonization.Resampling.ADAPTIVE_PACKED
+                return Skeleton.Resampling.ADAPTIVE_PACKED
 
             # Fixed step
             elif argument == 'fixed':
-                return Skeletonization.Resampling.FIXED_STEP
+                return Skeleton.Resampling.FIXED_STEP
 
             # By default none
             else:
-                return Skeletonization.Resampling.NONE
+                return Skeleton.Resampling.NONE
 
     ################################################################################################
     # @ArborsRadii
@@ -289,23 +296,23 @@ class Skeleton:
 
             # As specified in the morphology file
             if argument == 'default':
-                return Skeletonization.ArborsRadii.ORIGINAL
+                return Skeleton.ArborsRadii.ORIGINAL
 
             # Scaled
             elif argument == 'scaled':
-                return Skeletonization.ArborsRadii.SCALED
+                return Skeleton.ArborsRadii.SCALED
 
             # Fixed
             elif argument == 'fixed':
-                return Skeletonization.ArborsRadii.UNIFIED
+                return Skeleton.ArborsRadii.UNIFIED
 
             # Filtered
             elif argument == 'filtered':
-                return Skeletonization.ArborsRadii.FILTERED
+                return Skeleton.ArborsRadii.FILTERED
 
             # By default, as specified in the morphology file
             else:
-                return Skeletonization.ArborsRadii.ORIGINAL
+                return Skeleton.ArborsRadii.ORIGINAL
 
     ################################################################################################
     # @Rendering
@@ -350,19 +357,19 @@ class Skeleton:
 
                 # Close up view
                 if argument == 'close-up':
-                    return Skeletonization.Rendering.View.CLOSE_UP_VIEW
+                    return Skeleton.Rendering.View.CLOSE_UP_VIEW
 
                 # Mid-shot view
                 elif argument == 'mid-shot':
-                    return Skeletonization.Rendering.View.MID_SHOT_VIEW
+                    return Skeleton.Rendering.View.MID_SHOT_VIEW
 
                 # Wide-shot view
                 elif argument == 'wide-shot':
-                    return Skeletonization.Rendering.View.WIDE_SHOT_VIEW
+                    return Skeleton.Rendering.View.WIDE_SHOT_VIEW
 
                 # By default use the wide shot view
                 else:
-                    return Skeletonization.Rendering.View.WIDE_SHOT_VIEW
+                    return Skeleton.Rendering.View.WIDE_SHOT_VIEW
 
         ########################################################################################
         # @Resolution
@@ -391,12 +398,12 @@ class Skeleton:
 
                 # To scale
                 if argument == 'to-scale':
-                    return Skeletonization.Rendering.Resolution.TO_SCALE
+                    return Skeleton.Rendering.Resolution.TO_SCALE
 
                 # Fixed resolution
                 elif argument == 'fixed':
-                    return Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+                    return Skeleton.Rendering.Resolution.FIXED_RESOLUTION
 
                 # By default render at the specified resolution
                 else:
-                    return Skeletonization.Rendering.Resolution.FIXED_RESOLUTION
+                    return Skeleton.Rendering.Resolution.FIXED_RESOLUTION

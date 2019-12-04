@@ -180,7 +180,11 @@ bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
             "Each sample is drawn as a sphere (this approach is very time consuming)"),
            (nmv.enums.Skeleton.Method.CONNECTED_SECTIONS,
             'Connected Sections',
-            "The sections of a single arbor are connected together")],
+            "The sections of a single arbor are connected together"),
+           (nmv.enums.Skeleton.Method.DENDROGRAM,
+            'Dendrogram',
+            "Draw the morphology skeleton as a dendrogram, where you can visualize it in 3D."
+            "This mode helps to analyse complex morphology skeletons")],
     name="Method",
     default=nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS)
 
