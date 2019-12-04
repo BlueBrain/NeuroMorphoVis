@@ -113,6 +113,14 @@ class Section:
         # The length of the section
         self.length = 0
 
+        self.path_length = None
+
+        self.dendrogram_x = None
+        self.dendrogram_Y = None
+
+        self.compute_length()
+        self.compute_path_length()
+
     ################################################################################################
     # @get_type_string
     ################################################################################################
@@ -322,3 +330,11 @@ class Section:
             self.length += (sample_1.point - sample_0.point).length
 
         return self.length
+
+    def compute_path_length(self):
+
+        if self.is_root():
+            self.path_length = self.compute_length()
+        else:
+            self.path_length = self.compute_length() + self.parent.path_length
+

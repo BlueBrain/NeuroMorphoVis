@@ -123,6 +123,12 @@ class DendrogramBuilder:
         print(len(leafs))
         return len(leafs)
 
+    def get_leaves_of_arbor(self,
+                            root):
+        leaves = list()
+        self.get_leaves(root, leaves)
+        return leaves
+
     def count_right_leaves(self,
                            root):
         if root.has_children():
@@ -167,13 +173,144 @@ class DendrogramBuilder:
 
             self.draw_sub_tree(child, x=starting_x, y=y + length)
 
+    def compute_dendrogram_x_for_parents(self,
+                                         node):
 
+        # Get the parent
+        if node is None:
+            return
+
+        parent = node.parent
+
+        # Parent must not be None
+        if parent is not None:
+
+            # Compute X's for all the children
+            x = 0
+
+            for child in parent.children:
+
+                # In case one is not computed
+                if child.dendrogram_x is None:
+                    return
+                x += child.dendrogram_x
+
+            x /= len(parent.children)
+
+            # Do it
+            parent.dendrogram_x = x
+
+        # Do it for the parent
+        self.compute_dendrogram_x_for_parents(parent)
+
+    def print_dendro(self,
+                     root):
+        print('%d %f %f' % (root.branching_order, root.dendrogram_x, root.dendrogram_y))
+
+        for child in root.children:
+            self.print_dendro(child)
+
+    def propagate_y(self,
+                    root):
+
+        if root is not None:
+            root.dendrogram_y = root.compute_length()
+
+        for child in root.children:
+            self.propagate_y(child)
+
+
+    def plot_path_length(self, section):
+
+        section.length = nmv.skeleton.compute_section_length(section)
+        if section.is_root():
+            section.path_length = section.length
+        else:
+            section.path_length = section.parent.path_length + section.length
+        print('%d %f' % (section.branching_order, section.path_length))
+
+        for child in section.children:
+            self.plot_path_length(child)
+
+
+
+    def draw_dendrogram(self,
+                        root):
+        if root.is_root():
+            starting = 0
+        else:
+            starting = root.parent.path_length
+        ending = starting + root.length
+
+        point_1 = Vector((root.dendrogram_x, starting, 0))
+        point_2 = Vector((root.dendrogram_x, ending, 0))
+
+        print('%d %f %f' % (root.branching_order, starting, ending))
+
+        nmv.geometry.draw_line(point1=point_1, point2=point_2, thickness=1.0)
+
+        # Draw the horizontal line
+        if root.has_children():
+
+            number_children = len(root.children)
+
+            for i in range(number_children - 1) :
+                child_1 = root.children[i]
+                child_2 = root.children[i + 1]
+                hline_point_1 = Vector((child_1.dendrogram_x - 0.5, ending, 0))
+                hline_point_2 = Vector((child_2.dendrogram_x + 0.5, ending, 0))
+                nmv.geometry.draw_line(point1=hline_point_1, point2=hline_point_2, thickness=1.0)
+
+
+        for child in root.children:
+            self.draw_dendrogram(child)
 
 
     # ratio between the left and the right gets the x distance
     def draw_arbor_dendrogram(self,
                               arbor):
 
+        # Compute the total number of leaves of the arbor
+        leaves = self.get_leaves_of_arbor(arbor)
+        number_leaves = len(leaves)
+
+        # Assuming that the delta is 4
+        delta = 15
+
+        # Total distance
+        total_width = delta * (number_leaves - 1)
+
+        # Assuming that the leaves will start at 0.0 on the x-axis
+        for i, leaf in enumerate(leaves):
+            print(leaf.branching_order)
+            leaf.dendrogram_x = i * delta
+
+        # Propagate the values upwards in the tree
+        for leaf in leaves:
+            self.compute_dendrogram_x_for_parents(leaf)
+
+        self.propagate_y(arbor)
+
+        print('-')
+        self.plot_path_length(arbor)
+
+        #self.print_dendro(arbor)
+        self.draw_dendrogram(arbor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        '''
         right = self.count_right_leaves(arbor)
         left = self.count_left_leaves(arbor)
         total = right + left
@@ -198,7 +335,7 @@ class DendrogramBuilder:
 
         # draw current
         nmv.geometry.draw_line(point1=starting_point, point2=ending_point, thickness=0.1)
-
+        
 
 
 
@@ -214,7 +351,7 @@ class DendrogramBuilder:
             #print(self.count_sub_tree_leaves(child))
             #print('starting: ', starting_x)
             self.draw_sub_tree(child, x=starting_x, y=y + length)
-
+        '''
 
 
 
@@ -246,8 +383,8 @@ class DendrogramBuilder:
         # Resample the sections of the morphology skeleton
         nmv.builders.skeleton.resample_skeleton_sections(builder=self)
 
-
-        self.draw_arbor_dendrogram(self.morphology.apical_dendrite)
+        if self.morphology.apical_dendrite is not None:
+            self.draw_arbor_dendrogram(self.morphology.apical_dendrite)
 
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
