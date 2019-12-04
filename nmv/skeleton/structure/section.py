@@ -110,16 +110,17 @@ class Section:
         # Initial value for the maximum branching level
         self.maximum_branching_order = 100
 
-        # The length of the section
-        self.length = 0
+        # The length of the section, initially None, till getting computed
+        self.length = None
 
+        # The path length from the root node till the end of this section along the arbor
         self.path_length = None
 
+        # The X-coordinate of the dendrogram of this section
         self.dendrogram_x = None
-        self.dendrogram_Y = None
 
-        self.compute_length()
-        self.compute_path_length()
+        # The Y-coordinate of the dendrogram of this section
+        self.dendrogram_Y = None
 
     ################################################################################################
     # @get_type_string
@@ -316,10 +317,13 @@ class Section:
     # @compute_length
     ################################################################################################
     def compute_length(self):
-        """Computes the length of the section
+        """Computes the length of the section.
+
+        :return:
+            Returns the length of the section in case this function is called from an object.
         """
 
-        # Re-initialize to zero
+        # Re-initialize to zero, in case it is still None
         self.length = 0
 
         # Add the length of every segment along the section
@@ -329,12 +333,56 @@ class Section:
             sample_1 = self.samples[i + 1]
             self.length += (sample_1.point - sample_0.point).length
 
+        # Return the result
         return self.length
 
-    def compute_path_length(self):
+    ################################################################################################
+    # @compute_parents_path_length
+    ################################################################################################
+    def compute_parents_path_length(self):
+        """Computes the path length of the parent sections recursively.
+        """
 
+        # The parent must not be None
+        if self.parent is not None:
+
+            # Compute the path length
+            self.parent.compute_path_length()
+
+            # Go recursively
+            self.compute_parents_path_length()
+
+    ################################################################################################
+    # @compute_path_length
+    ################################################################################################
+    def compute_path_length(self):
+        """Computes the path length of the section. The path length is the distance from the root
+        node till the end of this section along the arbor.
+
+        Note that the result of this function is only correct if path_length is computed for all
+        the parent sections.
+
+        :return:
+            Returns the path length of the section in case of being called from an object.
+        """
+
+        # Re-initialize to zero, in case it is still None
+        self.path_length = 0
+
+        # If this is a root section, the path length is simply the section length
         if self.is_root():
             self.path_length = self.compute_length()
+
+        # Otherwise, it is the sum of the path length of the parent and the length of this section
         else:
+
+            # If the path length of the parent is still None, compute the parents please
+            if self.parent.path_length is None:
+                self.compute_parents_path_length()
+
+            # Now we can correctly
             self.path_length = self.compute_length() + self.parent.path_length
+
+        # Return the result
+        return self.path_length
 

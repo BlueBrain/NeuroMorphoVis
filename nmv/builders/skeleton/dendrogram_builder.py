@@ -129,49 +129,8 @@ class DendrogramBuilder:
         self.get_leaves(root, leaves)
         return leaves
 
-    def count_right_leaves(self,
-                           root):
-        if root.has_children():
-            return self.count_sub_tree_leaves(root.children[0])
-        else:
-            return 0
 
-    def count_left_leaves(self,
-                          root):
-        if root.has_children():
-            return self.count_sub_tree_leaves(root.children[1])
-        else:
-            return 0
 
-    def draw_sub_tree(self,
-                      root,
-                      x, y):
-
-        right = self.count_right_leaves(root)
-        left = self.count_left_leaves(root)
-        total = left + right
-
-        # length
-        length = 2 #root.compute_length()
-
-        starting_point = Vector((x, y, 0))
-
-        if self.count_sub_tree_leaves(root) == 1:
-            ending_point = Vector((x, length, 0))
-        else:
-            ending_point = Vector((x, y + length, 0))
-
-        # draw current
-        nmv.geometry.draw_line(point1=starting_point, point2=ending_point, thickness=0.1)
-
-        # draw the subtree
-        for i, child in enumerate(root.children):
-            if i == 0:
-                starting_x = x + (right / 2.0)
-            else:
-                starting_x = x - (left / 2.0)
-
-            self.draw_sub_tree(child, x=starting_x, y=y + length)
 
     def compute_dendrogram_x_for_parents(self,
                                          node):
@@ -309,49 +268,6 @@ class DendrogramBuilder:
 
 
 
-
-        '''
-        right = self.count_right_leaves(arbor)
-        left = self.count_left_leaves(arbor)
-        total = right + left
-
-        print('balance')
-        print(right, ' ', left)
-
-        tree_width = total
-        x = tree_width / 2.0
-        y = 0
-
-        # draw the root as a line starting from 0, 0 and up
-        length = 2 # arbor.compute_length()
-
-        # draw the line
-        starting_point = Vector((x, y, 0))
-
-        if self.count_sub_tree_leaves(arbor) == 1:
-            ending_point = Vector((x, length, 0))
-        else:
-            ending_point = Vector((x, y + length, 0))
-
-        # draw current
-        nmv.geometry.draw_line(point1=starting_point, point2=ending_point, thickness=0.1)
-        
-
-
-
-        # children
-        for i, child in enumerate(arbor.children):
-
-            if i == 0:
-                starting_x = x + (total / 2.0)
-            else:
-                starting_x = x - (total / 2.0)
-
-
-            #print(self.count_sub_tree_leaves(child))
-            #print('starting: ', starting_x)
-            self.draw_sub_tree(child, x=starting_x, y=y + length)
-        '''
 
 
 

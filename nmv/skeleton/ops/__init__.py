@@ -20,6 +20,7 @@ from .skeleton_branching_ops import *
 from .skeleton_coloring_ops import *
 from .skeleton_connection_ops import *
 from .skeleton_construction_ops import *
+from .skeleton_dendrogram_ops import *
 from .skeleton_drawing_ops import *
 from .skeleton_geometry_ops import *
 from .skeleton_intersection_ops import *
