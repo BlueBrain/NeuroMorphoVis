@@ -196,29 +196,34 @@ def kernel_total_arbor_length_distribution(morphology,
 ####################################################################################################
 def kernel_sections_length_range_distribution(morphology,
                                               options):
-    """Find the minimum section length of the given morphology.
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
 
     :param morphology:
         A given morphology skeleton to analyse.
-    :return:
-        The result of the analysis operation.
+    :param options:
+        System options.
     """
 
-    minimum_results =nmv.analysis.invoke_kernel(
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_minimum_section_length_of_arbor,
         nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
+    # Average
     average_results = nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_average_section_length_of_arbor,
         nmv.analysis.compute_average_analysis_result_of_morphology)
 
+    # Maximum
     maximum_results = nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_maximum_section_length_of_arbor,
         nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
+    # Plot
     nmv.analysis.plot_min_avg_max_per_arbor_distribution(
         minimum_results=minimum_results,
         maximum_results=maximum_results,

@@ -182,9 +182,9 @@ class CreateNeuronCard(bpy.types.Operator):
                                       options=nmv.interface.ui_options)
 
         # Draw the morphology and highlight it
-        builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-        builder.render_highlighted_arbors()
+        #builder = nmv.builders.DisconnectedSectionsBuilder(
+        #    morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        #builder.render_highlighted_arbors()
 
         '''
         # Resolution scale

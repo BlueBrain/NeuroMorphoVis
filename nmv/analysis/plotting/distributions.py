@@ -136,7 +136,12 @@ def plot_per_arbor_distribution(analysis_results,
     plt.close()
 
 
-
+def mm_2_inches(mm):
+    mm_per_inch = 25.4
+    if type(mm) is tuple:
+        return tuple([e*(1/mm_per_inch) for e in mm])
+    else:
+        return (1/mm_per_inch) * mm
 
 def plot_min_avg_max_per_arbor_distribution(minimum_results,
                                             average_results,
@@ -162,17 +167,39 @@ def plot_min_avg_max_per_arbor_distribution(minimum_results,
     font_list = font_manager.createFontList(font_files)
     font_manager.fontManager.ttflist.extend(font_list)
 
-    # Adjust configuration
-    seaborn.set_style("whitegrid")
-    plt.rcParams['axes.grid'] = 'False'
-    plt.rcParams['font.family'] = 'Arial'
-    plt.rcParams['axes.linewidth'] = 0.0
-    plt.rcParams['axes.labelsize'] = 10
-    plt.rcParams['axes.labelweight'] = 'regular'
-    plt.rcParams['xtick.labelsize'] = 10
-    plt.rcParams['ytick.labelsize'] = 10
-    plt.rcParams['legend.fontsize'] = 10
-    plt.rcParams['axes.titlesize'] = 15
+    # # Adjust configuration
+    # seaborn.set_style("whitegrid")
+    # plt.rcParams['axes.grid'] = 'False'
+    # plt.rcParams['font.family'] = 'Arial'
+    # plt.rcParams['axes.linewidth'] = 0.0
+    # plt.rcParams['axes.labelsize'] = 10
+    # plt.rcParams['axes.labelweight'] = 'regular'
+    # plt.rcParams['xtick.labelsize'] = 10
+    # plt.rcParams['ytick.labelsize'] = 10
+    # plt.rcParams['legend.fontsize'] = 10
+    # plt.rcParams['axes.titlesize'] = 15
+
+    import numpy as np
+    import seaborn as sns
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+
+    from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+
+    sns.set_style('ticks')
+    sns.set_context('paper')
+
+    mpl.rcParams['axes.linewidth'] = 0.5
+    FIGW = 183  # max width (mm), for nature neuroscience
+    FIGH = 247  # max height (mm), for nature neuroscience
+    labelsize = 6  # label (font) size
+    linewidth = 0.75
+
+    # Custom colormaps
+    mygreen = (0.313, 0.768, 0.458)
+    myblue = (0.274, 0.533, 0.925)
+    myred = (0.996, 0.223, 0.352)
+    mygrey = (0.42, 0.42, 0.42)
 
     # X-axis data
     x_data = list()
@@ -219,8 +246,27 @@ def plot_min_avg_max_per_arbor_distribution(minimum_results,
     print(y_min_data)
     print(y_avg_data)
     print(y_max_data)
-    pass
 
+    min_data = np.array(y_min_data)
+    avg_data = np.array(y_avg_data)
+    max_data = np.array(y_max_data)
+
+    y_axis = [0, 1, 2, 3]
+    y_labels = x_data # ['Basal Dendrite 0', 'Basal Dendrite 1', 'Basal Dendrite 2', 'Apical Dendrite']
+
+    fig, ax = plt.subplots(figsize=mm_2_inches((FIGW / 2.5, FIGW / 3.75)))
+
+    xerr = np.array([avg_data - min_data, max_data - avg_data])
+    ax.barh(y_labels, avg_data, color=[myred, myblue, mygreen, mygrey], xerr=xerr,
+            tick_label=y_labels, error_kw={'elinewidth': 0.75}, linewidth=0, capsize=2.25)
+    sns.despine(bottom=True, top=False)
+    ax.invert_yaxis()
+    ax.xaxis.set_ticks_position('top')
+    ax.tick_params(labelsize=labelsize, **{'length': 3.0, 'pad': 3.0})
+
+    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
+                                  morphology.label,
+                                  figure_name), transparent=True)
 
 def plot_distribution(distribution,
                       tilte,
