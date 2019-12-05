@@ -137,7 +137,7 @@ class DendrogramBuilder:
 
         # Compute the dendrogram of the morphology
         nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 2)
+            morphology=self.morphology, delta=maximum_radius * 4)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
