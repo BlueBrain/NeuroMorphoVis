@@ -242,7 +242,12 @@ def compute_morphology_dendrogram(morphology,
 ####################################################################################################
 def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
+                                               max_branching_order=nmv.consts.Math.INFINITY,
                                                mode='NON FLAT'):
+
+    # Stop if the maximum branching order has been reached
+    if section.branching_order > max_branching_order:
+        return
 
     # If the given section is a root, set the start along the Y-axis to zero, otherwise to the path
     # length of the parent
@@ -282,6 +287,10 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     # Append the polyline to the list
     poly_lines_data.append(poly_line)
 
+    # Stop if the maximum branching order has been reached
+    if section.branching_order > max_branching_order - 1:
+        return
+
     # Draw the horizontal line
     if section.has_children():
 
@@ -307,30 +316,37 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     # Go recursively
     for child in section.children:
         create_dendrogram_poly_lines_list_of_arbor(
-            section=child, poly_lines_data=poly_lines_data, mode=mode)
+            section=child, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order,
+            mode=mode)
 
 
 ####################################################################################################
 # add_soma_to_stems_line
 ####################################################################################################
 def add_soma_to_stems_line(morphology,
-                           poly_lines_data=[]):
+                           poly_lines_data=[],
+                           ignore_apical_dendrite=True,
+                           ignore_basal_dendrites=True,
+                           ignore_axon=True):
 
     x_values = list()
     radii = list()
 
-    if morphology.apical_dendrite is not None:
-        x_values.append(morphology.apical_dendrite.dendrogram_x)
-        radii.append(morphology.apical_dendrite.samples[0].radius)
+    if not ignore_apical_dendrite:
+        if morphology.apical_dendrite is not None:
+            x_values.append(morphology.apical_dendrite.dendrogram_x)
+            radii.append(morphology.apical_dendrite.samples[0].radius)
 
-    if morphology.dendrites is not None:
-        for basal_dendrite in morphology.dendrites:
-            x_values.append(basal_dendrite.dendrogram_x)
-            radii.append(basal_dendrite.samples[0].radius)
+    if not ignore_basal_dendrites:
+        if morphology.dendrites is not None:
+            for basal_dendrite in morphology.dendrites:
+                x_values.append(basal_dendrite.dendrogram_x)
+                radii.append(basal_dendrite.samples[0].radius)
 
-    if morphology.axon is not None:
-        x_values.append(morphology.axon.dendrogram_x)
-        radii.append(morphology.axon.samples[0].radius)
+    if not ignore_axon:
+        if morphology.axon is not None:
+            x_values.append(morphology.axon.dendrogram_x)
+            radii.append(morphology.axon.samples[0].radius)
 
     # Average radius
     avg_radius = sum(radii) / len(radii)

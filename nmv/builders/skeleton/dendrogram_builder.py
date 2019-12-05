@@ -142,22 +142,34 @@ class DendrogramBuilder:
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
 
-        if self.morphology.apical_dendrite is not None:
-            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                self.morphology.apical_dendrite, skeleton_poly_lines)
-
-        if self.morphology.dendrites is not None:
-            for basal_dendrite in self.morphology.dendrites:
+        if not self.options.morphology.ignore_apical_dendrite:
+            if self.morphology.apical_dendrite is not None:
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                    basal_dendrite, skeleton_poly_lines)
+                    section=self.morphology.apical_dendrite,
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
-        if self.morphology.axon is not None:
-            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                self.morphology.axon, skeleton_poly_lines)
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for basal_dendrite in self.morphology.dendrites:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=basal_dendrite,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
+
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                    section=self.morphology.axon,
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_order=self.options.morphology.axon_branch_order)
 
         # The soma to stems line
         center = nmv.skeleton.add_soma_to_stems_line(
-            morphology=self.morphology, poly_lines_data=skeleton_poly_lines)
+            morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
+            ignore_apical_dendrite=self.options.morphology.ignore_apical_dendrite,
+            ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
+            ignore_axon=self.options.morphology.ignore_axon)
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
