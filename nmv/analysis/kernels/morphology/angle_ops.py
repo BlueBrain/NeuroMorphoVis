@@ -128,3 +128,88 @@ def kernel_average_global_bifurcation_angle(morphology):
         nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
+####################################################################################################
+# @kernel_segments_length_range_distribution
+####################################################################################################
+def kernel_section_local_bifurcation_angle_range_distribution(morphology,
+                                              options):
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :param options:
+        System options.
+    """
+
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_local_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Average
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_local_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    # Maximum
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_local_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Plot
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name='local-bifurcation-angle',
+        x_label='Angle (Degrees)',
+        title='Local Bifurcation Angle')
+
+####################################################################################################
+# @kernel_segments_length_range_distribution
+####################################################################################################
+def kernel_section_global_bifurcation_angle_range_distribution(morphology,
+                                              options):
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :param options:
+        System options.
+    """
+
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_global_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Average
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_global_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    # Maximum
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_global_bifurcation_angle_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Plot
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name='global-bifurcation-angle',
+        x_label='Angle (Degrees)',
+        title='Global Bifurcation Angle')

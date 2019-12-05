@@ -87,6 +87,7 @@ def kernel_average_section_surface_area(morphology):
                                       nmv.analysis.compute_average_section_surface_area,
                                       nmv.analysis.compute_average_analysis_result_of_morphology)
 
+
 ####################################################################################################
 # @kernel_maximum_branching_order
 ####################################################################################################
@@ -107,3 +108,47 @@ def kernel_total_arbor_surface_area_distribution(morphology,
                                              x_label='Area (\u03BCm\u00b2)',
                                              title='Neurites Surface Area',
                                              add_percentage=True)
+
+####################################################################################################
+# @kernel_segments_length_range_distribution
+####################################################################################################
+def kernel_section_area_range_distribution(morphology,
+                                              options):
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :param options:
+        System options.
+    """
+
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_section_surface_area,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Average
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_section_surface_area,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    # Maximum
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_section_surface_area,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Plot
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name='section-surface-area',
+        x_label='Length (um)',
+        title='Section Surface Area')
+

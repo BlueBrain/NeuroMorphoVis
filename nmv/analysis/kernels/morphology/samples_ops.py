@@ -421,3 +421,45 @@ def kernel_samples_radii(morphology, options):
     #    print(i.value, i.branching_order)
 
 
+####################################################################################################
+# @kernel_segments_length_range_distribution
+####################################################################################################
+def kernel_samples_per_section_range_distribution(morphology,
+                                                  options):
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :param options:
+        System options.
+    """
+
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_samples_count_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Average
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_number_samples_per_section_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    # Maximum
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_samples_count_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Plot
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name='samples-per-section-range',
+        x_label='Samples Count',
+        title='Samples Count')
