@@ -195,7 +195,10 @@ def kernel_total_arbor_length_distribution(morphology,
 # @kernel_sections_length_range_distribution
 ####################################################################################################
 def kernel_sections_length_range_distribution(morphology,
-                                              options):
+                                              options,
+                                              figure_title,
+                                              figure_axis_label,
+                                              figure_label):
     """Computes and plots the range of section lengths across the morphology along the different
     arbors.
 
@@ -230,16 +233,19 @@ def kernel_sections_length_range_distribution(morphology,
         average_results=average_results,
         morphology=morphology,
         options=options,
-        figure_name='sections-length',
-        x_label='Length (um)',
-        title='Section Length')
+        figure_name=figure_label,
+        x_label=figure_axis_label,
+        title=figure_title)
 
 
 ####################################################################################################
 # @kernel_segments_length_range_distribution
 ####################################################################################################
 def kernel_segments_length_range_distribution(morphology,
-                                              options):
+                                              options,
+                                              figure_title,
+                                              figure_axis_label,
+                                              figure_label):
     """Computes and plots the range of section lengths across the morphology along the different
     arbors.
 
@@ -274,6 +280,6 @@ def kernel_segments_length_range_distribution(morphology,
         average_results=average_results,
         morphology=morphology,
         options=options,
-        figure_name='segments-length',
-        x_label='Length (um)',
-        title='Segments Length')
+        figure_name=figure_label,
+        x_label=figure_axis_label,
+        title=figure_title)

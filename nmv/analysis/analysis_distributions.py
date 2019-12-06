@@ -25,6 +25,17 @@ from nmv.analysis.kernels.morphology import *
 distributions = [
 
     AnalysisDistribution(
+        name='Section Length',
+        kernel=kernel_sections_length_range_distribution,
+        description='The range of the sections length',
+        data_format='FLOAT',
+        figure_title='Section Length Range',
+        figure_axis_label='Length (um)',
+        figure_label='sections-length-range')
+]
+
+'''
+    AnalysisDistribution(
         name='Samples Radii',
         kernel=kernel_samples_radii,
         description='The distribution of the radii of all the samples in the morphology',
@@ -60,25 +71,19 @@ distributions = [
         kernel=kernel_maximum_branching_order_distribution,
         description='The maximum branching order',
         data_format='INT'),
+    '''
 
-    AnalysisDistribution(
-        name='Section Length',
-        kernel=kernel_sections_length_range_distribution,
-        description='The maximum branching order',
-        data_format='INT'),
+'''
 
+AnalysisDistribution(
+    name='Total Arbor Surface Area',
+    kernel=kernel_total_arbor_surface_area_distribution,
+    description='The distribution of the radii of all the samples in the morphology',
+    data_format='INT'),
 
-
-
-    AnalysisDistribution(
-        name='Total Arbor Surface Area',
-        kernel=kernel_total_arbor_surface_area_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
-
-    AnalysisDistribution(
-        name='Total Arbor Surface Area',
-        kernel=kernel_total_arbor_volume_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
-]
+AnalysisDistribution(
+    name='Total Arbor Surface Area',
+    kernel=kernel_total_arbor_volume_distribution,
+    description='The distribution of the radii of all the samples in the morphology',
+    data_format='INT'),
+'''

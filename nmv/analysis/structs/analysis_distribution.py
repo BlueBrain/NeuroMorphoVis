@@ -36,7 +36,10 @@ class AnalysisDistribution:
                  kernel=None,
                  description='',
                  data_format='FLOAT',
-                 unit='NONE'):
+                 unit='NONE',
+                 figure_title=None,
+                 figure_label=None,
+                 figure_axis_label=None):
         """Constructor
 
         :param name:
@@ -68,6 +71,15 @@ class AnalysisDistribution:
         # Entry unit
         self.unit = unit
 
+        # The title of the figure
+        self.figure_title = figure_title
+
+        # The label of the independent axis
+        self.figure_axis_label = figure_axis_label
+
+        # The label of the figure that is used to name the file
+        self.figure_label = figure_label
+
         # Analysis result for the entire morphology of type @MorphologyAnalysisResult
         self.result = None
 
@@ -81,9 +93,15 @@ class AnalysisDistribution:
 
         :param morphology:
             A given morphology to analyze.
+        :param options:
+            User defined options.
         """
 
         if self.kernel is not None:
 
             # Get the result from applying the kernel on the entire morphology skeleton
-            self.result = self.kernel(morphology, options)
+            self.result = self.kernel(morphology,
+                                      options,
+                                      figure_title=self.figure_title,
+                                      figure_axis_label=self.figure_axis_label,
+                                      figure_label=self.figure_label)
