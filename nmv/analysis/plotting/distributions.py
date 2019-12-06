@@ -19,9 +19,144 @@
 import nmv.consts
 import nmv.utilities
 
-
-
 def plot_per_arbor_distribution(analysis_results,
+                                morphology,
+                                options,
+                                figure_name=None,
+                                x_label=None,
+                                title=None,
+                                add_percentage=False):
+    # X-axis data
+    x_data = list()
+
+    # Y-axis data
+    y_data = list()
+
+    # Plotting imports
+    import numpy
+    import seaborn
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    # Import the fonts
+    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    font_list = font_manager.createFontList(font_files)
+    font_manager.fontManager.ttflist.extend(font_list)
+
+    # Clean the figure
+    plt.clf()
+
+    # Collecting the lists, Axon
+    if analysis_results.axon_result is not None:
+        x_data.append('Axon')
+        y_data.append(analysis_results.axon_result)
+
+    # Basal dendrites
+    if analysis_results.basal_dendrites_result is not None:
+        for i, result in enumerate(analysis_results.basal_dendrites_result):
+            x_data.append('Basal Dendrite %d' % i)
+            y_data.append(result)
+    # Apical dendrite
+    if analysis_results.apical_dendrite_result is not None:
+        x_data.append('Apical Dendrite')
+        y_data.append(analysis_results.apical_dendrite_result)
+
+    # Total number of bars, similar to arbors
+    total_number_of_bars = len(x_data)
+
+    # The width of each bar
+    bar_width = 0.55
+
+    # Adjust seaborn configuration
+    seaborn.set_style("white")
+
+    # The color palette
+    # palette = seabron.cubehelix_palette(2 * total_number_of_bars)
+    palette = seaborn.color_palette("pastel", total_number_of_bars)
+    seaborn.set_palette(palette=palette)
+
+    # Adjusting the matplotlib parameters
+    plt.rcParams['axes.grid'] = 'False'
+    plt.rcParams['font.family'] = 'NimbusSanL'
+    plt.rcParams['axes.linewidth'] = 0.0
+    plt.rcParams['axes.labelsize'] = bar_width * 10
+    plt.rcParams['axes.labelweight'] = 'regular'
+    plt.rcParams['xtick.labelsize'] = bar_width * 10
+    plt.rcParams['ytick.labelsize'] = bar_width * 10
+    plt.rcParams['legend.fontsize'] = 10
+    plt.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+    plt.rcParams['axes.axisbelow'] = True
+    plt.rcParams['axes.edgecolor'] = '0.1'
+
+    # numpay array from the lists
+    x = numpy.asarray(x_data)
+    y = numpy.asarray(y_data)
+
+    # Adjusting the figure size
+    plt.figure(figsize=(bar_width * 4, total_number_of_bars * 0.5 * bar_width))
+
+    # Plot the bar plot
+    ax = seaborn.barplot(x=y, y=x, edgecolor='none')
+
+    # Title
+    ax.set(xlabel=x_label, title=title)
+    ax.spines['left'].set_linewidth(0.5)
+    ax.spines['left'].set_color('black')
+
+    # Add percentage on the right side of the bar
+    for bar in ax.patches:
+        # Current Y center
+        y = bar.get_y()
+
+        # Current bar height
+        height = bar.get_height()
+
+        # Current center
+        centre = y + height / 2.0
+
+        # Set the new center
+        bar.set_y(centre - bar_width / 2.0)
+
+        # Set the new height
+        bar.set_height(bar_width)
+
+    # Create a list to collect the plt.patches data
+    totals = []
+
+    # Find the values and append to list
+    for i in ax.patches:
+        totals.append(i.get_width())
+
+    # Set individual bar labels using above list
+    total = sum(totals)
+
+    # Set individual bar labels using above list
+    for i, patch in enumerate(ax.patches):
+        # get_width pulls left or right; get_y pushes up or down
+
+        # Get the width of the bar and then add a little increment
+        increment = 15
+        x = patch.get_width() + increment
+        y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
+
+        # Compute the percentage
+        percentage = round((patch.get_width() / total) * 100, 2)
+        if add_percentage:
+            value = '%d (%2.1f%%)' % (y_data[i], percentage)
+        else:
+            value = '%d' % y_data[i]
+        ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
+
+    # Save the figure
+    plt.savefig('%s/%s-%s.pdf' % (
+        options.io.analysis_directory, morphology.label, figure_name), bbox_inches='tight')
+
+    # Close the figures
+    plt.close()
+
+
+def plot_per_arbor_distribution_(analysis_results,
                                 morphology,
                                 options,
                                 figure_name=None,
@@ -32,7 +167,6 @@ def plot_per_arbor_distribution(analysis_results,
     # Plotting imports
     import numpy
     import seaborn
-    import pandas
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
     from matplotlib.ticker import MaxNLocator

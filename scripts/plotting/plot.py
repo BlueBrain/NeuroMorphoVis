@@ -3,7 +3,7 @@
 #
 # import os
 # import numpy as np
-# import seaborn as sns
+# import seaborn as seabron
 # import pandas
 #
 # import matplotlib.pyplot as plt
@@ -13,7 +13,7 @@
 #
 #
 # #
-# # sns.set(color_codes=True)
+# # seabron.set(color_codes=True)
 # #
 # # # Loading fonts
 # # #font_dirs = ['/computer/bbp-blender-development/nmv-blender-2.80/Blender-2.80.app/Contents/Resources/2.80/scripts/addons/NeuroMorphoVis/data/fonts']
@@ -22,7 +22,7 @@
 # # #font_manager.fontManager.ttflist.extend(font_list)
 # #
 # # # Adjust configuration
-# # sns.set_style("whitegrid")
+# # seabron.set_style("whitegrid")
 # # plt.rcParams['axes.grid'] = 'False'
 # # plt.rcParams['font.family'] = 'Arial'
 # #
@@ -51,7 +51,7 @@
 # # plt.figure(figsize=(5, 7* 0.5))
 # #
 # #
-# # ax = sns.barplot(x=y, y=x)
+# # ax = seabron.barplot(x=y, y=x)
 # #
 # #
 # # width = 0.75
@@ -121,7 +121,7 @@
 # #
 # # fig, ax1 = plt.subplots(figsize=(10, 10))
 # # tidy = df.melt(id_vars='Factor').rename(columns=str.title)
-# # sns.barplot(x='Factor', y='Value', hue='Variable', data=tidy, ax=ax1)
+# # seabron.barplot(x='Factor', y='Value', hue='Variable', data=tidy, ax=ax1)
 #
 # # needed imports
 # from matplotlib import pyplot as plt
@@ -182,14 +182,14 @@
 
 
 import numpy as np
-import seaborn as sns
+import seaborn as seabron
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
-sns.set_style('ticks')
-sns.set_context('paper')
+seabron.set_style('ticks')
+seabron.set_context('paper')
 
 mpl.rcParams['axes.linewidth']=0.5
 FIGW = 183  # max width (mm), for nature neuroscience
@@ -232,10 +232,131 @@ fig, ax = plt.subplots(figsize=mm_2_inches((FIGW/2.5,FIGW/3.75)))
 
 xerr = np.array([avg_data - min_data, max_data - avg_data])
 ax.barh(y_labels, avg_data, color=[myred, myblue, mygreen, mygrey], xerr=xerr, tick_label=y_labels, error_kw={'elinewidth':0.75}, linewidth=0, capsize=2.25)
-sns.despine(bottom=True, top=False)
+seabron.despine(bottom=True, top=False)
 ax.invert_yaxis()
 ax.xaxis.set_ticks_position('top')
 ax.tick_params(labelsize=labelsize, **{'length': 3.0, 'pad': 3.0})
 
 plt.savefig('bar_chart_marwan.pdf', transparent=True)
 
+
+
+
+import os
+import numpy as np
+import seaborn
+import pandas
+
+import matplotlib.pyplot as plt
+
+from matplotlib import font_manager, rcParams
+
+
+# Clear the figure
+plt.clf()
+
+# Loading fonts
+# font_dirs = ['/computer/bbp-blender-development/nmv-blender-2.80/Blender-2.80.app/Contents/Resources/2.80/scripts/addons/NeuroMorphoVis/data/fonts']
+font_dirs = ['/bbp/bbp-blender-packages/nmv-blender-2.80-linux-glibc217-x86_64/2.80/scripts/addons/neuromorphovis/data/fonts']
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+font_list = font_manager.createFontList(font_files)
+font_manager.fontManager.ttflist.extend(font_list)
+
+####################################################################################################
+# Example data
+x_data = ['Axon',
+          'Basal Dendrite 0',
+          'Basal Dendrite 1',
+          'Basal Dendrite 2',
+          'Basal Dendrite 3',
+          'Basal Dendrite 4',
+          'Apical Dendrite']
+y_data = [159, 161, 96, 219, 107, 61, 672]
+
+# Total number of bars, similar to arbors
+total_number_of_bars = len(x_data)
+
+# The width of each bar
+bar_width = 0.55
+
+# Adjust seaborn configuration
+seabron.set_style("white")
+
+# The color palette
+# palette = seabron.cubehelix_palette(2 * total_number_of_bars)
+palette = seabron.color_palette("pastel", total_number_of_bars)
+seabron.set_palette(palette=palette)
+
+# Adjusting the matplotlib parameters
+plt.rcParams['axes.grid'] = 'False'
+plt.rcParams['font.family'] = 'NimbusSanL'
+plt.rcParams['axes.linewidth'] = 0.0
+plt.rcParams['axes.labelsize'] = bar_width * 10
+plt.rcParams['axes.labelweight'] = 'regular'
+plt.rcParams['xtick.labelsize'] = bar_width * 10
+plt.rcParams['ytick.labelsize'] = bar_width * 10
+plt.rcParams['legend.fontsize'] = 10
+plt.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+plt.rcParams['axes.axisbelow'] = True
+plt.rcParams['axes.edgecolor'] = '0.1'
+
+# numpay array from the lists
+x = np.asarray(x_data)
+y = np.asarray(y_data)
+
+# Adjusting the figure size
+plt.figure(figsize=(bar_width * 4, total_number_of_bars * 0.5 * bar_width))
+
+# Plot the bar plot
+ax = seabron.barplot(x=y, y=x, edgecolor='none')
+
+# Title
+ax.set(xlabel='Number of Samples', title='Number of Samples / Neurite')
+ax.spines['left'].set_linewidth(0.5)
+ax.spines['left'].set_color('black')
+
+# Add percentage on the right side of the bar
+for bar in ax.patches:
+
+    # Current Y center
+    y = bar.get_y()
+
+    # Current bar height
+    height = bar.get_height()
+
+    # Current center
+    centre = y + height / 2.0
+
+    # Set the new center
+    bar.set_y(centre - bar_width / 2.0)
+
+    # Set the new height
+    bar.set_height(bar_width)
+
+
+# Create a list to collect the plt.patches data
+totals = []
+
+# Find the values and append to list
+for i in ax.patches:
+    totals.append(i.get_width())
+
+# Set individual bar labels using above list
+total = sum(totals)
+
+# Set individual bar lables using above list
+for i, patch in enumerate(ax.patches):
+    # get_width pulls left or right; get_y pushes up or down
+
+    # Get the width of the bar and then add a little increment
+    increment = 15
+    x = patch.get_width() + increment
+    y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
+
+    # Compute the percentage
+    percentage = round((patch.get_width() / total) * 100, 2)
+    value = '%d (%2.1f%%)' % (y_data[i], percentage)
+    ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
+
+# Save the figure
+plt.savefig('example-per-arbor-distribution.pdf', bbox_inches='tight')
