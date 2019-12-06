@@ -159,19 +159,19 @@ def plot_per_arbor_distribution(analysis_results,
         # get_width pulls left or right; get_y pushes up or down
 
         # Get the width of the bar and then add a little increment
-        increment = 10
-        x = patch.get_width() + increment
+        increment = 29
+        x = patch.get_width()
         y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
 
         # Compute the percentage
         percentage = round((patch.get_width() / total) * 100, 2)
         if add_percentage:
-            value = '%d (%2.1f%%)' % (y_data[i], percentage)
+            value = '  %d (%2.1f%%)' % (y_data[i], percentage)
         else:
             if 'float' in type(y_data[i]):
-                value = '%2.1f' % y_data[i]
+                value = '  %2.1f' % y_data[i]
             else:
-                value = '%d' % y_data[i]
+                value = '  %d' % y_data[i]
 
         ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
 

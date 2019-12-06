@@ -33,8 +33,7 @@ distributions = [
         data_format='INT',
         figure_title='Number of Samples / Neurite',
         figure_axis_label='Number of Samples',
-        figure_label='number-of-samples-per-neurite'
-    ),
+        figure_label='number-of-samples-per-neurite'),
 
     AnalysisDistribution(
         name='Arbor Length',
@@ -53,6 +52,52 @@ distributions = [
         figure_title='Section Length Range',
         figure_axis_label='Length (\u03BCm)',
         figure_label='sections-length-range'),
+
+    AnalysisDistribution(
+        name='Segment Length',
+        kernel=kernel_segment_length_range_distribution,
+        description='The range of the segments length',
+        data_format='FLOAT',
+        figure_title='Segment Length Range',
+        figure_axis_label='Length (\u03BCm)',
+        figure_label='segment-length-range'),
+
+    AnalysisDistribution(
+        name='Section Surface Area',
+        kernel=kernel_sections_surface_area_range_distribution,
+        description='The range of the sections surface area',
+        data_format='FLOAT',
+        figure_title='Section Surface Area Range',
+        figure_axis_label='Area (\u03BCm\u00b2)',
+        figure_label='sections-surface-area-range'),
+
+    # AnalysisDistribution(
+    #     name='Segment Surface Area',
+    #     kernel=kernel_segment_surface_area_range_distribution,
+    #     description='The range of the segments surface area',
+    #     data_format='FLOAT',
+    #     figure_title='Segment Surface Area Range',
+    #     figure_axis_label='Area (\u03BCm\u00b2',
+    #     figure_label='segments-surface-area-range'),
+
+    AnalysisDistribution(
+        name='Section Volume',
+        kernel=kernel_section_volume_range_distribution,
+        description='The range of the sections volume',
+        data_format='FLOAT',
+        figure_title='Section Volume Range',
+        figure_axis_label='Volume (\u03BCm\u00b3)',
+        figure_label='sections-volume-range'),
+
+    # AnalysisDistribution(
+    #     name='Segment Surface Area',
+    #     kernel=kernel_segment_volume_range_distribution,
+    #     description='The range of the segments volume',
+    #     data_format='FLOAT',
+    #     figure_title='Segment Volume Range',
+    #     figure_axis_label='Area (\u03BCm\u00b3',
+    #     figure_label='segments-volume-range'),
+
 
 ]
 

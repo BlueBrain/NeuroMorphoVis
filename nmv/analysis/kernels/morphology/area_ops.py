@@ -109,11 +109,15 @@ def kernel_total_arbor_surface_area_distribution(morphology,
                                              title='Neurites Surface Area',
                                              add_percentage=True)
 
+
 ####################################################################################################
 # @kernel_segments_length_range_distribution
 ####################################################################################################
-def kernel_section_area_range_distribution(morphology,
-                                              options):
+def kernel_sections_surface_area_range_distribution(morphology,
+                                                    options,
+                                                    figure_title,
+                                                    figure_axis_label,
+                                                    figure_label):
     """Computes and plots the range of section lengths across the morphology along the different
     arbors.
 
@@ -148,7 +152,6 @@ def kernel_section_area_range_distribution(morphology,
         average_results=average_results,
         morphology=morphology,
         options=options,
-        figure_name='section-surface-area',
-        x_label='Length (um)',
-        title='Section Surface Area')
-
+        figure_name=figure_label,
+        x_label=figure_axis_label,
+        title=figure_title)

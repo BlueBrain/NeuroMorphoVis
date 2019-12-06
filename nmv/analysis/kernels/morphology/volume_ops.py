@@ -114,7 +114,11 @@ def kernel_total_arbor_volume_distribution(morphology,
 # @kernel_segments_length_range_distribution
 ####################################################################################################
 def kernel_section_volume_range_distribution(morphology,
-                                              options):
+                                              options,
+                                             figure_title,
+                                             figure_axis_label,
+                                             figure_label
+                                             ):
     """Computes and plots the range of section lengths across the morphology along the different
     arbors.
 
@@ -149,6 +153,6 @@ def kernel_section_volume_range_distribution(morphology,
         average_results=average_results,
         morphology=morphology,
         options=options,
-        figure_name='section-volume',
-        x_label='Volume (um)',
-        title='Section Volume')
+        figure_name=figure_label,
+        x_label=figure_axis_label,
+        title=figure_title)
