@@ -24,24 +24,51 @@ from nmv.analysis.kernels.morphology import *
 ####################################################################################################
 distributions = [
 
+
+
+    AnalysisDistribution(
+        name='Total Number of Samples per Neurite',
+        kernel=kernel_total_number_of_samples_per_arbor_distribution,
+        description='The total number of sampler per neurite (or arbor) in the morphology',
+        data_format='INT',
+        figure_title='Number of Samples / Neurite',
+        figure_axis_label='Number of Samples',
+        figure_label='number-of-samples-per-neurite'
+    ),
+
+    AnalysisDistribution(
+        name='Arbor Length',
+        kernel=kernel_total_arbor_length_distribution,
+        description='The total length of each arbor in the morphology',
+        data_format='FLOAT',
+        figure_title='Neurite Length',
+        figure_axis_label='Length (\u03BCm)',
+        figure_label='per-neurite-length'),
+
+    AnalysisDistribution(
+        name='Section Length',
+        kernel=kernel_sections_length_range_distribution,
+        description='The range of the sections length',
+        data_format='FLOAT',
+        figure_title='Section Length Range',
+        figure_axis_label='Length (\u03BCm)',
+        figure_label='sections-length-range'),
+
+]
+
+'''
+
+    
+        
     AnalysisDistribution(
         name='Samples Radii',
         kernel=kernel_samples_radii,
         description='The distribution of the radii of all the samples in the morphology',
         data_format='INT'),
 
-    AnalysisDistribution(
-        name='Number of samples per section',
-        kernel=kernel_number_samples_per_section,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
+    
 
 
-    AnalysisDistribution(
-        name='Total Number of Samples',
-        kernel=kernel_total_number_of_samples_per_arbor_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
 
     AnalysisDistribution(
         name='Total Number of Samples',
@@ -60,25 +87,20 @@ distributions = [
         kernel=kernel_maximum_branching_order_distribution,
         description='The maximum branching order',
         data_format='INT'),
+    '''
 
-    AnalysisDistribution(
-        name='Section Length',
-        kernel=kernel_sections_length_range_distribution,
-        description='The maximum branching order',
-        data_format='INT'),
+'''
 
+AnalysisDistribution(
+    name='Total Arbor Surface Area',
+    kernel=kernel_total_arbor_surface_area_distribution,
+    description='The distribution of the radii of all the samples in the morphology',
+    data_format='INT',
+    '(\u03BCm\u00b2)'),
 
-
-
-    AnalysisDistribution(
-        name='Total Arbor Surface Area',
-        kernel=kernel_total_arbor_surface_area_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
-
-    AnalysisDistribution(
-        name='Total Arbor Surface Area',
-        kernel=kernel_total_arbor_volume_distribution,
-        description='The distribution of the radii of all the samples in the morphology',
-        data_format='INT'),
-]
+AnalysisDistribution(
+    name='Total Arbor Surface Area',
+    kernel=kernel_total_arbor_volume_distribution,
+    description='The distribution of the radii of all the samples in the morphology',
+    data_format='INT'),
+'''

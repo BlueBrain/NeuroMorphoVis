@@ -274,10 +274,14 @@ def kernel_number_of_samples_at_branching_order_distributions(morphology):
     #print(analysis_results.morphology_result)
 
 
-
-
-
-def kernel_total_number_of_samples_per_arbor_distribution(morphology, options):
+####################################################################################################
+# @kernel_total_number_of_samples_per_arbor_distribution
+####################################################################################################
+def kernel_total_number_of_samples_per_arbor_distribution(morphology,
+                                                          options,
+                                                          figure_title,
+                                                          figure_axis_label,
+                                                          figure_label):
 
     analysis_results = nmv.analysis.invoke_kernel(
         morphology,
@@ -288,9 +292,9 @@ def kernel_total_number_of_samples_per_arbor_distribution(morphology, options):
     nmv.analysis.plot_per_arbor_distribution(analysis_results=analysis_results,
                                              morphology=morphology,
                                              options=options,
-                                             figure_name='number-of-samples',
-                                             x_label='Number of Samples',
-                                             title='Number of Samples / Neurite',
+                                             figure_name=figure_label,
+                                             x_label=figure_axis_label,
+                                             title=figure_title,
                                              add_percentage=True)
 
 

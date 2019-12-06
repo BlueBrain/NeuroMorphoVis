@@ -19,6 +19,10 @@
 import nmv.consts
 import nmv.utilities
 
+
+####################################################################################################
+# @plot_per_arbor_distribution
+####################################################################################################
 def plot_per_arbor_distribution(analysis_results,
                                 morphology,
                                 options,
@@ -26,16 +30,29 @@ def plot_per_arbor_distribution(analysis_results,
                                 x_label=None,
                                 title=None,
                                 add_percentage=False):
-    # X-axis data
-    x_data = list()
+    # Installing dependencies
+    try:
+        import numpy
+    except ValueError:
+        print('Package *numpy* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='numpy')
 
-    # Y-axis data
-    y_data = list()
+    try:
+        import matplotlib
+    except ValueError:
+        print('Package *matplotlib* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='matplotlib')
+
+    try:
+        import seaborn
+    except ValueError:
+        print('Package *seaborn* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='seaborn')
 
     # Plotting imports
     import numpy
     import seaborn
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as pyplot
     from matplotlib import font_manager
 
     # Import the fonts
@@ -45,7 +62,13 @@ def plot_per_arbor_distribution(analysis_results,
     font_manager.fontManager.ttflist.extend(font_list)
 
     # Clean the figure
-    plt.clf()
+    pyplot.clf()
+
+    # X-axis data
+    x_data = list()
+
+    # Y-axis data
+    y_data = list()
 
     # Collecting the lists, Axon
     if analysis_results.axon_result is not None:
@@ -66,7 +89,7 @@ def plot_per_arbor_distribution(analysis_results,
     total_number_of_bars = len(x_data)
 
     # The width of each bar
-    bar_width = 0.55
+    bar_width = 0.65
 
     # Adjust seaborn configuration
     seaborn.set_style("white")
@@ -77,24 +100,24 @@ def plot_per_arbor_distribution(analysis_results,
     seaborn.set_palette(palette=palette)
 
     # Adjusting the matplotlib parameters
-    plt.rcParams['axes.grid'] = 'False'
-    plt.rcParams['font.family'] = 'NimbusSanL'
-    plt.rcParams['axes.linewidth'] = 0.0
-    plt.rcParams['axes.labelsize'] = bar_width * 10
-    plt.rcParams['axes.labelweight'] = 'regular'
-    plt.rcParams['xtick.labelsize'] = bar_width * 10
-    plt.rcParams['ytick.labelsize'] = bar_width * 10
-    plt.rcParams['legend.fontsize'] = 10
-    plt.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
-    plt.rcParams['axes.axisbelow'] = True
-    plt.rcParams['axes.edgecolor'] = '0.1'
+    pyplot.rcParams['axes.grid'] = 'False'
+    pyplot.rcParams['font.family'] = 'NimbusSanL'
+    pyplot.rcParams['axes.linewidth'] = 0.0
+    pyplot.rcParams['axes.labelsize'] = bar_width * 10
+    pyplot.rcParams['axes.labelweight'] = 'regular'
+    pyplot.rcParams['xtick.labelsize'] = bar_width * 10
+    pyplot.rcParams['ytick.labelsize'] = bar_width * 10
+    pyplot.rcParams['legend.fontsize'] = 10
+    pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+    pyplot.rcParams['axes.axisbelow'] = True
+    pyplot.rcParams['axes.edgecolor'] = '0.1'
 
-    # numpay array from the lists
+    # numpy array from the lists
     x = numpy.asarray(x_data)
     y = numpy.asarray(y_data)
 
     # Adjusting the figure size
-    plt.figure(figsize=(bar_width * 4, total_number_of_bars * 0.5 * bar_width))
+    pyplot.figure(figsize=(bar_width * 4, total_number_of_bars * 0.5 * bar_width))
 
     # Plot the bar plot
     ax = seaborn.barplot(x=y, y=x, edgecolor='none')
@@ -136,7 +159,7 @@ def plot_per_arbor_distribution(analysis_results,
         # get_width pulls left or right; get_y pushes up or down
 
         # Get the width of the bar and then add a little increment
-        increment = 15
+        increment = 10
         x = patch.get_width() + increment
         y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
 
@@ -145,16 +168,174 @@ def plot_per_arbor_distribution(analysis_results,
         if add_percentage:
             value = '%d (%2.1f%%)' % (y_data[i], percentage)
         else:
-            value = '%d' % y_data[i]
+            if 'float' in type(y_data[i]):
+                value = '%2.1f' % y_data[i]
+            else:
+                value = '%d' % y_data[i]
+
         ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
 
     # Save the figure
-    plt.savefig('%s/%s-%s.pdf' % (
-        options.io.analysis_directory, morphology.label, figure_name), bbox_inches='tight')
+    pyplot.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
+                   bbox_inches='tight', transparent=True)
 
     # Close the figures
-    plt.close()
+    pyplot.close()
 
+
+####################################################################################################
+# @plot_min_avg_max_per_arbor_distribution
+####################################################################################################
+def plot_min_avg_max_per_arbor_distribution(minimum_results,
+                                            average_results,
+                                            maximum_results,
+                                            morphology,
+                                            options,
+                                            figure_name=None,
+                                            x_label=None,
+                                            title=None):
+
+    # Installing dependencies
+    try:
+        import numpy
+    except ValueError:
+        print('Package *numpy* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='numpy')
+
+    try:
+        import matplotlib
+    except ValueError:
+        print('Package *matplotlib* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='matplotlib')
+
+    try:
+        import seaborn
+    except ValueError:
+        print('Package *seaborn* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='seaborn')
+
+    try:
+        import pandas
+    except ValueError:
+        print('Package *pandas* is not installed. Installing it.')
+        nmv.utilities.pip_wheel(package_name='pandas')
+
+    import numpy
+    import seaborn
+    from matplotlib import pyplot
+    from matplotlib import font_manager
+
+    # Clear any figure
+    pyplot.clf()
+
+    # Import the fonts
+    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    font_list = font_manager.createFontList(font_files)
+    font_manager.fontManager.ttflist.extend(font_list)
+
+    # Labels on the independent axis
+    labels = list()
+
+    # The list of the minimum, average and maximum data
+    min_list = list()
+    avg_list = list()
+    max_list = list()
+
+    # Collecting the lists, Axon
+    if minimum_results.axon_result is not None:
+        labels.append('Axon')
+        min_list.append(minimum_results.axon_result)
+        avg_list.append(average_results.axon_result)
+        max_list.append(maximum_results.axon_result)
+
+    # Basal dendrites
+    number_basals = len(minimum_results.basal_dendrites_result)
+    if minimum_results.basal_dendrites_result is not None:
+        for i in range(number_basals):
+            labels.append('Basal Dendrite %d' % i)
+            min_list.append(minimum_results.basal_dendrites_result[i])
+            avg_list.append(average_results.basal_dendrites_result[i])
+            max_list.append(maximum_results.basal_dendrites_result[i])
+
+    # Apical dendrite
+    if minimum_results.apical_dendrite_result is not None:
+        labels.append('Apical Dendrite')
+        min_list.append(minimum_results.apical_dendrite_result)
+        avg_list.append(average_results.apical_dendrite_result)
+        max_list.append(maximum_results.apical_dendrite_result)
+
+    # Total number of bars, similar to arbors
+    total_number_of_bars = len(labels)
+
+    # The width of each bar
+    bar_width = 0.65
+
+    # Adjust seaborn configuration
+    seaborn.set_style("white")
+
+    # The color palette
+    # palette = seabron.cubehelix_palette(2 * total_number_of_bars)
+    palette = seaborn.color_palette("pastel", total_number_of_bars)
+    seaborn.set_palette(palette=palette)
+
+    # Adjusting the matplotlib parameters
+    pyplot.rcParams['axes.grid'] = 'False'
+    pyplot.rcParams['font.family'] = 'NimbusSanL'
+    pyplot.rcParams['axes.linewidth'] = 0.0
+    pyplot.rcParams['axes.labelsize'] = bar_width * 10
+    pyplot.rcParams['axes.labelweight'] = 'regular'
+    pyplot.rcParams['xtick.labelsize'] = bar_width * 10
+    pyplot.rcParams['ytick.labelsize'] = bar_width * 10
+    pyplot.rcParams['legend.fontsize'] = 10
+    pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+    pyplot.rcParams['axes.axisbelow'] = True
+    pyplot.rcParams['axes.edgecolor'] = '0.1'
+
+    # Adjusting the figure size
+    pyplot.figure(figsize=(bar_width * 4, total_number_of_bars * 0.5 * bar_width))
+
+    # Compile the list
+    min_data = numpy.array(min_list)
+    avg_data = numpy.array(avg_list)
+    max_data = numpy.array(max_list)
+
+    # Compute the range
+    xerr = numpy.array([avg_data - min_data, max_data - avg_data])
+
+    # Plot the bar plot
+    ax = seaborn.barplot(x=avg_data, y=labels, xerr=xerr, edgecolor='none',
+                         error_kw={'elinewidth': 0.75, 'capsize': 1.0})
+
+    # Title
+    ax.set(xlabel=x_label, title=title)
+    ax.spines['left'].set_linewidth(0.5)
+    ax.spines['left'].set_color('black')
+
+    # Save the figure
+    pyplot.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
+                   bbox_inches='tight', transparent=True)
+
+    # Close the figures
+    pyplot.close()
+
+    '''
+    y_labels = x_data # ['Basal Dendrite 0', 'Basal Dendrite 1', 'Basal Dendrite 2', 'Apical Dendrite']
+
+
+    # The bar
+    ax.barh(y_labels, avg_data, color=[myred, myblue, mygreen, mygrey], xerr=xerr,
+            tick_label=labels, error_kw={'elinewidth': 0.75}, linewidth=0, capsize=2.25)
+    sns.despine(bottom=True, top=False)
+    ax.invert_yaxis()
+    ax.xaxis.set_ticks_position('top')
+    ax.tick_params(labelsize=labelsize, **{'length': 3.0, 'pad': 3.0})
+
+    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
+                                  morphology.label,
+                                  figure_name), transparent=True)
+
+    '''
 
 def plot_per_arbor_distribution_(analysis_results,
                                 morphology,
@@ -277,130 +458,6 @@ def mm_2_inches(mm):
     else:
         return (1/mm_per_inch) * mm
 
-def plot_min_avg_max_per_arbor_distribution(minimum_results,
-                                            average_results,
-                                            maximum_results,
-                                            morphology,
-                                            options,
-                                            figure_name=None,
-                                            x_label=None,
-                                            title=None,):
-    # Plotting imports
-    import numpy
-    import seaborn
-    import pandas
-    import matplotlib.pyplot as plt
-    from matplotlib import font_manager
-    from matplotlib.ticker import MaxNLocator
-
-    plt.clf()
-
-    # Import the fonts
-    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
-    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-    font_list = font_manager.createFontList(font_files)
-    font_manager.fontManager.ttflist.extend(font_list)
-
-    # # Adjust configuration
-    # seaborn.set_style("whitegrid")
-    # plt.rcParams['axes.grid'] = 'False'
-    # plt.rcParams['font.family'] = 'Arial'
-    # plt.rcParams['axes.linewidth'] = 0.0
-    # plt.rcParams['axes.labelsize'] = 10
-    # plt.rcParams['axes.labelweight'] = 'regular'
-    # plt.rcParams['xtick.labelsize'] = 10
-    # plt.rcParams['ytick.labelsize'] = 10
-    # plt.rcParams['legend.fontsize'] = 10
-    # plt.rcParams['axes.titlesize'] = 15
-
-    import numpy as np
-    import seaborn as sns
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-
-    from matplotlib.colors import ListedColormap, LinearSegmentedColormap
-
-    sns.set_style('ticks')
-    sns.set_context('paper')
-
-    mpl.rcParams['axes.linewidth'] = 0.5
-    FIGW = 183  # max width (mm), for nature neuroscience
-    FIGH = 247  # max height (mm), for nature neuroscience
-    labelsize = 6  # label (font) size
-    linewidth = 0.75
-
-    # Custom colormaps
-    mygreen = (0.313, 0.768, 0.458)
-    myblue = (0.274, 0.533, 0.925)
-    myred = (0.996, 0.223, 0.352)
-    mygrey = (0.42, 0.42, 0.42)
-
-    # X-axis data
-    x_data = list()
-
-    # Y-axis data
-    y_min_data = list()
-    y_avg_data = list()
-    y_max_data = list()
-
-    # Collecting the lists, Axon
-    if minimum_results.axon_result is not None:
-        x_data.append('Axon')
-        y_min_data.append(minimum_results.axon_result)
-        y_avg_data.append(average_results.axon_result)
-        y_max_data.append(maximum_results.axon_result)
-
-        #colors.append(color_codes[0])
-        #total_arbors += 1
-
-    # Basal dendrites
-    number_basals = len(minimum_results.basal_dendrites_result)
-    if minimum_results.basal_dendrites_result is not None:
-        for i in range(number_basals):
-            x_data.append('Basal Dendrite %d' % i)
-            y_min_data.append(minimum_results.basal_dendrites_result[i])
-            y_avg_data.append(average_results.basal_dendrites_result[i])
-            y_max_data.append(maximum_results.basal_dendrites_result[i])
-
-            #colors.append(color_codes[1])
-            #total_arbors += 1
-
-    # Apical dendrite
-    if minimum_results.apical_dendrite_result is not None:
-        x_data.append('Apical Dendrite')
-        y_min_data.append(minimum_results.apical_dendrite_result)
-        y_avg_data.append(average_results.apical_dendrite_result)
-        y_max_data.append(maximum_results.apical_dendrite_result)
-
-        #colors.append(color_codes[2])
-        #total_arbors += 1
-
-
-    print(x_data)
-    print(y_min_data)
-    print(y_avg_data)
-    print(y_max_data)
-
-    min_data = np.array(y_min_data)
-    avg_data = np.array(y_avg_data)
-    max_data = np.array(y_max_data)
-
-    y_axis = [0, 1, 2, 3]
-    y_labels = x_data # ['Basal Dendrite 0', 'Basal Dendrite 1', 'Basal Dendrite 2', 'Apical Dendrite']
-
-    fig, ax = plt.subplots(figsize=mm_2_inches((FIGW / 2.5, FIGW / 3.75)))
-
-    xerr = np.array([avg_data - min_data, max_data - avg_data])
-    ax.barh(y_labels, avg_data, color=[myred, myblue, mygreen, mygrey], xerr=xerr,
-            tick_label=y_labels, error_kw={'elinewidth': 0.75}, linewidth=0, capsize=2.25)
-    sns.despine(bottom=True, top=False)
-    ax.invert_yaxis()
-    ax.xaxis.set_ticks_position('top')
-    ax.tick_params(labelsize=labelsize, **{'length': 3.0, 'pad': 3.0})
-
-    plt.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory,
-                                  morphology.label,
-                                  figure_name), transparent=True)
 
 def plot_distribution(distribution,
                       tilte,
