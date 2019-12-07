@@ -225,6 +225,168 @@ class ConnectedSectionsBuilder:
         self.morphology_objects.append(morphology_object)
 
     ################################################################################################
+    # @draw_morphology_skeleton_with_matplotlib
+    ################################################################################################
+    def draw_morphology_skeleton_with_matplotlib(self):
+
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
+
+        nmv.logger.info('Updating Branching to Primary / Secondary')
+        nmv.builders.skeleton.update_sections_branching(builder=self)
+
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+
+        # A list of all the skeleton poly-lines
+        skeleton_poly_lines = list()
+
+        import seaborn as sns
+        import matplotlib.pyplot as plt
+        import numpy as np
+
+        plt.clf()
+
+        # Apical dendrite
+        nmv.logger.info('Constructing poly-lines')
+        if not self.options.morphology.ignore_apical_dendrite:
+            if self.morphology.apical_dendrite is not None:
+                nmv.logger.detail('Apical dendrite')
+
+                # Construct the poly-line objects
+                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                    root=self.morphology.apical_dendrite,
+                    poly_lines_data=skeleton_poly_lines,
+                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order)
+
+                x_max = -1e10
+                x_min = 1e10
+                y_max = -1e10
+                y_min = 1e10
+                for poly_line in skeleton_poly_lines:
+
+                    x_list = list()
+                    y_list = list()
+
+                    for sample in poly_line.samples:
+                        x_list.append(sample[0][0])
+                        y_list.append(sample[0][1])
+
+                        if max(x_list) > x_max:
+                            x_max = max(x_list)
+                        if max(y_list) > y_max:
+                            y_max = max(y_list)
+
+                        if min(x_list) < x_min:
+                            x_min = max(x_list)
+                        if min(y_list) < y_min:
+                            y_min = max(y_list)
+
+                    x = np.array(x_list)
+                    y = np.array(y_list)
+
+                    sns.lineplot(x=x, y=y, sort=False, lw=0.75, color="coral")
+
+                delta_x = x_max - x_min
+                delta_y = y_max - y_min
+
+                aspect_ratio = delta_x / delta_y
+
+        # Axon
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                nmv.logger.detail('Axon')
+                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                    root=self.morphology.axon,
+                    poly_lines_data=skeleton_poly_lines,
+                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                    max_branching_level=self.options.morphology.axon_branch_order)
+
+                x_max = -1e10
+                x_min = 1e10
+                y_max = -1e10
+                y_min = 1e10
+                for poly_line in skeleton_poly_lines:
+
+                    x_list = []
+                    y_list = []
+                    for sample in poly_line.samples:
+                        x_list.append(sample[0][0])
+                        y_list.append(sample[0][1])
+
+                        if max(x_list) > x_max:
+                            x_max = max(x_list)
+                        if max(y_list) > y_max:
+                            y_max = max(y_list)
+
+                        if min(x_list) < x_min:
+                            x_min = max(x_list)
+                        if min(y_list) < y_min:
+                            y_min = max(y_list)
+
+                    x = np.array(x_list)
+                    y = np.array(y_list)
+
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5, color="blue")
+
+                delta_x = x_max - x_min
+                delta_y = y_max - y_min
+
+                aspect_ratio = delta_x / delta_y
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=basal_dendrite,
+                        poly_lines_data=skeleton_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order)
+
+                    x_max = -1e10
+                    x_min = 1e10
+                    y_max = -1e10
+                    y_min = 1e10
+                    for poly_line in skeleton_poly_lines:
+
+                        x_list = []
+                        y_list = []
+                        for sample in poly_line.samples:
+                            x_list.append(sample[0][0])
+                            y_list.append(sample[0][1])
+
+                            if max(x_list) > x_max:
+                                x_max = max(x_list)
+                            if max(y_list) > y_max:
+                                y_max = max(y_list)
+
+                            if min(x_list) < x_min:
+                                x_min = max(x_list)
+                            if min(y_list) < y_min:
+                                y_min = max(y_list)
+
+                        x = np.array(x_list)
+                        y = np.array(y_list)
+
+                        #ax = sns.lineplot(x=x, y=y, sort=False, lw=0.25, color="green")
+
+                    delta_x = x_max - x_min
+                    delta_y = y_max - y_min
+
+                    aspect_ratio = delta_x / delta_y
+
+        ax.set_aspect(aspect='equal')
+
+        # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
+        plt.savefig('/Users/abdellah/Desktop/nmv-release/neuron.pdf',
+                    bbox_inches='tight')
+
+
+    ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self):
