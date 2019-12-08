@@ -240,10 +240,12 @@ class ConnectedSectionsBuilder:
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
         # A list of all the skeleton poly-lines
-        skeleton_poly_lines = list()
 
-        import seaborn as sns
+        # Create the color palette
+        self.morphology.create_morphology_color_palette()
+
         import matplotlib.pyplot as plt
+        import seaborn as sns
         import numpy as np
 
         plt.clf()
@@ -254,6 +256,7 @@ class ConnectedSectionsBuilder:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
 
+                skeleton_poly_lines = list()
                 # Construct the poly-line objects
                 nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.apical_dendrite,
@@ -287,7 +290,7 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    sns.lineplot(x=x, y=y, sort=False, lw=0.75, color="coral")
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75, color=self.morphology.apical_dendrite_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -297,6 +300,8 @@ class ConnectedSectionsBuilder:
         # Axon
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
+
+                skeleton_poly_lines = list()
                 nmv.logger.detail('Axon')
                 nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.axon,
@@ -329,7 +334,7 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5, color="blue")
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5, color=self.morphology.axon_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -340,6 +345,9 @@ class ConnectedSectionsBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    skeleton_poly_lines = list()
+
                     nmv.logger.detail('Basal dendrite [%d]' % i)
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=basal_dendrite,
@@ -372,7 +380,7 @@ class ConnectedSectionsBuilder:
                         x = np.array(x_list)
                         y = np.array(y_list)
 
-                        #ax = sns.lineplot(x=x, y=y, sort=False, lw=0.25, color="green")
+                        ax = sns.lineplot(x=x, y=y, sort=False, lw=0.25, color=self.morphology.basal_dendrites_colors[i])
 
                     delta_x = x_max - x_min
                     delta_y = y_max - y_min

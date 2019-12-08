@@ -190,3 +190,136 @@ class DendrogramBuilder:
         nmv.logger.info('Done')
         return self.morphology_objects
 
+    def draw_morphology_skeleton_with_matplotlib(self):
+
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        import numpy as np
+
+        # Create the color palette
+        self.morphology.create_morphology_color_palette()
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+
+        # Get the maximum radius to make it easy to compute the deltas
+        maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
+            morphology=self.morphology).morphology_result
+
+        # Compute the dendrogram of the morphology
+        nmv.skeleton.compute_morphology_dendrogram(
+            morphology=self.morphology, delta=maximum_radius * 8)
+
+        plt.clf()
+
+        if not self.options.morphology.ignore_apical_dendrite:
+
+            # A list of all the skeleton poly-lines
+            skeleton_poly_lines = list()
+
+            if self.morphology.apical_dendrite is not None:
+                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                    section=self.morphology.apical_dendrite,
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                    stretch_legs=False)
+
+                for poly_line in skeleton_poly_lines:
+
+                    x_list = list()
+                    y_list = list()
+
+                    for i, sample in enumerate(poly_line.samples):
+                        x_list.append(sample[0][0])
+                        y_list.append(sample[0][1])
+
+                    x = np.array(x_list)
+                    y = np.array(y_list)
+
+                    ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                  color=self.morphology.apical_dendrite_color)
+
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
+                # A list of all the skeleton poly-lines
+                skeleton_poly_lines = list()
+
+                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                    section=self.morphology.axon,
+                    poly_lines_data=skeleton_poly_lines,
+                    max_branching_order=self.options.morphology.axon_branch_order,
+                    stretch_legs=False)
+
+                for poly_line in skeleton_poly_lines:
+
+                    x_list = list()
+                    y_list = list()
+
+                    for i, sample in enumerate(poly_line.samples):
+                        x_list.append(sample[0][0])
+                        y_list.append(sample[0][1])
+
+                    x = np.array(x_list)
+                    y = np.array(y_list)
+
+                    ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                  color=self.morphology.axon_color)
+
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+
+                    # A list of all the skeleton poly-lines
+                    skeleton_poly_lines = list()
+
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=basal_dendrite,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        stretch_legs=False)
+
+                    color = self.morphology.basal_dendrites_colors[i]
+                    for poly_line in skeleton_poly_lines:
+
+                        x_list = list()
+                        y_list = list()
+
+                        for i, sample in enumerate(poly_line.samples):
+                            x_list.append(sample[0][0])
+                            y_list.append(sample[0][1])
+
+                        x = np.array(x_list)
+                        y = np.array(y_list)
+
+                        ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                      color=color)
+
+
+
+        # The soma to stems line
+        skeleton_poly_lines = list()
+        center = nmv.skeleton.add_soma_to_stems_line(
+            morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
+            ignore_apical_dendrite=self.options.morphology.ignore_apical_dendrite,
+            ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
+            ignore_axon=self.options.morphology.ignore_axon)
+
+        for poly_line in skeleton_poly_lines:
+
+            x_list = list()
+            y_list = list()
+
+            for i, sample in enumerate(poly_line.samples):
+                x_list.append(sample[0][0])
+                y_list.append(sample[0][1])
+
+            x = np.array(x_list)
+            y = np.array(y_list)
+
+            ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                          color="black")
+
+        # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
+        #ax.set_aspect(aspect='equal')
+        plt.savefig('/Users/abdellah/Desktop/nmv-release/dendrogram.pdf',
+                    bbox_inches='tight')

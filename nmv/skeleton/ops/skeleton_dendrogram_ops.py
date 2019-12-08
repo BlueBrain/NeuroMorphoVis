@@ -243,7 +243,8 @@ def compute_morphology_dendrogram(morphology,
 def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
                                                max_branching_order=nmv.consts.Math.INFINITY,
-                                               mode='NON FLAT'):
+                                               mode='FLAT',
+                                               stretch_legs=True):
 
     # Stop if the maximum branching order has been reached
     if section.branching_order > max_branching_order:
@@ -303,8 +304,14 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             samples = list()
             radius_1 = child_1.samples[0].radius
             radius_2 = child_2.samples[0].radius
-            samples.append([(child_1.dendrogram_x - radius_1, end_y, 0, 1), radius_1])
-            samples.append([(child_2.dendrogram_x + radius_2, end_y, 0, 1), radius_2])
+            if stretch_legs:
+                x_1 = child_1.dendrogram_x - radius_1
+                x_2 = child_2.dendrogram_x + radius_2
+            else:
+                x_1 = child_1.dendrogram_x
+                x_2 = child_2.dendrogram_x
+            samples.append([(x_1, end_y, 0, 1), radius_1])
+            samples.append([(x_2, end_y, 0, 1), radius_2])
             poly_line = nmv.geometry.PolyLine(
                 name='section_%s' % str(section.id),
                 samples=samples,

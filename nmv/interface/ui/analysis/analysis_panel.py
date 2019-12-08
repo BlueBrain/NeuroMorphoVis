@@ -184,6 +184,12 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         builder.draw_morphology_skeleton_with_matplotlib()
+
+        builder = nmv.builders.DendrogramBuilder(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        builder.draw_morphology_skeleton_with_matplotlib()
+
+
         # Draw the morphology and highlight it
         #builder = nmv.builders.DisconnectedSectionsBuilder(
         #    morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)

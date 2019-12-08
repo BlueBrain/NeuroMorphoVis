@@ -128,6 +128,15 @@ class Morphology:
         # Maximum branching order
         self.maximum_branching_order = 100
 
+        # The color of the apical dendrite, see @create_morphology_color_palette
+        self.apical_dendrite_color = None
+
+        # The colors of the basal dendrites, see @create_morphology_color_palette
+        self.basal_dendrites_colors = None
+
+        # The color of the axon, see @create_morphology_color_palette
+        self.axon_color = None
+
     ################################################################################################
     # @build_samples_lists_recursively
     ################################################################################################
@@ -441,5 +450,64 @@ class Morphology:
         if self.has_dendrites():
             for dendrite in self.dendrites:
                 self.set_section_branching_order(dendrite)
+
+    ################################################################################################
+    # @update_branching_order
+    ################################################################################################
+    def get_total_number_of_arbors(self):
+        """Computes the total number of arbors or neurites in the morphology.
+
+        :return:
+            The total number of arbors or neurites in the morphology.
+        """
+
+        # The total number of arbors
+        total_arbor_count = 0
+
+        # Apical
+        if self.has_apical_dendrite():
+            total_arbor_count += 1
+
+        # Basal dendrites
+        if self.has_dendrites():
+            total_arbor_count += len(self.dendrites)
+
+        # Axon
+        if self.has_axon():
+            total_arbor_count += 1
+
+        # Return the total
+        return total_arbor_count
+
+    ################################################################################################
+    # @update_branching_order
+    ################################################################################################
+    def create_morphology_color_palette(self,
+                                        palette_name=None):
+
+        import seaborn
+        palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
+
+        # An index to keep track on the colors
+        color_index = 0
+
+        # Apical
+        if self.has_apical_dendrite():
+            self.apical_dendrite_color = palette[color_index]
+            color_index += 1
+
+        # Basal dendrites
+        if self.has_dendrites():
+            self.basal_dendrites_colors = list()
+            for dendrite in self.dendrites:
+                self.basal_dendrites_colors.append(palette[color_index])
+                color_index += 1
+
+        # Axon
+        if self.has_axon():
+            self.axon_color = palette[color_index]
+
+
+
 
 
