@@ -16,13 +16,28 @@
 ####################################################################################################
 
 # Internal imports
-from nmv.analysis.structs import AnalysisDistribution
-from nmv.analysis.kernels.morphology import *
+from .structs import *
+from .kernels import *
+
 
 ####################################################################################################
 # Global analysis items, only applied on a global level not per-arbor level
 ####################################################################################################
 distributions = [
+    AnalysisDistribution(
+        name='Total Number of Samples per Arbor',
+        description='The total number of sampler per arbor in the morphology',
+        data_format='NUMBER_PER_ARBOR',
+        figure_title='Number of Samples / Arbor',
+        figure_name='number-of-samples-per-arbor',
+        figure_xlabel='Number of Samples',
+        compute_total_kernel=compute_number_of_samples_of_arbor,
+        add_percentage=True),
+
+]
+
+'''
+distributionss = [
 
 
     AnalysisDistribution(
@@ -51,8 +66,6 @@ distributions = [
         figure_title='Samples Radii',
         figure_axis_label='Sample Radius (\u03BCm)',
         figure_label='samples-radii'),
-
-
 
     AnalysisDistribution(
         name='Samples Radii',
@@ -145,6 +158,7 @@ distributions = [
         figure_label='samples-radii'),
 
 ]
+'''
 
 '''
 

@@ -20,6 +20,10 @@ import bpy
 from bpy.props import IntProperty
 from bpy.props import FloatProperty
 
+# Internal imports
+import nmv
+import nmv.analysis
+
 
 ####################################################################################################
 # AnalysisDistribution
@@ -33,13 +37,16 @@ class AnalysisDistribution:
     ################################################################################################
     def __init__(self,
                  name,
-                 kernel=None,
-                 description='',
-                 data_format='FLOAT',
-                 unit='NONE',
-                 figure_title=None,
-                 figure_label=None,
-                 figure_axis_label=None):
+                 description,
+                 data_format,
+                 figure_title,
+                 figure_name,
+                 figure_xlabel,
+                 compute_total_kernel=None,
+                 compute_min_kernel=None,
+                 compute_avg_kernel=None,
+                 compute_max_kernel=None,
+                 add_percentage=False):
         """Constructor
 
         :param name:
@@ -59,26 +66,35 @@ class AnalysisDistribution:
         # Entry name
         self.name = name
 
-        # Analysis filter
-        self.kernel = kernel
-
         # Entry description
         self.description = description
 
         # Entry format
         self.data_format = data_format
 
-        # Entry unit
-        self.unit = unit
+        # The kernel used to compute the total count of a specific property (per arbor)
+        self.compute_total_kernel = compute_total_kernel
+
+        # The kernel used to compute the minimum value of a specific property (per arbor)
+        self.compute_min_kernel = compute_min_kernel
+
+        # The kernel used to compute the average value of a specific property (per arbor)
+        self.compute_avg_kernel = compute_avg_kernel
+
+        # The kernel used to compute the maximum value of a specific property (per arbor)
+        self.compute_max_kernel = compute_max_kernel
 
         # The title of the figure
         self.figure_title = figure_title
 
         # The label of the independent axis
-        self.figure_axis_label = figure_axis_label
+        self.figure_xlabel = figure_xlabel
 
         # The label of the figure that is used to name the file
-        self.figure_label = figure_label
+        self.figure_name = figure_name
+
+        # Add percentage to the bars
+        self.add_percentage = add_percentage
 
         # Analysis result for the entire morphology of type @MorphologyAnalysisResult
         self.result = None
@@ -97,6 +113,63 @@ class AnalysisDistribution:
             User defined options.
         """
 
+        # Kernel name
+        nmv.logger.info('Analysis: %s' % self.name)
+
+        # Compute the total number per arbor
+        if 'NUMBER_PER_ARBOR' in self.data_format:
+
+            # Total
+            analysis_results = nmv.analysis.invoke_kernel(
+                morphology,
+                self.compute_total_kernel,
+                nmv.analysis.compute_total_analysis_result_of_morphology)
+
+            # Plot the distribution
+            nmv.analysis.plot_per_arbor_result(analysis_results=analysis_results,
+                                               morphology=morphology,
+                                               options=options,
+                                               figure_name=self.figure_name,
+                                               figure_title=self.figure_title,
+                                               figure_xlabel=self.figure_xlabel,
+                                               add_percentage=True)
+
+        # Compute the range, then plot the average with error bars to show the range of the result
+        elif 'RANGE_PER_ARBOR' in self.data_format:
+
+            # Minimum
+            minimum_results = nmv.analysis.invoke_kernel(
+                morphology,
+                self.compute_min_kernel,
+                nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+            # Average
+            average_results = nmv.analysis.invoke_kernel(
+                morphology,
+                self.compute_avg_kernel,
+                nmv.analysis.compute_average_analysis_result_of_morphology)
+
+            # Maximum
+            maximum_results = nmv.analysis.invoke_kernel(
+                morphology,
+                self.compute_max_kernel,
+                nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+            # Plot the result
+            nmv.analysis.plot_per_arbor_range(minimum_results=minimum_results,
+                                              maximum_results=maximum_results,
+                                              average_results=average_results,
+                                              morphology=morphology,
+                                              options=options,
+                                              figure_name=self.figure_name,
+                                              figure_title=self.figure_title,
+                                              figure_xlabel=self.figure_xlabel)
+
+
+        else:
+            nmv.logger.log('A kernel is not implemented')
+
+        '''
         if self.kernel is not None:
 
             # Get the result from applying the kernel on the entire morphology skeleton
@@ -105,3 +178,4 @@ class AnalysisDistribution:
                                       figure_title=self.figure_title,
                                       figure_axis_label=self.figure_axis_label,
                                       figure_label=self.figure_label)
+        '''

@@ -21,9 +21,9 @@ import nmv.skeleton
 
 
 ####################################################################################################
-# @compute_total_number_samples_of_arbor
+# @compute_number_of_samples_of_arbor
 ####################################################################################################
-def compute_total_number_samples_of_arbor(arbor):
+def compute_number_of_samples_of_arbor(arbor):
     """Computes the total number of samples along the given arbor.
 
     Note that we use the number of segments to account for the number of samples to avoid
@@ -61,9 +61,9 @@ def compute_total_number_samples_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_total_number_samples_of_arbor_distributions
+# @compute_number_of_samples_of_arbor_distributions
 ####################################################################################################
-def compute_total_number_samples_of_arbor_distributions(arbor):
+def compute_number_of_samples_of_arbor_distributions(arbor):
     """Computes the total number of samples along the given arbor with respect to different
     branching orders.
 
@@ -90,7 +90,7 @@ def compute_total_number_samples_of_arbor_distributions(arbor):
 
 
 ####################################################################################################
-# @compute_total_number_samples_of_arbor
+# @compute_number_of_samples_of_arbor
 ####################################################################################################
 def compute_total_number_of_zero_radii_samples_of_arbor(arbor):
     """Computes the total number of samples that have zero-radii along the given arbor.

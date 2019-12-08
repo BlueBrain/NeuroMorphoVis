@@ -29,7 +29,7 @@ def kernel_total_number_samples_at_branching_order(morphology):
 
     return nmv.analysis.invoke_kernel(
         morphology,
-        nmv.analysis.compute_total_number_samples_of_arbor_distributions,
+        nmv.analysis.compute_number_of_samples_of_arbor_distributions,
         nmv.analysis.compute_total_analysis_result_of_morphology_at_branching_order)
 
 
@@ -49,7 +49,7 @@ def kernel_total_number_samples(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_total_number_samples_of_arbor,
+                                      nmv.analysis.compute_number_of_samples_of_arbor,
                                       nmv.analysis.compute_total_analysis_result_of_morphology)
 
 
@@ -258,7 +258,7 @@ def kernel_number_of_samples_at_branching_order_distributions(morphology):
 
     analysis_results = nmv.analysis.compile_data(
         morphology,
-        nmv.analysis.compute_total_number_samples_of_arbor_distributions)
+        nmv.analysis.compute_number_of_samples_of_arbor_distributions)
 
 
 
@@ -285,7 +285,7 @@ def kernel_total_number_of_samples_per_arbor_distribution(morphology,
 
     analysis_results = nmv.analysis.invoke_kernel(
         morphology,
-        nmv.analysis.compute_total_number_samples_of_arbor,
+        nmv.analysis.compute_number_of_samples_of_arbor,
         nmv.analysis.compute_total_analysis_result_of_morphology)
 
     # Plot the distribution
@@ -419,16 +419,16 @@ def kernel_samples_radii(morphology,
 
     plt.clf()
     sns.regplot(x=r, y=y, fit_reg=False)
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/example2.pdf')
+    #plt.savefig('/Users/abdellah/Desktop/nmv-release/example2.pdf')
 
     plt.clf()
     sns.jointplot(x=r, y=y)
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/example3.pdf')
+    #plt.savefig('/Users/abdellah/Desktop/nmv-release/example3.pdf')
 
     plt.clf()
     g = sns.distplot(y, bins=20, kde=False, hist_kws={'log':True})
 
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/example4.pdf')
+    #plt.savefig('/Users/abdellah/Desktop/nmv-release/example4.pdf')
     
 
 

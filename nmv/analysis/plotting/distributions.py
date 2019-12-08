@@ -21,14 +21,14 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @plot_per_arbor_distribution
+# @plot_per_arbor_result
 ####################################################################################################
-def plot_per_arbor_distribution(analysis_results,
+def plot_per_arbor_result(analysis_results,
                                 morphology,
                                 options,
                                 figure_name=None,
-                                x_label=None,
-                                title=None,
+                                figure_title=None,
+                                figure_xlabel=None,
                                 add_percentage=False):
     # Installing dependencies
     try:
@@ -123,7 +123,7 @@ def plot_per_arbor_distribution(analysis_results,
     ax = seaborn.barplot(x=y, y=x, edgecolor='none')
 
     # Title
-    ax.set(xlabel=x_label, title=title)
+    ax.set(xlabel=figure_xlabel, title=figure_title)
     ax.spines['left'].set_linewidth(0.5)
     ax.spines['left'].set_color('black')
 
@@ -184,16 +184,16 @@ def plot_per_arbor_distribution(analysis_results,
 
 
 ####################################################################################################
-# @plot_min_avg_max_per_arbor_distribution
+# @plot_per_arbor_range
 ####################################################################################################
-def plot_min_avg_max_per_arbor_distribution(minimum_results,
-                                            average_results,
-                                            maximum_results,
-                                            morphology,
-                                            options,
-                                            figure_name=None,
-                                            x_label=None,
-                                            title=None):
+def plot_per_arbor_range(minimum_results,
+                         average_results,
+                         maximum_results,
+                         morphology,
+                         options,
+                         figure_name=None,
+                         figure_xlabel=None,
+                         figure_title=None):
 
     # Installing dependencies
     try:
@@ -308,7 +308,7 @@ def plot_min_avg_max_per_arbor_distribution(minimum_results,
                          error_kw={'elinewidth': 0.75, 'capsize': 1.0})
 
     # Title
-    ax.set(xlabel=x_label, title=title)
+    ax.set(xlabel=figure_xlabel, title=figure_title)
     ax.spines['left'].set_linewidth(0.5)
     ax.spines['left'].set_color('black')
 
