@@ -65,6 +65,42 @@ def compute_section_surface_area_from_segments(section):
 
 
 ####################################################################################################
+# @compute_segments_surface_areas_in_section
+####################################################################################################
+def compute_segments_surface_areas_in_section(section,
+                                              segments_surface_areas):
+    """Computes the surface areas of all the segments in the section.
+
+    :param section:
+        A given section to compute the surface area of its segments.
+    :param segments_surface_areas:
+        A list of all the surface areas of all the segments in the section.
+    """
+
+    # If the section has less than two samples, then report the error
+    if len(section.samples) < 2:
+        return
+
+    # Integrate the surface area between each two successive samples
+    for i in range(len(section.samples) - 1):
+
+        # Retrieve the data of the samples along each segment on the section
+        p0 = section.samples[i].point
+        p1 = section.samples[i + 1].point
+        r0 = section.samples[i].radius
+        r1 = section.samples[i + 1].radius
+
+        # Compute the segment lateral area
+        segment_length = (p0 - p1).length
+        r_sum = r0 + r1
+        r_diff = r0 - r1
+        segment_lateral_area = math.pi * r_sum * math.sqrt((r_diff * r_diff) + segment_length)
+
+        # Compute the segment surface area and append it list
+        segments_surface_areas.append(segment_lateral_area + math.pi * ((r0 * r0) + (r1 * r1)))
+
+
+####################################################################################################
 # @compute_sections_surface_areas_from_segments
 ####################################################################################################
 def compute_sections_surface_areas_from_segments(section,

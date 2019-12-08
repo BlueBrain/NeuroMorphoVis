@@ -81,6 +81,81 @@ def compute_minimum_section_surface_area(arbor):
 
 
 ####################################################################################################
+# @compute_minimum_surface_area_per_section
+####################################################################################################
+def compute_minimum_segment_surface_area(arbor):
+    """Computes the minimum section surface area per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum surface area of the smallest section along the given arbor in um squared.
+    """
+
+    # A list that will contain the surface areas of all the sections along the arbor
+    segments_surface_areas = list()
+
+    # Compute the surface area of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_surface_areas_in_section,
+          segments_surface_areas])
+
+    # Return the minimum section surface area
+    return min(segments_surface_areas)
+
+
+####################################################################################################
+# @compute_maximum_segment_surface_area
+####################################################################################################
+def compute_maximum_segment_surface_area(arbor):
+    """Computes the minimum section surface area per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum surface area of the smallest section along the given arbor in um squared.
+    """
+
+    # A list that will contain the surface areas of all the sections along the arbor
+    segments_surface_areas = list()
+
+    # Compute the surface area of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_surface_areas_in_section,
+          segments_surface_areas])
+
+    # Return the minimum section surface area
+    return max(segments_surface_areas)
+
+
+####################################################################################################
+# @compute_maximum_segment_surface_area
+####################################################################################################
+def compute_average_segment_surface_area(arbor):
+    """Computes the minimum section surface area per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum surface area of the smallest section along the given arbor in um squared.
+    """
+
+    # A list that will contain the surface areas of all the sections along the arbor
+    segments_surface_areas = list()
+
+    # Compute the surface area of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_surface_areas_in_section,
+          segments_surface_areas])
+
+    # Return the minimum section surface area
+    return sum(segments_surface_areas) / len(segments_surface_areas)
+
+
+####################################################################################################
 # @compute_maximum_surface_area_per_section
 ####################################################################################################
 def compute_maximum_section_surface_area(arbor):

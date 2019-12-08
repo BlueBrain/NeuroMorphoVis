@@ -25,6 +25,43 @@ from nmv.analysis.kernels.morphology import *
 distributions = [
 
 
+    AnalysisDistribution(
+        name='Number ot Tips',
+        kernel=kernel_number_terminal_tips_distribution,
+        description='The range of the segments volume',
+        data_format='INT',
+        figure_title='Number of Terminal Tips / Neurite',
+        figure_axis_label='Number of Tips',
+        figure_label='number-of-tips'),
+
+    AnalysisDistribution(
+        name='Number ot Tips',
+        kernel=kernel_number_of_sections_distribution,
+        description='The number of sections per arbor',
+        data_format='INT',
+        figure_title='Number of Sections / Neurite',
+        figure_axis_label='Number of Sections',
+        figure_label='number-of-sections'),
+
+    AnalysisDistribution(
+        name='Samples Radii',
+        kernel=kernel_samples_radii_range_distribution,
+        description='Radii range',
+        data_format='FLOAT',
+        figure_title='Samples Radii',
+        figure_axis_label='Sample Radius (\u03BCm)',
+        figure_label='samples-radii'),
+
+
+
+    AnalysisDistribution(
+        name='Samples Radii',
+        kernel=kernel_samples_radii_range_distribution,
+        description='Radii range',
+        data_format='FLOAT',
+        figure_title='Sample Radius (\u03BCm)',
+        figure_axis_label='Samples Radii',
+        figure_label='samples-radii'),
 
     AnalysisDistribution(
         name='Total Number of Samples per Neurite',
@@ -49,7 +86,7 @@ distributions = [
         kernel=kernel_sections_length_range_distribution,
         description='The range of the sections length',
         data_format='FLOAT',
-        figure_title='Section Length Range',
+        figure_title='Sections Length Range',
         figure_axis_label='Length (\u03BCm)',
         figure_label='sections-length-range'),
 
@@ -58,7 +95,7 @@ distributions = [
         kernel=kernel_segment_length_range_distribution,
         description='The range of the segments length',
         data_format='FLOAT',
-        figure_title='Segment Length Range',
+        figure_title='Segments Length Range',
         figure_axis_label='Length (\u03BCm)',
         figure_label='segment-length-range'),
 
@@ -67,37 +104,45 @@ distributions = [
         kernel=kernel_sections_surface_area_range_distribution,
         description='The range of the sections surface area',
         data_format='FLOAT',
-        figure_title='Section Surface Area Range',
+        figure_title='Sections Surface Area Range',
         figure_axis_label='Area (\u03BCm\u00b2)',
         figure_label='sections-surface-area-range'),
 
-    # AnalysisDistribution(
-    #     name='Segment Surface Area',
-    #     kernel=kernel_segment_surface_area_range_distribution,
-    #     description='The range of the segments surface area',
-    #     data_format='FLOAT',
-    #     figure_title='Segment Surface Area Range',
-    #     figure_axis_label='Area (\u03BCm\u00b2',
-    #     figure_label='segments-surface-area-range'),
+    AnalysisDistribution(
+        name='Segment Surface Area',
+        kernel=kernel_segment_surface_area_range_distribution,
+        description='The range of the segments surface area',
+        data_format='FLOAT',
+        figure_title='Segments Surface Area Range',
+        figure_axis_label='Area (\u03BCm\u00b2)',
+        figure_label='segments-surface-area-range'),
 
     AnalysisDistribution(
         name='Section Volume',
         kernel=kernel_section_volume_range_distribution,
         description='The range of the sections volume',
         data_format='FLOAT',
-        figure_title='Section Volume Range',
+        figure_title='Sections Volume Range',
         figure_axis_label='Volume (\u03BCm\u00b3)',
         figure_label='sections-volume-range'),
 
-    # AnalysisDistribution(
-    #     name='Segment Surface Area',
-    #     kernel=kernel_segment_volume_range_distribution,
-    #     description='The range of the segments volume',
-    #     data_format='FLOAT',
-    #     figure_title='Segment Volume Range',
-    #     figure_axis_label='Area (\u03BCm\u00b3',
-    #     figure_label='segments-volume-range'),
+    AnalysisDistribution(
+        name='Segment Volume',
+        kernel=kernel_segment_volume_range_distribution,
+        description='The range of the segments volume',
+        data_format='FLOAT',
+        figure_title='Segments Volume Range',
+        figure_axis_label='Volume (\u03BCm\u00b3)',
+        figure_label='segments-volume-range'),
 
+    AnalysisDistribution(
+        name='Samples Radii',
+        kernel=kernel_samples_radii,
+        description='Radii range',
+        data_format='FLOAT',
+        figure_title='Samples Radii',
+        figure_axis_label='Sample Radius (\u03BCm)',
+        figure_label='samples-radii'),
 
 ]
 

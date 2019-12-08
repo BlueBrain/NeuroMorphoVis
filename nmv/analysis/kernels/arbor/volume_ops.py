@@ -137,3 +137,78 @@ def compute_average_section_volume(arbor):
 
     # Return the total section volume
     return arbor_total_volume / len(sections_volumes)
+
+
+####################################################################################################
+# @compute_minimum_section_volume
+####################################################################################################
+def compute_minimum_segment_volume(arbor):
+    """Computes the minimum section volume of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum section volume of the arbor in um cube.
+    """
+
+    # A list that will contain the volumes of all the sections along the arbor
+    segments_volumes = list()
+
+    # Compute the volumes of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_volumes_in_section,
+          segments_volumes])
+
+    # Return the minimum section volume
+    return min(segments_volumes)
+
+
+####################################################################################################
+# @compute_minimum_section_volume
+####################################################################################################
+def compute_maximum_segment_volume(arbor):
+    """Computes the minimum section volume of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum section volume of the arbor in um cube.
+    """
+
+    # A list that will contain the volumes of all the sections along the arbor
+    segments_volumes = list()
+
+    # Compute the volumes of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_volumes_in_section,
+          segments_volumes])
+
+    # Return the minimum section volume
+    return max(segments_volumes)
+
+
+####################################################################################################
+# @compute_minimum_section_volume
+####################################################################################################
+def compute_average_segment_volume(arbor):
+    """Computes the minimum section volume of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum section volume of the arbor in um cube.
+    """
+
+    # A list that will contain the volumes of all the sections along the arbor
+    segments_volumes = list()
+
+    # Compute the volumes of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_segments_volumes_in_section,
+          segments_volumes])
+
+    # Return the minimum section volume
+    return sum(segments_volumes) / len(segments_volumes)

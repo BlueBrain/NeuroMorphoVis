@@ -375,7 +375,11 @@ def kernel_number_samples_per_section(morphology,
     plt.close()
 
 
-def kernel_samples_radii(morphology, options):
+def kernel_samples_radii(morphology,
+                         options,
+                         figure_title,
+                         figure_axis_label,
+                         figure_label):
 
     # Analysis results
     analysis_results = nmv.analysis.compile_data(
@@ -405,21 +409,28 @@ def kernel_samples_radii(morphology, options):
     r = np.asarray(r_data)
 
     colors = (0, 0, 0)
-    '''
+
     # Plot
-    plt.scatter(x, y, c=colors, alpha=0.5)
-    plt.title('Example')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example.pdf')
+    # plt.scatter(x, y, c=colors, alpha=0.5)
+    # plt.title('Example')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.savefig('/Users/abdellah/Desktop/nmv-release/example.pdf')
 
-    sns.regplot(x=x, y=y, fit_reg=False)
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example2.pdf')
-
+    plt.clf()
     sns.regplot(x=r, y=y, fit_reg=False)
-    plt.savefig('/Users/abdellah/Desktop/nmv-release/figures/example3.pdf')
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/example2.pdf')
+
+    plt.clf()
+    sns.jointplot(x=r, y=y)
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/example3.pdf')
+
+    plt.clf()
+    g = sns.distplot(y, bins=20, kde=False, hist_kws={'log':True})
+
+    plt.savefig('/Users/abdellah/Desktop/nmv-release/example4.pdf')
     
-    '''
+
 
     #for i in analysis_results.morphology_result:
     #    print(i.value, i.branching_order)
@@ -467,3 +478,50 @@ def kernel_samples_per_section_range_distribution(morphology,
         figure_name='samples-per-section-range',
         x_label='Samples Count',
         title='Samples Count')
+
+
+####################################################################################################
+# @kernel_samples_radii_range_distribution
+####################################################################################################
+def kernel_samples_radii_range_distribution(morphology,
+                                            options,
+                                            figure_title,
+                                            figure_axis_label,
+                                            figure_label):
+    """Computes and plots the range of section lengths across the morphology along the different
+    arbors.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :param options:
+        System options.
+    """
+
+    # Minimum
+    minimum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_sample_radius_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Average
+    average_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_sample_radius_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+    # Maximum
+    maximum_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_sample_radius_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Plot
+    nmv.analysis.plot_min_avg_max_per_arbor_distribution(
+        minimum_results=minimum_results,
+        maximum_results=maximum_results,
+        average_results=average_results,
+        morphology=morphology,
+        options=options,
+        figure_name=figure_label,
+        x_label=figure_axis_label,
+        title=figure_title)
