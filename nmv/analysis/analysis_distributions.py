@@ -18,22 +18,35 @@
 # Internal imports
 from .structs import *
 from .kernels import *
+import nmv.enums
 
 
 ####################################################################################################
 # Global analysis items, only applied on a global level not per-arbor level
 ####################################################################################################
 distributions = [
+
     AnalysisDistribution(
         name='Total Number of Samples per Arbor',
         description='The total number of sampler per arbor in the morphology',
-        data_format='NUMBER_PER_ARBOR',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
         figure_title='Number of Samples / Arbor',
         figure_name='number-of-samples-per-arbor',
         figure_xlabel='Number of Samples',
         compute_total_kernel=compute_number_of_samples_of_arbor,
         add_percentage=True),
 
+    AnalysisDistribution(
+        name='Samples Radii Range per Arbor',
+        description='The range of samples radii per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Samples Radii Range / Arbor',
+        figure_name='samples-radii-range-per-arbor',
+        figure_xlabel='Sample Radius (\u03BCm)',
+        compute_min_kernel=compute_minimum_sample_radius_of_arbor,
+        compute_avg_kernel=compute_average_sample_radius_of_arbor,
+        compute_max_kernel=compute_maximum_sample_radius_of_arbor,
+        add_percentage=False),
 ]
 
 '''
@@ -67,14 +80,7 @@ distributionss = [
         figure_axis_label='Sample Radius (\u03BCm)',
         figure_label='samples-radii'),
 
-    AnalysisDistribution(
-        name='Samples Radii',
-        kernel=kernel_samples_radii_range_distribution,
-        description='Radii range',
-        data_format='FLOAT',
-        figure_title='Sample Radius (\u03BCm)',
-        figure_axis_label='Samples Radii',
-        figure_label='samples-radii'),
+    
 
     AnalysisDistribution(
         name='Total Number of Samples per Neurite',

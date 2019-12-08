@@ -15,14 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
-import bpy
-from bpy.props import IntProperty
-from bpy.props import FloatProperty
-
 # Internal imports
 import nmv
 import nmv.analysis
+import nmv.enums
 
 
 ####################################################################################################
@@ -117,7 +113,7 @@ class AnalysisDistribution:
         nmv.logger.info('Analysis: %s' % self.name)
 
         # Compute the total number per arbor
-        if 'NUMBER_PER_ARBOR' in self.data_format:
+        if nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR in self.data_format:
 
             # Total
             analysis_results = nmv.analysis.invoke_kernel(
@@ -135,7 +131,7 @@ class AnalysisDistribution:
                                                add_percentage=True)
 
         # Compute the range, then plot the average with error bars to show the range of the result
-        elif 'RANGE_PER_ARBOR' in self.data_format:
+        elif nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR in self.data_format:
 
             # Minimum
             minimum_results = nmv.analysis.invoke_kernel(
@@ -165,17 +161,6 @@ class AnalysisDistribution:
                                               figure_title=self.figure_title,
                                               figure_xlabel=self.figure_xlabel)
 
-
+        # Non reported kernel
         else:
             nmv.logger.log('A kernel is not implemented')
-
-        '''
-        if self.kernel is not None:
-
-            # Get the result from applying the kernel on the entire morphology skeleton
-            self.result = self.kernel(morphology,
-                                      options,
-                                      figure_title=self.figure_title,
-                                      figure_axis_label=self.figure_axis_label,
-                                      figure_label=self.figure_label)
-        '''
