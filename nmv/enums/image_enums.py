@@ -43,9 +43,15 @@ class Image:
             pass
 
         # PDF
-        PDF = 'pdf'
+        PDF = 'PDF'
 
         # PNG
-        PNG = 'png'
+        PNG = 'PNG'
+
+        # BMP
+        BMP = 'BMP'
+
+        # TIFF
+        TIFF = 'TIFF'
 
 

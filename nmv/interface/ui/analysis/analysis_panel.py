@@ -185,11 +185,16 @@ class CreateNeuronCard(bpy.types.Operator):
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        builder.draw_morphology_skeleton_with_matplotlib()
+        for projection in [nmv.enums.Camera.View.FRONT,
+                           nmv.enums.Camera.View.SIDE,
+                           nmv.enums.Camera.View.TOP]:
+            builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
 
         builder = nmv.builders.DendrogramBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
         builder.draw_morphology_skeleton_with_matplotlib()
+
 
 
         # Draw the morphology and highlight it

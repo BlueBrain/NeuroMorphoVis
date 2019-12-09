@@ -269,8 +269,8 @@ class ConnectedSectionsBuilder:
                     x_list.append(sample[0][1])
                     y_list.append(sample[0][2])
                 elif projection == nmv.enums.Camera.View.TOP:
-                    x_list.append(sample[0][2])
-                    y_list.append(sample[0][0])
+                    x_list.append(sample[0][0])
+                    y_list.append(sample[0][2])
                 else:
                     x_list.append(sample[0][0])
                     y_list.append(sample[0][1])
@@ -337,10 +337,10 @@ class ConnectedSectionsBuilder:
                     y_list.append(sample_0[0][2])
                     y_list.append(sample_1[0][2])
                 elif projection == nmv.enums.Camera.View.TOP:
-                    x_list.append(sample_0[0][2])
-                    x_list.append(sample_1[0][2])
-                    y_list.append(sample_0[0][0])
-                    y_list.append(sample_1[0][0])
+                    x_list.append(sample_0[0][0])
+                    x_list.append(sample_1[0][0])
+                    y_list.append(sample_0[0][2])
+                    y_list.append(sample_1[0][2])
                 else:
                     x_list.append(sample_0[0][0])
                     x_list.append(sample_1[0][0])
@@ -390,8 +390,8 @@ class ConnectedSectionsBuilder:
                 x_list.append(vertex[1])
                 y_list.append(vertex[2])
             elif projection == nmv.enums.Camera.View.TOP:
-                x_list.append(vertex[2])
-                y_list.append(vertex[0])
+                x_list.append(vertex[0])
+                y_list.append(vertex[2])
             else:
                 x_list.append(vertex[0])
                 y_list.append(vertex[1])
@@ -447,7 +447,8 @@ class ConnectedSectionsBuilder:
                 # Plot the lines
                 figure = self.draw_poly_line_list_at_fixed_thickness(
                     poly_lines=apical_dendrite_poly_lines,
-                    color=self.morphology.apical_dendrite_color, thickness=0.5)
+                    color=self.morphology.apical_dendrite_color, thickness=0.5,
+                    projection=projection)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -496,7 +497,7 @@ class ConnectedSectionsBuilder:
         # Save the figure
         matplotlib.pyplot.savefig(
             '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
-                             'xy', '.png'),
+                             projection, '.png'),
             bbox_inches='tight', transparent=True, dpi=300)
 
     ################################################################################################
