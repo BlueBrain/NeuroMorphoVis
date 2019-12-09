@@ -17,10 +17,10 @@
 
 
 ####################################################################################################
-# @Analysis
+# @Image
 ####################################################################################################
-class Analysis:
-    """Analysis enumerators
+class Image:
+    """Image enumerators
     """
 
     ################################################################################################
@@ -30,10 +30,10 @@ class Analysis:
         pass
 
     ################################################################################################
-    # @Distribution
+    # @Extension
     ################################################################################################
-    class Distribution:
-        """Distribution edges
+    class Extension:
+        """Extension edges
         """
 
         ############################################################################################
@@ -42,10 +42,10 @@ class Analysis:
         def __init__(self):
             pass
 
-        # Sharp edges
-        NUMBER_PER_ARBOR = 'ANALYSIS_NUMBER_PER_ARBOR'
+        # PDF
+        PDF = 'pdf'
 
-        # Curvy edges
-        RANGE_PER_ARBOR = 'ANALYSIS_RANGE_PER_ARBOR'
+        # PNG
+        PNG = 'png'
 
 

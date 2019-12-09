@@ -20,6 +20,7 @@ from .analysis_enums import *
 from .camera_enums import *
 from .color_enums import *
 from .dendrogram_enums import *
+from .image_enums import *
 from .input_enums import *
 from .meshing_enums import *
 from .shading_enums import *

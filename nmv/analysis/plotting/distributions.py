@@ -17,6 +17,7 @@
 
 
 import nmv.consts
+import nmv.enums
 import nmv.utilities
 
 
@@ -29,7 +30,8 @@ def plot_per_arbor_result(analysis_results,
                                 figure_name=None,
                                 figure_title=None,
                                 figure_xlabel=None,
-                                add_percentage=False):
+                                add_percentage=False,
+                                image_extension=nmv.enums.Image.Extension.PNG):
     # Installing dependencies
     try:
         import numpy
@@ -159,14 +161,16 @@ def plot_per_arbor_result(analysis_results,
         # get_width pulls left or right; get_y pushes up or down
 
         # Get the width of the bar and then add a little increment
-        increment = 29
         x = patch.get_width()
         y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
 
         # Compute the percentage
         percentage = round((patch.get_width() / total) * 100, 2)
         if add_percentage:
-            value = '  %d (%2.1f%%)' % (y_data[i], percentage)
+            if 'float' in type(y_data[i]):
+                value = '  %2.1f (%2.1f%%)' % (y_data[i], percentage)
+            else:
+                value = '  %d (%2.1f%%)' % (y_data[i], percentage)
         else:
             if 'float' in type(y_data[i]):
                 value = '  %2.1f' % y_data[i]
@@ -176,8 +180,9 @@ def plot_per_arbor_result(analysis_results,
         ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
 
     # Save the figure
-    pyplot.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
-                   bbox_inches='tight', transparent=True)
+    pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
+                                    image_extension),
+                   bbox_inches='tight', transparent=True, dpi=300)
 
     # Close the figures
     pyplot.close()
@@ -193,7 +198,8 @@ def plot_per_arbor_range(minimum_results,
                          options,
                          figure_name=None,
                          figure_xlabel=None,
-                         figure_title=None):
+                         figure_title=None,
+                         image_extension=nmv.enums.Image.Extension.PNG):
 
     # Installing dependencies
     try:
@@ -313,8 +319,9 @@ def plot_per_arbor_range(minimum_results,
     ax.spines['left'].set_color('black')
 
     # Save the figure
-    pyplot.savefig('%s/%s-%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
-                   bbox_inches='tight', transparent=True)
+    pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
+                                    image_extension),
+                   bbox_inches='tight', transparent=True, dpi=300)
 
     # Close the figures
     pyplot.close()
@@ -377,7 +384,7 @@ def plot_distribution(distribution,
                  hist_kws={"color": color, "lw": 0.5},
                  kde_kws={"color": color, "lw": 0.5})
 
-    plt.savefig('%s/neuromorphovis-output/%s-plot.pdf' % (os.path.expanduser('~'), tilte), dpi=150)
+    plt.savefig('%s/neuromorphovis-output/%s-plot.png' % (os.path.expanduser('~'), tilte), dpi=150)
 
     # Close figure to reset
     plt.close()

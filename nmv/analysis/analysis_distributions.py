@@ -54,7 +54,7 @@ distributions = [
         figure_name='maximum-branching-order-per-arbor',
         figure_xlabel='Branching Order',
         compute_total_kernel=compute_maximum_branching_order_of_arbor,
-        add_percentage=True),
+        add_percentage=False),
 
     AnalysisDistribution(
         name='Total Arbor Length',
