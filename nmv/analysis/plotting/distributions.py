@@ -265,9 +265,8 @@ def plot_per_arbor_range(minimum_results,
         palette.append(morphology.apical_dendrite_color)
 
     # Basal dendrites
-    number_basals = len(minimum_results.basal_dendrites_result)
     if minimum_results.basal_dendrites_result is not None:
-        for i in range(number_basals):
+        for i in range( len(minimum_results.basal_dendrites_result)):
             labels.append('Basal Dendrite %d' % i)
             min_list.append(minimum_results.basal_dendrites_result[i])
             avg_list.append(average_results.basal_dendrites_result[i])

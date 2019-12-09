@@ -290,7 +290,8 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5, color=self.morphology.apical_dendrite_color)
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5,
+                                      color=self.morphology.apical_dendrite_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -334,7 +335,7 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5, color=self.morphology.axon_color)
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75, color=self.morphology.axon_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -380,7 +381,7 @@ class ConnectedSectionsBuilder:
                         x = np.array(x_list)
                         y = np.array(y_list)
 
-                        ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5,
+                        ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75,
                                           color=self.morphology.basal_dendrites_colors[i])
 
 
