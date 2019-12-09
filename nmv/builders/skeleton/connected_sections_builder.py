@@ -29,6 +29,10 @@ import nmv.consts
 import nmv.geometry
 import nmv.scene
 
+import seaborn
+import numpy
+import matplotlib.pyplot
+
 
 ####################################################################################################
 # @DisconnectedSectionsBuilder
@@ -225,9 +229,185 @@ class ConnectedSectionsBuilder:
         self.morphology_objects.append(morphology_object)
 
     ################################################################################################
+    # @draw_poly_line_list_at_fixed_thickness
+    ################################################################################################
+    @staticmethod
+    def draw_poly_line_list_at_fixed_thickness(poly_lines,
+                                               color,
+                                               thickness=0.5,
+                                               projection=nmv.enums.Camera.View.FRONT):
+        """Draws the poly-line using seaborn with a fixed line thickness.
+
+        :param poly_lines:
+            A list of all the poly-lines.
+        :param color:
+            Color.
+        :param thickness:
+            Thickness.
+        :param projection:
+            Projection.
+        :return:
+            A handle to the figure.
+        """
+
+        # A handle to the figure
+        figure = None
+
+        # Line by line
+        for poly_line in poly_lines:
+
+            # Lists to compile the data
+            x_list = []
+            y_list = []
+
+            # Append the samples
+            for sample in poly_line.samples:
+                if projection == nmv.enums.Camera.View.FRONT:
+                    x_list.append(sample[0][0])
+                    y_list.append(sample[0][1])
+                elif projection == nmv.enums.Camera.View.SIDE:
+                    x_list.append(sample[0][1])
+                    y_list.append(sample[0][2])
+                elif projection == nmv.enums.Camera.View.TOP:
+                    x_list.append(sample[0][2])
+                    y_list.append(sample[0][0])
+                else:
+                    x_list.append(sample[0][0])
+                    y_list.append(sample[0][1])
+
+            # Convert the lists to numpy arrays for the plotting function
+            x = numpy.array(x_list)
+            y = numpy.array(y_list)
+
+            # Plot the data with seaborn
+            figure = seaborn.lineplot(x=x, y=y, sort=False, lw=thickness, color=color)
+
+        # Return the handle to the figure
+        return figure
+
+    ################################################################################################
+    # @    def draw_poly_line_list_at_scale
+    ################################################################################################
+    @staticmethod
+    def draw_poly_line_list_at_scale(poly_lines,
+                                     color,
+                                     scale=1.0,
+                                     projection=nmv.enums.Camera.View.FRONT):
+        """Draws the poly-line using seaborn according to the actual radii.
+
+        :param poly_lines:
+            A list of all the poly-lines.
+        :param color:
+            Color.
+        :param scale: 
+            A scale value that will be used to scale the radii.
+       :param projection:
+            Projection.
+        :return:
+            A handle to the figure.
+        :return: 
+        """
+
+        # A handle to the figure
+        figure = None
+
+        # Line by line
+        for poly_line in poly_lines:
+
+            # Segment by segment in the line
+            for i in range(len(poly_line.samples) - 1):
+
+                # Segment samples
+                sample_0 = poly_line.samples[i]
+                sample_1 = poly_line.samples[i + 1]
+
+                # Data
+                x_list = list()
+                y_list = list()
+
+                # Append the samples
+                if projection == nmv.enums.Camera.View.FRONT:
+                    x_list.append(sample_0[0][0])
+                    x_list.append(sample_1[0][0])
+                    y_list.append(sample_0[0][1])
+                    y_list.append(sample_1[0][1])
+                elif projection == nmv.enums.Camera.View.SIDE:
+                    x_list.append(sample_0[0][1])
+                    x_list.append(sample_1[0][1])
+                    y_list.append(sample_0[0][2])
+                    y_list.append(sample_1[0][2])
+                elif projection == nmv.enums.Camera.View.TOP:
+                    x_list.append(sample_0[0][2])
+                    x_list.append(sample_1[0][2])
+                    y_list.append(sample_0[0][0])
+                    y_list.append(sample_1[0][0])
+                else:
+                    x_list.append(sample_0[0][0])
+                    x_list.append(sample_1[0][0])
+                    y_list.append(sample_0[0][1])
+                    y_list.append(sample_1[0][1])
+
+                # Radius value
+                radius = 0.5 * (sample_0[1] + sample_1[1]) * scale
+
+                # Convert the lists to numpy array
+                x = numpy.array(x_list)
+                y = numpy.array(y_list)
+
+                # Plot the data
+                figure = seaborn.lineplot(x=x, y=y, sort=False, lw=radius, color=color)
+
+        # Return the handle to the figure
+        return figure
+
+    ################################################################################################
+    # @draw_soma_projection
+    ################################################################################################
+    def draw_soma_projection(self,
+                             projection=nmv.enums.Camera.View.FRONT):
+        """Draws the projection of the soma.
+
+        :param projection:
+            Projection.
+        """
+
+
+        # The soma
+        soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
+        vertices = soma_builder_object.get_soma_profile()
+
+        # Project to xy
+        x_list = list()
+        y_list = list()
+
+        # Compile the data
+        for vertex in vertices:
+
+            if projection == nmv.enums.Camera.View.FRONT:
+                x_list.append(vertex[0])
+                y_list.append(vertex[1])
+            elif projection == nmv.enums.Camera.View.SIDE:
+                x_list.append(vertex[1])
+                y_list.append(vertex[2])
+            elif projection == nmv.enums.Camera.View.TOP:
+                x_list.append(vertex[2])
+                y_list.append(vertex[0])
+            else:
+                x_list.append(vertex[0])
+                y_list.append(vertex[1])
+
+        # Convert the lists to numpy arrays
+        x = numpy.asarray(x_list)
+        y = numpy.asarray(y_list)
+
+        # Plot
+        matplotlib.pyplot.scatter(x, y, c=self.morphology.soma_color, sizes=(0.25, 0.5), alpha=0.25)
+
+    ################################################################################################
     # @draw_morphology_skeleton_with_matplotlib
     ################################################################################################
-    def draw_morphology_skeleton_with_matplotlib(self):
+    def draw_morphology_skeleton_with_matplotlib(self,
+                                                 projection=nmv.enums.Camera.View.FRONT):
 
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
@@ -244,11 +424,11 @@ class ConnectedSectionsBuilder:
         # Create the color palette
         self.morphology.create_morphology_color_palette()
 
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        import numpy as np
+        # Clear the figure
+        matplotlib.pyplot.clf()
 
-        plt.clf()
+        # A handle to the figure
+        figure = None
 
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
@@ -256,159 +436,67 @@ class ConnectedSectionsBuilder:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
 
-                skeleton_poly_lines = list()
-                # Construct the poly-line objects
+                # Get the lines
+                apical_dendrite_poly_lines = list()
                 nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                     root=self.morphology.apical_dendrite,
-                    poly_lines_data=skeleton_poly_lines,
+                    poly_lines_data=apical_dendrite_poly_lines,
                     connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
-                x_max = -1e10
-                x_min = 1e10
-                y_max = -1e10
-                y_min = 1e10
-                for poly_line in skeleton_poly_lines:
-
-                    x_list = list()
-                    y_list = list()
-
-                    for sample in poly_line.samples:
-                        x_list.append(sample[0][0])
-                        y_list.append(sample[0][1])
-
-                        if max(x_list) > x_max:
-                            x_max = max(x_list)
-                        if max(y_list) > y_max:
-                            y_max = max(y_list)
-
-                        if min(x_list) < x_min:
-                            x_min = max(x_list)
-                        if min(y_list) < y_min:
-                            y_min = max(y_list)
-
-                    x = np.array(x_list)
-                    y = np.array(y_list)
-
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5,
-                                      color=self.morphology.apical_dendrite_color)
-
-                delta_x = x_max - x_min
-                delta_y = y_max - y_min
-
-                aspect_ratio = delta_x / delta_y
-
-        # Axon
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
-
-                skeleton_poly_lines = list()
-                nmv.logger.detail('Axon')
-                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                    root=self.morphology.axon,
-                    poly_lines_data=skeleton_poly_lines,
-                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                    max_branching_level=self.options.morphology.axon_branch_order)
-
-                x_max = -1e10
-                x_min = 1e10
-                y_max = -1e10
-                y_min = 1e10
-                for poly_line in skeleton_poly_lines:
-
-                    x_list = []
-                    y_list = []
-                    for sample in poly_line.samples:
-                        x_list.append(sample[0][0])
-                        y_list.append(sample[0][1])
-
-                        if max(x_list) > x_max:
-                            x_max = max(x_list)
-                        if max(y_list) > y_max:
-                            y_max = max(y_list)
-
-                        if min(x_list) < x_min:
-                            x_min = max(x_list)
-                        if min(y_list) < y_min:
-                            y_min = max(y_list)
-
-                    x = np.array(x_list)
-                    y = np.array(y_list)
-
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75, color=self.morphology.axon_color)
-
-                delta_x = x_max - x_min
-                delta_y = y_max - y_min
-
-                aspect_ratio = delta_x / delta_y
+                # Plot the lines
+                figure = self.draw_poly_line_list_at_fixed_thickness(
+                    poly_lines=apical_dendrite_poly_lines,
+                    color=self.morphology.apical_dendrite_color, thickness=0.5)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
-                    skeleton_poly_lines = list()
-
                     nmv.logger.detail('Basal dendrite [%d]' % i)
+
+                    # Get the lines
+                    basal_dendrite_poly_lines = list()
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=basal_dendrite,
-                        poly_lines_data=skeleton_poly_lines,
+                        poly_lines_data=basal_dendrite_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
-                    x_max = -1e10
-                    x_min = 1e10
-                    y_max = -1e10
-                    y_min = 1e10
-                    for poly_line in skeleton_poly_lines:
+                    # Plot the lines
+                    figure = self.draw_poly_line_list_at_fixed_thickness(
+                        poly_lines=basal_dendrite_poly_lines,
+                        color=self.morphology.basal_dendrites_colors[i], thickness=0.5)
 
-                        x_list = []
-                        y_list = []
-                        for sample in poly_line.samples:
-                            x_list.append(sample[0][0])
-                            y_list.append(sample[0][1])
+        # Axon
+        if not self.options.morphology.ignore_axon:
+            if self.morphology.axon is not None:
 
-                            if max(x_list) > x_max:
-                                x_max = max(x_list)
-                            if max(y_list) > y_max:
-                                y_max = max(y_list)
+                nmv.logger.detail('Axon')
 
-                            if min(x_list) < x_min:
-                                x_min = max(x_list)
-                            if min(y_list) < y_min:
-                                y_min = max(y_list)
+                # Get the lines
+                axon_poly_lines = list()
+                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                    root=self.morphology.axon,
+                    poly_lines_data=axon_poly_lines,
+                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                    max_branching_level=self.options.morphology.axon_branch_order)
 
-                        x = np.array(x_list)
-                        y = np.array(y_list)
+                # Plot the lines
+                figure = self.draw_poly_line_list_at_fixed_thickness(
+                    poly_lines=axon_poly_lines,
+                    color=self.morphology.axon_color, thickness=0.5)
 
-                        ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75,
-                                          color=self.morphology.basal_dendrites_colors[i])
+        # Soma
+        self.draw_soma_projection()
 
+        # Adjust the scale
+        figure.set_aspect(aspect='equal')
 
-
-        # The soma
-        soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
-        vertices = soma_builder_object.get_soma_profile()
-
-        # Project to xy
-        x_data = list()
-        y_data = list()
-
-        for vertex in vertices:
-            x_data.append(vertex[0])
-            y_data.append(vertex[1])
-
-        x = np.asarray(x_data)
-        y = np.asarray(y_data)
-        plt.scatter(x, y, c=self.morphology.soma_color, sizes=(1.0, 1.5), alpha=0.5)
-
-        ax.set_aspect(aspect='equal')
-
-        # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
-        plt.savefig(
+        # Save the figure
+        matplotlib.pyplot.savefig(
             '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
-                             'xy',
-                             '.png'),
+                             'xy', '.png'),
             bbox_inches='tight', transparent=True, dpi=300)
 
     ################################################################################################
