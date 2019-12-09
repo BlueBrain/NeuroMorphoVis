@@ -72,20 +72,27 @@ def plot_per_arbor_result(analysis_results,
     # Y-axis data
     y_data = list()
 
-    # Collecting the lists, Axon
-    if analysis_results.axon_result is not None:
-        x_data.append('Axon')
-        y_data.append(analysis_results.axon_result)
+    # Color palette
+    palette = []
+
+    # Apical dendrite
+    if analysis_results.apical_dendrite_result is not None:
+        x_data.append('Apical Dendrite')
+        y_data.append(analysis_results.apical_dendrite_result)
+        palette.append(morphology.apical_dendrite_color)
 
     # Basal dendrites
     if analysis_results.basal_dendrites_result is not None:
         for i, result in enumerate(analysis_results.basal_dendrites_result):
             x_data.append('Basal Dendrite %d' % i)
             y_data.append(result)
-    # Apical dendrite
-    if analysis_results.apical_dendrite_result is not None:
-        x_data.append('Apical Dendrite')
-        y_data.append(analysis_results.apical_dendrite_result)
+            palette.append(morphology.basal_dendrites_colors[i])
+
+    # Collecting the lists, Axon
+    if analysis_results.axon_result is not None:
+        x_data.append('Axon')
+        y_data.append(analysis_results.axon_result)
+        palette.append(morphology.axon_color)
 
     # Total number of bars, similar to arbors
     total_number_of_bars = len(x_data)
@@ -97,8 +104,6 @@ def plot_per_arbor_result(analysis_results,
     seaborn.set_style("white")
 
     # The color palette
-    # palette = seabron.cubehelix_palette(2 * total_number_of_bars)
-    palette = seaborn.color_palette("pastel", total_number_of_bars)
     seaborn.set_palette(palette=palette)
 
     # Adjusting the matplotlib parameters
@@ -167,12 +172,12 @@ def plot_per_arbor_result(analysis_results,
         # Compute the percentage
         percentage = round((patch.get_width() / total) * 100, 2)
         if add_percentage:
-            if 'float' in type(y_data[i]):
+            if 'float' in str(type(y_data[i])):
                 value = '  %2.1f (%2.1f%%)' % (y_data[i], percentage)
             else:
                 value = '  %d (%2.1f%%)' % (y_data[i], percentage)
         else:
-            if 'float' in type(y_data[i]):
+            if 'float' in str(type(y_data[i])):
                 value = '  %2.1f' % y_data[i]
             else:
                 value = '  %d' % y_data[i]
@@ -248,12 +253,16 @@ def plot_per_arbor_range(minimum_results,
     avg_list = list()
     max_list = list()
 
-    # Collecting the lists, Axon
-    if minimum_results.axon_result is not None:
-        labels.append('Axon')
-        min_list.append(minimum_results.axon_result)
-        avg_list.append(average_results.axon_result)
-        max_list.append(maximum_results.axon_result)
+    # Color palette
+    palette = []
+
+    # Apical dendrite
+    if minimum_results.apical_dendrite_result is not None:
+        labels.append('Apical Dendrite')
+        min_list.append(minimum_results.apical_dendrite_result)
+        avg_list.append(average_results.apical_dendrite_result)
+        max_list.append(maximum_results.apical_dendrite_result)
+        palette.append(morphology.apical_dendrite_color)
 
     # Basal dendrites
     number_basals = len(minimum_results.basal_dendrites_result)
@@ -263,13 +272,15 @@ def plot_per_arbor_range(minimum_results,
             min_list.append(minimum_results.basal_dendrites_result[i])
             avg_list.append(average_results.basal_dendrites_result[i])
             max_list.append(maximum_results.basal_dendrites_result[i])
+            palette.append(morphology.basal_dendrites_colors[i])
 
-    # Apical dendrite
-    if minimum_results.apical_dendrite_result is not None:
-        labels.append('Apical Dendrite')
-        min_list.append(minimum_results.apical_dendrite_result)
-        avg_list.append(average_results.apical_dendrite_result)
-        max_list.append(maximum_results.apical_dendrite_result)
+    # Collecting the lists, Axon
+    if minimum_results.axon_result is not None:
+        labels.append('Axon')
+        min_list.append(minimum_results.axon_result)
+        avg_list.append(average_results.axon_result)
+        max_list.append(maximum_results.axon_result)
+        palette.append(morphology.axon_color)
 
     # Total number of bars, similar to arbors
     total_number_of_bars = len(labels)
@@ -282,7 +293,7 @@ def plot_per_arbor_range(minimum_results,
 
     # The color palette
     # palette = seabron.cubehelix_palette(2 * total_number_of_bars)
-    palette = seaborn.color_palette("pastel", total_number_of_bars)
+    # palette = seaborn.color_palette("pastel", total_number_of_bars)
     seaborn.set_palette(palette=palette)
 
     # Adjusting the matplotlib parameters

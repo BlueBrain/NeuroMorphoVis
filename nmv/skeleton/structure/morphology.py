@@ -137,6 +137,9 @@ class Morphology:
         # The color of the axon, see @create_morphology_color_palette
         self.axon_color = None
 
+        # The color of the soma, see @create_morphology_color_palette
+        self.soma_color = None
+
     ################################################################################################
     # @build_samples_lists_recursively
     ################################################################################################
@@ -485,8 +488,14 @@ class Morphology:
     def create_morphology_color_palette(self,
                                         palette_name=None):
 
+        import numpy
+        import matplotlib.pyplot
         import seaborn
-        palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
+
+        # palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
+
+        palette = matplotlib.pyplot.get_cmap('Spectral_r')
+        palette = palette(numpy.linspace(0, 1.0, 1 + self.get_total_number_of_arbors()))
 
         # An index to keep track on the colors
         color_index = 0
@@ -506,6 +515,12 @@ class Morphology:
         # Axon
         if self.has_axon():
             self.axon_color = palette[color_index]
+            color_index += 1
+
+        # Soma
+        self.soma_color = palette[color_index]
+
+
 
 
 

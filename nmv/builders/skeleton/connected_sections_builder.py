@@ -290,7 +290,7 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.75, color=self.morphology.apical_dendrite_color)
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5, color=self.morphology.apical_dendrite_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -334,7 +334,7 @@ class ConnectedSectionsBuilder:
                     x = np.array(x_list)
                     y = np.array(y_list)
 
-                    ax = sns.lineplot(x=x, y=y, sort=False, lw=0.5, color=self.morphology.axon_color)
+                    ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5, color=self.morphology.axon_color)
 
                 delta_x = x_max - x_min
                 delta_y = y_max - y_min
@@ -380,19 +380,35 @@ class ConnectedSectionsBuilder:
                         x = np.array(x_list)
                         y = np.array(y_list)
 
-                        ax = sns.lineplot(x=x, y=y, sort=False, lw=0.25, color=self.morphology.basal_dendrites_colors[i])
+                        ax = sns.lineplot(x=x, y=y, sort=False, lw=1.5,
+                                          color=self.morphology.basal_dendrites_colors[i])
 
-                    delta_x = x_max - x_min
-                    delta_y = y_max - y_min
 
-                    aspect_ratio = delta_x / delta_y
+
+        # The soma
+        soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
+        vertices = soma_builder_object.get_soma_profile()
+
+        # Project to xy
+        x_data = list()
+        y_data = list()
+
+        for vertex in vertices:
+            x_data.append(vertex[0])
+            y_data.append(vertex[1])
+
+        x = np.asarray(x_data)
+        y = np.asarray(y_data)
+        plt.scatter(x, y, c=self.morphology.soma_color, sizes=(1.0, 1.5), alpha=0.5)
 
         ax.set_aspect(aspect='equal')
 
         # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
-        plt.savefig('/Users/abdellah/Desktop/nmv-release/neuron.pdf',
-                    bbox_inches='tight')
-
+        plt.savefig(
+            '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
+                             'xy',
+                             '.png'),
+            bbox_inches='tight', transparent=True, dpi=300)
 
     ################################################################################################
     # @draw_morphology_skeleton

@@ -177,17 +177,19 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology,
             directory=nmv.interface.ui_options.io.analysis_directory)
 
+        nmv.interface.ui_morphology.create_morphology_color_palette()
+
         for distribution in nmv.analysis.distributions:
             distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
                                       options=nmv.interface.ui_options)
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        #builder.draw_morphology_skeleton_with_matplotlib()
+        builder.draw_morphology_skeleton_with_matplotlib()
 
         builder = nmv.builders.DendrogramBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
-        #builder.draw_morphology_skeleton_with_matplotlib()
+        builder.draw_morphology_skeleton_with_matplotlib()
 
 
         # Draw the morphology and highlight it

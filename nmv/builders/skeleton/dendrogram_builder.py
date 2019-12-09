@@ -294,8 +294,6 @@ class DendrogramBuilder:
                         ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
                                       color=color)
 
-
-
         # The soma to stems line
         skeleton_poly_lines = list()
         center = nmv.skeleton.add_soma_to_stems_line(
@@ -317,9 +315,13 @@ class DendrogramBuilder:
             y = np.array(y_list)
 
             ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                          color="black")
+                          color=self.morphology.soma_color)
 
         # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
         #ax.set_aspect(aspect='equal')
-        plt.savefig('/Users/abdellah/Desktop/nmv-release/dendrogram.pdf',
-                    bbox_inches='tight')
+
+        plt.savefig(
+            '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
+                             'dendrogram',
+                             '.png'),
+            bbox_inches='tight', transparent=True, dpi=300)

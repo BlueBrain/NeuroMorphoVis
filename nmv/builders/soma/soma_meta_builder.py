@@ -17,6 +17,7 @@
 
 # System imports
 import random
+import copy
 
 # Blender imports
 import bpy
@@ -109,7 +110,8 @@ class SomaMetaBuilder:
     ################################################################################################
     # @finalize_meta_object
     ################################################################################################
-    def finalize_meta_object(self):
+    def finalize_meta_object(self,
+                             name):
         """Converts the meta object to a mesh and get it ready for export or visualization.
         """
 
@@ -124,7 +126,7 @@ class SomaMetaBuilder:
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
-        self.meta_mesh = bpy.context.scene.objects['soma']
+        self.meta_mesh = bpy.context.scene.objects[name]
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
@@ -138,8 +140,8 @@ class SomaMetaBuilder:
         # Select the soma object
         # Note the conversion from the meta object to the mesh object adds automatically '.001'
         # to the object name, therefore we must rename it
-        self.meta_mesh = bpy.context.scene.objects['soma.001']
-        self.meta_mesh.name = 'soma'
+        self.meta_mesh = bpy.context.scene.objects['%s.001' % name]
+        self.meta_mesh.name = name
 
         # Re-select it again to be able to perform post-processing operations in it
         nmv.scene.select_object(self.meta_mesh)
@@ -367,7 +369,7 @@ class SomaMetaBuilder:
         self.emanate_towards_the_branches()
 
         # Update the meta object and convert it to a mesh
-        self.finalize_meta_object()
+        self.finalize_meta_object(name='soma')
 
         # Assign the material to the reconstructed mesh
         if apply_shader:
@@ -375,5 +377,33 @@ class SomaMetaBuilder:
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh
+
+    ################################################################################################
+    # @get_soma_profile
+    ################################################################################################
+    def get_soma_profile(self):
+        """Returns the profile of the soma as a list of coordinates.
+
+        :return:
+            The profile of the soma as a list of coordinates.
+        """
+
+        # Initialize the MetaObject before emanating towards the branches
+        self.initialize_meta_object(name='profile')
+
+        # Emanate the basic sphere towards the branches
+        self.emanate_towards_the_branches()
+
+        # Update the meta object and convert it to a mesh
+        self.finalize_meta_object(name='profile')
+
+        # List of vertices
+        vertices = copy.deepcopy(nmv.mesh.get_vertices_in_object(self.meta_mesh))
+
+        # delete the soma
+        nmv.scene.delete_object_in_scene(self.meta_mesh)
+
+        # Return the vertices list
+        return vertices
 
 
