@@ -128,7 +128,7 @@ class AnalysisDistribution:
                                                figure_name=self.figure_name,
                                                figure_title=self.figure_title,
                                                figure_xlabel=self.figure_xlabel,
-                                               add_percentage=True)
+                                               add_percentage=self.add_percentage)
 
         # Compute the range, then plot the average with error bars to show the range of the result
         elif nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR in self.data_format:

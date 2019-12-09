@@ -159,24 +159,67 @@ def compute_maximum_path_distance_of_arbor(arbor):
         The maximum path distance from the soma along all the arbors till their last sample.
     """
 
-    # Compute the maximum branching order
-    maximum_branching_order = compute_maximum_branching_order_of_arbor(arbor)
-
     # A list that will collect the distances along each path on the arbor.
     paths_distances = list()
-
-    # NOTE: This variable (or list) is used to sum up the values recursively
-    path_distance = list()
-    path_distance.append(0)
 
     # Apply the operation per section
     nmv.skeleton.ops.apply_operation_to_arbor(
         *[arbor,
-          nmv.analysis.get_maximum_path_distance,
-          paths_distances, maximum_branching_order, path_distance])
+          nmv.analysis.compute_path_distance,
+          paths_distances])
 
-    # Return the maximum branching order of the arbor
+    # Return the maximum path distance
     return max(paths_distances)
+
+
+####################################################################################################
+# @compute_maximum_ecludian_distance_of_arbor
+####################################################################################################
+def compute_maximum_ecludian_distance_of_arbor(arbor):
+    """Compute the maximum ecludian distance from the soma to the last sample along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The maximum ecludian distance from the soma to the last sample along the arbor.
+    """
+
+    # A list that will collect the distances along each path on the arbor.
+    ecludian_distances = list()
+
+    # Apply the operation per section
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_maximum_ecludian_distance,
+          ecludian_distances])
+
+    # Return the maximum path distance
+    return max(ecludian_distances)
+
+
+####################################################################################################
+# @compute_minimum_ecludian_distance_of_arbor
+####################################################################################################
+def compute_minimum_ecludian_distance_of_arbor(arbor):
+    """Compute the minimum ecludian distance from the soma to the first sample along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The minimum ecludian distance from the soma to the first sample along the arbor.
+    """
+
+    # A list that will collect the distances along each path on the arbor.
+    ecludian_distances = list()
+
+    # Apply the operation per section
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_minimum_ecludian_distance,
+          ecludian_distances])
+
+    # Return the maximum path distance
+    return min(ecludian_distances)
 
 
 ####################################################################################################

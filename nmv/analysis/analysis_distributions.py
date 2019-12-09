@@ -47,6 +47,16 @@ distributions = [
         add_percentage=False),
 
     AnalysisDistribution(
+        name='Total Number of Bifurcations per Arbor',
+        description='The total number of bifurcations per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Bifurcations / Arbor',
+        figure_name='number-of-bifurcations-per-arbor',
+        figure_xlabel='Number of Bifurcations',
+        compute_total_kernel=compute_total_number_of_bifurcations_of_arbor,
+        add_percentage=True),
+
+    AnalysisDistribution(
         name='Maximum Branching Order per Arbor',
         description='The maximum branching order per arbor in the morphology',
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
@@ -87,6 +97,51 @@ distributions = [
         figure_xlabel='Number of Sections',
         compute_total_kernel=compute_total_number_of_sections_of_arbor,
         add_percentage=True),
+
+    AnalysisDistribution(
+        name='Total Number of Short Section per Arbor',
+        description='The total number of short sections (where the length of the section is '
+                    'less than the sum of the diameters of the first and last samples) per arbor '
+                    'in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Short Sections / Arbor',
+        figure_name='number-of-short-sections-per-arbor',
+        figure_xlabel='Number of Short Sections',
+        compute_total_kernel=compute_number_of_short_sections_of_arbor,
+        add_percentage=True),
+
+    AnalysisDistribution(
+        name='Maximum Path Distance per Arbor',
+        description='The maximum distance from the soma to the terminal tip per arbor in the '
+                    'morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Maximum Path Distance / Arbor',
+        figure_name='maximum-path-distance-per-arbor',
+        figure_xlabel='Path Distance from Soma',
+        compute_total_kernel=compute_maximum_path_distance_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Maximum Ecludian Distance per Arbor',
+        description='The maximum radial distance from the soma to the terminal tip per arbor in '
+                    'the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Maximum Ecludian Distance / Arbor',
+        figure_name='maximum-ecludian-distance-per-arbor',
+        figure_xlabel='Radial Distance from Soma',
+        compute_total_kernel=compute_maximum_ecludian_distance_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Minimum Ecludian Distance per Arbor',
+        description='The minimum radial distance from the soma to the first sample along every '
+                    'arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Minimum Ecludian Distance / Arbor',
+        figure_name='minimum-ecludian-distance-per-arbor',
+        figure_xlabel='Radial Distance from Soma',
+        compute_total_kernel=compute_minimum_ecludian_distance_of_arbor,
+        add_percentage=False),
 
     AnalysisDistribution(
         name='Arbor Surface Area',

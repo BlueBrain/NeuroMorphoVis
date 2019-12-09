@@ -404,30 +404,56 @@ def get_maximum_branching_order(section,
 
 
 ####################################################################################################
-# @get_maximum_path_distance
+# @compute_path_distance
 ####################################################################################################
-def get_maximum_path_distance(section,
-                              analysis_data,
-                              maximum_branching_order,
-                              path_distance):
-    """Gets the maximum branching order of the arbor.
+def compute_path_distance(section,
+                          analysis_data):
+    """Computes the path distance of a given section.
 
-    :param section:
+     :param section:
         A given section to get analyzed.
     :param analysis_data:
         A list to collect the analysis data.
     """
 
-    # Get a reference to the current distance
+    # Computes the path distance if not computed for the parents
+    analysis_data.append(section.compute_path_length())
 
-    # Compute the section length
-    section_length = nmv.analysis.compute_section_length(section=section)
 
-    path_distance[0] += section_length
+####################################################################################################
+# @compute_maximum_ecludian_distance
+####################################################################################################
+def compute_maximum_ecludian_distance(section,
+                                      analysis_data):
+    """Computes the maximum Ecludian distance of a given section.
 
-    if not section.has_children():
-        analysis_data.append(copy.deepcopy(path_distance[0]))
-        path_distance[0] -= section_length
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Get the last sample of the section and compute its radial distance if exists, otherwise ignore
+    if len(section.samples) > 1:
+        analysis_data.append(section.samples[-1].point.length)
+
+
+####################################################################################################
+# @compute_minimum_ecludian_distance
+####################################################################################################
+def compute_minimum_ecludian_distance(section,
+                                      analysis_data):
+    """Computes the minimum Ecludian distance of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Get the last sample of the section and compute its radial distance if exists, otherwise ignore
+    if len(section.samples) > 1:
+        analysis_data.append(section.samples[0].point.length)
 
 
 ####################################################################################################
