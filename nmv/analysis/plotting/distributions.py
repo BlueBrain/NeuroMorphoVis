@@ -31,7 +31,7 @@ def plot_per_arbor_result(analysis_results,
                                 figure_title=None,
                                 figure_xlabel=None,
                                 add_percentage=False,
-                                image_extension=nmv.enums.Image.Extension.PNG):
+                                image_extension=nmv.enums.Image.Extension.TIFF):
     # Installing dependencies
     try:
         import numpy
@@ -187,7 +187,7 @@ def plot_per_arbor_result(analysis_results,
     # Save the figure
     pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
                                     image_extension),
-                   bbox_inches='tight', transparent=True, dpi=300)
+                   bbox_inches='tight', transparent=True, dpi=600)
 
     # Close the figures
     pyplot.close()
@@ -204,7 +204,7 @@ def plot_per_arbor_range(minimum_results,
                          figure_name=None,
                          figure_xlabel=None,
                          figure_title=None,
-                         image_extension=nmv.enums.Image.Extension.PNG):
+                         image_extension=nmv.enums.Image.Extension.TIFF):
 
     # Installing dependencies
     try:
@@ -331,7 +331,7 @@ def plot_per_arbor_range(minimum_results,
     # Save the figure
     pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
                                     image_extension),
-                   bbox_inches='tight', transparent=True, dpi=300)
+                   bbox_inches='tight', transparent=True, dpi=600)
 
     # Close the figures
     pyplot.close()
