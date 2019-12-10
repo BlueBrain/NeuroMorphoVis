@@ -117,30 +117,42 @@ distributions = [
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
         figure_title='Maximum Path Distance / Arbor',
         figure_name='maximum-path-distance-per-arbor',
-        figure_xlabel='Path Distance from Soma',
+        figure_xlabel='Path Distance from Soma (\u03BCm)',
         compute_total_kernel=compute_maximum_path_distance_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(
-        name='Maximum Ecludian Distance per Arbor',
+        name='Maximum Euclidean Distance per Arbor',
         description='The maximum radial distance from the soma to the terminal tip per arbor in '
                     'the morphology',
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
-        figure_title='Maximum Ecludian Distance / Arbor',
-        figure_name='maximum-ecludian-distance-per-arbor',
-        figure_xlabel='Radial Distance from Soma',
-        compute_total_kernel=compute_maximum_ecludian_distance_of_arbor,
+        figure_title='Maximum Euclidean Distance / Arbor',
+        figure_name='maximum-euclidean-distance-per-arbor',
+        figure_xlabel='Radial Distance from Soma (\u03BCm)',
+        compute_total_kernel=compute_maximum_euclidean_distance_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(
-        name='Minimum Ecludian Distance per Arbor',
+        name='Minimum Euclidean Distance per Arbor',
         description='The minimum radial distance from the soma to the first sample along every '
                     'arbor in the morphology',
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
-        figure_title='Minimum Ecludian Distance / Arbor',
-        figure_name='minimum-ecludian-distance-per-arbor',
-        figure_xlabel='Radial Distance from Soma',
-        compute_total_kernel=compute_minimum_ecludian_distance_of_arbor,
+        figure_title='Minimum Euclidean Distance / Arbor',
+        figure_name='minimum-euclidean-distance-per-arbor',
+        figure_xlabel='Radial Distance from Soma (\u03BCm)',
+        compute_total_kernel=compute_minimum_euclidean_distance_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Sections Contraction Range per Arbor',
+        description='The range of sections contraction per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Sections Contraction Range / Arbor',
+        figure_name='sections-contraction-range-per-arbor',
+        figure_xlabel='Contraction Ratio',
+        compute_min_kernel=compute_minimum_section_contraction_of_arbor,
+        compute_avg_kernel=compute_average_section_contraction_of_arbor,
+        compute_max_kernel=compute_maximum_section_contraction_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(

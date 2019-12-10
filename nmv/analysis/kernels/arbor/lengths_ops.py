@@ -203,6 +203,88 @@ def compute_sections_lengths_of_arbor(arbor):
 
 
 ####################################################################################################
+# @compute_sections_contractions_of_arbor
+####################################################################################################
+def compute_sections_contractions_of_arbor(arbor):
+    """Computes an array that contains the contraction ratios of all the sections along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the contraction ratios of all the sections along the arbor.
+    """
+
+    # A list that will contains the contraction ratios of all the sections along the arbor
+    sections_contraction_ratios = list()
+
+    # Compute the length of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_contraction_ratios,
+          sections_contraction_ratios])
+
+    # Return the list
+    return sections_contraction_ratios
+
+
+####################################################################################################
+# @compute_minimum_section_contraction_of_arbor
+####################################################################################################
+def compute_minimum_section_contraction_of_arbor(arbor):
+    """Computes the minimum section contraction along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum section contraction of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_contractions = compute_sections_contractions_of_arbor(arbor)
+
+    # Return the minimum
+    return min(sections_contractions)
+
+
+####################################################################################################
+# @compute_average_section_contraction_of_arbor
+####################################################################################################
+def compute_average_section_contraction_of_arbor(arbor):
+    """Computes the average section contraction along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average section contraction of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_contractions = compute_sections_contractions_of_arbor(arbor)
+
+    # Return the minimum
+    return sum(sections_contractions) / len(sections_contractions)
+
+
+####################################################################################################
+# @compute_minimum_section_contraction_of_arbor
+####################################################################################################
+def compute_maximum_section_contraction_of_arbor(arbor):
+    """Computes the minimum section contraction along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum section contraction of the given arbor
+    """
+
+    # Get all the sections lengths
+    sections_contractions = compute_sections_contractions_of_arbor(arbor)
+
+    # Return the minimum
+    return max(sections_contractions)
+
+
+####################################################################################################
 # @compute_minimum_section_length_of_arbor
 ####################################################################################################
 def compute_minimum_section_length_of_arbor(arbor):

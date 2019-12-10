@@ -266,6 +266,48 @@ def compute_minimum_sample_radius_of_arbor(arbor):
     return min(sections_samples_radii)
 
 
+def compute_minimum_daughter_ratio_of_arbor(arbor):
+
+    # A list that will contain the radii of all the samples along a given section
+    data_list = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_daughter_ratio,
+          data_list])
+
+    return min(data_list)
+
+
+def compute_average_daughter_ratio_of_arbor(arbor):
+
+    # A list that will contain the radii of all the samples along a given section
+    data_list = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_daughter_ratio,
+          data_list])
+
+    return sum(data_list) / len(data_list)
+
+
+def compute_maximum_daughter_ratio_of_arbor(arbor):
+
+    # A list that will contain the radii of all the samples along a given section
+    data_list = list()
+
+    # Append the radii of the samples to the list
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_daughter_ratio,
+          data_list])
+
+    return max(data_list)
+
+
 ####################################################################################################
 # @compute_maximum_sample_radius_of_arbor
 ####################################################################################################

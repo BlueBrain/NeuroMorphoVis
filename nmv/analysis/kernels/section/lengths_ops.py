@@ -84,6 +84,30 @@ def compute_section_length(section):
 
 
 ####################################################################################################
+# @compute_section_euclidean_distance
+####################################################################################################
+def compute_section_euclidean_distance(section):
+    """Computes the Euclidean distance of the section from the first and last samples.
+
+    :param section:
+        A given section to compute its length.
+    :return:
+        Section Euclidean distance in microns.
+    """
+
+    # If the section has less than two samples, then report the error
+    if len(section.samples) < 2:
+        return 0
+
+    # Otherwise, get the first and last samples and return the Euclidean distances between them
+    point_0 = section.samples[0].point
+    point_1 = section.samples[-1].point
+
+    # Return the Euclidean distance
+    return (point_0 - point_1).length
+
+
+####################################################################################################
 # @compute_sections_lengths
 ####################################################################################################
 def compute_sections_lengths(section,
@@ -101,6 +125,29 @@ def compute_sections_lengths(section,
 
     # Append the length to the list
     sections_lengths.append(section_length)
+
+
+####################################################################################################
+# @compute_sections_contraction_ratios
+####################################################################################################
+def compute_sections_contraction_ratios(section,
+                                        sections_euclidean_distances):
+    """Compute the contraction ratio of a given section.
+
+    :param section:
+        A given section to compute its length.
+    :param sections_euclidean_distances:
+        A list to collect the resulting data.
+    """
+
+    # Compute section length
+    section_length = compute_section_length(section=section)
+
+    # Compute section Euclidean distance
+    section_euclidean_distance = compute_section_euclidean_distance(section=section)
+
+    # Append the result
+    sections_euclidean_distances.append(section_euclidean_distance / section_length)
 
 
 ####################################################################################################

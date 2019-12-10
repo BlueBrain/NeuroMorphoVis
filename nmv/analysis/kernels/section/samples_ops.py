@@ -421,11 +421,11 @@ def compute_path_distance(section,
 
 
 ####################################################################################################
-# @compute_maximum_ecludian_distance
+# @compute_maximum_euclidean_distance
 ####################################################################################################
-def compute_maximum_ecludian_distance(section,
+def compute_maximum_euclidean_distance(section,
                                       analysis_data):
-    """Computes the maximum Ecludian distance of a given section.
+    """Computes the maximum Euclidean distance of a given section.
 
      :param section:
         A given section to get analyzed.
@@ -439,11 +439,11 @@ def compute_maximum_ecludian_distance(section,
 
 
 ####################################################################################################
-# @compute_minimum_ecludian_distance
+# @compute_minimum_euclidean_distance
 ####################################################################################################
-def compute_minimum_ecludian_distance(section,
+def compute_minimum_euclidean_distance(section,
                                       analysis_data):
-    """Computes the minimum Ecludian distance of a given section.
+    """Computes the minimum Euclidean distance of a given section.
 
      :param section:
         A given section to get analyzed.
@@ -454,6 +454,78 @@ def compute_minimum_ecludian_distance(section,
     # Get the last sample of the section and compute its radial distance if exists, otherwise ignore
     if len(section.samples) > 1:
         analysis_data.append(section.samples[0].point.length)
+
+
+####################################################################################################
+# @compute_daughter_ratio
+####################################################################################################
+def compute_daughter_ratio(section,
+                           analysis_data):
+    """Computes the daughter ration of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # The section must have children
+    if section.has_children():
+
+        # The section must have two children
+        if len(section.children) == 2:
+
+            # Get references to the children sections
+            child_0 = section.children[0]
+            child_1 = section.children[1]
+
+            # Compute the ratio, irrespective to which one is bigger
+            daughter_ratio = child_0.samples[0].radius / child_1.samples[0].radius
+
+            # If the ratio is less than 1.0, simply invert it
+            if daughter_ratio < 1.0:
+                daughter_ratio = 1.0 / daughter_ratio
+
+            # Append the result to the list
+            analysis_data.append(daughter_ratio)
+
+
+####################################################################################################
+# @compute_parent_daughter_ratio
+####################################################################################################
+def compute_parent_daughter_ratios(section,
+                                   analysis_data):
+    """Computes the parent-daughter ratios of a given section.
+
+     :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # The section must have children
+    if section.has_children():
+
+        # Make sure that the section has at least one sample
+        if len(section.samples) > 0:
+
+            # Get the parent radius
+            parent_radius = section.samples[-1].radius
+
+            # For every child
+            for child in section.children:
+
+                # The child must have at least one sample as well
+                if len(child.samples) > 0:
+
+                    # Get the child radius
+                    child_radius = child.samples[0].radius
+
+                    # Compute the ratio, irrespective to which one is bigger
+                    parent_daughter_ratio = child_radius / parent_radius
+
+                    # Append the result to the list
+                    analysis_data.append(parent_daughter_ratio)
 
 
 ####################################################################################################
