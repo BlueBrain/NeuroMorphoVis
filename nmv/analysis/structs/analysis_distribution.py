@@ -38,6 +38,7 @@ class AnalysisDistribution:
                  figure_title,
                  figure_name,
                  figure_xlabel,
+                 kernel=None,
                  compute_total_kernel=None,
                  compute_min_kernel=None,
                  compute_avg_kernel=None,
@@ -115,7 +116,7 @@ class AnalysisDistribution:
         # Compute the total number per arbor
         if nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR in self.data_format:
 
-            # Total
+            # Analysis results
             analysis_results = nmv.analysis.invoke_kernel(
                 morphology,
                 self.compute_total_kernel,
@@ -132,6 +133,11 @@ class AnalysisDistribution:
 
         # Compute the range, then plot the average with error bars to show the range of the result
         elif nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR in self.data_format:
+
+            minimum_result, average_result, maximum_result = nmv.analysis.invoke_kernel(
+                morphology,
+                self.compute_min_kernel,
+                nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
             # Minimum
             minimum_results = nmv.analysis.invoke_kernel(
@@ -163,4 +169,4 @@ class AnalysisDistribution:
 
         # Non reported kernel
         else:
-            nmv.logger.log('A kernel is not implemented')
+            nmv.logger.log('A kernel is NOT implemented')

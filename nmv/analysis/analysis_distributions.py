@@ -21,10 +21,22 @@ from .kernels import *
 import nmv.enums
 
 
+distributions = [
+
+    AnalysisDistribution(
+        name='Total Number of Samples per Arbor',
+        description='The total number of sampler per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Samples / Arbor',
+        figure_name='number-of-samples-per-arbor',
+        figure_xlabel='Number of Samples',
+        compute_total_kernel=compute_number_of_samples_of_arbor,
+        add_percentage=True),
+]
 ####################################################################################################
 # Global analysis items, only applied on a global level not per-arbor level
 ####################################################################################################
-distributions = [
+distributionss = [
 
     AnalysisDistribution(
         name='Total Number of Samples per Arbor',

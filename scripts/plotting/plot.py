@@ -1,4 +1,4 @@
-##/computer/bbp-blender-development/nmv-blender-2.80/Blender-2.80.app/Contents/Resources/2.80/python/bin/python3.7m
+#!/computer/bbp-blender-development/nmv-blender-2.80/Blender-2.80.app/Contents/Resources/2.80/python/bin/python3.7m
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -12,14 +12,18 @@ import numpy as np
 
 
 directory = '/home/abdellah/neuromorphovis-output/analysis/'
+directory = '/Users/abdellah/neuromorphovis-output/analysis'
+
+morphology = 'c8076e.CNG'
 
 import sys
 from PIL import Image
 
 images = [Image.open('%s/%s.TIFF' % (directory, x)) for x in
-          ['02b_pyramidal1aACC.CNG-arbor-length',
-           '02b_pyramidal1aACC.CNG-arbor-surface-area',
-           '02b_pyramidal1aACC.CNG-arbor-volume']]
+          ['%s-arbor-length' % morphology,
+           '%s-arbor-surface-area' % morphology,
+           '%s-arbor-volume' % morphology]]
+
 widths, heights = zip(*(i.size for i in images))
 
 total_width = sum(widths)
@@ -35,10 +39,44 @@ for im in images:
 new_im.save('%s/arbor.TIFF' % directory)
 
 
+
+
 images = [Image.open('%s/%s.TIFF' % (directory, x)) for x in
-          ['02b_pyramidal1aACC.CNG-sections-length-range-per-arbor',
-           '02b_pyramidal1aACC.CNG-sections-surface-area-range-per-arbor',
-           '02b_pyramidal1aACC.CNG-sections-volume-range-per-arbor']]
+          ['%s-arbor-length' % morphology,
+           '%s-arbor-surface-area' % morphology,
+           '%s-arbor-volume' % morphology]]
+
+widths, heights = zip(*(i.size for i in images))
+
+total_height = sum(heights)
+max_width = max(widths)
+
+
+
+new_im = Image.new('RGB', (max_width, total_height))
+
+y_offset = 0
+for im in images:
+  new_im.paste(im, (0, y_offset))
+  y_offset += im.size[1]
+
+new_im.save('%s/arbor-vertical.TIFF' % directory)
+
+
+
+
+
+
+
+
+
+
+
+
+images = [Image.open('%s/%s.TIFF' % (directory, x)) for x in
+          ['%s-sections-length-range-per-arbor' % morphology,
+           '%s-sections-surface-area-range-per-arbor' % morphology,
+           '%s-sections-volume-range-per-arbor' % morphology]]
 widths, heights = zip(*(i.size for i in images))
 
 total_width = sum(widths)
@@ -55,9 +93,9 @@ new_im.save('%s/section.TIFF' % directory)
 
 
 images = [Image.open('%s/%s.TIFF' % (directory, x)) for x in
-          ['02b_pyramidal1aACC.CNG-segments-length-range-per-arbor',
-           '02b_pyramidal1aACC.CNG-segments-surface-area-range-per-arbor',
-           '02b_pyramidal1aACC.CNG-segments-volume-range-per-arbor']]
+          ['%s-segments-length-range-per-arbor' % morphology,
+           '%s-segments-surface-area-range-per-arbor' % morphology,
+           '%s-segments-volume-range-per-arbor' % morphology]]
 widths, heights = zip(*(i.size for i in images))
 
 total_width = sum(widths)
