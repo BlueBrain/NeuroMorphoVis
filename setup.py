@@ -45,12 +45,12 @@ def parse_command_line_arguments(arguments=None):
                   'NOTE: git, wget or curl must be installed to run this script.'
     parser = argparse.ArgumentParser(description=description)
 
-    arg_help = 'Blender version. 2.79, 2.80, or 2.81. 2.80 by default.'
+    arg_help = 'Blender version. 2.79, 2.80, or 2.81. By default it is 2.80.'
     parser.add_argument('--blender-version',
                         action='store', dest='blender_version', default='2.80', help=arg_help)
 
     arg_help = 'Installation directory.'
-    parser.add_argument('--install-prefix',
+    parser.add_argument('--prefix',
                         action='store', dest='install_prefix', required=True, help=arg_help)
 
     arg_help = 'Enable to get a detailed log, otherwise only the basic operations'
