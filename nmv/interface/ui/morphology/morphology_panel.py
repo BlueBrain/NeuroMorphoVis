@@ -670,7 +670,8 @@ class SaveMorphologySWC(bpy.types.Operator):
 
         # Create the meshes directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.morphologies_directory)
+            nmv.file.ops.clean_and_create_directory(
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
@@ -715,7 +716,8 @@ class SaveMorphologySegments(bpy.types.Operator):
 
         # Create the meshes directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.morphologies_directory)
+            nmv.file.ops.clean_and_create_directory(
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
@@ -759,7 +761,8 @@ class SaveMorphologyBLEND(bpy.types.Operator):
 
         # Create the meshes directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.morphologies_directory)
+            nmv.file.ops.clean_and_create_directory(
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
