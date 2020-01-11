@@ -167,7 +167,7 @@ def install_for_linux(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Clone NeuroMorphoVis into the 'addons' directory
-    addons_directory = '%s/blender-neuromorphovis/2.80/scripts/addons/' % directory
+    addons_directory = '%s/blender-neuromorphovis/%s/scripts/addons/' % (directory, blender_version)
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
     run_command(shell_command, verbose)
@@ -176,14 +176,14 @@ def install_for_linux(directory, blender_version, verbose=False):
     pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     # Removing the site-packages directory
-    blender_python_wheels = '%s/blender-neuromorphovis/2.80/python/lib/python%s/site-packages/' % \
-                            (directory, python_version)
+    blender_python_wheels = '%s/blender-neuromorphovis/%s/python/lib/python%s/site-packages/' % \
+                            (directory, blender_version, python_version)
     shell_command = 'rm -rf %s/numpy' % blender_python_wheels
     run_command(shell_command, verbose)
 
     # Blender python
     blender_python_prefix = '%s/%s/python/bin/' % (blender_directory, blender_version)
-    blender_python = '%s/python3.7m' % blender_python_prefix
+    blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
 
     # Pip installation
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
@@ -198,14 +198,19 @@ def install_for_linux(directory, blender_version, verbose=False):
     shell_command = '%s %s' % (blender_python, get_pip_script)
     run_command(shell_command, verbose)
 
+    # Pip executable
     pip_executable = '%s/pip' % blender_python_prefix
 
+    # packages
     for wheel in pip_wheels:
-
-        # Command
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         print('INSTALL: %s' % shell_command)
         run_command(shell_command, verbose)
+
+    # Remove the archive
+    log_process('Cleaning')
+    shell_command = 'rm %s/blender.tar.bz2' % directory
+    run_command(shell_command, verbose)
 
 
 ####################################################################################################
