@@ -125,6 +125,26 @@ bpy.types.Scene.NMV_SomaSimulationProgress = bpy.props.IntProperty(
     description='Reconstruction progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
 
+# Image format
+bpy.types.Scene.NMV_SomaImageFormat = bpy.props.EnumProperty(
+    items=[(nmv.enums.Image.Extension.PNG,
+            'PNG',
+            'PNG'),
+           (nmv.enums.Image.Extension.TIFF,
+            'TIFF',
+            'TIFF'),
+           (nmv.enums.Image.Extension.OPEN_EXR,
+            'OpenEXR',
+            'OpenEXR'),
+           (nmv.enums.Image.Extension.JPEG,
+            'JPEG',
+            'JPEG'),
+           (nmv.enums.Image.Extension.BMP,
+            'BMP',
+            'BMP')],
+    name='',
+    default=nmv.enums.Image.Extension.PNG)
+
 # View size option in microns
 bpy.types.Scene.NMV_ViewDimensions = bpy.props.FloatProperty(
     name='Dimensions',

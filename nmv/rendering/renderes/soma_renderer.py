@@ -41,6 +41,7 @@ class SomaRenderer:
                camera_view=nmv.enums.Camera.View.FRONT,
                image_resolution=512,
                image_name='SOMA',
+               image_format=nmv.enums.Image.Extension.PNG,
                image_directory=None,
                keep_camera_in_scene=False):
         """Render the soma to a .PNG image.
@@ -73,7 +74,8 @@ class SomaRenderer:
         # Render an image
         soma_camera.render_scene(
             bounding_box=bounding_box, camera_view=camera_view, image_resolution=image_resolution,
-            image_name=image_prefix, keep_camera_in_scene=keep_camera_in_scene)
+            image_name=image_prefix, image_format=image_format,
+            keep_camera_in_scene=keep_camera_in_scene)
 
     ################################################################################################
     # @render_scene_object

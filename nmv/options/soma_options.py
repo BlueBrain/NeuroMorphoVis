@@ -83,6 +83,9 @@ class SomaOptions:
         # Render the soma to a transparent image
         self.transparent_film = True
 
+        # Image extension
+        self.image_format = nmv.enums.Image.Extension.PNG
+
         # Render the soma to image with a specific background
         self.film_color = nmv.consts.Color.WHITE
 

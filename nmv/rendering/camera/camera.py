@@ -136,18 +136,38 @@ class Camera:
     # @render_image
     ################################################################################################
     def render_image(self,
-                     image_name='IMAGE'):
+                     image_name='IMAGE',
+                     image_format=nmv.enums.Image.Extension.PNG):
         """Render an image to a file.
 
         :param image_name:
             The output name of the rendered image.
+        :param image_format:
+            The format of the image, by default .PNG.
         """
 
         # Activate the camera for rendering
         self.set_active()
 
+        # Update the image file format
+        bpy.context.scene.render.image_settings.file_format = image_format
+
+        # Set the extension based on the format
+        if image_format == nmv.enums.Image.Extension.PNG:
+            image_extension = 'png'
+        if image_format == nmv.enums.Image.Extension.TIFF:
+            image_extension = 'tiff'
+        elif image_format == nmv.enums.Image.Extension.BMP:
+            image_extension = 'bmp'
+        elif image_format == nmv.enums.Image.Extension.OPEN_EXR:
+            image_extension = 'exr'
+        elif image_format == nmv.enums.Image.Extension.JPEG:
+            image_extension = 'jpeg'
+        else:
+            image_extension = 'png'
+
         # Set the image file name
-        bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
+        bpy.data.scenes['Scene'].render.filepath = '%s.%s' % (image_name, image_extension)
 
         # Render the image and ignore Blender verbosity
         bpy.ops.render.render(write_still=True)
@@ -456,6 +476,7 @@ class Camera:
                      camera_view=nmv.enums.Camera.View.FRONT,
                      image_resolution=512,
                      image_name='IMAGE',
+                     image_format=nmv.enums.Image.Extension.PNG,
                      camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
                      keep_camera_in_scene=True):
         """Render scene using an orthographic camera.
@@ -468,6 +489,8 @@ class Camera:
             The 'base' resolution of the image, by default 512.
         :param image_name:
             The name of the image, by default 'IMAGE'.
+        :param image_format:
+            The file format of the image, by default .PNG.
         :param camera_projection:
             Camera projection either orthographic or perspective.
         :param keep_camera_in_scene:
@@ -482,8 +505,8 @@ class Camera:
         self.setup_camera_for_scene(bounding_box, camera_view, camera_projection)
 
         # Update the camera resolution
-        self.update_camera_resolution(resolution=image_resolution, camera_view=camera_view,
-            bounds=bounding_box.bounds)
+        self.update_camera_resolution(
+            resolution=image_resolution, camera_view=camera_view, bounds=bounding_box.bounds)
         if camera_projection == nmv.enums.Camera.Projection.PERSPECTIVE:
             self.camera.data.type = 'PERSP'
             bpy.context.object.data.angle = math.radians(45.0)
@@ -494,7 +517,7 @@ class Camera:
         nmv.scene.ops.deselect_all()
 
         # Render the image
-        self.render_image(image_name=image_name)
+        self.render_image(image_name=image_name, image_format=image_format)
 
         # Keep the camera in the scene or delete it after the rendering
         if not keep_camera_in_scene:
@@ -510,6 +533,7 @@ class Camera:
                               camera_view=nmv.enums.Camera.View.FRONT,
                               scale_factor=1.0,
                               image_name='IMAGE',
+                              image_format=nmv.enums.Image.Extension.PNG,
                               keep_camera_in_scene=False):
         """Render a scene to scale using orthographic projection.
 
@@ -522,6 +546,8 @@ class Camera:
             A factor to scale the resolution of the image.
         :param image_name:
             The name of the image, by default 'IMAGE'.
+        :param image_format:
+            The file format of the image, by default .PNG.
         :param keep_camera_in_scene:
             Keep the camera in the scene after rendering.
         """
@@ -537,7 +563,7 @@ class Camera:
         nmv.scene.ops.deselect_all()
 
         # Render the image
-        self.render_image(image_name=image_name)
+        self.render_image(image_name=image_name, image_format=image_format)
 
         # Keep the camera in the scene or delete it after the rendering
         if not keep_camera_in_scene:

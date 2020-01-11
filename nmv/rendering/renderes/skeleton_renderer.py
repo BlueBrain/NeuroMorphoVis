@@ -29,6 +29,7 @@ def render(bounding_box,
            camera_view=nmv.enums.Camera.View.FRONT,
            image_resolution=nmv.consts.Image.DEFAULT_RESOLUTION,
            image_name='image',
+           image_format=nmv.enums.Image.Extension.PNG,
            image_directory=None,
            keep_camera_in_scene=False):
     """Render a scene within a given bounding box to an image.
@@ -41,6 +42,8 @@ def render(bounding_box,
         The resolution of the image, by default 1024.
     :param image_name:
         The name of the image, by default 'image'.
+    :param image_format:
+        The file format of the image.
     :param image_directory:
         The directory where the image will be rendered. If the directory is set to None,
         then the prefix is included in @image_name.
@@ -60,6 +63,7 @@ def render(bounding_box,
                                  camera_view=camera_view,
                                  image_resolution=image_resolution,
                                  image_name=image_prefix,
+                                 image_format=image_format,
                                  keep_camera_in_scene=keep_camera_in_scene)
 
 
@@ -70,6 +74,7 @@ def render_to_scale(bounding_box,
                     camera_view=nmv.enums.Camera.View.FRONT,
                     image_scale_factor=nmv.consts.Image.DEFAULT_IMAGE_SCALE_FACTOR,
                     image_name='image',
+                    image_format=nmv.enums.Image.Extension.PNG,
                     image_directory=None,
                     keep_camera_in_scene=False):
     """Render a scene within a given bounding box to scale.
@@ -81,7 +86,9 @@ def render_to_scale(bounding_box,
     :param image_scale_factor:
         The factor used to scale the resolution of the image the image, by default 1.
     :param image_name:
-        The name of the image, by default 'MESH'.
+        The name of the image, by default 'image'.
+    :param image_format:
+        The file format of the image.
     :param image_directory:
         The directory where the image will be rendered. If the directory is set to None,
         then the prefix is included in @image_name.
@@ -101,6 +108,7 @@ def render_to_scale(bounding_box,
                                           camera_view=camera_view,
                                           scale_factor=image_scale_factor,
                                           image_name=image_prefix,
+                                          image_format=image_format,
                                           keep_camera_in_scene=keep_camera_in_scene)
 
 

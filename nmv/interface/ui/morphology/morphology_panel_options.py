@@ -369,6 +369,26 @@ bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
     name='View',
     default=nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW)
 
+# Image format
+bpy.types.Scene.NMV_MorphologyImageFormat = bpy.props.EnumProperty(
+    items=[(nmv.enums.Image.Extension.PNG,
+            'PNG',
+            'PNG'),
+           (nmv.enums.Image.Extension.TIFF,
+            'TIFF',
+            'TIFF'),
+           (nmv.enums.Image.Extension.OPEN_EXR,
+            'OpenEXR',
+            'OpenEXR'),
+           (nmv.enums.Image.Extension.JPEG,
+            'JPEG',
+            'JPEG'),
+           (nmv.enums.Image.Extension.BMP,
+            'BMP',
+            'BMP')],
+    name='',
+    default=nmv.enums.Image.Extension.PNG)
+
 # Frame resolution
 bpy.types.Scene.NMV_MorphologyFrameResolution = bpy.props.IntProperty(
     name="Resolution",

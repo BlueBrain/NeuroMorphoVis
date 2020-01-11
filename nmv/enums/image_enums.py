@@ -45,6 +45,12 @@ class Image:
         # PDF
         PDF = 'PDF'
 
+        # TIFF
+        TIFF = 'TIFF'
+
+        # JPEG
+        JPEG = 'JPEG'
+
         # PNG
         PNG = 'PNG'
 
@@ -54,4 +60,6 @@ class Image:
         # TIFF
         TIFF = 'TIFF'
 
+        # OpenEXR
+        OPEN_EXR = 'OPEN_EXR'
 

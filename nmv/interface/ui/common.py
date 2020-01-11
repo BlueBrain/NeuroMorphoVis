@@ -312,7 +312,8 @@ def validate_output_directory(panel_object,
 ####################################################################################################
 def render_morphology_image(panel_object,
                             context_scene,
-                            view):
+                            view,
+                            image_format=nmv.enums.Image.Extension.PNG):
     """Renders an image of the morphology reconstructed in the scene.
 
     :param panel_object:
@@ -321,6 +322,8 @@ def render_morphology_image(panel_object,
         A reference to the Blender scene.
     :param view:
         Rendering view.
+    :param image_format:
+        Image extension or file format, by default .PNG.
     """
 
     # Validate the output directory
@@ -333,6 +336,9 @@ def render_morphology_image(panel_object,
 
     # Report the process starting in the UI
     panel_object.report({'INFO'}, 'Rendering ... Wait')
+
+    # Update the image file format
+    bpy.context.scene.render.image_settings.file_format = image_format
 
     # Compute the bounding box for a close up view
     if context_scene.NMV_MorphologyRenderingView == \
@@ -380,6 +386,7 @@ def render_morphology_image(panel_object,
             camera_view=view,
             image_resolution=context_scene.NMV_MorphologyFrameResolution,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
@@ -392,6 +399,7 @@ def render_morphology_image(panel_object,
             camera_view=view,
             image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
             image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
@@ -404,7 +412,8 @@ def render_morphology_image(panel_object,
 ####################################################################################################
 def render_mesh_image(panel_object,
                       context_scene,
-                      view):
+                      view,
+                      image_format=nmv.enums.Image.Extension.PNG):
     """Renders an image of a mesh in the scene.
 
     :param panel_object:
@@ -413,6 +422,8 @@ def render_mesh_image(panel_object,
         A reference to the Blender scene.
     :param view:
         Rendering view.
+    :param image_format:
+        Image extension or file format, by default .PNG.
     """
 
     # Validate the output directory
@@ -425,6 +436,9 @@ def render_mesh_image(panel_object,
 
     # Report the process starting in the UI
     panel_object.report({'INFO'}, 'Rendering ... Wait')
+
+    # Update the image file format
+    bpy.context.scene.render.image_settings.file_format = image_format
 
     # Compute the bounding box for a close up view
     if context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
@@ -471,6 +485,7 @@ def render_mesh_image(panel_object,
             camera_view=view,
             image_resolution=context_scene.NMV_MeshFrameResolution,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
@@ -483,6 +498,7 @@ def render_mesh_image(panel_object,
             camera_view=view,
             image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
             image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 

@@ -146,6 +146,9 @@ class MeshOptions:
         # Render the mesh to image with a specific background
         self.film_color = nmv.consts.Color.WHITE
 
+        # Image extension
+        self.image_format = nmv.enums.Image.Extension.PNG
+
         # MESH EXPORT ##############################################################################
         # Save the reconstructed mesh as a .ply file to the output directory
         self.export_ply = False

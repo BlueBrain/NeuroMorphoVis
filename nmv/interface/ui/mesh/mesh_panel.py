@@ -190,7 +190,9 @@ class RenderMeshFront(bpy.types.Operator):
         """
 
         # Render the image
-        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.FRONT)
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
+            image_format=nmv.interface.ui_options.mesh.image_format)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -219,7 +221,9 @@ class RenderMeshSide(bpy.types.Operator):
         """
 
         # Render the image
-        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.SIDE)
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
+            image_format=nmv.interface.ui_options.mesh.image_format)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -248,7 +252,9 @@ class RenderMeshTop(bpy.types.Operator):
         """
 
         # Render the image
-        nmv.interface.ui.render_mesh_image(self, context.scene, nmv.enums.Camera.View.TOP)
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
+            image_format=nmv.interface.ui_options.mesh.image_format)
 
         # Confirm operation done
         return {'FINISHED'}

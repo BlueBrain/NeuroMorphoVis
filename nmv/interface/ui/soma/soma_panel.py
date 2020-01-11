@@ -176,18 +176,30 @@ class SomaPanel(bpy.types.Panel):
         view_dimensions_row.prop(scene, 'NMV_ViewDimensions')
         view_dimensions_row.enabled = False
 
-        # Background
-        background_row = layout.row()
-        background_row.prop(scene, 'NMV_SomaTransparentBackground')
+        # Image extension
+        image_extension_row = layout.row()
+        image_extension_row.label(text='Image Format:')
+        image_extension_row.prop(scene, 'NMV_SomaImageFormat')
+        nmv.interface.ui_options.soma.image_format = scene.NMV_SomaImageFormat
 
-        if scene.NMV_SomaTransparentBackground:
-            nmv.interface.ui_options.soma.transparent_film = True
+        # Can we have a transparent background
+        if scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.PNG or \
+           scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.TIFF or \
+           scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.OPEN_EXR:
+
+            # Transparent image or not
+            background_row = layout.row()
+            background_row.prop(scene, 'NMV_SomaTransparentBackground')
+
+            if scene.NMV_SomaTransparentBackground:
+                nmv.interface.ui_options.soma.transparent_film = True
+            else:
+                nmv.interface.ui_options.soma.transparent_film = False
         else:
-
-            # Not transparent
             nmv.interface.ui_options.soma.transparent_film = False
 
-            # Background color
+        # Background color
+        if nmv.interface.ui_options.soma.transparent_film is False:
             background_color = layout.row()
             background_color.prop(scene, 'NMV_SomaBackgroundColor')
             nmv.interface.ui_options.soma.film_color = scene.NMV_SomaBackgroundColor
@@ -536,6 +548,7 @@ class RenderSomaFront(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
+            image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
@@ -599,6 +612,7 @@ class RenderSomaSide(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.SIDE,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
+            image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
@@ -662,6 +676,7 @@ class RenderSomaTop(bpy.types.Operator):
             camera_view=nmv.enums.Camera.View.TOP,
             image_resolution=scene.NMV_SomaFrameResolution,
             image_name='SOMA_MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
+            image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
         # Report the process termination in the UI
