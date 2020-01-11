@@ -45,7 +45,7 @@ def parse_command_line_arguments(arguments=None):
                   'NOTE: git, wget or curl must be installed to run this script.'
     parser = argparse.ArgumentParser(description=description)
 
-    arg_help = 'Blender version. 2.79, 2.80, or 2.81. 2.8 by default.'
+    arg_help = 'Blender version. 2.79, 2.80, or 2.81. 2.80 by default.'
     parser.add_argument('--blender-version',
                         action='store', dest='blender_version', default='2.80', help=arg_help)
 
@@ -121,71 +121,82 @@ def log_detail(msg):
 ####################################################################################################
 # @install_for_linux
 ####################################################################################################
-def install_for_linux(directory, blender_version):
+def install_for_linux(directory, blender_version, verbose=False):
     """Install NeuroMorphoVis on Linux operating system.
 
     :param directory:
         Installation directory.
+    :param blender_version
+        The version of Blender.
+    :param verbose:
+        Verbose.
     """
 
     # Blender url
-    server = 'https://download.blender.org/release/Blender2.80/'
-    package_name = 'blender-2.80rc3-linux-glibc217-x86_64'
+    if blender_version == '2.79':
+        python_version = '3.5'
+        package_name = 'blender-2.79-linux-glibc219-x86_64'
+    elif blender_version == '2.80':
+        python_version = '3.7'
+        package_name = 'blender-2.80-linux-glibc217-x86_64'
+    elif blender_version == '2.81':
+        python_version = '3.7'
+        package_name = 'blender-2.81-linux-glibc217-x86_64'
+    else:
+        print('ERROR: Wrong Blender version [%s]' % blender_version)
+        exit(0)
+
+    # Blender url
+    server = 'https://download.blender.org/release/Blender%s/' % blender_version
     blender_url = '%s/%s.tar.bz2' % (server, package_name)
 
     # wet (Download)
-    print('Cloning')
+    log_process('Downloading Blender [%s] from %s' % (blender_version, blender_url))
     shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, blender_url)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Extract
     shell_command = 'tar xjfv %s/blender.tar.bz2 -C %s' % (directory, directory)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Moving to blender
     blender_directory = '%s/blender-neuromorphovis' % directory
     shell_command = 'mv %s/%s %s' % (directory, package_name, blender_directory)
-    print(shell_command)
     if os.path.exists(blender_directory):
         os.rmdir(blender_directory)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Clone NeuroMorphoVis into the 'addons' directory
     addons_directory = '%s/blender-neuromorphovis/2.80/scripts/addons/' % directory
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Installing dependencies
     pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
+    # Removing the site-packages directory
+    blender_python_wheels = '%s/blender-neuromorphovis/2.80/python/lib/python%s/site-packages/' % \
+                            (directory, python_version)
+    shell_command = 'rm -rf %s/numpy' % blender_python_wheels
+    run_command(shell_command, verbose)
+
     # Blender python
-    blender_python_prefix = '%s/2.80/python/bin/' % blender_directory
+    blender_python_prefix = '%s/%s/python/bin/' % (blender_directory, blender_version)
     blender_python = '%s/python3.7m' % blender_python_prefix
 
     # Pip installation
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
     shell_command = 'wget -O %s/get-pip.py %s' % (blender_python_prefix, get_pip_script_url)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     # Activate the get-pip.py script
     get_pip_script = '%s/get-pip.py' % blender_python_prefix
     shell_command = 'chmod +x %s' % get_pip_script
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
-
-    # Removing the previous numpy installation
-    blender_python_wheels = '%s/blender-neuromorphovis/2.80/python/lib/site-packages/' % directory
-    shell_command = 'rm -rf %s/numpy*' % blender_python_wheels
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     shell_command = '%s %s' % (blender_python, get_pip_script)
-    print('INSTALL: %s' % shell_command)
-    subprocess.call(shell_command, shell=True)
+    run_command(shell_command, verbose)
 
     pip_executable = '%s/pip' % blender_python_prefix
 
@@ -194,7 +205,7 @@ def install_for_linux(directory, blender_version):
         # Command
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         print('INSTALL: %s' % shell_command)
-        subprocess.call(shell_command, shell=True)
+        run_command(shell_command, verbose)
 
 
 ####################################################################################################
@@ -363,6 +374,9 @@ if __name__ == "__main__":
 
     # Parse the arguments
     args = parse_command_line_arguments()
+
+    # Check that the apps required to install NMV are all there.
+    # check_apps()
 
     # Create the installation directory
     if not os.path.exists(args.install_prefix):

@@ -33,6 +33,7 @@ distributions = [
         compute_total_kernel=compute_number_of_samples_of_arbor,
         add_percentage=True),
 ]
+
 ####################################################################################################
 # Global analysis items, only applied on a global level not per-arbor level
 ####################################################################################################
