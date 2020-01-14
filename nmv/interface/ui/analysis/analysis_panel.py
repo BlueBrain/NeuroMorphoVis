@@ -77,7 +77,7 @@ class AnalysisPanel(bpy.types.Panel):
             export_analysis_row = layout.row()
             export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
-            export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+            # export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
