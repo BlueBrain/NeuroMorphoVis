@@ -152,6 +152,11 @@ Using the _Mesh Reconstruction_ toolbox to generate a piecewise watertight mesh 
 	<img src="docs/artifacts/renderings/neuron-group.jpeg" width=804>
 </p>
 
+<p align="center">	
+	<img src="docs/artifacts/renderings/fluorescent-neuron.jpeg" width=400>	
+	<img src="docs/artifacts/renderings/golgi-staining-neuron.jpeg" width=400>	
+</p>
+
 
 ## Known Bugs or Feature Requests
 
