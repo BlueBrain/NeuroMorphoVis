@@ -241,10 +241,9 @@ Scientific Visualiation Engineer
 Blue Brain Project  
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch) 
  
-__Samuel Lapere__  
-Section Manager, Visualization  
-Blue Brain Project  
-[samuel.lapere@epfl.ch](samuel.lapere@epfl.ch) 
+__Felix Schürmann__  
+Co-director of the Blue Brain Project    
+[felix.schuermann@epfl.ch](samuel.lapere@epfl.ch) 
 
 Should you have any questions concerning press enquiriries, please contact:
 
