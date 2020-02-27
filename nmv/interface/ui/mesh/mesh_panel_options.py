@@ -379,4 +379,10 @@ bpy.types.Scene.NMV_MeshBackgroundColor = bpy.props.FloatVectorProperty(
     subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
     description="The color of the background of the rendered image")
 
+# Reconstruction time
+bpy.types.Scene.NMV_MeshReconstructionTime = bpy.props.FloatProperty(
+    name="Reconstruction (Sec)",
+    description="The time it takes to reconstruct the mesh and draw it to the viewport",
+    default=0, min=0, max=1000000)
+
 

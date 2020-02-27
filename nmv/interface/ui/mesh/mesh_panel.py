@@ -39,6 +39,9 @@ import nmv.utilities
 from .mesh_panel_options import *
 from .mesh_panel_ops import *
 
+# Is the mesh reconstructed or not
+is_mesh_reconstructed = False
+
 
 ####################################################################################################
 # @MeshPanel
@@ -87,6 +90,14 @@ class MeshPanel(bpy.types.Panel):
         # Mesh reconstruction button
         draw_mesh_reconstruction_button(panel=self, scene=context.scene)
 
+        # Profiling
+        if is_mesh_reconstructed:
+            morphology_stats_row = self.layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            reconstruction_time_row = self.layout.row()
+            reconstruction_time_row.prop(context.scene, 'NMV_MeshReconstructionTime')
+            reconstruction_time_row.enabled = False
+
         # Rendering options
         draw_rendering_options(panel=self, scene=context.scene)
 
@@ -120,6 +131,8 @@ class ReconstructNeuronMesh(bpy.types.Operator):
             {'FINISHED'}
         """
 
+        import time
+
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
@@ -133,6 +146,9 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
         # Meshing technique
         meshing_technique = nmv.interface.ui_options.mesh.meshing_technique
+
+        # Start reconstruction
+        start_time = time.time()
 
         # Piece-wise watertight meshing
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
@@ -162,6 +178,14 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
             # Invalid method
             self.report({'ERROR'}, 'Invalid Meshing Technique')
+            return {'FINISHED'}
+
+        # Mesh reconstructed
+        reconstruction_time = time.time()
+        global is_mesh_reconstructed
+        is_mesh_reconstructed = True
+        context.scene.NMV_MeshReconstructionTime = reconstruction_time - start_time
+        nmv.logger.info('Mesh reconstructed in [%f] seconds' % context.scene.NMV_MeshReconstructionTime)
 
         return {'FINISHED'}
 

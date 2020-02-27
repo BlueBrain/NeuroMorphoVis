@@ -36,8 +36,10 @@ import nmv.rendering
 import nmv.utilities
 from .morphology_panel_options import *
 
+# Is the morphology reconstructed or not
 is_morphology_reconstructed = False
 
+# What is the selected morphology builder
 morphology_builder = None
 
 
