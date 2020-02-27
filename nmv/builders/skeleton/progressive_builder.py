@@ -139,12 +139,10 @@ class ProgressiveBuilder:
 
         # If the branching order is already greater than that of the current section, simply return
         if branching_order < root.branching_order:
-            print('Less ', branching_order, ' ', root.branching_order)
             return
 
         # If the branching order is less than that of the current section, then process the children
         if branching_order > root.branching_order:
-            print('Greater ', branching_order, ' ', root.branching_order)
             for child in root.children:
                 self.construct_arbors_poly_lines_list_at_branching_order(
                     root=child, branching_order=branching_order, poly_lines_list=poly_lines_list,

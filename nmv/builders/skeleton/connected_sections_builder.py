@@ -114,14 +114,8 @@ class ConnectedSectionsBuilder:
     def create_arbor_component(self,
                                arbor,
                                bevel_object,
-                               component_name):
-        """
-
-        :param arbor:
-        :param bevel_object:
-        :param component_name:
-        :return:
-        """
+                               component_name,
+                               max_branching_level):
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -131,7 +125,7 @@ class ConnectedSectionsBuilder:
             root=arbor,
             poly_lines_data=skeleton_poly_lines,
             connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-            max_branching_level=self.options.morphology.apical_dendrite_branch_order)
+            max_branching_level=max_branching_level)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -155,7 +149,8 @@ class ConnectedSectionsBuilder:
                 nmv.logger.detail('Apical dendrite')
                 self.create_arbor_component(arbor=self.morphology.apical_dendrite,
                                             bevel_object=bevel_object,
-                                            component_name='ApicalDendrite')
+                                            component_name='ApicalDendrite',
+                                            max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -163,16 +158,17 @@ class ConnectedSectionsBuilder:
                 nmv.logger.detail('Axon')
                 self.create_arbor_component(arbor=self.morphology.axon,
                                             bevel_object=bevel_object,
-                                            component_name='Axon')
+                                            component_name='Axon',
+                                            max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
-                    self.create_arbor_component(arbor=basal_dendrite,
-                                                bevel_object=bevel_object,
-                                                component_name='BasalDendrite_%d' % i)
+                    self.create_arbor_component(
+                        arbor=basal_dendrite, bevel_object=bevel_object, component_name='BasalDendrite_%d' % i,
+                        max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
     ################################################################################################
     # @create_all_arbors_as_single_component
