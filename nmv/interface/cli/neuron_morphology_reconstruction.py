@@ -40,6 +40,7 @@ import nmv.interface
 import nmv.options
 import nmv.rendering
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -74,6 +75,9 @@ def reconstruct_neuron_morphology(cli_morphology,
             None, cli_options.io.morphologies_directory, cli_morphology.label,
             blend=cli_options.morphology.export_blend)
 
+    # Set the background color
+    nmv.scene.set_background_color(nmv.consts.Color.WHITE, transparent=True)
+
     # Render a static image of the reconstructed morphology skeleton
     if cli_options.morphology.render:
 
@@ -90,7 +94,7 @@ def reconstruct_neuron_morphology(cli_morphology,
                 nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
 
             # Compute the bounding box for the available meshes only
-            bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+            bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
 
         # Compute the bounding box for the wide shot view that correspond to the whole morphology
         else:
@@ -125,9 +129,27 @@ def reconstruct_neuron_morphology(cli_morphology,
     # Render a 360 sequence of the reconstructed morphology skeleton
     if cli_options.morphology.render_360:
 
-        # Compute the full morphology bounding box
-        rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-            morphology=cli_morphology)
+        # Compute the bounding box for a close up view
+        if cli_options.morphology.rendering_view == \
+                nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
+
+            # Compute the bounding box for a close up view
+            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=cli_options.morphology.close_up_dimensions)
+
+        # Compute the bounding box for a mid shot view
+        elif cli_options.morphology.rendering_view == \
+                nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
+
+            # Compute the bounding box for the available meshes only
+            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+        # Compute the bounding box for the wide shot view that correspond to the whole morphology
+        else:
+
+            # Compute the full morphology bounding box
+            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=cli_morphology)
 
         # Compute a 360 bounding box to fit the arbors
         bounding_box_360 = nmv.bbox.compute_360_bounding_box(rendering_bbox,
@@ -136,8 +158,6 @@ def reconstruct_neuron_morphology(cli_morphology,
         # Stretch the bounding box by few microns
         bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
-        # Transparent color
-        nmv.scene.set_background_color(nmv.consts.Color.WHITE, transparent=True)
 
         for i in range(0, 360):
 
@@ -154,12 +174,61 @@ def reconstruct_neuron_morphology(cli_morphology,
                 image_resolution=cli_options.morphology.full_view_resolution,
                 image_name=image_name)
 
-
-
     # Render a sequence of the progressive reconstruction of the morphology skeleton
     if cli_options.morphology.render_progressive:
-        # TODO: implement this option
-        pass
+
+        # We must reconstruct the morphology with the Progressive builder
+        nmv.scene.clear_scene()
+
+        # Reconstruct the morphology using the progressive builder
+        progressive_builder = nmv.builders.ProgressiveBuilder(
+            morphology=cli_morphology, options=cli_options)
+        progressive_builder.draw_morphology_skeleton()
+
+        import bpy
+
+        # Compute the bounding box for a close up view
+        if cli_options.morphology.rendering_view == \
+                nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
+
+            # Compute the bounding box for a close up view
+            rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=cli_options.morphology.close_up_dimensions)
+
+        # Compute the bounding box for a mid shot view
+        elif cli_options.morphology.rendering_view == \
+                nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
+
+            # Compute the bounding box for the available meshes only
+            rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+        # Compute the bounding box for the wide shot view that correspond to the whole morphology
+        else:
+
+            # Compute the full morphology bounding box
+            rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=cli_morphology)
+
+        # Move to the last frame to get the bounding box of all the drawn objects
+        bpy.context.scene.frame_set(0)
+
+        for i in range(0, 100):
+            bpy.context.scene.frame_set(i)
+
+            # Set the frame name
+            image_name = 'frame_%s' % '{0:05d}'.format(i)
+
+            # Set the frame name
+            image_name = '%s/%s/frame_%s' % (
+                cli_options.io.sequences_directory, cli_morphology.label, '{0:05d}'.format(i))
+
+            # Render a frame
+            nmv.rendering.renderer.render(
+                bounding_box=rendering_bbox,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_resolution=cli_options.morphology.full_view_resolution,
+                image_name=image_name,
+                image_directory=None)
 
 
 ####################################################################################################
