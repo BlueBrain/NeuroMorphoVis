@@ -94,7 +94,11 @@ class MetaBuilder:
         # Stats. about the mesh
         self.mesh_statistics = 'MetaBuilder Mesh: \n'
 
+        # A list to collect the error in radii
         self.radii_error = list()
+
+        # A temporary label for the mesh
+        self.label = 'meta_mesh'
 
     ################################################################################################
     # @update_morphology_skeleton
@@ -392,11 +396,11 @@ class MetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = self.smallest_radius * 2.0
+        self.meta_skeleton.resolution = self.smallest_radius
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
-        self.meta_mesh = bpy.context.scene.objects[self.morphology.label]
+        self.meta_mesh = bpy.context.scene.objects[self.label]
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
@@ -450,8 +454,9 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Initialize the meta object
+        # Note that self.label should be replaced by self.options.morphology.label
         result, stats = nmv.utilities.profile_function(
-            self.initialize_meta_object, self.options.morphology.label)
+            self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
 
         # Build the soma

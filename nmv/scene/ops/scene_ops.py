@@ -493,6 +493,27 @@ def get_list_of_curves_in_scene():
 
 
 ####################################################################################################
+# @get_list_of_objects_in_scene
+####################################################################################################
+def get_list_of_objects_in_scene():
+    """Return a list of references to all the objects in the scene.
+
+    :return:
+        A list of references to all the objects in the scene
+    """
+
+    # A list of all the objects in the scene
+    object_list = list()
+
+    # Simply add all the objects
+    for scene_object in bpy.context.scene.objects:
+        object_list.append(scene_object)
+
+    # Return a reference to the list
+    return object_list
+
+
+####################################################################################################
 # @get_reference_to_object_by_name
 ####################################################################################################
 def get_reference_to_object_by_name(object_name):

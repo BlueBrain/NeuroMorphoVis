@@ -332,7 +332,8 @@ def analyze_morphology(morphology,
             item.apply_per_arbor_analysis_kernel(morphology=morphology, context=context)
 
         # Analyze the bounding box information
-        analyze_bounding_box(morphology=morphology, scene=context.scene)
+        if context is not None:
+            analyze_bounding_box(morphology=morphology, scene=context.scene)
 
         # Morphology is analyzed
         return True

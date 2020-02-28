@@ -104,7 +104,7 @@ def reconstruct_neuron_morphology(cli_morphology,
                 nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
 
             # Render the image
-            nmv.rendering.NeuronSkeletonRenderer.render(
+            nmv.rendering.render(
                 bounding_box=bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_resolution=cli_options.morphology.full_view_resolution,
@@ -115,7 +115,7 @@ def reconstruct_neuron_morphology(cli_morphology,
         else:
 
             # Render the image
-            nmv.rendering.NeuronSkeletonRenderer.render_to_scale(
+            nmv.rendering.render_to_scale(
                 bounding_box=bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_scale_factor=cli_options.mesh.resolution_scale_factor,
@@ -124,8 +124,37 @@ def reconstruct_neuron_morphology(cli_morphology,
 
     # Render a 360 sequence of the reconstructed morphology skeleton
     if cli_options.morphology.render_360:
-        # TODO: implement this option
-        pass
+
+        # Compute the full morphology bounding box
+        rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
+            morphology=cli_morphology)
+
+        # Compute a 360 bounding box to fit the arbors
+        bounding_box_360 = nmv.bbox.compute_360_bounding_box(rendering_bbox,
+                                                             cli_morphology.soma.centroid)
+
+        # Stretch the bounding box by few microns
+        bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+
+        # Transparent color
+        nmv.scene.set_background_color(nmv.consts.Color.WHITE, transparent=True)
+
+        for i in range(0, 360):
+
+            # Set the frame name
+            image_name = '%s/%s/frame_%s' % (
+                cli_options.io.sequences_directory, cli_morphology.label, '{0:05d}'.format(i))
+
+            # Render a frame
+            nmv.rendering.renderer.render_at_angle(
+                scene_objects=nmv.scene.get_list_of_objects_in_scene(),
+                angle=i,
+                bounding_box=bounding_box_360,
+                camera_view=nmv.enums.Camera.View.FRONT,
+                image_resolution=cli_options.morphology.full_view_resolution,
+                image_name=image_name)
+
+
 
     # Render a sequence of the progressive reconstruction of the morphology skeleton
     if cli_options.morphology.render_progressive:

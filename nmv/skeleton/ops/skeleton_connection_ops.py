@@ -225,17 +225,22 @@ def label_primary_and_secondary_sections_based_on_angles(section):
         # Compute the vector of the child section based on its first two samples
         child_vector = (child.samples[1].point - child.samples[0].point).normalized()
 
-        # Compute the angle between the two vectors
-        angle = parent_vector.angle(child_vector)
+        # The vectors must have non zero length
+        if child_vector.length > 0.0 and parent_vector.length > 0.0:
 
-        # If the angle is greater than the greatest angle, then update the @primary_child reference
-        if angle > greatest_angle:
+            # Compute the angle between the two vectors
+            angle = parent_vector.angle(child_vector)
 
-            # Update the angle
-            greatest_angle = angle
+            # If the angle is greater than the greatest angle, then update the @primary_child reference
+            if angle > greatest_angle:
 
-            # Update the primary child
-            primary_child = child
+                # Update the angle
+                greatest_angle = angle
+
+                # Update the primary child
+                primary_child = child
+        else:
+            return
 
     # Create a new children list with update order, where the primary section comes first and the
     # secondary ones come later in the loop for the smooth continuation of the meshing
