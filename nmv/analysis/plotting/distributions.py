@@ -25,13 +25,26 @@ import nmv.utilities
 # @plot_per_arbor_result
 ####################################################################################################
 def plot_per_arbor_result(analysis_results,
-                                morphology,
-                                options,
-                                figure_name=None,
-                                figure_title=None,
-                                figure_xlabel=None,
-                                add_percentage=False,
-                                image_extension=nmv.enums.Image.Extension.TIFF):
+                          morphology,
+                          options,
+                          figure_name=None,
+                          figure_title=None,
+                          figure_xlabel=None,
+                          add_percentage=False,
+                          image_extension=nmv.enums.Image.Extension.PDF):
+    """
+
+    :param analysis_results:
+    :param morphology:
+    :param options:
+    :param figure_name:
+    :param figure_title:
+    :param figure_xlabel:
+    :param add_percentage:
+    :param image_extension:
+    :return:
+    """
+
     # Installing dependencies
     try:
         import numpy
@@ -163,7 +176,6 @@ def plot_per_arbor_result(analysis_results,
 
     # Set individual bar labels using above list
     for i, patch in enumerate(ax.patches):
-        # get_width pulls left or right; get_y pushes up or down
 
         # Get the width of the bar and then add a little increment
         x = patch.get_width()
@@ -205,6 +217,19 @@ def plot_per_arbor_range(minimum_results,
                          figure_xlabel=None,
                          figure_title=None,
                          image_extension=nmv.enums.Image.Extension.PDF):
+    """
+
+    :param minimum_results:
+    :param average_results:
+    :param maximum_results:
+    :param morphology:
+    :param options:
+    :param figure_name:
+    :param figure_xlabel:
+    :param figure_title:
+    :param image_extension:
+    :return:
+    """
 
     # Installing dependencies
     try:

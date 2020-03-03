@@ -141,7 +141,6 @@ class CreateNeuronCard(bpy.types.Operator):
     bl_idname = "nmv.create_neuron_card"
     bl_label = "Create Neuron Card"
 
-
     ################################################################################################
     # @execute
     ################################################################################################
@@ -179,9 +178,38 @@ class CreateNeuronCard(bpy.types.Operator):
 
         nmv.interface.ui_morphology.create_morphology_color_palette()
 
+        # Compile a list of PDFs that will be gathered together in a single document
+        analysis_pdfs = list()
+
+        # Apply the analysis kernels and compile the analysis pdf list
         for distribution in nmv.analysis.distributions:
+
+            # Apply the kernels
             distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
                                       options=nmv.interface.ui_options)
+
+            # Append to the list
+            pdf = '%s/%s-%s.PDF' % (nmv.interface.ui_options.io.analysis_directory,
+                                    nmv.interface.ui_morphology.label,
+                                    distribution.figure_name)
+            analysis_pdfs.append(pdf)
+
+        neuron_catalaog = '%s/catalog.pdf' % nmv.interface.ui_options.io.analysis_directory
+
+        from PyPDF2 import PdfFileReader, PdfFileWriter
+        pdf_writer = PdfFileWriter()
+
+        for path in analysis_pdfs:
+            pdf_reader = PdfFileReader(path)
+            for page in range(pdf_reader.getNumPages()):
+                # Add each page to the writer object
+                pdf_writer.addPage(pdf_reader.getPage(page))
+
+        # Write out the merged PDF
+        with open(neuron_catalaog, 'wb') as out:
+            pdf_writer.write(out)
+
+
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
@@ -195,30 +223,7 @@ class CreateNeuronCard(bpy.types.Operator):
 
         builder.draw_morphology_skeleton_with_matplotlib()
 
-        from PyPDF2 import PdfFileReader, PdfFileWriter
 
-        paths = ['dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-FRONT..pdf',
-                 'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-dendrogram..pdf',
-                 'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-samples-radii-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-contraction-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-length-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-surface-area-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-volume-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-length-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-surface-area-range-per-arbor.PDF',
-                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-volume-range-per-arbor.PDF']
-        output = '/home/abdellah/Desktop/tmp/file.pdf'
-        pdf_writer = PdfFileWriter()
-
-        for path in paths:
-            pdf_reader = PdfFileReader('/home/abdellah/neuromorphovis-output/analysis/' + path)
-            for page in range(pdf_reader.getNumPages()):
-                # Add each page to the writer object
-                pdf_writer.addPage(pdf_reader.getPage(page))
-
-        # Write out the merged PDF
-        with open(output, 'wb') as out:
-            pdf_writer.write(out)
 
         # Draw the morphology and highlight it
         #builder = nmv.builders.DisconnectedSectionsBuilder(

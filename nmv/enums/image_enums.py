@@ -57,9 +57,36 @@ class Image:
         # BMP
         BMP = 'BMP'
 
-        # TIFF
-        TIFF = 'TIFF'
-
         # OpenEXR
         OPEN_EXR = 'OPEN_EXR'
+
+        ############################################################################################
+        # @get_extension
+        ############################################################################################
+        def get_extension(self, enumerator):
+            """Gets the extension from the enumerator.
+
+            :param enumerator:
+                Input.
+            :return:
+                Return the extension.
+            """
+
+            if enumerator in self.PDF:
+                return 'pdf'
+            elif enumerator in self.TIFF:
+                return 'tiff'
+            elif enumerator in self.PNG:
+                return 'png'
+            elif enumerator in self.JPEG:
+                return 'jpeg'
+            elif enumerator in self.BMP:
+                return 'bmp'
+            elif enumerator in self.OPEN_EXR:
+                return 'exr'
+            else:
+                return 'png'
+
+
+
 
