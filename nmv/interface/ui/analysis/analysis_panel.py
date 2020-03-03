@@ -77,7 +77,7 @@ class AnalysisPanel(bpy.types.Panel):
             export_analysis_row = layout.row()
             export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
-            # export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+            export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
@@ -195,7 +195,30 @@ class CreateNeuronCard(bpy.types.Operator):
 
         builder.draw_morphology_skeleton_with_matplotlib()
 
+        from PyPDF2 import PdfFileReader, PdfFileWriter
 
+        paths = ['dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-FRONT..pdf',
+                 'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-dendrogram..pdf',
+                 'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-samples-radii-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-contraction-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-length-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-surface-area-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-sections-volume-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-length-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-surface-area-range-per-arbor.PDF',
+                'dend-tkb060123a2_ch2_ct_x_db_60x_2_axon-tkb060510b1_ch1_cc2_n_db_60x_1-segments-volume-range-per-arbor.PDF']
+        output = '/home/abdellah/Desktop/tmp/file.pdf'
+        pdf_writer = PdfFileWriter()
+
+        for path in paths:
+            pdf_reader = PdfFileReader('/home/abdellah/neuromorphovis-output/analysis/' + path)
+            for page in range(pdf_reader.getNumPages()):
+                # Add each page to the writer object
+                pdf_writer.addPage(pdf_reader.getPage(page))
+
+        # Write out the merged PDF
+        with open(output, 'wb') as out:
+            pdf_writer.write(out)
 
         # Draw the morphology and highlight it
         #builder = nmv.builders.DisconnectedSectionsBuilder(

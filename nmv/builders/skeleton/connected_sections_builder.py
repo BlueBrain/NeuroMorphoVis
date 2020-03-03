@@ -493,7 +493,7 @@ class ConnectedSectionsBuilder:
         # Save the figure
         matplotlib.pyplot.savefig(
             '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
-                             projection, '.png'),
+                             projection, '.pdf'),
             bbox_inches='tight', transparent=True, dpi=300)
 
     ################################################################################################

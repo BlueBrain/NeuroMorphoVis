@@ -204,7 +204,7 @@ def plot_per_arbor_range(minimum_results,
                          figure_name=None,
                          figure_xlabel=None,
                          figure_title=None,
-                         image_extension=nmv.enums.Image.Extension.TIFF):
+                         image_extension=nmv.enums.Image.Extension.PDF):
 
     # Installing dependencies
     try:
@@ -331,7 +331,7 @@ def plot_per_arbor_range(minimum_results,
     # Save the figure
     pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
                                     image_extension),
-                   bbox_inches='tight', transparent=True, dpi=600)
+                   bbox_inches='tight', transparent=True, dpi=300)
 
     # Close the figures
     pyplot.close()
