@@ -93,7 +93,7 @@ distributions = [
         figure_name='number-of-short-sections-per-arbor',
         figure_xlabel='Number of Short Sections',
         compute_total_kernel=compute_number_of_short_sections_of_arbor,
-        add_percentage=True),
+        add_percentage=False),
 
     AnalysisDistribution(
         name='Maximum Path Distance per Arbor',

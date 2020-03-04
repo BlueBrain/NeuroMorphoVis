@@ -585,7 +585,8 @@ class ConnectedSectionsBuilder:
                     # Plot the lines
                     figure = self.draw_poly_line_list_at_fixed_thickness(
                         poly_lines=basal_dendrite_poly_lines,
-                        color=self.morphology.basal_dendrites_colors[i], thickness=0.5)
+                        color=self.morphology.basal_dendrites_colors[i], thickness=0.5,
+                        projection=projection)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -604,7 +605,8 @@ class ConnectedSectionsBuilder:
                 # Plot the lines
                 figure = self.draw_poly_line_list_at_fixed_thickness(
                     poly_lines=axon_poly_lines,
-                    color=self.morphology.axon_color, thickness=0.5)
+                    color=self.morphology.axon_color, thickness=0.5,
+                    projection=projection)
 
         # Soma
         self.draw_soma_projection()
@@ -612,7 +614,23 @@ class ConnectedSectionsBuilder:
         # Adjust the scale
         figure.set_aspect(aspect='equal')
 
-
+        if projection == nmv.enums.Camera.View.FRONT:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.x, self.morphology.bounding_box.p_max.x))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.y, self.morphology.bounding_box.p_max.y))
+        elif projection == nmv.enums.Camera.View.SIDE:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.z, self.morphology.bounding_box.p_max.z))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.y, self.morphology.bounding_box.p_max.y))
+        elif projection == nmv.enums.Camera.View.TOP:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.x, self.morphology.bounding_box.p_max.x))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.z, self.morphology.bounding_box.p_max.z))
+        else:
+            pass
 
         # Title
         figure.set(xlabel=projection)

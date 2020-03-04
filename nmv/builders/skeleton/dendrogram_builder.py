@@ -260,8 +260,9 @@ class DendrogramBuilder:
         pyplot.rcParams['ytick.labelsize'] = bar_width * 10
         pyplot.rcParams['legend.fontsize'] = 10
         pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
-        pyplot.rcParams['axes.axisbelow'] = False
+        pyplot.rcParams['axes.axisbelow'] = True
         pyplot.rcParams['axes.edgecolor'] = '0.1'
+        pyplot.axis('off')
 
         if not self.options.morphology.ignore_apical_dendrite:
 
