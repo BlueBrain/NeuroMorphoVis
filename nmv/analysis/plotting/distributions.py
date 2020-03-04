@@ -405,6 +405,8 @@ def plot_distribution(distribution,
     plt.rcParams['figure.titlesize'] = 10
     plt.rcParams['axes.titlesize'] = 10
 
+    #plt.figure(figsize=(0.65 * 4, total_number_of_bars * 0.5 * bar_width))
+
     # Convert the distribution list to a numpy array
     np_distribution = np.array(distribution)
 

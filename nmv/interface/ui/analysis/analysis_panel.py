@@ -181,7 +181,23 @@ class CreateNeuronCard(bpy.types.Operator):
         # Compile a list of PDFs that will be gathered together in a single document
         analysis_pdfs = list()
 
-        # Apply the analysis kernels and compile the analysis pdf list
+        # Draw the morphology skeleton to append it to the analysis PDF
+        builder = nmv.builders.ConnectedSectionsBuilder(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+
+        for projection in [nmv.enums.Camera.View.FRONT,
+                           nmv.enums.Camera.View.SIDE,
+                           nmv.enums.Camera.View.TOP]:
+            skeleton_pdf = builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
+            analysis_pdfs.append(skeleton_pdf)
+
+        # Draw the dendrogram PDF and append it to the list
+        builder = nmv.builders.DendrogramBuilder(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        dendrogram_pdf = builder.draw_morphology_skeleton_with_matplotlib()
+        analysis_pdfs.append(dendrogram_pdf)
+
+        # Apply the analysis kernels and compile the analysis PDF
         for distribution in nmv.analysis.distributions:
 
             # Apply the kernels
@@ -210,18 +226,9 @@ class CreateNeuronCard(bpy.types.Operator):
             pdf_writer.write(out)
 
 
-        builder = nmv.builders.ConnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        for projection in [nmv.enums.Camera.View.FRONT,
-                           nmv.enums.Camera.View.SIDE,
-                           nmv.enums.Camera.View.TOP]:
-            builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
 
-        builder = nmv.builders.DendrogramBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        builder.draw_morphology_skeleton_with_matplotlib()
 
 
 
