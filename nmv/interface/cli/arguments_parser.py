@@ -22,7 +22,7 @@ from argparse import RawTextHelpFormatter
 
 # Internal imports
 sys.path.append("%s/" % os.path.dirname(os.path.realpath(__file__)))
-from args import *
+from args_strings import *
 
 
 ####################################################################################################

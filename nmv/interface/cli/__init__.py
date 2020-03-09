@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .args import *
+from .args_strings import *
 from .arguments_parser import *
 from .morphology_analysis import *
 from .neuron_mesh_reconstruction import *
