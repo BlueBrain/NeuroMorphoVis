@@ -29,10 +29,6 @@ import nmv.consts
 import nmv.geometry
 import nmv.scene
 
-import seaborn
-import numpy
-import matplotlib.pyplot
-
 
 ####################################################################################################
 # @DisconnectedSectionsBuilder
@@ -246,6 +242,31 @@ class ConnectedSectionsBuilder:
             A handle to the figure.
         """
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+        
         # A handle to the figure
         figure = None
 
@@ -304,6 +325,31 @@ class ConnectedSectionsBuilder:
         :return: 
         """
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+        
         # A handle to the figure
         figure = None
 
@@ -368,6 +414,31 @@ class ConnectedSectionsBuilder:
         """
 
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+        
         # The soma
         soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
         vertices = soma_builder_object.get_soma_profile()
@@ -405,6 +476,31 @@ class ConnectedSectionsBuilder:
     def draw_morphology_skeleton_with_matplotlib(self,
                                                  projection=nmv.enums.Camera.View.FRONT):
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+        
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 

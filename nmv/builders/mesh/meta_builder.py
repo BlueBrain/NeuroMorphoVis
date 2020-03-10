@@ -20,6 +20,7 @@ import copy, os
 
 # Blender imports
 import bpy, mathutils
+from mathutils import Vector
 
 # Internal modules
 import nmv
@@ -340,10 +341,17 @@ class MetaBuilder:
 
         # The arbor must be connected to the soma
         if arbor.connected_to_soma:
+
             # Assume that from the soma center towards the first point along the arbor is a segment
+            p1 = Vector((self.morphology.soma.centroid[0], 
+                         self.morphology.soma.centroid[1], 
+                         self.morphology.soma.centroid[2]))
+            p2 = arbor.samples[0].point
+
+            # Add the meta segment to the object 
             self.create_meta_segment(
-                p1=self.morphology.soma.centroid,
-                p2=arbor.samples[0].point,
+                p1=p1,
+                p2=p2,
                 r1=self.morphology.soma.smallest_radius,
                 r2=arbor.samples[0].radius * self.magic_scale_factor)
 
