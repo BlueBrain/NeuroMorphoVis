@@ -654,7 +654,8 @@ def create_materials(material_type,
         sections or segments.
     """
 
-    bpy.context.scene.world.color = (10, 10, 10)
+    if nmv.utilities.is_blender_280():
+        bpy.context.scene.world.color = (10, 10, 10)
 
     # A list of the created materials
     materials_list = []

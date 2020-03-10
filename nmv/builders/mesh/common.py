@@ -162,7 +162,7 @@ def reconstruct_soma_mesh(builder):
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
     """
-
+    
     if builder.options.mesh.soma_reconstruction_technique == \
             nmv.enums.Soma.Representation.META_BALLS:
 

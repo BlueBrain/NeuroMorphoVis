@@ -184,7 +184,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Soma building using a specific approach
-    arg_options = ['ignore', 'sphere', '(profile)']
+    arg_options = ['ignore', 'sphere', '(profile), meta-balls']
     arg_help = 'Soma representation in the reconstructed morphology. \n' \
                'Options %s' % arg_options
     skeletonization_args.add_argument(

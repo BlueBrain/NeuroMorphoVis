@@ -494,7 +494,7 @@ class MetaBuilder:
 
         # Transform to the global coordinates, if required
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.transform_to_global_coordinates, self)
+            nmv.builders.mesh.common.transform_to_global_coordinates, self)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh

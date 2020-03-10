@@ -180,20 +180,22 @@ class NeuroMorphoVisOptions:
         self.morphology.bevel_object_sides = arguments.bevel_sides
 
         # Sections radii
+        self.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.get_enum(arguments.sections_radii)
+
         # Unified radius across all the arbors
-        if arguments.sections_radii == 'unified':
+        if self.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = True
             self.morphology.samples_unified_radii_value = arguments.fixed_section_radius
 
         # Scaled radii w.r.t the given in the morphology file
-        elif arguments.sections_radii == 'scaled':
+        elif self.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
             self.morphology.scale_sections_radii = True
             self.morphology.unify_sections_radii = False
             self.morphology.sections_radii_scale = arguments.radii_scale_factor
 
         # Filtered
-        elif arguments.sections_radii == 'filtered':
+        elif self.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.FILTERED:
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = False
             self.morphology.sections_radii_scale = arguments.radii_scale_factor
@@ -294,6 +296,10 @@ class NeuroMorphoVisOptions:
         ############################################################################################
         # Reconstruct neuron mesh for exporting
         self.mesh.reconstruct_neuron_mesh = arguments.reconstruct_neuron_mesh
+
+        # Soma reconstruction technique 
+        self.mesh.soma_reconstruction_technique = nmv.enums.Soma.Representation.get_enum(
+            arguments.soma_representation)
 
         # Tessellation level (between 0.1 and 1.0)
         self.mesh.tessellation_level = float(arguments.tessellation_level)

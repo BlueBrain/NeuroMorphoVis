@@ -88,6 +88,9 @@ class Arbors:
         # Scale the radii of the arbors using a constant factor
         SCALED = 'ARBORS_RADII_SCALED'
 
+        # Filter radii
+        FILTERED = 'ARBORS_RADII_FILTERED'
+
         ############################################################################################
         # @get_enum
         ############################################################################################
@@ -101,6 +104,10 @@ class Arbors:
             # Scaled radii
             elif argument == 'scaled':
                 return Arbors.Radii.SCALED
+
+            # Filtered radii
+            elif argument == 'filtered':
+                return Arbors.Radii.FILTERED
 
             # By default, use the original skeleton radii as specified in the morphology
             else:
