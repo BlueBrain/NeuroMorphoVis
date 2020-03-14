@@ -32,22 +32,6 @@ distributions = [
         figure_xlabel='Number of Samples',
         compute_total_kernel=compute_number_of_samples_of_arbor,
         add_percentage=True),
-]
-
-####################################################################################################
-# Global analysis items, only applied on a global level not per-arbor level
-####################################################################################################
-distributionss = [
-
-    AnalysisDistribution(
-        name='Total Number of Samples per Arbor',
-        description='The total number of sampler per arbor in the morphology',
-        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
-        figure_title='Number of Samples / Arbor',
-        figure_name='number-of-samples-per-arbor',
-        figure_xlabel='Number of Samples',
-        compute_total_kernel=compute_number_of_samples_of_arbor,
-        add_percentage=True),
 
     AnalysisDistribution(
         name='Total Number of Terminal Tips per Arbor',
@@ -90,18 +74,6 @@ distributionss = [
         add_percentage=True),
 
     AnalysisDistribution(
-        name='Samples Radii Range per Arbor',
-        description='The range of samples radii per arbor in the morphology',
-        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
-        figure_title='Samples Radii Range / Arbor',
-        figure_name='samples-radii-range-per-arbor',
-        figure_xlabel='Sample Radius (\u03BCm)',
-        compute_min_kernel=compute_minimum_sample_radius_of_arbor,
-        compute_avg_kernel=compute_average_sample_radius_of_arbor,
-        compute_max_kernel=compute_maximum_sample_radius_of_arbor,
-        add_percentage=False),
-
-    AnalysisDistribution(
         name='Total Number of Section per Arbor',
         description='The total number of sections per arbor in the morphology',
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
@@ -121,7 +93,7 @@ distributionss = [
         figure_name='number-of-short-sections-per-arbor',
         figure_xlabel='Number of Short Sections',
         compute_total_kernel=compute_number_of_short_sections_of_arbor,
-        add_percentage=True),
+        add_percentage=False),
 
     AnalysisDistribution(
         name='Maximum Path Distance per Arbor',
@@ -154,18 +126,6 @@ distributionss = [
         figure_name='minimum-euclidean-distance-per-arbor',
         figure_xlabel='Radial Distance from Soma (\u03BCm)',
         compute_total_kernel=compute_minimum_euclidean_distance_of_arbor,
-        add_percentage=False),
-
-    AnalysisDistribution(
-        name='Sections Contraction Range per Arbor',
-        description='The range of sections contraction per arbor in the morphology',
-        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
-        figure_title='Sections Contraction Range / Arbor',
-        figure_name='sections-contraction-range-per-arbor',
-        figure_xlabel='Contraction Ratio',
-        compute_min_kernel=compute_minimum_section_contraction_of_arbor,
-        compute_avg_kernel=compute_average_section_contraction_of_arbor,
-        compute_max_kernel=compute_maximum_section_contraction_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(
@@ -259,6 +219,50 @@ distributionss = [
         compute_avg_kernel=compute_average_segment_volume,
         compute_max_kernel=compute_maximum_segment_volume,
         add_percentage=False),
+
+    AnalysisDistribution(
+        name='Samples Radii Range per Arbor',
+        description='The range of samples radii per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Samples Radii Range / Arbor',
+        figure_name='samples-radii-range-per-arbor',
+        figure_xlabel='Sample Radius (\u03BCm)',
+        compute_min_kernel=compute_minimum_sample_radius_of_arbor,
+        compute_avg_kernel=compute_average_sample_radius_of_arbor,
+        compute_max_kernel=compute_maximum_sample_radius_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Sections Contraction Range per Arbor',
+        description='The range of sections contraction per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Sections Contraction Range / Arbor',
+        figure_name='sections-contraction-range-per-arbor',
+        figure_xlabel='Contraction Ratio',
+        compute_min_kernel=compute_minimum_section_contraction_of_arbor,
+        compute_avg_kernel=compute_average_section_contraction_of_arbor,
+        compute_max_kernel=compute_maximum_section_contraction_of_arbor,
+        add_percentage=False),
+]
+
+####################################################################################################
+# Global analysis items, only applied on a global level not per-arbor level
+####################################################################################################
+distributionss = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ]
 
 '''

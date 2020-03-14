@@ -25,13 +25,26 @@ import nmv.utilities
 # @plot_per_arbor_result
 ####################################################################################################
 def plot_per_arbor_result(analysis_results,
-                                morphology,
-                                options,
-                                figure_name=None,
-                                figure_title=None,
-                                figure_xlabel=None,
-                                add_percentage=False,
-                                image_extension=nmv.enums.Image.Extension.TIFF):
+                          morphology,
+                          options,
+                          figure_name=None,
+                          figure_title=None,
+                          figure_xlabel=None,
+                          add_percentage=False,
+                          image_extension=nmv.enums.Image.Extension.PDF):
+    """
+
+    :param analysis_results:
+    :param morphology:
+    :param options:
+    :param figure_name:
+    :param figure_title:
+    :param figure_xlabel:
+    :param add_percentage:
+    :param image_extension:
+    :return:
+    """
+
     # Installing dependencies
     try:
         import numpy
@@ -163,7 +176,6 @@ def plot_per_arbor_result(analysis_results,
 
     # Set individual bar labels using above list
     for i, patch in enumerate(ax.patches):
-        # get_width pulls left or right; get_y pushes up or down
 
         # Get the width of the bar and then add a little increment
         x = patch.get_width()
@@ -204,7 +216,20 @@ def plot_per_arbor_range(minimum_results,
                          figure_name=None,
                          figure_xlabel=None,
                          figure_title=None,
-                         image_extension=nmv.enums.Image.Extension.TIFF):
+                         image_extension=nmv.enums.Image.Extension.PDF):
+    """
+
+    :param minimum_results:
+    :param average_results:
+    :param maximum_results:
+    :param morphology:
+    :param options:
+    :param figure_name:
+    :param figure_xlabel:
+    :param figure_title:
+    :param image_extension:
+    :return:
+    """
 
     # Installing dependencies
     try:
@@ -331,7 +356,7 @@ def plot_per_arbor_range(minimum_results,
     # Save the figure
     pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
                                     image_extension),
-                   bbox_inches='tight', transparent=True, dpi=600)
+                   bbox_inches='tight', transparent=True, dpi=300)
 
     # Close the figures
     pyplot.close()
@@ -379,6 +404,8 @@ def plot_distribution(distribution,
     plt.rcParams['legend.fontsize'] = 10
     plt.rcParams['figure.titlesize'] = 10
     plt.rcParams['axes.titlesize'] = 10
+
+    #plt.figure(figsize=(0.65 * 4, total_number_of_bars * 0.5 * bar_width))
 
     # Convert the distribution list to a numpy array
     np_distribution = np.array(distribution)

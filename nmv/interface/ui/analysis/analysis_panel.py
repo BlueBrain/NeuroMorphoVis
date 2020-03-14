@@ -77,7 +77,7 @@ class AnalysisPanel(bpy.types.Panel):
             export_analysis_row = layout.row()
             export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
-            # export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+            export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
@@ -141,7 +141,6 @@ class CreateNeuronCard(bpy.types.Operator):
     bl_idname = "nmv.create_neuron_card"
     bl_label = "Create Neuron Card"
 
-
     ################################################################################################
     # @execute
     ################################################################################################
@@ -179,21 +178,57 @@ class CreateNeuronCard(bpy.types.Operator):
 
         nmv.interface.ui_morphology.create_morphology_color_palette()
 
-        for distribution in nmv.analysis.distributions:
-            distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
-                                      options=nmv.interface.ui_options)
+        # Compile a list of PDFs that will be gathered together in a single document
+        analysis_pdfs = list()
+
+        # Draw the morphology skeleton to append it to the analysis PDF
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         for projection in [nmv.enums.Camera.View.FRONT,
                            nmv.enums.Camera.View.SIDE,
                            nmv.enums.Camera.View.TOP]:
-            builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
+            skeleton_pdf = builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
+            analysis_pdfs.append(skeleton_pdf)
 
+        # Draw the dendrogram PDF and append it to the list
         builder = nmv.builders.DendrogramBuilder(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        dendrogram_pdf = builder.draw_morphology_skeleton_with_matplotlib()
+        analysis_pdfs.append(dendrogram_pdf)
 
-        builder.draw_morphology_skeleton_with_matplotlib()
+        # Apply the analysis kernels and compile the analysis PDF
+        for distribution in nmv.analysis.distributions:
+
+            # Apply the kernels
+            distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
+                                      options=nmv.interface.ui_options)
+
+            # Append to the list
+            pdf = '%s/%s-%s.PDF' % (nmv.interface.ui_options.io.analysis_directory,
+                                    nmv.interface.ui_morphology.label,
+                                    distribution.figure_name)
+            analysis_pdfs.append(pdf)
+
+        neuron_catalaog = '%s/catalog.pdf' % nmv.interface.ui_options.io.analysis_directory
+
+        from PyPDF2 import PdfFileReader, PdfFileWriter
+        pdf_writer = PdfFileWriter()
+
+        for path in analysis_pdfs:
+            pdf_reader = PdfFileReader(path)
+            for page in range(pdf_reader.getNumPages()):
+                # Add each page to the writer object
+                pdf_writer.addPage(pdf_reader.getPage(page))
+
+        # Write out the merged PDF
+        with open(neuron_catalaog, 'wb') as out:
+            pdf_writer.write(out)
+
+
+
+
+
 
 
 

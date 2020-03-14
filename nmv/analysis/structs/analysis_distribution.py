@@ -134,11 +134,6 @@ class AnalysisDistribution:
         # Compute the range, then plot the average with error bars to show the range of the result
         elif nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR in self.data_format:
 
-            minimum_result, average_result, maximum_result = nmv.analysis.invoke_kernel(
-                morphology,
-                self.compute_min_kernel,
-                nmv.analysis.compute_minimum_analysis_result_of_morphology)
-
             # Minimum
             minimum_results = nmv.analysis.invoke_kernel(
                 morphology,

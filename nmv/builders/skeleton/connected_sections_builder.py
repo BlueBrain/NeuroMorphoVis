@@ -28,6 +28,8 @@ import nmv.skeleton
 import nmv.consts
 import nmv.geometry
 import nmv.scene
+import nmv.utilities
+
 
 
 ####################################################################################################
@@ -137,25 +139,29 @@ class ConnectedSectionsBuilder:
     ################################################################################################
     def create_each_arbor_as_separate_component(self,
                                                 bevel_object):
+        """Creates each arbor in the morphology as a single component.
+
+        :param bevel_object:
+            Bevel object used to extrude the arbors.
+        """
 
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrite:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
-                self.create_arbor_component(arbor=self.morphology.apical_dendrite,
-                                            bevel_object=bevel_object,
-                                            component_name='ApicalDendrite',
-                                            max_branching_level=self.options.morphology.apical_dendrite_branch_order)
+                self.create_arbor_component(
+                    arbor=self.morphology.apical_dendrite,
+                    bevel_object=bevel_object, component_name='ApicalDendrite',
+                    max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
                 nmv.logger.detail('Axon')
-                self.create_arbor_component(arbor=self.morphology.axon,
-                                            bevel_object=bevel_object,
-                                            component_name='Axon',
-                                            max_branching_level=self.options.morphology.axon_branch_order)
+                self.create_arbor_component(
+                    arbor=self.morphology.axon, bevel_object=bevel_object, component_name='Axon',
+                    max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -163,7 +169,8 @@ class ConnectedSectionsBuilder:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
                     self.create_arbor_component(
-                        arbor=basal_dendrite, bevel_object=bevel_object, component_name='BasalDendrite_%d' % i,
+                        arbor=basal_dendrite, bevel_object=bevel_object,
+                        component_name='BasalDendrite_%d' % i,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
     ################################################################################################
@@ -266,7 +273,13 @@ class ConnectedSectionsBuilder:
         import seaborn
         import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
-        
+
+        # Import the fonts
+        font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+        font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+        font_list = font_manager.createFontList(font_files)
+        font_manager.fontManager.ttflist.extend(font_list)
+
         # A handle to the figure
         figure = None
 
@@ -283,8 +296,8 @@ class ConnectedSectionsBuilder:
                     x_list.append(sample[0][0])
                     y_list.append(sample[0][1])
                 elif projection == nmv.enums.Camera.View.SIDE:
-                    x_list.append(sample[0][1])
-                    y_list.append(sample[0][2])
+                    x_list.append(sample[0][2])
+                    y_list.append(sample[0][1])
                 elif projection == nmv.enums.Camera.View.TOP:
                     x_list.append(sample[0][0])
                     y_list.append(sample[0][2])
@@ -349,7 +362,7 @@ class ConnectedSectionsBuilder:
         import seaborn
         import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
-        
+
         # A handle to the figure
         figure = None
 
@@ -413,6 +426,22 @@ class ConnectedSectionsBuilder:
             Projection.
         """
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        # Plotting imports
+        import numpy
+        import matplotlib
 
         # Installing dependencies
         try:
@@ -513,11 +542,64 @@ class ConnectedSectionsBuilder:
 
         # A list of all the skeleton poly-lines
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+
+        # Import the fonts
+        font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+        font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+        font_list = font_manager.createFontList(font_files)
+        font_manager.fontManager.ttflist.extend(font_list)
+
         # Create the color palette
         self.morphology.create_morphology_color_palette()
 
         # Clear the figure
         matplotlib.pyplot.clf()
+
+        # Adjust seaborn configuration
+        seaborn.set_style("white")
+
+        # The width of each bar
+        bar_width = 0.65
+
+        # Adjust seaborn configuration
+        seaborn.set_style("white")
+
+        # Adjusting the matplotlib parameters
+        pyplot.rcParams['axes.grid'] = 'False'
+        pyplot.rcParams['font.family'] = 'NimbusSanL'
+        pyplot.rcParams['axes.linewidth'] = 0.0
+        pyplot.rcParams['axes.labelsize'] = bar_width * 10
+        pyplot.rcParams['axes.labelweight'] = 'regular'
+        pyplot.rcParams['xtick.labelsize'] = bar_width * 10
+        pyplot.rcParams['ytick.labelsize'] = bar_width * 10
+        pyplot.rcParams['legend.fontsize'] = 10
+        pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+        pyplot.rcParams['axes.axisbelow'] = True
+        pyplot.rcParams['axes.edgecolor'] = '0.1'
 
         # A handle to the figure
         figure = None
@@ -559,7 +641,8 @@ class ConnectedSectionsBuilder:
                     # Plot the lines
                     figure = self.draw_poly_line_list_at_fixed_thickness(
                         poly_lines=basal_dendrite_poly_lines,
-                        color=self.morphology.basal_dendrites_colors[i], thickness=0.5)
+                        color=self.morphology.basal_dendrites_colors[i], thickness=0.5,
+                        projection=projection)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -578,7 +661,8 @@ class ConnectedSectionsBuilder:
                 # Plot the lines
                 figure = self.draw_poly_line_list_at_fixed_thickness(
                     poly_lines=axon_poly_lines,
-                    color=self.morphology.axon_color, thickness=0.5)
+                    color=self.morphology.axon_color, thickness=0.5,
+                    projection=projection)
 
         # Soma
         self.draw_soma_projection()
@@ -586,11 +670,33 @@ class ConnectedSectionsBuilder:
         # Adjust the scale
         figure.set_aspect(aspect='equal')
 
+        if projection == nmv.enums.Camera.View.FRONT:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.x, self.morphology.bounding_box.p_max.x))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.y, self.morphology.bounding_box.p_max.y))
+        elif projection == nmv.enums.Camera.View.SIDE:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.z, self.morphology.bounding_box.p_max.z))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.y, self.morphology.bounding_box.p_max.y))
+        elif projection == nmv.enums.Camera.View.TOP:
+            figure.set_xlim(
+                (self.morphology.bounding_box.p_min.x, self.morphology.bounding_box.p_max.x))
+            figure.set_ylim(
+                (self.morphology.bounding_box.p_min.z, self.morphology.bounding_box.p_max.z))
+        else:
+            pass
+
+        # Title
+        figure.set(xlabel=projection)
+
+        pdf_file_path = '%s/%s-%s.pdf' % \
+                        (self.options.io.analysis_directory, self.morphology.label, projection)
         # Save the figure
-        matplotlib.pyplot.savefig(
-            '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
-                             projection, '.png'),
-            bbox_inches='tight', transparent=True, dpi=300)
+        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+
+        return pdf_file_path
 
     ################################################################################################
     # @draw_morphology_skeleton

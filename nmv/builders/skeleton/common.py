@@ -68,14 +68,12 @@ def create_skeleton_materials_and_illumination(builder):
         name='apical_dendrite_skeleton', material_type=builder.options.morphology.material,
         color=builder.options.morphology.apical_dendrites_color)
 
-    '''
     # Articulations, ONLY, for the articulated reconstruction method
     if builder.options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         builder.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='articulation', material_type=builder.options.morphology.material,
             color=builder.options.morphology.articulation_color)
-    '''
 
     # Create an illumination specific for the given material
     nmv.shading.create_material_specific_illumination(builder.options.morphology.material)

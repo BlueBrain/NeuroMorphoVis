@@ -18,10 +18,6 @@
 # System imports
 import copy
 
-# Blender imports
-import bpy
-from mathutils import Vector
-
 # Internal imports
 import nmv.analysis
 import nmv.mesh
@@ -32,6 +28,7 @@ import nmv.geometry
 import nmv.scene
 import nmv.bmeshi
 import nmv.shading
+import nmv.utilities
 
 
 ####################################################################################################
@@ -40,8 +37,6 @@ import nmv.shading
 class DendrogramBuilder:
     """Builds and draws the morphology as a series of samples where each sample is represented by
     a sphere.
-
-    NOTE: We use bmeshes to generate the spheres and then link them to the scene all at once.
     """
 
     ################################################################################################
@@ -190,11 +185,44 @@ class DendrogramBuilder:
         nmv.logger.info('Done')
         return self.morphology_objects
 
+    ################################################################################################
+    # @draw_morphology_skeleton
+    ################################################################################################
     def draw_morphology_skeleton_with_matplotlib(self):
+        """Draws the morphology skeleton dendrogram with matplotlib. The resulting file should be
+        included in the analysis fact sheet.
+        """
 
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        import numpy as np
+        # Installing dependencies
+        try:
+            import numpy
+        except ValueError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ValueError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+
+        try:
+            import seaborn
+        except ValueError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        # Plotting imports
+        import numpy
+        import seaborn
+        import matplotlib.pyplot as pyplot
+        from matplotlib import font_manager
+
+        # Import the fonts
+        font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+        font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+        font_list = font_manager.createFontList(font_files)
+        font_manager.fontManager.ttflist.extend(font_list)
 
         # Create the color palette
         self.morphology.create_morphology_color_palette()
@@ -210,7 +238,31 @@ class DendrogramBuilder:
         nmv.skeleton.compute_morphology_dendrogram(
             morphology=self.morphology, delta=maximum_radius * 8)
 
-        plt.clf()
+        # Clean the environment
+        pyplot.clf()
+
+        # Adjust seaborn configuration
+        seaborn.set_style("white")
+
+        # The width of each bar
+        bar_width = 0.65
+
+        # Adjust seaborn configuration
+        seaborn.set_style("white")
+
+        # Adjusting the matplotlib parameters
+        pyplot.rcParams['axes.grid'] = 'False'
+        pyplot.rcParams['font.family'] = 'NimbusSanL'
+        pyplot.rcParams['axes.linewidth'] = 0.0
+        pyplot.rcParams['axes.labelsize'] = bar_width * 10
+        pyplot.rcParams['axes.labelweight'] = 'regular'
+        pyplot.rcParams['xtick.labelsize'] = bar_width * 10
+        pyplot.rcParams['ytick.labelsize'] = bar_width * 10
+        pyplot.rcParams['legend.fontsize'] = 10
+        pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
+        pyplot.rcParams['axes.axisbelow'] = True
+        pyplot.rcParams['axes.edgecolor'] = '0.1'
+        pyplot.axis('off')
 
         if not self.options.morphology.ignore_apical_dendrite:
 
@@ -233,11 +285,11 @@ class DendrogramBuilder:
                         x_list.append(sample[0][0])
                         y_list.append(sample[0][1])
 
-                    x = np.array(x_list)
-                    y = np.array(y_list)
+                    x = numpy.array(x_list)
+                    y = numpy.array(y_list)
 
-                    ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                                  color=self.morphology.apical_dendrite_color)
+                    ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                     color=self.morphology.apical_dendrite_color)
 
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
@@ -259,10 +311,10 @@ class DendrogramBuilder:
                         x_list.append(sample[0][0])
                         y_list.append(sample[0][1])
 
-                    x = np.array(x_list)
-                    y = np.array(y_list)
+                    x = numpy.array(x_list)
+                    y = numpy.array(y_list)
 
-                    ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                    ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
                                   color=self.morphology.axon_color)
 
         if not self.options.morphology.ignore_basal_dendrites:
@@ -288,11 +340,11 @@ class DendrogramBuilder:
                             x_list.append(sample[0][0])
                             y_list.append(sample[0][1])
 
-                        x = np.array(x_list)
-                        y = np.array(y_list)
+                        x = numpy.array(x_list)
+                        y = numpy.array(y_list)
 
-                        ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                                      color=color)
+                        ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                         color=color)
 
         # The soma to stems line
         skeleton_poly_lines = list()
@@ -311,17 +363,15 @@ class DendrogramBuilder:
                 x_list.append(sample[0][0])
                 y_list.append(sample[0][1])
 
-            x = np.array(x_list)
-            y = np.array(y_list)
+            x = numpy.array(x_list)
+            y = numpy.array(y_list)
 
-            ax = plt.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                          color=self.morphology.soma_color)
+            ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                             color=self.morphology.soma_color)
 
-        # plt.gcf().set_size_inches(5 , 5 / aspect_ratio)
-        #ax.set_aspect(aspect='equal')
+        pdf_file_path = '%s/%s-dendrogram.pdf' % \
+                        (self.options.io.analysis_directory, self.morphology.label)
+        pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
-        plt.savefig(
-            '%s/%s-%s.%s' % (self.options.io.analysis_directory, self.morphology.label,
-                             'dendrogram',
-                             '.png'),
-            bbox_inches='tight', transparent=True, dpi=300)
+        # Return the file path
+        return pdf_file_path
