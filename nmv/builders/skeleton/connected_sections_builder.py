@@ -138,6 +138,11 @@ class ConnectedSectionsBuilder:
     ################################################################################################
     def create_each_arbor_as_separate_component(self,
                                                 bevel_object):
+        """Creates each arbor in the morphology as a single component.
+
+        :param bevel_object:
+            Bevel object used to extrude the arbors.
+        """
 
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
