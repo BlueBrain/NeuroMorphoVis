@@ -346,7 +346,7 @@ def render_morphology_image(panel_object,
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.NMV_MeshCloseUpSize)
+            extent=context_scene.NMV_MorphologyCloseUpDimensions)
 
     # Compute the bounding box for a mid shot view
     elif context_scene.NMV_MorphologyRenderingView == \

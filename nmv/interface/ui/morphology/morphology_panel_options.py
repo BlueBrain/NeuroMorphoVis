@@ -326,12 +326,6 @@ bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
             'Original',
             'Use the original morphology skeleton'),
            (nmv.enums.Skeleton.Style.TAPERED,
-            'Planar',
-            'Project the entire morphology skeleton to XY plane'),
-           (nmv.enums.Skeleton.Style.TAPERED,
-            'Planar Zigzag',
-            'Project the entire morphology skeleton to XY plane and zigzag it'),
-           (nmv.enums.Skeleton.Style.TAPERED,
             'Tapered',
             'Create a tapered morphology skeleton (for artistic purposes).'),
            (nmv.enums.Skeleton.Style.ZIGZAG,
@@ -339,7 +333,7 @@ bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
             'Create a zigzagged skeleton (to simulate the way the neurons look under the '
             'microscope when the intracellular space if filled with some stain). This style is '
             'recommended to create meshes that can be used for machine learning applications.'),
-           (nmv.enums.Skeleton.Style.TAPERED,
+           (nmv.enums.Skeleton.Style.TAPERED_ZIGZAG,
             'Tapered Zigzag',
             'Create a zigzagged and tapered skeleton.')],
     name='Skeleton', default=nmv.enums.Skeleton.Style.ORIGINAL)

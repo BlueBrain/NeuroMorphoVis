@@ -212,7 +212,14 @@ class CreateNeuronCard(bpy.types.Operator):
 
         neuron_catalaog = '%s/catalog.pdf' % nmv.interface.ui_options.io.analysis_directory
 
-        from PyPDF2 import PdfFileReader, PdfFileWriter
+        try:
+            import PyPDF2
+            from PyPDF2 import PdfFileReader, PdfFileWriter
+        except ImportError:
+            print('Package *PyPDF2* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='pypdf2')
+            from PyPDF2 import PdfFileReader, PdfFileWriter
+
         pdf_writer = PdfFileWriter()
 
         for path in analysis_pdfs:

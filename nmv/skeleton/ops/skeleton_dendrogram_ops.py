@@ -19,8 +19,8 @@
 from mathutils import Vector
 
 # Internal imports
-import nmv
 import nmv.geometry
+import nmv.consts
 
 
 ####################################################################################################
@@ -302,8 +302,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             child_2 = section.children[i + 1]
 
             samples = list()
-            radius_1 = child_1.samples[0].radius
-            radius_2 = child_2.samples[0].radius
+            radius_1 = 0.5 # child_1.samples[0].radius
+            radius_2 = 0.5 # child_2.samples[0].radius
             if stretch_legs:
                 x_1 = child_1.dendrogram_x - radius_1
                 x_2 = child_2.dendrogram_x + radius_2
