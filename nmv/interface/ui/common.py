@@ -295,16 +295,22 @@ def validate_output_directory(panel_object,
 
     :param context_scene:
         Current scene in the rendering context.
+
+    :return
+        True if the output directory is valid or False otherwise.
     """
 
     # Ensure that there is a valid directory where the images will be written to
     if nmv.interface.ui_options.io.output_directory is None:
         panel_object.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-        return {'FINISHED'}
+        return False
 
     if not nmv.file.ops.path_exists(context_scene.NMV_OutputDirectory):
         panel_object.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-        return {'FINISHED'}
+        return False
+
+    # The output directory is valid
+    return True
 
 
 ####################################################################################################

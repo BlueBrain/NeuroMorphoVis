@@ -27,3 +27,4 @@ from .mtypes_consts import *
 from .simulation_consts import *
 from .soft_body_consts import *
 from .spines_consts import *
+from .suffix_consts import *

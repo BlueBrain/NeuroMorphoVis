@@ -415,6 +415,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # View all the objects in the scene
             nmv.scene.ops.view_all_scene()
 
+            # Finished
             return {'FINISHED'}
 
         else:
@@ -447,7 +448,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # View all the objects in the scene
             nmv.scene.ops.view_all_scene()
 
-            # Done
+            # Modal
             return {'RUNNING_MODAL'}
 
     ################################################################################################
@@ -518,14 +519,8 @@ class RenderSomaFront(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        nmv.logger.log(scene.NMV_OutputDirectory)
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
@@ -536,18 +531,13 @@ class RenderSomaFront(bpy.types.Operator):
         nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
                                            transparent=scene.NMV_SomaTransparentBackground)
 
-        # Fix the WHITE BUG
-        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[2] > 0.9:
-            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
-
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='SOMA_MESH_FRONT_%s' % nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.SOMA_FRONT),
             image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
@@ -583,13 +573,8 @@ class RenderSomaSide(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
@@ -600,18 +585,13 @@ class RenderSomaSide(bpy.types.Operator):
         nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
                                            transparent=scene.NMV_SomaTransparentBackground)
 
-        # Fix the WHITE BUG
-        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
-           scene.NMV_SomaBackgroundColor[1] > 0.9 and \
-           scene.NMV_SomaBackgroundColor[2] > 0.9:
-            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
-
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.SIDE,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='SOMA_MESH_SIDE_%s' % nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.SOMA_SIDE),
             image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
@@ -647,13 +627,8 @@ class RenderSomaTop(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
@@ -664,18 +639,13 @@ class RenderSomaTop(bpy.types.Operator):
         nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
                                            transparent=scene.NMV_SomaTransparentBackground)
 
-        # Fix the WHITE BUG
-        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[2] > 0.9:
-            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
-
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.TOP,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='SOMA_MESH_TOP_%s' % nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.SOMA_TOP),
             image_format=nmv.interface.ui_options.soma.image_format,
             image_directory=nmv.interface.ui_options.io.images_directory)
 
@@ -730,7 +700,7 @@ class RenderSoma360(bpy.types.Operator):
             # Refresh the panel context
             self.cancel(context)
 
-            # Done
+            # Finished
             return {'FINISHED'}
 
         # Timer event, where the function is executed here on a per-frame basis
@@ -739,6 +709,10 @@ class RenderSoma360(bpy.types.Operator):
             # Set the frame name
             image_name = '%s/%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
+
+            # Background color
+            nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                               transparent=scene.NMV_SomaTransparentBackground)
 
             # Render a frame
             nmv.rendering.SomaRenderer.render_at_angle(
@@ -775,41 +749,31 @@ class RenderSoma360(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.sequences_directory)
 
-        # Create a specific directory for this mesh
-        self.output_directory = '%s/%s_soma_mesh_360' % \
+        # Create a specific directory for this soma mesh
+        self.output_directory = '%s/%s%s' % \
                                 (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label)
+                                 nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.SOMA_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Background color
         nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
                                            transparent=scene.NMV_SomaTransparentBackground)
 
-        # Fix the WHITE BUG
-        if scene.NMV_SomaBackgroundColor[0] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[1] > 0.9 and \
-                scene.NMV_SomaBackgroundColor[2] > 0.9:
-            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
-
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
         self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
         wm.modal_handler_add(self)
 
-        # Done
+        # Modal
         return {'RUNNING_MODAL'}
 
     ################################################################################################
@@ -830,7 +794,7 @@ class RenderSoma360(bpy.types.Operator):
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Rendering Done')
 
-        # Confirm operation done
+        # Finished
         return {'FINISHED'}
 
 
@@ -855,7 +819,7 @@ class RenderSomaProgressive(bpy.types.Operator):
     morphology_object = None
 
     # Soma builder parameters
-    soma_soft_body_builder = None
+    soma_builder = None
     soma_sphere_object = None
 
     ################################################################################################
@@ -877,8 +841,7 @@ class RenderSomaProgressive(bpy.types.Operator):
         scene = context.scene
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or \
-                self.timer_limits > scene.NMV_SimulationSteps:
+        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > scene.NMV_SimulationSteps:
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -886,7 +849,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             # Refresh the panel context
             self.cancel(context)
 
-            # Done
+            # Finished
             return {'FINISHED'}
 
         # Timer event, where the function is executed here on a per-frame basis
@@ -896,12 +859,16 @@ class RenderSomaProgressive(bpy.types.Operator):
             bpy.context.scene.frame_set(self.timer_limits)
 
             # Set the frame name
-            image_name = '%s/frame_%s' % (
+            image_name = '%s/%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
+
+            # Background color
+            nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
+                                               transparent=scene.NMV_SomaTransparentBackground)
 
             # Render a frame
             nmv.rendering.SomaRenderer.render_at_angle(
-                soma_mesh=nmv.interface.ui_soma_mesh,
+                soma_mesh=self.soma_sphere_object,
                 angle=0.0,
                 view_extent=scene.NMV_ViewDimensions,
                 camera_view=nmv.enums.Camera.View.FRONT,
@@ -932,33 +899,26 @@ class RenderSomaProgressive(bpy.types.Operator):
             Panel context.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Clear the scene
         nmv.scene.ops.clear_scene()
-
-        # Get a reference to the scene
-        scene = context.scene
 
         # Create the sequences directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.sequences_directory)
 
         # Create a specific directory for this mesh
-        self.output_directory = '%s/%s_soma_mesh_progressive' % (
+        self.output_directory = '%s/%s%s' % (
             nmv.interface.ui_options.io.sequences_directory,
-            nmv.interface.ui_options.morphology.label)
+            nmv.interface.ui_options.morphology.label,
+            nmv.consts.Suffix.SOMA_PROGRESSIVE)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, scene)
+        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
 
         # If the result is None, report the issue
         if loading_result is None:
@@ -966,7 +926,7 @@ class RenderSomaProgressive(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create a some builder object
-        self.soma_soft_body_builder = nmv.builders.SomaSoftBodyBuilder(
+        self.soma_builder = nmv.builders.SomaSoftBodyBuilder(
             nmv.interface.ui_morphology, nmv.interface.ui_options)
 
         # Build the basic profile of the some from the soft body operation, but don't run the
@@ -978,7 +938,7 @@ class RenderSomaProgressive(bpy.types.Operator):
         self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
         wm.modal_handler_add(self)
 
-        # Done
+        # Modal
         return {'RUNNING_MODAL'}
 
     ################################################################################################
@@ -990,9 +950,6 @@ class RenderSomaProgressive(bpy.types.Operator):
         :param context:
             Panel context.
         """
-
-        # Get a reference to the scene
-        scene = context.scene
 
         # Multi-threading
         wm = context.window_manager
@@ -1007,13 +964,13 @@ class RenderSomaProgressive(bpy.types.Operator):
 
         # Show the progress, Done
         nmv.utilities.show_progress(
-            'Rendering', self.timer_limits, scene.NMV_SimulationSteps, done=True)
+            'Rendering', self.timer_limits, context.scene.NMV_SimulationSteps, done=True)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Rendering Done')
 
         # Delete the camera
-        nmv.scene.ops.delete_list_objects([self.soma_sphere_object])
+        # nmv.scene.ops.delete_list_objects([self.soma_sphere_object])
 
 
 ####################################################################################################
@@ -1040,16 +997,8 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
             {'FINISHED'}
         """
 
-        # Get a reference to the scene
-        scene = context.scene
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -1060,8 +1009,9 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
         nmv.file.export_object_to_obj_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
+        # Finished
         return {'FINISHED'}
 
 
@@ -1089,16 +1039,8 @@ class SaveSomaMeshPLY(bpy.types.Operator):
             {'FINISHED'}
         """
 
-        # Get a reference to the scene
-        scene = context.scene
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -1109,8 +1051,9 @@ class SaveSomaMeshPLY(bpy.types.Operator):
         nmv.file.export_object_to_ply_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
+        # Finished
         return {'FINISHED'}
 
 
@@ -1139,16 +1082,8 @@ class SaveSomaMeshSTL(bpy.types.Operator):
             {'FINISHED'}
         """
 
-        # Get a reference to the scene
-        scene = context.scene
-
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -1159,8 +1094,9 @@ class SaveSomaMeshSTL(bpy.types.Operator):
         nmv.file.export_object_to_stl_file(
             mesh_object=nmv.interface.ui_soma_mesh,
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
+        # Finished
         return {'FINISHED'}
 
 
@@ -1191,13 +1127,8 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -1207,8 +1138,10 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
         # Export the selected soma mesh as a .blend file
         nmv.file.export_scene_to_blend_file(
             output_directory=nmv.interface.ui_options.io.meshes_directory,
-            output_file_name='%s_soma' % nmv.interface.ui_morphology.label)
+            output_file_name='%s%s' % (nmv.interface.ui_morphology.label,
+                                       nmv.consts.Suffix.SOMA_MESH))
 
+        # Finished
         return {'FINISHED'}
 
 
