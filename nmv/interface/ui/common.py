@@ -333,8 +333,9 @@ def render_morphology_image(panel_object,
     """
 
     # Validate the output directory
-    nmv.interface.ui.validate_output_directory(
-        panel_object=panel_object, context_scene=context_scene)
+    if not nmv.interface.ui.validate_output_directory(
+            panel_object=panel_object, context_scene=context_scene):
+        return
 
     # Create the images directory if it does not exist
     if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
@@ -368,15 +369,15 @@ def render_morphology_image(panel_object,
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
             morphology=nmv.interface.ui_morphology)
 
-    # Get the view prefix
+    # Get the image suffix
     if view == nmv.enums.Camera.View.FRONT:
-        view_prefix = 'FRONT'
+        suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
     elif view == nmv.enums.Camera.View.SIDE:
-        view_prefix = 'SIDE'
+        suffix = nmv.consts.Suffix.MORPHOLOGY_SIDE
     elif view == nmv.enums.Camera.View.TOP:
-        view_prefix = 'TOP'
+        suffix = nmv.consts.Suffix.MORPHOLOGY_TOP
     else:
-        view_prefix = ''
+        suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
 
     # Background color
     nmv.scene.ops.set_background_color(
@@ -391,7 +392,7 @@ def render_morphology_image(panel_object,
             bounding_box=bounding_box,
             camera_view=view,
             image_resolution=context_scene.NMV_MorphologyFrameResolution,
-            image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
@@ -404,7 +405,7 @@ def render_morphology_image(panel_object,
             bounding_box=bounding_box,
             camera_view=view,
             image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
-            image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
@@ -433,8 +434,9 @@ def render_mesh_image(panel_object,
     """
 
     # Validate the output directory
-    nmv.interface.ui.validate_output_directory(
-        panel_object=panel_object, context_scene=context_scene)
+    if not nmv.interface.ui.validate_output_directory(
+            panel_object=panel_object, context_scene=context_scene):
+        return
 
     # Create the images directory if it does not exist
     if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
@@ -466,15 +468,15 @@ def render_mesh_image(panel_object,
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
             morphology=nmv.interface.ui_morphology)
 
-    # Get the view prefix
+    # Get the image suffix
     if view == nmv.enums.Camera.View.FRONT:
-        view_prefix = 'FRONT'
+        suffix = nmv.consts.Suffix.MESH_FRONT
     elif view == nmv.enums.Camera.View.SIDE:
-        view_prefix = 'SIDE'
+        suffix = nmv.consts.Suffix.MESH_SIDE
     elif view == nmv.enums.Camera.View.TOP:
-        view_prefix = 'TOP'
+        suffix = nmv.consts.Suffix.MESH_TOP
     else:
-        view_prefix = 'FRONT'
+        suffix = nmv.consts.Suffix.MESH_FRONT
 
     # Background color
     nmv.scene.ops.set_background_color(
@@ -490,7 +492,7 @@ def render_mesh_image(panel_object,
             bounding_box=bounding_box,
             camera_view=view,
             image_resolution=context_scene.NMV_MeshFrameResolution,
-            image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
@@ -503,7 +505,7 @@ def render_mesh_image(panel_object,
             bounding_box=bounding_box,
             camera_view=view,
             image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
-            image_name='MESH_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)

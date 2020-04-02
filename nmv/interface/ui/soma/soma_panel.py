@@ -337,7 +337,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # Refresh the panel context
             self.cancel(context)
 
-            # Done
+            # Finished
             return {'FINISHED'}
 
         # Timer event, where the function is executed here on a per-frame basis

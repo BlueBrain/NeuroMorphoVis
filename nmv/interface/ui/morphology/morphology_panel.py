@@ -345,7 +345,7 @@ class RenderMorphology360(bpy.types.Operator):
         if event.type == 'TIMER':
 
             # Set the frame name
-            image_name = '%s/frame_%s' % (
+            image_name = '%s/%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
 
             # Compute the bounding box for a close up view
@@ -409,13 +409,8 @@ class RenderMorphology360(bpy.types.Operator):
         :param context: Panel context.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
@@ -424,9 +419,10 @@ class RenderMorphology360(bpy.types.Operator):
                 nmv.interface.ui_options.io.sequences_directory)
 
         # Create a specific directory for this mesh
-        self.output_directory = '%s/%s_morphology_360' % \
+        self.output_directory = '%s/%s%s' % \
                                 (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label)
+                                 nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.MORPHOLOGY_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Use the event timer to update the UI during the soma building
@@ -488,9 +484,6 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         :param context: Panel context.
         :param event: A given event for the panel.
         """
-
-        # Get a reference to the scene
-        scene = context.scene
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > bpy.context.scene.frame_end:
@@ -579,13 +572,8 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         :param context: Panel context.
         """
 
-        # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
@@ -594,9 +582,10 @@ class RenderMorphologyProgressive(bpy.types.Operator):
                 nmv.interface.ui_options.io.sequences_directory)
 
         # Create a specific directory for this mesh
-        self.output_directory = '%s/%s_morphology_progressive' % \
+        self.output_directory = '%s/%s%s' % \
                                 (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label)
+                                 nmv.interface.ui_options.morphology.label,
+                                 nmv.consts.Suffix.MORPHOLOGY_PROGRESSIVE)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Clear the scene
@@ -661,13 +650,8 @@ class SaveMorphologySWC(bpy.types.Operator):
         :return: {'FINISHED'}
         """
 
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -707,13 +691,8 @@ class SaveMorphologySegments(bpy.types.Operator):
         :return: {'FINISHED'}
         """
 
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
@@ -752,13 +731,8 @@ class SaveMorphologyBLEND(bpy.types.Operator):
         :return: {'FINISHED'}
         """
 
-        # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
-            self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-            return {'FINISHED'}
-
-        if not nmv.file.ops.file_ops.path_exists(context.scene.NMV_OutputDirectory):
-            self.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        # Verify the output directory
+        if not nmv.interface.validate_output_directory(self, context.scene):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist

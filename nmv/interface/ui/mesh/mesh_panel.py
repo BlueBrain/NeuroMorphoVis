@@ -432,9 +432,10 @@ class RenderMesh360(bpy.types.Operator):
         self.bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
         # Create a specific directory for this mesh
-        self.output_directory = '%s/%s_mesh_360' % (
+        self.output_directory = '%s/%s%s' % (
             nmv.interface.ui_options.io.sequences_directory,
-            nmv.interface.ui_options.morphology.label)
+            nmv.interface.ui_options.morphology.label,
+            nmv.consts.Suffix.MESH_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
         # Use the event timer to update the UI during the soma building
