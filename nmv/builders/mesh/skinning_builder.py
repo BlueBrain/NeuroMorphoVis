@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, os, copy
+import copy
 import time
 
 # Blender imports
@@ -473,12 +473,8 @@ class SkinningBuilder:
         nmv.builders.create_skeleton_materials(builder=self)
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
-        self.profiling_statistics += stats
-
-        # Apply skeleton - based operation, if required, to slightly modify the skeleton
         result, stats = nmv.utilities.profile_function(
-            nmv.builders.modify_morphology_skeleton, self)
+            nmv.builders.mesh.update_morphology_skeleton, self)
         self.profiling_statistics += stats
 
         # Build the soma, with the default parameters

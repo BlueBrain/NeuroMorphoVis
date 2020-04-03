@@ -500,7 +500,7 @@ def draw_connected_sections(section, name,
             global progressive_frame_index
 
             # The file path of the frame
-            frame_file_path = '%s/frame_%s' % (
+            frame_file_path = '%s/%s' % (
                 frame_destination, '{0:05d}'.format(progressive_frame_index))
 
             # Render the image to film
@@ -647,7 +647,7 @@ def draw_disconnected_skeleton_sections(section,
             global progressive_frame_index
 
             # The file path of the frame
-            frame_file_path = '%s/frame_%s' % (
+            frame_file_path = '%s/%s' % (
                 frame_destination, '{0:05d}'.format(progressive_frame_index))
 
             # Render the image to film

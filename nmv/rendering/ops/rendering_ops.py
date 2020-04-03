@@ -306,7 +306,7 @@ def render_full_view_360(objects_list,
             scene_object.rotation_euler[1] = i * 2 * 3.14 / 360.0
 
         # Set the frame name
-        frame_name = '%s/%s_%s' % (frames_directory, 'frame', '{0:05d}'.format(i))
+        frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
 
         # Render the image to film
         camera_ops.render_scene_to_image(camera, frame_name)

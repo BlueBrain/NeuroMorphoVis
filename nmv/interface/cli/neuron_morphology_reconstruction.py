@@ -216,10 +216,10 @@ def reconstruct_neuron_morphology(cli_morphology,
             bpy.context.scene.frame_set(i)
 
             # Set the frame name
-            image_name = 'frame_%s' % '{0:05d}'.format(i)
+            image_name = '%s' % '{0:05d}'.format(i)
 
             # Set the frame name
-            image_name = '%s/%s/frame_%s' % (
+            image_name = '%s/%s/%s' % (
                 cli_options.io.sequences_directory, cli_morphology.label, '{0:05d}'.format(i))
 
             # Render a frame
