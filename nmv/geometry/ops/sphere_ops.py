@@ -22,7 +22,7 @@ import math, random
 # Blender imports
 from mathutils import Vector, Matrix
 
-import nmv
+# Internal imports
 import nmv.geometry
 import nmv.mesh
 

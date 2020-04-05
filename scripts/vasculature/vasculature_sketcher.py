@@ -19,7 +19,6 @@
 from mathutils import Vector
 
 # NeuroMorphoVis imports
-import nmv
 import nmv.geometry
 import nmv.mesh
 import nmv.file

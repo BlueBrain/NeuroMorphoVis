@@ -24,7 +24,7 @@ import bpy
 from mathutils import Vector
 from mathutils import Matrix
 
-import nmv
+# Internal imports
 import nmv.consts
 import nmv.mesh
 import nmv.shading

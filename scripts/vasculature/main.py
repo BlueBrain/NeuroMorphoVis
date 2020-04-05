@@ -23,7 +23,6 @@ import bpy
 from mathutils import Vector
 
 # NeuroMorphoVis imports
-import nmv
 import nmv.mesh
 import nmv.scene
 

@@ -18,9 +18,6 @@
 # System imports
 import copy
 
-# Internal imports
-import nmv
-
 
 ####################################################################################################
 # @compute_number_of_samples_per_section_distributions

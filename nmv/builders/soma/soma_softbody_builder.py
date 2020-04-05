@@ -21,7 +21,7 @@ import random
 # Blender imports
 import bpy
 
-import nmv
+# Internal imports
 import nmv.bmeshi
 import nmv.consts
 import nmv.enums

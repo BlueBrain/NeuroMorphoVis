@@ -20,7 +20,6 @@
 import copy
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.enums
 

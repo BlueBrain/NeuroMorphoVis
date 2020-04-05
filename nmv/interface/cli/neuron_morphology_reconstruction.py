@@ -29,7 +29,6 @@ for import_path in import_paths:
     sys.path.append(('%s/../../..' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Internal imports
-import nmv
 import nmv.builders
 import nmv.consts
 import nmv.bbox

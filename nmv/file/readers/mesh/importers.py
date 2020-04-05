@@ -22,7 +22,6 @@ import os
 import bpy
 
 # Internal imports
-import nmv
 import nmv.scene
 
 

@@ -21,7 +21,6 @@ import random
 # Blender imports
 from mathutils import Vector
 
-import nmv
 import nmv.consts
 import nmv.shading
 import nmv.scene
