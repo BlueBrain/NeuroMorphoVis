@@ -178,5 +178,5 @@ class Shading:
 
         (WIRE_FRAME,
          'Wire-frame',
-         "Wire-frxame shader. This shader might take several minutes to create an image")
+         "Wire-frame shader to show the polygons of the mesh")
     ]
