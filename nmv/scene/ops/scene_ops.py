@@ -93,13 +93,6 @@ def set_background_color(color,
     # 2.80 or higher
     if nmv.utilities.is_blender_280():
 
-        # Color
-        bpy.context.scene.world.color = color
-
-        # Fix the WHITE BUG
-        if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
-            bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
-
         # Transparency
         bpy.context.scene.render.film_transparent = transparent
 
@@ -109,19 +102,69 @@ def set_background_color(color,
         else:
             bpy.context.scene.render.image_settings.color_mode = 'RGB'
 
+            # If Workbench render is used, adjust the color as follows
+            if bpy.context.scene.render.engine == 'BLENDER_WORKBENCH':
+
+                # Set the color selected
+                bpy.context.scene.world.color = color
+
+                # Fix the WHITE BUG
+                if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+                    bpy.context.scene.world.color = nmv.consts.Color.VERY_WHITE
+
+            # Cycles and Eevee
+            else:
+
+                # Get a reference to the WORLD
+                world = bpy.data.worlds['World']
+
+                # Use nodes
+                world.use_nodes = True
+
+                # Get the background node
+                bg = world.node_tree.nodes['Background']
+
+                # Set the color
+                bg.inputs[0].default_value = (color[0], color[1], color[2], 1)
+
+                # Fix the WHITE BUG
+                if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+                    bg.inputs[0].default_value = (10, 10, 10, 1)
     # 2.79
     else:
-
-        # Color
-        bpy.context.scene.world.horizon_color = color
 
         # Transparency
         if transparent:
             bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
             bpy.context.scene.render.image_settings.color_mode = 'RGBA'
         else:
-            bpy.context.scene.render.alpha_mode = 'SKY'
-            bpy.context.scene.render.image_settings.color_mode = 'RGB'
+
+            # If Cycles
+            if bpy.context.scene.render.engine == 'CYCLES':
+
+                # Get a reference to the WORLD
+                world = bpy.data.worlds['World']
+
+                # Use nodes
+                world.use_nodes = True
+
+                # Get the background node
+                bg = world.node_tree.nodes['Background']
+
+                # Set the color
+                bg.inputs[0].default_value = (color[0], color[1], color[2], 1)
+
+                # Fix the WHITE BUG
+                if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+                    bg.inputs[0].default_value = (10, 10, 10, 1)
+
+            # If Blender render
+            else:
+                bpy.context.scene.render.alpha_mode = 'SKY'
+                bpy.context.scene.render.image_settings.color_mode = 'RGB'
+
+                # Color
+                bpy.context.scene.world.horizon_color = color
 
 
 ####################################################################################################
