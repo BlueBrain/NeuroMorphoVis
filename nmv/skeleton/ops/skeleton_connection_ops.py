@@ -952,17 +952,15 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
         A reference to the soma mesh after the connection.
     """
 
-    # If the arbor is not valid
+    # If the arbor is not valid, return
     if arbor is None:
-
-        # Return
-        return
+        return soma_mesh
 
     # Verify if the arbor is connected to the soma or not
     if not arbor.connected_to_soma:
-        nmv.logger.log('\t\t * WARNING: The neurite [%s: %d] is not connected to the soma' %
-              (arbor.get_type_string(), arbor.id))
-        return
+        nmv.logger.log('\t\t * WARNING: The arbor [%s: %d] is not connected to the soma' %
+                       (arbor.get_type_string(), arbor.id))
+        return soma_mesh
 
     # Clip the auxiliary section using a cutting plane that is normal on the branch
     # Get the intersection point between the soma and the apical dendrite
