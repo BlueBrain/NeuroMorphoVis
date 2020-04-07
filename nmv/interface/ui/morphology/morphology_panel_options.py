@@ -86,7 +86,7 @@ bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
 # Morphology material
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shading.MATERIAL_ITEMS,
-    name="Material",
+    name="Shading",
     default=nmv.enums.Shading.LAMBERT_WARD)
 
 # Color arbor by part
@@ -148,18 +148,6 @@ bpy.types.Scene.NMV_MorphologyHomogeneousColor = bpy.props.BoolProperty(
     name="Homogeneous Color",
     description="Use a single color for rendering all the objects of the morphology",
     default=False)
-
-# Transparent background
-bpy.types.Scene.NMV_MorphologyTransparentBackground = bpy.props.BoolProperty(
-    name="Transparent Background",
-    description="Set transparent background for the rendered image",
-    default=False)
-
-# Background color
-bpy.types.Scene.NMV_MorphologyBackgroundColor = bpy.props.FloatVectorProperty(
-    name="Background Color",
-    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
-    description="The color of the background of the rendered image")
 
 # Reconstruction method
 bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
@@ -365,21 +353,7 @@ bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
 
 # Image format
 bpy.types.Scene.NMV_MorphologyImageFormat = bpy.props.EnumProperty(
-    items=[(nmv.enums.Image.Extension.PNG,
-            'PNG',
-            'PNG'),
-           (nmv.enums.Image.Extension.TIFF,
-            'TIFF',
-            'TIFF'),
-           (nmv.enums.Image.Extension.OPEN_EXR,
-            'OpenEXR',
-            'OpenEXR'),
-           (nmv.enums.Image.Extension.JPEG,
-            'JPEG',
-            'JPEG'),
-           (nmv.enums.Image.Extension.BMP,
-            'BMP',
-            'BMP')],
+    items=nmv.enums.Image.Extension.IMAGE_EXTENSION_ITEMS,
     name='',
     default=nmv.enums.Image.Extension.PNG)
 

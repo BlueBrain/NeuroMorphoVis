@@ -74,9 +74,6 @@ def reconstruct_neuron_morphology(cli_morphology,
             None, cli_options.io.morphologies_directory, cli_morphology.label,
             blend=cli_options.morphology.export_blend)
 
-    # Set the background color
-    nmv.scene.set_background_color(nmv.consts.Color.WHITE, transparent=True)
-
     # Render a static image of the reconstructed morphology skeleton
     if cli_options.morphology.render:
 

@@ -21,10 +21,10 @@
 import bpy
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.enums
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -48,13 +48,21 @@ def create_lambert_ward_illumination():
 
     # Add the lights
     for i, angle in enumerate(light_rotation):
-        bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-        lamp_reference = bpy.context.object
-        lamp_reference.name = 'Lamp%d' % i
-        lamp_reference.data.name = "Lamp%d" % i
-        lamp_reference.rotation_euler = angle
-        lamp_reference.data.use_specular = True if i == 0 else False
-        lamp_reference.data.energy = 0.5
+        if nmv.utilities.is_blender_280():
+            bpy.ops.object.light_add(type='SUN', radius=1, location=(0, 0, 0))
+            lamp_reference = bpy.context.object
+            lamp_reference.name = 'Lamp%d' % i
+            lamp_reference.data.name = "Lamp%d" % i
+            lamp_reference.rotation_euler = angle
+            lamp_reference.data.energy = 0.5
+        else:
+            bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+            lamp_reference = bpy.context.object
+            lamp_reference.name = 'Lamp%d' % i
+            lamp_reference.data.name = "Lamp%d" % i
+            lamp_reference.rotation_euler = angle
+            lamp_reference.data.use_specular = True if i == 0 else False
+            lamp_reference.data.energy = 0.5
 
 
 ####################################################################################################
@@ -90,9 +98,9 @@ def create_shadow_illumination():
 
 
 ####################################################################################################
-# @create_glossy_bumpy_illumination
+# @create_glossy_illumination
 ####################################################################################################
-def create_glossy_bumpy_illumination():
+def create_glossy_illumination():
 
     nmv.scene.ops.clear_lights()
 
@@ -100,56 +108,34 @@ def create_glossy_bumpy_illumination():
     nmv.scene.ops.deselect_all()
 
     # Multiple light sources from different directions
-    light_rotation = [(0.000, 3.140, 0.000),
+    light_rotation = [(0.000, 0, 0.000),
                       (-1.57, 0.000, 0.000),
                       (0.000, -1.57, 0.000)]
 
+    light_position = [(0, 0, 100),
+                      (0, 100, 0),
+                      (-100, 0, 0)]
+
     # Add the light sources
     for i, angle in enumerate(light_rotation):
-        lamp_data = bpy.data.lamps.new(name='HemiLamp%d' % i, type='HEMI')
-        lamp_object = bpy.data.objects.new(name='HemiLamp%d' % i, object_data=lamp_data)
-        bpy.context.scene.objects.link(lamp_object)
-        lamp_object.rotation_euler = angle
-        bpy.data.lamps['HemiLamp%d' % i].use_nodes = True
-        bpy.data.lamps['HemiLamp%d' % i].node_tree.nodes["Emission"].inputs[1].default_value = 10
 
-
-####################################################################################################
-# @create_voronoi_cells_illumination
-####################################################################################################
-def create_voronoi_cells_illumination():
-    """
-
-    :param name:
-    :return:
-    """
-
-    # Get active scene
-    current_scene = bpy.context.scene
-
-    # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
-
-    # If no light sources in the scene, then create two sources one towards the top and the
-    # other one towards the bottom
-    if not nmv.scene.ops.is_object_in_scene_by_name('DefaultLamp'):
-        nmv.scene.ops.deselect_all()
-
-        light_rotation = [(0.000, 0.000, 0.000),
-                          (0.000, 3.140, 0.000),
-                          (1.570, 0.000, 0.000),
-                          (-1.57, 0.000, 0.000),
-                          (0.000, 1.570, 0.000),
-                          (0.000, -1.57, 0.000)]
-
-        for i, angle in enumerate(light_rotation):
-            bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+        if nmv.utilities.is_blender_280():
+            bpy.ops.object.light_add(type='AREA', radius=1, location=light_position[i])
             lamp_reference = bpy.context.object
             lamp_reference.name = 'Lamp%d' % i
             lamp_reference.data.name = "Lamp%d" % i
             lamp_reference.rotation_euler = angle
-            bpy.data.lamps['Lamp%d' % i].node_tree.nodes["Emission"].inputs[1].default_value = 2.5
+            lamp_reference.data.energy = 1e5
+
+        else:
+            lamp_data = bpy.data.lamps.new(name='Lamp%d' % i, type='HEMI')
+            lamp_object = bpy.data.objects.new(name='Lamp%d' % i, object_data=lamp_data)
+            bpy.context.scene.objects.link(lamp_object)
+            lamp_object.rotation_euler = angle
+            lamp_object.location = light_position[i]
+            bpy.data.lamps['Lamp%d' % i].use_nodes = True
+            bpy.data.lamps['Lamp%d' % i].node_tree.nodes["Emission"].inputs[
+                1].default_value = 1e5
 
 
 ####################################################################################################
@@ -162,7 +148,6 @@ def create_material_specific_illumination(material_type):
         Material type.
     """
 
-    return
     # Lambert Ward
     if material_type == nmv.enums.Shading.LAMBERT_WARD:
         return create_lambert_ward_illumination()
@@ -173,11 +158,11 @@ def create_material_specific_illumination(material_type):
 
     # Glossy bumpy
     elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
-        return create_glossy_bumpy_illumination()
+        return create_glossy_illumination()
 
-    # Voronoi
-    elif material_type == nmv.enums.Shading.VORONOI:
-        return create_voronoi_cells_illumination()
+    # Glossy
+    elif material_type == nmv.enums.Shading.GLOSSY:
+        return create_glossy_illumination()
 
     # Default, just use the lambert shader illumination
     else:

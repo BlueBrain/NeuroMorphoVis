@@ -221,7 +221,7 @@ bpy.types.Scene.NMV_RandomSpinesPercentage = bpy.props.FloatProperty(
 
 bpy.types.Scene.NMV_MeshMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shading.MATERIAL_ITEMS,
-    name="Material",
+    name="Shading",
     default=nmv.enums.Shading.LAMBERT_WARD)
 
 # Use single color for the all the objects in the mesh
@@ -304,21 +304,7 @@ bpy.types.Scene.NMV_KeepMeshCameras = bpy.props.BoolProperty(
 
 # Image format
 bpy.types.Scene.NMV_MeshImageFormat = bpy.props.EnumProperty(
-    items=[(nmv.enums.Image.Extension.PNG,
-            'PNG',
-            'PNG'),
-           (nmv.enums.Image.Extension.TIFF,
-            'TIFF',
-            'TIFF'),
-           (nmv.enums.Image.Extension.OPEN_EXR,
-            'OpenEXR',
-            'OpenEXR'),
-           (nmv.enums.Image.Extension.JPEG,
-            'JPEG',
-            'JPEG'),
-           (nmv.enums.Image.Extension.BMP,
-            'BMP',
-            'BMP')],
+    items=nmv.enums.Image.Extension.IMAGE_EXTENSION_ITEMS,
     name='',
     default=nmv.enums.Image.Extension.PNG)
 
@@ -366,18 +352,6 @@ bpy.types.Scene.NMV_ExportedMeshFormat = bpy.props.EnumProperty(
             'Blender File (.blend)',
             'Export the mesh as a .blend file')],
     name='Format', default=nmv.enums.Meshing.ExportFormat.PLY)
-
-# Transparent background
-bpy.types.Scene.NMV_MeshTransparentBackground = bpy.props.BoolProperty(
-    name="Transparent Background",
-    description="Set transparent background for the rendered image",
-    default=False)
-
-# Background color
-bpy.types.Scene.NMV_MeshBackgroundColor = bpy.props.FloatVectorProperty(
-    name="Background Color",
-    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
-    description="The color of the background of the rendered image")
 
 # Reconstruction time
 bpy.types.Scene.NMV_MeshReconstructionTime = bpy.props.FloatProperty(

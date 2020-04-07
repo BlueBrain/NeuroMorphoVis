@@ -379,11 +379,6 @@ def render_morphology_image(panel_object,
     else:
         suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
 
-    # Background color
-    nmv.scene.ops.set_background_color(
-        color=context_scene.NMV_MorphologyBackgroundColor,
-        transparent=context_scene.NMV_MorphologyTransparentBackground)
-
     # Render at a specific resolution
     if context_scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
 
@@ -477,11 +472,6 @@ def render_mesh_image(panel_object,
         suffix = nmv.consts.Suffix.MESH_TOP
     else:
         suffix = nmv.consts.Suffix.MESH_FRONT
-
-    # Background color
-    nmv.scene.ops.set_background_color(
-        color=context_scene.NMV_MeshBackgroundColor,
-        transparent=context_scene.NMV_MeshTransparentBackground)
 
     # Render at a specific resolution
     if context_scene.NMV_MeshRenderingResolution == \

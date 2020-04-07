@@ -54,6 +54,8 @@ class SomaRenderer:
             The resolution of the image, by default 512.
         :param image_name:
             The name of the image, by default 'SOMA'.
+        :param image_format:
+            The format of the image.
         :param image_directory:
             The directory where the image will be rendered. If the directory is set to None,
             then the prefix is included in @image_name.

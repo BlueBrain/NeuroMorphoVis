@@ -81,7 +81,7 @@ bpy.types.Scene.NMV_SomaBaseColor = bpy.props.FloatVectorProperty(
 # The material applied to the soma mesh following to the reconstruction
 bpy.types.Scene.NMV_SomaMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shading.MATERIAL_ITEMS,
-    name='Material',
+    name='Shading',
     description='The shading material that will be applied to the reconstructed soma mesh',
     default=nmv.enums.Shading.LAMBERT_WARD)
 
@@ -127,21 +127,7 @@ bpy.types.Scene.NMV_SomaSimulationProgress = bpy.props.IntProperty(
 
 # Image format
 bpy.types.Scene.NMV_SomaImageFormat = bpy.props.EnumProperty(
-    items=[(nmv.enums.Image.Extension.PNG,
-            'PNG',
-            'PNG'),
-           (nmv.enums.Image.Extension.TIFF,
-            'TIFF',
-            'TIFF'),
-           (nmv.enums.Image.Extension.OPEN_EXR,
-            'OpenEXR',
-            'OpenEXR'),
-           (nmv.enums.Image.Extension.JPEG,
-            'JPEG',
-            'JPEG'),
-           (nmv.enums.Image.Extension.BMP,
-            'BMP',
-            'BMP')],
+    items=nmv.enums.Image.Extension.IMAGE_EXTENSION_ITEMS,
     name='',
     default=nmv.enums.Image.Extension.PNG)
 
@@ -163,15 +149,3 @@ bpy.types.Scene.NMV_SomaRenderingProgress = bpy.props.IntProperty(
     name='Rendering Progress',
     description='Rendering progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
-
-# Transparent background
-bpy.types.Scene.NMV_SomaTransparentBackground = bpy.props.BoolProperty(
-    name="Transparent Background",
-    description="Set transparent background for the rendered image",
-    default=False)
-
-# Background color
-bpy.types.Scene.NMV_SomaBackgroundColor = bpy.props.FloatVectorProperty(
-    name="Background Color",
-    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
-    description="The color of the background of the rendered image")

@@ -87,6 +87,21 @@ class Image:
             else:
                 return 'png'
 
+        ############################################################################################
+        # A list of all the available image formats in NeuroMorphoVis
+        ############################################################################################
+        IMAGE_EXTENSION_ITEMS = [
+
+            # PNG
+            (PNG, 'PNG', 'Render a .png image'),
+
+            # PNG
+            (TIFF, 'TIFF', 'Render a .tiff image'),
+
+            # PNG
+            (OPEN_EXR, 'OpenEXR', 'Render an .exr image'),
+        ]
+
 
 
 

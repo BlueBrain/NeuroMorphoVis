@@ -446,27 +446,6 @@ def set_rendering_options(layout,
     image_extension_row.prop(scene, 'NMV_MorphologyImageFormat')
     nmv.interface.ui_options.morphology.image_format = scene.NMV_MorphologyImageFormat
 
-    # Can we have a transparent background
-    if scene.NMV_MorphologyImageFormat == nmv.enums.Image.Extension.PNG or \
-       scene.NMV_MorphologyImageFormat == nmv.enums.Image.Extension.TIFF or \
-       scene.NMV_MorphologyImageFormat == nmv.enums.Image.Extension.OPEN_EXR:
-
-        # Transparent image or not
-        background_row = layout.row()
-        background_row.prop(scene, 'NMV_MorphologyTransparentBackground')
-
-        if scene.NMV_MorphologyTransparentBackground:
-            nmv.interface.ui_options.morphology.transparent_film = True
-        else:
-            nmv.interface.ui_options.morphology.transparent_film = False
-    else:
-        nmv.interface.ui_options.morphology.transparent_film = False
-
-    if nmv.interface.ui_options.morphology.transparent_film is False:
-        background_color = layout.row()
-        background_color.prop(scene, 'NMV_MorphologyBackgroundColor')
-        nmv.interface.ui_options.morphology.film_color = scene.NMV_MorphologyBackgroundColor
-
     # Render view buttons
     render_view_row = layout.row()
     render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')

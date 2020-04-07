@@ -533,9 +533,6 @@ class DisconnectedSectionsBuilder:
 
     def render_highlighted_arbors(self):
 
-        # Set the background to transparent
-        nmv.scene.ops.set_background_color(color=nmv.consts.Color.VERY_WHITE, transparent=False)
-
         # Set the arbors radii to be fixed to 1.0
         self.options.morphology.material = nmv.enums.Shading.FLAT
         self.options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED

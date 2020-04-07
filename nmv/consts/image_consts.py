@@ -52,3 +52,6 @@ class Image:
 
     # Default value for the image scale factor
     DEFAULT_IMAGE_SCALE_FACTOR = 1.0
+
+    # Default samples per pixels
+    DEFAULT_SPP = 2

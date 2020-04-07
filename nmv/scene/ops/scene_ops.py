@@ -128,15 +128,17 @@ def set_background_color(color,
                 bg.inputs[0].default_value = (color[0], color[1], color[2], 1)
 
                 # Fix the WHITE BUG
-                if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
-                    bg.inputs[0].default_value = (10, 10, 10, 1)
+                # if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+                #    bg.inputs[0].default_value = (10, 10, 10, 1)
     # 2.79
     else:
 
-        # Transparency
+        # Transparency background
         if transparent:
             bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
             bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+
+        # Non-transparent background
         else:
 
             # If Cycles
@@ -165,6 +167,10 @@ def set_background_color(color,
 
                 # Color
                 bpy.context.scene.world.horizon_color = color
+
+                # Fix the WHITE BUG
+                if color[0] > 0.9 and color[1] > 0.9 and color[2] > 0.9:
+                    bpy.context.scene.world.horizon_color = nmv.consts.Color.VERY_WHITE
 
 
 ####################################################################################################
@@ -297,7 +303,7 @@ def clear_scene():
     nmv.utilities.enable_std_output()
 
     # Unlink all the objects in all the layers
-    #for scene in bpy.data.scenes:
+    # for scene in bpy.data.scenes:
     #    for scene_object in scene.objects:
     #        unlink_object_from_scene(scene_object)
 
@@ -342,9 +348,14 @@ def clear_lights():
             nmv.utilities.enable_std_output()
 
     # Select all the light, unlink them and clear their data
-    for scene_lamp in bpy.data.lamps:
-        scene_lamp.user_clear()
-        bpy.data.lamps.remove(scene_lamp)
+    if nmv.utilities.is_blender_280():
+        for scene_lamp in bpy.data.lights:
+            scene_lamp.user_clear()
+            bpy.data.lights.remove(scene_lamp)
+    else:
+        for scene_lamp in bpy.data.lamps:
+            scene_lamp.user_clear()
+            bpy.data.lamps.remove(scene_lamp)
 
 
 ####################################################################################################

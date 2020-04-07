@@ -113,7 +113,9 @@ class Shading:
             return Shading.GLOSSY_BUMPY
         elif shader_type == 'lambert':
             return Shading.LAMBERT_WARD
-        elif shader_type == 'cracks':
+        elif shader_type == 'toon':
+            return Shading.LAMBERT_WARD
+        elif shader_type == 'toon':
             return Shading.CRACKS
         elif shader_type == 'grid':
             return Shading.GRID
@@ -134,46 +136,47 @@ class Shading:
     ################################################################################################
     MATERIAL_ITEMS = [
         (LAMBERT_WARD,
-         'Lambert Ward',
-         "Lambert Ward Shader"),
-
-        (SUPER_ELECTRON_LIGHT,
-         'Super Electron Light',
-         "Highly Detailed Light Electron Shader"),
-
-        (SUPER_ELECTRON_DARK,
-         'Super Electron Dark',
-         "Highly Detailed Dark Electron Shader"),
-
-        (ELECTRON_LIGHT,
-         'Electron Light',
-         "Light Electron Shader"),
-
-        (ELECTRON_DARK,
-         'Electron Dark',
-         "Use Dark Electron Shader"),
-
-        (GLOSSY,
-         'Plastic',
-         "Use Glossy Shader"),
-
-        (GLOSSY_BUMPY,
-         'Glossy Bumpy',
-         "Use Glossy Bumpy Shader"),
-
-        (SHADOW,
-         'Shadow',
-         "Use Shadows Shader"),
+         'Default',
+         "Use the default Lambert Ward shader. This shader is used to create high resolution "
+         "images in few seconds. The rendering quality of this shader is not the best"),
 
         (FLAT,
          'Flat',
-         "Use Flat Shader"),
+         "Use Flat shader. This shader is used to create high resolution images in few seconds. "
+         "The rendering quality of this shader is not the best"),
 
-        (VORONOI,
-         'Voronoi',
-         "Use Voronoi Shader"),
+        (TOON,
+         'Toon',
+         "Use Toon shader. This shader is used to create high resolution images in few seconds. "
+         "The rendering quality of this shader is not the best"),
+
+        (ELECTRON_LIGHT,
+         'Electron Light',
+         "Light electron microscopy shader"),
+
+        (ELECTRON_DARK,
+         'Electron Dark',
+         "Dark electron microscopy shader"),
+
+        (SUPER_ELECTRON_LIGHT,
+         'Super Electron Light',
+         "Highly detailed light electron shader"),
+
+        (SUPER_ELECTRON_DARK,
+         'Super Electron Dark',
+         "Highly detailed dark electron shader"),
+
+        (GLOSSY,
+         'Plastic',
+         "Creates high quality images. This shader might take up to few hours to create a single "
+         "image depending on the complexity of the neuron"),
+
+        (GLOSSY_BUMPY,
+         'Glossy Bumpy',
+         "Creates high quality images. This shader might take up to few hours to create a single "
+         "image depending on the complexity of the neuron"),
 
         (WIRE_FRAME,
          'Wire-frame',
-         "Use Wire Frame Shader")
+         "Wire-frxame shader. This shader might take several minutes to create an image")
     ]

@@ -378,10 +378,6 @@ class RenderMorphology360(bpy.types.Operator):
             # Stretch the bounding box by few microns
             bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
 
-            # Background color
-            nmv.scene.ops.set_background_color(color=scene.NMV_MorphologyBackgroundColor,
-                                               transparent=scene.NMV_MorphologyTransparentBackground)
-
             # Render a frame
             nmv.rendering.renderer.render_at_angle(
                 scene_objects=nmv.interface.ui_reconstructed_skeleton,

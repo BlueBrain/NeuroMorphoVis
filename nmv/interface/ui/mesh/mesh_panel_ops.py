@@ -549,22 +549,6 @@ def draw_rendering_options(panel,
     image_extension_row.prop(scene, 'NMV_MeshImageFormat')
     nmv.interface.ui_options.mesh.image_format = scene.NMV_MeshImageFormat
 
-    # Can we have a transparent background
-    if scene.NMV_MeshImageFormat == nmv.enums.Image.Extension.PNG or \
-       scene.NMV_MeshImageFormat == nmv.enums.Image.Extension.TIFF or \
-       scene.NMV_MeshImageFormat == nmv.enums.Image.Extension.OPEN_EXR:
-
-        # Transparent image or not
-        background_row = layout.row()
-        background_row.prop(scene, 'NMV_MeshTransparentBackground')
-
-        if scene.NMV_MeshTransparentBackground:
-            nmv.interface.ui_options.mesh.transparent_film = True
-        else:
-            nmv.interface.ui_options.mesh.transparent_film = False
-    else:
-        nmv.interface.ui_options.mesh.transparent_film = False
-
     # Set the background color if it is not transparent
     if nmv.interface.ui_options.mesh.transparent_film is False:
         background_color = layout.row()

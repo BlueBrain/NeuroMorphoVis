@@ -118,8 +118,10 @@ def create_super_electron_light_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
     # Import the material from the library
     material_reference = import_shader(shader_name='super-electron-light-material')
@@ -158,8 +160,10 @@ def create_super_electron_dark_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
     # Import the material from the library
     material_reference = import_shader(shader_name='super-electron-dark-material')
@@ -197,25 +201,110 @@ def create_flat_material(name,
     # Get active scene
     current_scene = bpy.context.scene
 
-    # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
+    if nmv.utilities.is_blender_280():
+
+        # Set the current rendering engine to Blender
+        current_scene.render.engine = 'BLENDER_WORKBENCH'
+
+        # Create a new material (color) and assign it to the line
+        color = mathutils.Vector((color[0], color[1], color[2], 1.0))
+
+        # Create a new material (color) and assign it to the line
+        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference.diffuse_color = color
+
+        # Zero-metallic and roughness
+        material_reference.roughness = 0.0
+        material_reference.metallic = 0.0
+
+        # Flat shading
+        bpy.context.scene.display.shading.light = 'FLAT'
+
+    else:
+
+        # Switch the rendering engine to cycles to be able to create the material
         current_scene.render.engine = 'CYCLES'
 
-    bpy.context.scene.cycles.samples = 16
+        # Use only 2 samples
+        bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
-    # Import the material from the library
-    material_reference = import_shader(shader_name='flat-material')
+        # Import the material from the library
+        material_reference = import_shader(shader_name='flat-material')
 
-    # Rename the material
-    material_reference.name = str(name)
+        # Rename the material
+        material_reference.name = str(name)
 
-    # Update the color gradient
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
-    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+        # Update the color gradient
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
+# @create_toon_material
+####################################################################################################
+def create_toon_material(name,
+                            color=nmv.consts.Color.WHITE):
+    """Creates a carton shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    if nmv.utilities.is_blender_280():
+
+        # Set the current rendering engine to Blender
+        current_scene.render.engine = 'BLENDER_WORKBENCH'
+
+        # Create a new material (color) and assign it to the line
+        color = mathutils.Vector((color[0], color[1], color[2], 1.0))
+
+        # Create a new material (color) and assign it to the line
+        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference.diffuse_color = color
+
+        # Zero-metallic and roughness
+        material_reference.roughness = 0.0
+        material_reference.metallic = 0.0
+
+        # Flat shading
+        bpy.context.scene.display.shading.light = 'MATCAP'
+        bpy.context.scene.display.shading.studio_light = 'toon.exr'
+
+
+    else:
+
+        # Switch the rendering engine to cycles to be able to create the material
+        current_scene.render.engine = 'CYCLES'
+
+        bpy.context.scene.cycles.samples = 2
+
+        # Import the material from the library
+        material_reference = import_shader(shader_name='flat-material')
+
+        # Rename the material
+        material_reference.name = str(name)
+
+        # Update the color gradient
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
 
     # Return a reference to the material
     return material_reference
@@ -280,8 +369,10 @@ def create_wire_frame_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
     # Import the material from the library
     material_reference = import_shader(shader_name='wire-frame')
@@ -320,8 +411,10 @@ def create_electron_light_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
     # Import the material from the library
     material_reference = import_shader(shader_name='electron-light-material')
@@ -360,8 +453,10 @@ def create_electron_dark_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
 
     # Import the material from the library
     material_reference = import_shader(shader_name='electron-dark-material')
@@ -421,6 +516,9 @@ def create_lambert_ward_material(name,
         line_material.roughness = 0.0
         line_material.metallic = 0.0
 
+        bpy.context.scene.display.shading.light = 'STUDIO'
+        bpy.context.scene.display.shading.studio_light = 'Default'
+
         # Return a reference to the material
         return line_material
 
@@ -448,8 +546,6 @@ def create_lambert_ward_material(name,
 
         # Return a reference to the material
         return material_reference
-
-
 
 
 ####################################################################################################
@@ -586,6 +682,10 @@ def create_material(name,
     elif material_type == nmv.enums.Shading.FLAT:
         return create_flat_material(name='%s_color' % name, color=color)
 
+    # Toon
+    elif material_type == nmv.enums.Shading.TOON:
+        return create_toon_material(name='%s_color' % name, color=color)
+
     # Default
     else:
         return create_lambert_ward_material(name='%s_color' % name, color=color)
@@ -653,9 +753,6 @@ def create_materials(material_type,
         A list of two elements (different or same colors) where we can apply later to the drawn
         sections or segments.
     """
-
-    if nmv.utilities.is_blender_280():
-        bpy.context.scene.world.color = (10, 10, 10)
 
     # A list of the created materials
     materials_list = []

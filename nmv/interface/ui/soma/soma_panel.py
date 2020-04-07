@@ -182,28 +182,6 @@ class SomaPanel(bpy.types.Panel):
         image_extension_row.prop(scene, 'NMV_SomaImageFormat')
         nmv.interface.ui_options.soma.image_format = scene.NMV_SomaImageFormat
 
-        # Can we have a transparent background
-        if scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.PNG or \
-           scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.TIFF or \
-           scene.NMV_SomaImageFormat == nmv.enums.Image.Extension.OPEN_EXR:
-
-            # Transparent image or not
-            background_row = layout.row()
-            background_row.prop(scene, 'NMV_SomaTransparentBackground')
-
-            if scene.NMV_SomaTransparentBackground:
-                nmv.interface.ui_options.soma.transparent_film = True
-            else:
-                nmv.interface.ui_options.soma.transparent_film = False
-        else:
-            nmv.interface.ui_options.soma.transparent_film = False
-
-        # Background color
-        if nmv.interface.ui_options.soma.transparent_film is False:
-            background_color = layout.row()
-            background_color.prop(scene, 'NMV_SomaBackgroundColor')
-            nmv.interface.ui_options.soma.film_color = scene.NMV_SomaBackgroundColor
-
         # Render view buttons
         render_view_row = layout.row()
         render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')
@@ -527,10 +505,6 @@ class RenderSomaFront(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
-        # Background color
-        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                           transparent=scene.NMV_SomaTransparentBackground)
-
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
@@ -581,10 +555,6 @@ class RenderSomaSide(bpy.types.Operator):
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
-        # Background color
-        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                           transparent=scene.NMV_SomaTransparentBackground)
-
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
@@ -634,10 +604,6 @@ class RenderSomaTop(bpy.types.Operator):
         # Create the images directory if it does not exist
         if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
             nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
-
-        # Background color
-        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
@@ -710,10 +676,6 @@ class RenderSoma360(bpy.types.Operator):
             image_name = '%s/%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
 
-            # Background color
-            nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                               transparent=scene.NMV_SomaTransparentBackground)
-
             # Render a frame
             nmv.rendering.SomaRenderer.render_at_angle(
                 soma_mesh=nmv.interface.ui_soma_mesh,
@@ -763,10 +725,6 @@ class RenderSoma360(bpy.types.Operator):
                                  nmv.interface.ui_options.morphology.label,
                                  nmv.consts.Suffix.SOMA_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
-
-        # Background color
-        nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                           transparent=scene.NMV_SomaTransparentBackground)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
@@ -861,10 +819,6 @@ class RenderSomaProgressive(bpy.types.Operator):
             # Set the frame name
             image_name = '%s/%s' % (
                 self.output_directory, '{0:05d}'.format(self.timer_limits))
-
-            # Background color
-            nmv.scene.ops.set_background_color(color=scene.NMV_SomaBackgroundColor,
-                                               transparent=scene.NMV_SomaTransparentBackground)
 
             # Render a frame
             nmv.rendering.SomaRenderer.render_at_angle(
