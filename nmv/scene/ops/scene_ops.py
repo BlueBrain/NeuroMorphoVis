@@ -942,6 +942,8 @@ def clone_mesh_objects_into_joint_mesh(mesh_objects):
     cloned_mesh_objects = list()
     for mesh_object in mesh_objects:
         cloned_mesh_objects.append(nmv.scene.duplicate_object(mesh_object))
+
+    # Join all the mesh objects in a single object
     joint_mesh_object = nmv.mesh.join_mesh_objects(cloned_mesh_objects)
 
     # Deselect all the other objects in the scene

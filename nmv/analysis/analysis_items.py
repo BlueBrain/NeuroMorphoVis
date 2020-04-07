@@ -343,7 +343,7 @@ ui_global_analysis_items = [
     AnalysisItem(variable='NumberProfilePoints',
                  name='# Profile Points',
                  kernel=kernel_soma_count_profile_points,
-                 description='The radius of the soma as reported in the morphology file',
+                 description='The number of profile points of the soma',
                  data_format='INT'),
 
     ################################################################################################

@@ -566,10 +566,13 @@ def join_mesh_objects(mesh_list,
         return mesh_list[0]
 
     # Switch to the object mode
-    bpy.ops.object.mode_set(mode='OBJECT')
+    # bpy.ops.object.mode_set(mode='OBJECT')
 
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
+
+    # Set the 0th mesh to be active
+    nmv.scene.set_active_object(mesh_list[0])
 
     # Select all the sections in the sections list
     for mesh_object in mesh_list:
@@ -579,14 +582,10 @@ def join_mesh_objects(mesh_list,
             # Select the mesh object
             nmv.scene.select_object(mesh_object)
 
-    # Set the 0th mesh to be active
-    # TODO: Verify on Blender 2.79
-    # nmv.scene.set_active_object(mesh_list[0])
-
     # Set tha parenting order, the parent mesh is becoming an actual parent
     # bpy.ops.object.parent_set()
 
-    # Join the two meshes in one mesh
+    # Join the selected meshes in one mesh
     bpy.ops.object.join()
 
     # Get a reference to the resulting mesh
