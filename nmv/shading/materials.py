@@ -24,7 +24,6 @@ import bpy
 import mathutils
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.enums
 import nmv.scene

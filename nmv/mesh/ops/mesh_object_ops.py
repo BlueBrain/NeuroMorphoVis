@@ -19,7 +19,6 @@
 import bpy, bmesh
 
 # Internal imports
-import nmv
 import nmv.scene
 import nmv.mesh
 import nmv.utilities

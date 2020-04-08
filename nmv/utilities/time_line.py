@@ -22,7 +22,6 @@ import sys
 import bpy
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.utilities
 

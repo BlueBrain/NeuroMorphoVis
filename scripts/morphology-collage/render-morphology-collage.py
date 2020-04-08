@@ -19,7 +19,6 @@ import sys, os
 import argparse
 
 import bpy
-import nmv
 import nmv.file
 import nmv.rendering
 import nmv.scene

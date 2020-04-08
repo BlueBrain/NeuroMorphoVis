@@ -25,7 +25,7 @@ from bpy.props import BoolProperty
 from bpy.props import EnumProperty
 from bpy.props import FloatVectorProperty
 
-import nmv
+# Internal imports
 import nmv.enums
 import nmv.shading
 import nmv.scene

@@ -23,7 +23,6 @@ import time
 import bpy
 
 # Internal modules
-import nmv
 import nmv.builders
 import nmv.bmeshi
 import nmv.consts

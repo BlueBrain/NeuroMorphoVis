@@ -20,7 +20,6 @@ import bpy
 from mathutils import Vector
 
 # Internal imports
-import nmv
 import nmv.bbox
 import nmv.scene
 import nmv.camera

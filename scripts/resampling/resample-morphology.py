@@ -25,7 +25,6 @@ sys.path.append(('%s/core' %(os.path.dirname(os.path.realpath(__file__)))))
 import argparse
 
 # NeuroMorphoVis imports
-import nmv
 import nmv.file
 import nmv.skeleton
 

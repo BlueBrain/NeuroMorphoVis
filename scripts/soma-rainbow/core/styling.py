@@ -22,7 +22,6 @@ for import_path in import_paths:
     sys.path.append(('%s/%s' %(os.path.dirname(os.path.realpath(__file__)), import_path)))
 
 # NeuroMorphoVis imports
-import nmv
 import nmv.scene
 import nmv.shading
 import nmv.enums

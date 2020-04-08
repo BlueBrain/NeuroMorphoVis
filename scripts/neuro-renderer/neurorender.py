@@ -29,7 +29,6 @@ import parsing
 import styling
 
 # NeuroMorphoVis imports
-import nmv
 import nmv.scene
 import nmv.rendering
 import nmv.enums
