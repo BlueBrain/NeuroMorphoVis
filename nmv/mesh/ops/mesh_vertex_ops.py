@@ -687,5 +687,3 @@ def get_index_of_nearest_vertex_to_point(mesh_object,
 
     # Return the nearest vertex index
     return nearest_vertex_index
-
-

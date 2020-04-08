@@ -130,4 +130,3 @@ def create_ico_sphere(radius=1,
 
     # Return a reference to the sphere
     return sphere
-

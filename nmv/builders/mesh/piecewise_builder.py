@@ -22,7 +22,6 @@ import random, os, copy
 import bpy
 
 # Internal modules
-import nmv
 import nmv.bbox
 import nmv.builders
 import nmv.consts

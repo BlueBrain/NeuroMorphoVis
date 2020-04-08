@@ -19,7 +19,6 @@
 import os, copy, math
 
 # Internal import
-import nmv
 import nmv.consts
 import nmv.geometry
 import nmv.skeleton

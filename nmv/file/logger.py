@@ -16,7 +16,8 @@
 ####################################################################################################
 
 # System imports
-import os, platform
+import os
+import platform
 import datetime
 
 TWO_SPACES = '  '

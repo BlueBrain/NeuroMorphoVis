@@ -19,7 +19,6 @@
 import bpy
 import bmesh
 
-import nmv
 import nmv.scene
 
 

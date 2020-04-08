@@ -17,11 +17,10 @@
 
 # System imports
 import sys
+import os
 
 # Blender imports
 import bpy
-
-import os
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['neuromorphovis']

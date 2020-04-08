@@ -19,7 +19,6 @@
 import math
 
 # Internal imports
-import nmv
 import nmv.skeleton
 
 

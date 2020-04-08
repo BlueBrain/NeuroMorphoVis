@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
+import nmv.file
 
 
 ####################################################################################################
@@ -118,4 +118,3 @@ def write_morphology_to_segments_file(morphology_object,
     # Write the list to a file labeled with the same name of the morphology
     nmv.file.write_list_string_to_file(
         samples_list, '%s/%s.segments' % (file_path, morphology_object.label))
-

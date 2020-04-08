@@ -18,9 +18,6 @@
 # System imports
 import copy
 
-# Blender imports
-import bpy
-
 # Internal imports
 import nmv.mesh
 import nmv.enums
@@ -249,6 +246,3 @@ class DisconnectedSegmentsBuilder:
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
         return self.morphology_objects
-
-
-

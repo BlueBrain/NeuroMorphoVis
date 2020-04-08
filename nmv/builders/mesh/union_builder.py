@@ -17,15 +17,8 @@
 
 # System imports
 import copy
-import math
-import os
-
-# Blender imports
-import bpy
-from mathutils import Vector
 
 # Internal imports
-import nmv
 import nmv.builders
 import nmv.consts
 import nmv.enums
@@ -224,8 +217,7 @@ class UnionBuilder:
                            caps,
                            connection_to_soma,
                            soft):
-        """
-        Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
+        """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
         getting exponentially slower.
 

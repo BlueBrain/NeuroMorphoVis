@@ -18,9 +18,6 @@
 # System imports
 import copy
 
-# Blender imports
-import bpy
-
 # Internal imports
 import nmv.mesh
 import nmv.enums
@@ -29,7 +26,6 @@ import nmv.consts
 import nmv.geometry
 import nmv.scene
 import nmv.utilities
-
 
 
 ####################################################################################################

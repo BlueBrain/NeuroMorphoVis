@@ -23,7 +23,6 @@ import bmesh
 from mathutils import Vector, Matrix
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.geometry
 
@@ -238,6 +237,7 @@ def rotate_face_in_object_towards_point(bmesh_object,
 
         # Transform
         vertex.co = matrix_object * vertex.co
+
 
 ####################################################################################################
 # @rotate_face_from_center_to_point
@@ -760,8 +760,6 @@ def set_face_radius(bmesh_object,
     face.verts[1].co = new_p_1
     face.verts[2].co = new_p_2
     face.verts[3].co = new_p_3
-
-    return
 
 
 ####################################################################################################

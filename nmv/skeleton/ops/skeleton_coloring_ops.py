@@ -20,7 +20,6 @@ import random
 from mathutils import Vector
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.shading
 

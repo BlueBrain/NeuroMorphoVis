@@ -19,7 +19,6 @@
 import sys
 
 # Internal imports
-import nmv
 import nmv.options
 
 

@@ -33,6 +33,7 @@ import nmv.bmeshi
 import nmv.shading
 import nmv.analysis
 
+
 ####################################################################################################
 # @ProgressiveBuilder
 ####################################################################################################
@@ -167,6 +168,11 @@ class ProgressiveBuilder:
     ################################################################################################
     def construct_morphology_poly_lines_list_at_branching_order(self,
                                                                 branching_order):
+        """Constructing polylines of the morphology at a given branching order.
+
+        :param branching_order:
+            Maximum branching order.
+        """
         poly_lines_list = list()
 
         # Apical dendrite
@@ -446,4 +452,3 @@ class ProgressiveBuilder:
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
         return self.morphology_objects
-

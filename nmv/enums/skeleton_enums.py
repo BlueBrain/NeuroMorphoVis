@@ -35,28 +35,28 @@ class Skeleton:
     class Method:
 
         # Connect the original sections without repairing any artifacts in the morphology
-        CONNECTED_SECTIONS = 'Skeleton.CONNECTED_SECTION'
+        CONNECTED_SECTIONS = 'SKELETON_CONNECTED_SECTION'
 
         # Disconnect the sections and draw each of them as an independent object
-        DISCONNECTED_SECTIONS = 'Skeleton.DISCONNECTED_SECTIONS'
+        DISCONNECTED_SECTIONS = 'SKELETON_DISCONNECTED_SECTIONS'
 
         # Progressive reconstruction of the morphology
-        PROGRESSIVE = 'Skeleton.PROGRESSIVE'
+        PROGRESSIVE = 'SKELETON_PROGRESSIVE'
 
         # Connected skeleton where all the skeleton lines will be connected together in a one object
-        CONNECTED_SKELETON = 'Skeleton.CONNECTED_SKELETON'
+        CONNECTED_SKELETON = 'SKELETON_CONNECTED_SKELETON'
 
         # Samples
-        SAMPLES = 'Skeleton.SAMPLES'
+        SAMPLES = 'SKELETON_SAMPLES'
 
         # Similar to DISCONNECTED_SECTIONS, and add an articulation sphere to connect the sections
-        ARTICULATED_SECTIONS = 'Skeleton.ARTICULATED_SECTIONS'
+        ARTICULATED_SECTIONS = 'SKELETON_ARTICULATED_SECTIONS'
 
         # Disconnect the segments and draw each of them as an independent object
-        DISCONNECTED_SEGMENTS = 'Skeleton.DISCONNECTED_SEGMENTS'
+        DISCONNECTED_SEGMENTS = 'SKELETON_DISCONNECTED_SEGMENTS'
 
         # Dendrogram mode
-        DENDROGRAM = 'Skeleton.DENDROGRAM'
+        DENDROGRAM = 'SKELETON_DENDROGRAM'
 
         ############################################################################################
         # @__init__

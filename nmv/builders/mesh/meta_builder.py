@@ -16,14 +16,13 @@
 ####################################################################################################
 
 # Syetsm imports
-import copy, os
+import copy
 
 # Blender imports
 import bpy, mathutils
 from mathutils import Vector
 
 # Internal modules
-import nmv
 import nmv.builders
 import nmv.enums
 import nmv.mesh

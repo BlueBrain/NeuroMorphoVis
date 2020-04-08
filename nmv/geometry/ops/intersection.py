@@ -78,4 +78,3 @@ def sphere_line(sphere_center,
 
     # Otherwise, an intersection exists
     return True
-    

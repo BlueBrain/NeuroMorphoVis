@@ -21,7 +21,6 @@ import bpy
 from mathutils import Vector, Matrix
 
 # Internal modules
-import nmv
 import nmv.scene
 import nmv.geometry
 
@@ -169,8 +168,7 @@ def draw_line(point1=Vector((0, 0, 0)),
               material=None,
               color=None,
               name='line'):
-    """
-    Draws a line between two connected points in the space and returns a reference to it.
+    """Draws a line between two connected points in the space and returns a reference to it.
     NOTE: If you want to have a thin line, use 0.1 for the thickness and if you want to set it
     to scale, use 1.0.
 

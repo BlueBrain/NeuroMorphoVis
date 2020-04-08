@@ -17,10 +17,6 @@
 
 # System imports
 import sys
-
-# Blender imports
-import bpy
-
 import os
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts

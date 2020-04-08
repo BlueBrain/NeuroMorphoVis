@@ -15,9 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # Internal imports
-import nmv
 import nmv.skeleton
 
 
@@ -216,8 +214,3 @@ def write_morphology_to_swc_file(morphology_object,
     # Write the list to a file labeled with the same name of the morphology
     nmv.file.write_list_string_to_file(
         swc_samples_list, '%s/%s.swc' % (file_path, morphology_object.label))
-
-
-
-
-

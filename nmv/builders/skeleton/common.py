@@ -240,4 +240,3 @@ def transform_to_global_coordinates(builder):
             morphology_objects=builder.morphology_objects,
             blue_config=builder.options.morphology.blue_config,
             gid=builder.options.morphology.gid)
-

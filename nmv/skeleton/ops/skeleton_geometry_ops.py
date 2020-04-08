@@ -22,7 +22,6 @@ import random, copy
 from mathutils import Vector, Matrix
 
 # Internal imports
-import nmv
 import nmv.bbox
 import nmv.skeleton
 

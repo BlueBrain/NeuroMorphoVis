@@ -638,7 +638,6 @@ class DisconnectedSectionsBuilder:
         with open(output_stream, 'wb') as fh:
             pdf_writer.write(fh)
 
-
         nmv.scene.clear_scene()
 
 

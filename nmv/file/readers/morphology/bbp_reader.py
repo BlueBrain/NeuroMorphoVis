@@ -22,7 +22,6 @@ import random
 from mathutils import Vector, Matrix
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.skeleton
 
@@ -532,8 +531,9 @@ class BBPReader:
 
         # List of all profile points of the apical dendrite
         apical_dendrite_profile_points_data = []
-        if len(
-                bbp_apical_dendrite) > 0:  # Ensure that the apical dendrite is present in the skeleton
+
+        # Ensure that the apical dendrite is present in the skeleton
+        if len(bbp_apical_dendrite) > 0:
             apical_dendrite_profile_points_data.append(
                 [Vector((bbp_apical_dendrite[0].samples()[0][0],
                          bbp_apical_dendrite[0].samples()[0][1],

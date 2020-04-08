@@ -16,9 +16,10 @@
 ####################################################################################################
 
 # System imports
-import argparse, os, sys
+import argparse
+import os
+import sys
 from argparse import RawTextHelpFormatter
-
 
 # Internal imports
 sys.path.append("%s/" % os.path.dirname(os.path.realpath(__file__)))

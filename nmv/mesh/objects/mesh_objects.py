@@ -19,7 +19,6 @@
 import bpy
 
 # Internal modules
-import nmv
 import nmv.scene
 import nmv.utilities
 

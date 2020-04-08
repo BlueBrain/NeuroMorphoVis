@@ -19,7 +19,6 @@
 import bpy
 
 # Internal modules
-import nmv
 import nmv.consts
 import nmv.enums
 import nmv.scene

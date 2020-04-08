@@ -18,7 +18,7 @@
 # System imports
 import math
 
-import nmv
+# Internal imports
 import nmv.skeleton
 
 

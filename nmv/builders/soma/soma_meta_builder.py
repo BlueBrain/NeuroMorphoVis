@@ -413,5 +413,3 @@ class SomaMetaBuilder:
 
         # Return the vertices list
         return vertices
-
-

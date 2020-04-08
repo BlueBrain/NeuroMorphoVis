@@ -180,7 +180,6 @@ def get_objects_bounding_box(objects):
 ####################################################################################################
 def compute_scene_bounding_box_for_curves():
     """Compute the bounding box of all the 'curves' in the scene.
-
     NOTE: This function considers only 'CURVE' type and ignores the cameras for example.
 
     :return:
@@ -205,7 +204,6 @@ def compute_scene_bounding_box_for_curves():
 ####################################################################################################
 def compute_scene_bounding_box_for_meshes():
     """Compute the bounding box of all the meshes in the scene.
-
     NOTE: This function considers only 'MESH' type and ignores the cameras for example.
 
     :return:
@@ -232,7 +230,6 @@ def compute_scene_bounding_box_for_meshes():
 ####################################################################################################
 def compute_scene_bounding_box_for_curves_and_meshes():
     """Compute the bounding box of all the 'curves' and 'meshes'in the scene.
-
     NOTE: This function considers only 'CURVE' and 'MESH' types and ignores the cameras for example.
 
     :return:
@@ -257,7 +254,6 @@ def compute_scene_bounding_box_for_curves_and_meshes():
 ####################################################################################################
 def compute_scene_bounding_box():
     """Get the bounding box of all the objects in the scene.
-
     NOTE: This function considers only 'MESH','CURVE' types and ignores the cameras for example.
 
     :return:
@@ -305,7 +301,6 @@ def compute_unified_extent_bounding_box(extent):
 ####################################################################################################
 def compute_unified_bounding_box(non_unified_bounding_box):
     """Compute a unified bounding box from a non unified one, where all the dimensions are set to
-
     the largest dimension of the non-unified one. This bounding box will be used for rendering.
 
     :param non_unified_bounding_box:
@@ -339,7 +334,6 @@ def compute_360_bounding_box(non_unified_bounding_box,
                              soma_center=Vector((0.0, 0.0, 0.0))):
     """Compute a specific bounding box from a non unified one, where all the XZ dimensions are set
     to the largest dimension of the two to render 360 sequences.
-
     NOTE: This bounding box will be used for rendering movies.
 
     :param non_unified_bounding_box:
@@ -415,11 +409,12 @@ def draw_scene_bounding_box():
 ####################################################################################################
 def draw_bounding_box(bbox,
                       name='bbox'):
-    """
-    Draws a given bounding box.
+    """Draws a given bounding box.
 
-    :param bbox: Input bounding box.
-    :param name: Bounding box name.
+    :param bbox:
+        Input bounding box.
+    :param name:
+        Bounding box name.
     """
 
     # Deselect all the objects in the scene

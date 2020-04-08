@@ -21,7 +21,6 @@ import bpy
 from mathutils import Vector, Matrix
 
 # Internal modules
-import nmv
 import nmv.scene
 import nmv.geometry
 import nmv.enums

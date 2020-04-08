@@ -24,7 +24,6 @@ import bpy
 from bpy.props import BoolProperty
 
 # Internal imports
-import nmv
 import nmv.edit
 import nmv.interface
 import nmv.scene

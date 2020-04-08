@@ -24,7 +24,6 @@ import bpy
 from mathutils import Vector, Matrix
 
 # Internal imports
-import nmv
 import nmv.bmeshi
 import nmv.enums
 import nmv.geometry

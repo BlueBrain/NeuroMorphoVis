@@ -16,7 +16,9 @@
 ####################################################################################################
 
 # System imports
-import os, sys, copy, random, math, numpy
+import os
+import sys
+import copy
 
 # Blender imports
 import bpy

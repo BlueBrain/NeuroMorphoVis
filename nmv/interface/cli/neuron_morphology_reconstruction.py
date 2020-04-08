@@ -17,10 +17,6 @@
 
 # System imports
 import sys
-
-# Blender imports
-import bpy
-
 import os
 
 # Append the internal modules into the system paths to avoid Blender importing conflicts
@@ -181,8 +177,6 @@ def reconstruct_neuron_morphology(cli_morphology,
             morphology=cli_morphology, options=cli_options)
         progressive_builder.draw_morphology_skeleton()
 
-        import bpy
-
         # Compute the bounding box for a close up view
         if cli_options.morphology.rendering_view == \
                 nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
@@ -206,6 +200,7 @@ def reconstruct_neuron_morphology(cli_morphology,
                 morphology=cli_morphology)
 
         # Move to the last frame to get the bounding box of all the drawn objects
+        import bpy
         bpy.context.scene.frame_set(0)
 
         for i in range(0, 100):

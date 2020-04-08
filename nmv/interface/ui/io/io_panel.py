@@ -17,7 +17,6 @@
 
 # System imports
 import copy
-import os
 import time
 
 # Blender imports

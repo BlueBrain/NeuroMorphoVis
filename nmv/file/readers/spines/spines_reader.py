@@ -16,10 +16,7 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
-# System imports
-import sys, os
-
-import nmv
+# Internal imports
 import nmv.file
 
 

@@ -22,7 +22,6 @@ import copy
 from mathutils import Vector
 
 # Internal imports
-import nmv
 import nmv.consts
 import nmv.file
 import nmv.skeleton

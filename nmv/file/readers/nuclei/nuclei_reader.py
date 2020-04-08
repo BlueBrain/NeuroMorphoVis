@@ -15,10 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import sys, os
-
-import nmv
+# Internal imports
 import nmv.file
 
 

@@ -90,9 +90,3 @@ def pip_wheel(package_name):
     shell_command = '%s %s' % (pip_executable, package_name)
     print('INSTALL: %s' % shell_command)
     subprocess.call(shell_command, shell=True)
-
-
-
-
-
-

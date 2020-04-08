@@ -22,9 +22,7 @@ import random
 # Blender imports
 import bpy
 from mathutils import Vector
-from mathutils import Matrix
 
-import nmv
 import nmv.consts
 import nmv.shading
 import nmv.skeleton

@@ -19,7 +19,6 @@
 import bmesh
 
 # Internal imports
-import nmv
 import nmv.utilities
 
 

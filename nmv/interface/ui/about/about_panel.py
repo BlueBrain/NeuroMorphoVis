@@ -25,7 +25,6 @@ import bpy
 import bpy.utils.previews
 
 # Internal imports
-import nmv
 import nmv.enums
 import nmv.interface
 import nmv.utilities

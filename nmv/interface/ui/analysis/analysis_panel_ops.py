@@ -20,7 +20,6 @@ import bpy
 from bpy.props import BoolProperty
 
 # Internal imports
-import nmv
 import nmv.analysis
 import nmv.builders
 import nmv.scene

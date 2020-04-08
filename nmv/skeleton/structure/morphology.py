@@ -19,7 +19,6 @@
 import copy
 
 # Internal imports
-import nmv
 import nmv.bbox
 import nmv.skeleton
 

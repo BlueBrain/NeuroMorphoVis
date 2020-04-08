@@ -16,9 +16,9 @@
 ####################################################################################################
 
 # System imports
-import sys, os
+import os
 
-import nmv
+# Internal imports
 import nmv.file
 
 

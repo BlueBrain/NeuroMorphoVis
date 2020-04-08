@@ -19,7 +19,6 @@
 import copy
 
 # Internal modules
-import nmv
 import nmv.bmeshi
 import nmv.mesh
 import nmv.scene
@@ -310,6 +309,8 @@ class MorphologyEditor:
     # @update_arbor_coordinates
     ################################################################################################
     def update_skeleton_coordinates(self):
+        """Update the coordinates of the skeleton.
+        """
 
         # Header
         nmv.logger.header('Updating Morphology Skeleton Coordinates')

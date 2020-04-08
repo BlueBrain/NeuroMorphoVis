@@ -20,7 +20,6 @@ import bpy
 from mathutils import Vector
 
 # Internal modules
-import nmv
 import nmv.mesh
 
 

@@ -22,7 +22,6 @@ import random
 # Blender imports
 import bpy
 from mathutils import Vector
-from mathutils import Matrix
 
 # Internal imports
 import nmv.consts

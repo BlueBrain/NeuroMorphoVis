@@ -23,7 +23,6 @@ import bpy
 from mathutils import Vector
 
 # Internal modules
-import nmv
 import nmv.builders
 import nmv.consts
 import nmv.enums
