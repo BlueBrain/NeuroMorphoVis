@@ -549,7 +549,10 @@ def unregister_panel():
     bpy.utils.unregister_class(ReconstructNeuronMesh)
 
     # Mesh rendering
-    bpy.utils.unregister_class(ExportMesh)
+    bpy.utils.unregister_class(RenderMeshFront)
+    bpy.utils.unregister_class(RenderMeshSide)
+    bpy.utils.unregister_class(RenderMeshTop)
+    bpy.utils.unregister_class(RenderMesh360)
 
     # Neuron mesh saving operators
     bpy.utils.unregister_class(ExportMesh)
