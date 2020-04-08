@@ -44,7 +44,7 @@ class Color:
     # White
     WHITE = Vector((1.0, 1.0, 1.0))
 
-    # Very white
+    # Very white, used to solve a bug in Blender 2.8
     VERY_WHITE = Vector((10.0, 10.0, 10.0))
 
     # Gray

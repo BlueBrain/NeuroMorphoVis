@@ -177,6 +177,48 @@ ui_per_arbor_analysis_items = [
                  description='The average contraction ratio',
                  data_format='FLOAT'),
 
+    AnalysisItem(variable='MinDaughterRatio',
+                 name='Min. Daughter Ratio',
+                 kernel=kernel_minimum_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The minimum daughter ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='MaxDaughterRatio',
+                 name='Max. Daughter Ratio',
+                 kernel=kernel_maximum_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The maximum daughter ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='AvgDaughterRatio',
+                 name='Avg. Daughter Ratio',
+                 kernel=kernel_average_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The average daughter ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='MinParentDaughterRatio',
+                 name='Min. Parent  Daughter Ratio',
+                 kernel=kernel_minimum_parent_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The minimum parent daughter ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='MaxParentDaughterRatio',
+                 name='Max. Parent  Daughter Ratio',
+                 kernel=kernel_maximum_parent_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The maximum parent daughter ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='AvgParentDaughterRatio',
+                 name='Avg. Parent Daughter Ratio',
+                 kernel=kernel_average_parent_daughter_ratio,
+                 description='NOTE: If this value is ZERO, this means that the arbor has no '
+                             'branching. The average parent daughter ratio',
+                 data_format='FLOAT'),
+
     ################################################################################################
     # Angle-related items
     ################################################################################################

@@ -526,7 +526,7 @@ def compute_daughter_ratio(section,
             child_1 = section.children[1]
 
             # Compute the ratio, irrespective to which one is bigger
-            daughter_ratio = child_0.samples[0].radius / child_1.samples[0].radius
+            daughter_ratio = child_0.samples[1].radius / child_1.samples[1].radius
 
             # If the ratio is less than 1.0, simply invert it
             if daughter_ratio < 1.0:
@@ -565,7 +565,7 @@ def compute_parent_daughter_ratios(section,
                 if len(child.samples) > 0:
 
                     # Get the child radius
-                    child_radius = child.samples[0].radius
+                    child_radius = child.samples[1].radius
 
                     # Compute the ratio, irrespective to which one is bigger
                     parent_daughter_ratio = child_radius / parent_radius

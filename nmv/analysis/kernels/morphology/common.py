@@ -176,6 +176,43 @@ def compute_minimum_analysis_result_of_morphology(analysis_result):
 
 
 ####################################################################################################
+# @compute_minimum_analysis_result_of_morphology_and_ignore_zero
+####################################################################################################
+def compute_minimum_analysis_result_of_morphology_and_ignore_zero(analysis_result):
+    """Computes the minimum result with respect to the entire morphology skeleton from the analysis
+    results of the existing arbors. This function ignores the zero and picks a minimum value above
+    it.
+
+    NOTE: The morphology result is updated in the given analysis result structure.
+
+    :param analysis_result:
+        A structure that contains all the analysis results of the morphology arbors.
+    """
+
+    # A list that will contain the results of all the arbors
+    all_arbors_results = list()
+
+    # Apical dendrite
+    if analysis_result.apical_dendrite_result is not None:
+        all_arbors_results.append(analysis_result.apical_dendrite_result)
+
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            all_arbors_results.append(basal_dendrite_result)
+
+    # Axon
+    if analysis_result.axon_result is not None:
+        all_arbors_results.append(analysis_result.axon_result)
+
+    # Remove zeros from the list
+    all_arbors_results.remove(0)
+
+    # Update the morphology result
+    analysis_result.morphology_result = min(all_arbors_results)
+
+
+####################################################################################################
 # @compute_maximum_analysis_result_of_morphology
 ####################################################################################################
 def compute_maximum_analysis_result_of_morphology(analysis_result):
@@ -236,6 +273,45 @@ def compute_average_analysis_result_of_morphology(analysis_result):
     # Axon
     if analysis_result.axon_result is not None:
         all_arbors_results.append(analysis_result.axon_result)
+
+    # Update the morphology result
+    analysis_result.morphology_result = 0
+    for result in all_arbors_results:
+        analysis_result.morphology_result += result
+    analysis_result.morphology_result /= len(all_arbors_results)
+
+
+####################################################################################################
+# @compute_average_analysis_result_of_morphology_and_ignore_zero
+####################################################################################################
+def compute_average_analysis_result_of_morphology_and_ignore_zero(analysis_result):
+    """Computes the average result with respect to the entire morphology skeleton from the analysis
+    results of the existing arbors. This function ignores the zero-valued data from the computations.
+
+    NOTE: The morphology result is updated in the given analysis result structure.
+
+    :param analysis_result:
+        A structure that contains all the analysis results of the morphology arbors.
+    """
+
+    # A list that will contain the results of all the arbors
+    all_arbors_results = list()
+
+    # Apical dendrite
+    if analysis_result.apical_dendrite_result is not None:
+        all_arbors_results.append(analysis_result.apical_dendrite_result)
+
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for basal_dendrite_result in analysis_result.basal_dendrites_result:
+            all_arbors_results.append(basal_dendrite_result)
+
+    # Axon
+    if analysis_result.axon_result is not None:
+        all_arbors_results.append(analysis_result.axon_result)
+
+    # Remove zeros from the list
+    all_arbors_results.remove(0)
 
     # Update the morphology result
     analysis_result.morphology_result = 0

@@ -178,6 +178,115 @@ def kernel_average_sample_radius(morphology):
 
 
 ####################################################################################################
+# @kernel_minimum_daughter_ratio
+####################################################################################################
+def kernel_minimum_daughter_ratio(morphology):
+    """Find the minimum daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_daughter_ratio_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology_and_ignore_zero)
+
+
+####################################################################################################
+# @kernel_maximum_daughter_ratio
+####################################################################################################
+def kernel_maximum_daughter_ratio(morphology):
+    """Find the maximum daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_daughter_ratio_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_average_daughter_ratio
+####################################################################################################
+def kernel_average_daughter_ratio(morphology):
+    """Find the average daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_daughter_ratio_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology_and_ignore_zero)
+
+
+####################################################################################################
+# @kernel_minimum_parent_daughter_ratio
+####################################################################################################
+def kernel_minimum_parent_daughter_ratio(morphology):
+    """Find the minimum daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_parent_daughter_ratio_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology_and_ignore_zero)
+
+
+####################################################################################################
+# @kernel_maximum_parent_daughter_ratio
+####################################################################################################
+def kernel_maximum_parent_daughter_ratio(morphology):
+    """Find the maximum daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_parent_daughter_ratio_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_average_parent_daughter_ratio
+####################################################################################################
+def kernel_average_parent_daughter_ratio(morphology):
+    """Find the average daughter ratio of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_parent_daughter_ratio_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology_and_ignore_zero)
+
+
+
+####################################################################################################
 # @kernel_minimum_partition_asymmetry
 ####################################################################################################
 def kernel_minimum_partition_asymmetry(morphology):

@@ -138,15 +138,6 @@ distributions = [
         compute_total_kernel=compute_minimum_euclidean_distance_of_arbor,
         add_percentage=False),
 
-    AnalysisDistribution(
-        name='Arbor Surface Area',
-        description='The surface area of each arbor in the morphology',
-        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
-        figure_title='Arbor Surface Area',
-        figure_name='arbor-surface-area',
-        figure_xlabel='Area (\u03BCm\u00b2)',
-        compute_total_kernel=compute_arbor_total_surface_area,
-        add_percentage=True),
 
     AnalysisDistribution(
         name='Arbor Volume',
@@ -216,6 +207,19 @@ distributions = [
         compute_min_kernel=compute_minimum_section_volume,
         compute_avg_kernel=compute_average_section_volume,
         compute_max_kernel=compute_maximum_section_volume,
+        add_percentage=False),
+
+
+    AnalysisDistribution(
+        name='Contraction Range per Arbor',
+        description='The range of contraction per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Contraction / Arbor',
+        figure_name='contraction-per-arbor',
+        figure_xlabel='',
+        compute_min_kernel=compute_minimum_section_contraction_of_arbor,
+        compute_avg_kernel=compute_average_section_contraction_of_arbor,
+        compute_max_kernel=compute_maximum_section_contraction_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(
