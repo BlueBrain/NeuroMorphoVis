@@ -120,6 +120,24 @@ def kernel_total_number_terminal_tips(morphology):
 
 
 ####################################################################################################
+# @kernel_total_number_terminal_segments
+####################################################################################################
+def kernel_total_number_terminal_segments(morphology):
+    """Compute the total number of terminal segments of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_total_number_of_terminal_segments_of_arbor,
+        nmv.analysis.compute_total_analysis_result_of_morphology)
+
+
+####################################################################################################
 # @kernel_maximum_path_distance
 ####################################################################################################
 def kernel_number_terminal_tips_distribution(morphology,

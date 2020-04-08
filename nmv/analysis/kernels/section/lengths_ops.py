@@ -84,6 +84,79 @@ def compute_section_length(section):
 
 
 ####################################################################################################
+# @compute_section_taper_1
+####################################################################################################
+def compute_section_taper_1(section):
+    """
+    Computes the Burke Taper or Taper 1 of a given section. This function is measured per section
+    between two bifurcation points.
+    It is computed as follows:
+        The actual diameter of the first bifurcation sample minus previous bifurcation sample
+        diameter divided by the total length of the branch.
+    This function is applied only on NON ROOT and NON LEAVES branches, i.e. sections with
+    bifurcation points.
+
+    NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
+
+    :param section:
+        A given section to compute its Taper 1 value.
+    :return:
+        Section Taper 1 value.
+    """
+
+    # If root or leaf, return 0.0
+    if section.is_root() or section.is_leaf():
+        return 0.0
+
+    # Section length
+    section_length = compute_section_length(section=section)
+
+    # Diameter difference
+    delta_diameter = (section.parent.samples[-1].radius - section.samples[-1].radius) * 2.0
+
+    # Taper 1 value
+    taper_1_value = delta_diameter / section_length
+
+    # Return the value
+    return taper_1_value
+
+
+####################################################################################################
+# @compute_section_taper_2
+####################################################################################################
+def compute_section_taper_2(section):
+    """
+    Computes the Hillman Taper or Taper 2 of a given section. This function is measured per section
+    between two bifurcation points.
+    It is computed as follows:
+        The actual diameter of the first bifurcation sample minus previous bifurcation sample
+        diameter divided by the initial one.
+    This function is applied only on NON ROOT and NON LEAVES branches, i.e. sections with
+    bifurcation points.
+
+    NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
+
+    :param section:
+        A given section to compute its Taper 1 value.
+    :return:
+        Section Taper 1 value.
+    """
+
+    # If root or leaf, return 0.0
+    if section.is_root() or section.is_leaf():
+        return 0.0
+
+    # Diameter difference
+    delta = (section.parent.samples[-1].radius - section.samples[-1].radius)
+
+    # Taper 2 value
+    taper_2_value = delta / section.parent.samples[-1].radius
+
+    # Return the value
+    return taper_2_value
+
+
+####################################################################################################
 # @compute_section_euclidean_distance
 ####################################################################################################
 def compute_section_euclidean_distance(section):
@@ -128,15 +201,55 @@ def compute_sections_lengths(section,
 
 
 ####################################################################################################
+# @compute_sections_taper_1
+####################################################################################################
+def compute_sections_taper_1(section,
+                             sections_taper_1):
+    """Computes the Burke Taper (or Taper 1) of all the sections along a given arbor.
+
+    :param section:
+        A given section to compute its Taper 1 value.
+    :param sections_taper_1:
+        A list to collect the resulting data.
+    """
+
+    # Compute section length
+    section_taper_1 = compute_section_taper_1(section=section)
+
+    # Append the length to the list
+    sections_taper_1.append(section_taper_1)
+
+
+####################################################################################################
+# @compute_sections_taper_2
+####################################################################################################
+def compute_sections_taper_2(section,
+                             sections_taper_2):
+    """Computes the Hillman Taper (or Taper 2) of all the sections along a given arbor.
+
+    :param section:
+        A given section to compute its Taper 2 value.
+    :param sections_taper_2:
+        A list to collect the resulting data.
+    """
+
+    # Compute section length
+    section_taper_2 = compute_section_taper_2(section=section)
+
+    # Append the length to the list
+    sections_taper_2.append(section_taper_2)
+
+
+####################################################################################################
 # @compute_sections_contraction_ratios
 ####################################################################################################
 def compute_sections_contraction_ratios(section,
-                                        sections_euclidean_distances):
+                                        contraction_rations):
     """Compute the contraction ratio of a given section.
 
     :param section:
         A given section to compute its length.
-    :param sections_euclidean_distances:
+    :param contraction_rations:
         A list to collect the resulting data.
     """
 
@@ -146,8 +259,9 @@ def compute_sections_contraction_ratios(section,
     # Compute section Euclidean distance
     section_euclidean_distance = compute_section_euclidean_distance(section=section)
 
-    # Append the result
-    sections_euclidean_distances.append(section_euclidean_distance / section_length)
+    # Append the result only if the section length is greater than zero
+    if section_length > 0.0:
+        contraction_rations.append(section_euclidean_distance / section_length)
 
 
 ####################################################################################################

@@ -247,6 +247,69 @@ def create_flat_material(name,
 
 
 ####################################################################################################
+# @create_transparent_material
+####################################################################################################
+def create_transparent_material(name,
+                                color=nmv.consts.Color.WHITE):
+    """Creates a flat shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    if nmv.utilities.is_blender_280():
+
+        # Set the current rendering engine to Blender
+        current_scene.render.engine = 'BLENDER_WORKBENCH'
+
+        # Create a new material (color) and assign it to the line
+        color = mathutils.Vector((color[0], color[1], color[2], 1.0))
+
+        # Create a new material (color) and assign it to the line
+        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference.diffuse_color = color
+
+        # Zero-metallic and roughness
+        material_reference.roughness = 0.0
+        material_reference.metallic = 0.0
+
+        # Transparent shading
+        bpy.context.scene.shading.show_xray = True
+
+    else:
+
+        # Switch the rendering engine to cycles to be able to create the material
+        current_scene.render.engine = 'CYCLES'
+
+        # Use only 2 samples
+        bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
+
+        # Import the material from the library
+        material_reference = import_shader(shader_name='flat-material')
+
+        # Rename the material
+        material_reference.name = str(name)
+
+        # Update the color gradient
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+        material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
 # @create_toon_material
 ####################################################################################################
 def create_toon_material(name,
@@ -685,6 +748,10 @@ def create_material(name,
     # Toon
     elif material_type == nmv.enums.Shading.TOON:
         return create_toon_material(name='%s_color' % name, color=color)
+
+    # Transparent
+    elif material_type == nmv.enums.Shading.TRANSPARENT:
+        return create_transparent_material(name='%s_color' % name, color=color)
 
     # Default
     else:

@@ -231,7 +231,7 @@ def compute_total_number_of_terminal_tips_of_arbor(arbor):
     :param arbor:
         A given arbor to analyze.
     :return
-        The total number of tips in the arbor.
+        The total number of terminal tips in the arbor.
     """
 
     # A list that will contain the number of terminal tips
@@ -247,3 +247,32 @@ def compute_total_number_of_terminal_tips_of_arbor(arbor):
 
     # Return the total
     return total_tips
+
+
+####################################################################################################
+# @compute_total_number_of_terminal_segments_of_arbor
+####################################################################################################
+def compute_total_number_of_terminal_segments_of_arbor(arbor):
+    """Analyse the total number of terminal segments of the given morphology.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The total number of terminal segments in the arbor.
+    """
+
+    # A list that will contain the number of terminal segments
+    terminal_segments = list()
+
+    # Apply the operation per section
+    nmv.skeleton.ops.apply_operation_to_arbor(*[arbor, nmv.analysis.compute_terminal_segments,
+                                                terminal_segments])
+
+    # Calculate the total
+    total_terminal_segments = 0
+    for segments in terminal_segments:
+        total_terminal_segments += segments
+
+    # Return the total
+    return total_terminal_segments
+

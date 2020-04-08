@@ -17,6 +17,7 @@
 
 # System imports
 import copy
+import nmv.analysis
 
 
 ####################################################################################################
@@ -106,6 +107,7 @@ def analyze_number_of_segments_per_section(section,
     """
 
     # Analysis data
+    import nmv.analysis
     data = nmv.analysis.AnalysisData
     data.value = len(section.samples) - 1
     data.branching_order = section.branching_order
@@ -366,7 +368,7 @@ def count_trifurcations(section,
 
 
 ####################################################################################################
-# @count_trifurcations
+# @compute_terminal_tips
 ####################################################################################################
 def compute_terminal_tips(section,
                           analysis_data):
@@ -381,6 +383,24 @@ def compute_terminal_tips(section,
 
     if section.is_leaf():
         analysis_data.append(1)
+
+
+####################################################################################################
+# @compute_terminal_segments
+####################################################################################################
+def compute_terminal_segments(section,
+                              analysis_data):
+    """Checks if the section is a leaf or not. If yes, adds the number of segments in the section
+    to the result to account for a terminal segments.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    if section.is_leaf():
+        analysis_data.append(len(section.samples) - 1)
 
 
 ####################################################################################################
@@ -421,7 +441,7 @@ def compute_path_distance(section,
 # @compute_maximum_euclidean_distance
 ####################################################################################################
 def compute_maximum_euclidean_distance(section,
-                                      analysis_data):
+                                       analysis_data):
     """Computes the maximum Euclidean distance of a given section.
 
      :param section:
@@ -439,7 +459,7 @@ def compute_maximum_euclidean_distance(section,
 # @compute_minimum_euclidean_distance
 ####################################################################################################
 def compute_minimum_euclidean_distance(section,
-                                      analysis_data):
+                                       analysis_data):
     """Computes the minimum Euclidean distance of a given section.
 
      :param section:
@@ -451,6 +471,35 @@ def compute_minimum_euclidean_distance(section,
     # Get the last sample of the section and compute its radial distance if exists, otherwise ignore
     if len(section.samples) > 1:
         analysis_data.append(section.samples[0].point.length)
+
+
+####################################################################################################
+# @compute_section_partition_asymmetry
+####################################################################################################
+def compute_section_partition_asymmetry(section,
+                                        sections_partition_asymmetry):
+
+    # The section must have children
+    if section.has_children():
+
+        # Section must have at least two children to consider this a branching point
+        # NOTE: This is not handling trifurcations
+        if len(section.children) > 1:
+
+            # Children
+            child_1 = section.children[0]
+            child_2 = section.children[1]
+
+            # Compute the number of tips
+            n1 = nmv.analysis.compute_total_number_of_terminal_tips_of_arbor(child_1)
+            n2 = nmv.analysis.compute_total_number_of_terminal_tips_of_arbor(child_2)
+
+            # Compute the partition asymmetry
+            if not (n1 + n2) == 2:
+                partition_asymmetry = abs(n1 - n2) / (n1 + n2 - 2)
+
+                # Return the value
+                sections_partition_asymmetry.append(partition_asymmetry)
 
 
 ####################################################################################################

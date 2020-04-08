@@ -44,6 +44,16 @@ distributions = [
         add_percentage=False),
 
     AnalysisDistribution(
+        name='Total Number of Terminal Segments per Arbor',
+        description='The total number of terminal segments per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Terminal Segments / Arbor',
+        figure_name='number-of-terminal-segments-per-arbor',
+        figure_xlabel='Number of Terminal Segments',
+        compute_total_kernel=compute_total_number_of_terminal_segments_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
         name='Total Number of Bifurcations per Arbor',
         description='The total number of bifurcations per arbor in the morphology',
         data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,

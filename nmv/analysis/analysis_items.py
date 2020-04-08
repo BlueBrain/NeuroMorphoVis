@@ -34,6 +34,12 @@ ui_per_arbor_analysis_items = [
                  description='The total number number of terminal tips',
                  data_format='INT'),
 
+    AnalysisItem(variable='NumberTerminalSegments',
+                 name='Total # Terminal Segments',
+                 kernel=kernel_total_number_terminal_segments,
+                 description='The total number number of terminal segments',
+                 data_format='INT'),
+
     ################################################################################################
     # Samples-related items
     ################################################################################################
@@ -116,6 +122,60 @@ ui_per_arbor_analysis_items = [
                  kernel=kernel_number_zero_radius_samples,
                  description='The total number of zero-radii samples (epsilon value 1e-3 or 1 nm)',
                  data_format='INT'),
+
+    AnalysisItem(variable='MinTaper1',
+                 name='Min. Taper 1',
+                 kernel=kernel_minimum_taper_1,
+                 description='The minimum Taper 1 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='MaxTaper1',
+                 name='Max. Taper 1',
+                 kernel=kernel_maximum_taper_1,
+                 description='The maximum Taper 1 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='AvgTaper1',
+                 name='Avg. Taper 1',
+                 kernel=kernel_average_taper_1,
+                 description='The average Taper 1 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='MinTaper2',
+                 name='Min. Taper 2',
+                 kernel=kernel_minimum_taper_2,
+                 description='The minimum Taper 2 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='MaxTaper2',
+                 name='Max. Taper 2',
+                 kernel=kernel_maximum_taper_2,
+                 description='The maximum Taper 2 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='AvgTaper2',
+                 name='Avg. Taper 2',
+                 kernel=kernel_average_taper_2,
+                 description='The average Taper 2 value',
+                 data_format='NEGATIVE_FLOAT'),
+
+    AnalysisItem(variable='MinContraction',
+                 name='Min. Contraction',
+                 kernel=kernel_minimum_contraction,
+                 description='The minimum contraction ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='MaxContraction',
+                 name='Max. Contraction',
+                 kernel=kernel_maximum_contraction,
+                 description='The maximum contraction ratio',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='AvgContraction',
+                 name='Avg. Contraction',
+                 kernel=kernel_average_contraction,
+                 description='The average contraction ratio',
+                 data_format='FLOAT'),
 
     ################################################################################################
     # Angle-related items

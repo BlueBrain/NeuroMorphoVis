@@ -242,6 +242,80 @@ def compute_number_of_zero_radius_samples_per_section_of_arbor(arbor):
 
 
 ####################################################################################################
+# @compute_partition_asymmetry_per_section_of_arbor
+####################################################################################################
+def compute_partition_asymmetry_per_section_of_arbor(arbor):
+    """Computes the total number of zero-radius samples per section of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Number of zero-radius samples along the given arbor.
+    """
+
+    # A list that will contain the values per section
+    sections_partition_asymmetry = list()
+
+    # Compute the value of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_section_partition_asymmetry,
+          sections_partition_asymmetry])
+
+    # Return the list that contains all the values
+    return sections_partition_asymmetry
+
+
+####################################################################################################
+# @compute_minimum_partition_asymmetry_of_arbor
+####################################################################################################
+def compute_minimum_partition_asymmetry_of_arbor(arbor):
+    """Computes the minimum partition asymmetry of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Minimum partition asymmetry of the given arbor.
+    """
+
+    # Return the minimum
+    return min(compute_partition_asymmetry_per_section_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_maximum_partition_asymmetry_of_arbor
+####################################################################################################
+def compute_maximum_partition_asymmetry_of_arbor(arbor):
+    """Computes the maximum partition asymmetry of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Maximum partition asymmetry of the given arbor.
+    """
+
+    # Return the maximum
+    return max(compute_partition_asymmetry_per_section_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_average_partition_asymmetry_of_arbor
+####################################################################################################
+def compute_average_partition_asymmetry_of_arbor(arbor):
+    """Computes the average partition asymmetry of the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Average partition asymmetry of the given arbor.
+    """
+
+    # Return the average
+    partition_asymmetry = compute_partition_asymmetry_per_section_of_arbor(arbor)
+    return sum(partition_asymmetry) / (1.0 * len(partition_asymmetry))
+
+
+####################################################################################################
 # @compute_minimum_sample_radius_of_arbor
 ####################################################################################################
 def compute_minimum_sample_radius_of_arbor(arbor):
@@ -406,6 +480,12 @@ def get_number_of_samples_per_section_of_arbor(arbor):
 
     # Return the list
     return arbor_number_of_samples_per_section
+
+
+
+
+
+
 
 
 

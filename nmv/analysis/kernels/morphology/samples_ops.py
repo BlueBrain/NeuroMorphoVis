@@ -177,6 +177,60 @@ def kernel_average_sample_radius(morphology):
         nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
+####################################################################################################
+# @kernel_minimum_partition_asymmetry
+####################################################################################################
+def kernel_minimum_partition_asymmetry(morphology):
+    """Find the minimum partition asymmetry of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_partition_asymmetry_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_maximum_partition_asymmetry
+####################################################################################################
+def kernel_maximum_partition_asymmetry(morphology):
+    """Find the maximum partition asymmetry of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_partition_asymmetry_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_average_partition_asymmetry
+####################################################################################################
+def kernel_average_partition_asymmetry(morphology):
+    """Find the average partition asymmetry of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_partition_asymmetry_of_arbor,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
 def kernel_analyse_number_of_samples_per_section(morphology, options=None):
 
     # Get the analysis results

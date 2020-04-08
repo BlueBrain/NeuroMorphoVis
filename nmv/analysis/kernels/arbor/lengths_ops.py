@@ -373,3 +373,173 @@ def compute_number_of_short_sections_of_arbor(arbor):
 
     # Return the number of short sections
     return len(short_sections)
+
+
+####################################################################################################
+# @compute_taper_1_values_of_arbor
+####################################################################################################
+def compute_taper_1_values_of_arbor(arbor):
+    """Computes an array that contains the Taper 1 values of all the sections along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the Taper 1 values of all the sections along the arbor.
+    """
+
+    # A list that will contains the Taper 1 values along the arbor
+    sections_taper_1 = list()
+
+    # Compute the length of each segment individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_taper_1,
+          sections_taper_1])
+
+    # Return the list
+    return sections_taper_1
+
+
+####################################################################################################
+# @compute_taper_2_values_of_arbor
+####################################################################################################
+def compute_taper_2_values_of_arbor(arbor):
+    """Computes an array that contains the Taper 2 values of all the sections along the arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        An array that contains the Taper 2 values of all the sections along the arbor.
+    """
+
+    # A list that will contains the Taper 2 values along the arbor
+    sections_taper_2 = list()
+
+    # Compute the length of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_sections_taper_2,
+          sections_taper_2])
+
+    # Return the list
+    return sections_taper_2
+
+
+####################################################################################################
+# @compute_minimum_taper_1_of_arbor
+####################################################################################################
+def compute_minimum_taper_1_of_arbor(arbor):
+    """Computes the minimum Taper 1 value along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum Taper 1 value of the given arbor.
+    """
+
+    # Return the minimum
+    return min(compute_taper_1_values_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_minimum_taper_2_of_arbor
+####################################################################################################
+def compute_minimum_taper_2_of_arbor(arbor):
+    """Computes the minimum Taper 2 value along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum Taper 2 value of the given arbor.
+    """
+
+    # Return the minimum
+    return min(compute_taper_2_values_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_maximum_taper_1_of_arbor
+####################################################################################################
+def compute_maximum_taper_1_of_arbor(arbor):
+    """Computes the maximum Taper 1 value along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum Taper 1 value of the given arbor.
+    """
+
+    # Return the minimum
+    return max(compute_taper_1_values_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_maximum_taper_2_of_arbor
+####################################################################################################
+def compute_maximum_taper_2_of_arbor(arbor):
+    """Computes the maximum Taper 2 value along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum Taper 2 value of the given arbor.
+    """
+
+    # Return the minimum
+    return max(compute_taper_2_values_of_arbor(arbor))
+
+
+####################################################################################################
+# @compute_average_section_length_of_arbor
+####################################################################################################
+def compute_average_taper_1_of_arbor(arbor):
+    """Computes the average Taper 1 along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average Taper 1 of the given arbor
+    """
+
+    # Get all the Taper 1 values
+    taper_1_values = compute_taper_1_values_of_arbor(arbor)
+
+    # Total
+    total = 0.0
+
+    # Iterate and sum up all the sections lengths
+    for value in taper_1_values:
+
+        # Add to the total
+        total += value
+
+    # Return the average by normalizing the total one
+    return total / len(taper_1_values)
+
+
+####################################################################################################
+# @compute_average_taper_2_of_arbor
+####################################################################################################
+def compute_average_taper_2_of_arbor(arbor):
+    """Computes the average Taper 2 along the given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average Taper 2 of the given arbor
+    """
+
+    # Get all the Taper 2 values
+    taper_2_values = compute_taper_2_values_of_arbor(arbor)
+
+    # Total
+    total = 0.0
+
+    # Iterate and sum up all the sections lengths
+    for value in taper_2_values:
+
+        # Add to the total
+        total += value
+
+    # Return the average by normalizing the total one
+    return total / len(taper_2_values)

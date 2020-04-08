@@ -77,6 +77,9 @@ class Shading:
     # Wave
     WAVE = 'WAVE_SHADER'
 
+    # Transparent
+    TRANSPARENT = 'TRANSPARENT_SHADER'
+
     # Wire frame
     WIRE_FRAME = 'WIREFRAME_SHADER'
 
@@ -107,6 +110,8 @@ class Shading:
             return Shading.SUPER_ELECTRON_DARK
         elif shader_type == 'shadow':
             return Shading.SHADOW
+        elif shader_type == 'transparent':
+            return Shading.TRANSPARENT
         elif shader_type == 'glossy':
             return Shading.GLOSSY
         elif shader_type == 'glossy-bumpy':
@@ -149,6 +154,10 @@ class Shading:
          'Toon',
          "Use Toon shader. This shader is used to create high resolution images in few seconds. "
          "The rendering quality of this shader is not the best"),
+
+        (TRANSPARENT,
+         'Transparent',
+         "Transparent shader to show the internals of the mesh"),
 
         (ELECTRON_LIGHT,
          'Electron Light',

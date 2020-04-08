@@ -106,6 +106,11 @@ class AnalysisItem:
                     FloatProperty(name=self.name, description=description, subtype='FACTOR',
                                   min=0, max=1e32, precision=5))
 
+        elif self.data_format == 'NEGATIVE_FLOAT':
+            setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
+                    FloatProperty(name=self.name, description=description, subtype='FACTOR',
+                                  min=-1e5, max=1e32, precision=5))
+
         # Int entry
         elif self.data_format == 'INT':
             setattr(bpy.types.Scene, '%s%s' % (variable_prefix, self.variable),
@@ -131,6 +136,11 @@ class AnalysisItem:
             setattr(bpy.types.Scene, '%s' % self.variable,
                     FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
                                   min=0, max=1e32, precision=5))
+
+        elif self.data_format == 'NEGATIVE_FLOAT':
+            setattr(bpy.types.Scene, '%s' % self.variable,
+                    FloatProperty(name=self.name, description=self.description, subtype='FACTOR',
+                                  min=-1e5, max=1e32, precision=5))
 
         # Int entry
         elif self.data_format == 'INT':
