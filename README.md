@@ -38,7 +38,9 @@ _NeuroMorphoVis_ packages are available for Ubuntu, RedHat, macOSX and Windows f
 ## Installation 
 _NeuroMorphoVis_ can be installed to a user-specified directory from a Unix (Linux or macOSX) terminal. Installation procedures are available in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation).   
 
-
+## User Documentation 
+The user documentation is available for Blender 2.8 from this [link](https://github.com/BlueBrain/NeuroMorphoVis/wiki). 
+ 
 # Interfaces
 
 _NeuroMorphoVis_ is primarily designed as a plug-in in [Blender](https://www.blender.org/). It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
