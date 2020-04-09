@@ -248,19 +248,19 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
         try:
             import seaborn
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *seaborn* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='seaborn')
 
@@ -337,19 +337,19 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
         try:
             import seaborn
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *seaborn* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='seaborn')
 
@@ -425,13 +425,13 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
@@ -442,19 +442,19 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
         try:
             import seaborn
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *seaborn* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='seaborn')
 
@@ -504,19 +504,19 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
         try:
             import seaborn
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *seaborn* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='seaborn')
 
@@ -541,19 +541,19 @@ class ConnectedSectionsBuilder:
         # Installing dependencies
         try:
             import numpy
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *numpy* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='numpy')
 
         try:
             import matplotlib
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *matplotlib* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='matplotlib')
 
         try:
             import seaborn
-        except ValueError:
+        except ModuleNotFoundError:
             print('Package *seaborn* is not installed. Installing it.')
             nmv.utilities.pip_wheel(package_name='seaborn')
 

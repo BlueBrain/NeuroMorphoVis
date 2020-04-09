@@ -52,19 +52,19 @@ def plot_per_arbor_result(analysis_results,
     # Installing dependencies
     try:
         import numpy
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *numpy* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='numpy')
 
     try:
         import matplotlib
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *matplotlib* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='matplotlib')
 
     try:
         import seaborn
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *seaborn* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='seaborn')
 
@@ -247,25 +247,25 @@ def plot_per_arbor_range(minimum_results,
     # Installing dependencies
     try:
         import numpy
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *numpy* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='numpy')
 
     try:
         import matplotlib
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *matplotlib* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='matplotlib')
 
     try:
         import seaborn
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *seaborn* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='seaborn')
 
     try:
         import pandas
-    except ValueError:
+    except ModuleNotFoundError:
         print('Package *pandas* is not installed. Installing it.')
         nmv.utilities.pip_wheel(package_name='pandas')
 

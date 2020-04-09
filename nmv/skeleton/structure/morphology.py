@@ -21,6 +21,7 @@ import copy
 # Internal imports
 import nmv.bbox
 import nmv.skeleton
+import nmv.utilities
 
 
 ####################################################################################################
@@ -487,10 +488,32 @@ class Morphology:
     def create_morphology_color_palette(self,
                                         palette_name=None):
 
+        # Installing dependencies
+        try:
+            import numpy
+        except ModuleNotFoundError:
+            print('Package *numpy* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
+
+        try:
+            import matplotlib
+        except ModuleNotFoundError:
+            print('Package *matplotlib* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='matplotlib')
+        try:
+            import seaborn
+        except ModuleNotFoundError:
+            print('Package *seaborn* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='seaborn')
+
+        try:
+            import pandas
+        except ModuleNotFoundError:
+            print('Package *pandas* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='pandas')
+
         import numpy
         import matplotlib.pyplot
-        import seaborn
-
         # palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
 
         palette = matplotlib.pyplot.get_cmap('Spectral_r')

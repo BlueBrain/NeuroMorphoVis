@@ -218,34 +218,26 @@ class H5Reader:
         # A list of data
         data = None
 
-        # Import the h5py module to read the .H5 file
+        # Import h5py
         try:
-
-            # Import the h5py module
             import h5py
+        except ModuleNotFoundError:
+            print('Package *h5py* is not installed. Installing it.')
+            nmv.utilities.pip_wheel(package_name='numpy')
 
-            # Read the h5 file using the python module into a data array
-            data = h5py.File(self.morphology_file, 'r')
+        # Import the h5py module
+        import h5py
 
-        # Raise an exception if we cannot import the h5py module
-        except ImportError:
+        # Read the h5 file using the python module into a data array
+        data = h5py.File(self.morphology_file, 'r')
 
-            # Report the issue
-            nmv.logger.log('FATAL_ERROR: Cannot find a compatible \'h5py\' version!')
-
-            # Exit NMV
-            exit(0)
-
+        # Read the point list from the points directory
         try:
-
-            # Read the point list from the points directory
             nmv.utilities.disable_std_output()
             self.points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
             nmv.utilities.enable_std_output()
 
-        except ImportError:
-
-            # Error
+        except ValueError:
             nmv.logger.log('ERROR: Cannot load the data points from [%s]' % self.morphology_file)
 
             # Return None
