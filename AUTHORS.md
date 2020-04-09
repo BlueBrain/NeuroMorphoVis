@@ -11,6 +11,7 @@ The following people have contributed to NeuroMorphoVis:
 ##### Version 1.4
 
     Caitlin Monney (EPFL)
+    Nadir Roman (EPFL)
 
 ##### Advisors
 
