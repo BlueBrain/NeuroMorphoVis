@@ -49,10 +49,10 @@ The tool is also extensible via its powerful python API that can be imported in 
 
 To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [user guide](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Graphical-User-Interface).
 
-<figure align="center">
-<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/modules/panels/interface-2.8.jpeg" width=800>
+<p align="center">
+<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/modules/panels/interface-2.8.jpeg" width=800><br>
 <figcaption><center>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D view port of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites and blue for the axon) and the soma (in yellow) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
-</figure>
+</p>
 
 ## Command Line Options
 
