@@ -193,24 +193,8 @@ class DendrogramBuilder:
         included in the analysis fact sheet.
         """
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         # Plotting imports
         import numpy

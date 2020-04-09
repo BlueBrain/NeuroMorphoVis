@@ -22,29 +22,6 @@ import subprocess
 
 
 ####################################################################################################
-# @_version_
-####################################################################################################
-def install_dependen():
-    """Gets NeuroMorphoVis version.
-
-    :return:
-        NeuroMorphoVis version tuple.
-    """
-
-    # Load the version from the version file
-    version_file_path = '%s/../../__init__.py' % os.path.dirname(os.path.realpath(__file__))
-    version_file = open(version_file_path, 'r')
-    version_string = ''
-    for line in version_file:
-        if '"version":' in line:
-            string = line.split('\"version\": (')[1].split(')')[0].split(', ')
-            version = (int(string[0]), int(string[1]), int(string[2]))
-            break
-    version_file.close()
-    return version
-
-
-####################################################################################################
 # @get_python_executable
 ####################################################################################################
 def get_python_executable():
@@ -79,15 +56,71 @@ def install_pip():
 
 
 ####################################################################################################
-# @pip_wheel
+# @pip_install_wheel
 ####################################################################################################
-def pip_wheel(package_name):
+def pip_install_wheel(package_name):
+    """Installs a package.
+
+    :param package_name:
+        The name of the pip package.
+    """
 
     # Get the pip executable
     pip_executable = install_pip()
 
     # Command
-    shell_command = '%s install %s --force-reinstall' % (pip_executable,
-                                                                            package_name)
+    shell_command = '%s install %s --force-reinstall' % (pip_executable, package_name)
     print('INSTALL: %s' % shell_command)
     subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
+# @pip_install_wheel
+####################################################################################################
+def pip_uninstall_wheel(package_name):
+    """Uninstalls a package.
+
+    :param package_name:
+        The name of the pip package to be removed.
+    """
+
+    # Get the pip executable
+    pip_executable = install_pip()
+
+    # Command
+    shell_command = '%s uninstall %s' % (pip_executable, package_name)
+    print('INSTALL: %s' % shell_command)
+    subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
+# @verify_plotting_packages
+####################################################################################################
+def verify_plotting_packages():
+    """Verifies that all the plotting packages are installed. Otherwise, install the missing one.
+    """
+
+    # Installing dependencies
+    try:
+        import numpy
+    except ModuleNotFoundError:
+        print('Package *numpy* is not installed. Installing it.')
+        pip_install_wheel(package_name='numpy')
+
+    try:
+        import matplotlib
+    except ModuleNotFoundError:
+        print('Package *matplotlib* is not installed. Installing it.')
+        pip_install_wheel(package_name='matplotlib')
+
+    try:
+        import seaborn
+    except ModuleNotFoundError:
+        print('Package *seaborn* is not installed. Installing it.')
+        pip_install_wheel(package_name='seaborn')
+
+    try:
+        import pandas
+    except ModuleNotFoundError:
+        print('Package *pandas* is not installed. Installing it.')
+        pip_install_wheel(package_name='pandas')

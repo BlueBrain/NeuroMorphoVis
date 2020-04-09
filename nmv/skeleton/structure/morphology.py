@@ -488,29 +488,8 @@ class Morphology:
     def create_morphology_color_palette(self,
                                         palette_name=None):
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
-
-        try:
-            import pandas
-        except ModuleNotFoundError:
-            print('Package *pandas* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='pandas')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         import numpy
         import matplotlib.pyplot

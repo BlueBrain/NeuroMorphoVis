@@ -254,7 +254,7 @@ class CreateNeuronCard(bpy.types.Operator):
             from PyPDF2 import PdfFileReader, PdfFileWriter
         except ImportError:
             print('Package *PyPDF2* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='pypdf2')
+            nmv.utilities.pip_install_wheel(package_name='pypdf2')
             from PyPDF2 import PdfFileReader, PdfFileWriter
 
         pdf_writer = PdfFileWriter()

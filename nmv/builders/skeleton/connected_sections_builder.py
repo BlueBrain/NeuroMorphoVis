@@ -245,29 +245,12 @@ class ConnectedSectionsBuilder:
             A handle to the figure.
         """
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         # Plotting imports
         import numpy
         import seaborn
-        import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
 
         # Import the fonts
@@ -334,30 +317,12 @@ class ConnectedSectionsBuilder:
         :return: 
         """
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         # Plotting imports
         import numpy
         import seaborn
-        import matplotlib.pyplot as pyplot
-        from matplotlib import font_manager
 
         # A handle to the figure
         figure = None
@@ -422,48 +387,14 @@ class ConnectedSectionsBuilder:
             Projection.
         """
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         # Plotting imports
         import numpy
         import matplotlib
-
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
-
-        # Plotting imports
-        import numpy
-        import seaborn
         import matplotlib.pyplot as pyplot
-        from matplotlib import font_manager
-        
+
         # The soma
         soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
         vertices = soma_builder_object.get_soma_profile()
@@ -501,31 +432,6 @@ class ConnectedSectionsBuilder:
     def draw_morphology_skeleton_with_matplotlib(self,
                                                  projection=nmv.enums.Camera.View.FRONT):
 
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
-
-        # Plotting imports
-        import numpy
-        import seaborn
-        import matplotlib.pyplot as pyplot
-        from matplotlib import font_manager
-        
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
@@ -536,29 +442,10 @@ class ConnectedSectionsBuilder:
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
-        # A list of all the skeleton poly-lines
-
-        # Installing dependencies
-        try:
-            import numpy
-        except ModuleNotFoundError:
-            print('Package *numpy* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
-
-        try:
-            import matplotlib
-        except ModuleNotFoundError:
-            print('Package *matplotlib* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='matplotlib')
-
-        try:
-            import seaborn
-        except ModuleNotFoundError:
-            print('Package *seaborn* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='seaborn')
+        # Verify the presence of the plotting packages
+        nmv.utilities.verify_plotting_packages()
 
         # Plotting imports
-        import numpy
         import seaborn
         import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
@@ -573,7 +460,7 @@ class ConnectedSectionsBuilder:
         self.morphology.create_morphology_color_palette()
 
         # Clear the figure
-        matplotlib.pyplot.clf()
+        pyplot.clf()
 
         # Adjust seaborn configuration
         seaborn.set_style("white")
@@ -669,12 +556,12 @@ class ConnectedSectionsBuilder:
         # PNG figure
         pdf_file_path = '%s/%s/%s.png' % (self.options.io.analysis_directory,
                                           self.morphology.label, projection)
-        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+        pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
         # PDF figure
         pdf_file_path = '%s/%s/%s.pdf' % (self.options.io.analysis_directory,
                                           self.morphology.label, projection)
-        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+        pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
         if projection == nmv.enums.Camera.View.FRONT:
             figure.set_xlim(
@@ -700,12 +587,12 @@ class ConnectedSectionsBuilder:
         # PNG figure
         pdf_file_path = '%s/%s/%s.png' % (self.options.io.analysis_directory,
                                           self.morphology.label, projection)
-        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+        pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
         # PDF figure
         pdf_file_path = '%s/%s/%s.pdf' % (self.options.io.analysis_directory,
                                           self.morphology.label, projection)
-        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+        pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
         return pdf_file_path
 

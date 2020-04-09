@@ -218,12 +218,12 @@ class H5Reader:
         # A list of data
         data = None
 
-        # Import h5py
+        # Import h5py and install it if it does not exist
         try:
             import h5py
         except ModuleNotFoundError:
             print('Package *h5py* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='h5py')
+            nmv.utilities.pip_install_wheel(package_name='h5py')
 
         # Import the h5py module
         import h5py
@@ -243,15 +243,13 @@ class H5Reader:
             # Return None
             return None
 
+        # Get the structure list from the structures directory
         try:
-
-            # Get the structure list from the structures directory
             nmv.utilities.disable_std_output()
             self.structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
             nmv.utilities.enable_std_output()
 
         except ImportError:
-
             nmv.logger.log('ERROR: Cannot load the data structure from [%s]' % self.morphology_file)
 
             # Return None

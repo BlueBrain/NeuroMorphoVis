@@ -49,24 +49,8 @@ def plot_per_arbor_result(analysis_results,
         If this flag is True, a percentage text will be added on the right side of each bar.
     """
 
-    # Installing dependencies
-    try:
-        import numpy
-    except ModuleNotFoundError:
-        print('Package *numpy* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='numpy')
-
-    try:
-        import matplotlib
-    except ModuleNotFoundError:
-        print('Package *matplotlib* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='matplotlib')
-
-    try:
-        import seaborn
-    except ModuleNotFoundError:
-        print('Package *seaborn* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='seaborn')
+    # Verify the presence of the plotting packages
+    nmv.utilities.verify_plotting_packages()
 
     # Plotting imports
     import numpy
@@ -244,30 +228,8 @@ def plot_per_arbor_range(minimum_results,
         The X-axis label of the figure.
     """
 
-    # Installing dependencies
-    try:
-        import numpy
-    except ModuleNotFoundError:
-        print('Package *numpy* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='numpy')
-
-    try:
-        import matplotlib
-    except ModuleNotFoundError:
-        print('Package *matplotlib* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='matplotlib')
-
-    try:
-        import seaborn
-    except ModuleNotFoundError:
-        print('Package *seaborn* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='seaborn')
-
-    try:
-        import pandas
-    except ModuleNotFoundError:
-        print('Package *pandas* is not installed. Installing it.')
-        nmv.utilities.pip_wheel(package_name='pandas')
+    # Verify the presence of the plotting packages
+    nmv.utilities.verify_plotting_packages()
 
     import numpy
     import seaborn
