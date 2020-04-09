@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -483,4 +483,3 @@ ui_global_analysis_items = [
                              'soma in the morphology',
                  data_format='INT'),
 ]
-

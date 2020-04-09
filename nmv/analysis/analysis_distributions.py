@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -339,26 +339,6 @@ distributions = [
         compute_avg_kernel=compute_average_global_bifurcation_angle_of_arbor,
         compute_max_kernel=compute_maximum_global_bifurcation_angle_of_arbor,
         add_percentage=False),
-]
-
-####################################################################################################
-# Global analysis items, only applied on a global level not per-arbor level
-####################################################################################################
-distributionss = [
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ]
 
 '''

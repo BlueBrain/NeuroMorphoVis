@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2018, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -69,12 +69,12 @@ def compute_section_surface_area_from_segments(section):
 ####################################################################################################
 def compute_segments_surface_areas_in_section(section,
                                               segments_surface_areas):
-    """Computes the surface areas of all the segments in the section.
+    """Computes a list of the surface areas of all the segments in the section.
 
     :param section:
         A given section to compute the surface area of its segments.
     :param segments_surface_areas:
-        A list of all the surface areas of all the segments in the section.
+        A list of all the surface areas of all the segments in the section to append the results to.
     """
 
     # If the section has less than two samples, then report the error
@@ -105,8 +105,7 @@ def compute_segments_surface_areas_in_section(section,
 ####################################################################################################
 def compute_sections_surface_areas_from_segments(section,
                                                  sections_surface_areas):
-
-    """Computes the surface areas of all the sections along a given neurite or arbor.
+    """Computes the surface areas of all the sections along a given arbor.
 
     :param section:
         A given section to compute its surface area.

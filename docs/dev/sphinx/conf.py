@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'NeuroMorphoVis'
-copyright = '2016 - 2018, EPFL / Blue Brain Project'
+copyright = '2016 - 2020, EPFL / Blue Brain Project'
 author = 'Marwan Abdellah'
 
 # The version info for the project you're documenting, acts as replacement for
