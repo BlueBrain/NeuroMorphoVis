@@ -28,13 +28,14 @@ def compute_sections_local_bifurcation_angles(section,
 
     :param section:
         A given section to compute its surface area.
-    :return:
+    :param sections_local_angles:
         Section local bifurcation angle.
     """
 
     # The section must have 'at least' two children to compute this angle.
     if section.has_children():
 
+        # The section must have two children
         if len(section.children) == 2:
 
             # Access the children
@@ -44,23 +45,47 @@ def compute_sections_local_bifurcation_angles(section,
             # If the section has less than two samples, then report the error
             if len(child_1.samples) < 2:
                 return
-
             if len(child_2.samples) < 2:
                 return
 
+            # Construct the vectors
             vector_1 = (child_1.samples[1].point - child_1.samples[0].point)
             vector_2 = (child_2.samples[1].point - child_2.samples[0].point)
 
-            if vector_1.length < 1e-5:
-                return
+            # If the second sample in the child is located exactly at the first one, pick the third
+            if vector_1.length < 1e-6:
 
-            if vector_2.length < 1e-5:
-                return
+                # Ensure that the section has at least three samples
+                if len(child_1.samples) < 3:
+                    return
 
+                # Again, construct the vector
+                vector_1 = (child_1.samples[2].point - child_1.samples[0].point)
+
+                # If the vector has zero length, return
+                if vector_1.length < 1e-6:
+                    return
+
+            # If the second sample in the child is located exactly at the first one, pick the third
+            if vector_2.length < 1e-6:
+
+                # Ensure that the section has at least three samples
+                if len(child_2.samples) < 3:
+                    return
+
+                    # Again, construct the vector
+                vector_2 = (child_2.samples[2].point - child_2.samples[0].point)
+
+                # If the vector has zero length, return
+                if vector_2.length < 1e-6:
+                    return
+
+            # Compute the bifurcation angles
             vector_1 = vector_1.normalized()
             vector_2 = vector_2.normalized()
             angle = vector_1.angle(vector_2)
 
+            # Append the angle to the list
             sections_local_angles.append(angle * 180.0 / 3.14)
 
 
@@ -73,13 +98,14 @@ def compute_sections_global_bifurcation_angles(section,
 
     :param section:
         A given section to compute its surface area.
-    :return:
+    :param sections_global_angles:
         Section global bifurcation angle.
     """
 
     # The section must have 'at least' two children to compute this angle.
     if section.has_children():
 
+        # The section must have at least two children
         if len(section.children) == 2:
 
             # Access the children
@@ -89,21 +115,23 @@ def compute_sections_global_bifurcation_angles(section,
             # If the section has less than two samples, then report the error
             if len(child_1.samples) < 2:
                 return
-
             if len(child_2.samples) < 2:
                 return
 
+            # Compute the vectors
             vector_1 = (child_1.samples[-1].point - child_1.samples[0].point)
             vector_2 = (child_2.samples[-1].point - child_2.samples[0].point)
 
-            if vector_1.length < 1e-5:
+            # Ensure no Zero vectors
+            if vector_1.length < 1e-6:
+                return
+            if vector_2.length < 1e-6:
                 return
 
-            if vector_2.length < 1e-5:
-                return
-
+            # Compute the angles
             vector_1 = vector_1.normalized()
             vector_2 = vector_2.normalized()
             angle = vector_1.angle(vector_2)
 
+            # Append the angle to the list
             sections_global_angles.append(angle * 180.0 / 3.14)

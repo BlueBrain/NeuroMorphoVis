@@ -206,7 +206,8 @@ def compute_minimum_analysis_result_of_morphology_and_ignore_zero(analysis_resul
         all_arbors_results.append(analysis_result.axon_result)
 
     # Remove zeros from the list
-    all_arbors_results.remove(0)
+    if 0 in all_arbors_results:
+        all_arbors_results.remove(0)
 
     # Update the morphology result
     analysis_result.morphology_result = min(all_arbors_results)
@@ -311,7 +312,8 @@ def compute_average_analysis_result_of_morphology_and_ignore_zero(analysis_resul
         all_arbors_results.append(analysis_result.axon_result)
 
     # Remove zeros from the list
-    all_arbors_results.remove(0)
+    if 0 in all_arbors_results:
+        all_arbors_results.remove(0)
 
     # Update the morphology result
     analysis_result.morphology_result = 0

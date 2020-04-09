@@ -225,10 +225,10 @@ def kernel_average_contraction(morphology):
 
 
 ####################################################################################################
-# @kernel_minimum_taper_1
+# @kernel_minimum_burke_taper
 ####################################################################################################
-def kernel_minimum_taper_1(morphology):
-    """Find the minimum Taper 1 of the given morphology.
+def kernel_minimum_burke_taper(morphology):
+    """Find the minimum Burke taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -237,15 +237,15 @@ def kernel_minimum_taper_1(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_minimum_taper_1_of_arbor,
+                                      nmv.analysis.compute_minimum_burke_taper_of_arbor,
                                       nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_minimum_taper_2
+# @kernel_minimum_hillman_taper
 ####################################################################################################
-def kernel_minimum_taper_2(morphology):
-    """Find the minimum Taper 2 of the given morphology.
+def kernel_minimum_hillman_taper(morphology):
+    """Find the minimum Hillman taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -254,15 +254,15 @@ def kernel_minimum_taper_2(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_minimum_taper_2_of_arbor,
+                                      nmv.analysis.compute_minimum_hillman_taper_of_arbor,
                                       nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_maximum_taper_1
+# @kernel_maximum_burke_taper
 ####################################################################################################
-def kernel_maximum_taper_1(morphology):
-    """Find the maximum Taper 1 of the given morphology.
+def kernel_maximum_burke_taper(morphology):
+    """Find the maximum Burke taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -271,15 +271,15 @@ def kernel_maximum_taper_1(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_taper_1_of_arbor,
+                                      nmv.analysis.compute_maximum_burke_taper_of_arbor,
                                       nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_maximum_taper_2
+# @kernel_maximum_hillman_taper
 ####################################################################################################
-def kernel_maximum_taper_2(morphology):
-    """Find the maximum Taper 2 of the given morphology.
+def kernel_maximum_hillman_taper(morphology):
+    """Find the maximum Hillman taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -288,15 +288,15 @@ def kernel_maximum_taper_2(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_taper_2_of_arbor,
+                                      nmv.analysis.compute_maximum_hillman_taper_of_arbor,
                                       nmv.analysis.compute_maximum_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_average_taper_1
+# @kernel_average_burke_taper
 ####################################################################################################
-def kernel_average_taper_1(morphology):
-    """Find the average Taper 1 of the given morphology.
+def kernel_average_burke_taper(morphology):
+    """Find the average Burke taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -305,15 +305,15 @@ def kernel_average_taper_1(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_average_taper_1_of_arbor,
+                                      nmv.analysis.compute_average_burke_taper_of_arbor,
                                       nmv.analysis.compute_average_analysis_result_of_morphology)
 
 
 ####################################################################################################
-# @kernel_average_taper_2
+# @kernel_average_hillman_taper
 ####################################################################################################
-def kernel_average_taper_2(morphology):
-    """Find the average Taper 2 of the given morphology.
+def kernel_average_hillman_taper(morphology):
+    """Find the average Hillman taper of the given morphology.
 
     :param morphology:
         A given morphology skeleton to analyse.
@@ -322,7 +322,7 @@ def kernel_average_taper_2(morphology):
     """
 
     return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_average_taper_2_of_arbor,
+                                      nmv.analysis.compute_average_hillman_taper_of_arbor,
                                       nmv.analysis.compute_average_analysis_result_of_morphology)
 
 

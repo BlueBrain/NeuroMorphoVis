@@ -369,7 +369,13 @@ class DendrogramBuilder:
             ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
                              color=self.morphology.soma_color)
 
-        pdf_file_path = '%s/%s-dendrogram.pdf' % \
+        # Draw PNG figure
+        png_file_path = '%s/%s/dendrogram.png' % \
+                        (self.options.io.analysis_directory, self.morphology.label)
+        pyplot.savefig(png_file_path, bbox_inches='tight', transparent=True, dpi=300)
+
+        # Draw PDF figure
+        pdf_file_path = '%s/%s/dendrogram.pdf' % \
                         (self.options.io.analysis_directory, self.morphology.label)
         pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 

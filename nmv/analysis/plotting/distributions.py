@@ -30,8 +30,7 @@ def plot_per_arbor_result(analysis_results,
                           figure_name=None,
                           figure_title=None,
                           figure_xlabel=None,
-                          add_percentage=False,
-                          image_extension=nmv.enums.Image.Extension.PDF):
+                          add_percentage=False):
     """
 
     :param analysis_results:
@@ -41,7 +40,6 @@ def plot_per_arbor_result(analysis_results,
     :param figure_title:
     :param figure_xlabel:
     :param add_percentage:
-    :param image_extension:
     :return:
     """
 
@@ -196,9 +194,12 @@ def plot_per_arbor_result(analysis_results,
 
         ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
 
-    # Save the figure
-    pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
-                                    image_extension),
+    # Save a PNG figure
+    pyplot.savefig('%s/%s/%s.png' % (options.io.analysis_directory, morphology.label, figure_name),
+                   bbox_inches='tight', transparent=True, dpi=600)
+
+    # Save a PDF figure
+    pyplot.savefig('%s/%s/%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
                    bbox_inches='tight', transparent=True, dpi=600)
 
     # Close the figures
@@ -215,8 +216,7 @@ def plot_per_arbor_range(minimum_results,
                          options,
                          figure_name=None,
                          figure_xlabel=None,
-                         figure_title=None,
-                         image_extension=nmv.enums.Image.Extension.PDF):
+                         figure_title=None):
     """
 
     :param minimum_results:
@@ -227,7 +227,6 @@ def plot_per_arbor_range(minimum_results,
     :param figure_name:
     :param figure_xlabel:
     :param figure_title:
-    :param image_extension:
     :return:
     """
 
@@ -353,9 +352,12 @@ def plot_per_arbor_range(minimum_results,
     ax.spines['left'].set_linewidth(0.5)
     ax.spines['left'].set_color('black')
 
-    # Save the figure
-    pyplot.savefig('%s/%s-%s.%s' % (options.io.analysis_directory, morphology.label, figure_name,
-                                    image_extension),
+    # Save a PNG figure
+    pyplot.savefig('%s/%s/%s.png' % (options.io.analysis_directory, morphology.label, figure_name),
+                   bbox_inches='tight', transparent=True, dpi=300)
+
+    # Save a PDF figure
+    pyplot.savefig('%s/%s/%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
                    bbox_inches='tight', transparent=True, dpi=300)
 
     # Close the figures

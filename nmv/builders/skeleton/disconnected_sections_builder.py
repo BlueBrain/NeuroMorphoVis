@@ -597,7 +597,6 @@ class DisconnectedSectionsBuilder:
 
 
         for image in images:
-            print(image)
 
             img_path = '%s.png' % image
             pdf_path = '%s.pdf' % image

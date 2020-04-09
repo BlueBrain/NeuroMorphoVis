@@ -20,7 +20,9 @@ from .structs import *
 from .kernels import *
 import nmv.enums
 
-
+####################################################################################################
+# Analysis distributions
+####################################################################################################
 distributions = [
 
     AnalysisDistribution(
@@ -41,6 +43,16 @@ distributions = [
         figure_name='number-of-terminal-tips-per-arbor',
         figure_xlabel='Number of Tips',
         compute_total_kernel=compute_total_number_of_terminal_tips_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Total Number of Terminal Segments per Arbor',
+        description='The total number of terminal segments per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Terminal Segments / Arbor',
+        figure_name='number-of-terminal-segments-per-arbor',
+        figure_xlabel='Number of Segments',
+        compute_total_kernel=compute_total_number_of_terminal_segments_of_arbor,
         add_percentage=False),
 
     AnalysisDistribution(
@@ -209,7 +221,6 @@ distributions = [
         compute_max_kernel=compute_maximum_section_volume,
         add_percentage=False),
 
-
     AnalysisDistribution(
         name='Contraction Range per Arbor',
         description='The range of contraction per arbor in the morphology',
@@ -256,6 +267,88 @@ distributions = [
         compute_min_kernel=compute_minimum_section_contraction_of_arbor,
         compute_avg_kernel=compute_average_section_contraction_of_arbor,
         compute_max_kernel=compute_maximum_section_contraction_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Burke Taper Range per Arbor',
+        description='The range of Burke taper per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Burke Taper Range / Arbor',
+        figure_name='burke-taper-range-per-arbor',
+        figure_xlabel='Burke Taper',
+        compute_min_kernel=compute_minimum_burke_taper_of_arbor,
+        compute_avg_kernel=compute_average_burke_taper_of_arbor,
+        compute_max_kernel=compute_maximum_burke_taper_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Hillman Taper Range per Arbor',
+        description='The range of Hillman taper per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Hillman Taper Range / Arbor',
+        figure_name='hillman-taper-range-per-arbor',
+        figure_xlabel='Hillman Taper',
+        compute_min_kernel=compute_minimum_hillman_taper_of_arbor,
+        compute_avg_kernel=compute_average_hillman_taper_of_arbor,
+        compute_max_kernel=compute_maximum_hillman_taper_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Daughter Ratio Range per Arbor',
+        description='The range of the daughter ration per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Daughter Ratio Range / Arbor',
+        figure_name='daughter-ratio-range-per-arbor',
+        figure_xlabel='Daughter Ratio',
+        compute_min_kernel=compute_minimum_daughter_ratio_of_arbor,
+        compute_avg_kernel=compute_average_daughter_ratio_of_arbor,
+        compute_max_kernel=compute_maximum_daughter_ratio_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Parent Daughter Ratio Range per Arbor',
+        description='The range of the parent daughter ration per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Parent Daughter Ratio Range / Arbor',
+        figure_name='parent-daughter-ratio-range-per-arbor',
+        figure_xlabel='Parent Daughter Ratio',
+        compute_min_kernel=compute_minimum_parent_daughter_ratio_of_arbor,
+        compute_avg_kernel=compute_average_parent_daughter_ratio_of_arbor,
+        compute_max_kernel=compute_maximum_parent_daughter_ratio_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Total Number of Zero-radii Samples per Arbor',
+        description='The total number of zero-radii sampler per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.NUMBER_PER_ARBOR,
+        figure_title='Number of Zero-radii Samples / Arbor',
+        figure_name='number-of-zero-radii-samples-per-arbor',
+        figure_xlabel='Number of Samples',
+        compute_total_kernel=compute_number_of_zero_radius_samples_per_section_of_arbor,
+        add_percentage=True),
+
+    AnalysisDistribution(
+        name='Local Bifurcation Angle Range per Arbor',
+        description='The range of the local bifurcation angles per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Local Bifurcation Angle Range / Arbor',
+        figure_name='local-bifurcation-angle-range-per-arbor',
+        figure_xlabel='Angle (Degrees \u00B0)',
+        compute_min_kernel=compute_minimum_local_bifurcation_angle_of_arbor,
+        compute_avg_kernel=compute_average_local_bifurcation_angle_of_arbor,
+        compute_max_kernel=compute_maximum_local_bifurcation_angle_of_arbor,
+        add_percentage=False),
+
+    AnalysisDistribution(
+        name='Global Bifurcation Angle Range per Arbor',
+        description='The range of the global bifurcation angles per arbor in the morphology',
+        data_format=nmv.enums.Analysis.Distribution.RANGE_PER_ARBOR,
+        figure_title='Global Bifurcation Angle Range / Arbor',
+        figure_name='global-bifurcation-angle-range-per-arbor',
+        figure_xlabel='Angle (Degrees \u00B0)',
+        compute_min_kernel=compute_minimum_global_bifurcation_angle_of_arbor,
+        compute_avg_kernel=compute_average_global_bifurcation_angle_of_arbor,
+        compute_max_kernel=compute_maximum_global_bifurcation_angle_of_arbor,
         add_percentage=False),
 ]
 

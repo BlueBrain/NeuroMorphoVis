@@ -519,14 +519,17 @@ def compute_daughter_ratio(section,
     if section.has_children():
 
         # The section must have two children
-        if len(section.children) == 2:
+        if len(section.children) > 1:
 
             # Get references to the children sections
             child_0 = section.children[0]
             child_1 = section.children[1]
 
             # Compute the ratio, irrespective to which one is bigger
-            daughter_ratio = child_0.samples[1].radius / child_1.samples[1].radius
+            segment_1_radius = 0.5 * (child_0.samples[0].radius + child_0.samples[1].radius)
+            segment_2_radius = 0.5 * (child_1.samples[0].radius + child_1.samples[1].radius)
+
+            daughter_ratio = segment_1_radius / segment_2_radius
 
             # If the ratio is less than 1.0, simply invert it
             if daughter_ratio < 1.0:
@@ -552,20 +555,20 @@ def compute_parent_daughter_ratios(section,
     # The section must have children
     if section.has_children():
 
-        # Make sure that the section has at least one sample
-        if len(section.samples) > 0:
+        # Get the parent last segment radius
+        parent_radius = 0.5 * (section.samples[-1].radius + section.samples[-2].radius)
 
-            # Get the parent radius
-            parent_radius = section.samples[-1].radius
+        # Make sure that the section has at least one sample
+        if len(section.samples) > 1:
 
             # For every child
             for child in section.children:
 
                 # The child must have at least one sample as well
-                if len(child.samples) > 0:
+                if len(child.samples) > 1:
 
-                    # Get the child radius
-                    child_radius = child.samples[1].radius
+                    # Get the child first segment radius
+                    child_radius = 0.5 * (child.samples[0].radius + child.samples[1].radius)
 
                     # Compute the ratio, irrespective to which one is bigger
                     parent_daughter_ratio = child_radius / parent_radius

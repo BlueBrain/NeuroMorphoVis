@@ -666,6 +666,16 @@ class ConnectedSectionsBuilder:
         # Adjust the scale
         figure.set_aspect(aspect='equal')
 
+        # PNG figure
+        pdf_file_path = '%s/%s/%s.png' % (self.options.io.analysis_directory,
+                                          self.morphology.label, projection)
+        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+
+        # PDF figure
+        pdf_file_path = '%s/%s/%s.pdf' % (self.options.io.analysis_directory,
+                                          self.morphology.label, projection)
+        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+
         if projection == nmv.enums.Camera.View.FRONT:
             figure.set_xlim(
                 (self.morphology.bounding_box.p_min.x, self.morphology.bounding_box.p_max.x))
@@ -687,9 +697,14 @@ class ConnectedSectionsBuilder:
         # Title
         figure.set(xlabel=projection)
 
-        pdf_file_path = '%s/%s-%s.pdf' % \
-                        (self.options.io.analysis_directory, self.morphology.label, projection)
-        # Save the figure
+        # PNG figure
+        pdf_file_path = '%s/%s/%s.png' % (self.options.io.analysis_directory,
+                                          self.morphology.label, projection)
+        matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
+
+        # PDF figure
+        pdf_file_path = '%s/%s/%s.pdf' % (self.options.io.analysis_directory,
+                                          self.morphology.label, projection)
         matplotlib.pyplot.savefig(pdf_file_path, bbox_inches='tight', transparent=True, dpi=300)
 
         return pdf_file_path

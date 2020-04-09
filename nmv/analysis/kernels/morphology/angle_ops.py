@@ -35,7 +35,7 @@ def kernel_minimum_local_bifurcation_angle(morphology):
     return nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_minimum_local_bifurcation_angle_of_arbor,
-        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+        nmv.analysis.compute_minimum_analysis_result_of_morphology_and_ignore_zero)
 
 
 ####################################################################################################
@@ -71,7 +71,7 @@ def kernel_average_local_bifurcation_angle(morphology):
     return nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_average_local_bifurcation_angle_of_arbor,
-        nmv.analysis.compute_average_analysis_result_of_morphology)
+        nmv.analysis.compute_average_analysis_result_of_morphology_and_ignore_zero)
 
 
 ####################################################################################################
@@ -89,7 +89,7 @@ def kernel_minimum_global_bifurcation_angle(morphology):
     return nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_minimum_global_bifurcation_angle_of_arbor,
-        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+        nmv.analysis.compute_minimum_analysis_result_of_morphology_and_ignore_zero)
 
 
 ####################################################################################################
@@ -125,7 +125,7 @@ def kernel_average_global_bifurcation_angle(morphology):
     return nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_average_global_bifurcation_angle_of_arbor,
-        nmv.analysis.compute_average_analysis_result_of_morphology)
+        nmv.analysis.compute_average_analysis_result_of_morphology_and_ignore_zero)
 
 
 ####################################################################################################

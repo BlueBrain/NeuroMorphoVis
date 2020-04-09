@@ -376,170 +376,170 @@ def compute_number_of_short_sections_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_taper_1_values_of_arbor
+# @compute_burke_taper_values_of_arbor
 ####################################################################################################
-def compute_taper_1_values_of_arbor(arbor):
-    """Computes an array that contains the Taper 1 values of all the sections along the arbor.
+def compute_burke_taper_values_of_arbor(arbor):
+    """Computes an array that contains the Burke taper values of all the sections along the arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        An array that contains the Taper 1 values of all the sections along the arbor.
+        An array that contains the Burke taper values of all the sections along the arbor.
     """
 
-    # A list that will contains the Taper 1 values along the arbor
-    sections_taper_1 = list()
+    # A list that will contains the Burke taper values along the arbor
+    sections_burke_taper = list()
 
     # Compute the length of each segment individually
     nmv.skeleton.ops.apply_operation_to_arbor(
         *[arbor,
-          nmv.analysis.compute_sections_taper_1,
-          sections_taper_1])
+          nmv.analysis.compute_sections_burke_taper,
+          sections_burke_taper])
 
     # Return the list
-    return sections_taper_1
+    return sections_burke_taper
 
 
 ####################################################################################################
-# @compute_taper_2_values_of_arbor
+# @compute_hillman_taper_values_of_arbor
 ####################################################################################################
-def compute_taper_2_values_of_arbor(arbor):
-    """Computes an array that contains the Taper 2 values of all the sections along the arbor.
+def compute_hillman_taper_values_of_arbor(arbor):
+    """Computes an array that contains the Hillman taper values of all the sections along the arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        An array that contains the Taper 2 values of all the sections along the arbor.
+        An array that contains the Hillman taper values of all the sections along the arbor.
     """
 
-    # A list that will contains the Taper 2 values along the arbor
-    sections_taper_2 = list()
+    # A list that will contains the Hillman taper values along the arbor
+    sections_hillman_taper = list()
 
     # Compute the length of each section individually
     nmv.skeleton.ops.apply_operation_to_arbor(
         *[arbor,
-          nmv.analysis.compute_sections_taper_2,
-          sections_taper_2])
+          nmv.analysis.compute_sections_hillman_taper,
+          sections_hillman_taper])
 
     # Return the list
-    return sections_taper_2
+    return sections_hillman_taper
 
 
 ####################################################################################################
-# @compute_minimum_taper_1_of_arbor
+# @compute_minimum_burke_taper_of_arbor
 ####################################################################################################
-def compute_minimum_taper_1_of_arbor(arbor):
-    """Computes the minimum Taper 1 value along the given arbor.
+def compute_minimum_burke_taper_of_arbor(arbor):
+    """Computes the minimum Burke taper value along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The minimum Taper 1 value of the given arbor.
+        The minimum Burke taper value of the given arbor.
     """
 
     # Return the minimum
-    return min(compute_taper_1_values_of_arbor(arbor))
+    return min(compute_burke_taper_values_of_arbor(arbor))
 
 
 ####################################################################################################
-# @compute_minimum_taper_2_of_arbor
+# @compute_minimum_hillman_taper_of_arbor
 ####################################################################################################
-def compute_minimum_taper_2_of_arbor(arbor):
-    """Computes the minimum Taper 2 value along the given arbor.
+def compute_minimum_hillman_taper_of_arbor(arbor):
+    """Computes the minimum Hillman taper value along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The minimum Taper 2 value of the given arbor.
+        The minimum Hillman taper value of the given arbor.
     """
 
     # Return the minimum
-    return min(compute_taper_2_values_of_arbor(arbor))
+    return min(compute_hillman_taper_values_of_arbor(arbor))
 
 
 ####################################################################################################
-# @compute_maximum_taper_1_of_arbor
+# @compute_maximum_burke_taper_of_arbor
 ####################################################################################################
-def compute_maximum_taper_1_of_arbor(arbor):
-    """Computes the maximum Taper 1 value along the given arbor.
+def compute_maximum_burke_taper_of_arbor(arbor):
+    """Computes the maximum Burke taper value along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The maximum Taper 1 value of the given arbor.
+        The maximum Burke taper value of the given arbor.
     """
 
     # Return the minimum
-    return max(compute_taper_1_values_of_arbor(arbor))
+    return max(compute_burke_taper_values_of_arbor(arbor))
 
 
 ####################################################################################################
-# @compute_maximum_taper_2_of_arbor
+# @compute_maximum_hillman_taper_of_arbor
 ####################################################################################################
-def compute_maximum_taper_2_of_arbor(arbor):
-    """Computes the maximum Taper 2 value along the given arbor.
+def compute_maximum_hillman_taper_of_arbor(arbor):
+    """Computes the maximum Hillman taper value along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The maximum Taper 2 value of the given arbor.
+        The maximum Hillman taper value of the given arbor.
     """
 
     # Return the minimum
-    return max(compute_taper_2_values_of_arbor(arbor))
+    return max(compute_hillman_taper_values_of_arbor(arbor))
 
 
 ####################################################################################################
 # @compute_average_section_length_of_arbor
 ####################################################################################################
-def compute_average_taper_1_of_arbor(arbor):
-    """Computes the average Taper 1 along the given arbor.
+def compute_average_burke_taper_of_arbor(arbor):
+    """Computes the average Burke taper along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The average Taper 1 of the given arbor
+        The average Burke taper of the given arbor
     """
 
-    # Get all the Taper 1 values
-    taper_1_values = compute_taper_1_values_of_arbor(arbor)
+    # Get all the Burke taper values
+    _burke_taper_values = compute_burke_taper_values_of_arbor(arbor)
 
     # Total
     total = 0.0
 
     # Iterate and sum up all the sections lengths
-    for value in taper_1_values:
+    for value in _burke_taper_values:
 
         # Add to the total
         total += value
 
     # Return the average by normalizing the total one
-    return total / len(taper_1_values)
+    return total / len(_burke_taper_values)
 
 
 ####################################################################################################
-# @compute_average_taper_2_of_arbor
+# @compute_average_hillman_taper_of_arbor
 ####################################################################################################
-def compute_average_taper_2_of_arbor(arbor):
-    """Computes the average Taper 2 along the given arbor.
+def compute_average_hillman_taper_of_arbor(arbor):
+    """Computes the average Hillman taper along the given arbor.
 
     :param arbor:
         A given arbor to analyze.
     :return:
-        The average Taper 2 of the given arbor
+        The average Hillman taper of the given arbor
     """
 
-    # Get all the Taper 2 values
-    taper_2_values = compute_taper_2_values_of_arbor(arbor)
+    # Get all the Hillman taper values
+    _hillman_taper_values = compute_hillman_taper_values_of_arbor(arbor)
 
     # Total
     total = 0.0
 
     # Iterate and sum up all the sections lengths
-    for value in taper_2_values:
+    for value in _hillman_taper_values:
 
         # Add to the total
         total += value
 
     # Return the average by normalizing the total one
-    return total / len(taper_2_values)
+    return total / len(_hillman_taper_values)

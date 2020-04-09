@@ -84,11 +84,11 @@ def compute_section_length(section):
 
 
 ####################################################################################################
-# @compute_section_taper_1
+# @compute_section_burke_taper
 ####################################################################################################
-def compute_section_taper_1(section):
+def compute_section_burke_taper(section):
     """
-    Computes the Burke Taper or Taper 1 of a given section. This function is measured per section
+    Computes the Burke Taper or Burke taper of a given section. This function is measured per section
     between two bifurcation points.
     It is computed as follows:
         The actual diameter of the first bifurcation sample minus previous bifurcation sample
@@ -99,9 +99,9 @@ def compute_section_taper_1(section):
     NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
 
     :param section:
-        A given section to compute its Taper 1 value.
+        A given section to compute its Burke taper value.
     :return:
-        Section Taper 1 value.
+        Section Burke taper value.
     """
 
     # If root or leaf, return 0.0
@@ -114,19 +114,19 @@ def compute_section_taper_1(section):
     # Diameter difference
     delta_diameter = (section.parent.samples[-1].radius - section.samples[-1].radius) * 2.0
 
-    # Taper 1 value
-    taper_1_value = delta_diameter / section_length
+    # Burke taper value
+    burke_taper_value = delta_diameter / section_length
 
     # Return the value
-    return taper_1_value
+    return burke_taper_value
 
 
 ####################################################################################################
-# @compute_section_taper_2
+# @compute_section_hillman_taper
 ####################################################################################################
-def compute_section_taper_2(section):
+def compute_section_hillman_taper(section):
     """
-    Computes the Hillman Taper or Taper 2 of a given section. This function is measured per section
+    Computes the Hillman Taper or Hillman taper of a given section. This function is measured per section
     between two bifurcation points.
     It is computed as follows:
         The actual diameter of the first bifurcation sample minus previous bifurcation sample
@@ -137,9 +137,9 @@ def compute_section_taper_2(section):
     NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
 
     :param section:
-        A given section to compute its Taper 1 value.
+        A given section to compute its Burke taper value.
     :return:
-        Section Taper 1 value.
+        Section Burke taper value.
     """
 
     # If root or leaf, return 0.0
@@ -149,11 +149,11 @@ def compute_section_taper_2(section):
     # Diameter difference
     delta = (section.parent.samples[-1].radius - section.samples[-1].radius)
 
-    # Taper 2 value
-    taper_2_value = delta / section.parent.samples[-1].radius
+    # Hillman taper value
+    _hillman_taper_value = delta / section.parent.samples[-1].radius
 
     # Return the value
-    return taper_2_value
+    return _hillman_taper_value
 
 
 ####################################################################################################
@@ -170,7 +170,7 @@ def compute_section_euclidean_distance(section):
 
     # If the section has less than two samples, then report the error
     if len(section.samples) < 2:
-        return 0
+        return 0.0
 
     # Otherwise, get the first and last samples and return the Euclidean distances between them
     point_0 = section.samples[0].point
@@ -201,43 +201,43 @@ def compute_sections_lengths(section,
 
 
 ####################################################################################################
-# @compute_sections_taper_1
+# @compute_sections_burke_taper
 ####################################################################################################
-def compute_sections_taper_1(section,
-                             sections_taper_1):
-    """Computes the Burke Taper (or Taper 1) of all the sections along a given arbor.
+def compute_sections_burke_taper(section,
+                                 sections_burke_taper):
+    """Computes the Burke Taper of all the sections along a given arbor.
 
     :param section:
-        A given section to compute its Taper 1 value.
-    :param sections_taper_1:
+        A given section to compute its Burke taper value.
+    :param sections_burke_taper:
         A list to collect the resulting data.
     """
 
     # Compute section length
-    section_taper_1 = compute_section_taper_1(section=section)
+    section_burke_taper = compute_section_burke_taper(section=section)
 
     # Append the length to the list
-    sections_taper_1.append(section_taper_1)
+    sections_burke_taper.append(section_burke_taper)
 
 
 ####################################################################################################
-# @compute_sections_taper_2
+# @compute_sections_hillman_taper
 ####################################################################################################
-def compute_sections_taper_2(section,
-                             sections_taper_2):
-    """Computes the Hillman Taper (or Taper 2) of all the sections along a given arbor.
+def compute_sections_hillman_taper(section,
+                             sections_hillman_taper):
+    """Computes the Hillman Taper of all the sections along a given arbor.
 
     :param section:
-        A given section to compute its Taper 2 value.
-    :param sections_taper_2:
+        A given section to compute its Hillman taper value.
+    :param sections_hillman_taper:
         A list to collect the resulting data.
     """
 
     # Compute section length
-    section_taper_2 = compute_section_taper_2(section=section)
+    section_hillman_taper = compute_section_hillman_taper(section=section)
 
     # Append the length to the list
-    sections_taper_2.append(section_taper_2)
+    sections_hillman_taper.append(section_hillman_taper)
 
 
 ####################################################################################################
