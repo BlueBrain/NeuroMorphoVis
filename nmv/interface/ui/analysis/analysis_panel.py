@@ -138,7 +138,7 @@ class CreateNeuronCard(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "nmv.create_neuron_card"
-    bl_label = "Create Neuron Card"
+    bl_label = "Create Plots"
 
     ################################################################################################
     # @execute
