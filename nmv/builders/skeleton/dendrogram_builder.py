@@ -205,8 +205,8 @@ class DendrogramBuilder:
         # Import the fonts
         font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
         font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-        font_list = font_manager.createFontList(font_files)
-        font_manager.fontManager.ttflist.extend(font_list)
+        for font_file in font_files:
+            font_manager.fontManager.addfont(font_file)
 
         # Create the color palette
         self.morphology.create_morphology_color_palette()
