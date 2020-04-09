@@ -314,7 +314,7 @@ distributions = [
         figure_name=nmv.consts.Analysis.NUMBER_ZERO_RADII_SAMPLES_PER_ARBOR,
         figure_xlabel='Number of Samples',
         compute_total_kernel=compute_number_of_zero_radius_samples_per_section_of_arbor,
-        add_percentage=True),
+        add_percentage=False),
 
     AnalysisDistribution(
         name='Local Bifurcation Angle Range per Arbor',

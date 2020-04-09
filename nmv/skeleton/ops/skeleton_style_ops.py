@@ -66,7 +66,6 @@ def update_arbors_radii(morphology,
 
     # Selected option
     option = morphology_options.arbors_radii
-    print(morphology_options.arbors_radii)
 
     # Filtered
     if option == nmv.enums.Skeleton.ArborsRadii.FILTERED:

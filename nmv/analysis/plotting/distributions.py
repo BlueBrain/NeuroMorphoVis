@@ -180,19 +180,20 @@ def plot_per_arbor_result(analysis_results,
         y = patch.get_y() + (bar_width / 2.0) + (bar_width / 8.0)
 
         # Compute the percentage
-        percentage = round((patch.get_width() / total) * 100, 2)
-        if add_percentage:
-            if 'float' in str(type(y_data[i])):
-                value = '  %2.1f (%2.1f%%)' % (y_data[i], percentage)
+        if total > 0:
+            percentage = round((patch.get_width() / total) * 100, 2)
+            if add_percentage:
+                if 'float' in str(type(y_data[i])):
+                    value = '  %2.1f (%2.1f%%)' % (y_data[i], percentage)
+                else:
+                    value = '  %d (%2.1f%%)' % (y_data[i], percentage)
             else:
-                value = '  %d (%2.1f%%)' % (y_data[i], percentage)
-        else:
-            if 'float' in str(type(y_data[i])):
-                value = '  %2.1f' % y_data[i]
-            else:
-                value = '  %d' % y_data[i]
+                if 'float' in str(type(y_data[i])):
+                    value = '  %2.1f' % y_data[i]
+                else:
+                    value = '  %d' % y_data[i]
 
-        ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
+            ax.text(x, y, value, fontsize=bar_width * 10, color='dimgrey')
 
     # Save a PNG figure
     pyplot.savefig('%s/%s/%s.png' % (options.io.analysis_directory, morphology.label, figure_name),

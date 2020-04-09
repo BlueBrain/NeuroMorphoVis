@@ -77,10 +77,10 @@ class RandomSpineBuilder:
         lenght = 1e5
         for i_sample in dendrite_samples:
             distance = (i_sample.point - spine.post_synaptic_position).length
-            #print(distance)
+
             if distance < lenght:
                 spine.size = i_sample.radius * 3
-                print(spine.size)
+
 
         # Select a random spine from the spines list
         spine_template = random.choice(self.spine_meshes)
