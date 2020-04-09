@@ -79,7 +79,7 @@ def run_command(shell_command,
         print('\t* SHELL: ' + shell_command)
     else:
         devnull = open(os.devnull, 'w')
-        subprocess.call(shlex.split(shell_command), stdout=devnull)#, stderr=devnull)
+        subprocess.call(shlex.split(shell_command), stdout=devnull)
 
 
 ####################################################################################################
