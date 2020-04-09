@@ -196,7 +196,7 @@ def compute_average_global_bifurcation_angle_of_arbor(arbor):
 
     # At least one element
     if len(sections_bifurcation_angles) == 0:
-        return
+        return 0.0
 
     # Iterate and sum up all the sections surface areas
     for angle in sections_bifurcation_angles:
