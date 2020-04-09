@@ -285,15 +285,6 @@ def install_for_mac(directory, blender_version, verbose=False):
                                                                       blender_version)
     blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
 
-    # Installing the pref files
-    log_process('Installing the Pref files')
-    perf_url = 'https://github.com/BlueBrain/NeuroMorphoVis/raw/master/pref/'
-    pref_file_url = '%s/nmv-%s-mac-pref.blend?raw=true' % (perf_url, blender_version)
-    blender_config_directory = '%s/Contents/Resources/%s/config' % (blender_app_directory,
-                                                                    blender_version)
-    shell_command = 'curl %s -o %s/.' % (pref_file_url, blender_config_directory)
-    # run_command(shell_command, verbose)
-
     # Pip installation
     log_process('Installing Dependencies')
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'

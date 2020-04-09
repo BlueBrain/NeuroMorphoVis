@@ -17,6 +17,7 @@
 
 # System imports
 import copy
+import time
 
 # Blender imports
 import bpy
@@ -32,6 +33,9 @@ import nmv.scene
 import nmv.utilities
 
 from .analysis_panel_options import *
+
+# Is the morphology analyzed or not
+is_morphology_analyzed = False
 
 
 ####################################################################################################
@@ -73,10 +77,22 @@ class AnalysisPanel(bpy.types.Panel):
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)
 
             # Export analysis button
+            export_row = layout.row()
+            export_row.label(text='Export Analysis Results:', icon='MESH_UVSPHERE')
+
             export_analysis_row = layout.row()
             export_analysis_row.operator('nmv.export_analysis_results', icon='MESH_DATA')
 
-            export_analysis_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+            create_plots_row = layout.row()
+            create_plots_row.operator('nmv.create_neuron_card', icon='MESH_DATA')
+
+            global is_morphology_analyzed
+            if is_morphology_analyzed:
+                morphology_stats_row = layout.row()
+                morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+                analysis_time_row = layout.row()
+                analysis_time_row.prop(context.scene, 'NMV_MorphologyAnalysisTime')
+                analysis_time_row.enabled = False
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
@@ -176,6 +192,9 @@ class CreateNeuronCard(bpy.types.Operator):
         if not nmv.file.ops.path_exists(morphology_analysis_directory):
             nmv.file.ops.clean_and_create_directory(morphology_analysis_directory)
 
+        # Starting time
+        start_time = time.time()
+
         # Export the analysis results
         nmv.interface.ui.export_analysis_results(
             morphology=nmv.interface.ui_morphology, directory=morphology_analysis_directory)
@@ -218,6 +237,14 @@ class CreateNeuronCard(bpy.types.Operator):
             # Append to the list
             pdf = '%s/%s.pdf' % (morphology_analysis_directory, distribution.figure_name)
             analysis_pdfs.append(pdf)
+
+        # Morphology analyzed
+        analysis_time = time.time()
+        global is_morphology_analyzed
+        is_morphology_analyzed = True
+        context.scene.NMV_MorphologyAnalysisTime = analysis_time - start_time
+        nmv.logger.info('Morphology skeleton analyzed in [%f] seconds' %
+                        context.scene.NMV_MorphologyAnalysisTime)
 
         neuron_catalaog = '%s/catalog.pdf' % nmv.interface.ui_options.io.analysis_directory
 
