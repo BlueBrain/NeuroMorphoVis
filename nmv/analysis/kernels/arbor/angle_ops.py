@@ -45,7 +45,8 @@ def compute_minimum_local_bifurcation_angle_of_arbor(arbor):
     # Return the minimum local bifurcation angle
     if len(sections_bifurcation_angles) > 0:
         return min(sections_bifurcation_angles)
-    return 0.0
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -72,7 +73,8 @@ def compute_maximum_local_bifurcation_angle_of_arbor(arbor):
     # Return the minimum local bifurcation angle
     if len(sections_bifurcation_angles) > 0:
         return max(sections_bifurcation_angles)
-    return 0.0
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -191,6 +193,10 @@ def compute_average_global_bifurcation_angle_of_arbor(arbor):
 
     # Total arbor local bifurcation angle
     arbor_total_bifurcation_angle = 0.0
+
+    # At least one element
+    if len(sections_bifurcation_angles) == 0:
+        return
 
     # Iterate and sum up all the sections surface areas
     for angle in sections_bifurcation_angles:

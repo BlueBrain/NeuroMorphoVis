@@ -96,7 +96,10 @@ def compute_minimum_segment_length_of_arbor(arbor):
     segments_lengths = compute_segments_lengths_of_arbor(arbor)
 
     # Return the minimum
-    return min(segments_lengths)
+    if len(segments_lengths) > 0:
+        return min(segments_lengths)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -115,7 +118,10 @@ def compute_maximum_segment_length_of_arbor(arbor):
     segments_lengths = compute_segments_lengths_of_arbor(arbor)
 
     # Return the maximum
-    return max(segments_lengths)
+    if len(segments_lengths) > 0:
+        return max(segments_lengths)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -135,6 +141,10 @@ def compute_average_segment_length_of_arbor(arbor):
 
     # Total length
     total_length = 0.0
+
+    # At least one element
+    if len(segments_lengths) == 0:
+        return 0.0
 
     # Iterate and sum up all the segments lengths
     for length in segments_lengths:
@@ -243,7 +253,10 @@ def compute_minimum_section_contraction_of_arbor(arbor):
     sections_contractions = compute_sections_contractions_of_arbor(arbor)
 
     # Return the minimum
-    return min(sections_contractions)
+    if len(sections_contractions):
+        return min(sections_contractions)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -260,6 +273,10 @@ def compute_average_section_contraction_of_arbor(arbor):
 
     # Get all the sections lengths
     sections_contractions = compute_sections_contractions_of_arbor(arbor)
+
+    # At least one element
+    if len(sections_contractions) == 0:
+        return 0.0
 
     # Return the minimum
     return sum(sections_contractions) / len(sections_contractions)
@@ -281,7 +298,10 @@ def compute_maximum_section_contraction_of_arbor(arbor):
     sections_contractions = compute_sections_contractions_of_arbor(arbor)
 
     # Return the minimum
-    return max(sections_contractions)
+    if len(sections_contractions) > 0:
+        return max(sections_contractions)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -300,7 +320,10 @@ def compute_minimum_section_length_of_arbor(arbor):
     sections_lengths = compute_sections_lengths_of_arbor(arbor)
 
     # Return the minimum
-    return min(sections_lengths)
+    if len(sections_lengths) > 0:
+        return min(sections_lengths)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -319,7 +342,10 @@ def compute_maximum_section_length_of_arbor(arbor):
     sections_lengths = compute_sections_lengths_of_arbor(arbor)
 
     # Return the minimum
-    return max(sections_lengths)
+    if len(sections_lengths) > 0:
+        return max(sections_lengths)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -339,6 +365,10 @@ def compute_average_section_length_of_arbor(arbor):
 
     # Total arbor length
     arbor_total_length = 0.0
+
+    # At least one element
+    if len(sections_lengths) == 0:
+        return 0.0
 
     # Iterate and sum up all the sections lengths
     for length in sections_lengths:

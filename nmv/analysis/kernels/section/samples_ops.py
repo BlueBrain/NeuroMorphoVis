@@ -474,6 +474,116 @@ def compute_minimum_euclidean_distance(section,
 
 
 ####################################################################################################
+# @compute_section_burke_taper
+####################################################################################################
+def compute_section_burke_taper(section):
+    """Computes the Burke Taper of a given section. This function is measured per section between
+    two bifurcation points. It is computed as follows:
+        The actual diameter of the first bifurcation sample minus previous bifurcation sample
+        diameter divided by the total length of the branch.
+    This function is applied only on NON ROOT and NON LEAVES branches, i.e. sections with
+    bifurcation points.
+
+    NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
+
+    :param section:
+        A given section to compute its Burke taper value.
+    :return:
+        Section Burke taper value.
+    """
+
+    # If root or leaf, return 0.0
+    if section.is_root() or section.is_leaf():
+        return 0.0
+
+    # Section length
+    section_length = nmv.analysis.compute_section_length(section=section)
+
+    # Diameter difference
+    delta_diameter = (section.parent.samples[-1].radius - section.samples[-1].radius) * 2.0
+
+    # Burke taper value
+    burke_taper_value = delta_diameter / section_length
+
+    # Return the value
+    return burke_taper_value
+
+
+####################################################################################################
+# @compute_section_hillman_taper
+####################################################################################################
+def compute_section_hillman_taper(section):
+    """
+    Computes the Hillman Taper of a given section. This function is measured per section between
+    two bifurcation points. It is computed as follows:
+        The actual diameter of the first bifurcation sample minus previous bifurcation sample
+        diameter divided by the initial one.
+    This function is applied only on NON ROOT and NON LEAVES branches, i.e. sections with
+    bifurcation points.
+
+    NOTE: Further details are explained in LMeasure: http://cng.gmu.edu:8080/Lm/help/index.htm.
+
+    :param section:
+        A given section to compute its Burke taper value.
+    :return:
+        Section Burke taper value.
+    """
+
+    # If root or leaf, return 0.0
+    if section.is_root() or section.is_leaf():
+        return 0.0
+
+    # Diameter difference
+    delta = (section.parent.samples[-1].radius - section.samples[-1].radius)
+
+    # Hillman taper value
+    _hillman_taper_value = delta / section.parent.samples[-1].radius
+
+    # Return the value
+    return _hillman_taper_value
+
+
+####################################################################################################
+# @compute_sections_burke_taper
+####################################################################################################
+def compute_sections_burke_taper(section,
+                                 sections_burke_taper):
+    """Computes the Burke Taper of all the sections along a given arbor.
+
+    :param section:
+        A given section to compute its Burke taper value.
+    :param sections_burke_taper:
+        A list to collect the resulting data.
+    """
+
+    # Compute section length
+    section_burke_taper = compute_section_burke_taper(section=section)
+
+    # Append the length to the list
+    sections_burke_taper.append(section_burke_taper)
+
+
+####################################################################################################
+# @compute_sections_hillman_taper
+####################################################################################################
+def compute_sections_hillman_taper(section,
+                             sections_hillman_taper):
+    """Computes the Hillman Taper of all the sections along a given arbor.
+
+    :param section:
+        A given section to compute its Hillman taper value.
+    :param sections_hillman_taper:
+        A list to collect the resulting data.
+    """
+
+    # Compute section length
+    section_hillman_taper = compute_section_hillman_taper(section=section)
+
+    # Append the length to the list
+    sections_hillman_taper.append(section_hillman_taper)
+
+
+####################################################################################################
 # @compute_section_partition_asymmetry
 ####################################################################################################
 def compute_section_partition_asymmetry(section,
@@ -507,7 +617,7 @@ def compute_section_partition_asymmetry(section,
 ####################################################################################################
 def compute_daughter_ratio(section,
                            analysis_data):
-    """Computes the daughter ration of a given section.
+    """Computes the daughter ratio of a given section.
 
      :param section:
         A given section to get analyzed.

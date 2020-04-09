@@ -91,8 +91,8 @@ def compute_segments_volumes_in_section(section,
 
     :param section:
         A given section to compute its volume.
-    :return:
-        Section total volume in cube microns.
+    :param segments_volumes:
+        A list to collect the resulting data.
     """
 
     # If the section has less than two samples, then report the error

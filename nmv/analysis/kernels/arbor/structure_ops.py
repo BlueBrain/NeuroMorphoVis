@@ -144,7 +144,10 @@ def compute_maximum_branching_order_of_arbor(arbor):
           branching_orders])
 
     # Return the maximum branching order of the arbor
-    return max(branching_orders)
+    if len(branching_orders) > 0:
+        return max(branching_orders)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -169,7 +172,10 @@ def compute_maximum_path_distance_of_arbor(arbor):
           paths_distances])
 
     # Return the maximum path distance
-    return max(paths_distances)
+    if len(paths_distances) > 0:
+        return max(paths_distances)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -193,8 +199,11 @@ def compute_maximum_euclidean_distance_of_arbor(arbor):
           nmv.analysis.compute_maximum_euclidean_distance,
           euclidean_distances])
 
-    # Return the maximum path distance
-    return max(euclidean_distances)
+    # Return the maximum distance
+    if len(euclidean_distances) > 0:
+        return max(euclidean_distances)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -218,8 +227,11 @@ def compute_minimum_euclidean_distance_of_arbor(arbor):
           nmv.analysis.compute_minimum_euclidean_distance,
           euclidean_distances])
 
-    # Return the maximum path distance
-    return min(euclidean_distances)
+    # Return the minimum distance
+    if len(euclidean_distances) > 0:
+        return min(euclidean_distances)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -275,4 +287,3 @@ def compute_total_number_of_terminal_segments_of_arbor(arbor):
 
     # Return the total
     return total_terminal_segments
-

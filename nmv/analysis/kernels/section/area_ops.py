@@ -74,7 +74,7 @@ def compute_segments_surface_areas_in_section(section,
     :param section:
         A given section to compute the surface area of its segments.
     :param segments_surface_areas:
-        A list of all the surface areas of all the segments in the section to append the results to.
+        A list to collect the resulting data.
     """
 
     # If the section has less than two samples, then report the error

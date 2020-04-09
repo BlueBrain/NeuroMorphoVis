@@ -77,7 +77,10 @@ def compute_minimum_section_volume(arbor):
           sections_volumes])
 
     # Return the minimum section volume
-    return min(sections_volumes)
+    if len(sections_volumes) > 0:
+        return min(sections_volumes)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -102,7 +105,10 @@ def compute_maximum_section_volume(arbor):
           sections_volumes])
 
     # Return the minimum section volume
-    return max(sections_volumes)
+    if len(sections_volumes) > 0:
+        return max(sections_volumes)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -128,6 +134,14 @@ def compute_average_section_volume(arbor):
 
     # Total arbor length
     arbor_total_volume = 0.0
+
+    # At least a single item
+    if len(sections_volumes) == 0:
+        return  0.0
+
+    # Remove zeros in the list if any
+    if 0 in sections_volumes:
+        sections_volumes.remove(0)
 
     # Iterate and sum up all the sections volumes
     for volume in sections_volumes:
@@ -161,7 +175,10 @@ def compute_minimum_segment_volume(arbor):
           segments_volumes])
 
     # Return the minimum section volume
-    return min(segments_volumes)
+    if len(segments_volumes) > 0:
+        return min(segments_volumes)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -186,7 +203,10 @@ def compute_maximum_segment_volume(arbor):
           segments_volumes])
 
     # Return the minimum section volume
-    return max(segments_volumes)
+    if len(segments_volumes) > 0:
+        return max(segments_volumes)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -209,6 +229,10 @@ def compute_average_segment_volume(arbor):
         *[arbor,
           nmv.analysis.compute_segments_volumes_in_section,
           segments_volumes])
+
+    # At least a single element
+    if len(segments_volumes) == 0:
+        return 0.0
 
     # Return the minimum section volume
     return sum(segments_volumes) / len(segments_volumes)

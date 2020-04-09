@@ -77,7 +77,10 @@ def compute_minimum_section_surface_area(arbor):
           sections_surface_areas])
 
     # Return the minimum section surface area
-    return min(sections_surface_areas)
+    if len(sections_surface_areas) > 0:
+        return min(sections_surface_areas)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -102,7 +105,10 @@ def compute_minimum_segment_surface_area(arbor):
           segments_surface_areas])
 
     # Return the minimum section surface area
-    return min(segments_surface_areas)
+    if len(segments_surface_areas) > 0:
+        return min(segments_surface_areas)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -127,7 +133,10 @@ def compute_maximum_segment_surface_area(arbor):
           segments_surface_areas])
 
     # Return the minimum section surface area
-    return max(segments_surface_areas)
+    if len(segments_surface_areas) > 0:
+        return max(segments_surface_areas)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -150,6 +159,10 @@ def compute_average_segment_surface_area(arbor):
         *[arbor,
           nmv.analysis.compute_segments_surface_areas_in_section,
           segments_surface_areas])
+
+    # At least one element
+    if len(segments_surface_areas) == 0:
+        return 0.0
 
     # Return the minimum section surface area
     return sum(segments_surface_areas) / len(segments_surface_areas)
@@ -177,7 +190,10 @@ def compute_maximum_section_surface_area(arbor):
           sections_surface_areas])
 
     # Return the maximum section surface area
-    return max(sections_surface_areas)
+    if len(sections_surface_areas) > 0:
+        return max(sections_surface_areas)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -203,6 +219,10 @@ def compute_average_section_surface_area(arbor):
 
     # Total arbor length
     arbor_total_surface_area = 0.0
+
+    # At least one element
+    if len(sections_surface_areas) == 0:
+        return 0.0
 
     # Iterate and sum up all the sections surface areas
     for surface_area in sections_surface_areas:

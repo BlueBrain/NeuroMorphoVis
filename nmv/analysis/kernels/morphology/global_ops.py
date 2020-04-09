@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.analysis
 
 
@@ -77,8 +76,8 @@ def kernel_global_total_number_neurites(morphology):
         The result of the analysis operation.
     """
 
-    return kernel_global_number_apical_dendrites(morphology) + \
-           kernel_global_number_basal_dendrites(morphology) + \
+    return kernel_global_number_apical_dendrites(morphology) +  \
+           kernel_global_number_basal_dendrites(morphology) +   \
            kernel_global_number_axons(morphology)
 
 

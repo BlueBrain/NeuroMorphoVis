@@ -145,7 +145,10 @@ def compute_minimum_samples_count_of_arbor(arbor):
           sections_number_samples])
 
     # Return the minimum number of samples
-    return min(sections_number_samples)
+    if len(sections_number_samples) > 0:
+        return min(sections_number_samples)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -170,7 +173,10 @@ def compute_maximum_samples_count_of_arbor(arbor):
           sections_number_samples])
 
     # Return the minimum number of samples
-    return max(sections_number_samples)
+    if len(sections_number_samples) > 0:
+        return max(sections_number_samples)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -196,6 +202,10 @@ def compute_average_number_samples_per_section_of_arbor(arbor):
 
     # Total number of samples
     total_number_samples = 0
+
+    # At least one element
+    if len(sections_number_samples) == 0:
+        return 0
 
     # Iterate and sum up
     for section_number_samples in sections_number_samples:
@@ -278,8 +288,14 @@ def compute_minimum_partition_asymmetry_of_arbor(arbor):
         Minimum partition asymmetry of the given arbor.
     """
 
+    # Result
+    partition_asymmetry = compute_partition_asymmetry_per_section_of_arbor(arbor)
+
     # Return the minimum
-    return min(compute_partition_asymmetry_per_section_of_arbor(arbor))
+    if len(partition_asymmetry) > 0:
+        return min(partition_asymmetry)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -294,8 +310,14 @@ def compute_maximum_partition_asymmetry_of_arbor(arbor):
         Maximum partition asymmetry of the given arbor.
     """
 
+    # Result
+    partition_asymmetry = compute_partition_asymmetry_per_section_of_arbor(arbor)
+
     # Return the maximum
-    return max(compute_partition_asymmetry_per_section_of_arbor(arbor))
+    if len(partition_asymmetry) > 0:
+        return max(partition_asymmetry)
+    else:
+        return 0
 
 
 ####################################################################################################
@@ -312,7 +334,11 @@ def compute_average_partition_asymmetry_of_arbor(arbor):
 
     # Return the average
     partition_asymmetry = compute_partition_asymmetry_per_section_of_arbor(arbor)
-    return sum(partition_asymmetry) / (1.0 * len(partition_asymmetry))
+
+    if len(partition_asymmetry) > 0:
+        return sum(partition_asymmetry) / (1.0 * len(partition_asymmetry))
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -337,7 +363,10 @@ def compute_minimum_sample_radius_of_arbor(arbor):
           sections_samples_radii])
 
     # Return the minimum sample radius
-    return min(sections_samples_radii)
+    if len(sections_samples_radii) > 0:
+        return min(sections_samples_radii)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -357,8 +386,6 @@ def compute_minimum_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return min(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -380,8 +407,6 @@ def compute_maximum_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return max(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -403,8 +428,6 @@ def compute_average_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return sum(data_list) / len(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -426,8 +449,6 @@ def compute_minimum_parent_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return min(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -449,8 +470,6 @@ def compute_maximum_parent_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return max(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -472,8 +491,6 @@ def compute_average_parent_daughter_ratio_of_arbor(arbor):
     # The data list must have at least one element
     if len(data_list) > 0:
         return sum(data_list) / len(data_list)
-
-    # Otherwise, return zero to indicate that the arbor simply has no branches
     else:
         return 0.0
 
@@ -500,7 +517,10 @@ def compute_maximum_sample_radius_of_arbor(arbor):
           sections_samples_radii])
 
     # Return the maximum sample radius
-    return max(sections_samples_radii)
+    if len(sections_samples_radii) > 0:
+        return max(sections_samples_radii)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -525,7 +545,10 @@ def compute_average_sample_radius_of_arbor(arbor):
           sections_samples_radii])
 
     # Return the maximum sample radius
-    return (1.0 * sum(sections_samples_radii)) / len(sections_samples_radii)
+    if len(sections_samples_radii) > 0:
+        return (1.0 * sum(sections_samples_radii)) / len(sections_samples_radii)
+    else:
+        return 0.0
 
 
 ####################################################################################################
@@ -576,63 +599,3 @@ def get_number_of_samples_per_section_of_arbor(arbor):
 
     # Return the list
     return arbor_number_of_samples_per_section
-
-
-
-
-
-
-
-
-
-def compute_distribution_number_samples_per_section_of_arbor(arbor):
-
-    # A list that will contain the number of samples per section
-    data_list = list()
-
-    # Compute the number of segments of each section individually
-    nmv.skeleton.ops.apply_operation_to_arbor(
-        *[arbor,
-          nmv.analysis.compute_distribution_number_of_samples_per_section,
-          data_list])
-
-
-
-####################################################################################################
-# @get_samples_radii_data_of_arbor
-####################################################################################################
-def get_samples_radii_data_of_arbor(arbor):
-    """Gets a list of the number of samples per section of a given arbor.
-
-    :param arbor:
-        A given arbor to get analyzed.
-    :return
-        A list of the radii of the samples.
-    """
-
-    # A list that will contain the analysis data
-    analysis_data = list()
-
-    # Analyse
-    nmv.skeleton.ops.apply_operation_to_arbor(
-        *[arbor,
-          nmv.analysis.get_samples_radii_data_of_section,
-          analysis_data])
-
-    # Return the list
-    return analysis_data
-
-
-def get_number_of_samples_per_section_data_of_arbor(arbor):
-    # A list that will contain the analysis data
-    analysis_data = list()
-
-    # Analyse
-    nmv.skeleton.ops.apply_operation_to_arbor(
-        *[arbor,
-          nmv.analysis.get_number_of_samples_per_section_data_of_section,
-          analysis_data])
-
-    # Return the list
-    return analysis_data
-

@@ -16,28 +16,7 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.analysis
-
-
-
-def aggregate_arbors_data_to_morphology(analysis_result):
-
-
-    analysis_result.morphology_result = list()
-    if analysis_result.apical_dendrite_result is not None:
-        analysis_result.morphology_result.extend(analysis_result.apical_dendrite_result)
-
-    if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            analysis_result.morphology_result.extend(basal_dendrite_result)
-
-    if analysis_result.axon_result is not None:
-        analysis_result.morphology_result.extend(analysis_result.axon_result)
-
-
-
-
 
 
 ####################################################################################################
