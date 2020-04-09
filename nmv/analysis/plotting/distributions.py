@@ -31,16 +31,22 @@ def plot_per_arbor_result(analysis_results,
                           figure_title=None,
                           figure_xlabel=None,
                           add_percentage=False):
-    """
+    """Plot the analysis result per arbor.
 
     :param analysis_results:
+        A data structure containing the result.
     :param morphology:
+        A given morphology file.
     :param options:
+        System options.
     :param figure_name:
+        The prefix of the figure image.
     :param figure_title:
+        The title that will be written on the figure.
     :param figure_xlabel:
+        The X-axis label of the figure.
     :param add_percentage:
-    :return:
+        If this flag is True, a percentage text will be added on the right side of each bar.
     """
 
     # Installing dependencies
@@ -218,17 +224,24 @@ def plot_per_arbor_range(minimum_results,
                          figure_name=None,
                          figure_xlabel=None,
                          figure_title=None):
-    """
+    """Plots the analysis range per arbor.
 
     :param minimum_results:
+        A list containing the minimum values per arbor.
     :param average_results:
+        A list containing the average values per arbor.
     :param maximum_results:
+        A list containing the maximum values per arbor.
     :param morphology:
+        A given morphology file.
     :param options:
+        System options.
     :param figure_name:
-    :param figure_xlabel:
+        The prefix of the figure image.
     :param figure_title:
-    :return:
+        The title that will be written on the figure.
+    :param figure_xlabel:
+        The X-axis label of the figure.
     """
 
     # Installing dependencies
@@ -363,84 +376,3 @@ def plot_per_arbor_range(minimum_results,
 
     # Close the figures
     pyplot.close()
-
-
-def plot_distribution(distribution,
-                      tilte,
-                      normalized=False,
-                      color='b'):
-    import os
-    import numpy as np
-    import seaborn as sns
-    import pandas as pd
-    import matplotlib
-    import matplotlib.pyplot as plt
-
-
-    from matplotlib import font_manager as fm, rcParams
-    fpath = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, 'arial.ttf')
-
-    prop = fm.FontProperties(fname=fpath)
-
-    fm.findSystemFonts(fontpaths=nmv.consts.Paths.FONTS_DIRECTORY,
-                       fontext='ttf')
-
-    sns.set(color_codes=True)
-
-    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
-    font_files = fm.findSystemFonts(fontpaths=font_dirs)
-    font_list = fm.createFontList(font_files)
-    fm.fontManager.ttflist.extend(font_list)
-
-
-    sns.set_style("whitegrid")
-    plt.rcParams['axes.grid'] = 'False'
-    plt.rcParams['font.family'] = 'Arial'
-    #plt.rcParams['font.monospace'] = 'Regular'
-    #plt.rcParams['font.style'] = 'normal'
-
-    plt.rcParams['axes.linewidth'] = 0.0
-    plt.rcParams['axes.labelsize'] = 10
-    plt.rcParams['axes.labelweight'] = 'bold'
-    plt.rcParams['xtick.labelsize'] = 10
-    plt.rcParams['ytick.labelsize'] = 10
-    plt.rcParams['legend.fontsize'] = 10
-    plt.rcParams['figure.titlesize'] = 10
-    plt.rcParams['axes.titlesize'] = 10
-
-    #plt.figure(figsize=(0.65 * 4, total_number_of_bars * 0.5 * bar_width))
-
-    # Convert the distribution list to a numpy array
-    np_distribution = np.array(distribution)
-
-    # Adjust the Y-axis format
-    # plt.gca().yaxis.set_major_formatter(PercentFormatter(xmax=xmax, symbol=' %'))
-
-    # Set the title
-    plt.title('Samples')
-
-    # Plot the histogram
-    sns.distplot(np_distribution, color='r',kde=False, hist=True, norm_hist=normalized,
-                 hist_kws={"color": color, "lw": 0.5},
-                 kde_kws={"color": color, "lw": 0.5})
-
-    plt.savefig('%s/neuromorphovis-output/%s-plot.png' % (os.path.expanduser('~'), tilte), dpi=150)
-
-    # Close figure to reset
-    plt.close()
-
-
-####################################################################################################
-# @plot_analysis_results
-####################################################################################################
-def plot_analysis_results(analysis_results):
-
-    if analysis_results.apical_dendrite_result is not None:
-        plot_distribution(analysis_results.apical_dendrite_result, 'apical-dendrite')
-
-    if analysis_results.basal_dendrites_result is not None:
-        for i, basal_dendrite_result in enumerate(analysis_results.basal_dendrites_result):
-            plot_distribution(basal_dendrite_result, 'basal-dendrite-%d' % i)
-
-    if analysis_results.axon_result is not None:
-        plot_distribution(analysis_results.axon_result, 'axon')
