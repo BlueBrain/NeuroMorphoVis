@@ -223,7 +223,7 @@ class H5Reader:
             import h5py
         except ModuleNotFoundError:
             print('Package *h5py* is not installed. Installing it.')
-            nmv.utilities.pip_wheel(package_name='numpy')
+            nmv.utilities.pip_wheel(package_name='h5py')
 
         # Import the h5py module
         import h5py
