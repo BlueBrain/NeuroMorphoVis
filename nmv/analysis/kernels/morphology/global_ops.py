@@ -20,6 +20,51 @@ import nmv.analysis
 
 
 ####################################################################################################
+# @kernel_global_number_apical_dendrites_loaded
+####################################################################################################
+def kernel_global_number_apical_dendrites_loaded(morphology):
+    """Counts the number of apical dendrites of the original morphology as loaded from the file.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return morphology.number_loaded_apical_dendrites
+
+
+####################################################################################################
+# @kernel_global_number_basal_dendrites_loaded
+####################################################################################################
+def kernel_global_number_basal_dendrites_loaded(morphology):
+    """Counts the number of basal dendrites of the original morphology as loaded from the file.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return morphology.number_loaded_basal_dendrites
+
+
+####################################################################################################
+# @kernel_global_number_axons_loaded
+####################################################################################################
+def kernel_global_number_axons_loaded(morphology):
+    """Counts the number of axons dendrites of the original morphology as loaded from the file.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return morphology.number_loaded_axons
+
+
+####################################################################################################
 # @kernel_global_number_apical_dendrites
 ####################################################################################################
 def kernel_global_number_apical_dendrites(morphology):

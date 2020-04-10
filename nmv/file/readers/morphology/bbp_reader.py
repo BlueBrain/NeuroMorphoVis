@@ -929,11 +929,29 @@ class BBPReader:
                 apical_dendrite_root, apical_dendrite_list)
 
         # Create the tree representation of the morphology
-        morphology = nmv.skeleton.Morphology(
+        nmv_morphology = nmv.skeleton.Morphology(
             soma=soma, axon=axon, dendrites=dendrites, apical_dendrite=apical_dendrite, gid=gid)
 
+        # Labels
+        if nmv_morphology.axon is not None:
+            nmv_morphology.axon.label = 'Axon'
+
+        if nmv_morphology.apical_dendrite is not None:
+            nmv_morphology.apical_dendrite.label = 'ApicalDendrite'
+
+        if nmv_morphology.dendrites is not None:
+            for i in range(len(nmv_morphology.dendrites)):
+                nmv_morphology.dendrites[i].label = 'BasalDendrite%d' % (i + 1)
+
+        # Update the information
+        nmv_morphology.number_loaded_axons = len(axon)
+        nmv_morphology.number_loaded_basal_dendrites = len(dendrites)
+        nmv_morphology.number_loaded_apical_dendrites = len(apical_dendrite)
+
+        nmv_morphology.print_loaded_arbors_counts()
+
         # Return the morphology tree skeleton
-        return morphology
+        return nmv_morphology
 
     ################################################################################################
     # @load_morphology_from_circuit

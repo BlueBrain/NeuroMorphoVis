@@ -206,7 +206,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
     if not root.has_children() or branching_level >= max_branching_level:
 
         # Polyline name
-        poly_line_name = '%s_%d' % (root.get_type_prefix(), root.id)
+        poly_line_name = root.label
 
         # Construct the poly-line
         import nmv.geometry

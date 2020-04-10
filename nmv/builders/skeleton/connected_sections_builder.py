@@ -148,7 +148,7 @@ class ConnectedSectionsBuilder:
                 nmv.logger.detail('Apical dendrite')
                 self.create_arbor_component(
                     arbor=self.morphology.apical_dendrite,
-                    bevel_object=bevel_object, component_name='ApicalDendrite',
+                    bevel_object=bevel_object, component_name=self.morphology.apical_dendrite.label,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
@@ -156,7 +156,8 @@ class ConnectedSectionsBuilder:
             if self.morphology.axon is not None:
                 nmv.logger.detail('Axon')
                 self.create_arbor_component(
-                    arbor=self.morphology.axon, bevel_object=bevel_object, component_name='Axon',
+                    arbor=self.morphology.axon, bevel_object=bevel_object,
+                    component_name=self.morphology.axon.label,
                     max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
@@ -166,7 +167,7 @@ class ConnectedSectionsBuilder:
                     nmv.logger.detail('Basal dendrite [%d]' % i)
                     self.create_arbor_component(
                         arbor=basal_dendrite, bevel_object=bevel_object,
-                        component_name='BasalDendrite_%d' % i,
+                        component_name=basal_dendrite.label,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
     ################################################################################################

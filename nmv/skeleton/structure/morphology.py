@@ -140,6 +140,27 @@ class Morphology:
         # The color of the soma, see @create_morphology_color_palette
         self.soma_color = None
 
+        # Number of axons loaded from the morphology
+        self.number_loaded_axons = 0
+
+        # Number of apical dendrites loaded from the morphology
+        self.number_loaded_apical_dendrites = 0
+
+        # Number of basal dendrites loaded from the morphology
+        self.number_loaded_basal_dendrites = 0
+
+    ################################################################################################
+    # @build_samples_lists_recursively
+    ################################################################################################
+    def print_loaded_arbors_counts(self):
+        """Prints the number of arbors per type as loaded from the morphology.
+        """
+
+        nmv.logger.header('Original Morphology Structure')
+        nmv.logger.info('Axon(s): %d' % self.number_loaded_axons)
+        nmv.logger.info('Apical Dendrite(s): %d' % self.number_loaded_apical_dendrites)
+        nmv.logger.info('Basal Dendrites(s): %d' % self.number_loaded_basal_dendrites)
+
     ################################################################################################
     # @build_samples_lists_recursively
     ################################################################################################

@@ -33,7 +33,8 @@ class Section:
                  parent_id=-1,
                  children_ids=None,
                  samples=None,
-                 type=None):
+                 type=None,
+                 label='Section'):
         """Constructor
 
         :param id:
@@ -46,6 +47,8 @@ class Section:
             A list of samples that compose this section.
         :param type:
             Section type, can be AXON, DENDRITE, APICAL_DENDRITE, or NONE.
+        :param label:
+            Arbor label to indicate which one is that.
         """
 
         # Section index
@@ -73,6 +76,9 @@ class Section:
 
         # A reference to the section parent, if it exists
         self.parent = None
+
+        # Arbor label, only for roots
+        self.label = label
 
         # A list of the children
         self.children = list()

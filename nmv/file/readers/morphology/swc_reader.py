@@ -658,11 +658,24 @@ class SWCReader:
         basal_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
 
+        for i in range(len(basal_dendrites_arbors)):
+            basal_dendrites_arbors[i].label = 'BasalDendrite%d' % (i + 1)
+
+        # Compute the number of basals loaded from the morphology
+        number_loaded_basal_dendrites = len(basal_dendrites_arbors)
+
         # Build the axon, or axons if the morphology has more than a single axon
         # NOTE: For consistency, if we have more than a single axon, we use the principal one and
         # add the others later to the basal dendrites list
-        axon_arbor = None
         axons_arbors = self.build_arbors_from_samples(nmv.consts.Skeleton.SWC_AXON_SAMPLE_TYPE)
+
+        # Compute the number of axons loaded from the morphology
+        number_loaded_axons = len(axons_arbors)
+
+        for i in range(len(axons_arbors)):
+            axons_arbors[i].label = 'Axon%d' % (i + 1)
+
+        axon_arbor = None
         if axons_arbors is not None:
 
             # Set the principal axon
@@ -686,9 +699,16 @@ class SWCReader:
         # single apical dendrites
         # NOTE: For consistency, if we have more than a single morphology, we use the principal one
         # and add the others later to the basal dendrites list
-        apical_dendrite_arbor = None
         apical_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Skeleton.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
+
+        for i in range(len(apical_dendrites_arbors)):
+            apical_dendrites_arbors[i].label = 'ApicalDendrite%d' % (i + 1)
+
+        # Compute the number of apicals loaded from the morphology
+        number_loaded_apical_dendrites = len(apical_dendrites_arbors)
+
+        apical_dendrite_arbor = None
         if apical_dendrites_arbors is not None:
 
             # Set the principal axon
@@ -724,6 +744,13 @@ class SWCReader:
 
         # Add the number of stems to the morphology
         nmv_morphology.number_stems = self.get_number_stems_from_samples_list()
+
+        # Update the information
+        nmv_morphology.number_loaded_axons = number_loaded_axons
+        nmv_morphology.number_loaded_basal_dendrites = number_loaded_basal_dendrites
+        nmv_morphology.number_loaded_apical_dendrites = number_loaded_apical_dendrites
+
+        nmv_morphology.print_loaded_arbors_counts()
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology
