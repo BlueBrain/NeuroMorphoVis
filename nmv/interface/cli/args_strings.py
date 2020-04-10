@@ -80,14 +80,12 @@ class Args:
     ################################################################################################
     # Morphology arguments
     ################################################################################################
-    # Reconstruct the morphology skeleton
-    RECONSTRUCT_MORPHOLOGY_SKELETON = '--reconstruct-morphology-skeleton'
 
     # Morphology reconstruction algorithm
     MORPHOLOGY_RECONSTRUCTION_ALGORITHM = '--morphology-reconstruction-algorithm'
 
     # Morphology skeleton style
-    MORPHOLOGY_SKELETON = '--morphology-skeleton'
+    MORPHOLOGY_SKELETON = '--morphology-skeleton-style'
 
     # Soma representation in the morphology
     SOMA_REPRESENTATION = '--soma-representation'
@@ -110,17 +108,25 @@ class Args:
     # Basal dednrites branching order
     BASAL_DENDRITES_BRANCHING_ORDER = '--apical-dendrites-branching-order'
 
-    # Sections radii
-    SECTIONS_RADII = '--sections-radii'
+    # Samples radii
+    SAMPLES_RADII = '--samples-radii'
 
     # Radii scale factor
     RADII_SCALE_FACTOR = '--radii-scale-factor'
 
-    # Radii fixed section
-    FIXED_SECTION_RADIUS = '--fixed-section-radius'
+    # Morphology unified radius
+    MORPHOLOGY_RADIUS = '--unified-morphology-radius'
+
+    # Per-arbor radii
+    AXON_RADIUS = '--axon-radius'
+    APICAL_DENDRITES_RADIUS = '--apical-dendrites-radius'
+    BASAL_DENDRITES_RADIUS = '--basal-dendrites-radius'
 
     # Morphology bevel object sides
     MORPHOLOGY_BEVEL_SIDES = '--bevel-sides'
+
+    # Branching method
+    BRANCHING_METHOD = '--branching'
 
     ################################################################################################
     # Materials and colors arguments
@@ -152,9 +158,6 @@ class Args:
     ################################################################################################
     # Meshing arguments
     ################################################################################################
-    # Reconstruct soma mesh
-    RECONSTRUCT_SOMA_MESH = '--reconstruct-soma-mesh'
-
     # Reconstruct neuron mesh
     RECONSTRUCT_NEURON_MESH = '--reconstruct-neuron-mesh'
 
@@ -169,9 +172,6 @@ class Args:
 
     # Mesh surface
     MESH_SURFACE = '--surface'
-
-    # Branching method
-    BRANCHING_METHOD = '--branching'
 
     # Mesh tessellation level
     MESH_TESSELLATION_LEVEL = '--tessellation-level'
@@ -236,8 +236,6 @@ class Args:
     ################################################################################################
     # Rendering arguments
     ################################################################################################
-    # Render the skeleton of the soma (profile points connected together)
-    RENDER_SOMA_SKELETON = '--render-soma-skeleton'
 
     # Render a static image of the soma mesh
     RENDER_SOMA_MESH = '--render-soma-mesh'
@@ -275,11 +273,8 @@ class Args:
     # The size of a close up view in microns
     CLOSE_UP_DIMENSIONS = '--close-up-dimensions'
 
-    # The resolution of full-view (mid-shot or wide-shot) images
-    FULL_VIEW_RESOLUTION = '--full-view-resolution'
-
-    # The resolution of close-up view images
-    CLOSE_UP_RESOLUTION = '--close-up-resolution'
+    # Frame resolution
+    FRAME_RESOLUTION = '--frame-resolution'
 
     # Scale factor for increasing the resolution of the to-scale images
     RESOLUTION_SCALE_FACTOR = '--resolution-scale-factor'
@@ -292,9 +287,3 @@ class Args:
     ################################################################################################
     # Execution node
     EXECUTION_NODE = '--execution-node'
-
-    # Number of core to run the frame work
-    NUMBER_CORES = '--number-cores'
-
-    # Job granularity
-    JOB_GRANULARITY = '--job-granularity'

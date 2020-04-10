@@ -27,43 +27,33 @@ source $1
 
 #####################################################################################################
 BOOL_ARGS=''
-if [ "$RECONSTRUCT_MORPHOLOGY_SKELETON" == "yes" ];
-    then BOOL_ARGS+=' --reconstruct-morphology-skeleton '; fi
 if [ "$IGNORE_AXON" == "yes" ];
     then BOOL_ARGS+=' --ignore-axon '; fi
 if [ "$IGNORE_BASAL_DENDRITES" == "yes" ];
     then BOOL_ARGS+=' --ignore-basal-dendrites '; fi
 if [ "$IGNORE_APICAL_DENDRITES" == "yes" ];
     then BOOL_ARGS+=' --ignore-apical-dendrites '; fi
-if [ "$RECONSTRUCT_SOMA_MESH" == "yes" ];
-    then BOOL_ARGS+=' --reconstruct-soma-mesh '; fi
-if [ "$RECONSTRUCT_NEURON_MESH" == "yes" ];
-    then BOOL_ARGS+=' --reconstruct-neuron-mesh '; fi
 if [ "$CONNECT_SOMA_MESH_TO_ARBORS" == "yes" ];
     then BOOL_ARGS+=' --connect-soma-arbors'; fi
-if [ "$CONNECT_NEURON_OBJECTS_INTO_SINGLE_MESH" == "yes" ];
-    then BOOL_ARGS+=' --joint-neuron-meshes'; fi
 ####################################################################################################
 # Rendering parameters
-if [ "$RENDER_SOMA_SKELETON" == "yes" ];
-    then BOOL_ARGS+=' --render-soma-skeleton '; fi
-if [ "$RENDER_SOMA_MESH" == "yes" ];
+if [ "$RENDER_SOMA_IMAGE" == "yes" ];
     then BOOL_ARGS+=' --render-soma-mesh '; fi
-if [ "$RENDER_SOMA_MESH_PROGRESSIVE" == "yes" ];
+if [ "$RENDER_SOMA_PROGRESSIVE_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-soma-mesh-progressive '; fi
-if [ "$RENDER_SOMA_MESH_360" == "yes" ];
+if [ "$RENDER_SOMA_360_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-soma-mesh-360 '; fi
-if [ "$RENDER_NEURON_MORPHOLOGY" == "yes" ];
+if [ "$RENDER_NEURON_MORPHOLOGY_IMAGE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-morphology '; fi
-if [ "$RENDER_NEURON_MORPHOLOGY_360" == "yes" ];
+if [ "$RENDER_NEURON_MORPHOLOGY_360_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-morphology-360 '; fi
-if [ "$RENDER_NEURON_MORPHOLOGY_PROGRESSIVE" == "yes" ];
+if [ "$RENDER_NEURON_MORPHOLOGY_PROGRESSIVE_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-morphology-progressive '; fi
-if [ "$RENDER_NEURON_MESH" == "yes" ];
+if [ "$RENDER_NEURON_MESH_IMAGE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-mesh '; fi
-if [ "$RENDER_NEURON_MESH_360" == "yes" ];
+if [ "$RENDER_NEURON_MESH_360_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-mesh-360 '; fi
-if [ "$RENDER_TO_SCALE" == "yes" ];
+if [ "$RENDER_IMAGES_TO_SCALE" == "yes" ];
     then BOOL_ARGS+=' --render-to-scale '; fi
 ####################################################################################################
 # Mesh parameters
@@ -73,12 +63,12 @@ if [ "$ADD_NUCLEUS" == "yes" ];
     then BOOL_ARGS+=' --add-nucleus '; fi
 ####################################################################################################
 # Export morphology
-if [ "$EXPORT_NEURON_MORPHOLOGY_H5" == "yes" ];
-    then BOOL_ARGS+=' --export-morphology-h5'; fi
 if [ "$EXPORT_NEURON_MORPHOLOGY_SWC" == "yes" ];
     then BOOL_ARGS+=' --export-morphology-swc'; fi
 if [ "$EXPORT_NEURON_MORPHOLOGY_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-morphology-blend '; fi
+if [ "#EXPORT_NEURON_MORPHOLOGY_SEGMENTS" == "yes" ];
+    then BOOL_ARGS+=' --export-morphology-segments'; fi
 ####################################################################################################
 # Export soma mesh
 if [ "$EXPORT_SOMA_MESH_PLY" == "yes" ];
@@ -120,7 +110,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --morphology-directory=$MORPHOLOGY_DIRECTORY                                                    \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --morphology-reconstruction-algorithm=$MORPHOLOGY_RECONSTRUCTION_ALGORITHM                      \
-    --morphology-skeleton=$SKELETON                                                                 \
+    --morphology-skeleton-style=SKELETON_STYLE                                                      \
     --meshing-algorithm=$MESHING_TECHNIQUE                                                          \
     --axon-branching-order=$MAX_AXON_BRANCHING_ORDER                                                \
     --basal-dendrites-branching-order=$MAX_BASAL_DENDRITES_BRANCHING_ORDER                          \
@@ -139,21 +129,22 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --basal-dendrites-color=$BASAL_DENDRITES_COLOR                                                  \
     --spines-color=$SPINES_COLOR                                                                    \
     --nucleus-color=$NUCLEUS_COLOR                                                                  \
-    --sections-radii=$SET_SECTION_RADII                                                             \
+    --samples-radii=$SAMPLES_RADII                                                                  \
     --radii-scale-factor=$RADII_SCALE_FACTOR                                                        \
-    --fixed-section-radius=$FIXED_SECTION_RADIUS                                                    \
+    --unified-morphology-radius=$UNIFIED_SAMPLES_RADIUS                                             \
+    --axon-radius=$AXON_RADIUS                                                                      \
+    --apical-dendrites-radius=$APICAL_DENDRITES_RADIUS                                              \
+    --basal-dendrites-radius=$BASAL_DENDRITES_RADIUS                                                \
     --bevel-sides=$SECTION_BEVEL_SIDES                                                              \
     --camera-view=$CAMERA_VIEW                                                                      \
     --rendering-view=$RENDERING_VIEW                                                                \
-    --full-view-resolution=$FULL_VIEW_FRAME_RESOLUTION                                              \
+    --frame-resolution=$FRAME_RESOLUTION                                                            \
     --resolution-scale-factor=$FULL_VIEW_SCALE_FACTOR                                               \
-    --close-up-resolution=$CLOSE_UP_FRAME_RESOLUTION                                                \
     --close-up-dimensions=$CLOSE_UP_VIEW_DIMENSIONS                                                 \
     --image-file-format=$IMAGE_FILE_FORMAT                                                          \
     --shader=$SHADER                                                                                \
     --execution-node=$EXECUTION_NODE                                                                \
     --tessellation-level=$TESSELLATION_LEVEL                                                        \
-    --number-cores=$NUMBER_CORES                                                                    \
     $BOOL_ARGS
 
 echo -e "\nDONE ... NeuroMorphoVis \n"

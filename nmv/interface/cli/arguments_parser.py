@@ -239,7 +239,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Section radii (default, scaled or fixed)
-    arg_options = ['(default)', 'scaled', 'fixed']
+    arg_options = ['(default)', 'scaled', 'unified', 'type-unified']
     arg_help = 'The radii of the morphological sections.\n' \
                'Options: %s' % arg_options
     skeletonization_args.add_argument(
@@ -249,7 +249,7 @@ def parse_command_line_arguments():
 
     # Section radii scale factor
     arg_help = 'A scale factor used to scale the radii of the morphology.\n' \
-               'Valid only if --sections-radii = scaled.\n' \
+               'Valid only if --samples-radii = scaled.\n' \
                'Default is 1.0'
     skeletonization_args.add_argument(
         Args.RADII_SCALE_FACTOR,
@@ -258,10 +258,37 @@ def parse_command_line_arguments():
 
     # Section fixed radius (to enlarge the thin branches)
     arg_help = 'A fixed radius for all morphology sections.\n'\
-               'Valid only if --sections-radii = fixed.\n' \
+               'Valid only if --samples-radii = unified.\n' \
                'Default is 1.0'
     skeletonization_args.add_argument(
-        Args.FIXED_SECTION_RADIUS,
+        Args.MORPHOLOGY_RADIUS,
+        action='store', type=float, default=1.0,
+        help=arg_help)
+
+    # Axon radius
+    arg_help = 'A fixed radius for the axon samples.\n' \
+               'Valid only if --samples-radii = type-unified.\n' \
+               'Default is 1.0'
+    skeletonization_args.add_argument(
+        Args.AXON_RADIUS,
+        action='store', type=float, default=1.0,
+        help=arg_help)
+
+    # Apical radius
+    arg_help = 'A fixed radius for the apical dendrite samples.\n' \
+               'Valid only if --samples-radii = type-unified.\n' \
+               'Default is 1.0'
+    skeletonization_args.add_argument(
+        Args.APICAL_DENDRITES_RADIUS,
+        action='store', type=float, default=1.0,
+        help=arg_help)
+
+    # Apical radius
+    arg_help = 'A fixed radius for the basal dendrite samples.\n' \
+               'Valid only if --samples-radii = type-unified.\n' \
+               'Default is 1.0'
+    skeletonization_args.add_argument(
+        Args.BASAL_DENDRITES_RADIUS,
         action='store', type=float, default=1.0,
         help=arg_help)
 
@@ -373,9 +400,9 @@ def parse_command_line_arguments():
                   '\t electron-dark \n' \
                   '\t super-electron-light \n' \
                   '\t super-electron-dark \n' \
-                  '\t shadow \n' \
+                  '\t transparent \n' \
                   '\t flat \n' \
-                  '\t subsurface-scattering'
+                  '\t glossy'
     arg_help = 'Shading mode or material. \n' \
                'Options: %s' % arg_options
     materials_args.add_argument(
@@ -387,13 +414,6 @@ def parse_command_line_arguments():
     # Meshing arguments
     ################################################################################################
     meshing_args = parser.add_argument_group('Meshing', 'Meshing')
-
-    # Reconstruct the mesh of the soma only
-    arg_help = 'Reconstruct the mesh of the soma only.'
-    meshing_args.add_argument(
-        Args.RECONSTRUCT_SOMA_MESH,
-        action='store_true', default=False,
-        help=arg_help)
 
     # Reconstruct the mesh of entire neuron
     arg_help = 'Reconstruct the mesh of the entire neuron.'
@@ -581,13 +601,6 @@ def parse_command_line_arguments():
         action='store_true', default=False,
         help=arg_help)
 
-    # Render soma skeleton
-    arg_help = 'Render a static image of the soma skeleton (connected profile).'
-    rendering_args.add_argument(
-        Args.RENDER_SOMA_SKELETON,
-        action='store_true', default=False,
-        help=arg_help)
-
     # Render soma
     arg_help = 'Render an image of the reconstructed soma mesh.'
     rendering_args.add_argument(
@@ -657,21 +670,12 @@ def parse_command_line_arguments():
         action='store', type=int, default=20,
         help=arg_help)
 
-    # Full view resolution
-    arg_help = 'Base resolution of full view images (wide-shot or mid-shot). \n' \
+    # Frame resolution
+    arg_help = 'Base resolution of rendered view images (wide-shot or mid-shot). \n' \
                'Default 1024.'
     rendering_args.add_argument(
-        Args.FULL_VIEW_RESOLUTION,
+        Args.FRAME_RESOLUTION,
         action='store', type=int, default=1024,
-        help=arg_help)
-
-    # Full view resolution
-    arg_help = 'Base resolution of close-up images. \n' \
-               'Valid only when the --rendering-view = close-up. \n' \
-               'Default 512.'
-    rendering_args.add_argument(
-        Args.CLOSE_UP_RESOLUTION,
-        action='store', type=int, default=512,
         help=arg_help)
 
     # Full view scale factor
@@ -899,12 +903,11 @@ def create_shell_commands(arguments,
                               (arguments.blender, cli_morphology_analysis, arguments_string))
 
     # Morphology reconstruction task: call the @cli_morphology_reconstruction interface
-    if arguments.reconstruct_morphology_skeleton or         \
-       arguments.render_neuron_morphology or                \
+    if arguments.render_neuron_morphology or                \
        arguments.render_neuron_morphology_360 or            \
        arguments.render_neuron_morphology_progressive or    \
        arguments.export_morphology_swc or                   \
-       arguments.export_morphology_h5 or                    \
+       arguments.export_morphology_segments or              \
        arguments.export_morphology_blend:
 
         # Add this command to the list
@@ -912,11 +915,9 @@ def create_shell_commands(arguments,
                               (arguments.blender, cli_morphology_reconstruction, arguments_string))
 
     # Soma-related task: call the @cli_soma_reconstruction interface
-    if arguments.reconstruct_soma_mesh or                   \
-       arguments.render_soma_mesh or                        \
+    if arguments.render_soma_mesh or                        \
        arguments.render_soma_mesh_360 or                    \
        arguments.render_soma_mesh_progressive or            \
-       arguments.render_soma_skeleton or                    \
        arguments.export_soma_mesh_ply or                    \
        arguments.export_soma_mesh_obj or                    \
        arguments.export_soma_mesh_stl or                    \
@@ -927,8 +928,7 @@ def create_shell_commands(arguments,
                               (arguments.blender, cli_soma_reconstruction, arguments_string))
 
     # Neuron mesh reconstruction related task: call the @cli_mesh_reconstruction interface
-    if arguments.reconstruct_neuron_mesh or                 \
-       arguments.render_neuron_mesh or                      \
+    if arguments.render_neuron_mesh or                      \
        arguments.render_neuron_mesh_360 or                  \
        arguments.export_neuron_mesh_ply or                  \
        arguments.export_neuron_mesh_obj or                  \
