@@ -720,10 +720,6 @@ def create_material(name,
     elif material_type == nmv.enums.Shader.ELECTRON_DARK:
         return create_electron_dark_material(name='%s_color' % name, color=color)
 
-    # Shadow
-    elif material_type == nmv.enums.Shader.SHADOW:
-        return create_shadow_material(name='%s_color' % name, color=color)
-
     # Glossy
     elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_material(name='%s_color' % name, color=color)
@@ -731,10 +727,6 @@ def create_material(name,
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
         return create_glossy_bumpy_material(name='%s_color' % name, color=color)
-
-    # Voronoi
-    elif material_type == nmv.enums.Shader.VORONOI:
-        return create_voronoi_cells_material(name='%s_color' % name, color=color)
 
     # Wire frame
     elif material_type == nmv.enums.Shader.WIRE_FRAME:

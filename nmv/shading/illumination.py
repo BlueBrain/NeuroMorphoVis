@@ -152,10 +152,6 @@ def create_material_specific_illumination(material_type):
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_illumination()
 
-    # Shadow
-    elif material_type == nmv.enums.Shader.SHADOW:
-        return create_shadow_illumination()
-
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
         return create_glossy_illumination()

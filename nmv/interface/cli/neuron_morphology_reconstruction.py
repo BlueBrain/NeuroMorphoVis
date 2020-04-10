@@ -65,25 +65,24 @@ def reconstruct_neuron_morphology(cli_morphology,
 
     # Export to .BLEND file
     if cli_options.morphology.export_blend:
+
         # Export the morphology to a .BLEND file, None indicates all components the scene
         nmv.file.export_mesh_object(
             None, cli_options.io.morphologies_directory, cli_morphology.label,
             blend=cli_options.morphology.export_blend)
 
     # Render a static image of the reconstructed morphology skeleton
-    if cli_options.morphology.render:
+    if cli_options.rendering.render_morphology_static_frame:
 
         # Compute the bounding box for a close up view
-        if cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.CLOSE_UP:
+        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
                 extent=cli_options.morphology.close_up_dimensions)
 
         # Compute the bounding box for a mid shot view
-        elif cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.MID_SHOT:
+        elif cli_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
@@ -96,30 +95,29 @@ def reconstruct_neuron_morphology(cli_morphology,
                 morphology=cli_morphology)
 
         # If rendering all views
-        if cli_options.morphology.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
+        if cli_options.rendering.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
             views = [nmv.enums.Camera.View.FRONT,
                      nmv.enums.Camera.View.SIDE,
                      nmv.enums.Camera.View.TOP]
         else:
-            views = [cli_options.morphology.camera_view]
+            views = [cli_options.rendering.camera_view]
 
         # Get the image suffix
         suffixes = nmv.interface.get_morphology_image_suffixes_from_view(
-            cli_options.morphology.camera_view)
+            cli_options.rendering.camera_view)
 
         for view, suffix in zip(views, suffixes):
 
             # Render at a specific resolution
-            if cli_options.morphology.resolution_basis == \
-                    nmv.enums.Rendering.Resolution.FIXED:
+            if cli_options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
 
                 # Render the image
                 nmv.rendering.render(
                     bounding_box=bounding_box,
                     camera_view=view,
-                    image_resolution=cli_options.morphology.full_view_resolution,
+                    image_resolution=cli_options.rendering.full_view_resolution,
                     image_name='%s%s' % (cli_morphology.label, suffix),
-                    image_format=cli_options.morphology.image_format,
+                    image_format=cli_options.rendering.image_format,
                     image_directory=cli_options.io.images_directory)
 
             # Render at a specific scale factor
@@ -129,25 +127,23 @@ def reconstruct_neuron_morphology(cli_morphology,
                 nmv.rendering.render_to_scale(
                     bounding_box=bounding_box,
                     camera_view=view,
-                    image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                    image_scale_factor=cli_options.rendering.resolution_scale_factor,
                     image_name='%s%s' % (cli_morphology.label, suffix),
                     image_format=cli_options.morphology.image_format,
                     image_directory=cli_options.io.images_directory)
 
     # Render a 360 sequence of the reconstructed morphology skeleton
-    if cli_options.morphology.render_360:
+    if cli_options.rendering.render_mesh_360:
 
         # Compute the bounding box for a close up view
-        if cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.CLOSE_UP:
+        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
                 extent=cli_options.morphology.close_up_dimensions)
 
         # Compute the bounding box for a mid shot view
-        elif cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.MID_SHOT:
+        elif cli_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
@@ -178,11 +174,11 @@ def reconstruct_neuron_morphology(cli_morphology,
                 angle=i,
                 bounding_box=bounding_box_360,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=cli_options.morphology.full_view_resolution,
+                image_resolution=cli_options.rendering.full_view_resolution,
                 image_name=image_name)
 
     # Render a sequence of the progressive reconstruction of the morphology skeleton
-    if cli_options.morphology.render_progressive:
+    if cli_options.rendering.render_morphology_progressive:
 
         # We must reconstruct the morphology with the Progressive builder
         nmv.scene.clear_scene()
@@ -193,16 +189,14 @@ def reconstruct_neuron_morphology(cli_morphology,
         progressive_builder.draw_morphology_skeleton()
 
         # Compute the bounding box for a close up view
-        if cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.CLOSE_UP:
+        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=cli_options.morphology.close_up_dimensions)
+                extent=cli_options.rendering.close_up_dimensions)
 
         # Compute the bounding box for a mid shot view
-        elif cli_options.morphology.rendering_view == \
-                nmv.enums.Rendering.View.MID_SHOT:
+        elif cli_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
@@ -222,9 +216,6 @@ def reconstruct_neuron_morphology(cli_morphology,
             bpy.context.scene.frame_set(i)
 
             # Set the frame name
-            image_name = '%s' % '{0:05d}'.format(i)
-
-            # Set the frame name
             image_name = '%s/%s/%s' % (
                 cli_options.io.sequences_directory, cli_morphology.label, '{0:05d}'.format(i))
 
@@ -232,7 +223,7 @@ def reconstruct_neuron_morphology(cli_morphology,
             nmv.rendering.renderer.render(
                 bounding_box=rendering_bbox,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=cli_options.morphology.full_view_resolution,
+                image_resolution=cli_options.rendering.full_view_resolution,
                 image_name=image_name,
                 image_directory=None)
 
@@ -257,47 +248,44 @@ if __name__ == "__main__":
         print('Output: [%s]' % arguments.output_directory)
 
     # Get the options from the arguments
-    cli_options = nmv.options.NeuroMorphoVisOptions()
+    input_options = nmv.options.NeuroMorphoVisOptions()
 
     # Convert the CLI arguments to system options
-    cli_options.consume_arguments(arguments=arguments)
+    input_options.consume_arguments(arguments=arguments)
 
     # Read the morphology
-    cli_morphology = None
+    input_morphology = None
 
     # If the input is a GID, then open the circuit and read it
     if arguments.input == 'gid':
 
         # Load the morphology from the file
-        loading_flag, cli_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
-            blue_config=cli_options.morphology.blue_config,
-            gid=cli_options.morphology.gid)
+        loading_flag, input_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
+            blue_config=input_options.morphology.blue_config,
+            gid=input_options.morphology.gid)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the GID [%s] from the circuit [%s]' %
-                           cli_options.morphology.blue_config, str(cli_options.morphology.gid))
+                           input_options.morphology.blue_config, str(input_options.morphology.gid))
             exit(0)
 
     # If the input is a morphology file, then use the parser to load it directly
     elif arguments.input == 'file':
 
         # Read the morphology file
-        loading_flag, cli_morphology = nmv.file.read_morphology_from_file(options=cli_options)
+        loading_flag, input_morphology = nmv.file.read_morphology_from_file(options=input_options)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the morphology file [%s]' %
-                           str(cli_options.morphology.morphology_file_path))
+                           str(input_options.morphology.morphology_file_path))
             exit(0)
 
     else:
         nmv.logger.log('ERROR: Invalid input option')
         exit(0)
 
-    # TODO: Implement the render_soma_two_dimensional_profile() function
-    # render_soma_two_dimensional_profile(cli_morphology=cli_morphology, cli_options=cli_options)
-
     # Neuron morphology reconstruction and visualization
-    reconstruct_neuron_morphology(cli_morphology=cli_morphology, cli_options=cli_options)
+    reconstruct_neuron_morphology(cli_morphology=input_morphology, cli_options=input_options)
     nmv.logger.log('NMV Done')
 
 
