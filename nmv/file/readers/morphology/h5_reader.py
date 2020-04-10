@@ -514,7 +514,5 @@ class H5Reader:
         nmv_morphology.number_loaded_basal_dendrites = number_loaded_basal_dendrites
         nmv_morphology.number_loaded_apical_dendrites = number_loaded_apical_dendrites
 
-        nmv_morphology.print_loaded_arbors_counts()
-
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology

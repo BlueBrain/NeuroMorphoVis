@@ -948,8 +948,6 @@ class BBPReader:
         nmv_morphology.number_loaded_basal_dendrites = len(dendrites) if dendrites is not None else 0
         nmv_morphology.number_loaded_apical_dendrites = len(apical_dendrite) if apical_dendrite is not None else 0
 
-        nmv_morphology.print_loaded_arbors_counts()
-
         # Return the morphology tree skeleton
         return nmv_morphology
 

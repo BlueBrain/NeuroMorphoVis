@@ -89,24 +89,30 @@ def apply_analysis_operation_to_morphology(*args):
     analysis_function = args[1]
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.loaded_apical_dendrites is not None:
 
-        # Construct arbor arguments list
-        arbor_args = [morphology.apical_dendrite]
-        for i in range(2, len(args)):
-            arbor_args.append(args[i])
+        # Create an empty list to collect the resulting data
+        analysis_result.apical_dendrites_result = list()
 
-        # Apply the operation/filter to the arbor
-        analysis_result.apical_dendrite_result = analysis_function(*arbor_args)
+        # Dendrite by dendrite
+        for dendrite in morphology.loaded_apical_dendrites:
+
+            # Construct arbor arguments list
+            arbor_args = [dendrite]
+            for i in range(2, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            analysis_result.apical_dendrites_result.append(analysis_function(*arbor_args))
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.loaded_basal_dendrites is not None:
 
         # Create an empty list to collect the resulting data
         analysis_result.basal_dendrites_result = list()
 
         # Dendrite by dendrite
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.loaded_basal_dendrites:
 
             # Construct arbor arguments list
             arbor_args = [dendrite]
@@ -117,15 +123,21 @@ def apply_analysis_operation_to_morphology(*args):
             analysis_result.basal_dendrites_result.append(analysis_function(*arbor_args))
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.loaded_axons is not None:
 
-        # Construct arbor arguments list
-        arbor_args = [morphology.axon]
-        for i in range(2, len(args)):
-            arbor_args.append(args[i])
+        # Create an empty list to collect the resulting data
+        analysis_result.axons_result = list()
 
-        # Apply the operation/filter to the arbor
-        analysis_result.axon_result = analysis_function(*arbor_args)
+        # Dendrite by dendrite
+        for dendrite in morphology.loaded_axons:
+
+            # Construct arbor arguments list
+            arbor_args = [morphology.axon]
+            for i in range(2, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            analysis_result.axons_result.append(analysis_function(*arbor_args))
 
     # Return the structure that contains the analysis result
     return analysis_result

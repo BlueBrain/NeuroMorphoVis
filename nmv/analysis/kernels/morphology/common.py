@@ -35,9 +35,10 @@ def get_morphology_maximum_branching_order_from_analysis_results(analysis_result
     maximum_branching_order = 0
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        if len(analysis_result.apical_dendrite_result) > maximum_branching_order:
-            maximum_branching_order = len(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            if len(apical_dendrite_result) > maximum_branching_order:
+                maximum_branching_order = len(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -46,9 +47,10 @@ def get_morphology_maximum_branching_order_from_analysis_results(analysis_result
                 maximum_branching_order = len(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        if len(analysis_result.axon_result) > maximum_branching_order:
-            maximum_branching_order = len(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            if len(axon_result) > maximum_branching_order:
+                maximum_branching_order = len(axon_result)
 
     # Return the maximum branching order
     return maximum_branching_order
@@ -75,8 +77,8 @@ def compute_total_distribution_of_morphology(analysis_result):
         analysis_result.morphology_result.append([i + 1, 0])
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        for item in analysis_result.apical_dendrite_result:
+    if analysis_result.apical_dendrites_result is not None:
+        for item in analysis_result.apical_dendrites_result:
             analysis_result.morphology_result[item[0] - 1][1] += item[1]
 
     # Basal dendrites
@@ -86,8 +88,8 @@ def compute_total_distribution_of_morphology(analysis_result):
                 analysis_result.morphology_result[item[0] - 1][1] += item[1]
 
     # Axon
-    if analysis_result.axon_result is not None:
-        for item in analysis_result.axon_result:
+    if analysis_result.axons_result is not None:
+        for item in analysis_result.axons_result:
             analysis_result.morphology_result[item[0] - 1][1] += item[1]
 
 
@@ -108,8 +110,9 @@ def compute_total_analysis_result_of_morphology(analysis_result):
     analysis_result.morphology_result = 0
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        analysis_result.morphology_result += analysis_result.apical_dendrite_result
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            analysis_result.morphology_result += apical_dendrite_result
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -117,8 +120,9 @@ def compute_total_analysis_result_of_morphology(analysis_result):
             analysis_result.morphology_result += basal_dendrite_result
 
     # Axon
-    if analysis_result.axon_result is not None:
-        analysis_result.morphology_result += analysis_result.axon_result
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            analysis_result.morphology_result += axon_result
 
 
 ####################################################################################################
@@ -138,8 +142,9 @@ def compute_minimum_analysis_result_of_morphology(analysis_result):
     all_arbors_results = list()
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            all_arbors_results.append(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -147,8 +152,9 @@ def compute_minimum_analysis_result_of_morphology(analysis_result):
             all_arbors_results.append(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            all_arbors_results.append(axon_result)
 
     # Update the morphology result
     analysis_result.morphology_result = min(all_arbors_results)
@@ -172,8 +178,9 @@ def compute_minimum_analysis_result_of_morphology_and_ignore_zero(analysis_resul
     all_arbors_results = list()
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            all_arbors_results.append(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -181,8 +188,9 @@ def compute_minimum_analysis_result_of_morphology_and_ignore_zero(analysis_resul
             all_arbors_results.append(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            all_arbors_results.append(axon_result)
 
     # Remove zeros from the list
     if 0 in all_arbors_results:
@@ -209,8 +217,9 @@ def compute_maximum_analysis_result_of_morphology(analysis_result):
     all_arbors_results = list()
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            all_arbors_results.append(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -218,8 +227,9 @@ def compute_maximum_analysis_result_of_morphology(analysis_result):
             all_arbors_results.append(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            all_arbors_results.append(axon_result)
 
     # Update the morphology result
     analysis_result.morphology_result = max(all_arbors_results)
@@ -242,8 +252,9 @@ def compute_average_analysis_result_of_morphology(analysis_result):
     all_arbors_results = list()
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            all_arbors_results.append(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -251,8 +262,9 @@ def compute_average_analysis_result_of_morphology(analysis_result):
             all_arbors_results.append(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            all_arbors_results.append(axon_result)
 
     # Update the morphology result
     analysis_result.morphology_result = 0
@@ -278,8 +290,9 @@ def compute_average_analysis_result_of_morphology_and_ignore_zero(analysis_resul
     all_arbors_results = list()
 
     # Apical dendrite
-    if analysis_result.apical_dendrite_result is not None:
-        all_arbors_results.append(analysis_result.apical_dendrite_result)
+    if analysis_result.apical_dendrites_result is not None:
+        for apical_dendrite_result in analysis_result.apical_dendrites_result:
+            all_arbors_results.append(apical_dendrite_result)
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
@@ -287,8 +300,9 @@ def compute_average_analysis_result_of_morphology_and_ignore_zero(analysis_resul
             all_arbors_results.append(basal_dendrite_result)
 
     # Axon
-    if analysis_result.axon_result is not None:
-        all_arbors_results.append(analysis_result.axon_result)
+    if analysis_result.axons_result is not None:
+        for axon_result in analysis_result.axons_result:
+            all_arbors_results.append(axon_result)
 
     # Remove zeros from the list
     if 0 in all_arbors_results:

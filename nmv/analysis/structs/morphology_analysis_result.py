@@ -25,31 +25,31 @@ class MorphologyAnalysisResult:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 apical_dendrite_result=None,
+                 apical_dendrites_result=None,
                  basal_dendrites_result=None,
-                 axon_result=None,
+                 axons_result=None,
                  morphology_result=None):
         """Constructor
 
-        :param apical_dendrite_result:
-            The analysis result of the apical dendrite.
+        :param apical_dendrites_result:
+            The analysis result of the apical dendrites.
         :param basal_dendrites_result:
             The analysis result of the basal dendrites.
-        :param axon_result:
-            The analysis result of the axon.
+        :param axons_result:
+            The analysis result of the axons.
         :param morphology_result:
             The aggregate analysis result of the entire morphology.
             This is computed for each respective filter from the results of the individual arbors.
         """
 
         # Apical dendrite
-        self.apical_dendrite_result = apical_dendrite_result
+        self.apical_dendrites_result = apical_dendrites_result
 
         # Basal dendrites
         self.basal_dendrites_result = basal_dendrites_result
 
         # Axon
-        self.axon_result = axon_result
+        self.axon_result = axons_result
 
         # Entire morphology
         self.morphology_result = morphology_result

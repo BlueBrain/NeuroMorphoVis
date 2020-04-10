@@ -663,6 +663,9 @@ class SWCReader:
             for i in range(len(basal_dendrites_arbors)):
                 basal_dendrites_arbors[i].label = 'Basal Dendrite %d' % (i + 1)
 
+            # Store a copy to be stored in the drawn morphology
+            loaded_basal_dendrites_arbors = copy.deepcopy(basal_dendrites_arbors)
+
             # Compute the number of basals loaded from the morphology
             number_loaded_basal_dendrites = len(basal_dendrites_arbors)
         else:
@@ -680,6 +683,9 @@ class SWCReader:
                     axons_arbors[i].label = 'Axon %d' % (i + 1)
             else:
                 axons_arbors[0].label = 'Axon'
+
+            # Store a copy to be stored in the drawn morphology
+            loaded_axon_arbors = copy.deepcopy(axons_arbors)
 
             # Compute the number of axons loaded from the morphology
             number_loaded_axons = len(axons_arbors)
@@ -720,6 +726,9 @@ class SWCReader:
                     apical_dendrites_arbors[i].label = 'Apical Dendrite %d' % (i + 1)
             else:
                 apical_dendrites_arbors[0].label = 'Apical Dendrite'
+
+            # Store a copy to be stored in the drawn morphology
+            loaded_apical_dendrites_arbors = copy.deepcopy(apical_dendrites_arbors)
 
             # Compute the number of apicals loaded from the morphology
             number_loaded_apical_dendrites = len(apical_dendrites_arbors)
@@ -764,11 +773,12 @@ class SWCReader:
         nmv_morphology.number_stems = self.get_number_stems_from_samples_list()
 
         # Update the information
+        nmv_morphology.loaded_axons = loaded_axon_arbors
+        nmv_morphology.loaded_basal_dendrites = loaded_basal_dendrites_arbors
+        nmv_morphology.loaded_apical_dendrites = loaded_apical_dendrites_arbors
         nmv_morphology.number_loaded_axons = number_loaded_axons
         nmv_morphology.number_loaded_basal_dendrites = number_loaded_basal_dendrites
         nmv_morphology.number_loaded_apical_dendrites = number_loaded_apical_dendrites
-
-        nmv_morphology.print_loaded_arbors_counts()
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology

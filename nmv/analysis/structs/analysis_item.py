@@ -162,19 +162,19 @@ class AnalysisItem:
         self.register_variable(variable_prefix='Morphology')
 
         # Apical dendrite
-        if morphology.apical_dendrite is not None:
-            self.register_variable(variable_prefix=morphology.apical_dendrite.label)
+        if morphology.loaded_apical_dendrites is not None:
+            for apical_dendrite in morphology.loaded_apical_dendrites:
+                self.register_variable(variable_prefix=apical_dendrite.label)
 
         # Basal dendrites
-        if morphology.dendrites is not None:
-
-            # For each basal dendrite
-            for i, basal_dendrite in enumerate(morphology.dendrites):
+        if morphology.loaded_basal_dendrites is not None:
+            for basal_dendrite in morphology.loaded_basal_dendrites:
                 self.register_variable(variable_prefix=basal_dendrite.label)
 
         # Axon
-        if morphology.axon is not None:
-            self.register_variable(variable_prefix=morphology.axon.label)
+        if morphology.loaded_axons is not None:
+            for axon in morphology.loaded_axons:
+                self.register_variable(variable_prefix=axon.label)
 
     ################################################################################################
     # @update_analysis_variable
@@ -245,21 +245,20 @@ class AnalysisItem:
         self.update_analysis_variable(
             prefix='Morphology', result=self.result.morphology_result, context=context)
 
-        # Apical dendrite
-        if morphology.apical_dendrite is not None:
+        # Apical dendrites
+        if morphology.loaded_apical_dendrites is not None:
+            for i, apical_dendrite in enumerate(morphology.loaded_apical_dendrites):
 
-            # Get the apical dendrite result
-            result = self.result.apical_dendrite_result
+                # Get the apical dendrite result
+                result = self.result.apical_dendrites_result[i]
 
-            # Update the corresponding analysis variable
-            self.update_analysis_variable(
-                prefix=morphology.apical_dendrite.label, result=result, context=context)
+                # Update the corresponding analysis variable
+                self.update_analysis_variable(
+                    prefix=apical_dendrite.label, result=result, context=context)
 
         # Basal dendrites
-        if morphology.dendrites is not None:
-
-            # For each basal dendrite
-            for i, basal_dendrite in enumerate(morphology.dendrites):
+        if morphology.loaded_basal_dendrites is not None:
+            for i, basal_dendrite in enumerate(morphology.loaded_basal_dendrites):
 
                 # Get the result of this basal dendrite
                 result = self.result.basal_dendrites_result[i]
@@ -268,15 +267,16 @@ class AnalysisItem:
                 self.update_analysis_variable(
                     prefix=basal_dendrite.label, result=result, context=context)
 
-        # Axon
-        if morphology.axon is not None:
+        # Axons
+        if morphology.loaded_axons is not None:
+            for i, axon in enumerate(morphology.loaded_axons):
 
-            # Get the axon result
-            result = self.result.axon_result
+                # Get the axon result
+                result = self.result.axons_result[i]
 
-            # Update the corresponding analysis variable
-            self.update_analysis_variable(
-                prefix=morphology.axon.label, result=result, context=context)
+                # Update the corresponding analysis variable
+                self.update_analysis_variable(
+                    prefix=axon.label, result=result, context=context)
 
     ################################################################################################
     # @get_analysis_results_string
@@ -298,19 +298,20 @@ class AnalysisItem:
             prefix='Morphology', result=self.result.morphology_result) + '\n'
 
         # Apical dendrite
-        if morphology.apical_dendrite is not None:
+        if morphology.loaded_apical_dendrites is not None:
+            for i, apical_dendrite in enumerate(morphology.loaded_apical_dendrites):
 
-            # Get the apical dendrite result
-            result = self.result.apical_dendrite_result
+                # Get the apical dendrite result
+                result = self.result.apical_dendrites_result[i]
 
-            results_string += self.get_analysis_result_string(
-                prefix=morphology.apical_dendrite.label, result=result) + '\n'
+                results_string += self.get_analysis_result_string(
+                    prefix=apical_dendrite.label, result=result) + '\n'
 
         # Basal dendrites
-        if morphology.dendrites is not None:
+        if morphology.loaded_basal_dendrites is not None:
 
             # For each basal dendrite
-            for i, basal_dendrite in enumerate(morphology.dendrites):
+            for i, basal_dendrite in enumerate(morphology.loaded_basal_dendrites):
 
                 # Get the result of this basal dendrite
                 result = self.result.basal_dendrites_result[i]
@@ -319,13 +320,13 @@ class AnalysisItem:
                     prefix=basal_dendrite.label, result=result) + '\n'
 
         # Axon
-        if morphology.axon is not None:
+        if morphology.loaded_axons is not None:
+            for i, axon in enumerate(morphology.loaded_axons):
 
-            # Get the axon result
-            result = self.result.axon_result
+                result = self.result.axons_result[i]
 
-            results_string += self.get_analysis_result_string(
-                prefix=morphology.axon.label, result=result) + '\n'
+                results_string += self.get_analysis_result_string(
+                    prefix=axon.label, result=result) + '\n'
 
         # Return the final string
         return results_string

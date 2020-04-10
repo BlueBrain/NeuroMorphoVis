@@ -169,7 +169,7 @@ class DendrogramBuilder:
                             nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                                 section=basal_dendrite,
                                 poly_lines_data=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.apical_dendrites_branch_order)
+                                max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
                     # This is a basal dendrite
                     else:
