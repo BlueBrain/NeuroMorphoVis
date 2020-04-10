@@ -139,7 +139,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --camera-view=$CAMERA_VIEW                                                                      \
     --rendering-view=$RENDERING_VIEW                                                                \
     --frame-resolution=$FRAME_RESOLUTION                                                            \
-    --resolution-scale-factor=$FULL_VIEW_SCALE_FACTOR                                               \
+    --resolution-scale-factor=$RESOLUTION_SCALE_FACTOR                                              \
     --close-up-dimensions=$CLOSE_UP_VIEW_DIMENSIONS                                                 \
     --image-file-format=$IMAGE_FILE_FORMAT                                                          \
     --shader=$SHADER                                                                                \

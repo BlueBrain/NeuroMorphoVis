@@ -68,7 +68,7 @@ class RenderingOptions:
         self.resolution_basis = nmv.enums.Rendering.Resolution.FIXED
 
         # Full view image resolution
-        self.full_view_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
+        self.frame_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
 
         # Close up image resolution
         self.close_up_resolution = nmv.consts.Image.CLOSE_UP_RESOLUTION

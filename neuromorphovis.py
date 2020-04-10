@@ -86,12 +86,11 @@ def create_shell_commands_for_local_execution(arguments,
                               (arguments.blender, cli_morphology_analysis, arguments_string))
                               
     # Morphology reconstruction task: call the @cli_morphology_reconstruction interface
-    if arguments.reconstruct_morphology_skeleton or         \
-       arguments.render_neuron_morphology or                \
+    if arguments.render_neuron_morphology or                \
        arguments.render_neuron_morphology_360 or            \
        arguments.render_neuron_morphology_progressive or    \
        arguments.export_morphology_swc or                   \
-       arguments.export_morphology_h5 or                    \
+       arguments.export_morphology_segments or              \
        arguments.export_morphology_blend:
 
         # Add this command to the list
@@ -99,11 +98,9 @@ def create_shell_commands_for_local_execution(arguments,
                               (arguments.blender, cli_morphology_reconstruction, arguments_string))
 
     # Soma-related task: call the @cli_soma_reconstruction interface
-    if arguments.reconstruct_soma_mesh or                   \
-       arguments.render_soma_mesh or                        \
+    if arguments.render_soma_mesh or                        \
        arguments.render_soma_mesh_360 or                    \
        arguments.render_soma_mesh_progressive or            \
-       arguments.render_soma_skeleton or                    \
        arguments.export_soma_mesh_ply or                    \
        arguments.export_soma_mesh_obj or                    \
        arguments.export_soma_mesh_stl or                    \
@@ -114,8 +111,7 @@ def create_shell_commands_for_local_execution(arguments,
                               (arguments.blender, cli_soma_reconstruction, arguments_string))
 
     # Neuron mesh reconstruction related task: call the @cli_mesh_reconstruction interface
-    if arguments.reconstruct_neuron_mesh or                 \
-       arguments.render_neuron_mesh or                      \
+    if arguments.render_neuron_mesh or                      \
        arguments.render_neuron_mesh_360 or                  \
        arguments.export_neuron_mesh_ply or                  \
        arguments.export_neuron_mesh_obj or                  \

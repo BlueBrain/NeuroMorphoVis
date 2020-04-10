@@ -155,13 +155,6 @@ def parse_command_line_arguments():
     ################################################################################################
     skeletonization_args = parser.add_argument_group('Morphology Skeleton', 'Morphology Skeleton')
 
-    # Reconstruct the morphology of entire neuron
-    arg_help = 'Reconstruct morphology skeleton for visualization or analysis.'
-    skeletonization_args.add_argument(
-        Args.RECONSTRUCT_MORPHOLOGY_SKELETON,
-        action='store_true', default=False,
-        help=arg_help)
-
     # Morphology reconstruction algorithm
     arg_options = '[\'connected-sections\', \n' \
                   '\t  \'(connected-sections-repaired)\', \n' \
@@ -243,7 +236,7 @@ def parse_command_line_arguments():
     arg_help = 'The radii of the morphological sections.\n' \
                'Options: %s' % arg_options
     skeletonization_args.add_argument(
-        Args.SECTIONS_RADII,
+        Args.SAMPLES_RADII,
         action='store', default='default',
         help=arg_help)
 
@@ -708,23 +701,6 @@ def parse_command_line_arguments():
     execution_args.add_argument(
         Args.EXECUTION_NODE,
         action='store', default='local',
-        help=arg_help)
-
-    # Execution cores
-    arg_help = 'Number of execution cores on cluster. \n' \
-               'Default 256.'
-    execution_args.add_argument(
-        Args.NUMBER_CORES,
-        action='store', type=int, default=256,
-        help=arg_help)
-
-    # Job granularity
-    arg_options = ['high', '(low)']
-    arg_help = 'The granularity of the jobs running on the cluster. \n' \
-               'Options: %s' % arg_options
-    execution_args.add_argument(
-        Args.JOB_GRANULARITY,
-        action='store', default='low',
         help=arg_help)
 
     # Parse the arguments, and return a list of them

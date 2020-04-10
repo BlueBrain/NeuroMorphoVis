@@ -107,7 +107,7 @@ class NeuroMorphoVisOptions:
 
         # Morphology skeleton style
         self.morphology.skeleton = nmv.enums.Skeleton.Style.get_enum(
-            arguments.morphology_skeleton)
+            arguments.morphology_skeleton_style)
 
         # Morphology reconstruction method
         self.morphology.reconstruction_method = nmv.enums.Skeleton.Method.get_enum(
@@ -167,7 +167,7 @@ class NeuroMorphoVisOptions:
 
         # Sections radii
         self.morphology.arbors_radii = nmv.enums.Skeleton.Radii.get_enum(
-            arguments.sections_radii)
+            arguments.samples_radii)
 
         # Unified radius across all the arbors
         if self.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED:
@@ -215,14 +215,6 @@ class NeuroMorphoVisOptions:
 
         # Soma material
         self.soma.soma_material = nmv.enums.Shader.get_enum(arguments.shader)
-
-        # Reconstruct soma mesh
-        self.soma.reconstruct_soma_mesh = arguments.reconstruct_soma_mesh
-
-
-
-        # Rendering resolution for the soma frames
-        self.soma.rendering_resolution = arguments.full_view_resolution
 
         # Camera view [FRONT, SIDE or TOP]
         self.soma.camera_view = nmv.enums.Camera.View.get_enum(arguments.camera_view)
@@ -377,10 +369,10 @@ class NeuroMorphoVisOptions:
         self.rendering.resolution_scale_factor = arguments.resolution_scale_factor
 
         # Full view image resolution
-        self.rendering.full_view_resolution = arguments.full_view_resolution
+        self.rendering.full_view_resolution = arguments.frame_resolution
 
         # Close up image resolution
-        self.rendering.close_up_resolution = arguments.close_up_resolution
+        self.rendering.close_up_resolution = arguments.frame_resolution
 
         # The file format of the image
         self.rendering.image_format = nmv.enums.Image.Extension.get_enum(arguments.image_file_format)
