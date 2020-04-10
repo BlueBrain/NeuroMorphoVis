@@ -184,16 +184,16 @@ def compute_morphology_dendrogram_per_arbor_individually(morphology,
     """
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
         compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite, delta=delta)
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
         for basal_dendrite in morphology.dendrites:
             compute_arbor_dendrogram_individually(arbor=basal_dendrite, delta=delta)
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
         compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta)
 
 
@@ -215,7 +215,7 @@ def compute_morphology_dendrogram(morphology,
     continuing_index = 0
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
         compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite,
                                               delta=delta)
 
@@ -223,7 +223,7 @@ def compute_morphology_dendrogram(morphology,
         continuing_index = len(get_arbor_leaves(arbor=morphology.apical_dendrite))
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
         for basal_dendrite in morphology.dendrites:
             compute_arbor_dendrogram_individually(
                 arbor=basal_dendrite, delta=delta, continuing_index=continuing_index)
@@ -232,7 +232,7 @@ def compute_morphology_dendrogram(morphology,
             continuing_index += len(get_arbor_leaves(arbor=basal_dendrite))
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
         compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta,
                                               continuing_index=continuing_index)
 
@@ -332,9 +332,9 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
 ####################################################################################################
 def add_soma_to_stems_line(morphology,
                            poly_lines_data=[],
-                           ignore_apical_dendrite=True,
+                           ignore_apical_dendrites=True,
                            ignore_basal_dendrites=True,
-                           ignore_axon=True):
+                           ignore_axons=True):
 
     """Create the dendrogram connection from the soma to the stems.
 
@@ -342,11 +342,11 @@ def add_soma_to_stems_line(morphology,
         A given morphology.
     :param poly_lines_data:
         All the polyline data that reflect the dendrogram.
-    :param ignore_apical_dendrite:
+    :param ignore_apical_dendrites:
         A flag to indicate whether to include the apical dendrite or not.
     :param ignore_basal_dendrites:
         A flag to indicate whether to include the basal dendrites or not.
-    :param ignore_axon:
+    :param ignore_axons:
         A flag to indicate whether to include the axon or not.
     :return:
         The center of the drawn line to connect it to the dendrogram body.
@@ -355,19 +355,19 @@ def add_soma_to_stems_line(morphology,
     x_values = list()
     radii = list()
 
-    if not ignore_apical_dendrite:
-        if morphology.apical_dendrite is not None:
+    if not ignore_apical_dendrites:
+        if morphology.has_apical_dendrites():
             x_values.append(morphology.apical_dendrite.dendrogram_x)
             radii.append(morphology.apical_dendrite.samples[0].radius)
 
     if not ignore_basal_dendrites:
-        if morphology.dendrites is not None:
+       if morphology.has_basal_dendrites():
             for basal_dendrite in morphology.dendrites:
                 x_values.append(basal_dendrite.dendrogram_x)
                 radii.append(basal_dendrite.samples[0].radius)
 
-    if not ignore_axon:
-        if morphology.axon is not None:
+    if not ignore_axons:
+        if morphology.has_axons():
             x_values.append(morphology.axon.dendrogram_x)
             radii.append(morphology.axon.samples[0].radius)
 

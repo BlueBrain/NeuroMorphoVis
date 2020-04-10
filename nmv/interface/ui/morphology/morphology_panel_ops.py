@@ -64,7 +64,7 @@ def set_skeleton_options(layout,
             axon_level_row.enabled = True
 
         # Pass options from UI to system
-        options.morphology.ignore_axon = not scene.NMV_BuildAxon
+        options.morphology.ignore_axons = not scene.NMV_BuildAxon
         options.morphology.axon_branch_order = scene.NMV_AxonBranchingLevel
 
     # Build basal dendrites options
@@ -95,7 +95,7 @@ def set_skeleton_options(layout,
             apical_dendrite_level_row.enabled = True
 
         # Pass options from UI to system
-        options.morphology.ignore_apical_dendrite = not scene.NMV_BuildApicalDendrite
+        options.morphology.ignore_apical_dendrites = not scene.NMV_BuildApicalDendrite
         options.morphology.apical_dendrite_branch_order = scene.NMV_ApicalDendriteBranchingLevel
 
 

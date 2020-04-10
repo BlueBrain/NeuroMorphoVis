@@ -60,7 +60,7 @@ class UnionBuilder:
         self.soma_materials = None
 
         # A list of the materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the materials of the basal dendrites
         self.basal_dendrites_materials = None
@@ -238,19 +238,19 @@ class UnionBuilder:
         """
 
         # Axon
-        if self.morphology.axon is not None:
-            if not self.options.morphology.ignore_axon:
+        if self.morphology.has_axons():
+            if not self.options.morphology.ignore_axons:
                 nmv.logger.log('\t * Axon')
 
                 self.build_arbor(
                     arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Skeleton.AXON_PREFIX, material=self.axon_materials[0],
+                    name=nmv.consts.Skeleton.AXON_PREFIX, material=self.axons_materials[0],
                     connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the apical dendrite, if exists
         if self.morphology.apical_dendrite is not None:
-            if not self.options.morphology.ignore_apical_dendrite:
+            if not self.options.morphology.ignore_apical_dendrites:
                 nmv.logger.log('\t * Apical dendrite')
 
                 self.build_arbor(
@@ -261,11 +261,11 @@ class UnionBuilder:
                     connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the basal dendrites
-        if self.morphology.dendrites is not None:
+        if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
 
                 # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     nmv.logger.log('\t * Dendrite [%d]' % i)
 
                     # Draw the basal dendrites as a set connected sections

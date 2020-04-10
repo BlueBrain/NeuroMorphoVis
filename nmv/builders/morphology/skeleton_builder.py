@@ -67,16 +67,16 @@ class SkeletonBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the articulation spheres
-        self.articulation_materials = None
+        self.articulations_materials = None
 
         # The directory where the progressive frames will be dumped
         self.progressive_frames_directory = None
@@ -111,7 +111,7 @@ class SkeletonBuilder:
             color=self.options.shading.soma_color)
 
         # Axon
-        self.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
+        self.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='axon_skeleton', material_type=self.options.shading.material,
             color=self.options.shading.axon_color)
 
@@ -121,12 +121,12 @@ class SkeletonBuilder:
             color=self.options.shading.basal_dendrites_color)
 
         # Apical dendrite
-        self.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
+        self.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='apical_dendrite_skeleton', material_type=self.options.shading.material,
             color=self.options.shading.apical_dendrites_color)
 
         # Articulations for the articulated reconstruction method
-        self.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
+        self.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='articulation', material_type=self.options.shading.material,
             color=self.options.shading.articulation_color)
 
@@ -521,8 +521,8 @@ class SkeletonBuilder:
         morphology_objects = list()
 
         # Draw the axon
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 nmv.logger.info('Axon')
 
                 axon_segments_objects = []
@@ -530,7 +530,7 @@ class SkeletonBuilder:
                     self.morphology.axon,
                     name=nmv.consts.Skeleton.AXON_PREFIX,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    material_list=self.axon_materials,
+                    material_list=self.axons_materials,
                     segments_objects=axon_segments_objects)
 
                 # Convert the objects to something and add them to the scene
@@ -542,7 +542,7 @@ class SkeletonBuilder:
                     nmv.mesh.shade_smooth_object(sphere_mesh)
 
                     # Assign the material
-                    nmv.shading.set_material_to_object(sphere_mesh, self.axon_materials[i % 2])
+                    nmv.shading.set_material_to_object(sphere_mesh, self.axons_materials[i % 2])
 
                     # Append the sphere mesh to the morphology objects
                     morphology_objects.append(sphere_mesh)
@@ -551,10 +551,10 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
                 basal_dendrites_segments_objects = []
 
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     nmv.logger.info('Basal dendrite [%d]' % i)
                     dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_sections_as_spheres(
@@ -579,7 +579,7 @@ class SkeletonBuilder:
                     morphology_objects.append(sphere_mesh)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Draw the apical dendrite, if exists
             if self.morphology.apical_dendrite is not None:
@@ -590,7 +590,7 @@ class SkeletonBuilder:
                     self.morphology.apical_dendrite,
                     name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    material_list=self.apical_dendrite_materials,
+                    material_list=self.apical_dendrites_materials,
                     segments_objects=apical_dendrite_segments_objects)
 
                 # Convert the objects to something and add them to the scene
@@ -603,7 +603,7 @@ class SkeletonBuilder:
 
                     # Assign the material
                     nmv.shading.set_material_to_object(sphere_mesh,
-                                                       self.apical_dendrite_materials[i % 2])
+                                                       self.apical_dendrites_materials[i % 2])
 
                     # Append the sphere mesh to the morphology objects
                     morphology_objects.append(sphere_mesh)
@@ -628,13 +628,13 @@ class SkeletonBuilder:
         morphology_objects = []
 
         # Draw the axon
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
             axon_segments_objects = []
             self.draw_section_as_disconnected_segments(
                 self.morphology.axon,
                 name=nmv.consts.Skeleton.AXON_PREFIX,
                 max_branching_order=self.options.morphology.axon_branch_order,
-                material_list=self.axon_materials,
+                material_list=self.axons_materials,
                 bevel_object=bevel_object,
                 segments_objects=axon_segments_objects)
 
@@ -645,11 +645,11 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 basal_dendrites_segments_objects = []
 
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_section_as_disconnected_segments(
                         basal_dendrite, name=dendrite_name,
@@ -662,13 +662,13 @@ class SkeletonBuilder:
                 morphology_objects.extend(basal_dendrites_segments_objects)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             apical_dendrite_segments_objects = []
             self.draw_section_as_disconnected_segments(
                 self.morphology.apical_dendrite,
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.apical_dendrite_materials,
+                material_list=self.apical_dendrites_materials,
                 bevel_object=bevel_object,
                 segments_objects=apical_dendrite_segments_objects)
 
@@ -709,12 +709,12 @@ class SkeletonBuilder:
         morphology_objects = []
 
         # Draw the axon
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
             axon_sections_objects = []
             self.draw_root_as_disconnected_sections(
                 self.morphology.axon,
                 name=nmv.consts.Skeleton.AXON_PREFIX,
-                material_list=self.axon_materials,
+                material_list=self.axons_materials,
                 bevel_object=bevel_object,
                 max_branching_order=self.options.morphology.axon_branch_order,
                 sections_objects=axon_sections_objects)
@@ -723,12 +723,12 @@ class SkeletonBuilder:
             morphology_objects.extend(axon_sections_objects)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             apical_dendrite_sections_objects = []
             self.draw_root_as_disconnected_sections(
                 self.morphology.apical_dendrite,
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                material_list=self.apical_dendrite_materials,
+                material_list=self.apical_dendrites_materials,
                 bevel_object=bevel_object,
                 max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 sections_objects=apical_dendrite_sections_objects)
@@ -740,11 +740,11 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 basal_dendrites_sections_objects = []
 
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_root_as_disconnected_sections(
                         basal_dendrite,
@@ -786,13 +786,13 @@ class SkeletonBuilder:
 
         # Draw the articulations
         # Draw the axon joints
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
             axon_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
                 sphere_objects=axon_spheres_objects,
                 max_branching_order=self.options.morphology.axon_branch_order,
-                material_list=self.articulation_materials)
+                material_list=self.articulations_materials)
 
             # Extend the morphology objects list
             morphology_objects.extend(axon_spheres_objects)
@@ -801,28 +801,28 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 basal_dendrites_spheres_objects = []
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     # Draw the basal dendrites as a set connected sections
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
                         sphere_objects=basal_dendrites_spheres_objects,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.articulation_materials)
+                        material_list=self.articulations_materials)
 
                 # Extend the morphology objects list
                 morphology_objects.extend(basal_dendrites_spheres_objects)
 
         # Draw the apical dendrite joints
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
                 sphere_objects=apical_dendrite_spheres_objects,
                 max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.articulation_materials)
+                material_list=self.articulations_materials)
 
             # Extend the morphology objects list
             morphology_objects.extend(apical_dendrite_spheres_objects)
@@ -889,13 +889,13 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 # A list to keep all the drawn objects of the basal dendrites
                 basal_dendrites_sections_objects = []
 
                 # Draw each basal dendrites as a set connected sections
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
@@ -916,7 +916,7 @@ class SkeletonBuilder:
                 morphology_objects.extend(basal_dendrites_sections_objects)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Ensure tha existence of the apical dendrite
             if self.morphology.apical_dendrite is not None:
@@ -926,7 +926,7 @@ class SkeletonBuilder:
                     section=copy.deepcopy(self.morphology.apical_dendrite),
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material_list=self.apical_dendrite_materials,
+                    material_list=self.apical_dendrites_materials,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
                     caps=True,
@@ -941,17 +941,17 @@ class SkeletonBuilder:
                 morphology_objects.extend(apical_dendrite_sections_objects)
 
         # Draw the axon
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
 
             # Ensure tha existence of the axon
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
 
                 # Draw the axon as a set connected sections
                 axon_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.axon),
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Skeleton.AXON_PREFIX, material_list=self.axon_materials,
+                    name=nmv.consts.Skeleton.AXON_PREFIX, material_list=self.axons_materials,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
                     sections_objects=axon_sections_objects,
@@ -1016,10 +1016,10 @@ class SkeletonBuilder:
         morphology_poly_lines_data = []
 
         # Draw the axon as a set connected sections
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
 
                 # A list containing all the poly lines of each arbor
                 arbor_poly_line_data = []
@@ -1038,10 +1038,10 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 # Draw each basal dendrites as a set connected sections
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
 
                     # A list containing all the poly lines of each arbor
                     arbor_poly_line_data = []
@@ -1058,7 +1058,7 @@ class SkeletonBuilder:
                         roots_connection=self.options.morphology.arbors_to_soma_connection)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Ensure tha existence of the axon
             if self.morphology.apical_dendrite is not None:
@@ -1079,7 +1079,7 @@ class SkeletonBuilder:
         # Draw the skeleton
         skeleton = nmv.geometry.draw_poly_lines_as_single_object(
             poly_lines_data=morphology_poly_lines_data, bevel_object=bevel_object,
-            material=self.axon_materials[0])
+            material=self.axons_materials[0])
 
         # Draw a list that contains the skeleton object to match the return type
         return [skeleton]
@@ -1136,13 +1136,13 @@ class SkeletonBuilder:
         morphology_objects = []
 
         # Draw the axon as a set connected sections
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
             axon_sections_objects = []
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.axon),
                 max_branching_order=self.options.morphology.axon_branch_order,
                 name=nmv.consts.Skeleton.AXON_PREFIX,
-                material_list=self.axon_materials,
+                material_list=self.axons_materials,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,
                 caps=True,
@@ -1160,11 +1160,11 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 basal_dendrites_sections_objects = []
 
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     # Draw the basal dendrites as a set connected sections
                     dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
@@ -1186,13 +1186,13 @@ class SkeletonBuilder:
                 morphology_objects.extend(basal_dendrites_sections_objects)
 
         # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             apical_dendrite_sections_objects = []
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.apical_dendrite),
                 max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                material_list=self.apical_dendrite_materials,
+                material_list=self.apical_dendrites_materials,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,
                 caps=True,

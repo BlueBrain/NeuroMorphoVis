@@ -267,7 +267,7 @@ def verify_axon_connection_to_soma(morphology):
     """
 
     # Ensure that presence of the axon in the morphology
-    if morphology.axon is None:
+    if morphology.has_axons():
 
         # Report the issue
         nmv.logger.log('\t\t* WARNING: This morphology does NOT have an axon')
@@ -307,7 +307,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
                   (morphology.axon.get_type_string(), morphology.axon.id))
 
         # Is the basal dendrite intersecting with the apical dendrite, if exists !
-        if morphology.apical_dendrite is not None:
+        if morphology.has_apical_dendrites():
 
             # Verify if the axon intersects with the apical dendrite
             if nmv.skeleton.ops.dendrite_intersects_apical_dendrite(

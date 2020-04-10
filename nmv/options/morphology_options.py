@@ -70,13 +70,13 @@ class MorphologyOptions:
         self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
-        self.ignore_axon = False
+        self.ignore_axons = False
 
         # Enable/Disable basal dendrites reconstruction
         self.ignore_basal_dendrites = False
 
         # Enable/Disable apical dendrite reconstruction (if exists)
-        self.ignore_apical_dendrite = False
+        self.ignore_apical_dendrites = False
 
         # Axon branching order
         self.axon_branch_order = nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER
@@ -160,13 +160,13 @@ class MorphologyOptions:
         self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
-        self.ignore_axon = False
+        self.ignore_axons = False
 
         # Enable/Disable basal dendrites reconstruction
         self.ignore_basal_dendrites = False
 
         # Enable/Disable apical dendrite reconstruction (if exists)
-        self.ignore_apical_dendrite = False
+        self.ignore_apical_dendrites = False
 
         # Axon branching order
         self.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER

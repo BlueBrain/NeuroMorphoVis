@@ -468,7 +468,7 @@ def find_nearest_apical_dendritic_sample_to_axon(morphology,
     """
 
     # Ensure the presence of the apical dendrite
-    if morphology.apical_dendrite is None:
+    if morphology.has_apical_dendrites():
 
         # If there is no apical dendrite, then return None!
         return None
@@ -527,7 +527,7 @@ def find_nearest_dendritic_sample_to_axon(morphology):
     nearest_sample = None
 
     # If the apical dendrites exists, then check it.
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Find the nearest sample between the axon initial segment and the apical dendrite
         nearest_sample = find_nearest_apical_dendritic_sample_to_axon(morphology, nearest_sample)
@@ -581,7 +581,7 @@ def find_nearest_basal_dendritic_sample_to_basal_dendrite(morphology,
     # The initial value is set to None to indicate no samples found so far
     nearest_sample = None
 
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
         for dendrite in morphology.dendrites:
 
             # If the @basal_dendrite is the same as the @dendrite, then skip the check
@@ -615,7 +615,7 @@ def verify_axon_connection_to_soma(morphology):
     nmv.logger.info('Axon connectivity to soma')
 
     # Ensure that presence of the axon in the morphology
-    if morphology.axon is None:
+    if morphology.has_axons():
 
         # Report the issue
         nmv.logger.detail('WARNING: This morphology does NOT have an axon')
@@ -652,7 +652,7 @@ def verify_axon_connection_to_soma(morphology):
         return
 
     # Is the axon intersecting with the apical dendrite, if exists !
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Verify if the axon intersects with the apical dendrite
         if nmv.skeleton.ops.axon_intersects_apical_dendrite(
@@ -745,7 +745,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
     maximum_arbor_distance = morphology.soma.largest_radius
 
     # If the morphology has no basal dendrites
-    if morphology.dendrites is None:
+    if morphology.has_basal_dendrites():
 
         # Return
         return
@@ -838,15 +838,15 @@ def update_arbors_connection_to_soma(morphology):
     """
 
     # If the apical dendrite exists, then set its connectivity to True directly
-    if morphology.apical_dendrite is not None:
-        morphology.apical_dendrite.connected_to_soma = True
+    if morphology.has_apical_dendrites():
+        morphology.apical_dendrites[0].connected_to_soma = True
 
     # Verify the connectivity of the basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
         verify_basal_dendrites_connection_to_soma(morphology=morphology)
 
     # Verify the connectivity of the axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
         verify_axon_connection_to_soma(morphology=morphology)
 
 
@@ -1123,7 +1123,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
     connection_extents = list()
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Only if the apical is connected
         if morphology.apical_dendrite.connected_to_soma:
@@ -1136,7 +1136,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
             connection_extents.append([extent_center, extent_radius])
 
     # Apical dendrite
-    if morphology.axon is not None:
+    if morphology.has_axons():
 
         # Only if the axon is connected
         if morphology.axon.connected_to_soma:
@@ -1149,7 +1149,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
             connection_extents.append([extent_center, extent_radius])
 
     # Basal dendrite s
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
 
         # For each dendrite
         for dendrite in morphology.dendrites:
@@ -1187,7 +1187,7 @@ def get_stable_soma_extent(morphology):
     largest_distance = 0
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Compare the initial sample of the first segment of the apical dendrite
         distance = morphology.apical_dendrite.samples[0].point.length + \
@@ -1198,7 +1198,7 @@ def get_stable_soma_extent(morphology):
             largest_distance = distance
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
         for dendrite in morphology.dendrites:
 
             # Ensure that this basal dendrite is connected to the soma
@@ -1212,7 +1212,7 @@ def get_stable_soma_extent(morphology):
                     largest_distance = distance
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
 
         # Compare the initial sample of the first segment of the axon
         distance = morphology.axon.samples[0].point.length + \

@@ -62,13 +62,13 @@ class MetaBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the spines
         self.spines_materials = None
@@ -270,7 +270,7 @@ class MetaBuilder:
         nmv.logger.header('Building Arbors')
 
         # Draw the apical dendrite, if exists
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.info('Apical Dendrite')
                 self.create_meta_arbor(
@@ -279,16 +279,16 @@ class MetaBuilder:
 
         # Draw the basal dendrites, if exist
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            if self.morphology.has_basal_dendrites():
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
                     self.create_meta_arbor(
                         root=basal_dendrite,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
         # Draw the axon, if exist
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 nmv.logger.info('Axon')
                 self.create_meta_arbor(
                     root=self.morphology.axon,
@@ -363,30 +363,30 @@ class MetaBuilder:
         nmv.logger.header('Building Soma from Meta Objects')
 
         # Emanate towards the apical dendrite, if exists
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             nmv.logger.info('Apical dendrite')
 
             # The apical dendrite must be valid
             if self.morphology.apical_dendrite is not None:
                 self.emanate_soma_towards_arbor(arbor=self.morphology.apical_dendrite)
 
-        if self.morphology.dendrites is not None:
+        if self.morphology.has_basal_dendrites():
 
             # Emanate towards basal dendrites
             if not self.options.morphology.ignore_basal_dendrites:
 
                 # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     # Basal dendrites
                     nmv.logger.info('Dendrite [%d]' % i)
                     self.emanate_soma_towards_arbor(arbor=basal_dendrite)
 
         # Emanate towards the axon, if exists
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             nmv.logger.info('Axon')
 
             # The axon must be valid
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
                 self.emanate_soma_towards_arbor(arbor=self.morphology.axon)
 
     ################################################################################################

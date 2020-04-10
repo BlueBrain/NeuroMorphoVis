@@ -65,7 +65,7 @@ class PiecewiseBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
@@ -125,7 +125,7 @@ class PiecewiseBuilder:
         """
 
         # Draw the apical dendrite if not ignored
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Draw the apical dendrite, if exists
             if self.morphology.apical_dendrite is not None:
@@ -157,10 +157,10 @@ class PiecewiseBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
 
                     basal_dendrite_objects = []
@@ -182,7 +182,7 @@ class PiecewiseBuilder:
                     if len(basal_dendrite_objects) > 0:
 
                         # Add a reference to the mesh object
-                        self.morphology.dendrites[i].mesh = basal_dendrite_objects[0]
+                        self.morphology.basal_dendrites[i].mesh = basal_dendrite_objects[0]
 
                         # Add the sections (tubes) of the basal dendrite to the list
                         self.basal_dendrites_meshes.extend(basal_dendrite_objects)
@@ -192,10 +192,10 @@ class PiecewiseBuilder:
                             nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
         # Draw the axon as a set connected sections
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
                 nmv.logger.info('Axon')
 
                 # Draw the axon as a set connected sections
@@ -203,7 +203,7 @@ class PiecewiseBuilder:
                     section=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Skeleton.AXON_PREFIX,
-                    material_list=self.axon_materials,
+                    material_list=self.axons_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
                     caps=caps,

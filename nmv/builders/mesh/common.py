@@ -62,7 +62,7 @@ def create_skeleton_materials(builder):
         color=builder.options.shading.mesh_soma_color)
 
     # Axon
-    builder.axon_materials = nmv.shading.create_materials(
+    builder.axons_materials = nmv.shading.create_materials(
         material_type=builder.options.shading.mesh_material, name='axon_skeleton',
         color=builder.options.shading.mesh_axon_color)
 
@@ -329,7 +329,7 @@ def smooth_arbors_to_soma_connections(builder):
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
 
         # Connecting apical dendrite
-        if not builder.options.morphology.ignore_apical_dendrite:
+        if not builder.options.morphology.ignore_apical_dendrites:
 
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:
@@ -347,7 +347,7 @@ def smooth_arbors_to_soma_connections(builder):
                     select_arbor_to_soma_vertices(soma_mesh=builder.soma_mesh, arbor=basal_dendrite)
 
         # Connecting axon
-        if not builder.options.morphology.ignore_axon:
+        if not builder.options.morphology.ignore_axons:
 
             # Create the apical dendrite mesh
             if builder.morphology.axon is not None:
@@ -394,7 +394,7 @@ def connect_arbors_to_soma(builder):
         nmv.logger.header('Connecting arbors to soma')
 
         # Connecting axon
-        if not builder.options.morphology.ignore_axon:
+        if not builder.options.morphology.ignore_axons:
 
             # Create the apical dendrite mesh
             if builder.morphology.axon is not None:
@@ -402,7 +402,7 @@ def connect_arbors_to_soma(builder):
                 builder.soma_mesh = connection_function(builder.soma_mesh, builder.morphology.axon)
 
         # Connecting apical dendrite
-        if not builder.options.morphology.ignore_apical_dendrite:
+        if not builder.options.morphology.ignore_apical_dendrites:
 
             # There is an apical dendrite
             if builder.morphology.apical_dendrite is not None:

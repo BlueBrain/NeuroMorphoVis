@@ -66,16 +66,16 @@ class DisconnectedSectionsBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the articulation spheres
-        self.articulation_materials = None
+        self.articulations_materials = None
 
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
@@ -108,13 +108,13 @@ class DisconnectedSectionsBuilder:
         self.skeleton_materials.extend(self.soma_materials)
 
         # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrite_materials)
+        self.skeleton_materials.extend(self.apical_dendrites_materials)
 
         # Index: 4 - 5
         self.skeleton_materials.extend(self.basal_dendrites_materials)
 
         # Index: 6 - 7
-        self.skeleton_materials.extend(self.axon_materials)
+        self.skeleton_materials.extend(self.axons_materials)
 
         # Index 8 for the gray color
         self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
@@ -146,6 +146,8 @@ class DisconnectedSectionsBuilder:
             The prefix that is prepended to the name of the poly-line.
         :param material_start_index:
             An index that indicates which material to be used for which arbor.
+        :param highlight:
+            Highlight the given arbor.
         """
 
         # If the section is None, simply return
@@ -300,7 +302,7 @@ class DisconnectedSectionsBuilder:
         nmv.mesh.shade_smooth_object(articulations_spheres)
 
         # Assign the material
-        nmv.shading.set_material_to_object(articulations_spheres, self.articulation_materials[0])
+        nmv.shading.set_material_to_object(articulations_spheres, self.articulations_materials[0])
 
         # Append the sphere mesh to the morphology objects
         self.morphology_objects.append(articulations_spheres)
@@ -313,50 +315,31 @@ class DisconnectedSectionsBuilder:
         """
 
         # Draw the axon joints
-        if not self.options.morphology.ignore_axon:
-            self.draw_section_terminals_as_spheres(
-                root=self.morphology.axon,
-                max_branching_order=self.options.morphology.axon_branch_order,
-                material_list=self.articulation_materials)
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    self.draw_section_terminals_as_spheres(
+                        root=arbor,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        material_list=self.articulations_materials)
 
         # Draw the basal dendrites joints
         if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    self.draw_section_terminals_as_spheres(
+                        root=arbor,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        material_list=self.articulations_materials)
 
-            # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
-
-                # Draw the basal dendrites as a set connected sections
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axon:
-                            self.draw_section_terminals_as_spheres(
-                                root=basal_dendrite,
-                                max_branching_order=self.options.morphology.axon_branch_order,
-                                material_list=self.articulation_materials)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrite:
-                            self.draw_section_terminals_as_spheres(
-                                root=basal_dendrite,
-                                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                                material_list=self.articulation_materials)
-
-                    # This is a basal
-                    else:
-                        self.draw_section_terminals_as_spheres(
-                            root=basal_dendrite,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                            material_list=self.articulation_materials)
-
-        # Draw the apical dendrite joints
-        if not self.options.morphology.ignore_apical_dendrite:
-            self.draw_section_terminals_as_spheres(
-                root=self.morphology.apical_dendrite,
-                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.articulation_materials)
+        # Draw the apical dendrites joints
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for arbor in self.morphology.apical_dendrites:
+                    self.draw_section_terminals_as_spheres(
+                        root=self.arbor,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        material_list=self.articulations_materials)
 
         # Link and shade the articulation spheres
         self.link_and_shade_articulation_spheres()
@@ -373,7 +356,7 @@ class DisconnectedSectionsBuilder:
 
         nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
 
-        nmv.logger.info('Updating Radii')
+        nmv.logger.info('Updating radii')
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Create a static bevel object that you can use to scale the samples along the arbors
@@ -397,61 +380,39 @@ class DisconnectedSectionsBuilder:
 
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
-        if not self.options.morphology.ignore_apical_dendrite:
-            if self.morphology.apical_dendrite is not None:
-                nmv.logger.detail('Apical dendrite')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    nmv.logger.detail('Apical dendrite [%d]' % i)
+                    self.construct_tree_poly_lines(
+                        root=arbor, poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
         # Axon
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
-                nmv.logger.detail('Axon')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.axon,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Skeleton.AXON_PREFIX,
-                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail('Axon')
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
+                        material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
-
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axon:
-                            self.construct_tree_poly_lines(
-                                root=basal_dendrite,
-                                poly_lines_list=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.axon_branch_order,
-                                prefix=nmv.consts.Skeleton.AXON_PREFIX,
-                                material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrite:
-                            self.construct_tree_poly_lines(
-                                root=basal_dendrite,
-                                poly_lines_list=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                                prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                                material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
-
-                    # This is a basal dendrite
-                    else:
-                        self.construct_tree_poly_lines(
-                            root=basal_dendrite,
-                            poly_lines_list=skeleton_poly_lines,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                            prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
-                            material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+            if self.morphology.has_basal_dendrites():
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail('Basal dendrite [%d]')
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -510,7 +471,7 @@ class DisconnectedSectionsBuilder:
 
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.apical_dendrite is not None:
                 nmv.logger.detail('Apical dendrite')
                 self.construct_tree_poly_lines(
@@ -522,8 +483,8 @@ class DisconnectedSectionsBuilder:
                     highlight=True if highlighted_arbor_key == 'color_apical' else False)
 
         # Axon
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 nmv.logger.detail('Axon')
                 self.construct_tree_poly_lines(
                     root=self.morphology.axon,
@@ -535,8 +496,8 @@ class DisconnectedSectionsBuilder:
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            if self.morphology.has_basal_dendrites():
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
                     self.construct_tree_poly_lines(
                         root=basal_dendrite,
@@ -581,7 +542,7 @@ class DisconnectedSectionsBuilder:
             morphology=self.morphology)
 
         images = list()
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.apical_dendrite is not None:
                 self.draw_highlighted_arbor(highlighted_arbor_key='color_apical')
 
@@ -597,8 +558,8 @@ class DisconnectedSectionsBuilder:
                 images.append('%s/%s_%s' % (self.options.io.analysis_directory,
                                             self.options.morphology.label, 'apical'))
 
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 self.draw_highlighted_arbor(highlighted_arbor_key='color_axon')
 
                 # Render the image
@@ -614,8 +575,8 @@ class DisconnectedSectionsBuilder:
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            if self.morphology.has_basal_dendrites():
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     self.draw_highlighted_arbor(highlighted_arbor_key='color_basal_%d' % i)
 
                     # render

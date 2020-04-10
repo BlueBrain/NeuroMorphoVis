@@ -67,16 +67,16 @@ class ProgressiveBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the articulation spheres
-        self.articulation_materials = None
+        self.articulations_materials = None
 
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
@@ -103,13 +103,13 @@ class ProgressiveBuilder:
         self.skeleton_materials.extend(self.soma_materials)
 
         # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrite_materials)
+        self.skeleton_materials.extend(self.apical_dendrites_materials)
 
         # Index: 4 - 5
         self.skeleton_materials.extend(self.basal_dendrites_materials)
 
         # Index: 6 - 7
-        self.skeleton_materials.extend(self.axon_materials)
+        self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
     # @construct_arbors_poly_lines_list_at_branching_order
@@ -176,7 +176,7 @@ class ProgressiveBuilder:
         poly_lines_list = list()
 
         # Apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.apical_dendrite is not None:
                 if branching_order < self.options.morphology.apical_dendrite_branch_order:
                     self.construct_arbors_poly_lines_list_at_branching_order(
@@ -187,8 +187,8 @@ class ProgressiveBuilder:
                         material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
         # Axon
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 if branching_order < self.options.morphology.axon_branch_order:
                     self.construct_arbors_poly_lines_list_at_branching_order(
                         root=self.morphology.axon,
@@ -199,9 +199,9 @@ class ProgressiveBuilder:
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
                 if branching_order < self.options.morphology.basal_dendrites_branch_order:
-                    for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                    for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                         self.construct_arbors_poly_lines_list_at_branching_order(
                             root=basal_dendrite,
                             branching_order=branching_order,
@@ -329,7 +329,7 @@ class ProgressiveBuilder:
         nmv.mesh.shade_smooth_object(articulations_spheres)
 
         # Assign the material
-        nmv.shading.set_material_to_object(articulations_spheres, self.articulation_materials[0])
+        nmv.shading.set_material_to_object(articulations_spheres, self.articulations_materials[0])
 
         # Append the sphere mesh to the morphology objects
         self.morphology_objects.append(articulations_spheres)
@@ -342,33 +342,33 @@ class ProgressiveBuilder:
         """
 
         # Draw the axon joints
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
                 max_branching_order=self.options.morphology.axon_branch_order,
-                material_list=self.articulation_materials)
+                material_list=self.articulations_materials)
 
         # Draw the basal dendrites joints
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 basal_dendrites_spheres_objects = []
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
                     # Draw the basal dendrites as a set connected sections
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.articulation_materials)
+                        material_list=self.articulations_materials)
 
         # Draw the apical dendrite joints
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
                 max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                material_list=self.articulation_materials)
+                material_list=self.articulations_materials)
 
         # Link and shade the articulation spheres
         self.link_and_shade_articulation_spheres()

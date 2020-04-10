@@ -142,7 +142,7 @@ class NeuroMorphoVisOptions:
             nmv.enums.Soma.Representation.get_enum(arguments.soma_representation)
 
         # Ignore axon
-        self.morphology.ignore_axon = arguments.ignore_axon
+        self.morphology.ignore_axons = arguments.ignore_axons
 
         # Ignore apical dendrite, if exists
         self.morphology.ignore_apical = arguments.ignore_apical_dendrites

@@ -325,41 +325,26 @@ class SomaMetaBuilder:
         # Header
         nmv.logger.info('Building Soma from Meta Objects')
 
-        # Emanate towards the apical dendrite, if exists
-        if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.detail('Apical dendrite')
+        # Emanate towards the apical dendrites, if exist
+        if self.morphology.has_apical_dendrites():
+            if not self.options.morphology.ignore_apical_dendrites:
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    nmv.logger.detail('Apical Dendrite [%d]' % (i + 1))
+                    self.emanate_soma_towards_arbor(arbor=arbor)
 
-            # The apical dendrite must be valid
-            if self.morphology.apical_dendrite is not None:
-                self.emanate_soma_towards_arbor(arbor=self.morphology.apical_dendrite)
-
-        if self.morphology.dendrites is not None:
-
-            # Emanate towards basal dendrites
+        # Emanate towards basal dendrites, if exist
+        if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    nmv.logger.detail('Basal Dendrite [%d]' % (i + 1))
+                    self.emanate_soma_towards_arbor(arbor=arbor)
 
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    nmv.logger.detail('Dendrite [%d]' % i)
-
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axon:
-                            self.emanate_soma_towards_arbor(arbor=basal_dendrite)
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrite:
-                            self.emanate_soma_towards_arbor(arbor=basal_dendrite)
-                    else:
-                        self.emanate_soma_towards_arbor(arbor=basal_dendrite)
-
-        # Emanate towards the axon, if exists
-        if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.detail('Axon')
-
-            # The axon must be valid
-            if self.morphology.axon is not None:
-                self.emanate_soma_towards_arbor(arbor=self.morphology.axon)
+        # Emanate towards axons, if exist
+        if self.morphology.has_axons():
+            if not self.options.morphology.ignore_axons:
+                for i, arbor in enumerate(self.morphology.axons):
+                    nmv.logger.detail('Axon [%d]' % (i + 1))
+                    self.emanate_soma_towards_arbor(arbor=arbor)
 
     ################################################################################################
     # @reconstruct_soma_mesh

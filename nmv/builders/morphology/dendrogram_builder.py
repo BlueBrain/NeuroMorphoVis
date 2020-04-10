@@ -64,16 +64,16 @@ class DendrogramBuilder:
         self.soma_materials = None
 
         # A list of the colors/materials of the axon
-        self.axon_materials = None
+        self.axons_materials = None
 
         # A list of the colors/materials of the basal dendrites
         self.basal_dendrites_materials = None
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrite_materials = None
+        self.apical_dendrites_materials = None
 
         # A list of the colors/materials of the articulation spheres
-        self.articulation_materials = None
+        self.articulations_materials = None
 
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
@@ -97,13 +97,13 @@ class DendrogramBuilder:
         self.skeleton_materials.extend(self.soma_materials)
 
         # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrite_materials)
+        self.skeleton_materials.extend(self.apical_dendrites_materials)
 
         # Index: 4 - 5
         self.skeleton_materials.extend(self.basal_dendrites_materials)
 
         # Index: 6 - 7
-        self.skeleton_materials.extend(self.axon_materials)
+        self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -137,27 +137,27 @@ class DendrogramBuilder:
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
 
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.apical_dendrite is not None:
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                     section=self.morphology.apical_dendrite,
                     poly_lines_data=skeleton_poly_lines,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                     section=self.morphology.axon,
                     poly_lines_data=skeleton_poly_lines,
                     max_branching_order=self.options.morphology.axon_branch_order)
 
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for basal_dendrite in self.morphology.dendrites:
+            if self.morphology.has_basal_dendrites():
+                for basal_dendrite in self.morphology.basal_dendrites:
 
                     # If the basal dendrites list contains any axons
                     if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axon:
+                        if not self.options.morphology.ignore_axons:
                             nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                                 section=basal_dendrite,
                                 poly_lines_data=skeleton_poly_lines,
@@ -165,7 +165,7 @@ class DendrogramBuilder:
 
                     # If the basal dendrites list contains any apicals
                     elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrite:
+                        if not self.options.morphology.ignore_apical_dendrites:
                             nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                                 section=basal_dendrite,
                                 poly_lines_data=skeleton_poly_lines,
@@ -181,9 +181,9 @@ class DendrogramBuilder:
         # The soma to stems line
         center = nmv.skeleton.add_soma_to_stems_line(
             morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
-            ignore_apical_dendrite=self.options.morphology.ignore_apical_dendrite,
+            ignore_apical_dendrites=self.options.morphology.ignore_apical_dendrites,
             ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
-            ignore_axon=self.options.morphology.ignore_axon)
+            ignore_axons=self.options.morphology.ignore_axons)
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
@@ -267,7 +267,7 @@ class DendrogramBuilder:
         pyplot.rcParams['axes.edgecolor'] = '0.1'
         pyplot.axis('off')
 
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # A list of all the skeleton poly-lines
             skeleton_poly_lines = list()
@@ -294,8 +294,8 @@ class DendrogramBuilder:
                     ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
                                      color=self.morphology.apical_dendrite_color)
 
-        if not self.options.morphology.ignore_axon:
-            if self.morphology.axon is not None:
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
                 # A list of all the skeleton poly-lines
                 skeleton_poly_lines = list()
 
@@ -321,8 +321,8 @@ class DendrogramBuilder:
                                   color=self.morphology.axon_color)
 
         if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for i, basal_dendrite in enumerate(self.morphology.dendrites):
+            if self.morphology.has_basal_dendrites():
+                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
 
                     # A list of all the skeleton poly-lines
                     skeleton_poly_lines = list()
@@ -353,9 +353,9 @@ class DendrogramBuilder:
         skeleton_poly_lines = list()
         center = nmv.skeleton.add_soma_to_stems_line(
             morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
-            ignore_apical_dendrite=self.options.morphology.ignore_apical_dendrite,
+            ignore_apical_dendrites=self.options.morphology.ignore_apical_dendrites,
             ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
-            ignore_axon=self.options.morphology.ignore_axon)
+            ignore_axons=self.options.morphology.ignore_axons)
 
         for poly_line in skeleton_poly_lines:
 

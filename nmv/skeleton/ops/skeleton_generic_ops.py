@@ -148,7 +148,7 @@ def apply_operation_to_morphology(*args):
     morphology = args[0]
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Construct arbor arguments list
         arbor_args = [morphology.apical_dendrite]
@@ -159,7 +159,7 @@ def apply_operation_to_morphology(*args):
         apply_operation_to_arbor(*arbor_args)
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
 
         # Dendrite by dendrite
         for dendrite in morphology.dendrites:
@@ -173,7 +173,7 @@ def apply_operation_to_morphology(*args):
             apply_operation_to_arbor(*arbor_args)
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
 
         # Construct arbor arguments list
         arbor_args = [morphology.axon]
@@ -210,7 +210,7 @@ def apply_operation_to_morphology_partially(*args):
     apical_dendrite_branch_level = args[3]
 
     # Apical dendrite
-    if morphology.apical_dendrite is not None:
+    if morphology.has_apical_dendrites():
 
         # Construct arbor arguments list
         arbor_args = list()
@@ -231,7 +231,7 @@ def apply_operation_to_morphology_partially(*args):
         apply_operation_to_arbor_conditionally(*arbor_args)
 
     # Basal dendrites
-    if morphology.dendrites is not None:
+    if morphology.has_basal_dendrites():
 
         # Dendrite by dendrite
         for dendrite in morphology.dendrites:
@@ -255,7 +255,7 @@ def apply_operation_to_morphology_partially(*args):
             apply_operation_to_arbor_conditionally(*arbor_args)
 
     # Axon
-    if morphology.axon is not None:
+    if morphology.has_axons():
 
         # Construct arbor arguments list
         arbor_args = list()

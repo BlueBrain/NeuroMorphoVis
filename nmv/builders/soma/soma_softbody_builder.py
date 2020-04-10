@@ -569,7 +569,7 @@ class SomaSoftBodyBuilder:
         """
 
         # Apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Build towards the apical dendrite, if the apical dendrite is available
             if self.morphology.apical_dendrite is not None:
@@ -584,13 +584,13 @@ class SomaSoftBodyBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 # The branching order must be greater than zero
                 if self.options.morphology.basal_dendrites_branch_order > 0:
 
                     # Build towards the dendrites, if possible
-                    for i, dendrite_root in enumerate(self.morphology.dendrites):
+                    for i, dendrite_root in enumerate(self.morphology.basal_dendrites):
 
                         # The dendrite must be connected to the soma
                         if dendrite_root.connected_to_soma:
@@ -598,10 +598,10 @@ class SomaSoftBodyBuilder:
                             self.subdivide_at_extrusion_point(soma_bmesh_sphere, dendrite_root)
 
         # Axon
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
 
             # Ensure that the axon is present
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
 
                 # The branching order must be greater than zero
                 if self.options.morphology.axon_branch_order > 0:
@@ -645,7 +645,7 @@ class SomaSoftBodyBuilder:
         self.subdivide_sphere_at_extrusion_points(soma_bmesh_sphere)
 
         # Apical dendrite
-        if not self.options.morphology.ignore_apical_dendrite:
+        if not self.options.morphology.ignore_apical_dendrites:
 
             # Build towards the apical dendrite, if the apical dendrite is available
             if self.morphology.apical_dendrite is not None:
@@ -667,13 +667,13 @@ class SomaSoftBodyBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
 
             # Ensure tha existence of basal dendrites
-            if self.morphology.dendrites is not None:
+            if self.morphology.has_basal_dendrites():
 
                 # The branching order must be greater than zero
                 if self.options.morphology.basal_dendrites_branch_order > 0:
 
                     # Build towards the dendrites, if possible
-                    for i, dendrite_root in enumerate(self.morphology.dendrites):
+                    for i, dendrite_root in enumerate(self.morphology.basal_dendrites):
 
                         # The dendrite must be connected to the soma
                         if dendrite_root.connected_to_soma:
@@ -696,10 +696,10 @@ class SomaSoftBodyBuilder:
                             nmv.logger.info('Dendrite [%d] is NOT connected to soma' % i)
 
         # Axon
-        if not self.options.morphology.ignore_axon:
+        if not self.options.morphology.ignore_axons:
 
             # Ensure that the axon is present
-            if self.morphology.axon is not None:
+            if self.morphology.has_axons():
 
                 # The branching order must be greater than zero
                 if self.options.morphology.axon_branch_order > 0:
@@ -750,7 +750,7 @@ class SomaSoftBodyBuilder:
                     continue
 
                 # Check that the profile points are not intersecting apical dendrites
-                if not self.options.morphology.ignore_apical_dendrite:
+                if not self.options.morphology.ignore_apical_dendrites:
 
                     # Build towards the apical dendrite, if the apical dendrite is available
                     if self.morphology.apical_dendrite is not None:
@@ -768,10 +768,10 @@ class SomaSoftBodyBuilder:
                             continue
 
                 # Check that the profile points are not intersecting axons
-                if not self.options.morphology.ignore_axon:
+                if not self.options.morphology.ignore_axons:
 
                     # Ensure the presence of the axon in the morphology
-                    if self.morphology.axon is not None:
+                    if self.morphology.has_axons():
 
                         # Check that the profile point does NOT intersect the axon
                         if nmv.skeleton.ops.point_branch_intersect(
@@ -788,11 +788,11 @@ class SomaSoftBodyBuilder:
                 if not self.options.morphology.ignore_basal_dendrites:
 
                     # Ensure tha existence of basal dendrites
-                    if self.morphology.dendrites is not None:
+                    if self.morphology.has_basal_dendrites():
 
                         # Do it dendrite by dendrite
                         intersect = False
-                        for dendrite_root in self.morphology.dendrites:
+                        for dendrite_root in self.morphology.basal_dendrites:
 
                             # Check that the profile point does NOT intersect the basal dendrite
                             if nmv.skeleton.ops.point_branch_intersect(

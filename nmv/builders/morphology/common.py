@@ -54,7 +54,7 @@ def create_skeleton_materials_and_illumination(builder):
         color=builder.options.shading.soma_color)
 
     # Axon
-    builder.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
+    builder.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
         name='axon_skeleton', material_type=builder.options.shading.morphology_material,
         color=builder.options.shading.morphology_axon_color)
 
@@ -64,14 +64,14 @@ def create_skeleton_materials_and_illumination(builder):
         color=builder.options.shading.morphology_basal_dendrites_color)
 
     # Apical dendrite
-    builder.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
+    builder.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
         name='apical_dendrite_skeleton', material_type=builder.options.shading.morphology_material,
         color=builder.options.shading.morphology_apical_dendrites_color)
 
     # Articulations, ONLY, for the articulated reconstruction method
     if builder.options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-        builder.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
+        builder.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='articulation', material_type=builder.options.shading.morphology_material,
             color=builder.options.shading.morphology_articulation_color)
 
