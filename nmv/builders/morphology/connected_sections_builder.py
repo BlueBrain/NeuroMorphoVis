@@ -698,6 +698,7 @@ class ConnectedSectionsBuilder:
         # Create each arbor as a separate component
         self.create_each_arbor_as_separate_component(bevel_object=bevel_object)
 
+        # TODO: Add an option to handle this.
         # Create all the arbors as a single component
         # self.create_all_arbors_as_single_component(bevel_object=bevel_object)
 

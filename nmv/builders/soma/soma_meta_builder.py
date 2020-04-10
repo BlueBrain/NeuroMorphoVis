@@ -201,7 +201,7 @@ class SomaMetaBuilder:
         """Add some random noise of the soma surface to make it a little bit realistic.
 
         :param delta:
-            The noise delta.
+            The noise delta, by default 0.25.
         """
 
         nmv.logger.info('Noise')

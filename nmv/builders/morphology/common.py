@@ -172,11 +172,10 @@ def draw_soma(builder):
     """
 
     # Draw the soma as a sphere object
-    nmv.logger.info('Constructing Soma')
     if builder.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
 
         # Draw the soma sphere
-        nmv.logger.detail('Symbolic Sphere')
+        nmv.logger.detail('Symbolic sphere')
         soma_sphere = draw_soma_sphere(builder=builder)
 
         # Smooth shade the sphere to look nice
@@ -189,7 +188,6 @@ def draw_soma(builder):
     elif builder.options.morphology.soma_representation == nmv.enums.Soma.Representation.SOFT_BODY:
 
         # Create a soma builder object
-        nmv.logger.detail('SoftBody Object')
         soma_builder_object = nmv.builders.SomaSoftBodyBuilder(builder.morphology, builder.options)
 
         # Reconstruct the three-dimensional profile of the soma mesh without applying the
@@ -207,7 +205,6 @@ def draw_soma(builder):
             nmv.enums.Soma.Representation.META_BALLS:
 
         # Create the MetaBuilder
-        nmv.logger.detail('MetaBall Object')
         soma_builder_object = nmv.builders.SomaMetaBuilder(builder.morphology, builder.options)
 
         # Reconstruct the soma, don't apply the default shader and use the one from the
@@ -222,7 +219,7 @@ def draw_soma(builder):
 
     # Otherwise, ignore the soma drawing
     else:
-        nmv.logger.detail('Ignoring Soma')
+        nmv.logger.detail('Ignoring soma')
 
 
 ####################################################################################################
