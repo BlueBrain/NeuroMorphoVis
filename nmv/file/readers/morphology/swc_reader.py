@@ -659,7 +659,7 @@ class SWCReader:
             nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
 
         for i in range(len(basal_dendrites_arbors)):
-            basal_dendrites_arbors[i].label = 'BasalDendrite%d' % (i + 1)
+            basal_dendrites_arbors[i].label = 'Basal Dendrite %d' % (i + 1)
 
         # Compute the number of basals loaded from the morphology
         number_loaded_basal_dendrites = len(basal_dendrites_arbors)
@@ -672,8 +672,12 @@ class SWCReader:
         # Compute the number of axons loaded from the morphology
         number_loaded_axons = len(axons_arbors)
 
-        for i in range(len(axons_arbors)):
-            axons_arbors[i].label = 'Axon%d' % (i + 1)
+        # Clean naming
+        if len(axons_arbors) > 1:
+            for i in range(len(axons_arbors)):
+                axons_arbors[i].label = 'Axon %d' % (i + 1)
+        else:
+            axons_arbors[0].label = 'Axon %d'
 
         axon_arbor = None
         if axons_arbors is not None:
@@ -702,8 +706,12 @@ class SWCReader:
         apical_dendrites_arbors = self.build_arbors_from_samples(
             nmv.consts.Skeleton.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
 
-        for i in range(len(apical_dendrites_arbors)):
-            apical_dendrites_arbors[i].label = 'ApicalDendrite%d' % (i + 1)
+        # Clean naming
+        if len(apical_dendrites_arbors) > 1:
+            for i in range(len(apical_dendrites_arbors)):
+                apical_dendrites_arbors[i].label = 'Apical Dendrite %d' % (i + 1)
+        else:
+            apical_dendrites_arbors[0].label = 'Apical Dendrite'
 
         # Compute the number of apicals loaded from the morphology
         number_loaded_apical_dendrites = len(apical_dendrites_arbors)
