@@ -92,8 +92,7 @@ class SomaMetaBuilder:
             Meta-object name.
         """
 
-        # Header
-        nmv.logger.header('Creating the Meta Object')
+        nmv.logger.info('Initialization')
 
         # Create a new meta skeleton that will be used to reconstruct the skeleton frame
         self.meta_skeleton = bpy.data.metaballs.new(name)
@@ -106,7 +105,7 @@ class SomaMetaBuilder:
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
-        nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
+        nmv.logger.detail('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
     ################################################################################################
     # @finalize_meta_object
@@ -117,14 +116,14 @@ class SomaMetaBuilder:
         """
 
         # Header
-        nmv.logger.header('Meshing the Meta Object')
+        nmv.logger.info('Finalization')
 
         # Deselect all objects
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
         self.meta_skeleton.resolution = self.options.soma.meta_ball_resolution
-        nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
+        nmv.logger.detail('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
         self.meta_mesh = bpy.context.scene.objects[name]
@@ -198,29 +197,27 @@ class SomaMetaBuilder:
     # @add_noise_to_soma_surface
     ################################################################################################
     def add_noise_to_soma_surface(self,
-                                  soma_mesh,
-                                  delta=0.05):
-        """Add some random noise of the soma surface.
+                                  delta=0.5):
+        """Add some random noise of the soma surface to make it a little bit realistic.
 
-        :param soma_mesh:
-            A given soma mesh.
         :param delta:
             The noise delta.
         """
 
-        # Get the connection extents
-        connection_extents = nmv.skeleton.ops.get_soma_to_root_sections_connection_extent(
-            self.morphology)
+        nmv.logger.info('Noise')
 
-        for i in range(len(soma_mesh.data.vertices)):
-            vertex = soma_mesh.data.vertices[i]
+        # Decimation
+        nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.5)
 
-            if nmv.skeleton.ops.is_point_located_within_extents(vertex.co, connection_extents):
-                continue
-
+        # Adding perturbations
+        for i in range(len(self.meta_mesh.data.vertices)):
+            vertex = self.meta_mesh.data.vertices[i]
             vertex.select = True
             vertex.co = vertex.co + (vertex.normal * random.uniform(-delta / 2.0, delta / 2.0))
             vertex.select = False
+
+        # Smoothing
+        nmv.mesh.smooth_object(mesh_object=self.meta_mesh, level=2)
 
     ################################################################################################
     # @create_meta_segment
@@ -326,11 +323,11 @@ class SomaMetaBuilder:
         """
 
         # Header
-        nmv.logger.header('Building Soma from Meta Objects')
+        nmv.logger.info('Building Soma from Meta Objects')
 
         # Emanate towards the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.info('Apical dendrite')
+            nmv.logger.detail('Apical dendrite')
 
             # The apical dendrite must be valid
             if self.morphology.apical_dendrite is not None:
@@ -343,13 +340,22 @@ class SomaMetaBuilder:
 
                 # Do it dendrite by dendrite
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    # Basal dendrites
-                    nmv.logger.info('Dendrite [%d]' % i)
-                    self.emanate_soma_towards_arbor(arbor=basal_dendrite)
+                    nmv.logger.detail('Dendrite [%d]' % i)
+
+                    # If the basal dendrites list contains any axons
+                    if 'Axon' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_axon:
+                            self.emanate_soma_towards_arbor(arbor=basal_dendrite)
+                    # If the basal dendrites list contains any apicals
+                    elif 'Apical' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_apical_dendrite:
+                            self.emanate_soma_towards_arbor(arbor=basal_dendrite)
+                    else:
+                        self.emanate_soma_towards_arbor(arbor=basal_dendrite)
 
         # Emanate towards the axon, if exists
         if not self.options.morphology.ignore_apical_dendrite:
-            nmv.logger.info('Axon')
+            nmv.logger.detail('Axon')
 
             # The axon must be valid
             if self.morphology.axon is not None:
@@ -370,18 +376,24 @@ class SomaMetaBuilder:
             A reference to the reconstructed mesh of the soma.
         """
 
+        # Header
+        nmv.logger.header('Soma reconstruction with MetaBalls')
+
         # Initialize the MetaObject before emanating towards the branches
-        self.initialize_meta_object(name='soma')
+        self.initialize_meta_object(name=nmv.consts.Skeleton.SOMA_PREFIX)
 
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()
 
         # Update the meta object and convert it to a mesh
-        self.finalize_meta_object(name='soma')
+        self.finalize_meta_object(name=nmv.consts.Skeleton.SOMA_PREFIX)
 
         # Assign the material to the reconstructed mesh
         if apply_shader:
             self.assign_material_to_mesh()
+
+        # A dd a little bit of noise
+        self.add_noise_to_soma_surface()
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh
@@ -397,13 +409,13 @@ class SomaMetaBuilder:
         """
 
         # Initialize the MetaObject before emanating towards the branches
-        self.initialize_meta_object(name='profile')
+        self.initialize_meta_object(name='SomaProfile')
 
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()
 
         # Update the meta object and convert it to a mesh
-        self.finalize_meta_object(name='profile')
+        self.finalize_meta_object(name='SomaProfile')
 
         # List of vertices
         vertices = copy.deepcopy(nmv.mesh.get_vertices_in_object(self.meta_mesh))

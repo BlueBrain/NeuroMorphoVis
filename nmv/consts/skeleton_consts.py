@@ -35,6 +35,9 @@ class Skeleton:
     # Default branching order for the axon is different, as it is ignored in many cases
     AXON_DEFAULT_BRANCHING_ORDER = 2
 
+    # Soma prefix
+    SOMA_PREFIX = 'Soma'
+
     # Axon prefix
     AXON_PREFIX = 'Axon'
 
