@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .arbors_enums import *
 from .analysis_enums import *
 from .camera_enums import *
 from .color_enums import *

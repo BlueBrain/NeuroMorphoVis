@@ -55,7 +55,7 @@ class MorphologyOptions:
         self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Arbor style
-        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
+        self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
         self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
@@ -64,10 +64,10 @@ class MorphologyOptions:
         self.branching = nmv.enums.Skeleton.Branching.RADII
 
         # Morphology edge styles
-        self.edges = nmv.enums.Arbors.Edges.SHARP
+        self.edges = nmv.enums.Skeleton.Edges.SHARP
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
         self.ignore_axon = False
@@ -79,13 +79,13 @@ class MorphologyOptions:
         self.ignore_apical_dendrite = False
 
         # Axon branching order
-        self.axon_branch_order = nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER
+        self.axon_branch_order = nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER
 
         # Basal dendrites branching order
-        self.basal_dendrites_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.basal_dendrites_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # Apical dendrites branch order
-        self.apical_dendrite_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.apical_dendrite_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # Resampling method
         self.resampling_method = nmv.enums.Skeleton.Resampling.NONE
@@ -94,7 +94,7 @@ class MorphologyOptions:
         self.resampling_step = 1.0
 
         # The radii of the samples defined per section
-        self.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
+        self.arbors_radii = nmv.enums.Skeleton.Radii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0
@@ -145,7 +145,7 @@ class MorphologyOptions:
         self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Arbor style
-        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
+        self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Soma reconstruction technique (IGNORE, SPHERE, or REALISTIC by default)
         self.soma_representation = nmv.enums.Soma.Representation.SPHERE
@@ -154,10 +154,10 @@ class MorphologyOptions:
         self.branching = nmv.enums.Skeleton.Branching.RADII
 
         # Morphology edge styles
-        self.edges = nmv.enums.Arbors.Edges.SHARP
+        self.edges = nmv.enums.Skeleton.Edges.SHARP
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
 
         # Enable/Disable axon reconstruction
         self.ignore_axon = False
@@ -169,17 +169,17 @@ class MorphologyOptions:
         self.ignore_apical_dendrite = False
 
         # Axon branching order
-        self.axon_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # Basal dendrites branching order
-        self.basal_dendrites_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.basal_dendrites_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # Apical dendrites branch order
-        self.apical_dendrite_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
+        self.apical_dendrite_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # The radii of the sections (as specified in the morphology file, scaled with a given
         # scale factor, or constant at given fixed value)
-        self.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
+        self.arbors_radii = nmv.enums.Skeleton.Radii.ORIGINAL
 
         # A scale factor for the radii of the sections
         self.sections_radii_scale = 1.0

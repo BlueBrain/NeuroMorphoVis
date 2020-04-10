@@ -241,7 +241,7 @@ class SamplesBuilder:
                 apical_dendrite_spheres = list()
                 self.draw_sections_as_spheres(
                     self.morphology.apical_dendrite,
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     material_list=self.apical_dendrite_materials,
                     sphere_objects=apical_dendrite_spheres)
@@ -249,7 +249,7 @@ class SamplesBuilder:
                 # Link the spheres and shade
                 self.link_and_shade_spheres(sphere_list=apical_dendrite_spheres,
                                             materials_list=self.apical_dendrite_materials,
-                                            prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX)
+                                            prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX)
 
         # Axon
         if not self.options.morphology.ignore_axon:
@@ -258,7 +258,7 @@ class SamplesBuilder:
                 axon_spheres = list()
                 self.draw_sections_as_spheres(
                     self.morphology.axon,
-                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    name=nmv.consts.Skeleton.AXON_PREFIX,
                     max_branching_level=self.options.morphology.axon_branch_order,
                     material_list=self.axon_materials,
                     sphere_objects=axon_spheres)
@@ -266,14 +266,14 @@ class SamplesBuilder:
                 # Link the spheres and shade
                 self.link_and_shade_spheres(sphere_list=axon_spheres,
                                             materials_list=self.axon_materials,
-                                            prefix=nmv.consts.Arbors.AXON_PREFIX)
+                                            prefix=nmv.consts.Skeleton.AXON_PREFIX)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
-                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     basal_dendrites_spheres = list()
                     self.draw_sections_as_spheres(
                         basal_dendrite, name=dendrite_name,

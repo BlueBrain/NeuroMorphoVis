@@ -701,55 +701,55 @@ def create_material(name,
     """
 
     # Lambert Ward
-    if material_type == nmv.enums.Shading.LAMBERT_WARD:
+    if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_material(name='%s_color' % name, color=color)
 
     # Super electron light
-    elif material_type == nmv.enums.Shading.SUPER_ELECTRON_LIGHT:
+    elif material_type == nmv.enums.Shader.SUPER_ELECTRON_LIGHT:
         return create_super_electron_light_material(name='%s_color' % name, color=color)
 
     # Super electron dark
-    elif material_type == nmv.enums.Shading.SUPER_ELECTRON_DARK:
+    elif material_type == nmv.enums.Shader.SUPER_ELECTRON_DARK:
         return create_super_electron_dark_material(name='%s_color' % name, color=color)
 
     # Electron light
-    elif material_type == nmv.enums.Shading.ELECTRON_LIGHT:
+    elif material_type == nmv.enums.Shader.ELECTRON_LIGHT:
         return create_electron_light_material(name='%s_color' % name, color=color)
 
     # Electron dark
-    elif material_type == nmv.enums.Shading.ELECTRON_DARK:
+    elif material_type == nmv.enums.Shader.ELECTRON_DARK:
         return create_electron_dark_material(name='%s_color' % name, color=color)
 
     # Shadow
-    elif material_type == nmv.enums.Shading.SHADOW:
+    elif material_type == nmv.enums.Shader.SHADOW:
         return create_shadow_material(name='%s_color' % name, color=color)
 
     # Glossy
-    elif material_type == nmv.enums.Shading.GLOSSY:
+    elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_material(name='%s_color' % name, color=color)
 
     # Glossy bumpy
-    elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
+    elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
         return create_glossy_bumpy_material(name='%s_color' % name, color=color)
 
     # Voronoi
-    elif material_type == nmv.enums.Shading.VORONOI:
+    elif material_type == nmv.enums.Shader.VORONOI:
         return create_voronoi_cells_material(name='%s_color' % name, color=color)
 
     # Wire frame
-    elif material_type == nmv.enums.Shading.WIRE_FRAME:
+    elif material_type == nmv.enums.Shader.WIRE_FRAME:
         return create_wire_frame_material(name='%s_color' % name, color=color)
 
     # Flat
-    elif material_type == nmv.enums.Shading.FLAT:
+    elif material_type == nmv.enums.Shader.FLAT:
         return create_flat_material(name='%s_color' % name, color=color)
 
     # Toon
-    elif material_type == nmv.enums.Shading.TOON:
+    elif material_type == nmv.enums.Shader.TOON:
         return create_toon_material(name='%s_color' % name, color=color)
 
     # Transparent
-    elif material_type == nmv.enums.Shading.TRANSPARENT:
+    elif material_type == nmv.enums.Shader.TRANSPARENT:
         return create_transparent_material(name='%s_color' % name, color=color)
 
     # Default

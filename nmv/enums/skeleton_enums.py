@@ -127,8 +127,8 @@ class Skeleton:
         # Create a zigzagged and tapered morphology skeleton
         TAPERED_ZIGZAG = 'SKELETON_STYLE_TAPERED_ZIGZAG'
 
-        # Simplified
-        SIMPLIFIED = 'SKELETON_STYLE_SIMPLIFIED'
+        # Straight, only connects the first and the last two samples of a section
+        STRAIGHT = 'SKELETON_STYLE_STRAIGHT'
 
         ############################################################################################
         # @__init__
@@ -166,11 +166,38 @@ class Skeleton:
 
             # Tapered zigzag
             elif argument == 'simplified':
-                return Skeleton.Style.SIMPLIFIED
+                return Skeleton.Style.STRAIGHT
 
             # By default use the original skeleton
             else:
                 return Skeleton.Style.ORIGINAL
+
+        ############################################################################################
+        # A list of all the available styles in NeuroMorphoVis for morphology reconstruction
+        ############################################################################################
+        MORPHOLOGY_STYLE_ITEMS = [
+            (ORIGINAL,
+             'Original',
+             'Draw the arbors as described in the morphology file'),
+            (TAPERED,
+             'Tapered',
+             'Draw the sections as tapered cylinders (artistic)'),
+            (ZIGZAG,
+             'Zigzag',
+             'Draw the sections as wiggled zigzag lines (artistic)'),
+            (PLANAR,
+             'Planar',
+             'The morphology samples will be projected along the XY plane (artistic)'),
+            (TAPERED_ZIGZAG,
+             'Tapered-Zigzag',
+             'Draw the sections as tapered and wiggled zigzag tubes (artistic)'),
+            (PLANAR_ZIGZAG,
+             'Planar Zigzag',
+             'The samples will be projected along the XY plane wiggled zigzag tubes (artistic)'),
+            (STRAIGHT,
+             'Straight',
+             'Represent each section by a single segment that connects its terminals (artistic)')
+        ]
 
     ################################################################################################
     # @Branching
@@ -261,9 +288,9 @@ class Skeleton:
                 return Skeleton.Resampling.NONE
 
     ################################################################################################
-    # @ArborsRadii
+    # @Radii
     ################################################################################################
-    class ArborsRadii:
+    class Radii:
         """Radii of the samples along the arbors
         """
 
@@ -279,7 +306,7 @@ class Skeleton:
         # Scale the radii of the samples in the entire morphology using a user-defined scale factor
         SCALED = 'ARBORS_RADII_SCALED'
 
-        # Filter the radii at a given threshold radius
+        # Filter the radii of the samples below a specific threshold
         FILTERED = 'ARBORS_RADII_FILTERED'
 
         ############################################################################################
@@ -296,20 +323,87 @@ class Skeleton:
 
             # As specified in the morphology file
             if argument == 'default':
-                return Skeleton.ArborsRadii.ORIGINAL
+                return Skeleton.Radii.ORIGINAL
 
             # Scaled
             elif argument == 'scaled':
-                return Skeleton.ArborsRadii.SCALED
+                return Skeleton.Radii.SCALED
+
+            # Unified
+            elif argument == 'unified':
+                return Skeleton.Radii.UNIFIED
 
             # Fixed
-            elif argument == 'fixed':
-                return Skeleton.ArborsRadii.UNIFIED
+            elif argument == 'unified-per-type':
+                return Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE
 
-            # Filtered
+            # Unified
             elif argument == 'filtered':
-                return Skeleton.ArborsRadii.FILTERED
+                return Skeleton.Radii.FILTERED
 
             # By default, as specified in the morphology file
             else:
-                return Skeleton.ArborsRadii.ORIGINAL
+                return Skeleton.Radii.ORIGINAL
+
+    ################################################################################################
+    # @Edges
+    ################################################################################################
+    class Edges:
+        """Arbors edges
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # Sharp edges
+        SHARP = 'SKELETON_EDGES_SHARP'
+
+        # Curvy edges
+        CURVY = 'SKELETON_EDGES_CURVY'
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            # Sharp edges
+            if argument == 'sharp':
+                return Skeleton.Edges.SHARP
+
+            # Curvy
+            elif argument == 'curvy':
+                return Skeleton.Edges.CURVY
+
+            # By default, use the sharp edges
+            else:
+                return Skeleton.Edges.SHARP
+
+    ################################################################################################
+    # @Roots
+    ################################################################################################
+    class Roots:
+        """The status of the roots of the arbors
+        """
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        # The arbors are disconnected from the soma
+        DISCONNECTED_FROM_SOMA = 'ARBORS_ROOTS_DISCONNECTED_FROM_SOMA'
+
+        # The arbors are connected to the soma if they are primary with no intersection
+        CONNECTED_TO_SOMA = 'ARBORS_ROOTS_CONNECTED_TO_SOMA'
+
+        # The arbors are connected to the origin (0, 0, 0) if they are primary
+        CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_CONNECTED_TO_ORIGIN'
+
+        # All the arbors are connected to the origin even if some of them are not physically
+        # connected to the soma. This mode is used for piecewise meshing
+        ALL_CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_ALL_CONNECTED_TO_ORIGIN'

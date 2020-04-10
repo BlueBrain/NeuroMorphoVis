@@ -109,7 +109,7 @@ class DisconnectedSegmentsBuilder:
                                   poly_lines_list=[],
                                   branching_level=0,
                                   max_branching_level=nmv.consts.Math.INFINITY,
-                                  prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                                  prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                                   material_start_index=0):
         """Creates a list of poly-lines corresponding to all the sections in the given tree.
 
@@ -202,7 +202,7 @@ class DisconnectedSegmentsBuilder:
                     root=self.morphology.apical_dendrite,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
         # Axon
@@ -213,7 +213,7 @@ class DisconnectedSegmentsBuilder:
                     root=self.morphology.axon,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
@@ -225,7 +225,7 @@ class DisconnectedSegmentsBuilder:
                         root=basal_dendrite,
                         poly_lines_list=skeleton_poly_lines,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Arbors.AXON_PREFIX,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
                         material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         # Draw the poly-lines as a single object

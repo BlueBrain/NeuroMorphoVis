@@ -358,7 +358,7 @@ class SomaSoftBodyBuilder:
                 mesh_object=soma_sphere_mesh, material_reference=soma_material)
 
             # Create an illumination specific for the given material
-            nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+            nmv.shading.create_material_specific_illumination(self.options.shading.material)
 
         # Return a reference to the reconstructed soma mesh
         return soma_sphere_mesh
@@ -497,7 +497,7 @@ class SomaSoftBodyBuilder:
 
         # Start with a little bit of offset for bridging the branch with the soma directly
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            point_1 = point_1 - point_1.normalized() * nmv.consts.Arbors.SOMA_EXTRUSION_DELTA
+            point_1 = point_1 - point_1.normalized() * nmv.consts.Skeleton.SOMA_EXTRUSION_DELTA
 
         # Add the vertices to the existing vertex group
         nmv.mesh.ops.add_vertices_to_existing_vertex_group(vertices_indices, self.vertex_group)

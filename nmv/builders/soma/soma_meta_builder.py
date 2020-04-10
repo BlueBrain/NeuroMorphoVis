@@ -177,7 +177,7 @@ class SomaMetaBuilder:
             material_type=self.options.soma.soma_material)
 
         # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+        nmv.shading.create_material_specific_illumination(self.options.shading.material)
 
         # Deselect all objects
         nmv.scene.ops.deselect_all()

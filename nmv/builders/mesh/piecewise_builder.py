@@ -135,7 +135,7 @@ class PiecewiseBuilder:
                 nmv.skeleton.ops.draw_connected_sections(
                     section=self.morphology.apical_dendrite,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrites_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
@@ -166,7 +166,7 @@ class PiecewiseBuilder:
                     basal_dendrite_objects = []
 
                     # Draw the basal dendrites as a set connected sections
-                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=basal_dendrite,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
@@ -202,7 +202,7 @@ class PiecewiseBuilder:
                 nmv.skeleton.ops.draw_connected_sections(
                     section=self.morphology.axon,
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    name=nmv.consts.Skeleton.AXON_PREFIX,
                     material_list=self.axon_materials,
                     bevel_object=bevel_object,
                     repair_morphology=True,
@@ -234,9 +234,9 @@ class PiecewiseBuilder:
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED and \
             self.options.mesh.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA
         else:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
@@ -268,9 +268,9 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA
         else:
-            roots_connection = nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
         self.build_arbors(bevel_object=bevel_object, caps=False, roots_connection=roots_connection)

@@ -114,7 +114,7 @@ def apply_style(neurons,
         color = get_tag_rgb_color(tag, styles)
 
         # Shader
-        shader = nmv.enums.Shading.get_enum(get_tag_shader(tag, styles))
+        shader = nmv.enums.Shader.get_enum(get_tag_shader(tag, styles))
 
         # Alpha
         alpha = get_tag_alpha(tag, styles)
@@ -156,7 +156,7 @@ def draw_spheres(neurons,
         color = get_tag_rgb_color(tag, styles)
 
         # Shader
-        shader = nmv.enums.Shading.get_enum(get_tag_shader(tag, styles))
+        shader = nmv.enums.Shader.get_enum(get_tag_shader(tag, styles))
 
         # Alpha
         alpha = get_tag_alpha(tag, styles)
@@ -296,7 +296,7 @@ def apply_rainbow_style(neurons,
         color = get_rgb_color_from_value(location[1], y_min, y_max)
 
         # Shader
-        shader = nmv.enums.Shading.get_enum(get_tag_shader(tag, styles))
+        shader = nmv.enums.Shader.get_enum(get_tag_shader(tag, styles))
 
         # Alpha
         alpha = get_tag_alpha(tag, styles)

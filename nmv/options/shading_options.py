@@ -56,7 +56,7 @@ class ShadingOptions:
         self.nucleus_color = nmv.enums.Color.NUCLEI
 
         # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD
+        self.material = nmv.enums.Shader.LAMBERT_WARD
 
     ################################################################################################
     # @set_default
@@ -81,5 +81,5 @@ class ShadingOptions:
         self.articulation_color = nmv.enums.Color.ARTICULATION
 
         # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD
+        self.material = nmv.enums.Shader.LAMBERT_WARD
 

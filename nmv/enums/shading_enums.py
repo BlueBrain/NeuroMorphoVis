@@ -17,10 +17,10 @@
 
 
 ####################################################################################################
-# @Shading
+# @Shader
 ####################################################################################################
-class Shading:
-    """Shading enumerators
+class Shader:
+    """Shader enumerators
     """
 
     ################################################################################################
@@ -37,6 +37,9 @@ class Shading:
 
     # Toon shader
     TOON = 'TOON_SHADER'
+
+    # Transparent
+    TRANSPARENT = 'TRANSPARENT_SHADER'
 
     # Glossy shader
     GLOSSY = 'GLOSSY_SHADER'
@@ -59,32 +62,11 @@ class Shading:
     # Sub-surface scattering shader
     SUB_SURFACE_SCATTERING = 'SUB_SURFACE_SCATTERING_SHADER'
 
-    # Shadow
-    SHADOW = 'SHADOW_SHADER'
-
     # Plastic
     PLASTIC = 'PLASTIC_SHADER'
 
-    # Cracks
-    CRACKS = 'CRACKS_SHADER'
-
-    # Grid
-    GRID = 'GRID_SHADER'
-
-    # Granular
-    GRANULAR = 'GRANULAR_SHADER'
-
-    # Wave
-    WAVE = 'WAVE_SHADER'
-
-    # Transparent
-    TRANSPARENT = 'TRANSPARENT_SHADER'
-
     # Wire frame
     WIRE_FRAME = 'WIREFRAME_SHADER'
-
-    # Voronoi
-    VORONOI = 'VORONOI_SHADER'
 
     ################################################################################################
     # get_enum
@@ -99,42 +81,29 @@ class Shading:
             The shader enumerator.
         """
         if shader_type == 'flat':
-            return Shading.FLAT
+            return Shader.FLAT
         elif shader_type == 'electron-light':
-            return Shading.ELECTRON_LIGHT
+            return Shader.ELECTRON_LIGHT
         elif shader_type == 'electron-dark':
-            return Shading.ELECTRON_DARK
+            return Shader.ELECTRON_DARK
         elif shader_type == 'super-electron-light':
-            return Shading.SUPER_ELECTRON_LIGHT
+            return Shader.SUPER_ELECTRON_LIGHT
         elif shader_type == 'super-electron-dark':
-            return Shading.SUPER_ELECTRON_DARK
-        elif shader_type == 'shadow':
-            return Shading.SHADOW
+            return Shader.SUPER_ELECTRON_DARK
         elif shader_type == 'transparent':
-            return Shading.TRANSPARENT
+            return Shader.TRANSPARENT
         elif shader_type == 'glossy':
-            return Shading.GLOSSY
+            return Shader.GLOSSY
         elif shader_type == 'glossy-bumpy':
-            return Shading.GLOSSY_BUMPY
+            return Shader.GLOSSY_BUMPY
         elif shader_type == 'lambert':
-            return Shading.LAMBERT_WARD
+            return Shader.LAMBERT_WARD
         elif shader_type == 'toon':
-            return Shading.LAMBERT_WARD
-        elif shader_type == 'toon':
-            return Shading.CRACKS
-        elif shader_type == 'grid':
-            return Shading.GRID
-        elif shader_type == 'granular':
-            return Shading.GRANULAR
-        elif shader_type == 'wave':
-            return Shading.WAVE
-        elif shader_type == 'voronoi':
-            return Shading.VORONOI
+            return Shader.LAMBERT_WARD
         elif shader_type == 'wireframe':
-            return Shading.WIRE_FRAME
-
+            return Shader.WIRE_FRAME
         else:
-            return Shading.LAMBERT_WARD
+            return Shader.LAMBERT_WARD
 
     ################################################################################################
     # A list of all the available materials in NeuroMorphoVis

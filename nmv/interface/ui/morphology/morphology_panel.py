@@ -350,7 +350,7 @@ class RenderMorphology360(bpy.types.Operator):
 
             # Compute the bounding box for a close up view
             if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
+                    nmv.enums.Rendering.View.CLOSE_UP:
 
                 # Compute the bounding box for a close up view
                 rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
@@ -358,7 +358,7 @@ class RenderMorphology360(bpy.types.Operator):
 
             # Compute the bounding box for a mid-shot view
             elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
+                    nmv.enums.Rendering.View.MID_SHOT:
 
                 # Compute the bounding box for the available meshes only
                 rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
@@ -545,12 +545,12 @@ class RenderMorphologyProgressive(bpy.types.Operator):
         view = context.scene.NMV_MorphologyRenderingView
 
         # Compute the bounding box for a close up view
-        if view == nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
+        if view == nmv.enums.Rendering.View.CLOSE_UP:
             self.morphology_bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
                     extent=context.scene.NMV_MorphologyCloseUpDimensions)
 
         # Compute the bounding box for a mid-shot view
-        elif view == nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW:
+        elif view == nmv.enums.Rendering.View.MID_SHOT:
             self.morphology_bounding_box = copy.deepcopy(
                 nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes())
 

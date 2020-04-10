@@ -117,7 +117,7 @@ def get_section_poly_line(section,
 # @get_connected_poly_line
 ####################################################################################################
 def get_connected_poly_line(section,
-                            connection_to_soma=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
+                            connection_to_soma=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA,
                             transform=None):
     """Get the poly-line list or a series of points that reflect a connected stream passing by
     the given section. This function is different from the @get_section_poly_line one as it ignore
@@ -148,7 +148,7 @@ def get_connected_poly_line(section,
 
     # If this section is a ROOT and is requested by the user to be connected to the origin,
     # add few extra samples from the origin to the first sample of the given root section
-    if section.is_root() and connection_to_soma == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
+    if section.is_root() and connection_to_soma == nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN:
 
         # Get the direction from the origin to the first sample of the section
         direction = section.samples[0].point.normalized()
@@ -187,7 +187,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
                                                poly_lines_data=[],
                                                poly_line_data=[],
                                                branching_level=0,
-                                               connection_to_soma=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
+                                               connection_to_soma=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA,
                                                max_branching_level=nmv.consts.Math.INFINITY):
     # Ignore the drawing if the section is None
     if root is None:
@@ -264,7 +264,7 @@ def get_soma_connection_poly_line_(section):
         point = section.samples[0].point
 
         # Get the starting point of the bridging section
-        point = point - nmv.consts.Arbors.ARBOR_EXTRUSION_DELTA * direction
+        point = point - nmv.consts.Skeleton.ARBOR_EXTRUSION_DELTA * direction
 
         # Append the sample to the list
         poly_line.append([(point[0], point[1], point[2], 1), radius])
@@ -312,10 +312,10 @@ def get_origin_connection_poly_line(section,
         distance = (section.samples[0].point - direction).length
 
         # Add few samples between the origin and the first sample of the root section
-        for i in range(1, nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN):
+        for i in range(1, nmv.consts.Skeleton.N_SAMPLES_ROOT_TO_ORIGIN):
 
             # Compute the sample distance
-            sample_distance = distance * (i / nmv.consts.Arbors.N_SAMPLES_ROOT_TO_ORIGIN)
+            sample_distance = distance * (i / nmv.consts.Skeleton.N_SAMPLES_ROOT_TO_ORIGIN)
 
             # Sample point
             point = initial_sample + (direction * sample_distance)
@@ -455,16 +455,16 @@ def get_connected_sections_poly_line(section,
     if section.is_root():
 
         # If the root section is connected to the soma (soma bridging)
-        if roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_SOMA:
+        if roots_connection == nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA:
             poly_line.extend(get_soma_connection_poly_line_(section=section))
 
         # All root sections are connected to the origin of the soma, even if not true
-        elif roots_connection == nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN:
+        elif roots_connection == nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN:
             poly_line.extend(get_origin_connection_poly_line(
                 section=section, ignore_physical_connectivity=True))
 
         # If the root section is connected to the origin of the soma, but NOT the soma itself
-        elif roots_connection == nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN:
+        elif roots_connection == nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN:
             poly_line.extend(get_origin_connection_poly_line(
                 section=section, ignore_physical_connectivity=False))
 

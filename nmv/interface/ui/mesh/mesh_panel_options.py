@@ -219,9 +219,9 @@ bpy.types.Scene.NMV_RandomSpinesPercentage = bpy.props.FloatProperty(
     default=50, min=1.0, max=100.0)
 
 bpy.types.Scene.NMV_MeshMaterial = bpy.props.EnumProperty(
-    items=nmv.enums.Shading.MATERIAL_ITEMS,
+    items=nmv.enums.Shader.MATERIAL_ITEMS,
     name="Shading",
-    default=nmv.enums.Shading.LAMBERT_WARD)
+    default=nmv.enums.Shader.LAMBERT_WARD)
 
 # Use single color for the all the objects in the mesh
 bpy.types.Scene.NMV_MeshHomogeneousColor = bpy.props.BoolProperty(

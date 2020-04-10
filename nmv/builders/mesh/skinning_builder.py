@@ -414,7 +414,7 @@ class SkinningBuilder:
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=self.morphology.apical_dendrite,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    arbor_name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    arbor_name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     arbor_material=self.apical_dendrites_materials[0],
                     connected_to_soma=connected_to_soma)
 
@@ -435,7 +435,7 @@ class SkinningBuilder:
                     arbor_mesh = self.create_arbor_mesh(
                         arbor=basal_dendrite,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        arbor_name='%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i),
+                        arbor_name='%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i),
                         arbor_material=self.basal_dendrites_materials[0],
                         connected_to_soma=connected_to_soma)
 
@@ -453,7 +453,7 @@ class SkinningBuilder:
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=self.morphology.axon,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    arbor_name=nmv.consts.Arbors.AXON_PREFIX,
+                    arbor_name=nmv.consts.Skeleton.AXON_PREFIX,
                     arbor_material=self.axon_materials[0],
                     connected_to_soma=connected_to_soma)
 

@@ -16,7 +16,7 @@
 ####################################################################################################
 
 from .analysis_consts import *
-from .arbors_consts import *
+from .skeleton_consts import *
 from .paths_consts import *
 from .color_consts import *
 from .image_consts import *

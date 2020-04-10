@@ -161,9 +161,9 @@ class H5Reader:
         for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
 
             # Profile point
-            x = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_X_COORDINATES_IDX]
-            y = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Y_COORDINATES_IDX]
-            z = points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Z_COORDINATES_IDX]
+            x = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
+            y = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
+            z = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
             profile_point = Vector((x, y, z))
 
             # Add the profile point to the list
@@ -234,7 +234,7 @@ class H5Reader:
         # Read the point list from the points directory
         try:
             nmv.utilities.disable_std_output()
-            self.points_list = data[nmv.consts.Arbors.H5_POINTS_DIRECTORY].value
+            self.points_list = data[nmv.consts.Skeleton.H5_POINTS_DIRECTORY].value
             nmv.utilities.enable_std_output()
 
         except ValueError:
@@ -246,7 +246,7 @@ class H5Reader:
         # Get the structure list from the structures directory
         try:
             nmv.utilities.disable_std_output()
-            self.structure_list = data[nmv.consts.Arbors.H5_STRUCTURE_DIRECTORY].value
+            self.structure_list = data[nmv.consts.Skeleton.H5_STRUCTURE_DIRECTORY].value
             nmv.utilities.enable_std_output()
 
         except ImportError:
@@ -299,14 +299,14 @@ class H5Reader:
             for i_sample in range(section_first_point_index, section_last_point_index):
 
                 # Position
-                x = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_X_COORDINATES_IDX]
-                y = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Y_COORDINATES_IDX]
-                z = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_Z_COORDINATES_IDX]
+                x = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
+                y = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
+                z = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
                 point = Vector((x, y, z))
 
                 # Radius
                 # NOTE: What is reported in our .H5 files is the diameter unlike the .SWC files
-                radius = self.points_list[i_sample][nmv.consts.Arbors.H5_SAMPLE_RADIUS_IDX] / 2.0
+                radius = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_RADIUS_IDX] / 2.0
 
                 # Build a NeuroMorphoVis sample
                 nmv_sample = nmv.skeleton.Sample(
@@ -386,19 +386,19 @@ class H5Reader:
                 samples=section_samples, type=section_type)
 
             # Axon
-            if section_type == nmv.consts.Arbors.H5_AXON_SECTION_TYPE:
+            if section_type == nmv.consts.Skeleton.H5_AXON_SECTION_TYPE:
 
                 # Add the section to the axons list
                 axons_sections.append(nmv_section)
 
             # Basal dendrite
-            elif section_type == nmv.consts.Arbors.H5_BASAL_DENDRITE_SECTION_TYPE:
+            elif section_type == nmv.consts.Skeleton.H5_BASAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the basal dendrites list
                 basal_dendrites_sections.append(nmv_section)
 
             # Apical dendrite
-            elif section_type == nmv.consts.Arbors.H5_APICAL_DENDRITE_SECTION_TYPE:
+            elif section_type == nmv.consts.Skeleton.H5_APICAL_DENDRITE_SECTION_TYPE:
 
                 # Add the section to the apical dendrites list
                 apical_dendrites_sections.append(nmv_section)

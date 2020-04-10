@@ -270,7 +270,7 @@ def draw_poly_line(poly_line_data,
 ####################################################################################################
 def draw_poly_lines_in_single_object(poly_lines,
                                      object_name='poly_lines',
-                                     edges=nmv.enums.Arbors.Edges.SHARP,
+                                     edges=nmv.enums.Skeleton.Edges.SHARP,
                                      bevel_object=None,
                                      materials=None,
                                      poly_line_caps=True,
@@ -328,7 +328,7 @@ def draw_poly_lines_in_single_object(poly_lines,
         for material in materials:
             poly_lines_object.materials.append(material)
 
-    if edges == nmv.enums.Arbors.Edges.SHARP:
+    if edges == nmv.enums.Skeleton.Edges.SHARP:
         poly_line_type = 'POLY'
     else:
         poly_line_type = 'NURBS'

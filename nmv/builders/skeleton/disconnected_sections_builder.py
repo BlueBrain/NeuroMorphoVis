@@ -129,7 +129,7 @@ class DisconnectedSectionsBuilder:
                                   poly_lines_list=[],
                                   branching_level=0,
                                   max_branching_level=nmv.consts.Math.INFINITY,
-                                  prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                                  prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                                   material_start_index=0,
                                   highlight=True):
         """Creates a list of poly-lines corresponding to all the sections in the given tree.
@@ -224,9 +224,9 @@ class DisconnectedSectionsBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
@@ -387,7 +387,7 @@ class DisconnectedSectionsBuilder:
                     root=self.morphology.apical_dendrite,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
         # Axon
@@ -398,7 +398,7 @@ class DisconnectedSectionsBuilder:
                     root=self.morphology.axon,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
@@ -410,7 +410,7 @@ class DisconnectedSectionsBuilder:
                         root=basal_dendrite,
                         poly_lines_list=skeleton_poly_lines,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Arbors.AXON_PREFIX,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
                         material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         # Draw the poly-lines as a single object
@@ -478,7 +478,7 @@ class DisconnectedSectionsBuilder:
                     root=self.morphology.apical_dendrite,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX,
                     highlight=True if highlighted_arbor_key == 'color_apical' else False)
 
@@ -490,7 +490,7 @@ class DisconnectedSectionsBuilder:
                     root=self.morphology.axon,
                     poly_lines_list=skeleton_poly_lines,
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX,
                     highlight=True if highlighted_arbor_key == 'color_axon' else False)
 
@@ -503,7 +503,7 @@ class DisconnectedSectionsBuilder:
                         root=basal_dendrite,
                         poly_lines_list=skeleton_poly_lines,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Arbors.AXON_PREFIX,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
                         material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX,
                         highlight=True if highlighted_arbor_key == 'color_basal_%d' % i else False)
 
@@ -534,8 +534,8 @@ class DisconnectedSectionsBuilder:
     def render_highlighted_arbors(self):
 
         # Set the arbors radii to be fixed to 1.0
-        self.options.morphology.material = nmv.enums.Shading.FLAT
-        self.options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED
+        self.options.shading.material = nmv.enums.Shader.FLAT
+        self.options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
         self.options.morphology.samples_unified_radii_value = 1.0
 
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(

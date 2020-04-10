@@ -183,7 +183,7 @@ class ProgressiveBuilder:
                         root=self.morphology.apical_dendrite,
                         branching_order=branching_order,
                         poly_lines_list=poly_lines_list,
-                        prefix=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                         material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
         # Axon
@@ -194,7 +194,7 @@ class ProgressiveBuilder:
                         root=self.morphology.axon,
                         branching_order=branching_order,
                         poly_lines_list=poly_lines_list,
-                        prefix=nmv.consts.Arbors.BASAL_DENDRITES_PREFIX,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                         material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
@@ -206,7 +206,7 @@ class ProgressiveBuilder:
                             root=basal_dendrite,
                             branching_order=branching_order,
                             poly_lines_list=poly_lines_list,
-                            prefix=nmv.consts.Arbors.AXON_PREFIX,
+                            prefix=nmv.consts.Skeleton.AXON_PREFIX,
                             material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         return poly_lines_list
@@ -252,9 +252,9 @@ class ProgressiveBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius

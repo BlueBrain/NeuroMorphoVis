@@ -213,9 +213,9 @@ class SkeletonBuilder:
 
         # If we scale the morphology, we should account for that in the spheres to
         sphere_radius = radius
-        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.SCALED:
+        if self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.SCALED:
             sphere_radius *= self.options.morphology.sections_radii_scale
-        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
+        elif self.options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED:
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
@@ -436,7 +436,7 @@ class SkeletonBuilder:
             bevel_object=bevel_object)
 
         # Draw the frame for progressive rendering
-        if self.options.morphology.render_progressive:
+        if self.options.rendering.render_morphology_progressive:
             frame_file_path = '%s/frame_%s' % (
                 self.progressive_frames_directory, '{0:05d}'.format(self.progressive_frame_index))
 
@@ -528,7 +528,7 @@ class SkeletonBuilder:
                 axon_segments_objects = []
                 self.draw_sections_as_spheres(
                     self.morphology.axon,
-                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    name=nmv.consts.Skeleton.AXON_PREFIX,
                     max_branching_level=self.options.morphology.axon_branch_order,
                     material_list=self.axon_materials,
                     segments_objects=axon_segments_objects)
@@ -556,7 +556,7 @@ class SkeletonBuilder:
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.info('Basal dendrite [%d]' % i)
-                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_sections_as_spheres(
                         basal_dendrite, name=dendrite_name,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
@@ -588,7 +588,7 @@ class SkeletonBuilder:
                 apical_dendrite_segments_objects = []
                 self.draw_sections_as_spheres(
                     self.morphology.apical_dendrite,
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                     material_list=self.apical_dendrite_materials,
                     segments_objects=apical_dendrite_segments_objects)
@@ -632,7 +632,7 @@ class SkeletonBuilder:
             axon_segments_objects = []
             self.draw_section_as_disconnected_segments(
                 self.morphology.axon,
-                name=nmv.consts.Arbors.AXON_PREFIX,
+                name=nmv.consts.Skeleton.AXON_PREFIX,
                 max_branching_level=self.options.morphology.axon_branch_order,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
@@ -650,7 +650,7 @@ class SkeletonBuilder:
                 basal_dendrites_segments_objects = []
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    dendrite_name = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_section_as_disconnected_segments(
                         basal_dendrite, name=dendrite_name,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
@@ -666,7 +666,7 @@ class SkeletonBuilder:
             apical_dendrite_segments_objects = []
             self.draw_section_as_disconnected_segments(
                 self.morphology.apical_dendrite,
-                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,
@@ -713,7 +713,7 @@ class SkeletonBuilder:
             axon_sections_objects = []
             self.draw_root_as_disconnected_sections(
                 self.morphology.axon,
-                name=nmv.consts.Arbors.AXON_PREFIX,
+                name=nmv.consts.Skeleton.AXON_PREFIX,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
                 max_branching_level=self.options.morphology.axon_branch_order,
@@ -727,7 +727,7 @@ class SkeletonBuilder:
             apical_dendrite_sections_objects = []
             self.draw_root_as_disconnected_sections(
                 self.morphology.apical_dendrite,
-                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
@@ -745,7 +745,7 @@ class SkeletonBuilder:
                 basal_dendrites_sections_objects = []
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_root_as_disconnected_sections(
                         basal_dendrite,
                         name=dendrite_prefix,
@@ -896,7 +896,7 @@ class SkeletonBuilder:
 
                 # Draw each basal dendrites as a set connected sections
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
@@ -925,7 +925,7 @@ class SkeletonBuilder:
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.apical_dendrite),
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology,
@@ -951,7 +951,7 @@ class SkeletonBuilder:
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.axon),
                     max_branching_level=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Arbors.AXON_PREFIX, material_list=self.axon_materials,
+                    name=nmv.consts.Skeleton.AXON_PREFIX, material_list=self.axon_materials,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
                     sections_objects=axon_sections_objects,
@@ -1027,7 +1027,7 @@ class SkeletonBuilder:
                 # Build the arbor as a single object
                 nmv.skeleton.ops.build_arbor_as_single_object(
                     section=copy.deepcopy(self.morphology.axon),
-                    name=nmv.consts.Arbors.AXON_PREFIX,
+                    name=nmv.consts.Skeleton.AXON_PREFIX,
                     poly_line_data=arbor_poly_line_data,
                     poly_lines_data=morphology_poly_lines_data,
                     max_branching_level=self.options.morphology.axon_branch_order,
@@ -1047,7 +1047,7 @@ class SkeletonBuilder:
                     arbor_poly_line_data = []
 
                     # Build the arbor as a single object
-                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.build_arbor_as_single_object(
                         section=copy.deepcopy(basal_dendrite),
                         name=dendrite_prefix,
@@ -1069,7 +1069,7 @@ class SkeletonBuilder:
                 # Build the arbor as a single object
                 nmv.skeleton.ops.build_arbor_as_single_object(
                     section=copy.deepcopy(self.morphology.apical_dendrite),
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     poly_line_data=arbor_poly_line_data,
                     poly_lines_data=morphology_poly_lines_data,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order,
@@ -1141,7 +1141,7 @@ class SkeletonBuilder:
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.axon),
                 max_branching_level=self.options.morphology.axon_branch_order,
-                name=nmv.consts.Arbors.AXON_PREFIX,
+                name=nmv.consts.Skeleton.AXON_PREFIX,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,
@@ -1166,7 +1166,7 @@ class SkeletonBuilder:
 
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     # Draw the basal dendrites as a set connected sections
-                    dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order,
@@ -1191,7 +1191,7 @@ class SkeletonBuilder:
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.apical_dendrite),
                 max_branching_level=self.options.morphology.apical_dendrite_branch_order,
-                name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,
                 repair_morphology=repair_morphology,

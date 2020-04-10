@@ -57,7 +57,7 @@ bpy.types.Scene.NMV_BuildAxon = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_AxonBranchingLevel = bpy.props.IntProperty(
     name="Branching Order",
     description="Branching order for the axon",
-    default=nmv.consts.Arbors.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=100)
 
 # Build basal dendrites
 bpy.types.Scene.NMV_BuildBasalDendrites = bpy.props.BoolProperty(
@@ -69,7 +69,7 @@ bpy.types.Scene.NMV_BuildBasalDendrites = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_BasalDendritesBranchingLevel = bpy.props.IntProperty(
     name="Branching Order",
     description="Branching order for the basal dendrites",
-    default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=100)
 
 # Build apical dendrite
 bpy.types.Scene.NMV_BuildApicalDendrite = bpy.props.BoolProperty(
@@ -81,13 +81,13 @@ bpy.types.Scene.NMV_BuildApicalDendrite = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
     name="Branching Order",
     description="Branching order for the apical dendrite",
-    default=nmv.consts.Arbors.MAX_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=100)
 
 # Morphology material
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(
-    items=nmv.enums.Shading.MATERIAL_ITEMS,
+    items=nmv.enums.Shader.MATERIAL_ITEMS,
     name="Shading",
-    default=nmv.enums.Shading.LAMBERT_WARD)
+    default=nmv.enums.Shader.LAMBERT_WARD)
 
 # Color arbor by part
 bpy.types.Scene.NMV_ColorArborByPart = bpy.props.BoolProperty(
@@ -178,9 +178,9 @@ bpy.types.Scene.NMV_MorphologyReconstructionTechnique = bpy.props.EnumProperty(
 
 # Arbors style
 bpy.types.Scene.NMV_ArborsStyle = bpy.props.EnumProperty(
-    items=nmv.enums.Arbors.Style.MORPHOLOGY_STYLE_ITEMS,
+    items=nmv.enums.Skeleton.Style.MORPHOLOGY_STYLE_ITEMS,
     name="",
-    default=nmv.enums.Arbors.Style.ORIGINAL)
+    default=nmv.enums.Skeleton.Style.ORIGINAL)
 
 # Branching, is it based on angles or radii
 bpy.types.Scene.NMV_MorphologyBranching = bpy.props.EnumProperty(
@@ -195,17 +195,17 @@ bpy.types.Scene.NMV_MorphologyBranching = bpy.props.EnumProperty(
 
 # Soma connection to roots
 bpy.types.Scene.NMV_SomaConnectionToRoot = bpy.props.EnumProperty(
-    items=[(nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN,
+    items=[(nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN,
             'Connect Connected',
             'Connect the arbors that are physically connected to the origin of the soma'),
-           (nmv.enums.Arbors.Roots.ALL_CONNECTED_TO_ORIGIN,
+           (nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN,
             'All Connected',
             'Connect the all the arbors to the origin of the soma even if they intersect'),
-           (nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA,
+           (nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA,
             'All Disconnected',
             'Disconnect all the arbors from the soma')],
     name='',
-    default=nmv.enums.Arbors.Roots.CONNECTED_TO_ORIGIN)
+    default=nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN)
 
 # Arbor quality
 bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(
@@ -215,26 +215,26 @@ bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(
 
 # Section radius
 bpy.types.Scene.NMV_SectionsRadii = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeleton.ArborsRadii.ORIGINAL,
+    items=[(nmv.enums.Skeleton.Radii.ORIGINAL,
             'Original',
             "Set the radii of the samples to the original ones reported in the morphology file"),
-           (nmv.enums.Skeleton.ArborsRadii.UNIFIED,
+           (nmv.enums.Skeleton.Radii.UNIFIED,
             'Unified',
             "Set the radii of all the samples in the entire morphology to a unified value given "
             "by the user"),
-           (nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE,
+           (nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE,
             'Type Unified',
             "Set the radii of all the samples in the (axon, apical dendrite and basal dendrites) "
             "to a unified value (to axon, apical dendrite and basal dendrites) given by the user"),
-           (nmv.enums.Skeleton.ArborsRadii.SCALED,
+           (nmv.enums.Skeleton.Radii.SCALED,
             'Scaled',
             "Scale the radii of all the samples in the morphology with a scale factor given "
             "by the user"),
-           (nmv.enums.Skeleton.ArborsRadii.FILTERED,
+           (nmv.enums.Skeleton.Radii.FILTERED,
             'Filtered',
             "Filter the samples with radii lower than a given threshold"), ],
     name="Radii",
-    default=nmv.enums.Skeleton.ArborsRadii.ORIGINAL)
+    default=nmv.enums.Skeleton.Radii.ORIGINAL)
 
 # Unified radius value
 bpy.types.Scene.NMV_UnifiedRadiusValue = bpy.props.FloatProperty(

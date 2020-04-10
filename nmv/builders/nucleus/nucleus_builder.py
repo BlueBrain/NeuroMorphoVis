@@ -72,7 +72,7 @@ class NucleusBuilder:
         # Create the material
         material = nmv.shading.create_material(
             name='%nuclei_material', color=self.options.mesh.nucleus_color,
-            material_type=self.options.mesh.material)
+            material_type=self.options.shading.material)
 
         # Apply the shader
         for nucleus_object in self.nuclei_meshes:

@@ -80,10 +80,10 @@ bpy.types.Scene.NMV_SomaBaseColor = bpy.props.FloatVectorProperty(
 
 # The material applied to the soma mesh following to the reconstruction
 bpy.types.Scene.NMV_SomaMaterial = bpy.props.EnumProperty(
-    items=nmv.enums.Shading.MATERIAL_ITEMS,
+    items=nmv.enums.Shader.MATERIAL_ITEMS,
     name='Shading',
     description='The shading material that will be applied to the reconstructed soma mesh',
-    default=nmv.enums.Shading.LAMBERT_WARD)
+    default=nmv.enums.Shader.LAMBERT_WARD)
 
 # Soma scale factor
 bpy.types.Scene.NMV_SomaRadiusScaleFactor = bpy.props.FloatProperty(

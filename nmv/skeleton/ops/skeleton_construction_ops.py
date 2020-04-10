@@ -136,7 +136,7 @@ def build_arbor_as_single_object(section, name,
                                  max_branching_level=nmv.consts.Math.INFINITY,
                                  repair_morphology=False,
                                  ignore_branching_samples=False,
-                                 roots_connection=nmv.enums.Arbors.Roots.DISCONNECTED_FROM_SOMA):
+                                 roots_connection=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:

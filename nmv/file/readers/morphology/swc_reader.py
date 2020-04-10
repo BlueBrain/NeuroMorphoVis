@@ -98,8 +98,8 @@ class SWCReader:
                 continue
 
             # Ensure that this is not a soma profile point
-            if sample_i[nmv.consts.Arbors.SWC_SAMPLE_TYPE_IDX] == \
-                    nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE:
+            if sample_i[nmv.consts.Skeleton.SWC_SAMPLE_TYPE_IDX] == \
+                    nmv.consts.Skeleton.SWC_SOMA_SAMPLE_TYPE:
                 index = index + 1
                 continue
 
@@ -257,30 +257,30 @@ class SWCReader:
                     i.replace('\n', '')
 
             # Get the index
-            index = int(data[nmv.consts.Arbors.SWC_SAMPLE_INDEX_IDX])
+            index = int(data[nmv.consts.Skeleton.SWC_SAMPLE_INDEX_IDX])
 
             # Get the branch type
-            sample_type = int(data[nmv.consts.Arbors.SWC_SAMPLE_TYPE_IDX])
+            sample_type = int(data[nmv.consts.Skeleton.SWC_SAMPLE_TYPE_IDX])
 
             # If the sample type doesn't match a soma, an axon, a basal dendrite or an apical
             # dendrite, just consider it a basal dendrite
             if sample_type > 4:
-                sample_type = nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE
+                sample_type = nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE
 
                 # Get the X-coordinate
-            x = float(data[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX])
+            x = float(data[nmv.consts.Skeleton.SWC_SAMPLE_X_COORDINATES_IDX])
 
             # Get the Y-coordinate
-            y = float(data[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX])
+            y = float(data[nmv.consts.Skeleton.SWC_SAMPLE_Y_COORDINATES_IDX])
 
             # Get the Z-coordinate
-            z = float(data[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX])
+            z = float(data[nmv.consts.Skeleton.SWC_SAMPLE_Z_COORDINATES_IDX])
 
             # Get the sample radius
-            radius = float(data[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX])
+            radius = float(data[nmv.consts.Skeleton.SWC_SAMPLE_RADIUS_IDX])
 
             # Get the sample parent index
-            parent_index = int(data[nmv.consts.Arbors.SWC_SAMPLE_PARENT_INDEX_IDX])
+            parent_index = int(data[nmv.consts.Skeleton.SWC_SAMPLE_PARENT_INDEX_IDX])
 
             # If this is the soma sample, get the translation vector
             if parent_index == -1:
@@ -418,7 +418,7 @@ class SWCReader:
                    apical_dendrites_arbors):
 
         # Get the original profile points that are found in the SWC file
-        soma_samples = self.get_samples_list_by_type(nmv.consts.Arbors.SWC_SOMA_SAMPLE_TYPE)
+        soma_samples = self.get_samples_list_by_type(nmv.consts.Skeleton.SWC_SOMA_SAMPLE_TYPE)
 
         # Get the soma profile points (contour)
         soma_profile_points = list()
@@ -431,24 +431,24 @@ class SWCReader:
         for sample in soma_samples:
 
             # If the sample has no parent (-1), then this is the soma itself
-            if sample[-1] == nmv.consts.Arbors.SWC_NO_PARENT_SAMPLE_TYPE:
+            if sample[-1] == nmv.consts.Skeleton.SWC_NO_PARENT_SAMPLE_TYPE:
 
                 # Get soma centroid
-                soma_centroid = Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
-                                        sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
-                                        sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
+                soma_centroid = Vector((sample[nmv.consts.Skeleton.SWC_SAMPLE_X_COORDINATES_IDX],
+                                        sample[nmv.consts.Skeleton.SWC_SAMPLE_Y_COORDINATES_IDX],
+                                        sample[nmv.consts.Skeleton.SWC_SAMPLE_Z_COORDINATES_IDX]))
 
                 # Get soma radius
-                soma_radius = sample[nmv.consts.Arbors.SWC_SAMPLE_RADIUS_IDX]
+                soma_radius = sample[nmv.consts.Skeleton.SWC_SAMPLE_RADIUS_IDX]
 
             # Otherwise, this is a profile point
             else:
 
                 # Construct the profile point
                 soma_profile_point = \
-                    Vector((sample[nmv.consts.Arbors.SWC_SAMPLE_X_COORDINATES_IDX],
-                            sample[nmv.consts.Arbors.SWC_SAMPLE_Y_COORDINATES_IDX],
-                            sample[nmv.consts.Arbors.SWC_SAMPLE_Z_COORDINATES_IDX]))
+                    Vector((sample[nmv.consts.Skeleton.SWC_SAMPLE_X_COORDINATES_IDX],
+                            sample[nmv.consts.Skeleton.SWC_SAMPLE_Y_COORDINATES_IDX],
+                            sample[nmv.consts.Skeleton.SWC_SAMPLE_Z_COORDINATES_IDX]))
 
                 # Append the profile point to the list
                 soma_profile_points.append(soma_profile_point)
@@ -656,13 +656,13 @@ class SWCReader:
 
         # Build the basal dendrites
         basal_dendrites_arbors = self.build_arbors_from_samples(
-            nmv.consts.Arbors.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
+            nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE)
 
         # Build the axon, or axons if the morphology has more than a single axon
         # NOTE: For consistency, if we have more than a single axon, we use the principal one and
         # add the others later to the basal dendrites list
         axon_arbor = None
-        axons_arbors = self.build_arbors_from_samples(nmv.consts.Arbors.SWC_AXON_SAMPLE_TYPE)
+        axons_arbors = self.build_arbors_from_samples(nmv.consts.Skeleton.SWC_AXON_SAMPLE_TYPE)
         if axons_arbors is not None:
 
             # Set the principal axon
@@ -688,7 +688,7 @@ class SWCReader:
         # and add the others later to the basal dendrites list
         apical_dendrite_arbor = None
         apical_dendrites_arbors = self.build_arbors_from_samples(
-            nmv.consts.Arbors.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
+            nmv.consts.Skeleton.SWC_APICAL_DENDRITE_SAMPLE_TYPE)
         if apical_dendrites_arbors is not None:
 
             # Set the principal axon

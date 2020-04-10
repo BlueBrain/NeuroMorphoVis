@@ -245,7 +245,7 @@ class UnionBuilder:
                 self.build_arbor(
                     arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
                     max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Arbors.AXON_PREFIX, material=self.axon_materials[0],
+                    name=nmv.consts.Skeleton.AXON_PREFIX, material=self.axon_materials[0],
                     connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the apical dendrite, if exists
@@ -256,7 +256,7 @@ class UnionBuilder:
                 self.build_arbor(
                     arbor=self.morphology.apical_dendrite, caps=caps, bevel_object=bevel_object,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    name=nmv.consts.Arbors.APICAL_DENDRITES_PREFIX,
+                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material=self.apical_dendrites_materials[0],
                     connection_to_soma=connection_to_soma, soft=soft)
 
@@ -269,7 +269,7 @@ class UnionBuilder:
                     nmv.logger.log('\t * Dendrite [%d]' % i)
 
                     # Draw the basal dendrites as a set connected sections
-                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Arbors.BASAL_DENDRITES_PREFIX, i)
+                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
 
                     self.build_arbor(
                         arbor=basal_dendrite, caps=caps, bevel_object=bevel_object,

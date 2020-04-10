@@ -84,7 +84,7 @@ class CircuitSpineBuilder:
         # Create the material
         material = nmv.shading.create_material(
             name='%spine_material', color=self.options.mesh.spines_color,
-            material_type=self.options.mesh.material)
+            material_type=self.options.shading.material)
 
         # Apply the shader
         for spine_object in self.spine_meshes:

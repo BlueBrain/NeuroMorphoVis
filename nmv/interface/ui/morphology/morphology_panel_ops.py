@@ -167,26 +167,26 @@ def set_reconstruction_options(layout,
     sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
 
     # Radii as specified in the morphology file
-    if scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.ORIGINAL:
-        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
+    if scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.ORIGINAL:
+        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.ORIGINAL
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = False
         options.morphology.sections_radii_scale = 1.0
 
     # Unified diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.UNIFIED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED:
         fixed_diameter_row = layout.row()
         fixed_diameter_row.label(text='Fixed Radius Value:')
         fixed_diameter_row.prop(scene, 'NMV_UnifiedRadiusValue')
-        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.UNIFIED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
         options.morphology.samples_unified_radii_value = scene.NMV_UnifiedRadiusValue
 
     # Unified diameter per arbor type
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE:
         options.morphology.arbors_radii = \
-            nmv.enums.Skeleton.ArborsRadii.UNIFIED_PER_ARBOR_TYPE
+            nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE
         options.morphology.scale_sections_radii = False
         options.morphology.unify_sections_radii = True
 
@@ -211,23 +211,23 @@ def set_reconstruction_options(layout,
                 scene.NMV_BasalDendritesUnifiedRadiusValue
 
     # Scaled diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.SCALED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.SCALED:
         scaled_diameter_row = layout.row()
         scaled_diameter_row.label(text='Radius Scale Factor:')
         scaled_diameter_row.prop(scene, 'NMV_RadiusScaleValue')
-        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.SCALED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.SCALED
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
         options.morphology.sections_radii_scale = scene.NMV_RadiusScaleValue
 
     # Filtered
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.ArborsRadii.FILTERED:
+    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.FILTERED:
         filtered_diameter_row = layout.row()
         filtered_diameter_row.label(text='Radius Threshold:')
         filtered_diameter_row.prop(scene, 'NMV_FilteredRadiusThreshold')
         options.morphology.unify_sections_radii = False
         options.morphology.scale_sections_radii = True
-        options.morphology.arbors_radii = nmv.enums.Skeleton.ArborsRadii.FILTERED
+        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.FILTERED
         options.morphology.threshold_radius = scene.NMV_FilteredRadiusThreshold
     else:
         nmv.logger.log('ERROR')
@@ -403,7 +403,7 @@ def set_rendering_options(layout,
     rendering_view_row.prop(scene, 'NMV_MorphologyRenderingView', expand=True)
 
     # Close up view
-    if scene.NMV_MorphologyRenderingView == nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW:
+    if scene.NMV_MorphologyRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
 
         # Rendering close up option
         render_close_up_row = layout.row()

@@ -149,19 +149,19 @@ def create_material_specific_illumination(material_type):
     """
 
     # Lambert Ward
-    if material_type == nmv.enums.Shading.LAMBERT_WARD:
+    if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_illumination()
 
     # Shadow
-    elif material_type == nmv.enums.Shading.SHADOW:
+    elif material_type == nmv.enums.Shader.SHADOW:
         return create_shadow_illumination()
 
     # Glossy bumpy
-    elif material_type == nmv.enums.Shading.GLOSSY_BUMPY:
+    elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
         return create_glossy_illumination()
 
     # Glossy
-    elif material_type == nmv.enums.Shading.GLOSSY:
+    elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_illumination()
 
     # Default, just use the lambert shader illumination
