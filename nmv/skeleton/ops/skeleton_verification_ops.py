@@ -297,7 +297,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
     """
 
     # Verify dendrite by dendrite
-    for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
+    for i_basal_dendrite, basal_dendrite in enumerate(morphology.basal_dendrites):
 
         # Is the basal dendrite disconnected from the soma !
         if nmv.skeleton.ops.is_arbor_disconnected_from_soma(basal_dendrite):
@@ -323,7 +323,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # NOTE: The intersection function returns a positive result if this input basal
         # dendrite is intersecting with another basal dendrite with largest radius
         if nmv.skeleton.ops.basal_dendrite_intersects_basal_dendrite(
-            dendrite=basal_dendrite, dendrites=morphology.dendrites,
+            dendrite=basal_dendrite, dendrites=morphology.basal_dendrites,
                 soma_radius=morphology.soma.smallest_radius):
 
                 # Report the issue

@@ -189,7 +189,7 @@ def compute_morphology_dendrogram_per_arbor_individually(morphology,
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for basal_dendrite in morphology.dendrites:
+        for basal_dendrite in morphology.basal_dendrites:
             compute_arbor_dendrogram_individually(arbor=basal_dendrite, delta=delta)
 
     # Axon
@@ -224,7 +224,7 @@ def compute_morphology_dendrogram(morphology,
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for basal_dendrite in morphology.dendrites:
+        for basal_dendrite in morphology.basal_dendrites:
             compute_arbor_dendrogram_individually(
                 arbor=basal_dendrite, delta=delta, continuing_index=continuing_index)
 
@@ -362,7 +362,7 @@ def add_soma_to_stems_line(morphology,
 
     if not ignore_basal_dendrites:
        if morphology.has_basal_dendrites():
-            for basal_dendrite in morphology.dendrites:
+            for basal_dendrite in morphology.basal_dendrites:
                 x_values.append(basal_dendrite.dendrogram_x)
                 radii.append(basal_dendrite.samples[0].radius)
 

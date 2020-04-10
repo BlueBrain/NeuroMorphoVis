@@ -20,51 +20,6 @@ import nmv.analysis
 
 
 ####################################################################################################
-# @kernel_global_number_apical_dendrites_loaded
-####################################################################################################
-def kernel_global_number_apical_dendrites_loaded(morphology):
-    """Counts the number of apical dendrites of the original morphology as loaded from the file.
-
-    :param morphology:
-        A given morphology skeleton to analyse.
-    :return:
-        The result of the analysis operation.
-    """
-
-    return morphology.number_loaded_apical_dendrites
-
-
-####################################################################################################
-# @kernel_global_number_basal_dendrites_loaded
-####################################################################################################
-def kernel_global_number_basal_dendrites_loaded(morphology):
-    """Counts the number of basal dendrites of the original morphology as loaded from the file.
-
-    :param morphology:
-        A given morphology skeleton to analyse.
-    :return:
-        The result of the analysis operation.
-    """
-
-    return morphology.number_loaded_basal_dendrites
-
-
-####################################################################################################
-# @kernel_global_number_axons_loaded
-####################################################################################################
-def kernel_global_number_axons_loaded(morphology):
-    """Counts the number of axons dendrites of the original morphology as loaded from the file.
-
-    :param morphology:
-        A given morphology skeleton to analyse.
-    :return:
-        The result of the analysis operation.
-    """
-
-    return morphology.number_loaded_axons
-
-
-####################################################################################################
 # @kernel_global_number_apical_dendrites
 ####################################################################################################
 def kernel_global_number_apical_dendrites(morphology):
@@ -76,7 +31,7 @@ def kernel_global_number_apical_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.apical_dendrite is None else 1
+    return 0 if morphology.apical_dendrites is None else len(morphology.apical_dendrites)
 
 
 ####################################################################################################
@@ -91,7 +46,7 @@ def kernel_global_number_basal_dendrites(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.dendrites is None else len(morphology.dendrites)
+    return 0 if morphology.basal_dendrites is None else len(morphology.basal_dendrites)
 
 
 ####################################################################################################
@@ -106,7 +61,7 @@ def kernel_global_number_axons(morphology):
         The result of the analysis operation.
     """
 
-    return 0 if morphology.axon is None else 1
+    return 0 if morphology.axons is None else len(morphology.axons)
 
 
 ####################################################################################################

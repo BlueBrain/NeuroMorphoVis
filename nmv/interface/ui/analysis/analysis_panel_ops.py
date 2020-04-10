@@ -84,7 +84,8 @@ def register_group_checkbox(prefix,
     # By default hide the arbors analysis groups (unset their checkboxes)
     else:
         setattr(bpy.types.Scene, '%s' % prefix,
-                BoolProperty(name=prefix, description=description, default=False))
+                BoolProperty(name=get_label_from_prefix(prefix), description=description,
+                             default=False))
 
 
 ####################################################################################################
@@ -104,24 +105,26 @@ def register_analysis_groups(morphology):
     # Register the checkbox of the 'Soma' group
     register_group_checkbox(prefix='Soma', description='Show the analysis data of the soma')
 
-    # Register the group checkbox of the 'Apical Dendrite', if it exists
+    # Register the group checkbox of the 'Apical Dendrites', if exist
     if morphology.has_apical_dendrites():
-        register_group_checkbox(prefix=morphology.apical_dendrite.label,
-                                description='Show the analysis data of %s' %
-                                            morphology.apical_dendrite.label)
-    # Basal dendrites
-    if morphology.has_basal_dendrites():
-
-        # Register the group checkbox of the 'Basal Dendrite i'
-        for i, basal_dendrite in enumerate(morphology.dendrites):
+        for i, arbor in enumerate(morphology.apical_dendrites):
             register_group_checkbox(
-                prefix=basal_dendrite.label,
-                description='Show the analysis data of %s ' % basal_dendrite.label)
+                prefix='%s%i' % (arbor.get_type_prefix(), i),
+                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
 
-    # Register the group checkbox of the 'Axon', if it exists
+    # Register the group checkboxes of the Basal Dendrites, if exist
+    if morphology.has_basal_dendrites():
+        for i, arbor in enumerate(morphology.basal_dendrites):
+            register_group_checkbox(
+                prefix='%s%i' % (arbor.get_type_prefix(), i),
+                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
+
+    # Register the group checkboxes of the Axons, if exist
     if morphology.has_axons():
-        register_group_checkbox(prefix=morphology.axon.label,
-                                description='Show the analysis data of %s' % morphology.axon.label)
+        for i, arbor in enumerate(morphology.axons):
+            register_group_checkbox(
+                prefix='%s%i' % (arbor.get_type_prefix(), i),
+                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
 
 
 ####################################################################################################
@@ -188,26 +191,23 @@ def add_analysis_groups_to_panel(morphology,
     # Morphology
     add_analysis_group_to_panel(prefix='Morphology', layout=layout, context=context)
 
-    # Basal dendrites
-    if morphology.has_basal_dendrites():
-
-        # For each basal dendrite
-        for basal_dendrite in morphology.dendrites:
-
-            # Add the analysis results to the panel
-            add_analysis_group_to_panel(prefix=basal_dendrite.label, layout=layout, context=context)
-
-    # Apical dendrite
+    # Add the analysis results of the Apical Dendrites to the panel
     if morphology.has_apical_dendrites():
-        # Add the analysis results to the panel
-        add_analysis_group_to_panel(
-            prefix=morphology.apical_dendrite.label, layout=layout, context=context)
+        for i, arbor in enumerate(morphology.apical_dendrites):
+            add_analysis_group_to_panel(
+                prefix='%s%i' % (arbor.get_type_prefix(), i), layout=layout, context=context)
 
-    # Axon
+    # Add the analysis results of the Basal Dendrites to the panel
+    if morphology.basal_dendrites is not None:
+        for i, arbor in enumerate(morphology.basal_dendrites):
+            add_analysis_group_to_panel(
+                prefix='%s%i' % (arbor.get_type_prefix(), i), layout=layout, context=context)
+
+    # Add the analysis results of the Axons to the panel
     if morphology.has_axons():
-
-        # Add the analysis results to the panel
-        add_analysis_group_to_panel(prefix=morphology.axon.label, layout=layout, context=context)
+        for i, arbor in enumerate(morphology.axons):
+            add_analysis_group_to_panel(
+                prefix='%s%i' % (arbor.get_type_prefix(), i), layout=layout, context=context)
 
 
 ####################################################################################################
@@ -386,17 +386,17 @@ def export_analysis_results(morphology,
     analysis_results_string += '- Contents \n'
     analysis_results_string += '\t* Soma: ' + 'Found \n' \
         if morphology.soma is not None else 'Not Found \n'
-    if morphology.has_apical_dendrites():
+    if morphology.apical_dendrite is not None:
         analysis_results_string += '\t* Apical Dendrite: 1 \n'
     else:
         analysis_results_string += '\t* Apical Dendrite: 0 \n'
 
-    if morphology.has_basal_dendrites():
-        analysis_results_string += '\t* Basal Dendrites: %d \n' % len(morphology.dendrites)
+    if morphology.basal_dendrites is not None:
+        analysis_results_string += '\t* Basal Dendrites: %d \n' % len(morphology.basal_dendrites)
     else:
         analysis_results_string += '\t* Basal Dendrites: 0 \n'
 
-    if morphology.has_axons():
+    if morphology.axon is not None:
         analysis_results_string += '\t* Axon: 1 \n\n'
     else:
         analysis_results_string += '\t* Axon: 0 \n\n'

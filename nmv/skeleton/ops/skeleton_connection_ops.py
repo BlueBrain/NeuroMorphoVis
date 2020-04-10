@@ -498,7 +498,7 @@ def find_nearest_basal_dendritic_sample_to_axon(morphology,
     """
 
     # Iterate over the basal dendrites and apply the test
-    for basal_dendrite in morphology.dendrites:
+    for basal_dendrite in morphology.basal_dendrites:
 
         # Find the nearest sample between the axon initial segment and the basal dendrite
         nearest_sample = find_nearest_sample_along_section(
@@ -582,7 +582,7 @@ def find_nearest_basal_dendritic_sample_to_basal_dendrite(morphology,
     nearest_sample = None
 
     if morphology.has_basal_dendrites():
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
 
             # If the @basal_dendrite is the same as the @dendrite, then skip the check
             if dendrite.id == basal_dendrite.id:
@@ -690,7 +690,7 @@ def verify_axon_connection_to_soma(morphology):
 
     # Is the axon intersecting with any basal dendrite !
     if nmv.skeleton.ops.axon_intersects_dendrites(
-            axon=morphology.axon, dendrites=morphology.dendrites,
+            axon=morphology.axon, dendrites=morphology.basal_dendrites,
             soma_radius=morphology.soma.smallest_radius):
 
         # Report the issue
@@ -751,7 +751,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         return
 
     # Verify dendrite by dendrite
-    for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
+    for i_basal_dendrite, basal_dendrite in enumerate(morphology.basal_dendrites):
 
         nmv.logger.info('Basal dendrite [%d]' % i_basal_dendrite)
 
@@ -799,7 +799,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # Connected
         nmv.logger.detail('Connected to soma')
 
-    for i_basal_dendrite, basal_dendrite in enumerate(morphology.dendrites):
+    for i_basal_dendrite, basal_dendrite in enumerate(morphology.basal_dendrites):
 
         # Verify if the axon intersects with the apical dendrite
         if nmv.skeleton.ops.dendrite_intersects_apical_dendrite(
@@ -816,7 +816,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
         # NOTE: The intersection function returns a positive result if this input basal
         # dendrite is intersecting with another basal dendrite with largest radius
         if nmv.skeleton.ops.basal_dendrite_intersects_basal_dendrite(
-                dendrite=basal_dendrite, dendrites=morphology.dendrites,
+                dendrite=basal_dendrite, dendrites=morphology.basal_dendrites,
                 soma_radius=morphology.soma.smallest_radius):
 
             # Mark the basal dendrite connected to the soma
@@ -1152,7 +1152,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
     if morphology.has_basal_dendrites():
 
         # For each dendrite
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
 
             # Only if the dendrite is connected
             if dendrite.connected_to_soma:
@@ -1199,7 +1199,7 @@ def get_stable_soma_extent(morphology):
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
 
             # Ensure that this basal dendrite is connected to the soma
             if dendrite.connected_to_soma:

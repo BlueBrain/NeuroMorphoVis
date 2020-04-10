@@ -161,20 +161,20 @@ class AnalysisItem:
         # Morphology
         self.register_variable(variable_prefix='Morphology')
 
-        # Apical dendrite
-        if morphology.loaded_apical_dendrites is not None:
-            for apical_dendrite in morphology.loaded_apical_dendrites:
-                self.register_variable(variable_prefix=apical_dendrite.label)
+        # Apical dendrites
+        if morphology.has_apical_dendrites():
+            for i, arbor in enumerate(morphology.apical_dendrites):
+                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
 
         # Basal dendrites
-        if morphology.loaded_basal_dendrites is not None:
-            for basal_dendrite in morphology.loaded_basal_dendrites:
-                self.register_variable(variable_prefix=basal_dendrite.label)
+        if morphology.has_basal_dendrites():
+            for i, arbor in enumerate(morphology.basal_dendrites):
+                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
 
-        # Axon
-        if morphology.loaded_axons is not None:
-            for axon in morphology.loaded_axons:
-                self.register_variable(variable_prefix=axon.label)
+        # Axons
+        if morphology.has_axons():
+            for i, arbor in enumerate(morphology.axons):
+                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
 
     ################################################################################################
     # @update_analysis_variable
@@ -246,37 +246,37 @@ class AnalysisItem:
             prefix='Morphology', result=self.result.morphology_result, context=context)
 
         # Apical dendrites
-        if morphology.loaded_apical_dendrites is not None:
-            for i, apical_dendrite in enumerate(morphology.loaded_apical_dendrites):
+        if morphology.has_apical_dendrites():
+            for i, arbor in enumerate(morphology.apical_dendrites):
 
                 # Get the apical dendrite result
                 result = self.result.apical_dendrites_result[i]
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix=apical_dendrite.label, result=result, context=context)
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
 
         # Basal dendrites
-        if morphology.loaded_basal_dendrites is not None:
-            for i, basal_dendrite in enumerate(morphology.loaded_basal_dendrites):
+        if morphology.has_basal_dendrites():
+            for i, arbor in enumerate(morphology.basal_dendrites):
 
                 # Get the result of this basal dendrite
                 result = self.result.basal_dendrites_result[i]
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix=basal_dendrite.label, result=result, context=context)
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
 
         # Axons
-        if morphology.loaded_axons is not None:
-            for i, axon in enumerate(morphology.loaded_axons):
+        if morphology.has_axons():
+            for i, arbor in enumerate(morphology.axons):
 
                 # Get the axon result
                 result = self.result.axons_result[i]
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix=axon.label, result=result, context=context)
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
 
     ################################################################################################
     # @get_analysis_results_string
@@ -297,36 +297,33 @@ class AnalysisItem:
         results_string += self.get_analysis_result_string(
             prefix='Morphology', result=self.result.morphology_result) + '\n'
 
-        # Apical dendrite
-        if morphology.loaded_apical_dendrites is not None:
-            for i, apical_dendrite in enumerate(morphology.loaded_apical_dendrites):
+        # Apical dendrites
+        if morphology.has_apical_dendrites():
+            for i, arbor in enumerate(morphology.apical_dendrites):
 
                 # Get the apical dendrite result
                 result = self.result.apical_dendrites_result[i]
-
                 results_string += self.get_analysis_result_string(
-                    prefix=apical_dendrite.label, result=result) + '\n'
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
 
         # Basal dendrites
-        if morphology.loaded_basal_dendrites is not None:
-
-            # For each basal dendrite
-            for i, basal_dendrite in enumerate(morphology.loaded_basal_dendrites):
+        if morphology.has_basal_dendrites():
+            for i, arbor in enumerate(morphology.basal_dendrites):
 
                 # Get the result of this basal dendrite
                 result = self.result.basal_dendrites_result[i]
-
                 results_string += self.get_analysis_result_string(
-                    prefix=basal_dendrite.label, result=result) + '\n'
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
 
-        # Axon
-        if morphology.loaded_axons is not None:
-            for i, axon in enumerate(morphology.loaded_axons):
+        # Axons
+        if morphology.has_axons():
+            for i, arbor in enumerate(morphology.axons):
 
+                # Get the axon result
                 result = self.result.axons_result[i]
 
                 results_string += self.get_analysis_result_string(
-                    prefix=axon.label, result=result) + '\n'
+                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
 
         # Return the final string
         return results_string

@@ -340,10 +340,10 @@ def smooth_arbors_to_soma_connections(builder):
         if not builder.options.morphology.ignore_basal_dendrites:
 
             # Create the apical dendrite mesh
-            if builder.morphology.dendrites is not None:
+            if builder.morphology.basal_dendrites is not None:
 
                 # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(builder.morphology.dendrites):
+                for i, basal_dendrite in enumerate(builder.morphology.basal_dendrites):
                     select_arbor_to_soma_vertices(soma_mesh=builder.soma_mesh, arbor=basal_dendrite)
 
         # Connecting axon
@@ -414,10 +414,10 @@ def connect_arbors_to_soma(builder):
         if not builder.options.morphology.ignore_basal_dendrites:
 
             # Create the apical dendrite mesh
-            if builder.morphology.dendrites is not None:
+            if builder.morphology.basal_dendrites is not None:
 
                 # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(builder.morphology.dendrites):
+                for i, basal_dendrite in enumerate(builder.morphology.basal_dendrites):
                     nmv.logger.info('Dendrite [%d]' % i)
                     builder.soma_mesh = connection_function(
                         builder.soma_mesh, basal_dendrite)
@@ -611,9 +611,9 @@ def collect_morphology_stats(builder):
     else:
         builder.morphology_statistics += '\tApical Dendrite: 0 \n'
 
-    if builder.morphology.dendrites is not None:
+    if builder.morphology.basal_dendrites is not None:
         builder.morphology_statistics += '\tBasal Dendrites: %d \n' \
-                                         % len(builder.morphology.dendrites)
+                                         % len(builder.morphology.basal_dendrites)
     else:
         builder.morphology_statistics += '\t* Basal Dendrites: 0 \n'
 

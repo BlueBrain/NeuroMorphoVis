@@ -162,7 +162,7 @@ def apply_operation_to_morphology(*args):
     if morphology.has_basal_dendrites():
 
         # Dendrite by dendrite
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
 
             # Construct arbor arguments list
             arbor_args = [dendrite]
@@ -234,7 +234,7 @@ def apply_operation_to_morphology_partially(*args):
     if morphology.has_basal_dendrites():
 
         # Dendrite by dendrite
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
 
             # Construct arbor arguments list
             arbor_args = list()

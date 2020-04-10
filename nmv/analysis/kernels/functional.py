@@ -89,16 +89,16 @@ def apply_analysis_operation_to_morphology(*args):
     analysis_function = args[1]
 
     # Apical dendrite
-    if morphology.loaded_apical_dendrites is not None:
+    if morphology.apical_dendrites is not None:
 
         # Create an empty list to collect the resulting data
         analysis_result.apical_dendrites_result = list()
 
         # Dendrite by dendrite
-        for dendrite in morphology.loaded_apical_dendrites:
+        for arbor in morphology.apical_dendrites:
 
             # Construct arbor arguments list
-            arbor_args = [dendrite]
+            arbor_args = [arbor]
             for i in range(2, len(args)):
                 arbor_args.append(args[i])
 
@@ -106,16 +106,16 @@ def apply_analysis_operation_to_morphology(*args):
             analysis_result.apical_dendrites_result.append(analysis_function(*arbor_args))
 
     # Basal dendrites
-    if morphology.loaded_basal_dendrites is not None:
+    if morphology.basal_dendrites is not None:
 
         # Create an empty list to collect the resulting data
         analysis_result.basal_dendrites_result = list()
 
         # Dendrite by dendrite
-        for dendrite in morphology.loaded_basal_dendrites:
+        for arbor in morphology.basal_dendrites:
 
             # Construct arbor arguments list
-            arbor_args = [dendrite]
+            arbor_args = [arbor]
             for i in range(2, len(args)):
                 arbor_args.append(args[i])
 
@@ -123,16 +123,16 @@ def apply_analysis_operation_to_morphology(*args):
             analysis_result.basal_dendrites_result.append(analysis_function(*arbor_args))
 
     # Axon
-    if morphology.loaded_axons is not None:
+    if morphology.axons is not None:
 
         # Create an empty list to collect the resulting data
         analysis_result.axons_result = list()
 
         # Dendrite by dendrite
-        for dendrite in morphology.loaded_axons:
+        for arbor in morphology.axons:
 
             # Construct arbor arguments list
-            arbor_args = [morphology.axon]
+            arbor_args = [arbor]
             for i in range(2, len(args)):
                 arbor_args.append(args[i])
 

@@ -142,18 +142,18 @@ def kernel_maximum_branching_order(morphology):
     # Axon
     if result.axons_result is not None:
         for i in range(len(result.axons_result)):
-            morphology.loaded_axons[i].maximum_branching_order = result.axons_result[i]
+            morphology.axons[i].maximum_branching_order = result.axons_result[i]
 
     # Apical dendrite
     if result.apical_dendrites_result is not None:
         for i in range(len(result.apical_dendrites_result)):
-            morphology.loaded_apical_dendrites[i].maximum_branching_order = \
+            morphology.apical_dendrites[i].maximum_branching_order = \
                 result.apical_dendrites_result[i]
 
     # Basal dendrites
     if result.basal_dendrites_result is not None:
         for i in range(len(result.basal_dendrites_result)):
-            morphology.dendrites[i].maximum_branching_order = result.basal_dendrites_result[i]
+            morphology.basal_dendrites[i].maximum_branching_order = result.basal_dendrites_result[i]
 
     # Pass the analysis results to the morphology
     morphology.maximum_branching_order = result

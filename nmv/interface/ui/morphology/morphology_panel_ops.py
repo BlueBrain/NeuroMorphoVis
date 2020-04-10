@@ -68,7 +68,7 @@ def set_skeleton_options(layout,
         options.morphology.axon_branch_order = scene.NMV_AxonBranchingLevel
 
     # Build basal dendrites options
-    if nmv.interface.ui_morphology.dendrites is not None:
+    if nmv.interface.ui_morphology.basal_dendrites is not None:
         basal_dendrites_row = layout.row()
         basal_dendrites_row.prop(scene, 'NMV_BuildBasalDendrites')
         basal_dendrites_level_row = basal_dendrites_row.column()
@@ -203,7 +203,7 @@ def set_reconstruction_options(layout,
             options.morphology.apical_dendrite_samples_unified_radii_value = \
                 scene.NMV_ApicalDendriteUnifiedRadiusValue
 
-        if nmv.interface.ui_morphology.dendrites is not None:
+        if nmv.interface.ui_morphology.basal_dendrites is not None:
             basal_dendrites_radius_row = layout.row()
             basal_dendrites_radius_row.label(text='Basal Dendrites Radius:')
             basal_dendrites_radius_row.prop(scene, 'NMV_BasalDendritesUnifiedRadiusValue')
@@ -343,7 +343,7 @@ def set_color_options(layout,
                     options.shading.morphology_axon_color = axon_color_value
 
                 # Basal dendrites color option
-                if nmv.interface.ui_morphology.dendrites is not None:
+                if nmv.interface.ui_morphology.basal_dendrites is not None:
                     basal_dendrites_color_row = layout.row()
                     basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
                     if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:

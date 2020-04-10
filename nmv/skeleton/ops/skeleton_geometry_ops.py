@@ -142,7 +142,7 @@ def compute_full_morphology_bounding_box(morphology):
     # Compute basal dendrites bounding boxes
     basal_dendrites_bounding_boxes = []
     if morphology.has_basal_dendrites():
-        for dendrite in morphology.dendrites:
+        for dendrite in morphology.basal_dendrites:
             basal_dendrite_bounding_box = compute_arbor_bounding_box(dendrite)
             basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
 
