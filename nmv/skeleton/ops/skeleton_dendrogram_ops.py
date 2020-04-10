@@ -185,16 +185,18 @@ def compute_morphology_dendrogram_per_arbor_individually(morphology,
 
     # Apical dendrite
     if morphology.has_apical_dendrites():
-        compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite, delta=delta)
+        for arbor in morphology.apical_dendrites:
+            compute_arbor_dendrogram_individually(arbor=arbor, delta=delta)
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for basal_dendrite in morphology.basal_dendrites:
-            compute_arbor_dendrogram_individually(arbor=basal_dendrite, delta=delta)
+        for arbor in morphology.basal_dendrites:
+            compute_arbor_dendrogram_individually(arbor=arbor, delta=delta)
 
     # Axon
     if morphology.has_axons():
-        compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta)
+        for arbor in morphology.axons:
+            compute_arbor_dendrogram_individually(arbor=arbor, delta=delta)
 
 
 ####################################################################################################
@@ -216,25 +218,30 @@ def compute_morphology_dendrogram(morphology,
 
     # Apical dendrite
     if morphology.has_apical_dendrites():
-        compute_arbor_dendrogram_individually(arbor=morphology.apical_dendrite,
-                                              delta=delta)
+        for arbor in morphology.apical_dendrites:
+            compute_arbor_dendrogram_individually(
+                arbor=arbor, delta=delta, continuing_index=continuing_index)
 
-        # Add the leaves count 
-        continuing_index = len(get_arbor_leaves(arbor=morphology.apical_dendrite))
+            # Add the leaves count
+            continuing_index += len(get_arbor_leaves(arbor=arbor))
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for basal_dendrite in morphology.basal_dendrites:
+        for arbor in morphology.basal_dendrites:
             compute_arbor_dendrogram_individually(
-                arbor=basal_dendrite, delta=delta, continuing_index=continuing_index)
+                arbor=arbor, delta=delta, continuing_index=continuing_index)
 
             # Add the leaves count 
-            continuing_index += len(get_arbor_leaves(arbor=basal_dendrite))
+            continuing_index += len(get_arbor_leaves(arbor=arbor))
 
     # Axon
     if morphology.has_axons():
-        compute_arbor_dendrogram_individually(arbor=morphology.axon, delta=delta,
-                                              continuing_index=continuing_index)
+        for arbor in morphology.axons:
+            compute_arbor_dendrogram_individually(
+                arbor=arbor, delta=delta, continuing_index=continuing_index)
+
+            # Add the leaves count
+            continuing_index += len(get_arbor_leaves(arbor=arbor))
 
 
 ####################################################################################################
@@ -357,19 +364,21 @@ def add_soma_to_stems_line(morphology,
 
     if not ignore_apical_dendrites:
         if morphology.has_apical_dendrites():
-            x_values.append(morphology.apical_dendrite.dendrogram_x)
-            radii.append(morphology.apical_dendrite.samples[0].radius)
+            for arbor in morphology.apical_dendrites:
+                x_values.append(arbor.dendrogram_x)
+                radii.append(arbor.samples[0].radius)
 
     if not ignore_basal_dendrites:
-       if morphology.has_basal_dendrites():
-            for basal_dendrite in morphology.basal_dendrites:
-                x_values.append(basal_dendrite.dendrogram_x)
-                radii.append(basal_dendrite.samples[0].radius)
+        if morphology.has_basal_dendrites():
+            for arbor in morphology.basal_dendrites:
+                x_values.append(arbor.dendrogram_x)
+                radii.append(arbor.samples[0].radius)
 
     if not ignore_axons:
         if morphology.has_axons():
-            x_values.append(morphology.axon.dendrogram_x)
-            radii.append(morphology.axon.samples[0].radius)
+            for arbor in morphology.axons:
+                x_values.append(arbor.dendrogram_x)
+                radii.append(arbor.samples[0].radius)
 
     # Average radius
     avg_radius = sum(radii) / len(radii)

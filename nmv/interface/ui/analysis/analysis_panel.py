@@ -214,7 +214,7 @@ class CreateNeuronCard(bpy.types.Operator):
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=options)
 
-        '''
+
         for projection in [nmv.enums.Camera.View.FRONT,
                            nmv.enums.Camera.View.SIDE,
                            nmv.enums.Camera.View.TOP]:
@@ -226,7 +226,7 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology, options=options)
         dendrogram_pdf = builder.draw_morphology_skeleton_with_matplotlib()
         analysis_pdfs.append(dendrogram_pdf)
-        '''
+
 
         # Apply the analysis kernels and compile the analysis PDF
         for distribution in nmv.analysis.distributions:

@@ -193,63 +193,42 @@ class DisconnectedSegmentsBuilder:
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
 
-        # Apical dendrite
+        # Apical dendrites
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
-        # Axon
+        # Axons
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
-                nmv.logger.detail('Axon')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.axon,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
-
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axons:
-                            self.construct_tree_poly_lines(
-                                root=basal_dendrite,
-                                poly_lines_list=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.axon_branch_order,
-                                prefix=nmv.consts.Skeleton.AXON_PREFIX,
-                                material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrites:
-                            self.construct_tree_poly_lines(
-                                root=basal_dendrite,
-                                poly_lines_list=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                                prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                                material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
-
-                    # This is a basal dendrite
-                    else:
-                        self.construct_tree_poly_lines(
-                            root=basal_dendrite,
-                            poly_lines_list=skeleton_poly_lines,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                            prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
-                            material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(

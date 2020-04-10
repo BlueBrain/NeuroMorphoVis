@@ -238,86 +238,52 @@ class SamplesBuilder:
         nmv.logger.info('Constructing spheres')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
-                apical_dendrite_spheres = list()
-                self.draw_sections_as_spheres(
-                    self.morphology.apical_dendrite,
-                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    material_list=self.apical_dendrites_materials,
-                    sphere_objects=apical_dendrite_spheres)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    apical_dendrite_spheres = list()
+                    self.draw_sections_as_spheres(
+                        root=arbor, name=arbor.label,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        material_list=self.apical_dendrites_materials,
+                        sphere_objects=apical_dendrite_spheres)
 
-                # Link the spheres and shade
-                self.link_and_shade_spheres(sphere_list=apical_dendrite_spheres,
-                                            materials_list=self.apical_dendrites_materials,
-                                            prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX)
+                    # Link the spheres and shade
+                    self.link_and_shade_spheres(sphere_list=apical_dendrite_spheres,
+                                                materials_list=self.apical_dendrites_materials,
+                                                prefix=arbor.label)
 
         # Axon
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
-                nmv.logger.detail('Axon')
-                axon_spheres = list()
-                self.draw_sections_as_spheres(
-                    self.morphology.axon,
-                    name=nmv.consts.Skeleton.AXON_PREFIX,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    material_list=self.axons_materials,
-                    sphere_objects=axon_spheres)
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    axon_spheres = list()
+                    self.draw_sections_as_spheres(
+                        root=arbor, name=arbor.label,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        material_list=self.axons_materials, sphere_objects=axon_spheres)
 
-                # Link the spheres and shade
-                self.link_and_shade_spheres(sphere_list=axon_spheres,
-                                            materials_list=self.axons_materials,
-                                            prefix=nmv.consts.Skeleton.AXON_PREFIX)
+                    # Link the spheres and shade
+                    self.link_and_shade_spheres(sphere_list=axon_spheres,
+                                                materials_list=self.axons_materials,
+                                                prefix=arbor.label)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    basal_dendrites_spheres = list()
+                    self.draw_sections_as_spheres(
+                        root=arbor, name=arbor.label,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        material_list=self.basal_dendrites_materials,
+                        sphere_objects=basal_dendrites_spheres)
 
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axons:
-                            basal_dendrites_spheres = list()
-                            self.draw_sections_as_spheres(
-                                basal_dendrite, name=basal_dendrite.label,
-                                max_branching_order=self.options.morphology.axon_branch_order,
-                                material_list=self.axons_materials,
-                                sphere_objects=basal_dendrites_spheres)
-
-                            # Link the spheres and shade
-                            self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
-                                                        materials_list=self.axons_materials,
-                                                        prefix=basal_dendrite.label)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        basal_dendrites_spheres = list()
-                        self.draw_sections_as_spheres(
-                            basal_dendrite, name=basal_dendrite.label,
-                            max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                            material_list=self.apical_dendrites_materials,
-                            sphere_objects=basal_dendrites_spheres)
-
-                        # Link the spheres and shade
-                        self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
-                                                    materials_list=self.apical_dendrites_materials,
-                                                    prefix=basal_dendrite.label)
-
-                    # This is a basal dendrite
-                    else:
-                        dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
-                        basal_dendrites_spheres = list()
-                        self.draw_sections_as_spheres(
-                            basal_dendrite, name=dendrite_name,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                            material_list=self.basal_dendrites_materials,
-                            sphere_objects=basal_dendrites_spheres)
-
-                        # Link the spheres and shade
-                        self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
-                                                    materials_list=self.basal_dendrites_materials,
-                                                    prefix=dendrite_name)
+                    # Link the spheres and shade
+                    self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
+                                                materials_list=self.basal_dendrites_materials,
+                                                prefix=arbor.label)
         # Draw the soma
         nmv.builders.morphology.draw_soma(builder=self)
 

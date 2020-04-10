@@ -48,7 +48,7 @@ bpy.types.Scene.NMV_BuildSoma = bpy.props.EnumProperty(
 
 # Build axon
 bpy.types.Scene.NMV_BuildAxon = bpy.props.BoolProperty(
-    name="Build Axon",
+    name="Build Axons",
     description="Select this flag to reconstruct the axon",
     default=True)
 

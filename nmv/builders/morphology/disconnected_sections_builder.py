@@ -326,7 +326,7 @@ class DisconnectedSectionsBuilder:
         # Draw the basal dendrites joints
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                for arbor in self.morphology.basal_dendrites:
                     self.draw_section_terminals_as_spheres(
                         root=arbor,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
@@ -337,7 +337,7 @@ class DisconnectedSectionsBuilder:
             if self.morphology.has_apical_dendrites():
                 for arbor in self.morphology.apical_dendrites:
                     self.draw_section_terminals_as_spheres(
-                        root=self.arbor,
+                        root=arbor,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         material_list=self.articulations_materials)
 
@@ -382,8 +382,8 @@ class DisconnectedSectionsBuilder:
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                for i, arbor in enumerate(self.morphology.apical_dendrites):
-                    nmv.logger.detail('Apical dendrite [%d]' % i)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
                     self.construct_tree_poly_lines(
                         root=arbor, poly_lines_list=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
@@ -394,7 +394,7 @@ class DisconnectedSectionsBuilder:
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
                 for arbor in self.morphology.axons:
-                    nmv.logger.detail('Axon')
+                    nmv.logger.detail(arbor.label)
                     self.construct_tree_poly_lines(
                         root=arbor,
                         poly_lines_list=skeleton_poly_lines,
@@ -406,7 +406,7 @@ class DisconnectedSectionsBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
                 for arbor in self.morphology.basal_dendrites:
-                    nmv.logger.detail('Basal dendrite [%d]')
+                    nmv.logger.detail(arbor.label)
                     self.construct_tree_poly_lines(
                         root=arbor,
                         poly_lines_list=skeleton_poly_lines,
@@ -438,9 +438,16 @@ class DisconnectedSectionsBuilder:
         nmv.logger.info('Done')
         return self.morphology_objects
 
-
+    ################################################################################################
+    # @draw_highlighted_arbor
+    ################################################################################################
     def draw_highlighted_arbor(self,
                                highlighted_arbor_key):
+        """Draws a highlighted arbor in the morphology and gray the rest.
+
+        :param highlighted_arbor_key:
+            The color code key.
+        """
 
         # Clearing the scene
         nmv.scene.clear_scene()
@@ -473,34 +480,36 @@ class DisconnectedSectionsBuilder:
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX,
-                    highlight=True if highlighted_arbor_key == 'color_apical' else False)
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX,
+                        highlight=True if highlighted_arbor_key == 'color_apical_%d' % i else False)
 
-        # Axon
+        # Axons
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
-                nmv.logger.detail('Axon')
-                self.construct_tree_poly_lines(
-                    root=self.morphology.axon,
-                    poly_lines_list=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
-                    material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX,
-                    highlight=True if highlighted_arbor_key == 'color_axon' else False)
+                for i, arbor in enumerate(self.morphology.axons):
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX,
+                        highlight=True if highlighted_arbor_key == 'color_axon_%d' % i else False)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    nmv.logger.detail(arbor.label)
                     self.construct_tree_poly_lines(
-                        root=basal_dendrite,
+                        root=arbor,
                         poly_lines_list=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         prefix=nmv.consts.Skeleton.AXON_PREFIX,
@@ -531,6 +540,9 @@ class DisconnectedSectionsBuilder:
         nmv.logger.info('Done')
         return self.morphology_objects
 
+    ################################################################################################
+    # @render_highlighted_arbors
+    ################################################################################################
     def render_highlighted_arbors(self):
 
         # Set the arbors radii to be fixed to 1.0
@@ -542,36 +554,40 @@ class DisconnectedSectionsBuilder:
             morphology=self.morphology)
 
         images = list()
+
+        # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                self.draw_highlighted_arbor(highlighted_arbor_key='color_apical')
+                for i, arbor in self.morphology.apical_dendrites:
+                    self.draw_highlighted_arbor(highlighted_arbor_key='color_apical_%d' % i)
 
-                # render
-                # Render the image
-                nmv.rendering.render_to_scale(
-                    bounding_box=bounding_box,
-                    camera_view=nmv.enums.Camera.View.FRONT,
-                    image_scale_factor=2,
-                    image_name='%s_%s' % (self.options.morphology.label, 'apical'),
-                    image_directory=self.options.io.analysis_directory)
+                    # Render the image
+                    nmv.rendering.render_to_scale(
+                        bounding_box=bounding_box,
+                        camera_view=nmv.enums.Camera.View.FRONT,
+                        image_scale_factor=2,
+                        image_name='%s_%s' % (self.options.morphology.label, 'apical_%d' % i),
+                        image_directory=self.options.io.analysis_directory)
 
-                images.append('%s/%s_%s' % (self.options.io.analysis_directory,
-                                            self.options.morphology.label, 'apical'))
+                    images.append('%s/%s_%s' % (self.options.io.analysis_directory,
+                                                self.options.morphology.label, 'apical'))
 
+        # Axons
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
-                self.draw_highlighted_arbor(highlighted_arbor_key='color_axon')
+                for i, arbor in enumerate(self.morphology.axons):
+                    self.draw_highlighted_arbor(highlighted_arbor_key='color_axon_%d' % i)
 
-                # Render the image
-                nmv.rendering.render_to_scale(
-                    bounding_box=bounding_box,
-                    camera_view=nmv.enums.Camera.View.FRONT,
-                    image_scale_factor=2,
-                    image_name='%s_%s' % (self.options.morphology.label, 'axon'),
-                    image_directory=self.options.io.analysis_directory)
+                    # Render the image
+                    nmv.rendering.render_to_scale(
+                        bounding_box=bounding_box,
+                        camera_view=nmv.enums.Camera.View.FRONT,
+                        image_scale_factor=2,
+                        image_name='%s_%s' % (self.options.morphology.label, 'axon_%d' % i),
+                        image_directory=self.options.io.analysis_directory)
 
-                images.append('%s/%s_%s' % (self.options.io.analysis_directory,
-                                            self.options.morphology.label, 'axon'))
+                    images.append('%s/%s_%s' % (self.options.io.analysis_directory,
+                                                self.options.morphology.label, 'axon'))
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -590,62 +606,3 @@ class DisconnectedSectionsBuilder:
 
                     images.append('%s/%s_%s' % (self.options.io.analysis_directory,
                                                 self.options.morphology.label, 'basal_%d' % i))
-
-
-        import img2pdf
-        from PIL import Image
-
-
-        for image in images:
-
-            img_path = '%s.png' % image
-            pdf_path = '%s.pdf' % image
-
-            # opening image
-            image = Image.open(img_path)
-
-            # converting into chunks using img2pdf
-            pdf_bytes = img2pdf.convert(image.filename)
-
-            # opening or creating pdf file
-            file = open(pdf_path, "wb")
-
-            # writing pdf files with chunks
-            file.write(pdf_bytes)
-
-            # closing image file
-            image.close()
-
-            # closing pdf file
-            file.close()
-
-        output_stream = "%s/list.pdf" % self.options.io.analysis_directory
-        import sys
-        try:
-            from PyPDF2 import PdfFileReader, PdfFileWriter
-        except ImportError:
-            from pyPdf import PdfFileReader, PdfFileWriter
-
-        pdf_writer = PdfFileWriter()
-
-        for image in images:
-            path = '%s.pdf' % image
-            pdf_reader = PdfFileReader(path)
-            for page in range(pdf_reader.getNumPages()):
-                pdf_writer.addPage(pdf_reader.getPage(page))
-
-        with open(output_stream, 'wb') as fh:
-            pdf_writer.write(fh)
-
-        nmv.scene.clear_scene()
-
-
-
-
-
-
-
-
-
-
-

@@ -139,44 +139,27 @@ class DendrogramBuilder:
 
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                    section=self.morphology.apical_dendrite,
-                    poly_lines_data=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
-                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                    section=self.morphology.axon,
-                    poly_lines_data=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.axon_branch_order)
+                for arbor in self.morphology.axons:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order)
 
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for basal_dendrite in self.morphology.basal_dendrites:
-
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axons:
-                            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                                section=basal_dendrite,
-                                poly_lines_data=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.axon_branch_order)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrites:
-                            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                                section=basal_dendrite,
-                                poly_lines_data=skeleton_poly_lines,
-                                max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-                    # This is a basal dendrite
-                    else:
-                        nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                            section=basal_dendrite,
-                            poly_lines_data=skeleton_poly_lines,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order)
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
         # The soma to stems line
         center = nmv.skeleton.add_soma_to_stems_line(
@@ -268,78 +251,81 @@ class DendrogramBuilder:
         pyplot.axis('off')
 
         if not self.options.morphology.ignore_apical_dendrites:
-
-            # A list of all the skeleton poly-lines
-            skeleton_poly_lines = list()
-
             if self.morphology.has_apical_dendrites():
-                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                    section=self.morphology.apical_dendrite,
-                    poly_lines_data=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    stretch_legs=False)
-
-                for poly_line in skeleton_poly_lines:
-
-                    x_list = list()
-                    y_list = list()
-
-                    for i, sample in enumerate(poly_line.samples):
-                        x_list.append(sample[0][0])
-                        y_list.append(sample[0][1])
-
-                    x = numpy.array(x_list)
-                    y = numpy.array(y_list)
-
-                    ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                                     color=self.morphology.apical_dendrite_color)
-
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                # A list of all the skeleton poly-lines
-                skeleton_poly_lines = list()
-
-                nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                    section=self.morphology.axon,
-                    poly_lines_data=skeleton_poly_lines,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    stretch_legs=False)
-
-                for poly_line in skeleton_poly_lines:
-
-                    x_list = list()
-                    y_list = list()
-
-                    for i, sample in enumerate(poly_line.samples):
-                        x_list.append(sample[0][0])
-                        y_list.append(sample[0][1])
-
-                    x = numpy.array(x_list)
-                    y = numpy.array(y_list)
-
-                    ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                                  color=self.morphology.axon_color)
-
-        if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
 
                     # A list of all the skeleton poly-lines
                     skeleton_poly_lines = list()
 
+                    # Create the polylines
                     nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                        section=basal_dendrite,
+                        section=arbor,
                         poly_lines_data=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         stretch_legs=False)
 
-                    color = self.morphology.basal_dendrites_colors[i]
                     for poly_line in skeleton_poly_lines:
 
                         x_list = list()
                         y_list = list()
 
-                        for i, sample in enumerate(poly_line.samples):
+                        for sample in poly_line.samples:
+                            x_list.append(sample[0][0])
+                            y_list.append(sample[0][1])
+
+                        x = numpy.array(x_list)
+                        y = numpy.array(y_list)
+                        ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                         color=self.morphology.apical_dendrites_colors[i])
+
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for i, arbor in enumerate(self.morphology.axons):
+
+                    # A list of all the skeleton poly-lines
+                    skeleton_poly_lines = list()
+
+                    # Create the polylines
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        stretch_legs=False)
+
+                    # Plot
+                    for poly_line in skeleton_poly_lines:
+                        x_list = list()
+                        y_list = list()
+
+                        for sample in poly_line.samples:
+                            x_list.append(sample[0][0])
+                            y_list.append(sample[0][1])
+
+                        x = numpy.array(x_list)
+                        y = numpy.array(y_list)
+                        ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
+                                         color=self.morphology.axons_colors[i])
+
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+
+                    # A list of all the skeleton poly-lines
+                    skeleton_poly_lines = list()
+
+                    # Create the polylines
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        stretch_legs=False)
+
+                    # Plot
+                    for poly_line in skeleton_poly_lines:
+                        x_list = list()
+                        y_list = list()
+
+                        for sample in poly_line.samples:
                             x_list.append(sample[0][0])
                             y_list.append(sample[0][1])
 
@@ -347,7 +333,7 @@ class DendrogramBuilder:
                         y = numpy.array(y_list)
 
                         ax = pyplot.plot([x_list[0], x_list[1]], [y_list[0], y_list[1]], lw=1.0,
-                                         color=color)
+                                         color=self.morphology.basal_dendrites_colors[i])
 
         # The soma to stems line
         skeleton_poly_lines = list()
@@ -358,11 +344,10 @@ class DendrogramBuilder:
             ignore_axons=self.options.morphology.ignore_axons)
 
         for poly_line in skeleton_poly_lines:
-
             x_list = list()
             y_list = list()
 
-            for i, sample in enumerate(poly_line.samples):
+            for sample in poly_line.samples:
                 x_list.append(sample[0][0])
                 y_list.append(sample[0][1])
 
