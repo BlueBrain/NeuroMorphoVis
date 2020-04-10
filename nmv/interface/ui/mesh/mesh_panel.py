@@ -341,7 +341,7 @@ class RenderMesh360(bpy.types.Operator):
 
             # Render at a specific resolution
             if context.scene.NMV_MeshRenderingResolution == \
-                    nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+                    nmv.enums.Rendering.Resolution.FIXED:
 
                 # Render the image
                 nmv.rendering.renderer.render_at_angle(
@@ -404,14 +404,14 @@ class RenderMesh360(bpy.types.Operator):
                 nmv.interface.ui_options.io.sequences_directory)
 
         # Compute the bounding box for a close up view
-        if context.scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+        if context.scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
                 extent=context.scene.NMV_MeshCloseUpSize)
 
         # Compute the bounding box for a mid shot view
-        elif context.scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+        elif context.scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()

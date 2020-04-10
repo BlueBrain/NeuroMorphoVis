@@ -328,28 +328,28 @@ bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
 
 # Rendering type
 bpy.types.Scene.NMV_RenderingType = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION,
+    items=[(nmv.enums.Rendering.Resolution.FIXED,
             'Fixed Resolution',
             'Renders a full view of the morphology at a specified resolution'),
-           (nmv.enums.Skeleton.Rendering.Resolution.TO_SCALE,
+           (nmv.enums.Rendering.Resolution.TO_SCALE,
             'To Scale',
             'Renders an image of the full view at the right scale in (um)')],
     name='Type',
-    default=nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION)
+    default=nmv.enums.Rendering.Resolution.FIXED)
 
 # Rendering view
 bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeleton.Rendering.View.WIDE_SHOT_VIEW,
+    items=[(nmv.enums.Rendering.View.WIDE_SHOT,
             'Wide Shot',
             'Renders an image of the full view'),
-           (nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW,
+           (nmv.enums.Rendering.View.MID_SHOT,
             'Mid Shot',
             'Renders an image of the reconstructed arbors only'),
-           (nmv.enums.Skeleton.Rendering.View.CLOSE_UP_VIEW,
+           (nmv.enums.Rendering.View.CLOSE_UP,
             'Close Up',
             'Renders a close up image the focuses on the soma')],
     name='View',
-    default=nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW)
+    default=nmv.enums.Rendering.View.MID_SHOT)
 
 # Image format
 bpy.types.Scene.NMV_MorphologyImageFormat = bpy.props.EnumProperty(

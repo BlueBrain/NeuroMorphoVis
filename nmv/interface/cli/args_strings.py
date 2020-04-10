@@ -284,6 +284,9 @@ class Args:
     # Scale factor for increasing the resolution of the to-scale images
     RESOLUTION_SCALE_FACTOR = '--resolution-scale-factor'
 
+    # Image file format or extensions
+    IMAGE_FILE_FORMAT = '--image-file-format'
+
     ################################################################################################
     # Execution arguments
     ################################################################################################

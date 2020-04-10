@@ -423,7 +423,7 @@ def set_rendering_options(layout,
         rendering_type_row.prop(scene, 'NMV_RenderingType', expand=True)
 
         # Render at a specific resolution
-        if scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
+        if scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
 
             # Frame resolution option
             frame_resolution_row = layout.row()

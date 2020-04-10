@@ -241,24 +241,7 @@ class LoadMorphology(bpy.types.Operator):
         # Analyze the morphology once loaded as well
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
 
-        # TODO: Set the maximum branching order in a near box
-        '''
-        if nmv.interface.ui_morphology.axon is not None:
-            context.scene.NMV_AxonBranchingLevel = \
-                nmv.interface.ui_morphology.axon.maximum_branching_order
-
-        if nmv.interface.ui_morphology.apical_dendrite is not None:
-            context.scene.NMV_ApicalDendriteBranchingLevel = \
-                nmv.interface.ui_morphology.apical_dendrite.maximum_branching_order
-
-        if nmv.interface.ui_morphology.dendrites is not None:
-            max_branching_order = 0
-            for dendrite in nmv.interface.ui_morphology.dendrites:
-                if dendrite.maximum_branching_order > max_branching_order:
-                    max_branching_order = dendrite.maximum_branching_order
-            context.scene.NMV_BasalDendritesBranchingLevel = max_branching_order
-        '''
-
+        # Done
         return {'FINISHED'}
 
 

@@ -17,24 +17,33 @@
 
 
 ####################################################################################################
-# @Image
+# @Rendering
 ####################################################################################################
-class Image:
-    """Image enumerators
+class Rendering:
+    """Rendering options
     """
 
-    ################################################################################################
+    ############################################################################################
     # @__init__
-    ################################################################################################
+    ############################################################################################
     def __init__(self):
         pass
 
     ################################################################################################
-    # @Extension
+    # @View
     ################################################################################################
-    class Extension:
-        """Extension edges
+    class View:
+        """Rendering view options
         """
+
+        # Close up view
+        CLOSE_UP = 'RENDERING_CLOSE_UP_VIEW'
+
+        # The view will include the reconstructed arbors only
+        MID_SHOT = 'RENDERING_MID_SHORT_VIEW'
+
+        # Full view
+        WIDE_SHOT = 'RENDERING_WIDE_SHOT_VIEW'
 
         ############################################################################################
         # @__init__
@@ -42,50 +51,46 @@ class Image:
         def __init__(self):
             pass
 
-        # PDF
-        PDF = 'PDF'
-
-        # TIFF
-        TIFF = 'TIFF'
-
-        # JPEG
-        JPEG = 'JPEG'
-
-        # PNG
-        PNG = 'PNG'
-
-        # BMP
-        BMP = 'BMP'
-
-        # OpenEXR
-        OPEN_EXR = 'OPEN_EXR'
-
         ############################################################################################
-        # @get_extension
+        # @get_enum
         ############################################################################################
-        def get_extension(self, enumerator):
-            """Gets the extension from the enumerator.
+        @staticmethod
+        def get_enum(argument):
 
-            :param enumerator:
-                Input.
-            :return:
-                Return the extension.
-            """
+            # Close up view
+            if argument == 'close-up':
+                return Rendering.View.CLOSE_UP
 
-            if enumerator in self.PDF:
-                return 'pdf'
-            elif enumerator in self.TIFF:
-                return 'tiff'
-            elif enumerator in self.PNG:
-                return 'png'
-            elif enumerator in self.JPEG:
-                return 'jpeg'
-            elif enumerator in self.BMP:
-                return 'bmp'
-            elif enumerator in self.OPEN_EXR:
-                return 'exr'
+            # Mid-shot view
+            elif argument == 'mid-shot':
+                return Rendering.View.MID_SHOT
+
+            # Wide-shot view
+            elif argument == 'wide-shot':
+                return Rendering.View.WIDE_SHOT
+
+            # By default use the wide shot view
             else:
-                return 'png'
+                return Rendering.View.WIDE_SHOT
+
+    ################################################################################################
+    # @Resolution
+    ################################################################################################
+    class Resolution:
+        """Rendering resolution options
+        """
+
+        # Rendering to scale (for figures)
+        TO_SCALE = 'RENDER_TO_SCALE'
+
+        # Rendering based on a user defined resolution
+        FIXED= 'RENDER_FIXED_RESOLUTION'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
 
         ############################################################################################
         # @get_enum
@@ -93,33 +98,14 @@ class Image:
         @staticmethod
         def get_enum(argument):
 
-            # PNG
-            if 'png' in argument:
-                return Image.Extension.PNG
+            # To scale
+            if argument == 'to-scale':
+                return Rendering.Resolution.TO_SCALE
 
-            # TIFF
-            elif 'tiff' in argument:
-                return Image.Extension.TIFF
+            # Fixed resolution
+            elif argument == 'fixed':
+                return Rendering.Resolution.FIXED
 
-            # OpenEXR
-            elif 'exr' in argument:
-                return Image.Extension.OPEN_EXR
-
-            # By default PNG
+            # By default render at the specified resolution
             else:
-                return Image.Extension.PNG
-
-        ############################################################################################
-        # A list of all the available image formats in NeuroMorphoVis
-        ############################################################################################
-        IMAGE_EXTENSION_ITEMS = [
-
-            # PNG
-            (PNG, 'PNG', 'Render a .png image'),
-
-            # PNG
-            (TIFF, 'TIFF', 'Render a .tiff image'),
-
-            # PNG
-            (OPEN_EXR, 'OpenEXR', 'Render an .exr image'),
-        ]
+                return Rendering.Resolution.FIXED

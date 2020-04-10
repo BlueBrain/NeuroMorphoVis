@@ -49,3 +49,6 @@ class SoftBody:
 
     # Default value for stiffness
     STIFFNESS_DEFAULT = 0.1
+
+    # Initial soma radius scale factor
+    SOMA_SCALE_FACTOR = 0.5

@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.options
 
 # A global variable for the system options.
@@ -28,6 +27,8 @@ import nmv.options
 #   ui_options.options.morphology.VARIABLE : for the morphology options
 #   ui_options.options.mesh.VARIABLE : for the mesh options
 #   ui_options.options.analysis.VARIABLE : for the analysis options
+#   ui_options.options.rendering.VARIABLE : for the rendering options
+#   ui_options.options.shading.VARIABLE : for the shading options
 ui_options = nmv.options.NeuroMorphoVisOptions()
 
 # The morphology skeleton object loaded after UI interaction

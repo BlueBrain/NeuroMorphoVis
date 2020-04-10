@@ -496,7 +496,7 @@ def draw_rendering_options(panel,
     panel.shown_hidden_rows.append(rendering_view_row)
 
     # Add the close up size option
-    if scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+    if scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
 
         # Close up size option
         close_up_size_row = layout.row()
@@ -523,7 +523,7 @@ def draw_rendering_options(panel,
 
         # Add the frame resolution option
         if scene.NMV_MeshRenderingResolution == \
-                nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+                nmv.enums.Rendering.Resolution.FIXED:
 
             # Frame resolution option (only for the close up mode)
             frame_resolution_row = layout.row()
@@ -547,12 +547,6 @@ def draw_rendering_options(panel,
     image_extension_row.label(text='Image Format:')
     image_extension_row.prop(scene, 'NMV_MeshImageFormat')
     nmv.interface.ui_options.mesh.image_format = scene.NMV_MeshImageFormat
-
-    # Set the background color if it is not transparent
-    if nmv.interface.ui_options.mesh.transparent_film is False:
-        background_color = layout.row()
-        background_color.prop(scene, 'NMV_MeshBackgroundColor')
-        nmv.interface.ui_options.mesh.film_color = scene.NMV_MeshBackgroundColor
 
     # Rendering view
     render_view_row = layout.row()

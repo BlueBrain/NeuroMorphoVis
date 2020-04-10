@@ -58,31 +58,31 @@ def create_skeleton_materials(builder):
 
     # Soma
     builder.soma_materials = nmv.shading.create_materials(
-        material_type=builder.options.mesh.material, name='soma_skeleton',
-        color=builder.options.mesh.soma_color)
+        material_type=builder.options.shading.material, name='soma_skeleton',
+        color=builder.options.shading.soma_color)
 
     # Axon
     builder.axon_materials = nmv.shading.create_materials(
-        material_type=builder.options.mesh.material, name='axon_skeleton',
-        color=builder.options.mesh.axon_color)
+        material_type=builder.options.shading.material, name='axon_skeleton',
+        color=builder.options.shading.axon_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.mesh.material, name='basal_dendrites_skeleton',
-        color=builder.options.mesh.basal_dendrites_color)
+        material_type=builder.options.shading.material, name='basal_dendrites_skeleton',
+        color=builder.options.shading.basal_dendrites_color)
 
     # Apical dendrite
     builder.apical_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.mesh.material, name='apical_dendrite_skeleton',
-        color=builder.options.mesh.apical_dendrites_color)
+        material_type=builder.options.shading.material, name='apical_dendrite_skeleton',
+        color=builder.options.shading.apical_dendrites_color)
 
     # Spines
     builder.spines_materials = nmv.shading.create_materials(
-        material_type=builder.options.mesh.material,
-        name='spines', color=builder.options.mesh.spines_color)
+        material_type=builder.options.shading.material,
+        name='spines', color=builder.options.shading.spines_color)
 
     # Create an illumination specific for the given material
-    nmv.shading.create_material_specific_illumination(builder.options.mesh.material)
+    nmv.shading.create_material_specific_illumination(builder.options.shading.material)
 
 
 ####################################################################################################

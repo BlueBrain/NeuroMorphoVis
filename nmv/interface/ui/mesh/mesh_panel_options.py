@@ -273,27 +273,27 @@ bpy.types.Scene.NMV_NucleusMeshColor = bpy.props.FloatVectorProperty(
 
 # Rendering resolution
 bpy.types.Scene.NMV_MeshRenderingResolution = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION,
+    items=[(nmv.enums.Rendering.Resolution.FIXED,
             'Fixed',
             'Renders an image of the mesh at a specific resolution'),
-           (nmv.enums.Meshing.Rendering.Resolution.TO_SCALE,
+           (nmv.enums.Rendering.Resolution.TO_SCALE,
             'To Scale',
             'Renders an image of the mesh at factor of the exact scale in (um)')],
     name='Type',
-    default=nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION)
+    default=nmv.enums.Rendering.Resolution.FIXED)
 
 # Rendering view
 bpy.types.Scene.NMV_MeshRenderingView = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Rendering.View.WIDE_SHOT_VIEW,
+    items=[(nmv.enums.Rendering.View.WIDE_SHOT,
             'Wide Shot',
             'Renders an image of the full view'),
-           (nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW,
+           (nmv.enums.Rendering.View.MID_SHOT,
             'Mid Shot',
             'Renders an image of the reconstructed arbors only'),
-           (nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW,
+           (nmv.enums.Rendering.View.CLOSE_UP,
             'Close Up',
             'Renders a close up image the focuses on the soma')],
-    name='View', default=nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW)
+    name='View', default=nmv.enums.Rendering.View.MID_SHOT)
 
 # Keep cameras
 bpy.types.Scene.NMV_KeepMeshCameras = bpy.props.BoolProperty(

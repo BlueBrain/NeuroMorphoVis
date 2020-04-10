@@ -23,6 +23,7 @@ from .dendrogram_enums import *
 from .image_enums import *
 from .input_enums import *
 from .meshing_enums import *
+from .rendering_enums import *
 from .shading_enums import *
 from .skeleton_enums import *
 from .soma_enums import *

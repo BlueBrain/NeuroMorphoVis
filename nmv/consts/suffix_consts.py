@@ -47,6 +47,9 @@ class Suffix:
     # Suffix appended to the name of a reconstructed soma mesh file
     SOMA_MESH = '_soma'
 
+    # Suffix appended to the name of an image of the morphology
+    MORPHOLOGY = '_morphology'
+
     # Suffix appended to the name of a front image of the morphology
     MORPHOLOGY_FRONT = '_morphology_front'
 

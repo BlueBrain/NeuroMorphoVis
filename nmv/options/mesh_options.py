@@ -34,10 +34,6 @@ class MeshOptions:
         """Constructor
         """
 
-        # DATA #####################################################################################
-        # This flag must be set to reconstruct a mesh
-        self.reconstruct_neuron_mesh = False
-
         # MESHING OPTIONS ##########################################################################
         # Tessellate the mesh after the reconstruction
         self.tessellate_mesh = False
@@ -88,65 +84,6 @@ class MeshOptions:
 
         # Nucleus mesh quality, by default low quality
         self.nucleus_mesh_quality = nmv.enums.Meshing.Nucleus.Quality.LQ
-
-        # COLOR & MATERIALS OPTIONS ################################################################
-        # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD
-
-        # Soma color
-        self.soma_color = nmv.enums.Color.SOMA
-
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
-
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
-
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
-
-        # Spines color
-        self.spines_color = nmv.enums.Color.SPINES
-
-        # Nucleus color
-        self.nucleus_color = nmv.enums.Color.NUCLEI
-
-        # MESH RENDERING ###########################################################################
-        # Camera view
-        self.camera_view = nmv.enums.Camera.View.FRONT
-
-        # Rendering view
-        self.rendering_view = nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW
-
-        # Image resolution is based on scale or to a fixed resolution
-        self.resolution_basis = nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION
-
-        # Render a static frame of the mesh
-        self.render = False
-
-        # Render a 360 sequence of the reconstructed mesh
-        self.render_360 = False
-
-        # Full view image resolution
-        self.full_view_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
-
-        # Close up image resolution
-        self.close_up_resolution = nmv.consts.Image.CLOSE_UP_RESOLUTION
-
-        # Close up view dimensions
-        self.close_up_dimensions = nmv.consts.Image.CLOSE_UP_DIMENSIONS
-
-        # The scale factor used to scale the morphology rendering frame, default 1.0
-        self.resolution_scale_factor = 1.0
-
-        # Render the mesh to a transparent image
-        self.transparent_film = True
-
-        # Render the mesh to image with a specific background
-        self.film_color = nmv.consts.Color.WHITE
-
-        # Image extension
-        self.image_format = nmv.enums.Image.Extension.PNG
 
         # MESH EXPORT ##############################################################################
         # Save the reconstructed mesh as a .ply file to the output directory

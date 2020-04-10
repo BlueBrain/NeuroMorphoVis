@@ -51,6 +51,9 @@ class Camera:
         # Top view
         TOP = 'TOP'
 
+        # Render all views
+        ALL_VIEWS = 'ALL_VIEWS'
+
         # Front for 360
         FRONT_360 = 'FRONT_360'
 
@@ -78,6 +81,10 @@ class Camera:
             # Top
             elif argument == 'top':
                 return Camera.View.TOP
+
+            # All views
+            elif argument == 'all':
+                return Camera.View.ALL_VIEWS
 
             # Front for 360 rendering
             elif argument == 'front-360':

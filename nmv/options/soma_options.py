@@ -27,18 +27,22 @@ class SomaOptions:
     """Soma options
     """
 
+    ################################################################################################
+    # @__init__
+    ################################################################################################
     def __init__(self):
         """Constructor
         """
 
+        # RECONSTRUCTION OPTIONS ###################################################################
         # Reconstruction method
         self.method = nmv.enums.Soma.Representation.META_BALLS
 
         # Meta ball resolution in case of using the MetaBall generation approach
-        self.meta_ball_resolution = 0.99
+        self.meta_ball_resolution = nmv.consts.MetaBall.META_DEFAULT_RESOLUTION
 
-        # Radius scale factor
-        self.radius_scale_factor = 0.5
+        # Radius scale factor for the SoftBody algorithm
+        self.radius_scale_factor = nmv.consts.SoftBody.SOMA_SCALE_FACTOR
 
         # Stiffness
         self.stiffness = nmv.consts.SoftBody.STIFFNESS_DEFAULT
@@ -52,42 +56,7 @@ class SomaOptions:
         # Simulation steps
         self.simulation_steps = nmv.consts.SoftBody.SIMULATION_STEPS_DEFAULT
 
-        # Soma color
-        self.soma_color = nmv.enums.Color.SOMA
-
-        # Soma material
-        self.soma_material = nmv.enums.Shading.FLAT
-
-        # Reconstruct soma mesh
-        self.reconstruct_soma_mesh = False
-
-        # Render projections of the soma mesh
-        self.render_soma_mesh = False
-
-        # Render the progressive reconstruction of the soma mesh
-        self.render_soma_mesh_progressive = False
-
-        # Render a 360 sequence for the reconstructed soma mesh
-        self.render_soma_mesh_360 = False
-
-        # Rendering resolution for the soma images
-        self.rendering_resolution = 512
-
-        # Rendering extent in microns
-        self.rendering_extent = 20
-
-        # Camera view
-        self.camera_view = nmv.enums.Camera.View.FRONT
-
-        # Render the soma to a transparent image
-        self.transparent_film = True
-
-        # Image extension
-        self.image_format = nmv.enums.Image.Extension.PNG
-
-        # Render the soma to image with a specific background
-        self.film_color = nmv.consts.Color.WHITE
-
+        # MESH EXPORT OPTIONS ######################################################################
         # Export soma mesh in .ply format
         self.export_ply = False
 

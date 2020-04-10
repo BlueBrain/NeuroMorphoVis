@@ -640,7 +640,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Rendering view
-    arg_options = ['(front)', 'side', 'top']
+    arg_options = ['(front)', 'side', 'top', 'all']
     arg_help = 'The camera direction. \n' \
                'Options: %s' % arg_options
     rendering_args.add_argument(
@@ -681,6 +681,15 @@ def parse_command_line_arguments():
     rendering_args.add_argument(
         Args.RESOLUTION_SCALE_FACTOR,
         action='store', type=float, default=1.0,
+        help=arg_help)
+
+    # Image file format
+    arg_options = ['png', 'tiff', 'exr']
+    arg_help = 'The file formats or extensions of the rendered images. \n' \
+               'Options: %s' % arg_options
+    rendering_args.add_argument(
+        Args.IMAGE_FILE_FORMAT,
+        action='store', default='png',
         help=arg_help)
 
     ################################################################################################

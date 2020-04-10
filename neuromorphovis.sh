@@ -110,7 +110,7 @@ if [ "$ANALYZE_MORPHOLOGY_SKELETON" == "yes" ];
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... NeuroMorphoVis \n"
-    python3.7 neuromorphovis.py                                                                     \
+    python neuromorphovis.py                                                                        \
     --blender=$BLENDER_EXECUTABLE                                                                   \
     --input=$INPUT                                                                                  \
     --blue-config=$BLUE_CONFIG                                                                      \
@@ -149,6 +149,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --resolution-scale-factor=$FULL_VIEW_SCALE_FACTOR                                               \
     --close-up-resolution=$CLOSE_UP_FRAME_RESOLUTION                                                \
     --close-up-dimensions=$CLOSE_UP_VIEW_DIMENSIONS                                                 \
+    --image-file-format=$IMAGE_FILE_FORMAT                                                          \
     --shader=$SHADER                                                                                \
     --execution-node=$EXECUTION_NODE                                                                \
     --tessellation-level=$TESSELLATION_LEVEL                                                        \

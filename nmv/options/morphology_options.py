@@ -34,15 +34,7 @@ class MorphologyOptions:
         """Constructor
         """
 
-        # This flag must be set to reconstruct the morphology
-        self.reconstruct_morphology = False
-
-        # Skeletonization algorithm, ORIGINAL by default
-        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
-
-        # Arbor style
-        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
-
+        # INPUT SOURCE OPTIONS #####################################################################
         # The GID of a given neuron in a given circuit using a blue config
         self.gid = None
 
@@ -57,6 +49,13 @@ class MorphologyOptions:
 
         # Morphology label (based on the GID or the morphology file name)
         self.label = None
+
+        # RECONSTRUCTION OPTIONS ###################################################################
+        # Skeletonization algorithm, ORIGINAL by default
+        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
+
+        # Arbor style
+        self.arbor_style = nmv.enums.Arbors.Style.ORIGINAL
 
         # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
         self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
@@ -87,21 +86,6 @@ class MorphologyOptions:
 
         # Apical dendrites branch order
         self.apical_dendrite_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
-
-        # Soma color
-        self.soma_color = nmv.enums.Color.SOMA
-
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
-
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
-
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
-
-        # Articulations color
-        self.articulation_color = nmv.enums.Color.ARTICULATION
 
         # Resampling method
         self.resampling_method = nmv.enums.Skeleton.Resampling.NONE
@@ -140,56 +124,14 @@ class MorphologyOptions:
         # Selected a method to reconstruct the morphology
         self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
-        # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD
+        # EXPORT OPTIONS ###################################################################
+        # Export the morphology to .segments file
+        self.export_segments = False
 
-        # SKELETON RENDERING #######################################################################
-        # Camera view
-        self.camera_view = nmv.enums.Camera.View.FRONT
-
-        # Rendering view
-        self.rendering_view = nmv.enums.Skeleton.Rendering.View.MID_SHOT_VIEW
-
-        # Image resolution is based on scale or to a fixed resolution
-        self.resolution_basis = nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION
-
-        # Render a static frame of the skeleton
-        self.render = False
-
-        # Render a 360 sequence of the reconstructed skeleton
-        self.render_360 = False
-
-        # Progressive rendering of the morphology reconstruction (requires breadth first drawing)
-        self.render_progressive = False
-
-        # Full view image resolution
-        self.full_view_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
-
-        # Close up image resolution
-        self.close_up_resolution = nmv.consts.Image.CLOSE_UP_RESOLUTION
-
-        # Close up view dimensions
-        self.close_up_dimensions = nmv.consts.Image.CLOSE_UP_DIMENSIONS
-
-        # The scale factor used to scale the morphology rendering frame, default 1.0
-        self.resolution_scale_factor = 1.0
-
-        # Render the morphology to a transparent image
-        self.transparent_film = True
-
-        # Image extension
-        self.image_format = nmv.enums.Image.Extension.PNG
-
-        # Render the morphology to image with a specific background
-        self.film_color = nmv.consts.Color.WHITE
-
-        # Export the morphology to .H5 file
-        self.export_h5 = False
-
-        # Export the morphology to .SWC file
+        # Export the morphology to .swc file
         self.export_swc = False
 
-        # Export the morphology skeleton to .BLEND file for rendering using tubes
+        # Export the morphology skeleton to .blend file for rendering using tubes
         self.export_blend = False
 
     ################################################################################################
@@ -235,21 +177,6 @@ class MorphologyOptions:
         # Apical dendrites branch order
         self.apical_dendrite_branch_order = nmv.consts.Arbors.MAX_BRANCHING_ORDER
 
-        # Soma color
-        self.soma_color = nmv.enums.Color.SOMA
-
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
-
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
-
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
-
-        # Articulations color
-        self.articulation_color = nmv.enums.Color.ARTICULATION
-
         # The radii of the sections (as specified in the morphology file, scaled with a given
         # scale factor, or constant at given fixed value)
         self.arbors_radii = nmv.enums.Skeleton.ArborsRadii.ORIGINAL
@@ -273,5 +200,3 @@ class MorphologyOptions:
         # Selected a method to reconstruct the morphology
         self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
-        # Morphology material
-        self.material = nmv.enums.Shading.LAMBERT_WARD

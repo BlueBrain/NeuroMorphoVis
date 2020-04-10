@@ -167,14 +167,14 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
         nmv.file.ops.clean_and_create_directory(cli_options.io.images_directory)
 
     # Compute the bounding box for a close up view
-    if cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+    if cli_options.mesh.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
             extent=cli_options.mesh.close_up_dimensions)
 
     # Compute the bounding box for a mid shot view
-    elif cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+    elif cli_options.mesh.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
         # Compute the bounding box for the available meshes only
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -186,37 +186,41 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
             morphology=cli_morphology)
 
-    # Get the view prefix
-    if cli_options.mesh.camera_view == nmv.enums.Camera.View.FRONT:
-        view_prefix = 'FRONT'
-    elif cli_options.mesh.camera_view == nmv.enums.Camera.View.SIDE:
-        view_prefix = 'SIDE'
-    elif cli_options.mesh.camera_view == nmv.enums.Camera.View.TOP:
-        view_prefix = 'TOP'
+    # If rendering all views
+    if cli_options.mesh.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
+        views = [nmv.enums.Camera.View.FRONT,
+                 nmv.enums.Camera.View.SIDE,
+                 nmv.enums.Camera.View.TOP]
     else:
-        view_prefix = 'FRONT'
+        views = [cli_options.mesh.camera_view]
 
-    # Render at a specific resolution
-    if cli_options.mesh.resolution_basis == nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+    # Get the image suffix
+    suffixes = nmv.interface.get_morphology_image_suffixes_from_view(
+        cli_options.morphology.camera_view)
 
-        # Render the image
-        nmv.rendering.render(
-            bounding_box=bounding_box,
-            camera_view=cli_options.mesh.camera_view,
-            image_resolution=cli_options.mesh.full_view_resolution,
-            image_name='MESH_%s_%s' % (view_prefix, cli_options.morphology.label),
-            image_directory=cli_options.io.images_directory)
+    for view, suffix in zip(views, suffixes):
 
-    # Render at a specific scale factor
-    else:
+        # Render at a specific resolution
+        if cli_options.mesh.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
 
-        # Render the image
-        nmv.rendering.render_to_scale(
-            bounding_box=bounding_box,
-            camera_view=cli_options.mesh.camera_view,
-            image_scale_factor=cli_options.mesh.resolution_scale_factor,
-            image_name='MESH_%s_%s' % (view_prefix, cli_options.morphology.label),
-            image_directory=cli_options.io.images_directory)
+            # Render the image
+            nmv.rendering.render(
+                bounding_box=bounding_box,
+                camera_view=cli_options.mesh.camera_view,
+                image_resolution=cli_options.mesh.full_view_resolution,
+                image_name='%s%s' % (cli_options.morphology.label, suffix),
+                image_directory=cli_options.io.images_directory)
+
+        # Render at a specific scale factor
+        else:
+
+            # Render the image
+            nmv.rendering.render_to_scale(
+                bounding_box=bounding_box,
+                camera_view=cli_options.mesh.camera_view,
+                image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                image_name='MESH_%s_%s' % (cli_options.morphology.label, suffix),
+                image_directory=cli_options.io.images_directory)
 
 
 ####################################################################################################
@@ -243,14 +247,14 @@ def render_neuron_mesh_360(cli_options,
     if cli_options.mesh.render_360:
 
         # Compute the bounding box for a close up view
-        if cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+        if cli_options.mesh.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
                 extent=cli_options.mesh.close_up_dimensions)
 
         # Compute the bounding box for a mid shot view
-        elif cli_options.mesh.rendering_view == nmv.enums.Meshing.Rendering.View.MID_SHOT_VIEW:
+        elif cli_options.mesh.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -285,7 +289,7 @@ def render_neuron_mesh_360(cli_options,
 
             # Render at a specific resolution
             if cli_options.mesh.resolution_basis == \
-                    nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+                    nmv.enums.Rendering.Resolution.FIXED:
 
                 # Render the image
                 nmv.rendering.renderer.render_at_angle(

@@ -107,31 +107,31 @@ class SkeletonBuilder:
 
         # Soma
         self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='soma_skeleton', material_type=self.options.morphology.material,
-            color=self.options.morphology.soma_color)
+            name='soma_skeleton', material_type=self.options.shading.material,
+            color=self.options.shading.soma_color)
 
         # Axon
         self.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='axon_skeleton', material_type=self.options.morphology.material,
-            color=self.options.morphology.axon_color)
+            name='axon_skeleton', material_type=self.options.shading.material,
+            color=self.options.shading.axon_color)
 
         # Basal dendrites
         self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='basal_dendrites_skeleton', material_type=self.options.morphology.material,
-            color=self.options.morphology.basal_dendrites_color)
+            name='basal_dendrites_skeleton', material_type=self.options.shading.material,
+            color=self.options.shading.basal_dendrites_color)
 
         # Apical dendrite
         self.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='apical_dendrite_skeleton', material_type=self.options.morphology.material,
-            color=self.options.morphology.apical_dendrites_color)
+            name='apical_dendrite_skeleton', material_type=self.options.shading.material,
+            color=self.options.shading.apical_dendrites_color)
 
         # Articulations for the articulated reconstruction method
         self.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='articulation', material_type=self.options.morphology.material,
-            color=self.options.morphology.articulation_color)
+            name='articulation', material_type=self.options.shading.material,
+            color=self.options.shading.articulation_color)
 
         # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.morphology.material)
+        nmv.shading.create_material_specific_illumination(self.options.shading.material)
 
     ################################################################################################
     # @draw_section_samples_as_spheres

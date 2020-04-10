@@ -15,10 +15,19 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .io_options import *
-from .mesh_options import *
-from .morphology_options import *
-from .soma_options import *
-from .rendering_options import *
-from .shading_options import *
-from .neuromorphovis_options import *
+
+####################################################################################################
+# SoftBody
+####################################################################################################
+class MetaBall:
+    """MetaBall constants
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        pass
+
+    # Resolution
+    META_DEFAULT_RESOLUTION = 0.99

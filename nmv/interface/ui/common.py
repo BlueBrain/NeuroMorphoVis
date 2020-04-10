@@ -379,7 +379,7 @@ def render_morphology_image(panel_object,
         suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
 
     # Render at a specific resolution
-    if context_scene.NMV_RenderingType == nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
+    if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
 
         # Render the image
         nmv.rendering.render(
@@ -443,7 +443,7 @@ def render_mesh_image(panel_object,
     bpy.context.scene.render.image_settings.file_format = image_format
 
     # Compute the bounding box for a close up view
-    if context_scene.NMV_MeshRenderingView == nmv.enums.Meshing.Rendering.View.CLOSE_UP_VIEW:
+    if context_scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
@@ -474,7 +474,7 @@ def render_mesh_image(panel_object,
 
     # Render at a specific resolution
     if context_scene.NMV_MeshRenderingResolution == \
-            nmv.enums.Meshing.Rendering.Resolution.FIXED_RESOLUTION:
+            nmv.enums.Rendering.Resolution.FIXED:
 
         # Render the image
         nmv.rendering.render(

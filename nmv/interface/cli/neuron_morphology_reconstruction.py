@@ -95,28 +95,44 @@ def reconstruct_neuron_morphology(cli_morphology,
             bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
                 morphology=cli_morphology)
 
-        # Render at a specific resolution
-        if cli_options.morphology.resolution_basis == \
-                nmv.enums.Skeleton.Rendering.Resolution.FIXED_RESOLUTION:
-
-            # Render the image
-            nmv.rendering.render(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=cli_options.morphology.full_view_resolution,
-                image_name='MORPHOLOGY_FRONT_%s' % cli_morphology.label,
-                image_directory=cli_options.io.images_directory)
-
-        # Render at a specific scale factor
+        # If rendering all views
+        if cli_options.morphology.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
+            views = [nmv.enums.Camera.View.FRONT,
+                     nmv.enums.Camera.View.SIDE,
+                     nmv.enums.Camera.View.TOP]
         else:
+            views = [cli_options.morphology.camera_view]
 
-            # Render the image
-            nmv.rendering.render_to_scale(
-                bounding_box=bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_scale_factor=cli_options.mesh.resolution_scale_factor,
-                image_name='MESH_FRONT_%s' % cli_morphology.label,
-                image_directory=cli_options.io.images_directory)
+        # Get the image suffix
+        suffixes = nmv.interface.get_morphology_image_suffixes_from_view(
+            cli_options.morphology.camera_view)
+
+        for view, suffix in zip(views, suffixes):
+
+            # Render at a specific resolution
+            if cli_options.morphology.resolution_basis == \
+                    nmv.enums.Rendering.Resolution.FIXED:
+
+                # Render the image
+                nmv.rendering.render(
+                    bounding_box=bounding_box,
+                    camera_view=view,
+                    image_resolution=cli_options.morphology.full_view_resolution,
+                    image_name='%s%s' % (cli_morphology.label, suffix),
+                    image_format=cli_options.morphology.image_format,
+                    image_directory=cli_options.io.images_directory)
+
+            # Render at a specific scale factor
+            else:
+
+                # Render the image
+                nmv.rendering.render_to_scale(
+                    bounding_box=bounding_box,
+                    camera_view=view,
+                    image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                    image_name='%s%s' % (cli_morphology.label, suffix),
+                    image_format=cli_options.morphology.image_format,
+                    image_directory=cli_options.io.images_directory)
 
     # Render a 360 sequence of the reconstructed morphology skeleton
     if cli_options.morphology.render_360:
@@ -149,7 +165,6 @@ def reconstruct_neuron_morphology(cli_morphology,
 
         # Stretch the bounding box by few microns
         bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
-
 
         for i in range(0, 360):
 
