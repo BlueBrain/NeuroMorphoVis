@@ -1437,7 +1437,7 @@ def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
 # @get_random_spines_on_section
 ####################################################################################################
 def get_random_spines_on_section(current_branching_level,
-                                 max_branching_level,
+                                 max_branching_order,
                                  section,
                                  probability=5.0,
                                  spines_list=[]):
@@ -1448,7 +1448,7 @@ def get_random_spines_on_section(current_branching_level,
 
     :param current_branching_level:
         A list of ONLY one item to keep track on the current branching level recursively.
-    :param max_branching_level:
+    :param max_branching_order:
         The maximum branching level of a neuron.
     :param section:
         A given section to generate the spines for.
@@ -1463,7 +1463,7 @@ def get_random_spines_on_section(current_branching_level,
         return
 
     # If the current branching level is greater than the maximum one, exit
-    if current_branching_level[0] > max_branching_level:
+    if current_branching_level[0] > max_branching_order:
         return
 
     # Increment the branching level

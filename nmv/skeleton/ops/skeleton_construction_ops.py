@@ -132,8 +132,8 @@ def build_arbor_as_single_object(section, name,
                                  poly_line_data=[],
                                  poly_lines_data=[],
                                  secondary_sections=[],
-                                 branching_level=0,
-                                 max_branching_level=nmv.consts.Math.INFINITY,
+                                 branching_order=0,
+                                 max_branching_order=nmv.consts.Math.INFINITY,
                                  repair_morphology=False,
                                  ignore_branching_samples=False,
                                  roots_connection=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA):
@@ -147,9 +147,9 @@ def build_arbor_as_single_object(section, name,
         A list that should contain all the poly-lines.
     :param secondary_sections:
         A list of the secondary sections along the arbor.
-    :param branching_level:
+    :param branching_order:
         Current branching level.
-    :param max_branching_level:
+    :param max_branching_order:
         Maximum branching level the section can grow up to, infinity.
     :param name:
         Section name.
@@ -166,11 +166,11 @@ def build_arbor_as_single_object(section, name,
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Verify if this is the last section along the arbor or not
     is_last_section = False
-    if branching_level >= max_branching_level or not section.has_children():
+    if branching_order >= max_branching_order or not section.has_children():
         is_last_section = True
 
     # Verify if this a continuous section or not
@@ -193,7 +193,7 @@ def build_arbor_as_single_object(section, name,
 
     # If the section does not have any children, then draw the section and clean the
     # poly_line_data list
-    if (not section.has_children()) or (branching_level >= max_branching_level):
+    if (not section.has_children()) or (branching_order >= max_branching_order):
 
         # Add the section object to the sections_objects list
         poly_lines_data.append(copy.deepcopy(poly_line_data))
@@ -211,5 +211,5 @@ def build_arbor_as_single_object(section, name,
         build_arbor_as_single_object(
             section=child, name=name, poly_line_data=poly_line_data,
             poly_lines_data=poly_lines_data, secondary_sections=secondary_sections,
-            branching_level=branching_level, max_branching_level=max_branching_level,
+            branching_order=branching_order, max_branching_order=max_branching_order,
             repair_morphology=repair_morphology, roots_connection=roots_connection)

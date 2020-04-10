@@ -270,17 +270,17 @@ class ProgressiveBuilder:
     def draw_section_terminals_as_spheres(self,
                                           root,
                                           material_list=None,
-                                          branching_level=0,
-                                          max_branching_level=nmv.consts.Math.INFINITY):
+                                          branching_order=0,
+                                          max_branching_order=nmv.consts.Math.INFINITY):
         """Draws the terminals of a given arbor as spheres.
 
         :param root:
             Arbor root.
         :param material_list:
             Sphere material.
-        :param branching_level:
+        :param branching_order:
             Current branching level.
-        :param max_branching_level:
+        :param max_branching_order:
             Maximum branching level the section can grow up to: infinity.
         """
 
@@ -293,10 +293,10 @@ class ProgressiveBuilder:
             root.samples[0].radius * 1.025, location=root.samples[0].point, subdivisions=3))
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Make sure that the arbor exist
@@ -309,7 +309,7 @@ class ProgressiveBuilder:
             for child in root.children:
                 self.draw_section_terminals_as_spheres(
                     child, material_list=material_list,
-                    branching_level=branching_level, max_branching_level=max_branching_level)
+                    branching_order=branching_order, max_branching_order=max_branching_order)
 
     ################################################################################################
     # @link_and_shade_articulation_spheres
@@ -345,7 +345,7 @@ class ProgressiveBuilder:
         if not self.options.morphology.ignore_axon:
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 material_list=self.articulation_materials)
 
         # Draw the basal dendrites joints
@@ -359,7 +359,7 @@ class ProgressiveBuilder:
                     # Draw the basal dendrites as a set connected sections
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.articulation_materials)
 
         # Draw the apical dendrite joints
@@ -367,7 +367,7 @@ class ProgressiveBuilder:
             apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.articulation_materials)
 
         # Link and shade the articulation spheres

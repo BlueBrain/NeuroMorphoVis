@@ -132,7 +132,7 @@ class DendrogramBuilder:
 
         # Compute the dendrogram of the morphology
         nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 4)
+            morphology=self.morphology, delta=maximum_radius * 8)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -144,20 +144,39 @@ class DendrogramBuilder:
                     poly_lines_data=skeleton_poly_lines,
                     max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
-        if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.dendrites is not None:
-                for basal_dendrite in self.morphology.dendrites:
-                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
-                        section=basal_dendrite,
-                        poly_lines_data=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
-
         if not self.options.morphology.ignore_axon:
             if self.morphology.axon is not None:
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                     section=self.morphology.axon,
                     poly_lines_data=skeleton_poly_lines,
                     max_branching_order=self.options.morphology.axon_branch_order)
+
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.dendrites is not None:
+                for basal_dendrite in self.morphology.dendrites:
+
+                    # If the basal dendrites list contains any axons
+                    if 'Axon' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_axon:
+                            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                                section=basal_dendrite,
+                                poly_lines_data=skeleton_poly_lines,
+                                max_branching_order=self.options.morphology.axon_branch_order)
+
+                    # If the basal dendrites list contains any apicals
+                    elif 'Apical' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_apical_dendrite:
+                            nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                                section=basal_dendrite,
+                                poly_lines_data=skeleton_poly_lines,
+                                max_branching_order=self.options.morphology.apical_dendrites_branch_order)
+
+                    # This is a basal dendrite
+                    else:
+                        nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                            section=basal_dendrite,
+                            poly_lines_data=skeleton_poly_lines,
+                            max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
         # The soma to stems line
         center = nmv.skeleton.add_soma_to_stems_line(

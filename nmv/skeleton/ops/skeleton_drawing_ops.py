@@ -131,8 +131,8 @@ def extrude_connected_sections(section,
                                section_objects,
                                poly_line_data=[],
                                secondary_sections=[],
-                               branching_level=0,
-                               max_branching_level=nmv.consts.Math.INFINITY,
+                               branching_order=0,
+                               max_branching_order=nmv.consts.Math.INFINITY,
                                material_list=None,
                                bevel_object=None,
                                fixed_radius=None,
@@ -154,9 +154,9 @@ def extrude_connected_sections(section,
         full branch.
     :param secondary_sections:
         A list of the secondary sections along the arbor.
-    :param branching_level:
+    :param branching_order:
         Current branching level.
-    :param max_branching_level:
+    :param max_branching_order:
         Maximum branching level the section can grow up to, infinity.
     :param name:
         Section name.
@@ -189,11 +189,11 @@ def extrude_connected_sections(section,
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Verify if this is the last section along the arbor or not
     is_last_section = False
-    if branching_level >= max_branching_level or not section.has_children():
+    if branching_order >= max_branching_order or not section.has_children():
         is_last_section = True
 
     # Verify if this a continuous section or not
@@ -213,7 +213,7 @@ def extrude_connected_sections(section,
 
     # If the section does not have any children, then draw the section and clean the
     # poly_line_data list
-    if not section.has_children() or branching_level >= max_branching_level:
+    if not section.has_children() or branching_order >= max_branching_order:
 
         # Section material
         section_material = None
@@ -257,8 +257,8 @@ def extrude_connected_sections(section,
             section_objects=section_objects,
             poly_line_data=poly_line_data,
             secondary_sections=secondary_sections,
-            branching_level=branching_level,
-            max_branching_level=max_branching_level,
+            branching_order=branching_order,
+            max_branching_order=max_branching_order,
             material_list=material_list,
             bevel_object=bevel_object,
             fixed_radius=fixed_radius,
@@ -276,14 +276,14 @@ def extrude_connected_sections(section,
 def get_connected_sections_poly_lines_recursively(section,
                                                   poly_lines=[],
                                                   poly_line_samples=[],
-                                                  branching_level=0,
-                                                  max_branching_level=nmv.consts.Math.INFINITY):
+                                                  branching_order=0,
+                                                  max_branching_order=nmv.consts.Math.INFINITY):
     # Ignore the drawing if the section is None
     if section is None:
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Get a list of all the poly-line samples that corresponds to the given section
     section_poly_line_samples = nmv.skeleton.ops.get_section_poly_line(section=section)
@@ -292,7 +292,7 @@ def get_connected_sections_poly_lines_recursively(section,
     poly_line_samples.extend(section_poly_line_samples)
 
     # If the section does not have any children, then draw the section and clean the list
-    if not section.has_children() or branching_level >= max_branching_level:
+    if not section.has_children() or branching_order >= max_branching_order:
 
         # Polyline name
         poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
@@ -315,20 +315,20 @@ def get_connected_sections_poly_lines_recursively(section,
     for child in section.children:
         get_connected_sections_poly_lines_recursively(
             section=child, poly_lines=poly_lines, poly_line_samples=poly_line_samples,
-            branching_level=branching_level, max_branching_level=max_branching_level)
+            branching_order=branching_order, max_branching_order=max_branching_order)
 
 
 def get_connected_sections_poly_line_recursively(section,
                                                  poly_lines_data=[],
                                                  poly_line_data=[],
-                                                 branching_level=0,
-                                                 max_branching_level=nmv.consts.Math.INFINITY):
+                                                 branching_order=0,
+                                                 max_branching_order=nmv.consts.Math.INFINITY):
     # Ignore the drawing if the section is None
     if section is None:
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Get a list of all the poly-line that corresponds to the given section
     section_poly_line = nmv.skeleton.ops.get_section_poly_line(section=section)
@@ -337,7 +337,7 @@ def get_connected_sections_poly_line_recursively(section,
     poly_line_data.extend(section_poly_line)
 
     # If the section does not have any children, then draw the section and clean the list
-    if not section.has_children() or branching_level >= max_branching_level:
+    if not section.has_children() or branching_order >= max_branching_order:
 
         # Polyline name
         poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
@@ -355,13 +355,13 @@ def get_connected_sections_poly_line_recursively(section,
     for child in section.children:
         get_connected_sections_poly_line_recursively(
             section=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
-            branching_level=branching_level, max_branching_level=max_branching_level)
+            branching_order=branching_order, max_branching_order=max_branching_order)
 
 
 def draw_connected_sections_poly_lines(arbor,
                                        bevel_object,
                                        caps=True,
-                                       max_branching_level=nmv.consts.Math.INFINITY):
+                                       max_branching_order=nmv.consts.Math.INFINITY):
 
     # A list that will contain all the poly-lines gathered from traversing the arbor tree with
     # depth-first traversal
@@ -369,7 +369,7 @@ def draw_connected_sections_poly_lines(arbor,
 
     # Construct the poly-lines
     get_connected_sections_poly_line_recursively(
-        section=arbor, poly_lines_data=poly_lines_data, max_branching_level=max_branching_level)
+        section=arbor, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order)
 
     # A list that will contain all the drawn poly-lines to be able to access them later, although
     # we can access them by name
@@ -393,8 +393,8 @@ def draw_connected_sections(section, name,
                             poly_line_data=[],
                             sections_objects=[],
                             secondary_sections=[],
-                            branching_level=0,
-                            max_branching_level=nmv.consts.Math.INFINITY,
+                            branching_order=0,
+                            max_branching_order=nmv.consts.Math.INFINITY,
                             material_list=None,
                             bevel_object=None,
                             fixed_radius=None,
@@ -416,9 +416,9 @@ def draw_connected_sections(section, name,
         A list that should contain all the drawn section objects.
     :param secondary_sections:
         A list of the secondary sections along the arbor.
-    :param branching_level:
+    :param branching_order:
         Current branching level.
-    :param max_branching_level:
+    :param max_branching_order:
         Maximum branching level the section can grow up to, infinity.
     :param name:
         Section name.
@@ -451,11 +451,11 @@ def draw_connected_sections(section, name,
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Verify if this is the last section along the arbor or not
     is_last_section = False
-    if branching_level >= max_branching_level or not section.has_children():
+    if branching_order >= max_branching_order or not section.has_children():
         is_last_section = True
 
     # Verify if this a continuous section or not
@@ -478,7 +478,7 @@ def draw_connected_sections(section, name,
 
     # If the section does not have any children, then draw the section and clean the
     # poly_line_data list
-    if (not section.has_children()) or (branching_level >= max_branching_level):
+    if (not section.has_children()) or (branching_order >= max_branching_order):
 
         # Section material
         section_material = None
@@ -527,7 +527,7 @@ def draw_connected_sections(section, name,
         draw_connected_sections(
             section=child, name=name, poly_line_data=poly_line_data,
             sections_objects=sections_objects, secondary_sections=secondary_sections,
-            branching_level=branching_level, max_branching_level=max_branching_level,
+            branching_order=branching_order, max_branching_order=max_branching_order,
             material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
             transform=transform, repair_morphology=repair_morphology, caps=caps,
             render_frame=render_frame, frame_destination=frame_destination, camera=camera,
@@ -542,8 +542,8 @@ def draw_disconnected_skeleton_sections(section,
                                         poly_line_data=[],
                                         sections_objects=[],
                                         secondary_sections=[],
-                                        branching_level=0,
-                                        max_branching_level=nmv.consts.Math.INFINITY,
+                                        branching_order=0,
+                                        max_branching_order=nmv.consts.Math.INFINITY,
                                         material_list=None,
                                         bevel_object=None,
                                         fixed_radius=None,
@@ -565,9 +565,9 @@ def draw_disconnected_skeleton_sections(section,
         A list that should contain all the drawn section objects.
     :param secondary_sections:
         A list of the secondary sections along the arbor.
-    :param branching_level:
+    :param branching_order:
         Current branching level.
-    :param max_branching_level:
+    :param max_branching_order:
         Maximum branching level the section can grow up to, infinity.
     :param name:
         Section name.
@@ -602,11 +602,11 @@ def draw_disconnected_skeleton_sections(section,
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Verify if this is the last section along the arbor or not
     is_last_section = False
-    if branching_level >= max_branching_level or not section.has_children():
+    if branching_order >= max_branching_order or not section.has_children():
         is_last_section = True
 
     # Verify if this a continuous section or not
@@ -626,7 +626,7 @@ def draw_disconnected_skeleton_sections(section,
 
     # If the section does not have any children, then draw the section and clean the
     # poly_line_data list
-    if not section.has_children() or branching_level >= max_branching_level:
+    if not section.has_children() or branching_order >= max_branching_order:
 
         # Section material
         section_material = None
@@ -677,8 +677,8 @@ def draw_disconnected_skeleton_sections(section,
             poly_line_data=poly_line_data,
             sections_objects=sections_objects,
             secondary_sections=secondary_sections,
-            branching_level=branching_level,
-            max_branching_level=max_branching_level,
+            branching_order=branching_order,
+            max_branching_order=max_branching_order,
             material_list=material_list,
             bevel_object=bevel_object,
             fixed_radius=fixed_radius,

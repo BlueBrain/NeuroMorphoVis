@@ -233,8 +233,8 @@ class SkeletonBuilder:
                                           root,
                                           material_list=None,
                                           sphere_objects=[],
-                                          branching_level=0,
-                                          max_branching_level=nmv.consts.Math.INFINITY):
+                                          branching_order=0,
+                                          max_branching_order=nmv.consts.Math.INFINITY):
         """Draws the terminals of a given arbor as spheres.
 
         :param root:
@@ -243,9 +243,9 @@ class SkeletonBuilder:
             Sphere material.
         :param sphere_objects:
             A list of all the drawn spheres.
-        :param branching_level:
+        :param branching_order:
             Current branching level.
-        :param max_branching_level:
+        :param max_branching_order:
             Maximum branching level the section can grow up to: infinity.
         """
 
@@ -254,10 +254,10 @@ class SkeletonBuilder:
             return
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Make sure that the arbor exist
@@ -276,7 +276,7 @@ class SkeletonBuilder:
             for child in root.children:
                 self.draw_section_terminals_as_spheres(
                     child, sphere_objects=sphere_objects, material_list=material_list,
-                    branching_level=branching_level, max_branching_level=max_branching_level)
+                    branching_order=branching_order, max_branching_order=max_branching_order)
 
     ################################################################################################
     # @draw_sections_as_spheres
@@ -286,16 +286,16 @@ class SkeletonBuilder:
                                  name,
                                  material_list=[],
                                  segments_objects=[],
-                                 branching_level=0,
-                                 max_branching_level=nmv.consts.Math.INFINITY):
+                                 branching_order=0,
+                                 max_branching_order=nmv.consts.Math.INFINITY):
         """Draw the section as a list of spheres.
 
         :param root:
         :param name:
         :param material_list:
         :param segments_objects:
-        :param branching_level:
-        :param max_branching_level:
+        :param branching_order:
+        :param max_branching_order:
         :param bevel_object:
         :return:
         """
@@ -305,10 +305,10 @@ class SkeletonBuilder:
             return
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Make sure that the arbor exist
@@ -324,8 +324,8 @@ class SkeletonBuilder:
             for child in root.children:
                 self.draw_sections_as_spheres(
                     root=child,
-                    branching_level=branching_level,
-                    max_branching_level=max_branching_level,
+                    branching_order=branching_order,
+                    max_branching_order=max_branching_order,
                     name=name,
                     material_list=material_list,
                     segments_objects=segments_objects)
@@ -338,8 +338,8 @@ class SkeletonBuilder:
                                               name,
                                               material_list=[],
                                               segments_objects=[],
-                                              branching_level=0,
-                                              max_branching_level=nmv.consts.Math.INFINITY,
+                                              branching_order=0,
+                                              max_branching_order=nmv.consts.Math.INFINITY,
                                               bevel_object=None):
         """Draw the sections in each arbor as a series of disconnected segments, where each segment
         is represented by a tube.
@@ -352,9 +352,9 @@ class SkeletonBuilder:
             Arbor colors.
         :param segments_objects:
             The drawn list of segments.
-        :param branching_level:
+        :param branching_order:
             Current branching level.
-        :param max_branching_level:
+        :param max_branching_order:
             Maximum branching level the section can grow up to: infinity.
         :param bevel_object:
             A given bevel object to scale the arbor sections.
@@ -365,10 +365,10 @@ class SkeletonBuilder:
             return
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Make sure that the arbor exist
@@ -389,8 +389,8 @@ class SkeletonBuilder:
             for child in root.children:
                 self.draw_section_as_disconnected_segments(
                     root=child,
-                    branching_level=branching_level,
-                    max_branching_level=max_branching_level,
+                    branching_order=branching_order,
+                    max_branching_order=max_branching_order,
                     name=name,
                     material_list=material_list,
                     bevel_object=bevel_object,
@@ -456,8 +456,8 @@ class SkeletonBuilder:
                                            name,
                                            material_list=[],
                                            sections_objects=[],
-                                           branching_level=0,
-                                           max_branching_level=nmv.consts.Math.INFINITY,
+                                           branching_order=0,
+                                           max_branching_order=nmv.consts.Math.INFINITY,
                                            bevel_object=None):
         """Draws the section as a continuous, yet, disconnected and independent object from the
         rest of the sections of the morphology.
@@ -470,9 +470,9 @@ class SkeletonBuilder:
             Arbor colors.
         :param sections_objects:
             A list of all the drawn sections in the morphology.
-        :param branching_level:
+        :param branching_order:
             Current branching level.
-        :param max_branching_level:
+        :param max_branching_order:
             Maximum branching level set by the user.
         :param bevel_object:
             A given bevel object to scale the arbor sections.
@@ -482,10 +482,10 @@ class SkeletonBuilder:
         if root is not None:
 
             # Increment the branching level
-            branching_level += 1
+            branching_order += 1
 
             # Stop drawing at the maximum branching level
-            if branching_level > max_branching_level:
+            if branching_order > max_branching_order:
                 return
 
             # Draw the section as an independent disconnected object
@@ -502,8 +502,8 @@ class SkeletonBuilder:
                     root=child,
                     name=name,
                     material_list=material_list,
-                    branching_level=branching_level,
-                    max_branching_level=max_branching_level,
+                    branching_order=branching_order,
+                    max_branching_order=max_branching_order,
                     bevel_object=bevel_object,
                     sections_objects=sections_objects)
 
@@ -529,7 +529,7 @@ class SkeletonBuilder:
                 self.draw_sections_as_spheres(
                     self.morphology.axon,
                     name=nmv.consts.Skeleton.AXON_PREFIX,
-                    max_branching_level=self.options.morphology.axon_branch_order,
+                    max_branching_order=self.options.morphology.axon_branch_order,
                     material_list=self.axon_materials,
                     segments_objects=axon_segments_objects)
 
@@ -559,7 +559,7 @@ class SkeletonBuilder:
                     dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_sections_as_spheres(
                         basal_dendrite, name=dendrite_name,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.basal_dendrites_materials,
                         segments_objects=basal_dendrites_segments_objects)
 
@@ -589,7 +589,7 @@ class SkeletonBuilder:
                 self.draw_sections_as_spheres(
                     self.morphology.apical_dendrite,
                     name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     material_list=self.apical_dendrite_materials,
                     segments_objects=apical_dendrite_segments_objects)
 
@@ -633,7 +633,7 @@ class SkeletonBuilder:
             self.draw_section_as_disconnected_segments(
                 self.morphology.axon,
                 name=nmv.consts.Skeleton.AXON_PREFIX,
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
                 segments_objects=axon_segments_objects)
@@ -653,7 +653,7 @@ class SkeletonBuilder:
                     dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     self.draw_section_as_disconnected_segments(
                         basal_dendrite, name=dendrite_name,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
                         segments_objects=basal_dendrites_segments_objects)
@@ -667,7 +667,7 @@ class SkeletonBuilder:
             self.draw_section_as_disconnected_segments(
                 self.morphology.apical_dendrite,
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,
                 segments_objects=apical_dendrite_segments_objects)
@@ -716,7 +716,7 @@ class SkeletonBuilder:
                 name=nmv.consts.Skeleton.AXON_PREFIX,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 sections_objects=axon_sections_objects)
 
             # Extend the morphology objects list
@@ -730,7 +730,7 @@ class SkeletonBuilder:
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 sections_objects=apical_dendrite_sections_objects)
 
             # Extend the morphology objects list
@@ -751,7 +751,7 @@ class SkeletonBuilder:
                         name=dendrite_prefix,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         sections_objects=basal_dendrites_sections_objects)
 
                 # Extend the morphology objects list
@@ -791,7 +791,7 @@ class SkeletonBuilder:
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
                 sphere_objects=axon_spheres_objects,
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 material_list=self.articulation_materials)
 
             # Extend the morphology objects list
@@ -809,7 +809,7 @@ class SkeletonBuilder:
                     self.draw_section_terminals_as_spheres(
                         root=basal_dendrite,
                         sphere_objects=basal_dendrites_spheres_objects,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         material_list=self.articulation_materials)
 
                 # Extend the morphology objects list
@@ -821,7 +821,7 @@ class SkeletonBuilder:
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
                 sphere_objects=apical_dendrite_spheres_objects,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.articulation_materials)
 
             # Extend the morphology objects list
@@ -899,7 +899,7 @@ class SkeletonBuilder:
                     dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=dendrite_prefix,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
@@ -924,7 +924,7 @@ class SkeletonBuilder:
                 apical_dendrite_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.apical_dendrite),
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_list=self.apical_dendrite_materials,
                     bevel_object=bevel_object,
@@ -950,7 +950,7 @@ class SkeletonBuilder:
                 axon_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
                     section=copy.deepcopy(self.morphology.axon),
-                    max_branching_level=self.options.morphology.axon_branch_order,
+                    max_branching_order=self.options.morphology.axon_branch_order,
                     name=nmv.consts.Skeleton.AXON_PREFIX, material_list=self.axon_materials,
                     bevel_object=bevel_object,
                     repair_morphology=repair_morphology, caps=True,
@@ -1030,7 +1030,7 @@ class SkeletonBuilder:
                     name=nmv.consts.Skeleton.AXON_PREFIX,
                     poly_line_data=arbor_poly_line_data,
                     poly_lines_data=morphology_poly_lines_data,
-                    max_branching_level=self.options.morphology.axon_branch_order,
+                    max_branching_order=self.options.morphology.axon_branch_order,
                     repair_morphology=repair_morphology,
                     roots_connection=self.options.morphology.arbors_to_soma_connection)
 
@@ -1053,7 +1053,7 @@ class SkeletonBuilder:
                         name=dendrite_prefix,
                         poly_line_data=arbor_poly_line_data,
                         poly_lines_data=morphology_poly_lines_data,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         repair_morphology=repair_morphology,
                         roots_connection=self.options.morphology.arbors_to_soma_connection)
 
@@ -1072,7 +1072,7 @@ class SkeletonBuilder:
                     name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     poly_line_data=arbor_poly_line_data,
                     poly_lines_data=morphology_poly_lines_data,
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     repair_morphology=repair_morphology,
                     roots_connection=self.options.morphology.arbors_to_soma_connection)
 
@@ -1140,7 +1140,7 @@ class SkeletonBuilder:
             axon_sections_objects = []
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.axon),
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 name=nmv.consts.Skeleton.AXON_PREFIX,
                 material_list=self.axon_materials,
                 bevel_object=bevel_object,
@@ -1169,7 +1169,7 @@ class SkeletonBuilder:
                     dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
                         section=copy.deepcopy(basal_dendrite),
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=dendrite_prefix,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
@@ -1190,7 +1190,7 @@ class SkeletonBuilder:
             apical_dendrite_sections_objects = []
             nmv.skeleton.ops.draw_connected_sections(
                 section=copy.deepcopy(self.morphology.apical_dendrite),
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                 material_list=self.apical_dendrite_materials,
                 bevel_object=bevel_object,

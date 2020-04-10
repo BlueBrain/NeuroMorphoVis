@@ -80,7 +80,7 @@ def apply_operation_to_arbor_conditionally(*args):
     current_branching_level = args[0]
 
     # The max branching level is the second argument
-    max_branching_level = args[1]
+    max_branching_order = args[1]
 
     # The section is the third argument
     section = args[2]
@@ -93,7 +93,7 @@ def apply_operation_to_arbor_conditionally(*args):
 
     # Add the branching levels
     section_args.append(current_branching_level)
-    section_args.append(max_branching_level)
+    section_args.append(max_branching_order)
 
     # Add the section root
     section_args.append(section)
@@ -116,7 +116,7 @@ def apply_operation_to_arbor_conditionally(*args):
 
             # Add the branching levels
             section_args.append(current_branching_level)
-            section_args.append(max_branching_level)
+            section_args.append(max_branching_order)
 
             # Add the child
             section_args.append(child)

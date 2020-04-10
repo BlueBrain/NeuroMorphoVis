@@ -336,6 +336,22 @@ def add_soma_to_stems_line(morphology,
                            ignore_basal_dendrites=True,
                            ignore_axon=True):
 
+    """Create the dendrogram connection from the soma to the stems.
+
+    :param morphology:
+        A given morphology.
+    :param poly_lines_data:
+        All the polyline data that reflect the dendrogram.
+    :param ignore_apical_dendrite:
+        A flag to indicate whether to include the apical dendrite or not.
+    :param ignore_basal_dendrites:
+        A flag to indicate whether to include the basal dendrites or not.
+    :param ignore_axon:
+        A flag to indicate whether to include the axon or not.
+    :return:
+        The center of the drawn line to connect it to the dendrogram body.
+    """
+
     x_values = list()
     radii = list()
 

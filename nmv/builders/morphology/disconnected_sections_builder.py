@@ -127,8 +127,8 @@ class DisconnectedSectionsBuilder:
     def construct_tree_poly_lines(self,
                                   root,
                                   poly_lines_list=[],
-                                  branching_level=0,
-                                  max_branching_level=nmv.consts.Math.INFINITY,
+                                  branching_order=0,
+                                  max_branching_order=nmv.consts.Math.INFINITY,
                                   prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                                   material_start_index=0,
                                   highlight=True):
@@ -138,9 +138,9 @@ class DisconnectedSectionsBuilder:
             Arbor root, or children sections.
         :param poly_lines_list:
             A list that will combine all the constructed poly-lines.
-        :param branching_level:
+        :param branching_order:
             Current branching level of the arbor.
-        :param max_branching_level:
+        :param max_branching_order:
             The maximum branching level given by the user.
         :param prefix:
             The prefix that is prepended to the name of the poly-line.
@@ -153,21 +153,21 @@ class DisconnectedSectionsBuilder:
             return
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Return if we exceed the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Adjust the material
         if highlight:
-            material_index = material_start_index + (branching_level % 2)
+            material_index = material_start_index + (branching_order % 2)
         else:
             material_index = nmv.enums.Color.GRAY_MATERIAL_INDEX
 
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(
-            name='%s_%d' % (prefix, branching_level),
+            name='%s_%d' % (prefix, branching_order),
             samples=nmv.skeleton.get_section_poly_line(section=root),
             material_index=material_index)
 
@@ -178,8 +178,8 @@ class DisconnectedSectionsBuilder:
         for child in root.children:
             self.construct_tree_poly_lines(root=child,
                                            poly_lines_list=poly_lines_list,
-                                           branching_level=branching_level,
-                                           max_branching_level=max_branching_level,
+                                           branching_order=branching_order,
+                                           max_branching_order=max_branching_order,
                                            material_start_index=material_start_index,
                                            highlight=highlight)
 
@@ -242,17 +242,17 @@ class DisconnectedSectionsBuilder:
     def draw_section_terminals_as_spheres(self,
                                           root,
                                           material_list=None,
-                                          branching_level=0,
-                                          max_branching_level=nmv.consts.Math.INFINITY):
+                                          branching_order=0,
+                                          max_branching_order=nmv.consts.Math.INFINITY):
         """Draws the terminals of a given arbor as spheres.
 
         :param root:
             Arbor root.
         :param material_list:
             Sphere material.
-        :param branching_level:
+        :param branching_order:
             Current branching level.
-        :param max_branching_level:
+        :param max_branching_order:
             Maximum branching level the section can grow up to: infinity.
         """
 
@@ -265,10 +265,10 @@ class DisconnectedSectionsBuilder:
             root.samples[0].radius * 1.025, location=root.samples[0].point, subdivisions=3))
 
         # Increment the branching level
-        branching_level += 1
+        branching_order += 1
 
         # Stop drawing at the maximum branching level
-        if branching_level > max_branching_level:
+        if branching_order > max_branching_order:
             return
 
         # Make sure that the arbor exist
@@ -281,7 +281,7 @@ class DisconnectedSectionsBuilder:
             for child in root.children:
                 self.draw_section_terminals_as_spheres(
                     child, material_list=material_list,
-                    branching_level=branching_level, max_branching_level=max_branching_level)
+                    branching_order=branching_order, max_branching_order=max_branching_order)
 
     ################################################################################################
     # @link_and_shade_articulation_spheres
@@ -316,7 +316,7 @@ class DisconnectedSectionsBuilder:
         if not self.options.morphology.ignore_axon:
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.axon,
-                max_branching_level=self.options.morphology.axon_branch_order,
+                max_branching_order=self.options.morphology.axon_branch_order,
                 material_list=self.articulation_materials)
 
         # Draw the basal dendrites joints
@@ -325,20 +325,37 @@ class DisconnectedSectionsBuilder:
             # Ensure tha existence of basal dendrites
             if self.morphology.dendrites is not None:
 
-                basal_dendrites_spheres_objects = []
+                # Draw the basal dendrites as a set connected sections
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
-                    # Draw the basal dendrites as a set connected sections
-                    self.draw_section_terminals_as_spheres(
-                        root=basal_dendrite,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.articulation_materials)
+
+                    # If the basal dendrites list contains any axons
+                    if 'Axon' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_axon:
+                            self.draw_section_terminals_as_spheres(
+                                root=basal_dendrite,
+                                max_branching_order=self.options.morphology.axon_branch_order,
+                                material_list=self.articulation_materials)
+
+                    # If the basal dendrites list contains any apicals
+                    elif 'Apical' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_apical_dendrite:
+                            self.draw_section_terminals_as_spheres(
+                                root=basal_dendrite,
+                                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                                material_list=self.articulation_materials)
+
+                    # This is a basal
+                    else:
+                        self.draw_section_terminals_as_spheres(
+                            root=basal_dendrite,
+                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                            material_list=self.articulation_materials)
 
         # Draw the apical dendrite joints
         if not self.options.morphology.ignore_apical_dendrite:
-            apical_dendrite_spheres_objects = []
             self.draw_section_terminals_as_spheres(
                 root=self.morphology.apical_dendrite,
-                max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                 material_list=self.articulation_materials)
 
         # Link and shade the articulation spheres
@@ -386,7 +403,7 @@ class DisconnectedSectionsBuilder:
                 self.construct_tree_poly_lines(
                     root=self.morphology.apical_dendrite,
                     poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
 
@@ -397,8 +414,8 @@ class DisconnectedSectionsBuilder:
                 self.construct_tree_poly_lines(
                     root=self.morphology.axon,
                     poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.axon_branch_order,
-                    prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                    max_branching_order=self.options.morphology.axon_branch_order,
+                    prefix=nmv.consts.Skeleton.AXON_PREFIX,
                     material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
 
         # Basal dendrites
@@ -406,12 +423,35 @@ class DisconnectedSectionsBuilder:
             if self.morphology.dendrites is not None:
                 for i, basal_dendrite in enumerate(self.morphology.dendrites):
                     nmv.logger.detail('Basal dendrite [%d]' % i)
-                    self.construct_tree_poly_lines(
-                        root=basal_dendrite,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
-                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+
+                    # If the basal dendrites list contains any axons
+                    if 'Axon' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_axon:
+                            self.construct_tree_poly_lines(
+                                root=basal_dendrite,
+                                poly_lines_list=skeleton_poly_lines,
+                                max_branching_order=self.options.morphology.axon_branch_order,
+                                prefix=nmv.consts.Skeleton.AXON_PREFIX,
+                                material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+
+                    # If the basal dendrites list contains any apicals
+                    elif 'Apical' in basal_dendrite.label:
+                        if not self.options.morphology.ignore_apical_dendrite:
+                            self.construct_tree_poly_lines(
+                                root=basal_dendrite,
+                                poly_lines_list=skeleton_poly_lines,
+                                max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                                prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
+                                material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+
+                    # This is a basal dendrite
+                    else:
+                        self.construct_tree_poly_lines(
+                            root=basal_dendrite,
+                            poly_lines_list=skeleton_poly_lines,
+                            max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                            prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                            material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -436,7 +476,6 @@ class DisconnectedSectionsBuilder:
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')
         return self.morphology_objects
-
 
 
     def draw_highlighted_arbor(self,
@@ -477,7 +516,7 @@ class DisconnectedSectionsBuilder:
                 self.construct_tree_poly_lines(
                     root=self.morphology.apical_dendrite,
                     poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.apical_dendrite_branch_order,
+                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                     prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX,
                     highlight=True if highlighted_arbor_key == 'color_apical' else False)
@@ -489,7 +528,7 @@ class DisconnectedSectionsBuilder:
                 self.construct_tree_poly_lines(
                     root=self.morphology.axon,
                     poly_lines_list=skeleton_poly_lines,
-                    max_branching_level=self.options.morphology.axon_branch_order,
+                    max_branching_order=self.options.morphology.axon_branch_order,
                     prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
                     material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX,
                     highlight=True if highlighted_arbor_key == 'color_axon' else False)
@@ -502,7 +541,7 @@ class DisconnectedSectionsBuilder:
                     self.construct_tree_poly_lines(
                         root=basal_dendrite,
                         poly_lines_list=skeleton_poly_lines,
-                        max_branching_level=self.options.morphology.basal_dendrites_branch_order,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         prefix=nmv.consts.Skeleton.AXON_PREFIX,
                         material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX,
                         highlight=True if highlighted_arbor_key == 'color_basal_%d' % i else False)

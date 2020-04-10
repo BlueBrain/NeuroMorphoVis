@@ -186,15 +186,15 @@ def get_connected_poly_line(section,
 def get_arbor_poly_lines_as_connected_sections(root,
                                                poly_lines_data=[],
                                                poly_line_data=[],
-                                               branching_level=0,
+                                               branching_order=0,
                                                connection_to_soma=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA,
-                                               max_branching_level=nmv.consts.Math.INFINITY):
+                                               max_branching_order=nmv.consts.Math.INFINITY):
     # Ignore the drawing if the section is None
     if root is None:
         return
 
     # Increment the branching level
-    branching_level += 1
+    branching_order += 1
 
     # Get a list of all the poly-line that corresponds to the given section
     section_poly_line = get_connected_poly_line(section=root, connection_to_soma=connection_to_soma)
@@ -203,7 +203,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
     poly_line_data.extend(section_poly_line)
 
     # If the section does not have any children, then draw the section and clean the list
-    if not root.has_children() or branching_level >= max_branching_level:
+    if not root.has_children() or branching_order >= max_branching_order:
 
         # Polyline name
         poly_line_name = root.label
@@ -211,9 +211,9 @@ def get_arbor_poly_lines_as_connected_sections(root,
         # Construct the poly-line
         import nmv.geometry
         poly_line = nmv.geometry.PolyLine(
-            name='%s_%d' % (poly_line_name, branching_level),
+            name='%s_%d' % (poly_line_name, branching_order),
             samples=copy.deepcopy(poly_line_data),
-            material_index=root.get_material_index() + (branching_level % 2))
+            material_index=root.get_material_index() + (branching_order % 2))
 
         # Append the polyline to the list, and copy the data before clearing the list
         poly_lines_data.append(poly_line)
@@ -228,7 +228,7 @@ def get_arbor_poly_lines_as_connected_sections(root,
     for i, child in enumerate(root.children):
         get_arbor_poly_lines_as_connected_sections(
             root=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
-            branching_level=branching_level, max_branching_level=max_branching_level)
+            branching_order=branching_order, max_branching_order=max_branching_order)
 
 
 ####################################################################################################

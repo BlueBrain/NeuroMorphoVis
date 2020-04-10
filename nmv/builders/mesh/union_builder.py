@@ -162,7 +162,7 @@ class UnionBuilder:
 
         # Construct the poly-lines
         nmv.skeleton.ops.get_connected_sections_poly_lines_recursively(
-            section=arbor, poly_lines=arbor_poly_lines, max_branching_level=max_branching_order)
+            section=arbor, poly_lines=arbor_poly_lines, max_branching_order=max_branching_order)
 
         # If the arbor not connected to the soma, then add a point at the origin
         if not connection_to_soma:
