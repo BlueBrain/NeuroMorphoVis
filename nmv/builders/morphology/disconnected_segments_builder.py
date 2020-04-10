@@ -87,7 +87,7 @@ class DisconnectedSegmentsBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.skeleton.create_skeleton_materials_and_illumination(builder=self)
+        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -188,7 +188,7 @@ class DisconnectedSegmentsBuilder:
         self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -238,10 +238,10 @@ class DisconnectedSegmentsBuilder:
         self.morphology_objects.append(morphology_object)
 
         # Draw the soma
-        nmv.builders.skeleton.draw_soma(builder=self)
+        nmv.builders.morphology.draw_soma(builder=self)
 
         # Transforming to global coordinates
-        nmv.builders.skeleton.transform_to_global_coordinates(builder=self)
+        nmv.builders.morphology.transform_to_global_coordinates(builder=self)
 
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')

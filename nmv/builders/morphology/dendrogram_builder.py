@@ -91,7 +91,7 @@ class DendrogramBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.skeleton.create_skeleton_materials_and_illumination(builder=self)
+        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -124,7 +124,7 @@ class DendrogramBuilder:
         self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
@@ -212,7 +212,7 @@ class DendrogramBuilder:
         self.morphology.create_morphology_color_palette()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(

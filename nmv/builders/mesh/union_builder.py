@@ -374,7 +374,7 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Build the soma, with the default parameters
         result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)

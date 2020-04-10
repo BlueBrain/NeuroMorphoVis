@@ -88,7 +88,7 @@ class ConnectedSectionsBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.skeleton.create_skeleton_materials_and_illumination(builder=self)
+        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -108,8 +108,18 @@ class ConnectedSectionsBuilder:
     def create_arbor_component(self,
                                arbor,
                                bevel_object,
-                               component_name,
+                               arbor_name,
                                max_branching_level):
+        """Creates a single polyline of the given arbor and add it to the morphology objects list.
+
+        :param arbor:
+        :param bevel_object:
+            Bevel object used to extrude the arbors.
+        :param arbor_name:
+            The name of the arbor.
+        :param max_branching_level:
+            The maximum branching order of the arbor.
+        """
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -122,20 +132,20 @@ class ConnectedSectionsBuilder:
             max_branching_level=max_branching_level)
 
         # Draw the poly-lines as a single object
-        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-            poly_lines=skeleton_poly_lines, object_name=component_name,
+        arbor_object = nmv.geometry.draw_poly_lines_in_single_object(
+            poly_lines=skeleton_poly_lines, object_name=arbor_name,
             edges=self.options.morphology.edges, bevel_object=bevel_object,
             materials=self.skeleton_materials)
 
         # Append it to the morphology objects
-        self.morphology_objects.append(morphology_object)
+        self.morphology_objects.append(arbor_object)
 
     ################################################################################################
     # @create_all_arbors_as_single_component
     ################################################################################################
     def create_each_arbor_as_separate_component(self,
                                                 bevel_object):
-        """Creates each arbor in the morphology as a single component.
+        """Creates each arbor in the morphology as a single separate component.
 
         :param bevel_object:
             Bevel object used to extrude the arbors.
@@ -148,7 +158,7 @@ class ConnectedSectionsBuilder:
                 nmv.logger.detail('Apical dendrite')
                 self.create_arbor_component(
                     arbor=self.morphology.apical_dendrite,
-                    bevel_object=bevel_object, component_name=self.morphology.apical_dendrite.label,
+                    bevel_object=bevel_object, arbor_name=self.morphology.apical_dendrite.label,
                     max_branching_level=self.options.morphology.apical_dendrite_branch_order)
 
         # Axon
@@ -157,7 +167,7 @@ class ConnectedSectionsBuilder:
                 nmv.logger.detail('Axon')
                 self.create_arbor_component(
                     arbor=self.morphology.axon, bevel_object=bevel_object,
-                    component_name=self.morphology.axon.label,
+                    arbor_name=self.morphology.axon.label,
                     max_branching_level=self.options.morphology.axon_branch_order)
 
         # Basal dendrites
@@ -167,7 +177,7 @@ class ConnectedSectionsBuilder:
                     nmv.logger.detail('Basal dendrite [%d]' % i)
                     self.create_arbor_component(
                         arbor=basal_dendrite, bevel_object=bevel_object,
-                        component_name=basal_dendrite.label,
+                        arbor_name=basal_dendrite.label,
                         max_branching_level=self.options.morphology.basal_dendrites_branch_order)
 
     ################################################################################################
@@ -175,7 +185,10 @@ class ConnectedSectionsBuilder:
     ################################################################################################
     def create_all_arbors_as_single_component(self,
                                               bevel_object):
-        """Creates all the arbors in the morphology as a single component
+        """Creates all the arbors in the morphology as a single component.
+
+        :param bevel_object:
+            Bevel object used to interpolate the polyline.
         """
 
         # A list of all the skeleton poly-lines
@@ -252,13 +265,6 @@ class ConnectedSectionsBuilder:
         # Plotting imports
         import numpy
         import seaborn
-        from matplotlib import font_manager
-
-        # Import the fonts
-        font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
-        font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-        for font_file in font_files:
-            font_manager.fontManager.addfont(font_file)
 
         # A handle to the figure
         figure = None
@@ -432,14 +438,25 @@ class ConnectedSectionsBuilder:
     ################################################################################################
     def draw_morphology_skeleton_with_matplotlib(self,
                                                  projection=nmv.enums.Camera.View.FRONT):
+        """Draws the morphology skeleton with matplotlib.
 
+        :param projection:
+            The view of projection of the neuron, by default front view.
+
+        :return
+            The path to the generated PDF file.
+        """
+
+        # Update the radii of the arbors according to the given options
+        nmv.logger.info('Updating radii')
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
-        nmv.logger.info('Updating Branching to Primary / Secondary')
-        nmv.builders.skeleton.update_sections_branching(builder=self)
+        nmv.logger.info('Updating branching to primary and secondary')
+        nmv.builders.morphology.update_sections_branching(builder=self)
 
         # Update the style of the arbors
+        nmv.logger.info('Updating drawing style')
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
@@ -609,14 +626,15 @@ class ConnectedSectionsBuilder:
 
         nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
 
-        nmv.logger.info('Updating Radii')
+        nmv.logger.info('Updating radii')
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
-        nmv.logger.info('Updating Branching to Primary / Secondary')
-        nmv.builders.skeleton.update_sections_branching(builder=self)
+        nmv.logger.info('Updating branching to primary and secondary')
+        nmv.builders.morphology.update_sections_branching(builder=self)
 
         # Update the style of the arbors
+        nmv.logger.info('Updating arbor style')
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
@@ -634,7 +652,7 @@ class ConnectedSectionsBuilder:
         self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Create each arbor as a separate component
         self.create_each_arbor_as_separate_component(bevel_object=bevel_object)
@@ -643,10 +661,10 @@ class ConnectedSectionsBuilder:
         # self.create_all_arbors_as_single_component(bevel_object=bevel_object)
 
         # Draw the soma
-        nmv.builders.skeleton.draw_soma(builder=self)
+        nmv.builders.morphology.draw_soma(builder=self)
 
         # Transforming to global coordinates
-        nmv.builders.skeleton.transform_to_global_coordinates(builder=self)
+        nmv.builders.morphology.transform_to_global_coordinates(builder=self)
 
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')

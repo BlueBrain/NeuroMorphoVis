@@ -104,14 +104,14 @@ def update_morphology_skeleton(builder):
 
     # Resample the sections of the morphology skeleton
     nmv.logger.info('Resampling Skeleton')
-    nmv.builders.skeleton.resample_skeleton_sections(builder=builder)
+    nmv.builders.morphology.resample_skeleton_sections(builder=builder)
 
     nmv.logger.info('Updating Radii')
     nmv.skeleton.update_arbors_radii(
         morphology=builder.morphology, morphology_options=builder.options.morphology)
 
     nmv.logger.info('Updating Branching to Primary / Secondary')
-    nmv.builders.skeleton.update_sections_branching(builder=builder)
+    nmv.builders.morphology.update_sections_branching(builder=builder)
 
     # Update the style of the arbors
     nmv.logger.info('Updating Style')

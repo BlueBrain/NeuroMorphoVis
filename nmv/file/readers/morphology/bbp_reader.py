@@ -944,9 +944,9 @@ class BBPReader:
                 nmv_morphology.dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
 
         # Update the information
-        nmv_morphology.number_loaded_axons = len(axon)
-        nmv_morphology.number_loaded_basal_dendrites = len(dendrites)
-        nmv_morphology.number_loaded_apical_dendrites = len(apical_dendrite)
+        nmv_morphology.number_loaded_axons = len(axon) if axon is not None else 0
+        nmv_morphology.number_loaded_basal_dendrites = len(dendrites) if dendrites is not None else 0
+        nmv_morphology.number_loaded_apical_dendrites = len(apical_dendrite) if apical_dendrite is not None else 0
 
         nmv_morphology.print_loaded_arbors_counts()
 

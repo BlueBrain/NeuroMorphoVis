@@ -422,11 +422,15 @@ class H5Reader:
         basal_dendrites_arbors = nmv.skeleton.ops.build_arbors_from_sections(
             basal_dendrites_sections)
 
-        for i in range(len(basal_dendrites_arbors)):
-            basal_dendrites_arbors[i].label = 'Basal Dendrite %d' % (i + 1)
+        # Clean naming
+        if basal_dendrites_arbors is not None:
+            for i in range(len(basal_dendrites_arbors)):
+                basal_dendrites_arbors[i].label = 'Basal Dendrite %d' % (i + 1)
 
-        # Compute the number of basals loaded from the morphology
-        number_loaded_basal_dendrites = len(basal_dendrites_arbors)
+            # Compute the number of basals loaded from the morphology
+            number_loaded_basal_dendrites = len(basal_dendrites_arbors)
+        else:
+            number_loaded_basal_dendrites = 0
 
         # Build the axon, or axons if the morphology has more than a single axon
         # NOTE: For consistency, if we have more than a single axon, we use the principal one and
@@ -434,14 +438,17 @@ class H5Reader:
         axons_arbors = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
 
         # Clean naming
-        if len(axons_arbors) > 1:
-            for i in range(len(axons_arbors)):
-                axons_arbors[i].label = 'Axon %d' % (i + 1)
-        else:
-            axons_arbors[0].label = 'Axon %d'
+        if axons_arbors is not None:
+            if len(axons_arbors) > 1:
+                for i in range(len(axons_arbors)):
+                    axons_arbors[i].label = 'Axon %d' % (i + 1)
+            else:
+                axons_arbors[0].label = 'Axon'
 
-        # Compute the number of axons loaded from the morphology
-        number_loaded_axons = len(axons_arbors)
+            # Compute the number of axons loaded from the morphology
+            number_loaded_axons = len(axons_arbors)
+        else:
+            number_loaded_axons = 0
 
         axon_arbor = None
         if axons_arbors is not None:
@@ -465,14 +472,17 @@ class H5Reader:
             apical_dendrites_sections)
 
         # Clean naming
-        if len(apical_dendrites_arbors) > 1:
-            for i in range(len(apical_dendrites_arbors)):
-                apical_dendrites_arbors[i].label = 'Apical Dendrite %d' % (i + 1)
-        else:
-            apical_dendrites_arbors[0].label = 'Apical Dendrite'
+        if apical_dendrites_arbors is not None:
+            if len(apical_dendrites_arbors) > 1:
+                for i in range(len(apical_dendrites_arbors)):
+                    apical_dendrites_arbors[i].label = 'Apical Dendrite %d' % (i + 1)
+            else:
+                apical_dendrites_arbors[0].label = 'Apical Dendrite'
 
-        # Compute the number of apicals loaded from the morphology
-        number_loaded_apical_dendrites = len(apical_dendrites_arbors)
+            # Compute the number of apicals loaded from the morphology
+            number_loaded_apical_dendrites = len(apical_dendrites_arbors)
+        else:
+            number_loaded_apical_dendrites = 0
 
         apical_dendrite_arbor = None
         if apical_dendrites_arbors is not None:

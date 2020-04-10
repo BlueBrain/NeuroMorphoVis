@@ -25,6 +25,7 @@ FOUR_SPACES = '    '
 SIX_SPACES = '      '
 EIGHT_SPACES = '        '
 
+
 ####################################################################################################
 # @Logger
 ####################################################################################################
@@ -71,7 +72,7 @@ class Logger:
         log_file = open(self.log_file_path, 'w')
 
         # Starting message and time
-        log_file.write('NeuroMorphoVis - Marwan Abdellah (C) Blue Brain Project / EPFL \n')
+        log_file.write('NeuroMorphoVis (c) Blue Brain Project / EPFL - Marwan Abdellah\n')
         log_file.write(datetime.datetime.now().strftime("%I:%M %p on %B %d, %Y\n"))
 
         # Close

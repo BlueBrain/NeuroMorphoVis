@@ -116,7 +116,7 @@ def resample_skeleton_sections(builder):
         A given skeleton builder.
     """
 
-    nmv.logger.info('Resampling section')
+    nmv.logger.info('Resampling sections')
 
     # The adaptive resampling is quite important to prevent breaking the structure
     if builder.options.morphology.resampling_method == \

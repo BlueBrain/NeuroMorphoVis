@@ -91,7 +91,7 @@ class SamplesBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.skeleton.create_skeleton_materials_and_illumination(builder=self)
+        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -231,7 +231,7 @@ class SamplesBuilder:
         self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.skeleton.resample_skeleton_sections(builder=self)
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Apical dendrite
         nmv.logger.info('Constructing spheres')
@@ -286,10 +286,10 @@ class SamplesBuilder:
                                                 materials_list=self.basal_dendrites_materials,
                                                 prefix=dendrite_name)
         # Draw the soma
-        nmv.builders.skeleton.draw_soma(builder=self)
+        nmv.builders.morphology.draw_soma(builder=self)
 
         # Transforming to global coordinates
-        nmv.builders.skeleton.transform_to_global_coordinates(builder=self)
+        nmv.builders.morphology.transform_to_global_coordinates(builder=self)
 
         # Return the list of the drawn morphology objects
         nmv.logger.info('Done')

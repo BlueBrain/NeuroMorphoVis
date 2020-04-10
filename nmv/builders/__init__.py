@@ -18,5 +18,5 @@
 from .soma import *
 from .mesh import *
 from .nucleus import *
-from .skeleton import *
+from .morphology import *
 from .spine import *
