@@ -154,7 +154,7 @@ class ConnectedSectionsBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
                 self.create_arbor_component(
                     arbor=self.morphology.apical_dendrite,
@@ -217,7 +217,7 @@ class ConnectedSectionsBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
 
                 # Construct the poly-line objects
@@ -549,7 +549,7 @@ class ConnectedSectionsBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
 
                 # Get the lines

@@ -409,7 +409,7 @@ class SkinningBuilder:
             nmv.logger.info('Apical dendrite')
 
             # Create the apical dendrite mesh
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
 
                 arbor_mesh = self.create_arbor_mesh(
                     arbor=self.morphology.apical_dendrite,

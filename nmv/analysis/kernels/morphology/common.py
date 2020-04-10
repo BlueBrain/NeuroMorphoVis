@@ -111,18 +111,18 @@ def compute_total_analysis_result_of_morphology(analysis_result):
 
     # Apical dendrite
     if analysis_result.apical_dendrites_result is not None:
-        for apical_dendrite_result in analysis_result.apical_dendrites_result:
-            analysis_result.morphology_result += apical_dendrite_result
+        for result in analysis_result.apical_dendrites_result:
+            analysis_result.morphology_result += result
 
     # Basal dendrites
     if analysis_result.basal_dendrites_result is not None:
-        for basal_dendrite_result in analysis_result.basal_dendrites_result:
-            analysis_result.morphology_result += basal_dendrite_result
+        for result in analysis_result.basal_dendrites_result:
+            analysis_result.morphology_result += result
 
     # Axon
     if analysis_result.axons_result is not None:
-        for axon_result in analysis_result.axons_result:
-            analysis_result.morphology_result += axon_result
+        for result in analysis_result.axons_result:
+            analysis_result.morphology_result += result
 
 
 ####################################################################################################

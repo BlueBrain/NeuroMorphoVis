@@ -150,22 +150,25 @@ def apply_operation_to_morphology(*args):
     # Apical dendrite
     if morphology.has_apical_dendrites():
 
-        # Construct arbor arguments list
-        arbor_args = [morphology.apical_dendrite]
-        for i in range(1, len(args)):
-            arbor_args.append(args[i])
+        # Dendrite by dendrite
+        for arbor in morphology.apical_dendrites:
 
-        # Apply the operation/filter to the arbor
-        apply_operation_to_arbor(*arbor_args)
+            # Construct arbor arguments list
+            arbor_args = [arbor]
+            for i in range(1, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            apply_operation_to_arbor(*arbor_args)
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
 
         # Dendrite by dendrite
-        for dendrite in morphology.basal_dendrites:
+        for arbor in morphology.basal_dendrites:
 
             # Construct arbor arguments list
-            arbor_args = [dendrite]
+            arbor_args = [arbor]
             for i in range(1, len(args)):
                 arbor_args.append(args[i])
 
@@ -175,13 +178,16 @@ def apply_operation_to_morphology(*args):
     # Axon
     if morphology.has_axons():
 
-        # Construct arbor arguments list
-        arbor_args = [morphology.axon]
-        for i in range(1, len(args)):
-            arbor_args.append(args[i])
+        # Dendrite by dendrite
+        for arbor in morphology.axons:
 
-        # Apply the operation/filter to the arbor
-        apply_operation_to_arbor(*arbor_args)
+            # Construct arbor arguments list
+            arbor_args = [arbor]
+            for i in range(1, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            apply_operation_to_arbor(*arbor_args)
 
 
 ####################################################################################################

@@ -237,7 +237,7 @@ class SamplesBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing spheres')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
                 apical_dendrite_spheres = list()
                 self.draw_sections_as_spheres(

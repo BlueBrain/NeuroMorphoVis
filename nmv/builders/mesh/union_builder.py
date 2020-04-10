@@ -249,7 +249,7 @@ class UnionBuilder:
                     connection_to_soma=connection_to_soma, soft=soft)
 
         # Draw the apical dendrite, if exists
-        if self.morphology.apical_dendrite is not None:
+        if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
                 nmv.logger.log('\t * Apical dendrite')
 

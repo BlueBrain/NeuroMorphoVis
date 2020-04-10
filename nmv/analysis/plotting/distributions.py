@@ -79,23 +79,23 @@ def plot_per_arbor_result(analysis_results,
     # Apical dendrite
     if analysis_results.apical_dendrites_result is not None:
         for i, result in enumerate(analysis_results.apical_dendrites_result):
-            x_data.append(morphology.apical_dendrites[i].label)
+            x_data.append('Apical Dendrite %d' % i)
             y_data.append(result)
-            palette.append(morphology.apical_dendrite_color)
+            palette.append(morphology.apical_dendrites_colors[i])
 
     # Basal dendrites
     if analysis_results.basal_dendrites_result is not None:
         for i, result in enumerate(analysis_results.basal_dendrites_result):
-            x_data.append(morphology.basal_dendrites[i].label)
+            x_data.append('Basal Dendrite %d' % i)
             y_data.append(result)
             palette.append(morphology.basal_dendrites_colors[i])
 
     # Collecting the lists, Axon
     if analysis_results.axons_result is not None:
         for i, result in enumerate(analysis_results.axons_result):
-            x_data.append(morphology.axons[i].label)
+            x_data.append('Axon %d' % i)
             y_data.append(result)
-            palette.append(morphology.axon_color)
+            palette.append(morphology.axons_colors[i])
 
     # Total number of bars, similar to arbors
     total_number_of_bars = len(x_data)
@@ -261,16 +261,16 @@ def plot_per_arbor_range(minimum_results,
     # Apical dendrite
     if minimum_results.apical_dendrites_result is not None:
         for i in range(len(minimum_results.apical_dendrites_result)):
-            labels.append(morphology.apical_dendrites[i].label)
+            labels.append('Apical Dendrite %d' % i)
             min_list.append(minimum_results.apical_dendrites_result[i])
             avg_list.append(average_results.apical_dendrites_result[i])
             max_list.append(maximum_results.apical_dendrites_result[i])
-            palette.append(morphology.apical_dendrite_color)
+            palette.append(morphology.apical_dendrites_colors[i])
 
     # Basal dendrites
     if minimum_results.basal_dendrites_result is not None:
         for i in range(len(minimum_results.basal_dendrites_result)):
-            labels.append(morphology.basal_dendrites[i].label)
+            labels.append('Basal Dendrite %d' % i)
             min_list.append(minimum_results.basal_dendrites_result[i])
             avg_list.append(average_results.basal_dendrites_result[i])
             max_list.append(maximum_results.basal_dendrites_result[i])
@@ -279,11 +279,11 @@ def plot_per_arbor_range(minimum_results,
     # Collecting the lists, Axon
     if minimum_results.axons_result is not None:
         for i in range(len(minimum_results.axons_result)):
-            labels.append(morphology.axons[i].label)
+            labels.append('Axon %d' % i)
             min_list.append(minimum_results.axons_result[i])
             avg_list.append(average_results.axons_result[i])
             max_list.append(maximum_results.axons_result[i])
-            palette.append(morphology.axon_color)
+            palette.append(morphology.axons_colors[i])
 
     # Total number of bars, similar to arbors
     total_number_of_bars = len(labels)

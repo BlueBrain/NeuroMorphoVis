@@ -128,7 +128,7 @@ class PiecewiseBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Draw the apical dendrite, if exists
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
 
                 # Draw the apical dendrite as a set connected sections
                 nmv.logger.info('Apical dendrite')

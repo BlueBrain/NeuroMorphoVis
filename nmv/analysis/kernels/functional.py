@@ -89,7 +89,7 @@ def apply_analysis_operation_to_morphology(*args):
     analysis_function = args[1]
 
     # Apical dendrite
-    if morphology.apical_dendrites is not None:
+    if morphology.has_apical_dendrites():
 
         # Create an empty list to collect the resulting data
         analysis_result.apical_dendrites_result = list()
@@ -106,7 +106,7 @@ def apply_analysis_operation_to_morphology(*args):
             analysis_result.apical_dendrites_result.append(analysis_function(*arbor_args))
 
     # Basal dendrites
-    if morphology.basal_dendrites is not None:
+    if morphology.has_basal_dendrites():
 
         # Create an empty list to collect the resulting data
         analysis_result.basal_dendrites_result = list()
@@ -123,7 +123,7 @@ def apply_analysis_operation_to_morphology(*args):
             analysis_result.basal_dendrites_result.append(analysis_function(*arbor_args))
 
     # Axon
-    if morphology.axons is not None:
+    if morphology.has_axons():
 
         # Create an empty list to collect the resulting data
         analysis_result.axons_result = list()

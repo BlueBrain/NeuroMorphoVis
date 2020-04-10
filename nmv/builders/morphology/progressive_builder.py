@@ -177,7 +177,7 @@ class ProgressiveBuilder:
 
         # Apical dendrite
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 if branching_order < self.options.morphology.apical_dendrite_branch_order:
                     self.construct_arbors_poly_lines_list_at_branching_order(
                         root=self.morphology.apical_dendrite,

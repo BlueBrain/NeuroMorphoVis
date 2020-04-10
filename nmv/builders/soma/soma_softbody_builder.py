@@ -572,7 +572,7 @@ class SomaSoftBodyBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Build towards the apical dendrite, if the apical dendrite is available
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
 
                 # THe branching order must be greater than zero
                 if self.options.morphology.apical_dendrite_branch_order > 0:
@@ -648,7 +648,7 @@ class SomaSoftBodyBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Build towards the apical dendrite, if the apical dendrite is available
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
 
                 # THe branching order must be greater than zero
                 if self.options.morphology.apical_dendrite_branch_order > 0:
@@ -753,7 +753,7 @@ class SomaSoftBodyBuilder:
                 if not self.options.morphology.ignore_apical_dendrites:
 
                     # Build towards the apical dendrite, if the apical dendrite is available
-                    if self.morphology.apical_dendrite is not None:
+                    if self.morphology.has_apical_dendrites():
 
                         # Check that the profile point does NOT intersect the apical dendrite
                         if nmv.skeleton.ops.point_branch_intersect(

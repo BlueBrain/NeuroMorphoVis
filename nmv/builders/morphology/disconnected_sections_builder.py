@@ -472,7 +472,7 @@ class DisconnectedSectionsBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
                 self.construct_tree_poly_lines(
                     root=self.morphology.apical_dendrite,
@@ -543,7 +543,7 @@ class DisconnectedSectionsBuilder:
 
         images = list()
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 self.draw_highlighted_arbor(highlighted_arbor_key='color_apical')
 
                 # render

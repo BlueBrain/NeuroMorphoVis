@@ -196,7 +196,7 @@ class DisconnectedSegmentsBuilder:
         # Apical dendrite
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.detail('Apical dendrite')
                 self.construct_tree_poly_lines(
                     root=self.morphology.apical_dendrite,

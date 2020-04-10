@@ -271,7 +271,7 @@ class MetaBuilder:
 
         # Draw the apical dendrite, if exists
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.info('Apical Dendrite')
                 self.create_meta_arbor(
                     root=self.morphology.apical_dendrite,
@@ -367,7 +367,7 @@ class MetaBuilder:
             nmv.logger.info('Apical dendrite')
 
             # The apical dendrite must be valid
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 self.emanate_soma_towards_arbor(arbor=self.morphology.apical_dendrite)
 
         if self.morphology.has_basal_dendrites():

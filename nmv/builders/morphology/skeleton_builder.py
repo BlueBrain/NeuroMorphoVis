@@ -582,7 +582,7 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Draw the apical dendrite, if exists
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.logger.info('Apical dendrite')
 
                 apical_dendrite_segments_objects = []
@@ -919,7 +919,7 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Ensure tha existence of the apical dendrite
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 # Draw the apical dendrite as a set connected sections
                 apical_dendrite_sections_objects = []
                 nmv.skeleton.ops.draw_connected_sections(
@@ -1061,7 +1061,7 @@ class SkeletonBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
 
             # Ensure tha existence of the axon
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
 
                 # A list containing all the poly lines of each arbor
                 arbor_poly_line_data = []

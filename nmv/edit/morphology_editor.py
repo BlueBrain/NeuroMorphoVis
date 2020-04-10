@@ -132,7 +132,7 @@ class MorphologyEditor:
         samples_global_morphology_index = [1]
 
         # Apical dendrite
-        if self.morphology.apical_dendrite is not None:
+        if self.morphology.has_apical_dendrites():
 
             nmv.logger.info('Apical dendrite')
             self.update_samples_indices_per_morphology_of_arbor(
@@ -231,7 +231,7 @@ class MorphologyEditor:
         nmv.logger.header('Creating Morphology Skeleton for Repair')
 
         # Apical dendrite
-        if self.morphology.apical_dendrite is not None:
+        if self.morphology.has_apical_dendrites():
             nmv.logger.info('Apical dendrite')
             self.extrude_arbor(arbor=self.morphology.apical_dendrite)
 
@@ -316,7 +316,7 @@ class MorphologyEditor:
         nmv.logger.header('Updating Morphology Skeleton Coordinates')
 
         # Apical dendrite
-        if self.morphology.apical_dendrite is not None:
+        if self.morphology.has_apical_dendrites():
 
             nmv.logger.info('Apical dendrite')
             self.update_arbor_coordinates(root=self.morphology.apical_dendrite)

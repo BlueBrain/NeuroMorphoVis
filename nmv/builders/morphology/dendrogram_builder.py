@@ -138,7 +138,7 @@ class DendrogramBuilder:
         skeleton_poly_lines = list()
 
         if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                     section=self.morphology.apical_dendrite,
                     poly_lines_data=skeleton_poly_lines,
@@ -272,7 +272,7 @@ class DendrogramBuilder:
             # A list of all the skeleton poly-lines
             skeleton_poly_lines = list()
 
-            if self.morphology.apical_dendrite is not None:
+            if self.morphology.has_apical_dendrites():
                 nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                     section=self.morphology.apical_dendrite,
                     poly_lines_data=skeleton_poly_lines,
