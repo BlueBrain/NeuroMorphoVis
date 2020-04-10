@@ -225,16 +225,16 @@ class Skeleton:
         def get_enum(argument):
 
             # Angles
-            if argument == 'radii':
+            if argument == 'angles':
                 return Skeleton.Branching.ANGLES
 
             # Radii
             elif argument == 'radii':
                 return Skeleton.Branching.RADII
 
-            # By default angles
+            # By default radii
             else:
-                return Skeleton.Branching.ANGLES
+                return Skeleton.Branching.RADII
 
     ################################################################################################
     # @Resampling

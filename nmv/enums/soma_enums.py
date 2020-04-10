@@ -43,7 +43,7 @@ class Soma:
         SPHERE = 'SOMA_SYMBOLIC_SPHERE'
 
         # Generate soma with MetaBalls
-        META_BALLS = 'SOMA_METABALLS_MESH'
+        META_BALLS = 'SOMA_META_BALLS_MESH'
 
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
         SOFT_BODY = 'SOMA_SOFT_BODY_MESH'
