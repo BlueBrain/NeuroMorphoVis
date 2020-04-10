@@ -99,6 +99,66 @@ class AboutPanel(bpy.types.Panel):
         update_button = layout.column()
         update_button.operator('update.nmv', emboss=True,
                                icon_value=nmv.interface.ui_icons['github'].icon_id)
+        update_button.operator('open.github', emboss=True,
+                               icon_value=nmv.interface.ui_icons['github'].icon_id)
+        update_button.operator('open.wiki', emboss=True,
+                               icon_value=nmv.interface.ui_icons['github'].icon_id)
+
+
+####################################################################################################
+# @OpenDocumentation
+####################################################################################################
+class OpenDocumentation(bpy.types.Operator):
+    """Open the Github repository page"""
+
+    # Operator parameters
+    bl_idname = "open.wiki"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki')
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @OpenRepository
+####################################################################################################
+class OpenRepository(bpy.types.Operator):
+    """Open the Github repository page"""
+
+    # Operator parameters
+    bl_idname = "open.github"
+    bl_label = "Code"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis')
+        return {'FINISHED'}
 
 
 ####################################################################################################
@@ -123,6 +183,9 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         :return:
             'FINISHED'
         """
+
+        import webbrowser
+        webbrowser.open('http://thisisaurl.org')
 
         # Get the current path
         current_path = os.path.dirname(os.path.realpath(__file__))
@@ -155,6 +218,8 @@ def register_panel():
 
     # Buttons
     bpy.utils.register_class(UpdateNeuroMorphoVis)
+    bpy.utils.register_class(OpenRepository)
+    bpy.utils.register_class(OpenDocumentation)
 
 
 ####################################################################################################
@@ -168,3 +233,5 @@ def unregister_panel():
 
     # Buttons
     bpy.utils.unregister_class(UpdateNeuroMorphoVis)
+    bpy.utils.unregister_class(OpenRepository)
+    bpy.utils.unregister_class(OpenDocumentation)
