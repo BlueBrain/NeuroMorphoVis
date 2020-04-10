@@ -58,31 +58,31 @@ def create_skeleton_materials(builder):
 
     # Soma
     builder.soma_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.material, name='soma_skeleton',
-        color=builder.options.shading.soma_color)
+        material_type=builder.options.shading.mesh_material, name='soma_skeleton',
+        color=builder.options.shading.mesh_soma_color)
 
     # Axon
     builder.axon_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.material, name='axon_skeleton',
-        color=builder.options.shading.axon_color)
+        material_type=builder.options.shading.mesh_material, name='axon_skeleton',
+        color=builder.options.shading.mesh_axon_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.material, name='basal_dendrites_skeleton',
-        color=builder.options.shading.basal_dendrites_color)
+        material_type=builder.options.shading.mesh_material, name='basal_dendrites_skeleton',
+        color=builder.options.shading.mesh_basal_dendrites_color)
 
     # Apical dendrite
     builder.apical_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.material, name='apical_dendrite_skeleton',
-        color=builder.options.shading.apical_dendrites_color)
+        material_type=builder.options.shading.mesh_material, name='apical_dendrite_skeleton',
+        color=builder.options.shading.mesh_apical_dendrites_color)
 
     # Spines
     builder.spines_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.material,
-        name='spines', color=builder.options.shading.spines_color)
+        material_type=builder.options.shading.mesh_material,
+        name='spines', color=builder.options.shading.mesh_spines_color)
 
     # Create an illumination specific for the given material
-    nmv.shading.create_material_specific_illumination(builder.options.shading.material)
+    nmv.shading.create_material_specific_illumination(builder.options.shading.mesh_material)
 
 
 ####################################################################################################

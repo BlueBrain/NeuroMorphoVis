@@ -50,33 +50,33 @@ def create_skeleton_materials_and_illumination(builder):
 
     # Soma
     builder.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-        name='soma_skeleton', material_type=builder.options.shading.material,
+        name='soma_skeleton', material_type=builder.options.shading.morphology_material,
         color=builder.options.shading.soma_color)
 
     # Axon
     builder.axon_materials = nmv.skeleton.ops.create_skeleton_materials(
-        name='axon_skeleton', material_type=builder.options.shading.material,
-        color=builder.options.shading.axon_color)
+        name='axon_skeleton', material_type=builder.options.shading.morphology_material,
+        color=builder.options.shading.morphology_axon_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-        name='basal_dendrites_skeleton', material_type=builder.options.shading.material,
-        color=builder.options.shading.basal_dendrites_color)
+        name='basal_dendrites_skeleton', material_type=builder.options.shading.morphology_material,
+        color=builder.options.shading.morphology_basal_dendrites_color)
 
     # Apical dendrite
     builder.apical_dendrite_materials = nmv.skeleton.ops.create_skeleton_materials(
-        name='apical_dendrite_skeleton', material_type=builder.options.shading.material,
-        color=builder.options.shading.apical_dendrites_color)
+        name='apical_dendrite_skeleton', material_type=builder.options.shading.morphology_material,
+        color=builder.options.shading.morphology_apical_dendrites_color)
 
     # Articulations, ONLY, for the articulated reconstruction method
     if builder.options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         builder.articulation_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='articulation', material_type=builder.options.shading.material,
-            color=builder.options.shading.articulation_color)
+            name='articulation', material_type=builder.options.shading.morphology_material,
+            color=builder.options.shading.morphology_articulation_color)
 
     # Create an illumination specific for the given material
-    nmv.shading.create_material_specific_illumination(builder.options.shading.material)
+    nmv.shading.create_material_specific_illumination(builder.options.shading.morphology_material)
 
 
 ####################################################################################################

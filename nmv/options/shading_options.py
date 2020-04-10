@@ -34,29 +34,47 @@ class ShadingOptions:
         """Constructor
         """
 
-        # Soma color
+        # Soma color for the soma toolbox
         self.soma_color = nmv.enums.Color.SOMA
 
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
+        # Soma color for the morphology toolbox
+        self.morphology_soma_color = nmv.enums.Color.SOMA
 
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+        # Axon color for the morphology toolbox
+        self.morphology_axon_color = nmv.enums.Color.AXONS
 
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
+        # Basal dendrites color for the morphology toolbox
+        self.morphology_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
 
-        # Articulations color (only for morphology)
-        self.articulation_color = nmv.enums.Color.ARTICULATION
+        # Apical dendrites color for the morphology toolbox
+        self.morphology_apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
 
-        # Spines color (only for mesh)
-        self.spines_color = nmv.enums.Color.SPINES
+        # Articulations color for the morphology toolbox
+        self.morphology_articulation_color = nmv.enums.Color.ARTICULATION
 
-        # Nucleus color (only for mesh)
-        self.nucleus_color = nmv.enums.Color.NUCLEI
+        # Soma color for the mesh toolbox
+        self.mesh_soma_color = nmv.enums.Color.SOMA
 
-        # Morphology material
-        self.material = nmv.enums.Shader.LAMBERT_WARD
+        # Axon color for the mesh toolbox
+        self.mesh_axon_color = nmv.enums.Color.AXONS
+
+        # Basal dendrites color for the mesh toolbox
+        self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Spines color (only for mesh) for the mesh toolbox
+        self.mesh_spines_color = nmv.enums.Color.SPINES
+
+        # Nucleus color (only for mesh) for the mesh toolbox
+        self.mesh_nucleus_color = nmv.enums.Color.NUCLEI
+
+        # Material for the soma toolbox
+        self.soma_material = nmv.enums.Shader.LAMBERT_WARD
+
+        # Material for the morphology toolbox
+        self.morphology_material = nmv.enums.Shader.LAMBERT_WARD
+
+        # Material for the mesh toolbox
+        self.mesh_material = nmv.enums.Shader.LAMBERT_WARD
 
     ################################################################################################
     # @set_default
@@ -65,21 +83,44 @@ class ShadingOptions:
         """Sets the default options for duplicated objects.
         """
 
-        # Soma color
+        # Soma color for the soma toolbox
         self.soma_color = nmv.enums.Color.SOMA
 
-        # Axon color
-        self.axon_color = nmv.enums.Color.AXONS
+        # Soma color for the morphology toolbox
+        self.morphology_soma_color = nmv.enums.Color.SOMA
 
-        # Basal dendrites color
-        self.basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+        # Axon color for the morphology toolbox
+        self.morphology_axon_color = nmv.enums.Color.AXONS
 
-        # Apical dendrites color
-        self.apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
+        # Basal dendrites color for the morphology toolbox
+        self.morphology_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
 
-        # Articulations color
-        self.articulation_color = nmv.enums.Color.ARTICULATION
+        # Apical dendrites color for the morphology toolbox
+        self.morphology_apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
 
-        # Morphology material
-        self.material = nmv.enums.Shader.LAMBERT_WARD
+        # Articulations color for the morphology toolbox
+        self.morphology_articulation_color = nmv.enums.Color.ARTICULATION
 
+        # Soma color for the mesh toolbox
+        self.mesh_soma_color = nmv.enums.Color.SOMA
+
+        # Axon color for the mesh toolbox
+        self.mesh_axon_color = nmv.enums.Color.AXONS
+
+        # Basal dendrites color for the mesh toolbox
+        self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Spines color (only for mesh) for the mesh toolbox
+        self.mesh_spines_color = nmv.enums.Color.SPINES
+
+        # Nucleus color (only for mesh) for the mesh toolbox
+        self.mesh_nucleus_color = nmv.enums.Color.NUCLEI
+
+        # Material for the soma toolbox
+        self.soma_material = nmv.enums.Shader.LAMBERT_WARD
+
+        # Material for the morphology toolbox
+        self.morphology_material = nmv.enums.Shader.LAMBERT_WARD
+
+        # Material for the mesg toolbox
+        self.mesh_material = nmv.enums.Shader.LAMBERT_WARD

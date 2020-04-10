@@ -320,7 +320,7 @@ class SomaSoftBodyBuilder:
 
         # Link the soma sphere bmesh to the scene using a mesh object
         soma_sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            initial_soma_sphere_bmesh, 'soma')
+            initial_soma_sphere_bmesh, nmv.consts.Skeleton.SOMA_PREFIX)
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_mesh)
@@ -350,15 +350,15 @@ class SomaSoftBodyBuilder:
 
             # Create the soma material and assign it to the ico-sphere
             soma_material = nmv.shading.create_material(
-                name='soma_material', color=self.options.soma.soma_color,
-                material_type=self.options.soma.soma_material)
+                name='soma_material', color=self.options.shading.soma_color,
+                material_type=self.options.shading.soma_material)
 
             # Apply the shader to the ico-sphere
             nmv.shading.set_material_to_object(
                 mesh_object=soma_sphere_mesh, material_reference=soma_material)
 
             # Create an illumination specific for the given material
-            nmv.shading.create_material_specific_illumination(self.options.shading.material)
+            nmv.shading.create_material_specific_illumination(self.options.shading.soma_material)
 
         # Return a reference to the reconstructed soma mesh
         return soma_sphere_mesh
@@ -822,7 +822,7 @@ class SomaSoftBodyBuilder:
         """ Physics """
         # Link the soma sphere to the scene
         soma_sphere_object = nmv.bmeshi.ops.link_to_new_object_in_scene(
-            soma_bmesh_sphere, 'soma')
+            soma_bmesh_sphere, nmv.consts.Skeleton.SOMA_PREFIX)
 
         # Create a vertex group to link all the vertices of the extrusion faces to it
         self.vertex_group = nmv.mesh.ops.create_vertex_group(soma_sphere_object)
@@ -887,15 +887,15 @@ class SomaSoftBodyBuilder:
 
             # Create the soma material and assign it to the ico-sphere
             soma_material = nmv.shading.create_material(
-                name='soma', color=self.options.soma.soma_color,
-                material_type=self.options.soma.soma_material)
+                name=nmv.consts.Skeleton.SOMA_PREFIX, color=self.options.shading.soma_color,
+                material_type=self.options.shading.soma_material)
 
             # Apply the shader to the ico-sphere
             nmv.shading.set_material_to_object(
                 mesh_object=soma_sphere_object, material_reference=soma_material)
 
             # Create an illumination specific for the given material
-            nmv.shading.create_material_specific_illumination(self.options.soma.soma_material)
+            nmv.shading.create_material_specific_illumination(self.options.shading.soma_material)
 
         # Return a reference to the reconstructed soma
         return soma_sphere_object

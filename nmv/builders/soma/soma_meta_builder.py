@@ -172,11 +172,11 @@ class SomaMetaBuilder:
 
         # Create the soma material and assign it to the ico-sphere
         soma_material = nmv.shading.create_material(
-            name='soma_material', color=self.options.soma.soma_color,
-            material_type=self.options.soma.soma_material)
+            name='soma_material', color=self.options.shading.soma_color,
+            material_type=self.options.shading.soma_material)
 
         # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.shading.material)
+        nmv.shading.create_material_specific_illumination(self.options.shading.soma_material)
 
         # Deselect all objects
         nmv.scene.ops.deselect_all()

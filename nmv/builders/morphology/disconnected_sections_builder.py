@@ -118,7 +118,7 @@ class DisconnectedSectionsBuilder:
 
         # Index 8 for the gray color
         self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
-            name='gray', material_type=self.options.shading.material,
+            name='gray', material_type=self.options.shading.morphology_material,
             color=Vector((0.5, 0.5, 0.5))))
 
     ################################################################################################

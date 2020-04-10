@@ -126,12 +126,12 @@ class SomaPanel(bpy.types.Panel):
         # Pass options from UI to system
         color = scene.NMV_SomaBaseColor
         soma_base_color_value = Vector((color.r, color.g, color.b))
-        soma_options.soma_color = soma_base_color_value
+        nmv.interface.ui_options.shading.soma_color = soma_base_color_value
 
         # Soma material option
         soma_material_row = layout.row()
         soma_material_row.prop(scene, 'NMV_SomaMaterial')
-        soma_options.soma_material = scene.NMV_SomaMaterial
+        nmv.interface.ui_options.shading.soma_material = scene.NMV_SomaMaterial
 
         # Soma reconstruction options
         soma_reconstruction_row = layout.row()
@@ -226,11 +226,8 @@ class SomaPanel(bpy.types.Panel):
         # Ensure that the morphology is loaded to get its label
         if nmv.interface.ui_options.morphology.label is not None:
 
-            # Get the soma mesh name
-            reconstructed_soma_mesh_name = 'soma'
-
             # Does the soma mesh exist in the scene, then activate the buttons
-            if nmv.scene.ops.is_object_in_scene_by_name(reconstructed_soma_mesh_name):
+            if nmv.scene.ops.is_object_in_scene_by_name(nmv.consts.Skeleton.SOMA_PREFIX):
                 save_soma_mesh_buttons_column.enabled = True
                 view_dimensions_row.enabled = True
                 frame_resolution_row.enabled = True
