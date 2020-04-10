@@ -155,50 +155,29 @@ class ConnectedSectionsBuilder:
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
-                self.create_arbor_component(
-                    arbor=self.morphology.apical_dendrite,
-                    bevel_object=bevel_object, arbor_name=self.morphology.apical_dendrite.label,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-        # Axon
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                nmv.logger.detail('Axon')
-                self.create_arbor_component(
-                    arbor=self.morphology.axon, bevel_object=bevel_object,
-                    arbor_name=self.morphology.axon.label,
-                    max_branching_order=self.options.morphology.axon_branch_order)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.create_arbor_component(
+                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.create_arbor_component(
+                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
-                    # If the basal dendrites list contain any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axons:
-                            self.create_arbor_component(
-                                arbor=basal_dendrite, bevel_object=bevel_object,
-                                arbor_name=basal_dendrite.label,
-                                max_branching_order=self.options.morphology.axon_branch_order)
-
-                    # If the basal dendrites list contain any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrites:
-                            self.create_arbor_component(
-                                arbor=basal_dendrite,
-                                bevel_object=bevel_object,
-                                arbor_name=basal_dendrite.label,
-                                max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-                    # This is a pure basal dendrites
-                    else:
-                        self.create_arbor_component(
-                            arbor=basal_dendrite, bevel_object=bevel_object,
-                            arbor_name=basal_dendrite.label,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order)
+        # Axons
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    self.create_arbor_component(
+                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
     # @create_all_arbors_as_single_component
@@ -218,56 +197,35 @@ class ConnectedSectionsBuilder:
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
-
-                # Construct the poly-line objects
-                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_data=skeleton_poly_lines,
-                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
-
-        # Axon
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                nmv.logger.detail('Axon')
-                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                    root=self.morphology.axon,
-                    poly_lines_data=skeleton_poly_lines,
-                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                    max_branching_order=self.options.morphology.axon_branch_order)
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
-                    # If the basal dendrites list contains any axons
-                    if 'Axon' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_axons:
-                            nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                                root=basal_dendrite,
-                                poly_lines_data=skeleton_poly_lines,
-                                connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                                max_branching_order=self.options.morphology.axon_branch_order)
-
-                    # If the basal dendrites list contains any apicals
-                    elif 'Apical' in basal_dendrite.label:
-                        if not self.options.morphology.ignore_apical_dendrites:
-                            nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                                root=basal_dendrite,
-                                poly_lines_data=skeleton_poly_lines,
-                                connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                                max_branching_order=self.options.morphology.apical_dendrites_branch_order)
-
-                    # This is a basal dendrite
-                    else:
-                        nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                            root=basal_dendrite,
-                            poly_lines_data=skeleton_poly_lines,
-                            connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                            max_branching_order=self.options.morphology.basal_dendrites_branch_order)
+        # Axon
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_order=self.options.morphology.axon_branch_order)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -550,32 +508,33 @@ class ConnectedSectionsBuilder:
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
-                nmv.logger.detail('Apical dendrite')
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    nmv.logger.detail(arbor.label)
 
-                # Get the lines
-                apical_dendrite_poly_lines = list()
-                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                    root=self.morphology.apical_dendrite,
-                    poly_lines_data=apical_dendrite_poly_lines,
-                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+                    # Get the lines
+                    apical_dendrite_poly_lines = list()
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=arbor,
+                        poly_lines_data=apical_dendrite_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
-                # Plot the lines
-                figure = self.draw_poly_line_list_at_fixed_thickness(
-                    poly_lines=apical_dendrite_poly_lines,
-                    color=self.morphology.apical_dendrite_color, thickness=0.5,
-                    projection=projection)
+                    # Plot the lines
+                    figure = self.draw_poly_line_list_at_fixed_thickness(
+                        poly_lines=apical_dendrite_poly_lines,
+                        color=self.morphology.apical_dendrites_colors[i], thickness=0.5,
+                        projection=projection)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal dendrite [%d]' % i)
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    nmv.logger.detail(arbor.label)
 
                     # Get the lines
                     basal_dendrite_poly_lines = list()
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                        root=basal_dendrite,
+                        root=arbor,
                         poly_lines_data=basal_dendrite_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
@@ -589,22 +548,22 @@ class ConnectedSectionsBuilder:
         # Axon
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
+                for i, arbor in enumerate(self.morphology.axons):
+                    nmv.logger.detail(arbor.label)
 
-                nmv.logger.detail('Axon')
+                    # Get the lines
+                    axon_poly_lines = list()
+                    nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
+                        root=arbor,
+                        poly_lines_data=axon_poly_lines,
+                        connection_to_soma=self.options.morphology.arbors_to_soma_connection,
+                        max_branching_order=self.options.morphology.axon_branch_order)
 
-                # Get the lines
-                axon_poly_lines = list()
-                nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
-                    root=self.morphology.axon,
-                    poly_lines_data=axon_poly_lines,
-                    connection_to_soma=self.options.morphology.arbors_to_soma_connection,
-                    max_branching_order=self.options.morphology.axon_branch_order)
-
-                # Plot the lines
-                figure = self.draw_poly_line_list_at_fixed_thickness(
-                    poly_lines=axon_poly_lines,
-                    color=self.morphology.axon_color, thickness=0.5,
-                    projection=projection)
+                    # Plot the lines
+                    figure = self.draw_poly_line_list_at_fixed_thickness(
+                        poly_lines=axon_poly_lines,
+                        color=self.morphology.axons_colors[i], thickness=0.5,
+                        projection=projection)
 
         # Soma
         self.draw_soma_projection()
