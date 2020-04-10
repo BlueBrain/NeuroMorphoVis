@@ -164,17 +164,17 @@ class AnalysisItem:
         # Apical dendrites
         if morphology.has_apical_dendrites():
             for i, arbor in enumerate(morphology.apical_dendrites):
-                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
+                self.register_variable(variable_prefix=arbor.tag)
 
         # Basal dendrites
         if morphology.has_basal_dendrites():
             for i, arbor in enumerate(morphology.basal_dendrites):
-                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
+                self.register_variable(variable_prefix=arbor.tag)
 
         # Axons
         if morphology.has_axons():
             for i, arbor in enumerate(morphology.axons):
-                self.register_variable(variable_prefix='%s%i' % (arbor.get_type_prefix(), i))
+                self.register_variable(variable_prefix=arbor.tag)
 
     ################################################################################################
     # @update_analysis_variable
@@ -254,7 +254,7 @@ class AnalysisItem:
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
+                    prefix=arbor.tag, result=result, context=context)
 
         # Basal dendrites
         if morphology.has_basal_dendrites():
@@ -265,7 +265,7 @@ class AnalysisItem:
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
+                    prefix=arbor.tag, result=result, context=context)
 
         # Axons
         if morphology.has_axons():
@@ -276,7 +276,7 @@ class AnalysisItem:
 
                 # Update the corresponding analysis variable
                 self.update_analysis_variable(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result, context=context)
+                    prefix=arbor.tag, result=result, context=context)
 
     ################################################################################################
     # @get_analysis_results_string
@@ -304,7 +304,7 @@ class AnalysisItem:
                 # Get the apical dendrite result
                 result = self.result.apical_dendrites_result[i]
                 results_string += self.get_analysis_result_string(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
+                    prefix=arbor.tag, result=result) + '\n'
 
         # Basal dendrites
         if morphology.has_basal_dendrites():
@@ -313,7 +313,7 @@ class AnalysisItem:
                 # Get the result of this basal dendrite
                 result = self.result.basal_dendrites_result[i]
                 results_string += self.get_analysis_result_string(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
+                    prefix=arbor.tag, result=result) + '\n'
 
         # Axons
         if morphology.has_axons():
@@ -323,7 +323,7 @@ class AnalysisItem:
                 result = self.result.axons_result[i]
 
                 results_string += self.get_analysis_result_string(
-                    prefix='%s%d' % (arbor.get_type_prefix(), i), result=result) + '\n'
+                    prefix=arbor.tag, result=result) + '\n'
 
         # Return the final string
         return results_string

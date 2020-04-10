@@ -58,7 +58,8 @@ def get_label_from_prefix(prefix):
 # @register_group_checkbox
 ####################################################################################################
 def register_group_checkbox(prefix,
-                            description):
+                            description,
+                            label=''):
     """For each arbor in the morphology, there will be a checkbox to show and hide the analysis
     data group.
 
@@ -67,6 +68,8 @@ def register_group_checkbox(prefix,
 
     :param prefix:
         The prefix 'in string format' that is used to tag or identify the arbor.
+    :param label:
+        The label of the arbor.
     :param description:
         The tooltip description of the checkbox.
     """
@@ -84,7 +87,7 @@ def register_group_checkbox(prefix,
     # By default hide the arbors analysis groups (unset their checkboxes)
     else:
         setattr(bpy.types.Scene, '%s' % prefix,
-                BoolProperty(name=get_label_from_prefix(prefix), description=description,
+                BoolProperty(name=label, description=description,
                              default=False))
 
 
@@ -110,21 +113,24 @@ def register_analysis_groups(morphology):
         for i, arbor in enumerate(morphology.apical_dendrites):
             register_group_checkbox(
                 prefix='%s%i' % (arbor.get_type_prefix(), i),
-                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
+                description='Show the analysis data of %s' % arbor.label,
+                label=arbor.label)
 
     # Register the group checkboxes of the Basal Dendrites, if exist
     if morphology.has_basal_dendrites():
         for i, arbor in enumerate(morphology.basal_dendrites):
             register_group_checkbox(
                 prefix='%s%i' % (arbor.get_type_prefix(), i),
-                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
+                description='Show the analysis data of %s' % arbor.label,
+                label=arbor.label)
 
     # Register the group checkboxes of the Axons, if exist
     if morphology.has_axons():
         for i, arbor in enumerate(morphology.axons):
             register_group_checkbox(
                 prefix='%s%i' % (arbor.get_type_prefix(), i),
-                description='Show the analysis data of %s %d' % (arbor.get_type_label(), i))
+                description='Show the analysis data of %s' % arbor.label,
+                label=arbor.label)
 
 
 ####################################################################################################

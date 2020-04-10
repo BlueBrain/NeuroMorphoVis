@@ -665,6 +665,36 @@ class SWCReader:
         # Build the axons
         axons = self.build_arbors_from_samples(nmv.consts.Skeleton.SWC_AXON_SAMPLE_TYPE)
 
+        # Labeling and tagging the apical dendrites
+        if apical_dendrites is not None:
+            if len(apical_dendrites) == 1:
+                apical_dendrites[0].label = 'Apical Dendrite'
+                apical_dendrites[0].tag = 'ApicalDendrite'
+            else:
+                for i in range(len(apical_dendrites)):
+                    apical_dendrites[i].label = 'Apical Dendrite %d' % (i + 1)
+                    apical_dendrites[i].label = 'ApicalDendrite%d' % (i + 1)
+
+        # Labeling the basal dendrites
+        if basal_dendrites is not None:
+            if len(basal_dendrites) == 1:
+                basal_dendrites[0].label = 'Basal Dendrite'
+                basal_dendrites[0].tag = 'BasalDendrite'
+            else:
+                for i in range(len(basal_dendrites)):
+                    basal_dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
+                    basal_dendrites[i].tag = 'BasalDendrite%d' % (i + 1)
+
+        # Labeling and tagging the axons
+        if axons is not None:
+            if len(axons) == 1:
+                axons[0].label = 'Axon'
+                axons[0].tag = 'Axon'
+            else:
+                for i in range(len(axons)):
+                    axons[i].label = 'Axon %d' % (i + 1)
+                    axons[i].tag = 'Axon%d' % (i + 1)
+
         # Build the soma
         soma = self.build_soma(axons_arbors=axons,
                                basal_dendrites_arbors=basal_dendrites,

@@ -151,7 +151,7 @@ class ConnectedSectionsBuilder:
             Bevel object used to extrude the arbors.
         """
 
-        # Apical dendrite
+        # Apical dendrites
         nmv.logger.info('Constructing poly-lines')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
