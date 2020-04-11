@@ -154,7 +154,7 @@ def draw_soma_sphere(builder):
 
     # Draw the soma as a sphere
     soma_sphere = nmv.mesh.create_uv_sphere(
-        radius=soma.largest_radius, location=soma.centroid, name='soma')
+        radius=soma.smallest_radius, location=soma.centroid, name='soma')
 
     # Assign a material to the soma sphere
     nmv.shading.set_material_to_object(soma_sphere, builder.soma_materials[0])

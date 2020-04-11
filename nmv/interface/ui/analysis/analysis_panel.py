@@ -94,8 +94,14 @@ class AnalysisPanel(bpy.types.Panel):
                 analysis_time_row.prop(context.scene, 'NMV_MorphologyAnalysisTime')
                 analysis_time_row.enabled = False
 
+        # Load a morphology file to get analyzed !
+        else:
+            simple_message_row = layout.row()
+            simple_message_row.label(text='Load Morphology to Get Analyzed!',)
+
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(layout)
+
 
 
 ####################################################################################################

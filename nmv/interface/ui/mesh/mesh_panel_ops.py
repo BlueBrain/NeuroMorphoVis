@@ -387,23 +387,72 @@ def draw_color_options(panel,
     mesh_material_row.prop(scene, 'NMV_MeshMaterial')
     nmv.interface.ui_options.shading.mesh_material = scene.NMV_MeshMaterial
 
-    # Draw the meshing options
-    if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
-       scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION or \
-       scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+    # The morphology must be loaded to be able to draw these options
+    if nmv.interface.ui_morphology is not None:
 
-        # Homogeneous mesh coloring
-        homogeneous_color_row = layout.row()
-        homogeneous_color_row.prop(scene, 'NMV_MeshHomogeneousColor')
+        # Draw the meshing options
+        if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
+           scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.UNION or \
+           scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
 
-        # If the homogeneous color flag is set
-        if scene.NMV_MeshHomogeneousColor or  nmv.interface.ui_options.mesh.soma_connection == \
-                nmv.enums.Meshing.SomaConnection.CONNECTED and  \
-            nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
-                nmv.enums.Soma.Representation.META_BALLS:
+            # Homogeneous mesh coloring
+            homogeneous_color_row = layout.row()
+            homogeneous_color_row.prop(scene, 'NMV_MeshHomogeneousColor')
+
+            # If the homogeneous color flag is set
+            if scene.NMV_MeshHomogeneousColor or  nmv.interface.ui_options.mesh.soma_connection == \
+                    nmv.enums.Meshing.SomaConnection.CONNECTED and  \
+                nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
+                    nmv.enums.Soma.Representation.META_BALLS:
+                neuron_color_row = layout.row()
+                neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
+
+                nmv.interface.ui_options.shading.mesh_soma_color = \
+                    scene.NMV_NeuronMeshColor
+                nmv.interface.ui_options.shading.mesh_axons_color = \
+                    scene.NMV_NeuronMeshColor
+                nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
+                    scene.NMV_NeuronMeshColor
+                nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
+                    scene.NMV_NeuronMeshColor
+                nmv.interface.ui_options.shading.mesh_spines_color = \
+                    scene.NMV_NeuronMeshColor
+
+            # Different colors
+            else:
+                soma_color_row = layout.row()
+                soma_color_row.prop(scene, 'NMV_SomaMeshColor')
+                nmv.interface.ui_options.shading.mesh_soma_color = scene.NMV_SomaMeshColor
+
+                if nmv.interface.ui_morphology.has_axons():
+                    axons_color_row = layout.row()
+                    axons_color_row.prop(scene, 'NMV_AxonMeshColor')
+                    nmv.interface.ui_options.shading.mesh_axons_color = scene.NMV_AxonMeshColor
+
+                if nmv.interface.ui_morphology.has_basal_dendrites():
+                    basal_dendrites_color_row = layout.row()
+                    basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
+                    nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
+                        scene.NMV_BasalDendritesMeshColor
+
+                if nmv.interface.ui_morphology.has_apical_dendrites():
+                    apical_dendrites_color_row = layout.row()
+                    apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteMeshColor')
+                    nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
+                        scene.NMV_ApicalDendriteMeshColor
+
+                # Spines must be there to set a color for them
+                if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
+                    spines_color_row = layout.row()
+                    spines_color_row.prop(scene, 'NMV_SpinesMeshColor')
+                    nmv.interface.ui_options.shading.mesh_spines_color = scene.NMV_SpinesMeshColor
+
+        elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
+
             neuron_color_row = layout.row()
             neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
 
+            # Pass options from UI to system
             nmv.interface.ui_options.shading.mesh_soma_color = \
                 scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.shading.mesh_axons_color = \
@@ -415,57 +464,37 @@ def draw_color_options(panel,
             nmv.interface.ui_options.shading.mesh_spines_color = \
                 scene.NMV_NeuronMeshColor
 
-        # Different colors
-        else:
-            soma_color_row = layout.row()
-            soma_color_row.prop(scene, 'NMV_SomaMeshColor')
-            nmv.interface.ui_options.shading.mesh_soma_color = scene.NMV_SomaMeshColor
+        # Add nucleus color option if they are not ignored
+        if scene.NMV_Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
+            nucleus_color_row = layout.row()
+            nucleus_color_row.prop(scene, 'NMV_NucleusMeshColor')
 
-            axons_color_row = layout.row()
-            axons_color_row.prop(scene, 'NMV_AxonMeshColor')
-            nmv.interface.ui_options.shading.mesh_axons_color = scene.NMV_AxonMeshColor
+            nmv.interface.ui_options.shading.mesh_nucleus_color = Vector((
+                scene.NMV_NucleusMeshColor.r, scene.NMV_NucleusMeshColor.g,
+                scene.NMV_NucleusMeshColor.b))
 
-            basal_dendrites_color_row = layout.row()
-            basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
-            nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
-                scene.NMV_BasalDendritesMeshColor
+    # Just a demo UI
+    else:
 
-            apical_dendrites_color_row = layout.row()
-            apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteMeshColor')
-            nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
-                scene.NMV_ApicalDendriteMeshColor
+        # Soma
+        soma_color_row = layout.row()
+        soma_color_row.prop(scene, 'NMV_SomaMeshColor')
 
-            # Spines must be there to set a color for them
-            if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
-                spines_color_row = layout.row()
-                spines_color_row.prop(scene, 'NMV_SpinesMeshColor')
-                nmv.interface.ui_options.shading.mesh_spines_color = scene.NMV_SpinesMeshColor
+        # Axons
+        axons_color_row = layout.row()
+        axons_color_row.prop(scene, 'NMV_AxonMeshColor')
 
-    elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
+        # Basals
+        basal_dendrites_color_row = layout.row()
+        basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
 
-        neuron_color_row = layout.row()
-        neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
+        # Apicals
+        apical_dendrites_color_row = layout.row()
+        apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteMeshColor')
 
-        # Pass options from UI to system
-        nmv.interface.ui_options.shading.mesh_soma_color = \
-            scene.NMV_NeuronMeshColor
-        nmv.interface.ui_options.shading.mesh_axons_color = \
-            scene.NMV_NeuronMeshColor
-        nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
-            scene.NMV_NeuronMeshColor
-        nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
-            scene.NMV_NeuronMeshColor
-        nmv.interface.ui_options.shading.mesh_spines_color = \
-            scene.NMV_NeuronMeshColor
-
-    # Add nucleus color option if they are not ignored
-    if scene.NMV_Nucleus != nmv.enums.Meshing.Nucleus.IGNORE:
-        nucleus_color_row = layout.row()
-        nucleus_color_row.prop(scene, 'NMV_NucleusMeshColor')
-
-        nmv.interface.ui_options.shading.mesh_nucleus_color = Vector((
-            scene.NMV_NucleusMeshColor.r, scene.NMV_NucleusMeshColor.g,
-            scene.NMV_NucleusMeshColor.b))
+        # Spines
+        spines_color_row = layout.row()
+        spines_color_row.prop(scene, 'NMV_SpinesMeshColor')
 
 
 ####################################################################################################

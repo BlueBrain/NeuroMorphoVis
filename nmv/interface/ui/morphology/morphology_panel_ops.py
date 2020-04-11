@@ -51,52 +51,76 @@ def set_skeleton_options(layout,
     # Pass options from UI to system
     options.morphology.soma_representation = scene.NMV_BuildSoma
 
-    # Build axon options
-    if nmv.interface.ui_morphology.has_axons():
+    # The morphology must be loaded to be able to draw these options
+    if nmv.interface.ui_morphology is not None:
+
+        # Build axon options
+        if nmv.interface.ui_morphology.has_axons():
+            axon_row = layout.row()
+            axon_row.prop(scene, 'NMV_BuildAxon')
+            axon_level_row = axon_row.column()
+            axon_level_row.prop(scene, 'NMV_AxonBranchingLevel')
+
+            if not scene.NMV_BuildAxon:
+                axon_level_row.enabled = False
+            else:
+                axon_level_row.enabled = True
+
+            # Pass options from UI to system
+            options.morphology.ignore_axons = not scene.NMV_BuildAxon
+            options.morphology.axon_branch_order = scene.NMV_AxonBranchingLevel
+
+        # Build basal dendrites options
+        if nmv.interface.ui_morphology.has_basal_dendrites():
+            basal_dendrites_row = layout.row()
+            basal_dendrites_row.prop(scene, 'NMV_BuildBasalDendrites')
+            basal_dendrites_level_row = basal_dendrites_row.column()
+            basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingLevel')
+            if not scene.NMV_BuildBasalDendrites:
+                basal_dendrites_level_row.enabled = False
+            else:
+                basal_dendrites_level_row.enabled = True
+
+            # Pass options from UI to system
+            options.morphology.ignore_basal_dendrites = not scene.NMV_BuildBasalDendrites
+            options.morphology.basal_dendrites_branch_order = scene.NMV_BasalDendritesBranchingLevel
+
+        # Build apical dendrite option
+        if nmv.interface.ui_morphology.has_apical_dendrites():
+            apical_dendrite_row = layout.row()
+            apical_dendrite_row.prop(scene, 'NMV_BuildApicalDendrite')
+            apical_dendrite_level_row = apical_dendrite_row.column()
+            apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendriteBranchingLevel')
+
+            if not scene.NMV_BuildApicalDendrite:
+                apical_dendrite_level_row.enabled = False
+            else:
+                apical_dendrite_level_row.enabled = True
+
+            # Pass options from UI to system
+            options.morphology.ignore_apical_dendrites = not scene.NMV_BuildApicalDendrite
+            options.morphology.apical_dendrite_branch_order = scene.NMV_ApicalDendriteBranchingLevel
+
+    # Only a simple demo UI
+    else:
+
+        # Axons
         axon_row = layout.row()
         axon_row.prop(scene, 'NMV_BuildAxon')
         axon_level_row = axon_row.column()
         axon_level_row.prop(scene, 'NMV_AxonBranchingLevel')
 
-        if not scene.NMV_BuildAxon:
-            axon_level_row.enabled = False
-        else:
-            axon_level_row.enabled = True
-
-        # Pass options from UI to system
-        options.morphology.ignore_axons = not scene.NMV_BuildAxon
-        options.morphology.axon_branch_order = scene.NMV_AxonBranchingLevel
-
-    # Build basal dendrites options
-    if nmv.interface.ui_morphology.has_basal_dendrites():
+        # Basal dendrites
         basal_dendrites_row = layout.row()
         basal_dendrites_row.prop(scene, 'NMV_BuildBasalDendrites')
         basal_dendrites_level_row = basal_dendrites_row.column()
         basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingLevel')
-        if not scene.NMV_BuildBasalDendrites:
-            basal_dendrites_level_row.enabled = False
-        else:
-            basal_dendrites_level_row.enabled = True
 
-        # Pass options from UI to system
-        options.morphology.ignore_basal_dendrites = not scene.NMV_BuildBasalDendrites
-        options.morphology.basal_dendrites_branch_order = scene.NMV_BasalDendritesBranchingLevel
-
-    # Build apical dendrite option
-    if nmv.interface.ui_morphology.has_apical_dendrites():
+        # Apical Dendrites
         apical_dendrite_row = layout.row()
         apical_dendrite_row.prop(scene, 'NMV_BuildApicalDendrite')
         apical_dendrite_level_row = apical_dendrite_row.column()
         apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendriteBranchingLevel')
-
-        if not scene.NMV_BuildApicalDendrite:
-            apical_dendrite_level_row.enabled = False
-        else:
-            apical_dendrite_level_row.enabled = True
-
-        # Pass options from UI to system
-        options.morphology.ignore_apical_dendrites = not scene.NMV_BuildApicalDendrite
-        options.morphology.apical_dendrite_branch_order = scene.NMV_ApicalDendriteBranchingLevel
 
 
 ####################################################################################################
@@ -125,19 +149,22 @@ def set_reconstruction_options(layout,
         scene, 'NMV_MorphologyReconstructionTechnique', icon='FORCE_CURVE')
     options.morphology.reconstruction_method = scene.NMV_MorphologyReconstructionTechnique
 
-    # Morphology reconstruction techniques option
-    skeleton_style_row = layout.row()
-    skeleton_style_row.label(text='Skeleton Style:')
-    skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')
-    options.morphology.arbor_style = scene.NMV_ArborsStyle
+    # Connected sections only options
+    if scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
 
-    # Morphology branching
-    branching_row = layout.row()
-    branching_row.label(text='Branching:')
-    branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
-    options.morphology.branching = scene.NMV_MorphologyBranching
+        # Skeleton style
+        skeleton_style_row = layout.row()
+        skeleton_style_row.label(text='Skeleton Style:')
+        skeleton_style_row.prop(scene, 'NMV_ArborsStyle', icon='WPAINT_HLT')
+        options.morphology.arbor_style = scene.NMV_ArborsStyle
 
-    # Morphology branching
+        # Morphology branching
+        branching_row = layout.row()
+        branching_row.label(text='Branching:')
+        branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
+        options.morphology.branching = scene.NMV_MorphologyBranching
+
+    # Connection to somata
     arbor_to_soma_connection_row = layout.row()
     arbor_to_soma_connection_row.label(text='Arbors to Soma:')
     arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
@@ -156,14 +183,9 @@ def set_reconstruction_options(layout,
         resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
         options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
-    # Arbor quality option
-    arbor_quality_row = layout.row()
-    arbor_quality_row.label(text='Arbor Quality:')
-    arbor_quality_row.prop(scene, 'NMV_ArborQuality')
-    options.morphology.bevel_object_sides = scene.NMV_ArborQuality
-
     # Sections diameters option
     sections_radii_row = layout.row()
+    sections_radii_row.label(text='Arbors Radii:')
     sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
 
     # Radii as specified in the morphology file
@@ -232,6 +254,12 @@ def set_reconstruction_options(layout,
     else:
         nmv.logger.log('ERROR')
 
+    # Arbor quality option
+    arbor_quality_row = layout.row()
+    arbor_quality_row.label(text='Arbor Quality:')
+    arbor_quality_row.prop(scene, 'NMV_ArborQuality')
+    options.morphology.bevel_object_sides = scene.NMV_ArborQuality
+
 
 ####################################################################################################
 # set_color_options
@@ -258,124 +286,126 @@ def set_color_options(layout,
     morphology_material_row.prop(scene, 'NMV_MorphologyMaterial')
     options.shading.morphology_material = scene.NMV_MorphologyMaterial
 
-    # If we use the connected skeleton, we should use only a single color for the entire skeleton
-    if scene.NMV_MorphologyReconstructionTechnique == \
-        nmv.enums.Skeleton.Method.CONNECTED_SKELETON:
+    color_by_part_row = layout.row()
+    color_by_part_row.prop(scene, 'NMV_ColorArborByPart')
+    color_bw_row = color_by_part_row.column()
+    color_bw_row.prop(scene, 'NMV_ColorArborBlackAndWhite')
+    color_bw_row.enabled = False
 
-        neuron_color_row = layout.row()
-        neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-        color = scene.NMV_NeuronMorphologyColor
-        options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
-        options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
-        options.shading.morphology_apical_dendrites_color = Vector((color.r, color.g, color.b))
-        options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
+    # Assign different colors to each part of the skeleton by part
+    if scene.NMV_ColorArborByPart:
+        options.shading.morphology_axons_color = Vector((-1, 0, 0))
+        options.shading.morphology_basal_dendrites_color = Vector((-1, 0, 0))
+        options.shading.morphology_apical_dendrites_color = Vector((-1, 0, 0))
+        color_bw_row.enabled = True
 
-        # Soma color option
-        soma_color_row = layout.row()
-        soma_color_row.prop(scene, 'NMV_SomaColor')
-        if not scene.NMV_BuildSoma:
-            soma_color_row.enabled = False
-        soma_color_value = Vector((scene.NMV_SomaColor.r, scene.NMV_SomaColor.g, scene.NMV_SomaColor.b))
-        options.shading.morphology_soma_color = soma_color_value
+        # Render in black and white
+        if scene.NMV_ColorArborBlackAndWhite:
+            options.shading.morphology_axons_color = Vector((0, -1, 0))
+            options.shading.morphology_basal_dendrites_color = Vector((0, -1, 0))
+            options.shading.morphology_apical_dendrites_color = Vector((0, -1, 0))
 
+    # One color per component
     else:
 
-        color_by_part_row = layout.row()
-        color_by_part_row.prop(scene, 'NMV_ColorArborByPart')
-        color_bw_row = color_by_part_row.column()
-        color_bw_row.prop(scene, 'NMV_ColorArborBlackAndWhite')
-        color_bw_row.enabled = False
+        # Homogeneous morphology coloring
+        homogeneous_color_row = layout.row()
+        homogeneous_color_row.prop(scene, 'NMV_MorphologyHomogeneousColor')
 
-        # Assign different colors to each part of the skeleton by part
-        if scene.NMV_ColorArborByPart:
-            options.shading.morphology_axons_color = Vector((-1, 0, 0))
-            options.shading.morphology_basal_dendrites_color = Vector((-1, 0, 0))
-            options.shading.morphology_apical_dendrites_color = Vector((-1, 0, 0))
-            color_bw_row.enabled = True
+        # If the homogeneous color flag is set
+        if scene.NMV_MorphologyHomogeneousColor:
 
-            # Render in black and white
-            if scene.NMV_ColorArborBlackAndWhite:
-                options.shading.morphology_axons_color = Vector((0, -1, 0))
-                options.shading.morphology_basal_dendrites_color = Vector((0, -1, 0))
-                options.shading.morphology_apical_dendrites_color = Vector((0, -1, 0))
-
-        # One color per component
+            neuron_color_row = layout.row()
+            neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
+            color = scene.NMV_NeuronMorphologyColor
+            options.shading.morphology_soma_color = Vector((color.r, color.g, color.b))
+            options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
+            options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
+            options.shading.morphology_apical_dendrites_color = Vector((color.r, color.g, color.b))
+            options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
         else:
 
-            # Homogeneous morphology coloring
-            homogeneous_color_row = layout.row()
-            homogeneous_color_row.prop(scene, 'NMV_MorphologyHomogeneousColor')
+            # Soma color option
+            soma_color_row = layout.row()
+            soma_color_row.prop(scene, 'NMV_SomaColor')
+            if not scene.NMV_BuildSoma:
+                soma_color_row.enabled = False
 
-            # If the homogeneous color flag is set
-            if scene.NMV_MorphologyHomogeneousColor:
+            # Pass options from UI to system
+            soma_color_value = Vector((scene.NMV_SomaColor.r,
+                                       scene.NMV_SomaColor.g,
+                                       scene.NMV_SomaColor.b))
+            options.shading.morphology_soma_color = soma_color_value
 
-                neuron_color_row = layout.row()
-                neuron_color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-                color = scene.NMV_NeuronMorphologyColor
-                options.shading.morphology_soma_color = Vector((color.r, color.g, color.b))
-                options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
-                options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
-                options.shading.morphology_apical_dendrites_color = Vector((color.r, color.g, color.b))
-                options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
-            else:
+        # The morphology must be loaded to be able to draw these options
+        if nmv.interface.ui_morphology is not None:
 
-                # Soma color option
-                soma_color_row = layout.row()
-                soma_color_row.prop(scene, 'NMV_SomaColor')
-                if not scene.NMV_BuildSoma:
-                    soma_color_row.enabled = False
+            # Axon color option
+            if nmv.interface.ui_morphology.has_axons():
+                axons_color_row = layout.row()
+                axons_color_row.prop(scene, 'NMV_AxonColor')
+                if not scene.NMV_BuildAxon or scene.NMV_ColorArborByPart:
+                    axons_color_row.enabled = False
 
                 # Pass options from UI to system
-                soma_color_value = Vector((scene.NMV_SomaColor.r, scene.NMV_SomaColor.g, scene.NMV_SomaColor.b))
-                options.shading.morphology_soma_color = soma_color_value
+                axons_color_value = Vector((scene.NMV_AxonColor.r,
+                                           scene.NMV_AxonColor.g,
+                                           scene.NMV_AxonColor.b))
+                options.shading.morphology_axons_color = axons_color_value
 
-                # Axon color option
-                if nmv.interface.ui_morphology.has_axons():
-                    axons_color_row = layout.row()
-                    axons_color_row.prop(scene, 'NMV_AxonColor')
-                    if not scene.NMV_BuildAxon or scene.NMV_ColorArborByPart:
-                        axons_color_row.enabled = False
+            # Basal dendrites color option
+            if nmv.interface.ui_morphology.has_basal_dendrites():
+                basal_dendrites_color_row = layout.row()
+                basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+                if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:
+                    basal_dendrites_color_row.enabled = False
 
-                    # Pass options from UI to system
-                    axons_color_value = Vector((scene.NMV_AxonColor.r,
-                                               scene.NMV_AxonColor.g,
-                                               scene.NMV_AxonColor.b))
-                    options.shading.morphology_axons_color = axons_color_value
+                # Pass options from UI to system
+                color = scene.NMV_BasalDendritesColor
+                basal_dendrites_color_value = Vector((color.r, color.g, color.b))
+                options.shading.morphology_basal_dendrites_color = basal_dendrites_color_value
 
-                # Basal dendrites color option
-                if nmv.interface.ui_morphology.has_basal_dendrites():
-                    basal_dendrites_color_row = layout.row()
-                    basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
-                    if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:
-                        basal_dendrites_color_row.enabled = False
+            # Apical dendrite color option
+            if nmv.interface.ui_morphology.has_apical_dendrites():
+                apical_dendrites_color_row = layout.row()
+                apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+                if not scene.NMV_BuildApicalDendrite or scene.NMV_ColorArborByPart:
+                    apical_dendrites_color_row.enabled = False
 
-                    # Pass options from UI to system
-                    color = scene.NMV_BasalDendritesColor
-                    basal_dendrites_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_basal_dendrites_color = basal_dendrites_color_value
+                # Pass options from UI to system
+                color = scene.NMV_ApicalDendriteColor
+                apical_dendrites_color_value = Vector((color.r, color.g, color.b))
+                options.shading.morphology_apical_dendrites_color = apical_dendrites_color_value
 
-                # Apical dendrite color option
-                if nmv.interface.ui_morphology.has_apical_dendrites():
-                    apical_dendrites_color_row = layout.row()
-                    apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
-                    if not scene.NMV_BuildApicalDendrite or scene.NMV_ColorArborByPart:
-                        apical_dendrites_color_row.enabled = False
+            # Articulation color option
+            technique = scene.NMV_MorphologyReconstructionTechnique
+            if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
+                articulation_color_row = layout.row()
+                articulation_color_row.prop(scene, 'NMV_ArticulationColor')
 
-                    # Pass options from UI to system
-                    color = scene.NMV_ApicalDendriteColor
-                    apical_dendrites_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_apical_dendrites_color = apical_dendrites_color_value
+                # Pass options from UI to system
+                color = scene.NMV_ArticulationColor
+                articulation_color_value = Vector((color.r, color.g, color.b))
+                options.shading.morphology_articulation_color = articulation_color_value
 
-                # Articulation color option
-                technique = scene.NMV_MorphologyReconstructionTechnique
-                if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-                    articulation_color_row = layout.row()
-                    articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+        # Only a simple UI
+        else:
 
-                    # Pass options from UI to system
-                    color = scene.NMV_ArticulationColor
-                    articulation_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_articulation_color = articulation_color_value
+            # Axons
+            axons_color_row = layout.row()
+            axons_color_row.prop(scene, 'NMV_AxonColor')
+
+            # Apical dendrites
+            basal_dendrites_color_row = layout.row()
+            basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+
+            # Apical dendrites
+            apical_dendrites_color_row = layout.row()
+            apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+
+            # Articulation color option
+            articulation_color_row = layout.row()
+            articulation_color_row.prop(scene, 'NMV_ArticulationColor')
 
 
 ####################################################################################################
