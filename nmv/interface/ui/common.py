@@ -312,6 +312,7 @@ def validate_output_directory(panel_object,
     return True
 
 
+
 ####################################################################################################
 # @render_morphology_image
 ####################################################################################################
@@ -394,7 +395,7 @@ def render_morphology_image(panel_object,
             image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
+            keep_camera_in_scene=False)
 
     # Render at a specific scale factor
     else:
@@ -407,7 +408,7 @@ def render_morphology_image(panel_object,
             image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
+            keep_camera_in_scene=False)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 

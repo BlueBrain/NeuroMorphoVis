@@ -340,26 +340,3 @@ distributions = [
         compute_max_kernel=compute_maximum_global_bifurcation_angle_of_arbor,
         add_percentage=False),
 ]
-
-'''
-distributionss = [
-
-    
-    
-
-    
-
-
-    
-
-    AnalysisDistribution(
-        name='Samples Radii',
-        kernel=kernel_samples_radii,
-        description='Radii range',
-        data_format='FLOAT',
-        figure_title='Samples Radii',
-        figure_axis_label='Sample Radius (\u03BCm)',
-        figure_label='samples-radii'),
-
-]
-'''

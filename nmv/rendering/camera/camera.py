@@ -154,7 +154,7 @@ class Camera:
         # Set the extension based on the format
         if image_format == nmv.enums.Image.Extension.PNG:
             image_extension = 'png'
-        if image_format == nmv.enums.Image.Extension.TIFF:
+        elif image_format == nmv.enums.Image.Extension.TIFF:
             image_extension = 'tiff'
         elif image_format == nmv.enums.Image.Extension.BMP:
             image_extension = 'bmp'
