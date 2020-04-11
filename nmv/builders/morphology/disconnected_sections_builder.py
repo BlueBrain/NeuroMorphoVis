@@ -655,11 +655,11 @@ class DisconnectedSectionsBuilder:
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
                         image_scale_factor=2,
-                        image_name='%s_%s' % (self.options.morphology.label, 'apical_%d' % i),
+                        image_name='%s_%s' % (self.options.morphology.label, arbor.label),
                         image_directory=self.options.io.analysis_directory)
 
                     images.append('%s/%s_%s' % (self.options.io.analysis_directory,
-                                                self.options.morphology.label, 'apical'))
+                                                self.options.morphology.label, arbor.label))
 
         # Axons
         if not self.options.morphology.ignore_axons:
@@ -672,16 +672,16 @@ class DisconnectedSectionsBuilder:
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
                         image_scale_factor=2,
-                        image_name='%s_%s' % (self.options.morphology.label, 'axon_%d' % i),
+                        image_name='%s_%s' % (self.options.morphology.label, arbor.label),
                         image_directory=self.options.io.analysis_directory)
 
                     images.append('%s/%s_%s' % (self.options.io.analysis_directory,
-                                                self.options.morphology.label, 'axon'))
+                                                self.options.morphology.label, arbor.label))
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
                     self.draw_highlighted_arbor(highlighted_arbor_key='color_basal_%d' % i)
 
                     # render
@@ -690,8 +690,8 @@ class DisconnectedSectionsBuilder:
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
                         image_scale_factor=2,
-                        image_name='%s_%s' % (self.options.morphology.label, 'basal_%d' % i),
+                        image_name='%s_%s' % (self.options.morphology.label, arbor.label),
                         image_directory=self.options.io.analysis_directory)
 
                     images.append('%s/%s_%s' % (self.options.io.analysis_directory,
-                                                self.options.morphology.label, 'basal_%d' % i))
+                                                self.options.morphology.label, arbor.label))

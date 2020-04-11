@@ -103,7 +103,6 @@ class AnalysisPanel(bpy.types.Panel):
         nmv.interface.enable_or_disable_layout(layout)
 
 
-
 ####################################################################################################
 # @cExportAnalysisResults
 ####################################################################################################
@@ -216,6 +215,10 @@ class CreateNeuronCard(bpy.types.Operator):
         options.morphology.apical_dendrite_branch_order = 1e3
         options.morphology.basal_dendrites_branch_order = 1e3
 
+        builder = nmv.builders.DisconnectedSectionsBuilder(
+            morphology=nmv.interface.ui_morphology, options=options)
+
+        builder.render_highlighted_arbors()
         # Draw the morphology skeleton to append it to the analysis PDF
         builder = nmv.builders.ConnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=options)

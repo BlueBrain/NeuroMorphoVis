@@ -148,7 +148,7 @@ def compute_full_morphology_bounding_box(morphology):
             arbors_bounding_boxes.append(compute_arbor_bounding_box(arbor=arbor))
 
     # Compute apical dendrite bounding box, if exists
-    if morphology.has_apical_dendrite():
+    if morphology.has_apical_dendrites():
         for arbor in morphology.apical_dendrites:
             arbors_bounding_boxes.append(compute_arbor_bounding_box(arbor=arbor))
 
