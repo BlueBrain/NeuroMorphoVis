@@ -412,107 +412,63 @@ class H5Reader:
         # Build the axon tree
         self.build_tree(axons_sections)
 
-        # Build the basal dendritic tree
+        # Build the basal tree
         self.build_tree(basal_dendrites_sections)
 
-        # Build the apical dendritic tree
+        # Build the apical tree
         self.build_tree(apical_dendrites_sections)
 
-        # Build the basal dendritic arbors
-        basal_dendrites_arbors = nmv.skeleton.ops.build_arbors_from_sections(
-            basal_dendrites_sections)
+        # Apical dendrites
+        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
 
-        # Clean naming
-        if basal_dendrites_arbors is not None:
-            for i in range(len(basal_dendrites_arbors)):
-                basal_dendrites_arbors[i].label = 'Basal Dendrite %d' % (i + 1)
+        # Basal dendrites
+        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
 
-            # Compute the number of basals loaded from the morphology
-            number_loaded_basal_dendrites = len(basal_dendrites_arbors)
-        else:
-            number_loaded_basal_dendrites = 0
+        # Axons
+        axons = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
 
-        # Build the axon, or axons if the morphology has more than a single axon
-        # NOTE: For consistency, if we have more than a single axon, we use the principal one and
-        # add the others later to the basal dendrites list
-        axons_arbors = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
-
-        # Clean naming
-        if axons_arbors is not None:
-            if len(axons_arbors) > 1:
-                for i in range(len(axons_arbors)):
-                    axons_arbors[i].label = 'Axon %d' % (i + 1)
+        # Labeling and tagging the apical dendrites
+        if apical_dendrites is not None:
+            if len(apical_dendrites) == 1:
+                apical_dendrites[0].label = 'Apical Dendrite'
+                apical_dendrites[0].tag = 'ApicalDendrite'
             else:
-                axons_arbors[0].label = 'Axon'
+                for i in range(len(apical_dendrites)):
+                    apical_dendrites[i].label = 'Apical Dendrite %d' % (i + 1)
+                    apical_dendrites[i].label = 'ApicalDendrite%d' % (i + 1)
 
-            # Compute the number of axons loaded from the morphology
-            number_loaded_axons = len(axons_arbors)
-        else:
-            number_loaded_axons = 0
-
-        axon_arbor = None
-        if axons_arbors is not None:
-
-            # Set the principal axon
-            axon_arbor = axons_arbors[0]
-
-            # If we have more than a single axon, use the principal one and move the others to the
-            # basal dendrites
-            if len(axons_arbors) > 1:
-
-                # Add the others to the basal dendrites
-                for i in range(1, len(axons_arbors)):
-                    basal_dendrites_arbors.append(axons_arbors[i])
-
-        # Build the apical dendrites, or apical dendrites if the morphology has more than a
-        # single apical dendrites
-        # NOTE: For consistency, if we have more than a single morphology, we use the principal one
-        # and add the others later to the basal dendrites list
-        apical_dendrites_arbors = nmv.skeleton.ops.build_arbors_from_sections(
-            apical_dendrites_sections)
-
-        # Clean naming
-        if apical_dendrites_arbors is not None:
-            if len(apical_dendrites_arbors) > 1:
-                for i in range(len(apical_dendrites_arbors)):
-                    apical_dendrites_arbors[i].label = 'Apical Dendrite %d' % (i + 1)
+        # Labeling the basal dendrites
+        if basal_dendrites is not None:
+            if len(basal_dendrites) == 1:
+                basal_dendrites[0].label = 'Basal Dendrite'
+                basal_dendrites[0].tag = 'BasalDendrite'
             else:
-                apical_dendrites_arbors[0].label = 'Apical Dendrite'
+                for i in range(len(basal_dendrites)):
+                    basal_dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
+                    basal_dendrites[i].tag = 'BasalDendrite%d' % (i + 1)
 
-            # Compute the number of apicals loaded from the morphology
-            number_loaded_apical_dendrites = len(apical_dendrites_arbors)
-        else:
-            number_loaded_apical_dendrites = 0
-
-        apical_dendrite_arbor = None
-        if apical_dendrites_arbors is not None:
-
-            # Set the principal axon
-            apical_dendrite_arbor = apical_dendrites_arbors[0]
-
-            # If we have more than a single axon, use the principal one and move the others to the
-            # basal dendrites
-            if len(apical_dendrites_arbors) > 1:
-
-                # Add the others to the basal dendrites
-                for i in range(1, len(apical_dendrites_arbors)):
-                    basal_dendrites_arbors.append(apical_dendrites_arbors[i])
+        # Labeling and tagging the axons
+        if axons is not None:
+            if len(axons) == 1:
+                axons[0].label = 'Axon'
+                axons[0].tag = 'Axon'
+            else:
+                for i in range(len(axons)):
+                    axons[i].label = 'Axon %d' % (i + 1)
+                    axons[i].tag = 'Axon%d' % (i + 1)
 
         # Build the soma
-        nmv_soma = self.build_soma(self.points_list, self.structure_list)
+        soma = self.build_soma(self.points_list, self.structure_list)
 
         # Update the morphology label
         label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
 
         # Construct the morphology skeleton
-        nmv_morphology = nmv.skeleton.Morphology(
-            soma=nmv_soma, axon=axon_arbor, dendrites=basal_dendrites_arbors,
-            apical_dendrite=apical_dendrite_arbor, label=label)
-
-        # Update the information
-        nmv_morphology.number_loaded_axons = number_loaded_axons
-        nmv_morphology.number_loaded_basal_dendrites = number_loaded_basal_dendrites
-        nmv_morphology.number_loaded_apical_dendrites = number_loaded_apical_dendrites
+        nmv_morphology = nmv.skeleton.Morphology(soma=soma,
+                                                 axons=axons,
+                                                 basal_dendrites=basal_dendrites,
+                                                 apical_dendrites=apical_dendrites,
+                                                 label=label)
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology

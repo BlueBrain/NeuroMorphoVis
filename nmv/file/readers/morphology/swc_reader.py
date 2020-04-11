@@ -699,6 +699,7 @@ class SWCReader:
         soma = self.build_soma(axons_arbors=axons,
                                basal_dendrites_arbors=basal_dendrites,
                                apical_dendrites_arbors=apical_dendrites)
+
         # Update the morphology label
         label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
 
