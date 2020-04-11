@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.consts
+
 
 ####################################################################################################
 # Soma
@@ -59,26 +62,33 @@ class Soma:
         if self.arbors_profile_points is not None:
             self.arbors_profile_points = sorted(arbors_profile_points)
 
-        # Possible radii that can be assigned to the soma during its reconstruction
-        self.possible_radii = list()
+        # A list containing the distances from the profile point to the soma origin
+        self.distances_to_soma = list()
 
-        # Add the soma profile points radii to the possible_radii list
+        # Add the soma profile points radii to the distances_to_soma list
         for point in self.profile_points:
-            self.possible_radii.append(point.length)
+            self.distances_to_soma.append(point.length)
 
-        # Add the arbors profile points radii to the possible_radii list
+        # Add the arbors profile points radii to the distances_to_soma list
         if self.arbors_profile_points is not None:
             for point in self.arbors_profile_points:
-                self.possible_radii.append(point.length)
+                self.distances_to_soma.append(point.length)
 
         # Sort the radii in the list
-        self.possible_radii = sorted(self.possible_radii)
+        self.distances_to_soma = sorted(self.distances_to_soma)
+
+        # Clean the possible radii list
+        self.possible_radii = list()
+
+        for value in self.distances_to_soma:
+            if (self.mean_radius / 2.0) < value < (self.mean_radius * 2.0):
+                self.possible_radii.append(value)
 
         # The smallest radius
-        self.smallest_radius = self.possible_radii[0]
+        self.smallest_radius = self.possible_radii[0] - nmv.consts.Math.LITTLE_EPSILON
 
         # The largest radius
-        self.largest_radius = self.possible_radii[-1]
+        self.largest_radius = self.possible_radii[-1] + nmv.consts.Math.LITTLE_EPSILON
 
 
 

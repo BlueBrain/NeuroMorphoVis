@@ -164,18 +164,19 @@ def construct_swc_samples_list_from_morphology_tree(morphology_object):
         construct_swc_samples_list_from_soma(morphology_object.soma, swc_samples_list)
 
     # Apical dendrite
-    if morphology_object.apical_dendrite is not None:
-        construct_swc_samples_list_from_arbor(morphology_object.apical_dendrite, swc_samples_list)
+    if morphology_object.apical_dendrites is not None:
+        for arbor in morphology_object.apical_dendrites:
+            construct_swc_samples_list_from_arbor(arbor, swc_samples_list)
 
     # basal dendrites
-    if morphology_object.dendrites is not None:
-        # Do it dendrite by dendrite
-        for basal_dendrite in morphology_object.dendrites:
-            construct_swc_samples_list_from_arbor(basal_dendrite, swc_samples_list)
+    if morphology_object.basal_dendrites is not None:
+        for arbor in morphology_object.basal_dendrites:
+            construct_swc_samples_list_from_arbor(arbor, swc_samples_list)
 
     # Axon
-    if morphology_object.axon is not None:
-        construct_swc_samples_list_from_arbor(morphology_object.axon, swc_samples_list)
+    if morphology_object.axons is not None:
+        for arbor in morphology_object.axons:
+            construct_swc_samples_list_from_arbor(arbor, swc_samples_list)
 
     # Return the SWC-complaint  list of samples
     return swc_samples_list

@@ -435,7 +435,7 @@ class H5Reader:
             else:
                 for i in range(len(apical_dendrites)):
                     apical_dendrites[i].label = 'Apical Dendrite %d' % (i + 1)
-                    apical_dendrites[i].label = 'ApicalDendrite%d' % (i + 1)
+                    apical_dendrites[i].tag = 'ApicalDendrite%d' % (i + 1)
 
         # Labeling the basal dendrites
         if basal_dendrites is not None:

@@ -74,7 +74,6 @@ class SomaSoftBodyBuilder:
 
         # Ensure the connection between the arbors and the soma
         nmv.skeleton.ops.verify_arbors_proximity_to_soma(self.morphology)
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
 
     ################################################################################################
     # @add_noise_to_soma_surface
