@@ -846,9 +846,9 @@ def verify_arbor_proximity_to_soma(arbor,
 
 
 ####################################################################################################
-# @validate_arbors_proximity_to_soma
+# @verify_arbors_proximity_to_soma
 ####################################################################################################
-def validate_arbors_proximity_to_soma(morphology):
+def verify_arbors_proximity_to_soma(morphology):
     """Validates the proximity of the arbors to the soma. If the arbor is too far, then probably it
      is NOT connected to the soma, otherwise it is.
 
@@ -1169,43 +1169,35 @@ def get_soma_to_root_sections_connection_extent(morphology):
     # Initialize the list
     connection_extents = list()
 
-    # Apical dendrite
+    # Apical dendrites
     if morphology.has_apical_dendrites():
-
-        # Only if the apical is connected
-        if morphology.apical_dendrite.connected_to_soma:
-
-            # Get the extent
-            extent_center, extent_radius = get_soma_to_root_section_connection_extent(
-                morphology.apical_dendrite)
-
-            # Append this extent to the list
-            connection_extents.append([extent_center, extent_radius])
-
-    # Apical dendrite
-    if morphology.has_axons():
-
-        # Only if the axon is connected
-        if morphology.axon.connected_to_soma:
-
-            # Get the extent
-            extent_center, extent_radius = get_soma_to_root_section_connection_extent(
-                    morphology.axon)
-
-            # Append this extent to the list
-            connection_extents.append([extent_center, extent_radius])
-
-    # Basal dendrite s
-    if morphology.has_basal_dendrites():
-
-        # For each dendrite
-        for dendrite in morphology.basal_dendrites:
-
-            # Only if the dendrite is connected
-            if dendrite.connected_to_soma:
+        for arbor in morphology.apical_dendrites:
+            if arbor.connected_to_soma:
 
                 # Get the extent
-                extent_center, extent_radius = get_soma_to_root_section_connection_extent(dendrite)
+                extent_center, extent_radius = get_soma_to_root_section_connection_extent(arbor)
+
+                # Append this extent to the list
+                connection_extents.append([extent_center, extent_radius])
+
+    # Axons
+    if morphology.has_axons():
+        for arbor in morphology.axons:
+            if arbor.connected_to_soma:
+
+                # Get the extent
+                extent_center, extent_radius = get_soma_to_root_section_connection_extent(arbor)
+
+                # Append this extent to the list
+                connection_extents.append([extent_center, extent_radius])
+
+    # Basal dendrites
+    if morphology.has_basal_dendrites():
+        for arbor in morphology.basal_dendrites:
+            if arbor.connected_to_soma:
+
+                # Get the extent
+                extent_center, extent_radius = get_soma_to_root_section_connection_extent(arbor)
 
                 # Append this extent to the list
                 connection_extents.append([extent_center, extent_radius])
@@ -1217,7 +1209,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
 ####################################################################################################
 # @get_stable_soma_extent
 ####################################################################################################
-def get_stable_soma_extent(morphology):
+def get_stable_soma_extent_for_morphology(morphology):
     """
     This function will return an extent (or a sphere) that reflects the stable zone around the
     soma, where we cannot apply the same noise texture applied to the rest of the arbors.
@@ -1235,42 +1227,78 @@ def get_stable_soma_extent(morphology):
 
     # Apical dendrite
     if morphology.has_apical_dendrites():
+        for arbor in morphology.apical_dendrites:
 
-        # Compare the initial sample of the first segment of the apical dendrite
-        distance = morphology.apical_dendrite.samples[0].point.length + \
-                   morphology.apical_dendrite.samples[0].radius
-        if distance > largest_distance:
+            # Compare the initial sample of the first segment of the apical dendrite
+            distance = arbor.samples[0].point.length + arbor.samples[0].radius
 
-            # Update the largest distance
-            largest_distance = distance
+            if distance > largest_distance:
+
+                # Update the largest distance
+                largest_distance = distance
 
     # Basal dendrites
     if morphology.has_basal_dendrites():
-        for dendrite in morphology.basal_dendrites:
+        for arbor in morphology.basal_dendrites:
 
             # Ensure that this basal dendrite is connected to the soma
-            if dendrite.connected_to_soma:
+            if arbor.connected_to_soma:
 
                 # Compare the initial sample of the first segment of the basal dendrite
-                distance = dendrite.samples[0].point.length + dendrite.samples[0].radius
+                distance = arbor.samples[0].point.length + arbor.samples[0].radius
+
                 if distance > largest_distance:
 
                     # Update the largest distance
                     largest_distance = distance
 
-    # Axon
+    # Axons
     if morphology.has_axons():
+        for arbor in morphology.axons:
 
-        # Compare the initial sample of the first segment of the axon
-        distance = morphology.axon.samples[0].point.length + \
-                   morphology.axon.samples[0].radius
+            # Compare the initial sample of the first segment of the axon
+            distance = arbor.samples[0].point.length + arbor.samples[0].radius
+
+            if distance > largest_distance:
+
+                # Ensure that this axon is connected to the soma
+                if arbor.connected_to_soma:
+
+                    # Update the largest distance
+                    largest_distance = distance
+
+    # Return the extent, and add 1 micron for safety
+    return Vector((0.0, 0.0, 0.0)), largest_distance + 1.0
+
+
+####################################################################################################
+# @get_stable_soma_extent
+####################################################################################################
+def get_stable_soma_extent_for_connected_arbors(arbors):
+    """
+    This function will return an extent (or a sphere) that reflects the stable zone around the
+    soma, where we cannot apply the same noise texture applied to the rest of the arbors.
+    It checks the most far connected branch to the soma and then returns the sphere based on its
+    distance.
+
+    :param arbors:
+        A given list of valid and connected arbors to the soma.
+    :return:
+        The center and radius of the sphere that represents the stable extent.
+    """
+
+    # The distance to the most far branch
+    largest_distance = 0
+
+    for arbor in arbors:
+
+        # Compare the initial sample of the first segment of the apical dendrite
+        distance = arbor.samples[0].point.length + arbor.samples[0].radius
+
         if distance > largest_distance:
 
-            # Ensure that this axon is connected to the soma
-            if morphology.axon.connected_to_soma:
-
-                # Update the largest distance
-                largest_distance = distance
+            # Update the largest distance
+            largest_distance = distance
 
     # Return the extent, and add 1 micron for safety
     return Vector((0.0, 0.0, 0.0)), largest_distance + 1.0

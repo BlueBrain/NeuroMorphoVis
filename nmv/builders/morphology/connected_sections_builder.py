@@ -152,7 +152,7 @@ class ConnectedSectionsBuilder:
         """
 
         # Apical dendrites
-        nmv.logger.info('Constructing poly-lines')
+        nmv.logger.info('Reconstructing arbors')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for arbor in self.morphology.apical_dendrites:
@@ -194,7 +194,7 @@ class ConnectedSectionsBuilder:
         skeleton_poly_lines = list()
 
         # Apical dendrite
-        nmv.logger.info('Constructing poly-lines')
+        nmv.logger.info('Reconstructing arbors')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for arbor in self.morphology.apical_dendrites:
@@ -505,7 +505,7 @@ class ConnectedSectionsBuilder:
         figure = None
 
         # Apical dendrite
-        nmv.logger.info('Constructing poly-lines')
+        nmv.logger.info('Reconstructing arbors')
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for i, arbor in enumerate(self.morphology.apical_dendrites):

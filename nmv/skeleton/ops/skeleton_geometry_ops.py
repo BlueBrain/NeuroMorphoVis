@@ -134,37 +134,27 @@ def compute_full_morphology_bounding_box(morphology):
         The bounding box of the computed morphology.
     """
 
-    # Compute the axon bounding box
-    axon_bounding_box = None
-    if morphology.has_axon():
-        axon_bounding_box = compute_arbor_bounding_box(morphology.axon)
+    # Arbors bounding box
+    arbors_bounding_boxes = list()
+
+    # Compute the axons bounding box
+    if morphology.has_axons():
+        for arbor in morphology.axons:
+            arbors_bounding_boxes.append(compute_arbor_bounding_box(arbor=arbor))
 
     # Compute basal dendrites bounding boxes
-    basal_dendrites_bounding_boxes = []
     if morphology.has_basal_dendrites():
-        for dendrite in morphology.basal_dendrites:
-            basal_dendrite_bounding_box = compute_arbor_bounding_box(dendrite)
-            basal_dendrites_bounding_boxes.append(basal_dendrite_bounding_box)
+        for arbor in morphology.basal_dendrites:
+            arbors_bounding_boxes.append(compute_arbor_bounding_box(arbor=arbor))
 
     # Compute apical dendrite bounding box, if exists
-    apical_dendrite_bounding_box = None
     if morphology.has_apical_dendrite():
-        apical_dendrite_bounding_box = compute_arbor_bounding_box(morphology.apical_dendrite)
+        for arbor in morphology.apical_dendrites:
+            arbors_bounding_boxes.append(compute_arbor_bounding_box(arbor=arbor))
 
     # Get the joint bounding box of the entire morphology by collecting the individual ones in a
     # list and then merging the list into a single bounding box
-    morphology_bounding_boxes = basal_dendrites_bounding_boxes
-
-    # If the axon is there, add it
-    if axon_bounding_box is not None:
-        morphology_bounding_boxes.append(axon_bounding_box)
-
-    # If the apical dendrite is there, add it
-    if apical_dendrite_bounding_box is not None:
-        morphology_bounding_boxes.append(apical_dendrite_bounding_box)
-
-    # Get the joint bounding box from the list
-    morphology_bounding_box = nmv.bbox.extend_bounding_boxes(morphology_bounding_boxes)
+    morphology_bounding_box = nmv.bbox.extend_bounding_boxes(arbors_bounding_boxes)
 
     # Return the morphology bounding box
     return morphology_bounding_box

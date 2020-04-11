@@ -267,10 +267,10 @@ def verify_axon_connection_to_soma(morphology):
     """
 
     # Ensure that presence of the axon in the morphology
-    if morphology.has_axons():
+    if not morphology.has_axons():
 
         # Report the issue
-        nmv.logger.log('\t\t* WARNING: This morphology does NOT have an axon')
+        nmv.logger.detail('WARNING: This morphology does NOT have an axon')
 
         # Skip
         return

@@ -302,7 +302,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Get the reconstruction time to update the UI
             scene.NMV_SomaReconstructionTime = time.time() - self.reconstruction_time
-            nmv.logger.info('Soma reconstructed in [%f] seconds' %
+            nmv.logger.info_done('Soma reconstructed in [%f] seconds' %
                             scene.NMV_MorphologyLoadingTime)
 
             # Reset the timer limits
@@ -379,7 +379,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # Get the reconstruction time to update the UI
             self.reconstruction_time = time.time() - self.reconstruction_time
             scene.NMV_SomaReconstructionTime = self.reconstruction_time
-            nmv.logger.info('Soma reconstructed in [%f] seconds' %
+            nmv.logger.info_done('Soma reconstructed in [%f] seconds' %
                             scene.NMV_MorphologyLoadingTime)
 
             # Set the reconstruction flag to on

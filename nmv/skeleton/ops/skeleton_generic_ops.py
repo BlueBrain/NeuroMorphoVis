@@ -207,40 +207,17 @@ def apply_operation_to_morphology_partially(*args):
     morphology = args[0]
 
     # Axon maximum branching order
-    axon_branch_level = args[1]
+    axons_branching_order = args[1]
 
     # Basal dendrites maximum branching order
-    basal_dendrites_branch_level = args[2]
+    basal_dendrites_branching_order = args[2]
 
     # Apical dendrites maximum branching order
-    apical_dendrite_branch_level = args[3]
+    apical_dendrites_branching_order = args[3]
 
     # Apical dendrite
     if morphology.has_apical_dendrites():
-
-        # Construct arbor arguments list
-        arbor_args = list()
-
-        # Add the branching levels to the arguments
-        current_branching_level = [0]
-        arbor_args.append(current_branching_level)
-        arbor_args.append(apical_dendrite_branch_level)
-
-        # Add the section root
-        arbor_args.append(morphology.apical_dendrite)
-
-        # Add the other arguments
-        for i in range(4, len(args)):
-            arbor_args.append(args[i])
-
-        # Apply the operation/filter to the arbor
-        apply_operation_to_arbor_conditionally(*arbor_args)
-
-    # Basal dendrites
-    if morphology.has_basal_dendrites():
-
-        # Dendrite by dendrite
-        for dendrite in morphology.basal_dendrites:
+        for arbor in morphology.apical_dendrites:
 
             # Construct arbor arguments list
             arbor_args = list()
@@ -248,10 +225,32 @@ def apply_operation_to_morphology_partially(*args):
             # Add the branching levels to the arguments
             current_branching_level = [0]
             arbor_args.append(current_branching_level)
-            arbor_args.append(basal_dendrites_branch_level)
+            arbor_args.append(apical_dendrites_branching_order)
 
             # Add the section root
-            arbor_args.append(dendrite)
+            arbor_args.append(morphology.apical_dendrite)
+
+            # Add the other arguments
+            for i in range(4, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            apply_operation_to_arbor_conditionally(*arbor_args)
+
+    # Basal dendrites
+    if morphology.has_basal_dendrites():
+        for arbor in morphology.basal_dendrites:
+
+            # Construct arbor arguments list
+            arbor_args = list()
+
+            # Add the branching levels to the arguments
+            current_branching_level = [0]
+            arbor_args.append(current_branching_level)
+            arbor_args.append(basal_dendrites_branching_order)
+
+            # Add the section root
+            arbor_args.append(arbor)
 
             # Add the other arguments
             for i in range(4, len(args)):
@@ -262,21 +261,22 @@ def apply_operation_to_morphology_partially(*args):
 
     # Axon
     if morphology.has_axons():
+        for arbor in morphology.basal_dendrites:
 
-        # Construct arbor arguments list
-        arbor_args = list()
+            # Construct arbor arguments list
+            arbor_args = list()
 
-        # Add the branching levels to the arguments
-        current_branching_level = [0]
-        arbor_args.append(current_branching_level)
-        arbor_args.append(axon_branch_level)
+            # Add the branching levels to the arguments
+            current_branching_level = [0]
+            arbor_args.append(current_branching_level)
+            arbor_args.append(axons_branching_order)
 
-        # Add the section root
-        arbor_args.append(morphology.axon)
+            # Add the section root
+            arbor_args.append(arbor)
 
-        # Add the other arguments
-        for i in range(4, len(args)):
-            arbor_args.append(args[i])
+            # Add the other arguments
+            for i in range(4, len(args)):
+                arbor_args.append(args[i])
 
-        # Apply the operation/filter to the arbor
-        apply_operation_to_arbor_conditionally(*arbor_args)
+            # Apply the operation/filter to the arbor
+            apply_operation_to_arbor_conditionally(*arbor_args)

@@ -19,7 +19,7 @@
 ####################################################################################################
 # @branches_intersect
 ####################################################################################################
-def branches_intersect(branch_1,
+def arbors_intersect(branch_1,
                        branch_2,
                        soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
@@ -244,7 +244,7 @@ def axon_intersects_dendrites(axon,
         for dendrite in dendrites:
 
             # Branch intersection test
-            if branches_intersect(dendrite, axon, soma_radius):
+            if arbors_intersect(dendrite, axon, soma_radius):
 
                 # Intersection happens
                 return True
@@ -276,7 +276,7 @@ def axon_intersects_apical_dendrite(axon,
     if apical_dendrite is not None:
 
         # Is the axon intersecting with the apical dendrite or not
-        return branches_intersect(axon, apical_dendrite, soma_radius)
+        return arbors_intersect(axon, apical_dendrite, soma_radius)
 
     # Otherwise, return False if the apical dendrite does not exist in the morphology
     return False
@@ -305,7 +305,7 @@ def dendrite_intersects_apical_dendrite(dendrite,
     if apical_dendrite is not None:
 
         # Is the basal dendrite intersecting with the apical dendrite or not
-        return branches_intersect(dendrite, apical_dendrite, soma_radius)
+        return arbors_intersect(dendrite, apical_dendrite, soma_radius)
 
     # Otherwise, return False if the apical dendrite does not exist in the morphology
     return False
@@ -339,7 +339,7 @@ def basal_dendrite_intersects_basal_dendrite(dendrite,
                 continue
 
             # Check the intersection between the primary and the secondary dendrites
-            if branches_intersect(dendrite, secondary_dendrite, soma_radius):
+            if arbors_intersect(dendrite, secondary_dendrite, soma_radius):
 
                 # If the radius of the primary dendrite is less than the secondary one, then the
                 # intersection is true

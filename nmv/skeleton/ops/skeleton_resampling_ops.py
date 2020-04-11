@@ -138,21 +138,20 @@ def update_samples_indices_per_morphology(morphology_object,
     # Initially, this index is set to ONE and incremented later (soma index = 0)
     samples_global_morphology_index = [starting_index]
 
-    # Apical dendrite
-    if morphology_object.apical_dendrite is not None:
-        update_samples_indices_per_arbor_globally(morphology_object.apical_dendrite,
-                                                  samples_global_morphology_index)
+    # Apical dendrites
+    if morphology_object.has_apical_dendrites():
+        for arbor in morphology_object.apical_dendrites:
+            update_samples_indices_per_arbor_globally(arbor, samples_global_morphology_index)
 
-    # Do it dendrite by dendrite
-    if morphology_object.dendrites is not None:
-        for basal_dendrite in morphology_object.dendrites:
-            update_samples_indices_per_arbor_globally(basal_dendrite,
-                                                      samples_global_morphology_index)
+    # Basal dendrites
+    if morphology_object.has_basal_dendrites():
+        for arbor in morphology_object.basal_dendrites:
+            update_samples_indices_per_arbor_globally(arbor, samples_global_morphology_index)
 
-    # Axon
-    if morphology_object.axon is not None:
-        update_samples_indices_per_arbor_globally(morphology_object.axon,
-                                                  samples_global_morphology_index)
+    # Axons
+    if morphology_object.has_axons():
+        for arbor in morphology_object.axons:
+            update_samples_indices_per_arbor_globally(arbor, samples_global_morphology_index)
 
 
 ####################################################################################################

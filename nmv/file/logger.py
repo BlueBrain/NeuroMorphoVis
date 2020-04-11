@@ -139,7 +139,6 @@ class Logger:
         self.line()
         log_string = ''.join(map(str, args))
         self.log('%s* %s' % (FOUR_SPACES, log_string))
-        self.line()
 
     ################################################################################################
     # @info
@@ -157,6 +156,23 @@ class Logger:
 
         # Log the string
         self.log('%s* %s' % (SIX_SPACES, log_string))
+
+    ################################################################################################
+    # @info_done
+    ################################################################################################
+    def info_done(self,
+             *args):
+        """Log a sub-header.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('%s* %s \n' % (SIX_SPACES, log_string))
 
     ################################################################################################
     # @detail

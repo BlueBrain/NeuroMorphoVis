@@ -365,7 +365,7 @@ class MetaBuilder:
         nmv.logger.header('Building Soma from Meta Objects')
 
         # Verify the proximity of the arbors to the soma
-        nmv.skeleton.validate_arbors_proximity_to_soma(morphology=self.morphology)
+        nmv.skeleton.verify_arbors_proximity_to_soma(morphology=self.morphology)
 
         # Emanate towards the apical dendrites, if exist
         if not self.options.morphology.ignore_apical_dendrites:

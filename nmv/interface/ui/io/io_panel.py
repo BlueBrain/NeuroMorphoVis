@@ -211,11 +211,14 @@ class LoadMorphology(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
+        nmv.logger.header('Loading Morphology')
+        nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
+
         # Clear the scene
         import nmv.scene
         nmv.scene.clear_scene()
 
-        # Create a skeletonizer object to build the morphology skeleton
+        # Create a builder object to build the morphology skeleton
         import nmv.builders
         builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology,
@@ -226,7 +229,7 @@ class LoadMorphology(bpy.types.Operator):
 
         drawing_time = time.time()
         context.scene.NMV_MorphologyDrawingTime = drawing_time - loading_time
-        nmv.logger.info('Morphology drawn in [%f] seconds' %
+        nmv.logger.info('Morphology loaded in [%f] seconds' %
                         context.scene.NMV_MorphologyDrawingTime)
 
         # Switch to the top view
@@ -239,7 +242,9 @@ class LoadMorphology(bpy.types.Operator):
         nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
 
         # Analyze the morphology once loaded as well
+        analysis_time = time.time()
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
+        nmv.logger.info_done('Morphology analyzed in [%f] seconds' % (time.time() - analysis_time))
 
         # Done
         return {'FINISHED'}

@@ -30,3 +30,4 @@ from .skeleton_resampling_ops import *
 from .skeleton_generic_ops import *
 from .skeleton_style_ops import *
 from .skeleton_verification_ops import *
+from .skeleton_soma_ops import *
