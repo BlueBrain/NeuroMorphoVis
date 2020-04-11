@@ -349,6 +349,11 @@ class DisconnectedSectionsBuilder:
     ################################################################################################
     def draw_arbors_as_single_object(self,
                                      bevel_object):
+        """Draws all the arbors as a single object.
+
+        :param bevel_object:
+            Bevel object used to interpolate the polylines.
+        """
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -403,6 +408,11 @@ class DisconnectedSectionsBuilder:
     ################################################################################################
     def draw_each_arbor_as_single_object(self,
                                          bevel_object):
+        """Draws each arbor as a single object.
+
+         :param bevel_object:
+            Bevel object used to interpolate the polylines.
+        """
 
         # Apical dendrite
         nmv.logger.info('Reconstructing arbors')

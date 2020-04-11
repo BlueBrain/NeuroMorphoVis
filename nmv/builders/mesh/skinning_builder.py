@@ -84,7 +84,7 @@ class SkinningBuilder:
         self.spines_mesh = None
 
         # Statistics
-        self.profiling_statistics = 'SkinningBuilder Profiles: \n'
+        self.profiling_statistics = ''
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'

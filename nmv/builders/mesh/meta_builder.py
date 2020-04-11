@@ -86,7 +86,7 @@ class MetaBuilder:
         self.smallest_radius = 1e5
 
         # Statistics
-        self.profiling_statistics = 'MetaBuilder Profiles: \n'
+        self.profiling_statistics = ''
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
