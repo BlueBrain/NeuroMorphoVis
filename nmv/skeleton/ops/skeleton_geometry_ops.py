@@ -586,4 +586,4 @@ def simplify_morphology(section):
             section.samples[i].radius = section_maximum_radius - (i * section_step)
 
         # Omit the children
-        section.children = []
+        section.children = list()

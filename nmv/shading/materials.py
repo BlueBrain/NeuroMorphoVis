@@ -813,7 +813,7 @@ def create_materials(material_type,
     """
 
     # A list of the created materials
-    materials_list = []
+    materials_list = list()
     for i in range(2):
 
         # Create the material

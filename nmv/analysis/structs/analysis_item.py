@@ -92,11 +92,11 @@ class AnalysisItem:
 
         # Append a little detail to the description to indicate if this is morphology or arbor
         if 'Morphology' in variable_prefix:
-            description = '%s %s' % (self.description, 'of the entire morphology')
+            description = '%s %s' % (self.description, '. This value is reported for the morphology')
         elif 'Dendrite' in variable_prefix:
-            description = '%s %s' % (self.description, 'of the dendrite')
+            description = '%s %s' % (self.description, '. This value is reported for this dendrite')
         elif 'Axon' in variable_prefix:
-            description = '%s %s' % (self.description, 'of the axon')
+            description = '%s %s' % (self.description, '. This value is reported for the axon')
         else:
             description = 'None'
 

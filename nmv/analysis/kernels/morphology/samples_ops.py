@@ -60,6 +60,23 @@ def kernel_minimum_number_samples_per_section(morphology):
 
 
 ####################################################################################################
+# @kernel_distance_from_initial_sample_to_origin
+####################################################################################################
+def kernel_distance_from_initial_sample_to_origin(morphology):
+    """Computes the distance between the first sample along the arbor and the soma.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_first_sample_distance_to_soma,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+
+####################################################################################################
 # @kernel_maximum_number_samples_per_section
 ####################################################################################################
 def kernel_maximum_number_samples_per_section(morphology):

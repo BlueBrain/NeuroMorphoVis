@@ -324,6 +324,9 @@ class RenderMesh360(bpy.types.Operator):
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > 360:
 
+            # Reset the orientation of the mesh
+            nmv.scene.reset_orientation_of_objects(scene_objects=self.scene_objects)
+
             # Reset the timer limits
             self.timer_limits = 0
 

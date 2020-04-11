@@ -15,10 +15,14 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+import bpy
+
 # Internal imports
 import nmv.consts
 import nmv.enums
 import nmv.rendering
+import nmv.scene
 
 
 ####################################################################################################

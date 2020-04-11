@@ -26,21 +26,6 @@ from nmv.analysis.kernels.morphology import *
 ui_per_arbor_analysis_items = [
 
     ################################################################################################
-    # Generic items
-    ################################################################################################
-    AnalysisItem(variable='NumberTips',
-                 name='Total # Tips',
-                 kernel=kernel_total_number_terminal_tips,
-                 description='The total number number of terminal tips',
-                 data_format='INT'),
-
-    AnalysisItem(variable='NumberTerminalSegments',
-                 name='Total # Terminal Segments',
-                 kernel=kernel_total_number_terminal_segments,
-                 description='The total number number of terminal segments',
-                 data_format='INT'),
-
-    ################################################################################################
     # Samples-related items
     ################################################################################################
     AnalysisItem(variable='TotalNumberSamples',
@@ -53,6 +38,18 @@ ui_per_arbor_analysis_items = [
                  name='Total # Sections',
                  kernel=kernel_total_number_sections,
                  description='The total number of sections (or branches)',
+                 data_format='INT'),
+
+    AnalysisItem(variable='NumberTips',
+                 name='Total # Tips',
+                 kernel=kernel_total_number_terminal_tips,
+                 description='The total number number of terminal tips',
+                 data_format='INT'),
+
+    AnalysisItem(variable='NumberTerminalSegments',
+                 name='Total # Terminal Segments',
+                 kernel=kernel_total_number_terminal_segments,
+                 description='The total number number of terminal segments',
                  data_format='INT'),
 
     AnalysisItem(variable='MaximumBranchingOrder',
@@ -73,6 +70,14 @@ ui_per_arbor_analysis_items = [
                  description='The total number of trifurcations (or sections with three '
                              'children)',
                  data_format='INT'),
+
+    AnalysisItem(variable='DistanceToOrigin',
+                 name='Distance to Origin',
+                 kernel=kernel_distance_from_initial_sample_to_origin,
+                 description='The distance between the first sample on the initial segment of '
+                             'the arbor to the origin. This value is important to see if the arbor '
+                             'is disconnected from the soma in the reconstruction',
+                 data_format='FLOAT'),
 
     AnalysisItem(variable='MaximumPathDistance',
                  name='Max. Path Distance',

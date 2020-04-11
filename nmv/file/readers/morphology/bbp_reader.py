@@ -862,7 +862,7 @@ class BBPReader:
         mean_radius = bbp_morphology_soma.mean_radius()
 
         # Soma profile points
-        profile_points = []
+        profile_points = list()
         for bbp_morphology_soma_profile_point in bbp_morphology_soma.profile_points():
 
             # Profile points

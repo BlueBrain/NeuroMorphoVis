@@ -50,7 +50,7 @@ def get_segments_poly_lines(section,
     for i in range(len(section.samples) - 1):
 
         # An array containing the data of the segment arranged in blender poly-line format
-        segment_poly_line = []
+        segment_poly_line = list()
 
         # Global coordinates transformation, use I if no transform is given
         if transform is None:
@@ -137,7 +137,7 @@ def get_connected_poly_line(section,
     """
 
     # An array containing the data of the section arranged in blender poly-line format
-    poly_line = []
+    poly_line = list()
 
     # Global coordinates transformation, use I if no transform is given
     if transform is None:
@@ -249,7 +249,7 @@ def get_soma_connection_poly_line_(section):
     """
 
     # An array containing the poly-line data of the section compatible with Blender
-    poly_line = []
+    poly_line = list()
 
     # The section must be PHYSICALLY connected to the soma after the filtration
     if section.connected_to_soma:
@@ -294,7 +294,7 @@ def get_origin_connection_poly_line(section,
     """
 
     # An array containing the poly-line data of the section compatible with Blender
-    poly_line = []
+    poly_line = list()
 
     # The section must be PHYSICALLY connected to the soma after the filtration
     if section.connected_to_soma or ignore_physical_connectivity:
@@ -343,7 +343,7 @@ def get_stem_section_polyline(section,
     """
 
     # An array containing the poly-line data of the section compatible with Blender
-    poly_line = []
+    poly_line = list()
 
     # Get the starting sample index
     starting_sample_index = 1 if ignore_branching_samples else 0
@@ -386,7 +386,7 @@ def get_last_section_polyline(section,
     """
 
     # An array containing the poly-line data of the section compatible with Blender
-    poly_line = []
+    poly_line = list()
 
     # Get the starting sample index
     starting_sample_index = 1 if ignore_branching_samples else 0
@@ -449,7 +449,7 @@ def get_connected_sections_poly_line(section,
     """
 
     # An array containing the poly-line data of the section compatible with Blender
-    poly_line = []
+    poly_line = list()
 
     # Root section
     if section.is_root():

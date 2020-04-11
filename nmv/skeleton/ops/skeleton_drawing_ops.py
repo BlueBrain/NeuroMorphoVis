@@ -729,7 +729,7 @@ def draw_disconnected_segments(section,
     """
 
     # A list of all the created segments in the section
-    segments_objects = []
+    segments_objects = list()
 
     # Get the poly-line format of the section
     section_data = nmv.skeleton.ops.get_section_poly_line(section=section, transform=transform)

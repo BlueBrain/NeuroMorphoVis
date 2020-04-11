@@ -77,6 +77,21 @@ def deselect_object(scene_object):
 
 
 ####################################################################################################
+# @is_object_deleted
+####################################################################################################
+def is_object_deleted(scene_object):
+    """Checks if an object in the scene is deleted or not.
+
+    :param scene_object:
+        A given scene object to check.
+    :return:
+        True if the object is deleted, otherwise False.
+    """
+
+    return not (scene_object.name in bpy.data.objects)
+
+
+####################################################################################################
 # @set_background_color
 ####################################################################################################
 def set_background_color(color,
@@ -700,6 +715,23 @@ def rotate_object(scene_object,
 
     # Rotate the object
     scene_object.rotation_euler = (x, y, z)
+
+
+####################################################################################################
+# @reset_orientation_of_objects
+####################################################################################################
+def reset_orientation_of_objects(scene_objects):
+    """Reset the orientation of a group of objects in the scene.
+
+    :param scene_objects:
+        List of objects in the scene.
+    """
+
+    # Rotate all the objects as if they are a single object
+    for scene_object in scene_objects:
+
+        # Rotate the mesh object around the y axis
+        scene_object.rotation_euler[1] = 0
 
 
 ####################################################################################################

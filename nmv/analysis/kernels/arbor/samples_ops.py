@@ -152,6 +152,30 @@ def compute_minimum_samples_count_of_arbor(arbor):
 
 
 ####################################################################################################
+# @compute_minimum_samples_count_of_arbor
+####################################################################################################
+def compute_first_sample_distance_to_soma(arbor):
+    """Computes the distance from the first sample along the arbor to the soma origin.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        The distance from the first sample along the arbor to the soma origin.
+    """
+
+    # No arbor
+    if arbor is None:
+        return 0
+
+    if len(arbor.samples) > 0:
+        return arbor.samples[0].point.length
+    else:
+        return 0
+
+
+
+
+####################################################################################################
 # @compute_maximum_samples_count_of_arbor
 ####################################################################################################
 def compute_maximum_samples_count_of_arbor(arbor):

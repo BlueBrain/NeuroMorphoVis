@@ -508,7 +508,7 @@ def subdivide_face(bmesh_object,
 
     # Compile a list of all the edges in the face, becuase the subdivision operation is only
     # applied on edges.
-    edges = []
+    edges = list()
     for edge in face.edges[:]:
         edges.append(edge)
 
@@ -518,7 +518,7 @@ def subdivide_face(bmesh_object,
                                                  use_grid_fill=True)
 
     # Filter the faces from the dictionary and get their indices
-    subdivided_faces_indices = []
+    subdivided_faces_indices = list()
     for i in subdivided_faces['geom']:
         if 'BMFace' in str(i):
             subdivided_faces_indices.append(i.index)
