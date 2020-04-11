@@ -110,7 +110,7 @@ class UnionBuilder:
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        nmv.skeleton.ops.update_arbors_connection_to_soma(self.morphology)
+        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
 
         # Label the primary and secondary sections based on angles, and if does not work use
         # the radii as a fallback

@@ -73,7 +73,7 @@ class SomaSoftBodyBuilder:
             options.soma.radius_scale_factor * morphology.soma.smallest_radius
 
         # Ensure the connection between the arbors and the soma
-        nmv.skeleton.ops.verify_arbors_proximity_to_soma(self.morphology)
+        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
 
     ################################################################################################
     # @add_noise_to_soma_surface

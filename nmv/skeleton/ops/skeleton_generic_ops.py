@@ -228,7 +228,7 @@ def apply_operation_to_morphology_partially(*args):
             arbor_args.append(apical_dendrites_branching_order)
 
             # Add the section root
-            arbor_args.append(morphology.apical_dendrite)
+            arbor_args.append(arbor)
 
             # Add the other arguments
             for i in range(4, len(args)):

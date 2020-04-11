@@ -79,7 +79,7 @@ class SomaMetaBuilder:
         self.initial_soma_radius = morphology.soma.smallest_radius
 
         # Ensure the connection between the arbors and the soma
-        nmv.skeleton.ops.verify_arbors_proximity_to_soma(self.morphology)
+        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
 
     ################################################################################################
     # @initialize_meta_object
@@ -326,7 +326,7 @@ class SomaMetaBuilder:
         nmv.logger.info('Extruding towards arbors')
 
         # Verify the proximity of the arbors to the soma
-        nmv.skeleton.verify_arbors_proximity_to_soma(morphology=self.morphology)
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
         # Emanate towards the apical dendrites, if exist
         if self.morphology.has_apical_dendrites():
