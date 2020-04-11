@@ -29,7 +29,7 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @DisconnectedSectionsBuilder
+# @ConnectedSectionsBuilder
 ####################################################################################################
 class ConnectedSectionsBuilder:
     """Builds and draws the morphology as a series of connected sections like a stream from the

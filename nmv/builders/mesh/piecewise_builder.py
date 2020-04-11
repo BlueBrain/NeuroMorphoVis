@@ -308,7 +308,7 @@ class PiecewiseBuilder:
         smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
         """
 
-        nmv.logger.header('Building arbors')
+        nmv.logger.header('Reconstructing arbors')
 
         # Hard edges (less samples per branch)
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
@@ -389,7 +389,7 @@ class PiecewiseBuilder:
 
         # Report
         nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.log(self.profiling_statistics)
+        nmv.logger.info(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='piecewise')

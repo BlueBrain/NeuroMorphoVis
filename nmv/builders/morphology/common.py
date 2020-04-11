@@ -90,6 +90,8 @@ def update_sections_branching(builder):
         A given skeleton builder.
     """
 
+    nmv.logger.info('Updating section branching to primary and secondary')
+
     # Label the primary and secondary sections based on angles
     if builder.options.morphology.branching == nmv.enums.Skeleton.Branching.ANGLES:
         nmv.skeleton.ops.apply_operation_to_morphology(
@@ -116,7 +118,7 @@ def resample_skeleton_sections(builder):
         A given skeleton builder.
     """
 
-    nmv.logger.info('Resampling sections')
+    nmv.logger.info('Resampling skeleton')
 
     # The adaptive resampling is quite important to prevent breaking the structure
     if builder.options.morphology.resampling_method == \

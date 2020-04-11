@@ -17,7 +17,7 @@
 
 # System imports
 import os
-import sys
+import time
 
 # Blender imports
 import bpy
@@ -331,6 +331,11 @@ def render_morphology_image(panel_object,
         Image extension or file format, by default .PNG.
     """
 
+    nmv.logger.header('Rendering Image')
+
+    # Start
+    start_time = time.time()
+
     # Validate the output directory
     if not nmv.interface.ui.validate_output_directory(
             panel_object=panel_object, context_scene=context_scene):
@@ -404,6 +409,8 @@ def render_morphology_image(panel_object,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
 
+    nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
+
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')
 
@@ -426,6 +433,11 @@ def render_mesh_image(panel_object,
     :param image_format:
         Image extension or file format, by default .PNG.
     """
+
+    nmv.logger.header('Rendering Image')
+
+    # Start
+    start_time = time.time()
 
     # Validate the output directory
     if not nmv.interface.ui.validate_output_directory(
@@ -498,6 +510,8 @@ def render_mesh_image(panel_object,
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
+
+    nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 
     # Report the process termination in the UI
     panel_object.report({'INFO'}, 'Rendering Done')

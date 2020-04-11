@@ -103,18 +103,16 @@ def update_morphology_skeleton(builder):
         *[builder.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
     # Resample the sections of the morphology skeleton
-    nmv.logger.info('Resampling Skeleton')
     nmv.builders.morphology.resample_skeleton_sections(builder=builder)
 
-    nmv.logger.info('Updating Radii')
+    # Radii
     nmv.skeleton.update_arbors_radii(
         morphology=builder.morphology, morphology_options=builder.options.morphology)
 
-    nmv.logger.info('Updating Branching to Primary / Secondary')
+    # Branching
     nmv.builders.morphology.update_sections_branching(builder=builder)
 
     # Update the style of the arbors
-    nmv.logger.info('Updating Style')
     nmv.skeleton.ops.update_arbors_style(
         morphology=builder.morphology, arbor_style=builder.options.morphology.arbor_style)
 
@@ -240,7 +238,7 @@ def adjust_texture_mapping(mesh_objects,
         Texture space size, by default 5.0.
     """
 
-    nmv.logger.header('UV Mapping')
+    nmv.logger.info('UV Mapping')
 
     # Do it mesh by mesh
     for i, mesh_object in enumerate(mesh_objects):
@@ -618,8 +616,6 @@ def collect_mesh_stats(builder):
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
     """
-
-    nmv.logger.header('Collecting Mesh Stats.')
 
     # Get neuron objects
     neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)

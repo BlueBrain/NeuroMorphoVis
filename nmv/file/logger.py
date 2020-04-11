@@ -210,6 +210,22 @@ class Logger:
         self.log('%s* %s' % (TEN_SPACES, log_string))
 
     ################################################################################################
+    # @statistics
+    ################################################################################################
+    def statistics(self,
+                   *args):
+        """Log a stats.
+
+        :param args:
+            Input arguments.
+        """
+        print("")  # Add a new line
+        self.line()
+        log_string = ''.join(map(str, args))
+        self.log('%s* Stats.' % FOUR_SPACES)
+        self.log('%s* %s\n' % (SIX_SPACES, log_string))
+
+    ################################################################################################
     # @warning
     ################################################################################################
     def warning(self,

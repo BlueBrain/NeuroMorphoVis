@@ -48,8 +48,7 @@ def show_progress(message,
     if done:
 
         # Done message
-        sys.stdout.write('\t%s: [100 %%]%s' % (message, nmv.consts.Messages.SPACES))
-        sys.stdout.write('\n')
+        sys.stdout.write('\t%s: [100 %%]%s\n' % (message, nmv.consts.Messages.SPACES))
     else:
 
         # In progress message

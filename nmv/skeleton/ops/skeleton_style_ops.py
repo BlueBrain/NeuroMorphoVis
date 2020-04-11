@@ -33,6 +33,8 @@ def update_arbors_style(morphology,
         A given style to be applied on the arbors of the morphology skeleton.
     """
 
+    nmv.logger.info('Updating skeleton style')
+
     # Taper the sections
     if arbor_style == nmv.enums.Skeleton.Style.TAPERED or \
        arbor_style == nmv.enums.Skeleton.Style.TAPERED_ZIGZAG:
@@ -63,6 +65,8 @@ def update_arbors_radii(morphology,
     :param morphology_options:
         Morphology options.
     """
+
+    nmv.logger.info('Updating radii')
 
     # Selected option
     option = morphology_options.arbors_radii

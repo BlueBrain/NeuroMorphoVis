@@ -184,7 +184,8 @@ class ReconstructNeuronMesh(bpy.types.Operator):
         global is_mesh_reconstructed
         is_mesh_reconstructed = True
         context.scene.NMV_MeshReconstructionTime = reconstruction_time - start_time
-        nmv.logger.info('Mesh reconstructed in [%f] seconds' % context.scene.NMV_MeshReconstructionTime)
+        nmv.logger.statistics('Mesh reconstructed in [%f] seconds' %
+                              context.scene.NMV_MeshReconstructionTime)
 
         return {'FINISHED'}
 
