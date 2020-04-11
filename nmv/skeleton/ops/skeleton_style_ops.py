@@ -47,6 +47,11 @@ def update_arbors_style(morphology,
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.zigzag_section])
 
+    # Project it to the XY plane
+    if arbor_style == nmv.enums.Skeleton.Style.PLANAR:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, nmv.skeleton.ops.project_to_xy_plane])
+
     # Straight
     if arbor_style == nmv.enums.Skeleton.Style.STRAIGHT:
         nmv.skeleton.ops.apply_operation_to_morphology(
