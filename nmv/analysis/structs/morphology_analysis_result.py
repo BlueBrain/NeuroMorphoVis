@@ -49,7 +49,7 @@ class MorphologyAnalysisResult:
         self.basal_dendrites_result = basal_dendrites_result
 
         # Axon
-        self.axon_result = axons_result
+        self.axons_result = axons_result
 
         # Entire morphology
         self.morphology_result = morphology_result

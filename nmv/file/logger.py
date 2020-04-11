@@ -24,6 +24,7 @@ TWO_SPACES = '  '
 FOUR_SPACES = '    '
 SIX_SPACES = '      '
 EIGHT_SPACES = '        '
+TEN_SPACES = '          '
 
 
 ####################################################################################################
@@ -190,6 +191,23 @@ class Logger:
 
         # Log the string
         self.log('%s* %s' % (EIGHT_SPACES, log_string))
+
+    ################################################################################################
+    # @detail
+    ################################################################################################
+    def further_detail(self,
+                       *args):
+        """Log a sub-header.
+
+        :param args:
+            Input arguments.
+        """
+
+        # Make a string from the log args
+        log_string = ''.join(map(str, args))
+
+        # Log the string
+        self.log('%s* %s' % (TEN_SPACES, log_string))
 
     ################################################################################################
     # @warning

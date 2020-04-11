@@ -380,7 +380,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
             self.reconstruction_time = time.time() - self.reconstruction_time
             scene.NMV_SomaReconstructionTime = self.reconstruction_time
             nmv.logger.info_done('Soma reconstructed in [%f] seconds' %
-                            scene.NMV_MorphologyLoadingTime)
+                                 scene.NMV_MorphologyLoadingTime)
 
             # Set the reconstruction flag to on
             global is_soma_reconstructed

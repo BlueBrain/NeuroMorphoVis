@@ -197,7 +197,7 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         global is_morphology_reconstructed
         is_morphology_reconstructed = True
         context.scene.NMV_MorphologyReconstructionTime = reconstruction_time - start_time
-        nmv.logger.info('Morphology skeleton reconstructed in [%f] seconds' %
+        nmv.logger.info('Morphology reconstructed in [%f] seconds' %
                         context.scene.NMV_MorphologyReconstructionTime)
 
         # Confirm operation done

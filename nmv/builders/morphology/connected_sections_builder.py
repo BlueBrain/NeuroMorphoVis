@@ -668,5 +668,4 @@ class ConnectedSectionsBuilder:
         nmv.builders.morphology.transform_to_global_coordinates(builder=self)
 
         # Return the list of the drawn morphology objects
-        nmv.logger.info('Done')
         return self.morphology_objects

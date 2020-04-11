@@ -105,7 +105,7 @@ class SomaMetaBuilder:
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
         self.meta_skeleton.resolution = 1.0
-        nmv.logger.detail('Meta Resolution [%f]' % self.meta_skeleton.resolution)
+        nmv.logger.detail('Meta resolution [%f]' % self.meta_skeleton.resolution)
 
     ################################################################################################
     # @finalize_meta_object
@@ -116,14 +116,14 @@ class SomaMetaBuilder:
         """
 
         # Header
-        nmv.logger.info('Finalization')
+        nmv.logger.info('Converting soma profile to a mesh')
 
         # Deselect all objects
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
         self.meta_skeleton.resolution = self.options.soma.meta_ball_resolution
-        nmv.logger.detail('Meta Resolution [%f]' % self.meta_skeleton.resolution)
+        nmv.logger.detail('Meta resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
         self.meta_mesh = bpy.context.scene.objects[name]
@@ -204,7 +204,7 @@ class SomaMetaBuilder:
             The noise delta, by default 0.25.
         """
 
-        nmv.logger.info('Noise')
+        nmv.logger.info('Adding random noise')
 
         # Decimation
         nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.5)
@@ -323,7 +323,7 @@ class SomaMetaBuilder:
         """
 
         # Header
-        nmv.logger.info('Building Soma from Meta Objects')
+        nmv.logger.info('Extruding towards arbors')
 
         # Verify the proximity of the arbors to the soma
         nmv.skeleton.verify_arbors_proximity_to_soma(morphology=self.morphology)

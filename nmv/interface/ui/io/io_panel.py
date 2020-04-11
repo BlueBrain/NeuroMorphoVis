@@ -203,8 +203,6 @@ class LoadMorphology(bpy.types.Operator):
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)
         loading_time = time.time()
         context.scene.NMV_MorphologyLoadingTime = loading_time - start_time
-        nmv.logger.info('Morphology loaded in [%f] seconds' %
-                        context.scene.NMV_MorphologyLoadingTime)
 
         # If the result is None, report the issue
         if loading_result is None:
@@ -213,6 +211,8 @@ class LoadMorphology(bpy.types.Operator):
 
         nmv.logger.header('Loading Morphology')
         nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
+        nmv.logger.info('Morphology loaded in [%f] seconds' %
+                        context.scene.NMV_MorphologyLoadingTime)
 
         # Clear the scene
         import nmv.scene
@@ -220,16 +220,24 @@ class LoadMorphology(bpy.types.Operator):
 
         # Create a builder object to build the morphology skeleton
         import nmv.builders
+
+        # Always use meta builder to reconstruct the initial soma
+        options = copy.deepcopy(nmv.interface.ui_options)
+        options.soma.method = nmv.enums.Soma.Representation.META_BALLS
+
+        # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology,
-            options=copy.deepcopy(nmv.interface.ui_options))
+            options=options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
 
         drawing_time = time.time()
         context.scene.NMV_MorphologyDrawingTime = drawing_time - loading_time
-        nmv.logger.info('Morphology loaded in [%f] seconds' %
+
+        nmv.logger.header('Stats.')
+        nmv.logger.info('Morphology drawn in [%f] seconds' %
                         context.scene.NMV_MorphologyDrawingTime)
 
         # Switch to the top view
