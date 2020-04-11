@@ -277,7 +277,7 @@ def analyze_number_of_samples_per_section(section,
     """
 
     analysis_string = 'Section[%s : %d] : %d' % (section.get_type_string(),
-                                                 section.id,
+                                                 section.index,
                                                  len(section.samples))
     analysis_data_list.append(analysis_string)
 
@@ -296,7 +296,7 @@ def analyze_number_of_segments_per_section(section,
     """
 
     analysis_string = 'Section[%s : %d] : %d' % (section.get_type_string(),
-                                                 section.id,
+                                                 section.index,
                                                  len(section.samples) - 1)
     analysis_data_list.append(analysis_string)
 
@@ -316,7 +316,7 @@ def analyze_number_of_children_per_section(section,
 
     if section.has_children():
         analysis_string = 'Section[%s : %d] : %d' % (section.get_type_string(),
-                                                     section.id,
+                                                     section.index,
                                                      len(section.children))
         analysis_data_list.append(analysis_string)
 
@@ -355,7 +355,7 @@ def analyze_branching_angles_per_section(section,
             angle = child_1_vector.angle(child_2_vector) * 180.0 / 3.14
 
             analysis_string = 'Section[%s : %d] : %f' % (section.get_type_string(),
-                                                         section.id,
+                                                         section.index,
                                                          angle)
             analysis_data_list.append(analysis_string)
 
@@ -379,7 +379,7 @@ def analyze_branching_angles_per_section(section,
                 angle = primary_child_vector.angle(secondary_child_vector) * 180.0 / 3.14
 
                 analysis_string = 'Section[%s : %d] : %f' % (section.get_type_string(),
-                                                             section.id,
+                                                             section.index,
                                                              angle)
                 analysis_data_list.append(analysis_string)
 
@@ -409,7 +409,7 @@ def analyze_branching_radii_per_section(section,
             status = 'ERROR'
 
         analysis_string = 'Section[%s : %d] : [%f, %f, %f] : %s' % (section.get_type_string(),
-                                                                    section.id,
+                                                                    section.index,
                                                                     parent_radius,
                                                                     child_1_radius,
                                                                     child_2_radius,
@@ -434,7 +434,7 @@ def analyze_section_length(section,
     if len(section.samples) < 2:
 
         analysis_string = 'Section[%s : %d] : Length[%f] : %s' % (section.get_type_string(),
-                                                                  section.id,
+                                                                  section.index,
                                                                   0.0,
                                                                   'ERROR')
         analysis_data_list.append(analysis_string)
@@ -446,7 +446,7 @@ def analyze_section_length(section,
         section_length = compute_section_length(section=section)
 
         analysis_string = 'Section[%s : %d] : Length[%f] : %s' % (section.get_type_string(),
-                                                                  section.id,
+                                                                  section.index,
                                                                   section_length,
                                                                   'OK')
         analysis_data_list.append(analysis_string)
@@ -472,8 +472,8 @@ def analyze_section_radii(section,
     for i_sample in section.samples:
 
         analysis_string = 'Section[%s : %d] Average Radius[%f], Sample[%d] : Radius[%f]' % (
-            section.get_type_string(), section.id, average_section_radius,
-            i_sample.id, i_sample.radius)
+            section.get_type_string(), section.index, average_section_radius,
+            i_sample.index, i_sample.radius)
         analysis_data_list.append(analysis_string)
 
 
@@ -504,7 +504,7 @@ def analyze_short_sections(section,
         if section_length < diameters_sum:
 
             analysis_string = 'Section[%s : %d] : Length[Current : %f, Minimal : %f]' % (
-                section.get_type_string(), section.id, section_length, diameters_sum)
+                section.get_type_string(), section.index, section_length, diameters_sum)
             analysis_data_list.append(analysis_string)
 
 

@@ -218,13 +218,13 @@ def extrude_connected_sections(section,
         # Section material
         section_material = None
         if material_list is not None:
-            if section.id % 2 == 0:
+            if section.index % 2 == 0:
                 section_material = material_list[0]
             else:
                 section_material = material_list[1]
 
         # Section name
-        section_name = '%s_%d' % (name, section.id)
+        section_name = '%s_%d' % (name, section.index)
 
         base_mesh = section_objects[0]
         # Draw the extruded section and return a reference to it
@@ -295,7 +295,7 @@ def get_connected_sections_poly_lines_recursively(section,
     if not section.has_children() or branching_order >= max_branching_order:
 
         # Polyline name
-        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
+        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.index)
 
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(
@@ -340,7 +340,7 @@ def get_connected_sections_poly_line_recursively(section,
     if not section.has_children() or branching_order >= max_branching_order:
 
         # Polyline name
-        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.id)
+        poly_line_name = '%s_%d' % (section.get_type_prefix(), section.index)
 
         # Append the polyline to the list, and copy the data before clearing the list
         poly_lines_data.append([copy.deepcopy(poly_line_data), poly_line_name])
@@ -483,13 +483,13 @@ def draw_connected_sections(section, name,
         # Section material
         section_material = None
         if material_list is not None:
-            if section.id % 2 == 0:
+            if section.index % 2 == 0:
                 section_material = material_list[0]
             else:
                 section_material = material_list[1]
 
         # Section name
-        section_name = '%s_%d' % (name, section.id)
+        section_name = '%s_%d' % (name, section.index)
 
         # Draw the section
         section_object = draw_section_from_poly_line_data(
@@ -631,13 +631,13 @@ def draw_disconnected_skeleton_sections(section,
         # Section material
         section_material = None
         if material_list is not None:
-            if section.id % 2 == 0:
+            if section.index % 2 == 0:
                 section_material = material_list[0]
             else:
                 section_material = material_list[1]
 
         # Section name
-        section_name = '%s_%d' % (name, section.id)
+        section_name = '%s_%d' % (name, section.index)
 
         # Draw the section
         section_object = draw_section_from_poly_line_data(

@@ -40,7 +40,7 @@ def verify_segments_length(section):
 
         # Report it
         nmv.logger.log('\t\t* ANALYSIS: Section [%s: %d] @ segment [%d] @ segment length [%f] ' %
-              (section.get_type_string(), section.id, i, segment_length))
+              (section.get_type_string(), section.index, i, segment_length))
 
 
 ####################################################################################################
@@ -66,7 +66,7 @@ def verify_segments_length_wrt_radius(section):
 
             # Report it
             nmv.logger.log('\t\t* ANALYSIS: Section [%s: %d] @ segment [%d]: length [%f], radius [%f] ' %
-                  (section.get_type_string(), section.id, i, segment_length, section.samples[i].radius))
+                  (section.get_type_string(), section.index, i, segment_length, section.samples[i].radius))
 
 
 ####################################################################################################
@@ -88,21 +88,21 @@ def verify_number_of_samples_per_section(section):
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples, cannot be re-sampled' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
     # If the section has only two samples, then report it as an error
     if number_samples_per_section == 1:
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has only ONE sample' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
     # If the section has only two samples, then report it as a warning
     if number_samples_per_section == 2:
 
         # Report the warning
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only TWO samples' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
 
 ####################################################################################################
@@ -123,7 +123,7 @@ def verify_section_length_with_respect_to_radii(section):
 
         # Report the issue
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has less than TWO samples' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
     # Compute the section length
     section_length = nmv.skeleton.ops.compute_section_length(section)
@@ -140,7 +140,7 @@ def verify_section_length_with_respect_to_radii(section):
 
         # Report the issue
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] is SHORT [%f < %f]' %
-              (section.get_type_string(), section.id, section_length, minimal_section_length))
+              (section.get_type_string(), section.index, section_length, minimal_section_length))
 
         return True
 
@@ -190,14 +190,14 @@ def verify_number_of_children(section):
 
         # Report the issue
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] has only ONE child' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
     # The section has more than two children
     if number_children > 2:
 
         # Report the issue
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] has [%d] children' %
-              (section.get_type_string(), section.id, number_children))
+              (section.get_type_string(), section.index, number_children))
 
 
 ####################################################################################################
@@ -222,7 +222,7 @@ def verify_radii_at_branching_points(section):
 
             # Report the issue
             nmv.logger.log('\t\t* WARNING: Section [%s: %d] has a radius issue: Parent=[%f], Child=[%f]' %
-                  (section.get_type_string(), section.id, section.parent.samples[-1].radius,
+                  (section.get_type_string(), section.index, section.parent.samples[-1].radius,
                    section.samples[0].radius))
 
 
@@ -249,7 +249,7 @@ def verify_duplicated_samples(section,
 
             # Report the issue
             nmv.logger.log('\t\t* WARNING: Section [%s: %d] has DUPLICATES @ sample [%d], distance [%f]' %
-                  (section.get_type_string(), section.id, i + 1, distance))
+                  (section.get_type_string(), section.index, i + 1, distance))
 
 
 ####################################################################################################
@@ -280,7 +280,7 @@ def verify_axon_connection_to_soma(morphology):
 
         # Report the issue
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] is disconnected from the soma' %
-              (morphology.axon.get_type_string(), morphology.axon.id))
+              (morphology.axon.get_type_string(), morphology.axon.index))
 
 
 ####################################################################################################
@@ -304,7 +304,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
 
             # Report the issue
             nmv.logger.log('\t\t* WARNING: Section [%s: %d] is disconnected from the soma' %
-                  (morphology.axon.get_type_string(), morphology.axon.id))
+                  (morphology.axon.get_type_string(), morphology.axon.index))
 
         # Is the basal dendrite intersecting with the apical dendrite, if exists !
         if morphology.has_apical_dendrites():
@@ -316,8 +316,8 @@ def verify_basal_dendrites_connection_to_soma(morphology):
 
                 # Report the issue
                 nmv.logger.log('\t\t* WARNING: Section [%s: %d] intersects with section [%s: %d]' %
-                      (morphology.axon.get_type_string(), morphology.axon.id,
-                       morphology.apical_dendrite.get_type_string(), morphology.apical_dendrite.id))
+                      (morphology.axon.get_type_string(), morphology.axon.index,
+                       morphology.apical_dendrite.get_type_string(), morphology.apical_dendrite.index))
 
         # Is the basal dendrite intersecting with another basal dendrite !
         # NOTE: The intersection function returns a positive result if this input basal
@@ -328,8 +328,8 @@ def verify_basal_dendrites_connection_to_soma(morphology):
 
                 # Report the issue
                 nmv.logger.log('\t\t* WARNING: Section [%s: %d] intersects with section [%s: %d]' %
-                      (morphology.axon.get_type_string(), morphology.axon.id,
-                       morphology.apical_dendrite.get_type_string(), morphology.apical_dendrite.id))
+                      (morphology.axon.get_type_string(), morphology.axon.index,
+                       morphology.apical_dendrite.get_type_string(), morphology.apical_dendrite.index))
 
 
 ################################################################################################

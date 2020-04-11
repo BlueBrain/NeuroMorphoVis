@@ -166,7 +166,7 @@ class SamplesBuilder:
         # Make sure that the arbor exist
         if root is not None:
 
-            section_name = '%s_%d' % (name, root.id)
+            section_name = '%s_%d' % (name, root.index)
             drawn_spheres = self.draw_section_samples_as_spheres(root)
 
             # Add the drawn segments to the 'segments_objects'

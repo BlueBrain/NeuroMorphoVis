@@ -66,7 +66,7 @@ class RandomSpineBuilder:
     def emanate_spine_from_face(self,
                                 dendrite_samples,
                                 dendrite_mesh,
-                                face_index, id):
+                                face_index, index):
 
         # Create the spine
         spine = nmv.skeleton.Spine()
@@ -86,10 +86,10 @@ class RandomSpineBuilder:
         spine_template = random.choice(self.spine_meshes)
 
         # Get a copy of the template and update it
-        spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+        spine_object = nmv.scene.ops.duplicate_object(spine_template, index)
 
         # Rename the spine
-        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, id)
+        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, index)
 
         # Scale the spine
         spine_scale = spine.size
@@ -135,12 +135,12 @@ class RandomSpineBuilder:
     ################################################################################################
     def emanate_spine(self,
                       spine,
-                      id):
+                      index):
         """Emanates a spine at a random position on the dendritic tree.
 
         :param spine:
             A given spine object that contains all the data required to emanate the spine.
-        :param id:
+        :param index:
             Spine identifier.
         :return:
             The mesh instance that correspond to the spines.
@@ -150,10 +150,10 @@ class RandomSpineBuilder:
         spine_template = random.choice(self.spine_meshes)
 
         # Get a copy of the template and update it
-        spine_object = nmv.scene.ops.duplicate_object(spine_template, id)
+        spine_object = nmv.scene.ops.duplicate_object(spine_template, index)
 
         # Rename the spine
-        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, id)
+        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, index)
 
         # Scale the spine
         spine_scale = spine.size * random.uniform(1.25, 1.5)

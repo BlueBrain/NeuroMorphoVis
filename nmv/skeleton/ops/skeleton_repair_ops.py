@@ -62,7 +62,7 @@ def repair_short_sections_by_compression(section,
 
         # Report the repair
         nmv.logger.log('\t\t* REPAIRING: Short section [%s: %d], using compression' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Get the average radius of the section can therefore be computed based on the
         # minimal section length value
@@ -115,7 +115,7 @@ def repair_short_sections_by_connection_to_child(section):
     for child in section.children:
 
         # Ignore the primary child, since it has been already integrated into the parent
-        if child.id == primary_child.id:
+        if child.index == primary_child.index:
             continue
 
         else:
@@ -147,7 +147,7 @@ def repair_sections_with_single_child(section):
 
         # Report the repair
         nmv.logger.log('\t\t* REPAIRING: Section [%s: %d] has been connected to parent' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Apply the filter
         nmv.skeleton.ops.connect_single_child(section=section)
@@ -185,4 +185,4 @@ def repair_parents_with_smaller_radii(section):
 
         # Report the repair
         nmv.logger.log('\t\t* REPAIRING: Section [%s: %d], radius [%f]' %
-              (section.get_type_string(), section.id, section.samples[-1].radius))
+              (section.get_type_string(), section.index, section.samples[-1].radius))

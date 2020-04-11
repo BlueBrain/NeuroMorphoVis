@@ -173,13 +173,13 @@ def resample_section_at_fixed_step(section,
     # If the section has no samples, report this as an error and ignore this filter
     if len(section.samples) == 0:
         nmv.logger.error('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY one sample, report this as an error and ignore this filter
     elif len(section.samples) == 1:
         nmv.logger.error('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section length is less than the sampling step, then adaptively resample it
@@ -231,9 +231,9 @@ def resample_section_at_fixed_step(section,
             # Compute the auxiliary sample point, use epsilon for floating point comparison
             point = section.samples[i].point + (direction * sampling_step)
 
-            # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
+            # Add the auxiliary sample, the index of the sample is set to -1 (auxiliary sample)
             auxiliary_sample = nmv.skeleton.Sample(
-                point=point, radius=radius, id=-1, section=section, type=section.samples[i].type)
+                point=point, radius=radius, index=-1, section=section, type=section.samples[i].type)
 
             # Update the samples list
             section.samples.insert(i + 1, auxiliary_sample)
@@ -263,20 +263,20 @@ def resample_section_adaptively(section):
     # If the section has no samples, report this as an error and ignore this filter
     if len(section.samples) == 0:
         nmv.logger.error('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY one sample, report this as an error and ignore this filter
     elif len(section.samples) == 1:
         nmv.logger.error('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY two sample, report this as a warning
     elif len(section.samples) == 2:
 
         nmv.logger.error('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # The section has more than two samples, can be resampled
@@ -322,9 +322,9 @@ def resample_section_adaptively(section):
                 # Compute the auxiliary sample point, use epsilon for floating point comparison
                 point = section.samples[i].point + (direction * section.samples[i].radius)
 
-                # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
+                # Add the auxiliary sample, the index of the sample is set to -1 (auxiliary sample)
                 auxiliary_sample = nmv.skeleton.Sample(
-                    point=point, radius=radius, id=-1, section=section,
+                    point=point, radius=radius, index=-1, section=section,
                     type=section.samples[i].type)
 
                 # Update the samples list
@@ -355,20 +355,20 @@ def resample_section_adaptively_relaxed(section):
     # If the section has no samples, report this as an error and ignore this filter
     if len(section.samples) == 0:
         nmv.logger.error('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY one sample, report this as an error and ignore this filter
     elif len(section.samples) == 1:
         nmv.logger.error('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY two sample, report this as a warning
     elif len(section.samples) == 2:
 
         nmv.logger.error('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.id))
+                         (section.get_type_string(), section.index))
         return
 
     # The section has more than two samples, can be resampled
@@ -414,9 +414,9 @@ def resample_section_adaptively_relaxed(section):
                 # Compute the auxiliary sample point, use epsilon for floating point comparison
                 point = section.samples[i].point + (direction * extent)
 
-                # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
+                # Add the auxiliary sample, the index of the sample is set to -1 (auxiliary sample)
                 auxiliary_sample = nmv.skeleton.Sample(
-                    point=point, radius=radius, id=-1, section=section,
+                    point=point, radius=radius, index=-1, section=section,
                     type=section.samples[i].type)
 
                 # Update the samples list
@@ -487,7 +487,7 @@ def add_sample_at_section_center(section):
 
         # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
         auxiliary_sample = nmv.skeleton.Sample(
-            point=sample_position, radius=sample_radius, id=-1, morphology_id=-1, section=section,
+            point=sample_position, radius=sample_radius, index=-1, morphology_id=-1, section=section,
             type=section.samples[0].type)
 
         # Add the auxiliary sample to the section
@@ -565,7 +565,7 @@ def remove_samples_inside_soma(section):
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Return
         return
@@ -575,7 +575,7 @@ def remove_samples_inside_soma(section):
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has only ONE sample' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Return
         return
@@ -592,7 +592,7 @@ def remove_samples_inside_soma(section):
 
             # Report the repair
             nmv.logger.log('\t\t* REPAIRING: Removing internal sample, section [%s: %d]' %
-                  (section.get_type_string(), section.id))
+                  (section.get_type_string(), section.index))
 
             # Flip the samples
             section.samples[0] = sample_1
@@ -619,7 +619,7 @@ def remove_samples_inside_soma(section):
 
                 # Report the repair
                 nmv.logger.log('\t\t* REPAIRING: Removing internal sample, section [%s: %d]' %
-                      (section.get_type_string(), section.id))
+                      (section.get_type_string(), section.index))
 
                 # After removing this sample, the section might have two samples only, so we
                 # recursively call this function and break afterwards.
@@ -659,7 +659,7 @@ def remove_samples_within_extent(section,
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has less than THREE samples, not re-sampled' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Return
         return 0
@@ -669,7 +669,7 @@ def remove_samples_within_extent(section,
 
         # Report the error
         nmv.logger.log('\t\t* WARNING: Section [%s: %d] has TWO samples, cannot be re-sampled' %
-              (section.get_type_string(), section.id))
+              (section.get_type_string(), section.index))
 
         # Return
         return 0
@@ -714,7 +714,7 @@ def resample_section_front(section):
     """
 
     # TODO: Report the resampling operation to identify any issues till further notice
-    nmv.logger.log('\t\t* RESAMPLING: Section [%s] front' % (str(section.id)))
+    nmv.logger.log('\t\t* RESAMPLING: Section [%s] front' % (str(section.index)))
 
     # The re-sampling distance of the primary section is computed based on the section radius
     resampling_distance = section.samples[0].radius * math.sqrt(2)
@@ -743,7 +743,7 @@ def resample_section_front(section):
 
     # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
     auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, id=-1, section=section,
+        point=sample_position, radius=sample_radius, index=-1, section=section,
         type=section.samples[0])
 
     # Insert the auxiliary sample just after the first sample
@@ -770,7 +770,7 @@ def resample_section_rear(section):
     section.samples = list(reversed(section.samples))
 
     # TODO: Report the resampling operation to identify any issues till further notice
-    nmv.logger.log('\t\t* RESAMPLING: Primary section [%s]' % (str(section.id)))
+    nmv.logger.log('\t\t* RESAMPLING: Primary section [%s]' % (str(section.index)))
 
     # The re-sampling distance of the primary section is computed based on the section radius
     resampling_distance = section.samples[0].radius * math.sqrt(2)
@@ -799,7 +799,7 @@ def resample_section_rear(section):
 
     # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
     auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, id=-1, section=section,
+        point=sample_position, radius=sample_radius, index=-1, section=section,
         type=section.samples[0].type)
 
     # Insert the auxiliary sample just after the first sample
@@ -874,9 +874,9 @@ def resample_section_stem(section):
             # Compute the auxiliary sample radius based on the previous and next samples
             sample_radius = (section.samples[i + 1].radius + section.samples[i].radius) * 0.5
 
-            # Add the auxiliary sample, the id of the sample is set to -1 (auxiliary sample)
+            # Add the auxiliary sample, the index of the sample is set to -1 (auxiliary sample)
             auxiliary_sample = nmv.skeleton.Sample(
-                point=sample_point, radius=sample_radius, id=-1, section=section,
+                point=sample_point, radius=sample_radius, index=-1, section=section,
                 type=section.samples[i].type)
 
             # Update the samples list

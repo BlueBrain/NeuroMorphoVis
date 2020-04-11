@@ -79,7 +79,7 @@ class H5Reader:
                 for j_section in sections_list:
 
                     # Is it a child
-                    if child_id == j_section.id:
+                    if child_id == j_section.index:
 
                         # Append it to the list
                         i_section.children.append(j_section)
@@ -88,7 +88,7 @@ class H5Reader:
             for k_section in sections_list:
 
                 # Is it parent
-                if i_section.parent_id == k_section.id:
+                if i_section.parent_index == k_section.index:
 
                     # Set it to be a parent
                     i_section.parent = k_section
@@ -310,7 +310,7 @@ class H5Reader:
 
                 # Build a NeuroMorphoVis sample
                 nmv_sample = nmv.skeleton.Sample(
-                    point=point, radius=radius, id=sample_index, morphology_id=sample_index,
+                    point=point, radius=radius, index=sample_index, morphology_id=sample_index,
                     type=section_type)
 
                 # Add the sample to the list
@@ -382,7 +382,7 @@ class H5Reader:
 
             # Construct a skeleton section
             nmv_section = nmv.skeleton.Section(
-                id=section_id, parent_id=section_parent_id, children_ids=section_children_ids,
+                index=section_id, parent_index=section_parent_id, children_ids=section_children_ids,
                 samples=section_samples, type=section_type)
 
             # Axon

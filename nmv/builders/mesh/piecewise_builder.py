@@ -128,7 +128,7 @@ class PiecewiseBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for i, arbor in enumerate(self.morphology.apical_dendrites):
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
 
                     # A list to keep all the generated objects of the arbor
                     arbor_objects = list()
@@ -161,7 +161,7 @@ class PiecewiseBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
                 for i, arbor in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
 
                     # A list to keep all the generated objects of the arbor
                     arbor_objects = list()
@@ -195,7 +195,7 @@ class PiecewiseBuilder:
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
                 for i, arbor in enumerate(self.morphology.axons):
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
 
                     # A list to keep all the generated objects of the arbor
                     arbor_objects = list()

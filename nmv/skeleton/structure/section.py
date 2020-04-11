@@ -29,8 +29,8 @@ class Section:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 id=-1,
-                 parent_id=-1,
+                 index=-1,
+                 parent_index=-1,
                  children_ids=None,
                  samples=None,
                  type=None,
@@ -38,9 +38,9 @@ class Section:
                  tag='Section'):
         """Constructor
 
-        :param id:
+        :param index:
             Section index.
-        :param parent_id:
+        :param parent_index:
             The index of the parent section.
         :param children_ids:
             A list of the indexes of the children sections.
@@ -55,10 +55,10 @@ class Section:
         """
 
         # Section index
-        self.id = id
+        self.index = index
 
         # The index of the parent section
-        self.parent_id = parent_id
+        self.parent_index = parent_index
 
         # A list of the indexes of the children sections
         if children_ids is not None:
@@ -93,11 +93,17 @@ class Section:
         self.branching_order = 0
 
         # Is the 'root' section of any branch connected to the soma or not ?!
-        # NOTE: By default for all the sections, this options is set to False, however,
-        # for the root sections, the branch is checked if it is connected to the soma or not. If
-        # True, then we keep a reference to the face that will be used to extrude or connect that
-        # branch to the soma.
+        # By default for all the sections, this options is set to False, however, for the root
+        # sections, the branch is checked if it is connected to the soma or not. If True, then we
+        # keep a reference to the face that will be used to extrude or connect that branch to soma.
+        # This parameter is mainly used for the SoftBody soma reconstruction. 
         self.connected_to_soma = False
+
+        # Is the section (mainly the root sections that represent the arbors) far from the soma ?!
+        # This parameter is set to True by default, until it has been updated by the section-to-soma
+        # connection functions. It is being mainly used for the MetaBall soma reconstruction.
+        # The self.connected_to_soma parameter is used for the SoftBody soma reconstruction.
+        self.far_from_soma = True
 
         # A reference to the reconstructed mesh that represents the section.
         # NOTE: This reference will be used to link the mesh to the soma if the arbor is connected
@@ -306,7 +312,7 @@ class Section:
             True of False.
         """
 
-        if self.parent_id is None or self.parent is None:
+        if self.parent_index is None or self.parent is None:
             return False
 
         return True
@@ -323,7 +329,7 @@ class Section:
         for i, section_sample in enumerate(self.samples):
 
             # Set the sample index according to its order along the section in the samples list
-            section_sample.id = i
+            section_sample.index = i
 
     ################################################################################################
     # @compute_length

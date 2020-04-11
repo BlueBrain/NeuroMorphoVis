@@ -273,7 +273,7 @@ class MetaBuilder:
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for arbor in self.morphology.apical_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.create_meta_arbor(
                         root=arbor,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order)
@@ -282,7 +282,7 @@ class MetaBuilder:
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
                 for arbor in self.morphology.basal_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.create_meta_arbor(
                         root=arbor,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
@@ -291,7 +291,7 @@ class MetaBuilder:
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
                 for arbor in self.morphology.axons:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.create_meta_arbor(
                         root=arbor,
                         max_branching_order=self.options.morphology.axon_branch_order)
@@ -340,8 +340,8 @@ class MetaBuilder:
             A given arbor to emanate the soma towards.
         """
 
-        # The arbor must be connected to the soma to emanate towards it
-        if arbor.connected_to_soma:
+        # The arbor must NOT be far from the soma to emanate towards it
+        if not arbor.far_from_soma:
 
             # Assume that from the soma center towards the first point along the arbor is a segment
             p1 = Vector((self.morphology.soma.centroid[0], 
@@ -364,25 +364,28 @@ class MetaBuilder:
         # Header
         nmv.logger.header('Building Soma from Meta Objects')
 
+        # Verify the proximity of the arbors to the soma
+        nmv.skeleton.validate_arbors_proximity_to_soma(morphology=self.morphology)
+
         # Emanate towards the apical dendrites, if exist
         if not self.options.morphology.ignore_apical_dendrites:
             if self.morphology.has_apical_dendrites():
                 for arbor in self.morphology.apical_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards the basal dendrites, if exist
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
                 for arbor in self.morphology.basal_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards the axons, if exist
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
                 for arbor in self.morphology.axons:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
     ################################################################################################

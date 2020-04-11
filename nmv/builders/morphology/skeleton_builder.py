@@ -107,31 +107,31 @@ class SkeletonBuilder:
 
         # Soma
         self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='soma_skeleton', material_type=self.options.shading.material,
-            color=self.options.shading.soma_color)
+            name='soma_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_soma_color)
 
         # Axon
         self.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='axon_skeleton', material_type=self.options.shading.material,
-            color=self.options.shading.axon_color)
+            name='axon_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_axons_color)
 
         # Basal dendrites
         self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='basal_dendrites_skeleton', material_type=self.options.shading.material,
-            color=self.options.shading.basal_dendrites_color)
+            name='basal_dendrites_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_basal_dendrites_color)
 
         # Apical dendrite
         self.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='apical_dendrite_skeleton', material_type=self.options.shading.material,
-            color=self.options.shading.apical_dendrites_color)
+            name='apical_dendrite_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_apical_dendrites_color)
 
         # Articulations for the articulated reconstruction method
         self.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='articulation', material_type=self.options.shading.material,
-            color=self.options.shading.articulation_color)
+            name='articulation', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_articulation_color)
 
         # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.shading.material)
+        nmv.shading.create_material_specific_illumination(self.options.shading.morphology_material)
 
     ################################################################################################
     # @draw_section_samples_as_spheres
@@ -221,7 +221,7 @@ class SkeletonBuilder:
         # Create the sphere based on the largest radius
         section_terminal_sphere = nmv.geometry.create_uv_sphere(
             radius=sphere_radius * 1.125, location=point, subdivisions=16,
-            name='joint_%d' % section.id, color=self.options.morphology.articulation_color)
+            name='joint_%d' % section.index, color=self.options.morphology.articulation_color)
 
         # Return a reference to the terminal sphere
         return section_terminal_sphere
@@ -296,8 +296,6 @@ class SkeletonBuilder:
         :param segments_objects:
         :param branching_order:
         :param max_branching_order:
-        :param bevel_object:
-        :return:
         """
 
         # Ignore the drawing if the root section is None
@@ -314,7 +312,7 @@ class SkeletonBuilder:
         # Make sure that the arbor exist
         if root is not None:
 
-            section_name = '%s_%d' % (name, root.id)
+            section_name = '%s_%d' % (name, root.index)
             drawn_spheres = self.draw_section_samples_as_spheres(root)
 
             # Add the drawn segments to the 'segments_objects'
@@ -373,7 +371,7 @@ class SkeletonBuilder:
 
         # Make sure that the arbor exist
         if root is not None:
-            section_name = '%s_%d' % (name, root.id)
+            section_name = '%s_%d' % (name, root.index)
             drawn_segments = nmv.skeleton.ops.draw_disconnected_segments(
                 root, name=section_name,
                 material_list=material_list,
@@ -419,13 +417,13 @@ class SkeletonBuilder:
         # Get the section data arranged in a poly-line format
         data = nmv.skeleton.ops.get_section_poly_line(section)
 
-        # Use the section id to tag the section name
-        section_name = '%s_%d_section' % (name, section.id)
+        # Use the section index to tag the section name
+        section_name = '%s_%d_section' % (name, section.index)
 
         # Section material
         section_material = None
         if material_list is not None:
-            if section.id % 2 == 0:
+            if section.index % 2 == 0:
                 section_material = material_list[0]
             else:
                 section_material = material_list[1]
@@ -507,109 +505,7 @@ class SkeletonBuilder:
                     bevel_object=bevel_object,
                     sections_objects=sections_objects)
 
-    ################################################################################################
-    # @draw_morphology_as_spheres
-    ################################################################################################
-    def draw_morphology_as_spheres(self):
-        """Draws the morphology as a set of spheres.
 
-        :return:
-            A list of spheres.
-        """
-
-        # Morphology objects
-        morphology_objects = list()
-
-        # Draw the axon
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                nmv.logger.info('Axon')
-
-                axon_segments_objects = []
-                self.draw_sections_as_spheres(
-                    self.morphology.axon,
-                    name=nmv.consts.Skeleton.AXON_PREFIX,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    material_list=self.axons_materials,
-                    segments_objects=axon_segments_objects)
-
-                # Convert the objects to something and add them to the scene
-                for i, item in enumerate(axon_segments_objects):
-                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-                        item, '%s_%d' % ('axon', i))
-
-                    # Smooth shading
-                    nmv.mesh.shade_smooth_object(sphere_mesh)
-
-                    # Assign the material
-                    nmv.shading.set_material_to_object(sphere_mesh, self.axons_materials[i % 2])
-
-                    # Append the sphere mesh to the morphology objects
-                    morphology_objects.append(sphere_mesh)
-
-        # Draw the basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
-
-            # Ensure tha existence of basal dendrites
-            if self.morphology.has_basal_dendrites():
-                basal_dendrites_segments_objects = []
-
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.info('Basal dendrite [%d]' % i)
-                    dendrite_name = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
-                    self.draw_sections_as_spheres(
-                        basal_dendrite, name=dendrite_name,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.basal_dendrites_materials,
-                        segments_objects=basal_dendrites_segments_objects)
-
-                # Convert the objects to something and add them to the scene
-                for i, item in enumerate(basal_dendrites_segments_objects):
-                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-                        item, '%s_%d' % ('basal_dendrite', i))
-
-                    # Smooth shading
-                    nmv.mesh.shade_smooth_object(sphere_mesh)
-
-                    # Assign the material
-                    nmv.shading.set_material_to_object(sphere_mesh,
-                                                       self.basal_dendrites_materials[i % 2])
-
-                    # Append the sphere mesh to the morphology objects
-                    morphology_objects.append(sphere_mesh)
-
-        # Draw the apical dendrite
-        if not self.options.morphology.ignore_apical_dendrites:
-
-            # Draw the apical dendrite, if exists
-            if self.morphology.has_apical_dendrites():
-                nmv.logger.info('Apical dendrite')
-
-                apical_dendrite_segments_objects = []
-                self.draw_sections_as_spheres(
-                    self.morphology.apical_dendrite,
-                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    material_list=self.apical_dendrites_materials,
-                    segments_objects=apical_dendrite_segments_objects)
-
-                # Convert the objects to something and add them to the scene
-                for i, item in enumerate(apical_dendrite_segments_objects):
-                    sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(
-                        item, '%s_%d' % ('apical_dendrite', i))
-
-                    # Smooth shading
-                    nmv.mesh.shade_smooth_object(sphere_mesh)
-
-                    # Assign the material
-                    nmv.shading.set_material_to_object(sphere_mesh,
-                                                       self.apical_dendrites_materials[i % 2])
-
-                    # Append the sphere mesh to the morphology objects
-                    morphology_objects.append(sphere_mesh)
-
-        # Return a list of the morphology objects
-        return morphology_objects
 
     ################################################################################################
     # @draw_morphology_as_disconnected_segments

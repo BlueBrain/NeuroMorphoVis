@@ -335,7 +335,7 @@ def basal_dendrite_intersects_basal_dendrite(dendrite,
         for secondary_dendrite in dendrites:
 
             # The dendrite cannot intersect with itself, continue
-            if dendrite.id == secondary_dendrite.id:
+            if dendrite.index == secondary_dendrite.index:
                 continue
 
             # Check the intersection between the primary and the secondary dendrites

@@ -36,18 +36,18 @@ class Sample:
     def __init__(self,
                  point,
                  radius,
-                 id,
+                 index,
                  type=-1,
                  morphology_id=-1,
                  section=None,
-                 parent_id=-1):
+                 parent_index=-1):
         """Constructor
 
         :param point:
             Sample position in the cartesian space, Vector((x, y, z)).
         :param radius:
             Sample radius in microns.
-        :param id:
+        :param index:
             Sample index along the section from 0 to N-1 if the section has N samples.
         :param type:
             Sample type.
@@ -65,7 +65,7 @@ class Sample:
         self.radius = radius
 
         # Sample index along the section (from 0 to N, updated after section construction)
-        self.id = id
+        self.index = index
 
         # The global index of the sample w.r.t to the arbor it belongs to
         self.arbor_idx = -1
@@ -83,4 +83,4 @@ class Sample:
         self.type = type
 
         # The index of the parent sample, required for the connectivity of SWC files
-        self.parent_id = parent_id
+        self.parent_index = parent_index

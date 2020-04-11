@@ -222,7 +222,7 @@ class CircuitSpineBuilder:
             nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
 
             # Ignore soma synapses
-            # If the post-synaptic section id is zero, then revoke it, and continue
+            # If the post-synaptic section index is zero, then revoke it, and continue
             post_section_id = synapse.post_section()
             if post_section_id == 0:
                 continue

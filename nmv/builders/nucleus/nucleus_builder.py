@@ -100,7 +100,7 @@ class NucleusBuilder:
         nucleus_template = random.choice(self.nuclei_meshes)
 
         # Get a copy of the template and update it
-        nucleus_object = nmv.scene.ops.duplicate_object(nucleus_template, id)
+        nucleus_object = nmv.scene.ops.duplicate_object(nucleus_template, index)
 
         # Rename the nucleus
         nucleus_object.name = '%s_nucleus' % self.options.morphology.label

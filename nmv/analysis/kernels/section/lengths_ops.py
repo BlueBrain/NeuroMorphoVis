@@ -183,5 +183,5 @@ def identify_short_sections(section,
 
             # Update the list
             analysis_string = 'Section[%s : %d] : Length[Current : %f, Minimal : %f]' % (
-                section.get_type_string(), section.id, section_length, diameters_sum)
+                section.get_type_string(), section.index, section_length, diameters_sum)
             short_sections.append(analysis_string)

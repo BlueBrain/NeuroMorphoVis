@@ -163,17 +163,17 @@ class AnalysisItem:
 
         # Apical dendrites
         if morphology.has_apical_dendrites():
-            for i, arbor in enumerate(morphology.apical_dendrites):
+            for arbor in morphology.apical_dendrites:
                 self.register_variable(variable_prefix=arbor.tag)
 
         # Basal dendrites
         if morphology.has_basal_dendrites():
-            for i, arbor in enumerate(morphology.basal_dendrites):
+            for arbor in morphology.basal_dendrites:
                 self.register_variable(variable_prefix=arbor.tag)
 
         # Axons
         if morphology.has_axons():
-            for i, arbor in enumerate(morphology.axons):
+            for arbor in morphology.axons:
                 self.register_variable(variable_prefix=arbor.tag)
 
     ################################################################################################

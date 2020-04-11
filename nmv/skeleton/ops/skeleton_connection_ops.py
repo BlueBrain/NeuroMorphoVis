@@ -31,6 +31,7 @@ import nmv.mesh
 import nmv.scene
 import nmv.skeleton
 import nmv.utilities
+import nmv.consts
 
 
 ####################################################################################################
@@ -141,7 +142,7 @@ def label_primary_and_secondary_sections_based_on_radii(section):
     for child in section.children:
 
         # If the child is the same as the primary child (compare the IDs), label it the primary
-        if child.id == primary_child.id:
+        if child.index == primary_child.index:
 
             # Set this section to be the primary
             child.is_primary = True
@@ -252,7 +253,7 @@ def label_primary_and_secondary_sections_based_on_angles(section):
     for child in section.children:
 
         # If this child is the primary child (compare the IDs, then set its label to primary)
-        if child.id == primary_child.id:
+        if child.index == primary_child.index:
 
             # Update the label
             child.is_primary = True
@@ -376,7 +377,7 @@ def label_primary_and_secondary_sections_based_on_angles_with_fixed_radii(sectio
     for child in section.children:
 
         # If this child is the primary child (compare the IDs, then set its label to primary)
-        if child.id == primary_child.id:
+        if child.index == primary_child.index:
 
             # Update the label
             child.is_primary = True
@@ -585,7 +586,7 @@ def find_nearest_basal_dendritic_sample_to_basal_dendrite(morphology,
         for dendrite in morphology.basal_dendrites:
 
             # If the @basal_dendrite is the same as the @dendrite, then skip the check
-            if dendrite.id == basal_dendrite.id:
+            if dendrite.index == basal_dendrite.index:
                 continue
 
             # Find the nearest sample between the dendrite initial sample and the other basal dendrite
@@ -628,15 +629,15 @@ def verify_axon_connection_to_soma(morphology):
 
         # Report the issue
         nmv.logger.detail('WARNING: The axon @ section [%d] is disconnected from the soma'
-                          % morphology.axon.id)
+                          % morphology.axon.index)
 
         # Get the nearest arbor and sample to the axon initial segment
         nearest_sample = find_nearest_dendritic_sample_to_axon(morphology)
 
         # Report the repair
         nmv.logger.detail('REPAIRING: The axon is re-connected to section [%d, %s] @ sample [%s]'
-                          % (nearest_sample.section.id, nearest_sample.section.get_type_string(),
-                             str(nearest_sample.id)))
+                          % (nearest_sample.section.index, nearest_sample.section.get_type_string(),
+                             str(nearest_sample.index)))
 
         # Mark the axon disconnected from the soma
         morphology.axon.connected_to_soma = False
@@ -662,7 +663,7 @@ def verify_axon_connection_to_soma(morphology):
             # Report the issue
             nmv.logger.detail(
                 'WARNING: The axon @ section [%d] is intersecting with apical dendrite'
-                % morphology.axon.id)
+                % morphology.axon.index)
 
             # Find the intersection sample
             nearest_sample = find_nearest_apical_dendritic_sample_to_axon(morphology)
@@ -670,10 +671,10 @@ def verify_axon_connection_to_soma(morphology):
             # Report the repair
             nmv.logger.detail(
                 'REPAIRING: The axon @ section [%d] is re-connected to section '
-                '[%d, %s] @ sample [%s]' % (morphology.axon.id,
-                                            nearest_sample.section.id,
+                '[%d, %s] @ sample [%s]' % (morphology.axon.index,
+                                            nearest_sample.section.index,
                                             nearest_sample.section.get_type_string(),
-                                            str(nearest_sample.id)))
+                                            str(nearest_sample.index)))
 
             # Mark the axon disconnected from the soma
             morphology.axon.connected_to_soma = False
@@ -695,7 +696,7 @@ def verify_axon_connection_to_soma(morphology):
 
         # Report the issue
         nmv.logger.detail('WARNING: The axon @ section [%d] is intersecting with a basal dendrite'
-              % morphology.axon.id)
+              % morphology.axon.index)
 
         # Find the intersection sample
         nearest_sample = find_nearest_basal_dendritic_sample_to_axon(
@@ -703,8 +704,8 @@ def verify_axon_connection_to_soma(morphology):
 
         # Report the repair
         nmv.logger.detail('REPAIRING: The axon is re-connected to section [%d, %s] @ sample [%s]'
-              % (nearest_sample.section.id, nearest_sample.section.get_type_string(),
-                 str(nearest_sample.id)))
+              % (nearest_sample.section.index, nearest_sample.section.get_type_string(),
+                 str(nearest_sample.index)))
 
         # Mark the axon disconnected from the soma
         morphology.axon.connected_to_soma = False
@@ -722,7 +723,7 @@ def verify_axon_connection_to_soma(morphology):
     # Mark the axon connected to the soma
     morphology.axon.connected_to_soma = True
 
-    nmv.logger.detail('NOTE: The axon @ section [%d] is connected to the soma' % morphology.axon.id)
+    nmv.logger.detail('NOTE: The axon @ section [%d] is connected to the soma' % morphology.axon.index)
 
 
 ################################################################################################
@@ -781,7 +782,7 @@ def verify_basal_dendrites_connection_to_soma(morphology):
 
             # Report the repair
             nmv.logger.detail('REPAIRING: The basal dendrite [%d] @ section [%d] is re-connected '
-                              'to the soma' % (i_basal_dendrite, basal_dendrite.id))
+                              'to the soma' % (i_basal_dendrite, basal_dendrite.index))
 
             # Get the direction of the initial sample of the basal dendrite
             basal_dendrite.samples[0].point = \
@@ -825,9 +826,55 @@ def verify_basal_dendrites_connection_to_soma(morphology):
             continue
 
 
-################################################################################################
+####################################################################################################
+# @verify_arbor_proximity_to_soma
+####################################################################################################
+def verify_arbor_proximity_to_soma(arbor,
+                                   soma):
+    """Validates the proximity of a given arbor to the given soma. If the arbor is too far, then
+    probably, it is NOT connected to the soma, otherwise it is.
+    This function simply updates the self.far_from_soma  flag of the given arbor
+
+    :param arbor:
+        A given arbor of the morphology to check.
+    :param soma:
+        The soma of the morphology.
+    """
+
+    if arbor.samples[0].point.length < nmv.consts.Skeleton.MAXIMUM_SOMA_RADIUS_REPORTED:
+        arbor.far_from_soma = False
+
+
+####################################################################################################
+# @validate_arbors_proximity_to_soma
+####################################################################################################
+def validate_arbors_proximity_to_soma(morphology):
+    """Validates the proximity of the arbors to the soma. If the arbor is too far, then probably it
+     is NOT connected to the soma, otherwise it is.
+
+    :param morphology:
+        A given morphology skeleton.
+    """
+
+    # Apical dendrites
+    if morphology.has_apical_dendrites():
+        for arbor in morphology.apical_dendrites:
+            verify_arbor_proximity_to_soma(arbor=arbor, soma=morphology.soma)
+
+    # Basal dendrites
+    if morphology.has_basal_dendrites():
+        for arbor in morphology.basal_dendrites:
+            verify_arbor_proximity_to_soma(arbor=arbor, soma=morphology.soma)
+
+    # Axons
+    if morphology.has_axons():
+        for arbor in morphology.axons:
+            verify_arbor_proximity_to_soma(arbor=arbor, soma=morphology.soma)
+
+
+####################################################################################################
 # @update_arbors_connection_to_soma
-################################################################################################
+####################################################################################################
 def update_arbors_connection_to_soma(morphology):
     """Verify if the different arbors of the morphology are connected to the soma or not.
     The apical dendrite is always assumed to be connected to the soma since its large.
@@ -958,7 +1005,7 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
     # Verify if the arbor is connected to the soma or not
     if not arbor.connected_to_soma:
         nmv.logger.log('\t\t * WARNING: The arbor [%s: %d] is not connected to the soma' %
-                       (arbor.get_type_string(), arbor.id))
+                       (arbor.get_type_string(), arbor.index))
         return soma_mesh
 
     # Clip the auxiliary section using a cutting plane that is normal on the branch
@@ -1058,7 +1105,7 @@ def connect_arbor_to_meta_sball_soma(soma_mesh,
     # Verify if the arbor is connected to the soma or not
     if not arbor.connected_to_soma:
         nmv.logger.log('\t\t * WARNING: The neurite [%s: %d] is not connected to the soma' %
-                       (arbor.get_type_string(), arbor.id))
+                       (arbor.get_type_string(), arbor.index))
         return
 
     # Simply apply a union operator and remove the duplicate object

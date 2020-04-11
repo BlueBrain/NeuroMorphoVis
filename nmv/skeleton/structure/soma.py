@@ -54,6 +54,8 @@ class Soma:
 
         # The profile points of the arbors
         self.arbors_profile_points = arbors_profile_points
+
+        # If the list is given, sort the profile points
         if self.arbors_profile_points is not None:
             self.arbors_profile_points = sorted(arbors_profile_points)
 

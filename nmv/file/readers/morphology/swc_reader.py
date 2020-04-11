@@ -371,8 +371,8 @@ class SWCReader:
 
         # Construct a nmv sample object
         nmv_sample = nmv.skeleton.Sample(
-            point=sample_point, radius=sample_radius, id=sample_id, morphology_id=0,
-            type=sample_type, parent_id=parent_sample_id)
+            point=sample_point, radius=sample_radius, index=sample_id, morphology_id=0,
+            type=sample_type, parent_index=parent_sample_id)
 
         # Return a reference to the reconstructed object
         return nmv_sample
@@ -587,7 +587,7 @@ class SWCReader:
 
             # If this is a root sample, indicate that this section is a root
             if is_root_section:
-                nmv_section.parent_id = -1
+                nmv_section.parent_index = -1
                 nmv_section.parent = None
 
             # Append the reconstructed sections to the sections list
@@ -597,7 +597,7 @@ class SWCReader:
         for i, section in enumerate(sections_list):
 
             # Update the section index
-            section.id = i
+            section.index = i
 
             # Update the section type
             section.type = arbor_type

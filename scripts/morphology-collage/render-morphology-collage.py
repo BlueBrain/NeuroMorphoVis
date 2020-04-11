@@ -148,12 +148,12 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Column dimensions
-    # <layer id="1” thickness (µm) = "164.94915873"/>
-    # <layer id="2” thickness (µm) = "148.87602025"/>
-    # <layer id="3” thickness (µm) = "352.92508322"/>
-    # <layer id="4” thickness (µm) = "189.57183895"/>
-    # <layer id="5” thickness (µm) = "525.05585701"/>
-    # <layer id="6” thickness (µm) = "700.37845971”/>
+    # <layer index="1” thickness (µm) = "164.94915873"/>
+    # <layer index="2” thickness (µm) = "148.87602025"/>
+    # <layer index="3” thickness (µm) = "352.92508322"/>
+    # <layer index="4” thickness (µm) = "189.57183895"/>
+    # <layer index="5” thickness (µm) = "525.05585701"/>
+    # <layer index="6” thickness (µm) = "700.37845971”/>
 
     layer_1_height = 164.94915873
     layer_2_height = 148.87602025

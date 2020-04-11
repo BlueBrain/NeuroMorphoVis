@@ -56,7 +56,7 @@ def create_skeleton_materials_and_illumination(builder):
     # Axon
     builder.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
         name='axon_skeleton', material_type=builder.options.shading.morphology_material,
-        color=builder.options.shading.morphology_axon_color)
+        color=builder.options.shading.morphology_axons_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(

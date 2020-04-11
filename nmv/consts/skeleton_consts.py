@@ -35,6 +35,9 @@ class Skeleton:
     # Default branching order for the axon is different, as it is ignored in many cases
     AXON_DEFAULT_BRANCHING_ORDER = 2
 
+    # The maximum radius of soma reported in the literature
+    MAXIMUM_SOMA_RADIUS_REPORTED = 15
+
     # Soma prefix
     SOMA_PREFIX = 'Soma'
 

@@ -303,7 +303,7 @@ class NeuroMorphoVisOptions:
         self.shading.soma_color = nmv.utilities.parse_color_from_argument(arguments.soma_color)
 
         # Axon color
-        self.shading.axon_color = nmv.utilities.parse_color_from_argument(arguments.axon_color)
+        self.shading.axons_color = nmv.utilities.parse_color_from_argument(arguments.axons_color)
 
         # Basal dendrites color
         self.shading.basal_dendrites_color = nmv.utilities.parse_color_from_argument(

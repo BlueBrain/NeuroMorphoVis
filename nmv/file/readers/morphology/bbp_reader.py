@@ -284,19 +284,19 @@ class BBPReader:
     ################################################################################################
     @staticmethod
     def get_section_from_id(sections,
-                            id):
+                            index):
         """Return a BBP section from its ID.
 
         :param sections:
             A list of BBP sections
-        :param id:
+        :param index:
             A given section ID.
         :return:
             A BBP section.
         """
 
         for section in sections:
-            if section.id == id:
+            if section.index == index:
                 return section
         return None
 
@@ -322,10 +322,10 @@ class BBPReader:
         for section in sections_list:
 
             # The section should not have any parents
-            if section.parent_id is None:
+            if section.parent_index is None:
 
                 # Append it to the list
-                sections.append(BBPReader.get_section_from_id(sections_list, section.id))
+                sections.append(BBPReader.get_section_from_id(sections_list, section.index))
 
         return sections
 
@@ -386,7 +386,7 @@ class BBPReader:
             print('ERROR: Cannot import brain')
             return None
 
-        dendrites = [bbp_morphology.section(int(id)) for id in
+        dendrites = [bbp_morphology.section(int(index)) for index in
                      bbp_morphology.section_ids({brain.neuron.SectionType.dendrite})]
         return dendrites
 
@@ -410,7 +410,7 @@ class BBPReader:
             print('ERROR: Cannot import brain')
             return None
 
-        apical_dendrite = [bbp_morphology.section(int(id)) for id in
+        apical_dendrite = [bbp_morphology.section(int(index)) for index in
                            bbp_morphology.section_ids({brain.neuron.SectionType.apical_dendrite})]
         return apical_dendrite
 
@@ -739,13 +739,13 @@ class BBPReader:
         for bbp_morphology_section in bbp_morphology_sections:
 
             # Get the section ID
-            section_id = bbp_morphology_section.id()
+            section_id = bbp_morphology_section.index()
 
             # Get the parent section ID
             if bbp_morphology_section.parent() is None:
                 parent_section_id = None
             else:
-                parent_section_id = bbp_morphology_section.parent().id()
+                parent_section_id = bbp_morphology_section.parent().index()
 
             # Get the section type
             section_type = bbp_morphology_section.type()
@@ -764,17 +764,17 @@ class BBPReader:
                 radius = morphology_sample[3] / 2.0
 
                 # Construct a Sample object and add the data to it
-                morphology_sample = nmv.skeleton.Sample(point=point, radius=radius, id=i)
+                morphology_sample = nmv.skeleton.Sample(point=point, radius=radius, index=i)
                 samples.append(morphology_sample)
 
             # Retrieve all children IDs
             children_ids = []
             for child in bbp_morphology_section.children():
-                children_ids.append(child.id())
+                children_ids.append(child.index())
 
             # Build section
             section = nmv.skeleton.Section(
-                id=section_id, parent_id=parent_section_id, children_ids=children_ids,
+                index=section_id, parent_index=parent_section_id, children_ids=children_ids,
                 samples=samples, type=section_type)
 
             # Set the parenting
@@ -782,7 +782,7 @@ class BBPReader:
                 section.parent = None
 
             for i_section in sections:
-                if i_section.id == parent_section_id:
+                if i_section.index == parent_section_id:
                     section.parent = i_section.parent
 
             # Add the section to the list
@@ -808,7 +808,7 @@ class BBPReader:
         """
 
         # Get section parent and update the root
-        parent = BBPReader.get_section_from_id(sections, root.parent_id)
+        parent = BBPReader.get_section_from_id(sections, root.parent_index)
         root.parent = parent
 
         # Get section children and update the root
@@ -817,7 +817,7 @@ class BBPReader:
             # Do it child by child
             for child_id in root.children_ids:
 
-                # Get the section based on its id
+                # Get the section based on its index
                 child = BBPReader.get_section_from_id(sections, child_id)
 
                 # Create morphology skeleton before adding it to the current branch

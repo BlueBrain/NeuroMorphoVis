@@ -406,7 +406,7 @@ def draw_color_options(panel,
 
             nmv.interface.ui_options.shading.mesh_soma_color = \
                 scene.NMV_NeuronMeshColor
-            nmv.interface.ui_options.shading.mesh_axon_color = \
+            nmv.interface.ui_options.shading.mesh_axons_color = \
                 scene.NMV_NeuronMeshColor
             nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
                 scene.NMV_NeuronMeshColor
@@ -421,9 +421,9 @@ def draw_color_options(panel,
             soma_color_row.prop(scene, 'NMV_SomaMeshColor')
             nmv.interface.ui_options.shading.mesh_soma_color = scene.NMV_SomaMeshColor
 
-            axon_color_row = layout.row()
-            axon_color_row.prop(scene, 'NMV_AxonMeshColor')
-            nmv.interface.ui_options.shading.mesh_axon_color = scene.NMV_AxonMeshColor
+            axons_color_row = layout.row()
+            axons_color_row.prop(scene, 'NMV_AxonMeshColor')
+            nmv.interface.ui_options.shading.mesh_axons_color = scene.NMV_AxonMeshColor
 
             basal_dendrites_color_row = layout.row()
             basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
@@ -449,7 +449,7 @@ def draw_color_options(panel,
         # Pass options from UI to system
         nmv.interface.ui_options.shading.mesh_soma_color = \
             scene.NMV_NeuronMeshColor
-        nmv.interface.ui_options.shading.mesh_axon_color = \
+        nmv.interface.ui_options.shading.mesh_axons_color = \
             scene.NMV_NeuronMeshColor
         nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
             scene.NMV_NeuronMeshColor

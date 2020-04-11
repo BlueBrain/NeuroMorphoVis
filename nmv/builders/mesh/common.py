@@ -64,7 +64,7 @@ def create_skeleton_materials(builder):
     # Axon
     builder.axons_materials = nmv.shading.create_materials(
         material_type=builder.options.shading.mesh_material, name='axon_skeleton',
-        color=builder.options.shading.mesh_axon_color)
+        color=builder.options.shading.mesh_axons_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.shading.create_materials(
@@ -389,21 +389,21 @@ def connect_arbors_to_soma(builder):
         if not builder.options.morphology.ignore_axons:
             if builder.morphology.has_axons():
                 for arbor in builder.morphology.axons:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     builder.soma_mesh = connection_function(builder.soma_mesh, arbor)
 
         # Connecting apical dendrites
         if not builder.options.morphology.ignore_apical_dendrites:
             if builder.morphology.has_apical_dendrites():
                 for arbor in builder.morphology.apical_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     builder.soma_mesh = connection_function(builder.soma_mesh, arbor)
 
         # Connecting basal dendrites
         if not builder.options.morphology.ignore_basal_dendrites:
             if builder.morphology.has_basal_dendrites():
                 for arbor in builder.morphology.basal_dendrites:
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     builder.soma_mesh = connection_function(builder.soma_mesh, arbor)
 
     # Smooth the connections between the soma and the connected curves

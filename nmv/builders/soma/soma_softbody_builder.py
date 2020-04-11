@@ -405,7 +405,7 @@ class SomaSoftBodyBuilder:
         if visualize_connection:
 
             # Label the connection
-            connection_id = 'connection_%s_%s' % (branch.type, str(branch.id))
+            connection_id = 'connection_%s_%s' % (branch.type, str(branch.index))
 
             # Plot a sphere at the connection point if requested
             nmv.skeleton.ops.visualize_extrusion_connection(
@@ -504,7 +504,7 @@ class SomaSoftBodyBuilder:
 
         # Create the hook and attach it to the vertices
         hook = nmv.physics.hook.ops.add_hook_to_vertices(
-            initial_soma_sphere, vertices_indices, name='hook_%d' % branch.id)
+            initial_soma_sphere, vertices_indices, name='hook_%d' % branch.index)
 
         # The hook is stretched from the center of the face to the branch initial segment point
         # Set the hook positions at the different key frames

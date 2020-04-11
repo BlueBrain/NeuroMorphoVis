@@ -243,7 +243,7 @@ class UnionBuilder:
                 for arbor in self.morphology.axons:
 
                     # Build the mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
                         max_branching_order=self.options.morphology.axon_branch_order,
@@ -256,7 +256,7 @@ class UnionBuilder:
                 for arbor in self.morphology.apical_dendrites:
 
                     # Build the mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
@@ -270,7 +270,7 @@ class UnionBuilder:
                 for arbor in self.morphology.basal_dendrites:
 
                     # Build the mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,

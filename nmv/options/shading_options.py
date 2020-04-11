@@ -41,7 +41,7 @@ class ShadingOptions:
         self.morphology_soma_color = nmv.enums.Color.SOMA
 
         # Axon color for the morphology toolbox
-        self.morphology_axon_color = nmv.enums.Color.AXONS
+        self.morphology_axons_color = nmv.enums.Color.AXONS
 
         # Basal dendrites color for the morphology toolbox
         self.morphology_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
@@ -56,7 +56,7 @@ class ShadingOptions:
         self.mesh_soma_color = nmv.enums.Color.SOMA
 
         # Axon color for the mesh toolbox
-        self.mesh_axon_color = nmv.enums.Color.AXONS
+        self.mesh_axons_color = nmv.enums.Color.AXONS
 
         # Basal dendrites color for the mesh toolbox
         self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
@@ -90,7 +90,7 @@ class ShadingOptions:
         self.morphology_soma_color = nmv.enums.Color.SOMA
 
         # Axon color for the morphology toolbox
-        self.morphology_axon_color = nmv.enums.Color.AXONS
+        self.morphology_axons_color = nmv.enums.Color.AXONS
 
         # Basal dendrites color for the morphology toolbox
         self.morphology_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
@@ -105,7 +105,7 @@ class ShadingOptions:
         self.mesh_soma_color = nmv.enums.Color.SOMA
 
         # Axon color for the mesh toolbox
-        self.mesh_axon_color = nmv.enums.Color.AXONS
+        self.mesh_axons_color = nmv.enums.Color.AXONS
 
         # Basal dendrites color for the mesh toolbox
         self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES

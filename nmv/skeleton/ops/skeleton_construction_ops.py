@@ -39,35 +39,35 @@ def update_section_parenting(section,
 
     # Detect if the section has no parent, then set it as a root
     # Use the first sample to identify if this section is a root or not
-    if str(section.samples[0].parent_id) == str(-1):
+    if str(section.samples[0].parent_index) == str(-1):
 
         # This section is a root
         section.parent = None
-        section.parent_id = None
+        section.parent_index = None
 
     for i_section in sections_list:
 
         # If this is the same section
-        if i_section.id == section.id:
+        if i_section.index == section.index:
 
             # Next section
             continue
 
         # If the last sample along the section has the same index of the first sample of the
         # auxiliary section, then the auxiliary section is a child
-        if section.samples[-1].id == i_section.samples[0].id:
+        if section.samples[-1].index == i_section.samples[0].index:
 
             # Add the auxiliary section as a child to the parent section
             section.children.append(i_section)
-            section.children_ids.append(i_section.id)
+            section.children_ids.append(i_section.index)
 
         # If the first sample along the section has the same index of the last sample of the
         # auxiliary section, then the auxiliary section is a parent
-        if section.samples[0].id == i_section.samples[-1].id:
+        if section.samples[0].index == i_section.samples[-1].index:
 
             # Set the auxiliary section to be a parent to this child section
             section.parent = i_section
-            section.parent_id = i_section.id
+            section.parent_index = i_section.index
 
 
 ####################################################################################################

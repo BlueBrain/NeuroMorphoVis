@@ -288,7 +288,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
 
     # Construct the poly-line
     poly_line = nmv.geometry.PolyLine(
-        name='section_%s' % str(section.id),
+        name='section_%s' % str(section.index),
         samples=samples,
         material_index=section.get_material_index() + (section.branching_order % 2))
 
@@ -320,7 +320,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             samples.append([(x_1, end_y, 0, 1), radius_1])
             samples.append([(x_2, end_y, 0, 1), radius_2])
             poly_line = nmv.geometry.PolyLine(
-                name='section_%s' % str(section.id),
+                name='section_%s' % str(section.index),
                 samples=samples,
                 material_index=section.get_material_index() + (section.branching_order % 2))
 

@@ -410,7 +410,7 @@ class SkinningBuilder:
                 for i, arbor in enumerate(self.morphology.apical_dendrites):
 
                     # Create the mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     arbor_mesh = self.create_arbor_mesh(
                         arbor=arbor,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
@@ -427,7 +427,7 @@ class SkinningBuilder:
                 for i, arbor in enumerate(self.morphology.basal_dendrites):
 
                     # Create the mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     arbor_mesh = self.create_arbor_mesh(
                         arbor=arbor,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
@@ -444,7 +444,7 @@ class SkinningBuilder:
                 for i, arbor in enumerate(self.morphology.axons):
 
                     # Create the axon mesh
-                    nmv.logger.info(arbor.label)
+                    nmv.logger.detail(arbor.label)
                     arbor_mesh = self.create_arbor_mesh(
                         arbor=arbor,
                         max_branching_order=self.options.morphology.axon_branch_order,

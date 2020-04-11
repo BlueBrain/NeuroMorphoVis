@@ -299,8 +299,8 @@ class SomaMetaBuilder:
             A given arbor to emanate the soma towards.
         """
 
-        # The arbor must be connected to the soma
-        if arbor.connected_to_soma:
+        # The arbor must NOT be far from the soma
+        if not arbor.far_from_soma:
 
             # Assume that from the soma center towards the first point along the arbor is a segment
             p1 = Vector((self.morphology.soma.centroid[0], 
@@ -325,25 +325,28 @@ class SomaMetaBuilder:
         # Header
         nmv.logger.info('Building Soma from Meta Objects')
 
+        # Verify the proximity of the arbors to the soma
+        nmv.skeleton.validate_arbors_proximity_to_soma(morphology=self.morphology)
+
         # Emanate towards the apical dendrites, if exist
         if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
-                for i, arbor in enumerate(self.morphology.apical_dendrites):
-                    nmv.logger.detail('Apical Dendrite [%d]' % (i + 1))
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards basal dendrites, if exist
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
-                for i, arbor in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.detail('Basal Dendrite [%d]' % (i + 1))
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards axons, if exist
         if self.morphology.has_axons():
             if not self.options.morphology.ignore_axons:
-                for i, arbor in enumerate(self.morphology.axons):
-                    nmv.logger.detail('Axon [%d]' % (i + 1))
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
     ################################################################################################
