@@ -342,7 +342,7 @@ def smooth_arbors_to_soma_connections(builder):
 
         # Connecting axons
         if not builder.options.morphology.ignore_axons:
-            if builder.morphology.has_axon():
+            if builder.morphology.has_axons():
                 for arbor in builder.morphology.axons:
                     select_arbor_to_soma_vertices(soma_mesh=builder.soma_mesh, arbor=arbor)
 
