@@ -906,47 +906,74 @@ class BBPReader:
         """
 
         # Convert a BBP morphology into a list of all the sections
-        soma, axon_list, basal_dendrites_list, apical_dendrite_list = \
+        soma, axons_list, basal_dendrites_list, apical_dendrites_list = \
             BBPReader.convert_bbp_morphology_to_list(gid, bbp_morphology)
 
-        # Create the axon tree
-        axon_root = BBPReader.get_starting_sections_from_sections_list(axon_list)[0]
-        axon = BBPReader.create_morphology_skeleton(axon_root, axon_list)
+        # Create the apical dendrites trees
+        apical_dendrites_roots = BBPReader.get_starting_sections_from_sections_list(
+            apical_dendrites_list)
+        apical_dendrites = None
+        if apical_dendrites_list is not None:
+            apical_dendrites = list()
+            for root in apical_dendrites_roots:
+                apical_dendrite = BBPReader.create_morphology_skeleton(root, apical_dendrites_list)
+                apical_dendrites.append(apical_dendrite)
 
-        # Create the dendrites trees
-        dendrites_roots = BBPReader.get_starting_sections_from_sections_list(basal_dendrites_list)
-        dendrites = []
-        for dendrite_root in dendrites_roots:
-            dendrite = BBPReader.create_morphology_skeleton(dendrite_root, basal_dendrites_list)
-            dendrites.append(dendrite)
+        # Create the axons trees
+        axons_roots = BBPReader.get_starting_sections_from_sections_list(axons_list)
+        axons = None
+        if axons_list is not None:
+            axons = list()
+            for root in axons_roots:
+                axon = BBPReader.create_morphology_skeleton(root, axons_list)
+                axons.append(axon)
 
-        # Create the apical dendrites tree, if exists
-        apical_dendrite = None
-        if apical_dendrite_list is not None:
-            apical_dendrite_root = BBPReader.get_starting_sections_from_sections_list(
-                apical_dendrite_list)[0]
-            apical_dendrite = BBPReader.create_morphology_skeleton(
-                apical_dendrite_root, apical_dendrite_list)
+        # Create the basal dendrites trees
+        basal_dendrites_roots = BBPReader.get_starting_sections_from_sections_list(
+            basal_dendrites_list)
+        basal_dendrites = None
+        if basal_dendrites_list is not None:
+            basal_dendrites = list()
+            for root in basal_dendrites_roots:
+                basal_dendrite = BBPReader.create_morphology_skeleton(root, basal_dendrites_list)
+                basal_dendrites.append(basal_dendrite)
+
+        # Labeling and tagging the apical dendrites
+        if apical_dendrites is not None:
+            if len(apical_dendrites) == 1:
+                apical_dendrites[0].label = 'Apical Dendrite'
+                apical_dendrites[0].tag = 'ApicalDendrite'
+            else:
+                for i in range(len(apical_dendrites)):
+                    apical_dendrites[i].label = 'Apical Dendrite %d' % (i + 1)
+                    apical_dendrites[i].label = 'ApicalDendrite%d' % (i + 1)
+
+        # Labeling the basal dendrites
+        if basal_dendrites is not None:
+            if len(basal_dendrites) == 1:
+                basal_dendrites[0].label = 'Basal Dendrite'
+                basal_dendrites[0].tag = 'BasalDendrite'
+            else:
+                for i in range(len(basal_dendrites)):
+                    basal_dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
+                    basal_dendrites[i].tag = 'BasalDendrite%d' % (i + 1)
+
+        # Labeling and tagging the axons
+        if axons is not None:
+            if len(axons) == 1:
+                axons[0].label = 'Axon'
+                axons[0].tag = 'Axon'
+            else:
+                for i in range(len(axons)):
+                    axons[i].label = 'Axon %d' % (i + 1)
+                    axons[i].tag = 'Axon%d' % (i + 1)
 
         # Create the tree representation of the morphology
-        nmv_morphology = nmv.skeleton.Morphology(
-            soma=soma, axon=axon, dendrites=dendrites, apical_dendrite=apical_dendrite, gid=gid)
-
-        # Labels
-        if nmv_morphology.axon is not None:
-            nmv_morphology.axon.label = 'Axon'
-
-        if nmv_morphology.apical_dendrite is not None:
-            nmv_morphology.apical_dendrite.label = 'Apical Dendrite'
-
-        if nmv_morphology.basal_dendrites is not None:
-            for i in range(len(nmv_morphology.basal_dendrites)):
-                nmv_morphology.basal_dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
-
-        # Update the information
-        nmv_morphology.number_loaded_axons = len(axon) if axon is not None else 0
-        nmv_morphology.number_loaded_basal_dendrites = len(dendrites) if dendrites is not None else 0
-        nmv_morphology.number_loaded_apical_dendrites = len(apical_dendrite) if apical_dendrite is not None else 0
+        nmv_morphology = nmv.skeleton.Morphology(soma=soma,
+                                                 axons=axons,
+                                                 basal_dendrites=basal_dendrites,
+                                                 apical_dendrites=apical_dendrites,
+                                                 gid=gid)
 
         # Return the morphology tree skeleton
         return nmv_morphology
