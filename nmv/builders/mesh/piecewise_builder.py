@@ -86,7 +86,7 @@ class PiecewiseBuilder:
         self.basal_dendrites_meshes = list()
 
         # A list of the reconstructed meshes of the axon
-        self.axon_meshes = list()
+        self.axons_meshes = list()
 
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiles: \n'
@@ -124,101 +124,106 @@ class PiecewiseBuilder:
             A list of all the individual meshes of the arbors.
         """
 
-        # Draw the apical dendrite if not ignored
+        # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:
-
-            # Draw the apical dendrite, if exists
             if self.morphology.has_apical_dendrites():
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    nmv.logger.info(arbor.label)
 
-                # Draw the apical dendrite as a set connected sections
-                nmv.logger.info('Apical dendrite')
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=self.morphology.apical_dendrite,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material_list=self.apical_dendrites_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=True,
-                    caps=caps,
-                    sections_objects=self.apical_dendrites_meshes,
-                    roots_connection=roots_connection)
+                    # A list to keep all the generated objects of the arbor
+                    arbor_objects = list()
 
-                # Ensure that apical dendrite objects were reconstructed
-                if len(self.apical_dendrites_meshes) > 0:
+                    nmv.skeleton.ops.draw_connected_sections(
+                        section=arbor,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        name=arbor.label,
+                        material_list=self.apical_dendrites_materials,
+                        bevel_object=bevel_object,
+                        repair_morphology=True,
+                        caps=caps,
+                        sections_objects=arbor_objects,
+                        roots_connection=roots_connection)
 
-                    # Add a reference to the mesh object
-                    self.morphology.apical_dendrite.mesh = self.apical_dendrites_meshes[0]
+                    # Ensure that apical dendrite objects were reconstructed
+                    if len(arbor_objects) > 0:
 
-                    # Convert the section object (tubes) into meshes
-                    for arbor_object in self.apical_dendrites_meshes:
-                        nmv.scene.ops.convert_object_to_mesh(arbor_object)
+                        # Add a reference to the mesh object
+                        self.morphology.apical_dendrites[i].mesh = arbor_objects[0]
 
-        # Draw the basal dendrites
+                        # Add the sections (tubes) of the apical dendrite to the list
+                        self.apical_dendrites_meshes.extend(arbor_objects)
+
+                        # Convert the section object (tubes) into meshes
+                        for arbor_object in arbor_objects:
+                            nmv.scene.ops.convert_object_to_mesh(arbor_object)
+
+        # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
-
-            # Ensure tha existence of basal dendrites
             if self.morphology.has_basal_dendrites():
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    nmv.logger.info(arbor.label)
 
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.info('Dendrite [%d]' % i)
-
-                    basal_dendrite_objects = []
+                    # A list to keep all the generated objects of the arbor
+                    arbor_objects = list()
 
                     # Draw the basal dendrites as a set connected sections
-                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
                     nmv.skeleton.ops.draw_connected_sections(
-                        section=basal_dendrite,
+                        section=arbor,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        name=basal_dendrite_prefix,
+                        name=arbor.label,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
                         repair_morphology=True,
                         caps=caps,
-                        sections_objects=basal_dendrite_objects,
+                        sections_objects=arbor_objects,
                         roots_connection=roots_connection)
 
-                    # Ensure that basal dendrite objects were reconstructed
-                    if len(basal_dendrite_objects) > 0:
+                    # Ensure that objects were reconstructed
+                    if len(arbor_objects) > 0:
 
                         # Add a reference to the mesh object
-                        self.morphology.basal_dendrites[i].mesh = basal_dendrite_objects[0]
+                        self.morphology.basal_dendrites[i].mesh = arbor_objects[0]
 
                         # Add the sections (tubes) of the basal dendrite to the list
-                        self.basal_dendrites_meshes.extend(basal_dendrite_objects)
+                        self.basal_dendrites_meshes.extend(arbor_objects)
 
                         # Convert the section object (tubes) into meshes
-                        for arbor_object in basal_dendrite_objects:
+                        for arbor_object in arbor_objects:
                             nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
-        # Draw the axon as a set connected sections
+        # Axons
         if not self.options.morphology.ignore_axons:
-
-            # Ensure tha existence of basal dendrites
             if self.morphology.has_axons():
-                nmv.logger.info('Axon')
+                for i, arbor in enumerate(self.morphology.axons):
+                    nmv.logger.info(arbor.label)
 
-                # Draw the axon as a set connected sections
-                nmv.skeleton.ops.draw_connected_sections(
-                    section=self.morphology.axon,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Skeleton.AXON_PREFIX,
-                    material_list=self.axons_materials,
-                    bevel_object=bevel_object,
-                    repair_morphology=True,
-                    caps=caps,
-                    sections_objects=self.axon_meshes,
-                    roots_connection=roots_connection)
+                    # A list to keep all the generated objects of the arbor
+                    arbor_objects = list()
 
-                # Ensure that axon objects were reconstructed
-                if len(self.axon_meshes) > 0:
+                    # Draw the axon as a set connected sections
+                    nmv.skeleton.ops.draw_connected_sections(
+                        section=arbor,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        name=arbor.label,
+                        material_list=self.axons_materials,
+                        bevel_object=bevel_object,
+                        repair_morphology=True,
+                        caps=caps,
+                        sections_objects=arbor_objects,
+                        roots_connection=roots_connection)
 
-                    # Add a reference to the mesh object
-                    self.morphology.axon.mesh = self.axon_meshes[0]
+                    # Ensure that axon objects were reconstructed
+                    if len(arbor_objects) > 0:
 
-                    # Convert the section object (tubes) into meshes
-                    for arbor_object in self.axon_meshes:
-                        nmv.scene.ops.convert_object_to_mesh(arbor_object)
+                        # Add a reference to the mesh object
+                        self.morphology.axons[i].mesh = arbor_objects[0]
+
+                        # Add the sections (tubes) of the basal dendrite to the list
+                        self.axons_meshes.extend(arbor_objects)
+
+                        # Convert the section object (tubes) into meshes
+                        for arbor_object in arbor_objects:
+                            nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -250,7 +255,7 @@ class PiecewiseBuilder:
             nmv.mesh.close_open_faces(arbor_object)
 
         # Close the caps of the axon meshes
-        for arbor_object in self.axon_meshes:
+        for arbor_object in self.axons_meshes:
             nmv.mesh.close_open_faces(arbor_object)
 
         # Delete the bevel object
@@ -284,7 +289,7 @@ class PiecewiseBuilder:
             nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
 
         # Smooth and close the faces of the axon meshes
-        for mesh in self.axon_meshes:
+        for mesh in self.axons_meshes:
             nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
 
         # Delete the bevel object

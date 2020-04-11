@@ -404,61 +404,56 @@ class SkinningBuilder:
         # Header
         nmv.logger.header('Building Arbors')
 
-        # Draw the apical dendrite, if exists
+        # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:
-            nmv.logger.info('Apical dendrite')
-
-            # Create the apical dendrite mesh
             if self.morphology.has_apical_dendrites():
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
 
-                arbor_mesh = self.create_arbor_mesh(
-                    arbor=self.morphology.apical_dendrite,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    arbor_name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    arbor_material=self.apical_dendrites_materials[0],
-                    connected_to_soma=connected_to_soma)
-
-                # Add a reference to the mesh object
-                self.morphology.apical_dendrite.mesh = arbor_mesh
-
-        # Draw the basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
-
-            # Are dendrites there
-            if self.morphology.has_basal_dendrites():
-
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-
-                    # Create the basal dendrite meshes
-                    nmv.logger.info('Dendrite [%d]' % i)
+                    # Create the mesh
+                    nmv.logger.info(arbor.label)
                     arbor_mesh = self.create_arbor_mesh(
-                        arbor=basal_dendrite,
+                        arbor=arbor,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        arbor_name=arbor.label,
+                        arbor_material=self.apical_dendrites_materials[0],
+                        connected_to_soma=connected_to_soma)
+
+                    # Add a reference to the mesh object
+                    self.morphology.apical_dendrites[i].mesh = arbor_mesh
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+
+                    # Create the mesh
+                    nmv.logger.info(arbor.label)
+                    arbor_mesh = self.create_arbor_mesh(
+                        arbor=arbor,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        arbor_name='%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i),
+                        arbor_name=arbor.label,
                         arbor_material=self.basal_dendrites_materials[0],
                         connected_to_soma=connected_to_soma)
 
                     # Add a reference to the mesh object
                     self.morphology.basal_dendrites[i].mesh = arbor_mesh
 
-        # Draw the axon as a set connected sections
+        # Axons
         if not self.options.morphology.ignore_axons:
-
-            # Ensure tha existence of basal dendrites
             if self.morphology.has_axons():
-                nmv.logger.info('Axon')
+                for i, arbor in enumerate(self.morphology.axons):
 
-                # Create the axon mesh
-                arbor_mesh = self.create_arbor_mesh(
-                    arbor=self.morphology.axon,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    arbor_name=nmv.consts.Skeleton.AXON_PREFIX,
-                    arbor_material=self.axons_materials[0],
-                    connected_to_soma=connected_to_soma)
+                    # Create the axon mesh
+                    nmv.logger.info(arbor.label)
+                    arbor_mesh = self.create_arbor_mesh(
+                        arbor=arbor,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        arbor_name=arbor.label,
+                        arbor_material=self.axons_materials[0],
+                        connected_to_soma=connected_to_soma)
 
-                # Add a reference to the mesh object
-                self.morphology.axon.mesh = arbor_mesh
+                    # Add a reference to the mesh object
+                    self.morphology.axons[i].mesh = arbor_mesh
 
     ################################################################################################
     # @reconstruct_mesh

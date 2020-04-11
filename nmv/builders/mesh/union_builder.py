@@ -237,44 +237,44 @@ class UnionBuilder:
             A flag indicating that the arbors will be smooth.
         """
 
-        # Axon
+        # Axons
         if self.morphology.has_axons():
             if not self.options.morphology.ignore_axons:
-                nmv.logger.log('\t * Axon')
+                for arbor in self.morphology.axons:
 
-                self.build_arbor(
-                    arbor=self.morphology.axon, caps=caps, bevel_object=bevel_object,
-                    max_branching_order=self.options.morphology.axon_branch_order,
-                    name=nmv.consts.Skeleton.AXON_PREFIX, material=self.axons_materials[0],
-                    connection_to_soma=connection_to_soma, soft=soft)
+                    # Build the mesh
+                    nmv.logger.info(arbor.label)
+                    self.build_arbor(
+                        arbor=arbor, caps=caps, bevel_object=bevel_object,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        name=arbor.label, material=self.axons_materials[0],
+                        connection_to_soma=connection_to_soma, soft=soft)
 
-        # Draw the apical dendrite, if exists
+        # Apical dendrites
         if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
-                nmv.logger.log('\t * Apical dendrite')
+                for arbor in self.morphology.apical_dendrites:
 
-                self.build_arbor(
-                    arbor=self.morphology.apical_dendrite, caps=caps, bevel_object=bevel_object,
-                    max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                    name=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                    material=self.apical_dendrites_materials[0],
-                    connection_to_soma=connection_to_soma, soft=soft)
+                    # Build the mesh
+                    nmv.logger.info(arbor.label)
+                    self.build_arbor(
+                        arbor=arbor, caps=caps, bevel_object=bevel_object,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        name=arbor.label,
+                        material=self.apical_dendrites_materials[0],
+                        connection_to_soma=connection_to_soma, soft=soft)
 
-        # Draw the basal dendrites
+        # Basal dendrites
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
 
-                # Do it dendrite by dendrite
-                for i, basal_dendrite in enumerate(self.morphology.basal_dendrites):
-                    nmv.logger.log('\t * Dendrite [%d]' % i)
-
-                    # Draw the basal dendrites as a set connected sections
-                    basal_dendrite_prefix = '%s_%d' % (nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX, i)
-
+                    # Build the mesh
+                    nmv.logger.info(arbor.label)
                     self.build_arbor(
-                        arbor=basal_dendrite, caps=caps, bevel_object=bevel_object,
+                        arbor=arbor, caps=caps, bevel_object=bevel_object,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        name=basal_dendrite_prefix,
+                        name=arbor.label,
                         material=self.basal_dendrites_materials[0],
                         connection_to_soma=connection_to_soma, soft=soft)
 
