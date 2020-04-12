@@ -269,6 +269,23 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
                                                radius=nmv.consts.Dendrogram.ARBOR_CONST_RADIUS,
                                                stretch_legs=True,
                                                arbor_material_index=-1):
+    """Create a list of polylines representing the dendrogram of the morphology.
+
+    :param section:
+        Root section.
+    :param poly_lines_data:
+        A list to collect the build poly-lines.
+    :param max_branching_order:
+        THe maximum branching order to be drawn.
+    :param dendrogram_type:
+        The type of dendrogram.
+    :param radius:
+        The radius of the arbors if fixed.
+    :param stretch_legs:
+        A flag to make nice drawings.
+    :param arbor_material_index:
+        The index of the material used to color the poly-line.
+    """
 
     # Stop if the maximum branching order has been reached
     if section.branching_order > max_branching_order:
@@ -383,6 +400,10 @@ def add_soma_to_stems_line(morphology,
         A flag to indicate whether to include the axon or not.
     :param soma_material_index:
         The index of the soma material.
+    :param dendrogram_type:
+        The type of dendrogram.
+    :param radius:
+        The radius of the arbors if fixed.
     :return:
         The center of the drawn line to connect it to the dendrogram body.
     """
@@ -390,18 +411,21 @@ def add_soma_to_stems_line(morphology,
     x_values = list()
     radii = list()
 
+    # Apical dendrites
     if not ignore_apical_dendrites:
         if morphology.has_apical_dendrites():
             for arbor in morphology.apical_dendrites:
                 x_values.append(arbor.dendrogram_x)
                 radii.append(arbor.samples[0].radius)
 
+    # Basal dendrites
     if not ignore_basal_dendrites:
         if morphology.has_basal_dendrites():
             for arbor in morphology.basal_dendrites:
                 x_values.append(arbor.dendrogram_x)
                 radii.append(arbor.samples[0].radius)
 
+    # Axons
     if not ignore_axons:
         if morphology.has_axons():
             for arbor in morphology.axons:
@@ -436,7 +460,3 @@ def add_soma_to_stems_line(morphology,
     poly_lines_data.append(poly_line)
 
     return center
-
-
-
-

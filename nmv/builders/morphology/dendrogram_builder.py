@@ -238,9 +238,6 @@ class DendrogramBuilder:
         # Always switch to the top view to see the dendrogram quite well
         nmv.scene.view_axis(axis='TOP')
 
-        # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
-
         # Return the list of the drawn morphology objects
         return self.morphology_objects
 
@@ -303,7 +300,7 @@ class DendrogramBuilder:
                     # A list of all the skeleton poly-lines
                     skeleton_poly_lines = list()
 
-                    # Create the polylines
+                    # Create the poly-lines
                     nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
@@ -528,7 +525,7 @@ class DendrogramBuilder:
         # Compute the bounding box of the dendrogram and stretch it
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
         delta = bounding_box.get_largest_dimension() * 0.05
-        bounding_box.extend_bbox(delta_x=delta, delta_y=2.0 * delta)
+        bounding_box.extend_bbox(delta_x=1.5 * delta, delta_y=delta)
 
         if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
             file_name = '%s_dendrogram_simplified' % self.morphology.label
