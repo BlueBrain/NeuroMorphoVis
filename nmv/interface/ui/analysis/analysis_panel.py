@@ -217,7 +217,6 @@ class CreateNeuronCard(bpy.types.Operator):
 
         builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=options)
-
         builder.render_highlighted_arbors()
 
         # Draw the morphology skeleton to append it to the analysis PDF

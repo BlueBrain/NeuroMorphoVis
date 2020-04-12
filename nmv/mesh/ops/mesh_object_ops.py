@@ -167,6 +167,33 @@ def smooth_object_vertices(mesh_object,
 
 
 ####################################################################################################
+# @adjust_normals
+####################################################################################################
+def adjust_normals(mesh_object):
+    """Adjust the normals of a given mesh object.
+
+    :param mesh_object:
+        A given mesh in the scene.
+    """
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Toggle from the object mode to edit mode
+    bpy.ops.object.editmode_toggle()
+
+    # Select all the vertices of the mesh
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+
+    # Toggle from the edit mode to the object mode
+    bpy.ops.object.editmode_toggle()
+
+
+####################################################################################################
 # @decimate_mesh_object
 ####################################################################################################
 def decimate_mesh_object(mesh_object,

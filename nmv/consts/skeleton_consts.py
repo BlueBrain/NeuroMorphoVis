@@ -30,7 +30,7 @@ class Skeleton:
         pass
 
     # Maximum branching order
-    MAX_BRANCHING_ORDER = 100
+    MAX_BRANCHING_ORDER = 1000
 
     # Default branching order for the axon is different, as it is ignored in many cases
     AXON_DEFAULT_BRANCHING_ORDER = 2

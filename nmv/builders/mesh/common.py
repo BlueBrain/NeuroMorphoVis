@@ -404,6 +404,9 @@ def connect_arbors_to_soma(builder):
                     nmv.logger.detail(arbor.label)
                     builder.soma_mesh = connection_function(builder.soma_mesh, arbor)
 
+        # Adjust the normals
+        nmv.mesh.adjust_normals(mesh_object=builder.soma_mesh)
+
     # Smooth the connections between the soma and the connected curves
     smooth_arbors_to_soma_connections(builder=builder)
 

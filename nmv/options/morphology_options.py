@@ -206,3 +206,46 @@ class MorphologyOptions:
         # Selected a method to reconstruct the morphology
         self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
+    def adjust_to_analysis_mode(self):
+        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
+
+        # Arbor style
+        self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
+
+        # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
+        self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
+
+        # Branching of the morphologies in the connected modes, either based on angles or radii
+        self.branching = nmv.enums.Skeleton.Branching.RADII
+
+        # Morphology edge styles
+        self.edges = nmv.enums.Skeleton.Edges.SHARP
+
+        # The arbors connectivity to the soma
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
+
+        # Enable/Disable axon reconstruction
+        self.ignore_axons = False
+
+        # Enable/Disable basal dendrites reconstruction
+        self.ignore_basal_dendrites = False
+
+        # Enable/Disable apical dendrite reconstruction (if exists)
+        self.ignore_apical_dendrites = False
+
+        # Axon branching order
+        self.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+
+        # Basal dendrites branching order
+        self.basal_dendrites_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+
+        # Apical dendrites branch order
+        self.apical_dendrite_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+
+        # Resampling method
+        self.resampling_method = nmv.enums.Skeleton.Resampling.NONE
+
+        # Number of sides of the bevel object used to scale the sections
+        # This parameter controls the quality of the reconstructed morphology
+        self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
+

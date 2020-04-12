@@ -806,9 +806,8 @@ class DisconnectedSectionsBuilder:
         """Render the morphology with different colors per arbor for analysis.
         """
 
-        # Set the default options
-        import nmv.options
-        self.options = nmv.options.NeuroMorphoVisOptions()
+        # NOTE: Readjust the parameters here to plot everything for the whole morphology
+        self.options.morphology.adjust_to_analysis_mode()
 
         # Draw the whole morphology with individual colors, but to-scale
         self.options.shading.morphology_material = nmv.enums.Shader.FLAT
