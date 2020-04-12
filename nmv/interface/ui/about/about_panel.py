@@ -64,11 +64,13 @@ class AboutPanel(bpy.types.Panel):
 
         # Credits
         credits_column = layout.column()
-        credits_column.label(text='Copyrights')
-        credits_column.label(text='Blue Brain Project (BBP)',
-                             icon_value=nmv.interface.ui_icons['bbp'].icon_id)
-        credits_column.label(text='Ecole Polytechnique Federale de Lausanne (EPFL)',
-                             icon_value=nmv.interface.ui_icons['epfl'].icon_id)
+        credits_column.label(text='Copyrights (c)')
+        credits_column.label(text='Blue Brain Project (BBP)', icon='PMARKER')
+        credits_column.label(text='Ecole Polytechnique Federale de Lausanne (EPFL)', icon='PMARKER')
+        credits_column.separator()
+
+        credits_column.label(text='License')
+        credits_column.label(text='GPL', icon='UNLOCKED')
         credits_column.separator()
 
         credits_column.label(text='Main Author')
@@ -97,12 +99,9 @@ class AboutPanel(bpy.types.Panel):
         version_column.label(text='Version: %d.%d.%d' % (version[0], version[1], version[2]))
 
         update_button = layout.column()
-        update_button.operator('update.nmv', emboss=True,
-                               icon_value=nmv.interface.ui_icons['github'].icon_id)
-        update_button.operator('open.github', emboss=True,
-                               icon_value=nmv.interface.ui_icons['github'].icon_id)
-        update_button.operator('open.wiki', emboss=True,
-                               icon_value=nmv.interface.ui_icons['github'].icon_id)
+        update_button.operator('update.nmv', emboss=True, icon='NODETREE')
+        update_button.operator('open.github', emboss=True, icon='URL')
+        update_button.operator('open.wiki', emboss=True, icon='SCRIPT')
 
 
 ####################################################################################################

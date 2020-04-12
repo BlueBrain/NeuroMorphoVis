@@ -267,9 +267,6 @@ class LoadMorphology(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
-    # Load the icons
-    nmv.interface.load_icons()
-
     # InputOutput data
     bpy.utils.register_class(IOPanel)
 
