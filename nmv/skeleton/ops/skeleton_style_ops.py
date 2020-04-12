@@ -79,8 +79,9 @@ def update_arbors_radii(morphology,
     # Filtered
     if option == nmv.enums.Skeleton.Radii.FILTERED:
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[morphology, nmv.skeleton.ops.filter_section_sub_threshold,
-              morphology_options.threshold_radius])
+            *[morphology, nmv.skeleton.ops.set_section_radii_between_given_range,
+              morphology_options.minimum_threshold_radius,
+              morphology_options.maximum_threshold_radius])
 
     elif option == nmv.enums.Skeleton.Radii.UNIFIED:
         nmv.skeleton.ops.apply_operation_to_morphology(

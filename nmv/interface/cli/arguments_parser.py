@@ -232,7 +232,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Section radii (default, scaled or fixed)
-    arg_options = ['(default)', 'scaled', 'unified', 'type-unified']
+    arg_options = ['(default)', 'scaled', 'unified', 'type-unified, filtered']
     arg_help = 'The radii of the morphological sections.\n' \
                'Options: %s' % arg_options
     skeletonization_args.add_argument(
@@ -283,6 +283,24 @@ def parse_command_line_arguments():
     skeletonization_args.add_argument(
         Args.BASAL_DENDRITES_RADIUS,
         action='store', type=float, default=1.0,
+        help=arg_help)
+
+    # Minimum sample radius
+    arg_help = 'Minimum threshold for a sample radius.\n' \
+               'Valid only if --samples-radii = filtered.\n' \
+               'Default is 1e-5'
+    skeletonization_args.add_argument(
+        Args.MINIMUM_SAMPLE_RADIUS,
+        action='store', type=float, default=1e-5,
+        help=arg_help)
+
+    # Minimum sample radius
+    arg_help = 'Maximum threshold for a sample radius.\n' \
+               'Valid only if --samples-radii = filtered.\n' \
+               'Default is 1e5'
+    skeletonization_args.add_argument(
+        Args.MAXIMUM_SAMPLE_RADIUS,
+        action='store', type=float, default=1e5,
         help=arg_help)
 
     # Morphology bevel object sides (sets the quality of the morphology)

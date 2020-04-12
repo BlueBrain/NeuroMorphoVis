@@ -122,6 +122,10 @@ class Args:
     APICAL_DENDRITES_RADIUS = '--apical-dendrites-radius'
     BASAL_DENDRITES_RADIUS = '--basal-dendrites-radius'
 
+    # Filtered radii
+    MINIMUM_SAMPLE_RADIUS = '--minimum-sample-radius'
+    MAXIMUM_SAMPLE_RADIUS = '--maximum-sample-radius'
+
     # Morphology bevel object sides
     MORPHOLOGY_BEVEL_SIDES = '--bevel-sides'
 

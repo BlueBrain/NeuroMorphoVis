@@ -266,12 +266,17 @@ bpy.types.Scene.NMV_AxonUnifiedRadiusValue = bpy.props.FloatProperty(
     description='The value of the radius in microns between (0.05 and 5.0) microns',
     default=1.0, min=0.05, max=5.0)
 
+# Minimum radius value
+bpy.types.Scene.NMV_MinimumRadiusThreshold = bpy.props.FloatProperty(
+    name='Minimum',
+    description='Any sample with smaller radius than this value will be ignored',
+    default=1e-5, min=0.005, max=5.0)
 
-# Threshold value for the radius
-bpy.types.Scene.NMV_FilteredRadiusThreshold = bpy.props.FloatProperty(
-    name='Threshold',
-    description='The value of the threshold radius in microns between (0.005 and 5.0) microns',
-    default=1.0, min=0.005, max=5.0)
+# Maximum radius value
+bpy.types.Scene.NMV_MaximumRadiusThreshold = bpy.props.FloatProperty(
+    name='Maximum',
+    description='Any sample with larger radius than this value will be ignored',
+    default=10, min=0.5, max=20)
 
 # Global radius scale value
 bpy.types.Scene.NMV_RadiusScaleValue = bpy.props.FloatProperty(

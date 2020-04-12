@@ -186,6 +186,8 @@ class NeuroMorphoVisOptions:
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = False
             self.morphology.sections_radii_scale = arguments.radii_scale_factor
+            self.morphology.minimum_threshold_radius = arguments.minimum_sample_radius
+            self.morphology.maximum_threshold_radius = arguments.maximum_sample_radius
 
         # Default as given in the morphology file
         else:
@@ -380,5 +382,3 @@ class NeuroMorphoVisOptions:
         # The file format of the image
         self.rendering.image_format = nmv.enums.Image.Extension.get_enum(
             arguments.image_file_format)
-
-        def set

@@ -111,8 +111,11 @@ class MorphologyOptions:
         # A particular unified radius given to all the samples of the basal dendrites sections
         self.basal_dendrites_samples_unified_radii_value = 1.0
 
-        # Threshold radius, where any section with lower radius values will not drawn
-        self.threshold_radius = 100000
+        # Minimum threshold radius value, where any section with lower radius values will not drawn
+        self.minimum_threshold_radius = 1e-5
+
+        # Maximum threshold radius value, where any section with bigger radius values will not drawn
+        self.maximum_threshold_radius = 1e5
 
         # Global coordinates
         self.global_coordinates = False
@@ -187,8 +190,11 @@ class MorphologyOptions:
         # A fixed and unified value for the radii of all the sections in the morphology
         self.samples_unified_radii_value = 1.0
 
-        # Threshold radius, where any section with lower radius values will not drawn
-        self.threshold_radius = 100000
+        # Minimum threshold radius value, where any section with lower radius values will not drawn
+        self.minimum_threshold_radius = 1e-5
+
+        # Maximum threshold radius value, where any section with bigger radius values will not drawn
+        self.maximum_threshold_radius = 1e5
 
         # Global coordinates
         self.global_coordinates = False

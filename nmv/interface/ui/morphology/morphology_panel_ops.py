@@ -244,13 +244,17 @@ def set_reconstruction_options(layout,
 
     # Filtered
     elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.FILTERED:
-        filtered_diameter_row = layout.row()
-        filtered_diameter_row.label(text='Radius Threshold:')
-        filtered_diameter_row.prop(scene, 'NMV_FilteredRadiusThreshold')
+        minimum_row = layout.row()
+        minimum_row.label(text='Minimum Radius:')
+        minimum_row.prop(scene, 'NMV_MinimumRadiusThreshold')
+        maximum_row = layout.row()
+        maximum_row.label(text='Maximum Radius:')
+        maximum_row.prop(scene, 'NMV_MaximumRadiusThreshold')
         options.morphology.unify_sections_radii = False
-        options.morphology.scale_sections_radii = True
+        options.morphology.scale_sections_radii = False
         options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.FILTERED
-        options.morphology.threshold_radius = scene.NMV_FilteredRadiusThreshold
+        options.morphology.minimum_threshold_radius = scene.NMV_MinimumRadiusThreshold
+        options.morphology.maximum_threshold_radius = scene.NMV_MaximumRadiusThreshold
     else:
         nmv.logger.log('ERROR')
 

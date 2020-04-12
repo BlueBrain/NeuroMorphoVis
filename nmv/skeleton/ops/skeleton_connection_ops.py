@@ -607,7 +607,7 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
 
     # Verify if the arbor is connected to the soma or not
     if not arbor.connected_to_soma:
-        nmv.logger.defailt('WARNING: The arbor [%s] is not connected to the soma' % arbor.label)
+        nmv.logger.further_detail('Arbor [%s] is not connected to the soma' % arbor.label)
         return soma_mesh
 
     # Clip the auxiliary section using a cutting plane that is normal on the branch

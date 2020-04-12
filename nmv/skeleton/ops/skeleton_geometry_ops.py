@@ -531,6 +531,34 @@ def filter_section_sub_threshold(section,
 
 
 ####################################################################################################
+# @set_section_radii_between_given_range
+####################################################################################################
+def set_section_radii_between_given_range(section,
+                                          minimum_value,
+                                          maximum_value):
+    """Filters a section with a radius lower than a given threshold value.
+
+    :param section:
+         A given section to filter.
+    :param minimum_value:
+        The minimum radius value.
+    :param maximum_value:
+        The maximum radius value.
+    """
+
+    # Ignore the filter if dirty values were given
+    if minimum_value > maximum_value:
+        return
+
+    # Filter each section sample based on its radius
+    for i_sample in section.samples:
+        if i_sample.radius < minimum_value:
+            i_sample.radius = minimum_value
+        if i_sample.radius > maximum_value:
+            i_sample.radius = maximum_value
+
+
+####################################################################################################
 # @update_branching_order_section
 ####################################################################################################
 def update_branching_order_section(section,
