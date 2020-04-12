@@ -15,11 +15,15 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+import bpy
+
 # System imports
 import copy
 
 # Internal imports
 import nmv.analysis
+import nmv.bbox
 import nmv.mesh
 import nmv.enums
 import nmv.skeleton
@@ -29,6 +33,7 @@ import nmv.scene
 import nmv.bmeshi
 import nmv.shading
 import nmv.utilities
+import nmv.rendering
 
 
 ####################################################################################################
@@ -104,6 +109,58 @@ class DendrogramBuilder:
 
         # Index: 6 - 7
         self.skeleton_materials.extend(self.axons_materials)
+
+    ################################################################################################
+    # @create_per_arbor_material_list
+    ################################################################################################
+    def create_per_arbor_material_list(self):
+
+        nmv.logger.info('Creating materials')
+
+        # Clear all the materials that are already present in the scene
+        for material in bpy.data.materials:
+            if 'soma_skeleton' in material.name or \
+                    'axon_skeleton' in material.name or \
+                    'basal_dendrites_skeleton' in material.name or \
+                    'apical_dendrite_skeleton' in material.name or \
+                    'articulation' in material.name or \
+                    'gray' in material.name:
+                material.user_clear()
+                bpy.data.materials.remove(material)
+
+        # Apical materials
+        if self.morphology.has_apical_dendrites():
+            for arbor in self.morphology.apical_dendrites:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Basal materials
+        if self.morphology.has_basal_dendrites():
+            for arbor in self.morphology.basal_dendrites:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Axons materials
+        if self.morphology.has_axons():
+            for arbor in self.morphology.axons:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Soma materials
+        soma_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='soma_material',
+            material_type=self.options.shading.morphology_material,
+            color=self.morphology.soma_color)
+        self.skeleton_materials.extend(soma_materials)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -230,23 +287,12 @@ class DendrogramBuilder:
         # Adjust seaborn configuration
         seaborn.set_style("white")
 
-        # The width of each bar
-        bar_width = 0.65
-
         # Adjust seaborn configuration
         seaborn.set_style("white")
 
         # Adjusting the matplotlib parameters
         pyplot.rcParams['axes.grid'] = 'False'
         pyplot.rcParams['font.family'] = 'NimbusSanL'
-        pyplot.rcParams['axes.linewidth'] = 0.0
-        pyplot.rcParams['axes.labelsize'] = bar_width * 10
-        pyplot.rcParams['axes.labelweight'] = 'regular'
-        pyplot.rcParams['xtick.labelsize'] = bar_width * 10
-        pyplot.rcParams['ytick.labelsize'] = bar_width * 10
-        pyplot.rcParams['legend.fontsize'] = 10
-        pyplot.rcParams['axes.titlesize'] = bar_width * 1.25 * 10
-        pyplot.rcParams['axes.axisbelow'] = True
         pyplot.rcParams['axes.edgecolor'] = '0.1'
         pyplot.axis('off')
 
@@ -369,3 +415,114 @@ class DendrogramBuilder:
 
         # Return the file path
         return pdf_file_path
+
+    ################################################################################################
+    # @draw_morphology_skeleton
+    ################################################################################################
+    def draw_highlighted_arbors(self):
+        """Reconstruct and draw the morphological skeleton.
+
+        :return
+            A list of all the drawn morphology objects including the soma and arbors.
+        """
+
+        nmv.logger.header('Building skeleton using DendrogamBuilder')
+
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+
+        # Create the skeleton materials
+        # self.create_single_skeleton_materials_list()
+        self.create_per_arbor_material_list()
+
+        # Resample the sections of the morphology skeleton
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+
+        # Get the maximum radius to make it easy to compute the deltas
+        maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
+            morphology=self.morphology).morphology_result
+
+        # Compute the dendrogram of the morphology
+        nmv.skeleton.compute_morphology_dendrogram(
+            morphology=self.morphology, delta=maximum_radius * 8)
+
+        # A list of all the skeleton poly-lines
+        skeleton_poly_lines = list()
+
+        material_index = 0
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        arbor_material_index=material_index)
+                    material_index += 2
+
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        arbor_material_index=material_index)
+                    material_index += 2
+
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
+                        section=arbor,
+                        poly_lines_data=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        arbor_material_index=material_index)
+                    material_index += 2
+
+        # The soma to stems line
+        center = nmv.skeleton.add_soma_to_stems_line(
+            morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
+            ignore_apical_dendrites=self.options.morphology.ignore_apical_dendrites,
+            ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
+            ignore_axons=self.options.morphology.ignore_axons, soma_material_index=material_index)
+
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        nmv.scene.hide_object(bevel_object)
+
+        # Draw the poly-lines as a single object
+        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+            poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
+
+        nmv.scene.set_object_location(morphology_object, center)
+
+        # Return the list of the drawn morphology objects
+        return self.morphology_objects
+
+    ################################################################################################
+    # @render_highlighted_arbors
+    ################################################################################################
+    def render_highlighted_arbors(self):
+        """Render the morphology with different colors per arbor for analysis.
+        """
+
+        # NOTE: Readjust the parameters here to plot everything for the whole morphology
+        self.options.morphology.adjust_to_analysis_mode()
+
+        # Draw the whole morphology with individual colors, but to-scale
+        self.options.shading.morphology_material = nmv.enums.Shader.FLAT
+        self.draw_highlighted_arbors()
+
+        # Compute the bounding box of the dendrogram and stretch it
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+        bounding_box.extend_bbox(delta=20)
+
+        nmv.rendering.render(
+            bounding_box=bounding_box,
+            camera_view=nmv.enums.Camera.View.FRONT,
+            image_resolution=2048,
+            image_name='%s_%s' % (self.morphology.label, 'dendrogram'),
+            image_directory='%s/%s' % (self.options.io.analysis_directory,
+                                       self.options.morphology.label))

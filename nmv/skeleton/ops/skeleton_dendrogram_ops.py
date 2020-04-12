@@ -250,8 +250,9 @@ def compute_morphology_dendrogram(morphology,
 def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
                                                max_branching_order=nmv.consts.Math.INFINITY,
-                                               mode='FLAT',
-                                               stretch_legs=True):
+                                               flat_mode=False,
+                                               stretch_legs=True,
+                                               arbor_material_index=-1):
 
     # Stop if the maximum branching order has been reached
     if section.branching_order > max_branching_order:
@@ -272,7 +273,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     # Construct a simple poly-line with two points at the start and end of the poly-line
     samples = list()
 
-    if mode == 'FLAT':
+    if flat_mode:
         samples.append([(point_1[0], point_1[1], point_1[2], 1), 2.0])
         samples.append([(point_2[0], point_2[1], point_2[2], 1), 2.0])
     else:
@@ -286,11 +287,13 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             radius = section.samples[i].radius
             samples.append([(section.dendrogram_x, start_y + delta, 0.0, 1), radius])
 
+    # Check the material
+    material_index = section.get_material_index() + (section.branching_order % 2)
+    if arbor_material_index > -1:
+        material_index = arbor_material_index
     # Construct the poly-line
     poly_line = nmv.geometry.PolyLine(
-        name='section_%s' % str(section.index),
-        samples=samples,
-        material_index=section.get_material_index() + (section.branching_order % 2))
+        name='section_%s' % str(section.index), samples=samples, material_index=material_index)
 
     # Append the polyline to the list
     poly_lines_data.append(poly_line)
@@ -309,8 +312,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             child_2 = section.children[i + 1]
 
             samples = list()
-            radius_1 = 0.5 # child_1.samples[0].radius
-            radius_2 = 0.5 # child_2.samples[0].radius
+            radius_1 = 1.0 # child_1.samples[0].radius
+            radius_2 = 1.0 # child_2.samples[0].radius
             if stretch_legs:
                 x_1 = child_1.dendrogram_x - radius_1
                 x_2 = child_2.dendrogram_x + radius_2
@@ -321,8 +324,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             samples.append([(x_2, end_y, 0, 1), radius_2])
             poly_line = nmv.geometry.PolyLine(
                 name='section_%s' % str(section.index),
-                samples=samples,
-                material_index=section.get_material_index() + (section.branching_order % 2))
+                    samples=samples, material_index=material_index)
 
             # Append the polyline to the list
             poly_lines_data.append(poly_line)
@@ -331,7 +333,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     for child in section.children:
         create_dendrogram_poly_lines_list_of_arbor(
             section=child, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order,
-            mode=mode)
+            flat_mode=flat_mode, arbor_material_index=arbor_material_index)
 
 
 ####################################################################################################
@@ -341,7 +343,8 @@ def add_soma_to_stems_line(morphology,
                            poly_lines_data=[],
                            ignore_apical_dendrites=True,
                            ignore_basal_dendrites=True,
-                           ignore_axons=True):
+                           ignore_axons=True,
+                           soma_material_index=0):
 
     """Create the dendrogram connection from the soma to the stems.
 
@@ -398,7 +401,8 @@ def add_soma_to_stems_line(morphology,
     samples.append([(point_2[0], point_2[1], point_2[2], 1), avg_radius])
 
     # Construct the poly-line
-    poly_line = nmv.geometry.PolyLine(name='root', samples=samples, material_index=0)
+    poly_line = nmv.geometry.PolyLine(
+        name='root', samples=samples, material_index=soma_material_index)
 
     # Append the polyline to the list
     poly_lines_data.append(poly_line)

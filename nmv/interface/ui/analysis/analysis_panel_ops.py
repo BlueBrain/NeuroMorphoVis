@@ -431,16 +431,25 @@ def export_analysis_results(morphology,
     options.morphology.apical_dendrite_branch_order = 1e3
     options.morphology.basal_dendrites_branch_order = 1e3
 
-    builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options)
+    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors()
-
-    # Draw the morphology skeleton to append it to the analysis PDF
-    # builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
 
     # Draw the dendrogram PDF and append it to the list
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.draw_morphology_skeleton_with_matplotlib()
 
+    exit(0)
+
+    builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options)
+    builder.render_highlighted_arbors()
+
+
+
+    # Draw the morphology skeleton to append it to the analysis PDF
+    # builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
+
     # Apply the analysis kernels and compile the analysis PDF
     for distribution in nmv.analysis.distributions:
         distribution.apply_kernel(morphology=morphology, options=options)
+
+

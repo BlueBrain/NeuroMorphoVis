@@ -370,8 +370,9 @@ class Morphology:
                 color_index += 1
 
         # Soma
-        self.soma_color = palette[color_index]
-
+        self.soma_color = Vector((palette[color_index][0],
+                                  palette[color_index][1],
+                                  palette[color_index][2]))
 
 
 
