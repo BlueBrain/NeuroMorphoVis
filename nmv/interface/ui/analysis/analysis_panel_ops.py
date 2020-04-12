@@ -27,6 +27,7 @@ import nmv.analysis
 import nmv.builders
 import nmv.scene
 import nmv.enums
+import nmv.consts
 
 
 ####################################################################################################
@@ -419,55 +420,37 @@ def export_analysis_results(morphology,
         analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)
 
     # Write the text to file
-    analysis_results_file = open('%s/analysis.txt' % morphology_analysis_directory, 'w')
+    analysis_results_file = open('%s/%s.txt' % (morphology_analysis_directory,
+                                                nmv.consts.Analysis.ANALYSIS_FILE_NAME), 'w')
     analysis_results_file.write(analysis_results_string)
     analysis_results_file.close()
 
     # Create the color palette of the neuron
     morphology.create_morphology_color_palette()
 
-    # Ensure to set the branching order to the maximum to draw the entire skeleton
-    # and the dendrogram
-    options.morphology.axon_branch_order = 1e3
-    options.morphology.apical_dendrite_branch_order = 1e3
-    options.morphology.basal_dendrites_branch_order = 1e3
+    # Ensure to set the branching order to the maximum to draw the entire skeleton and dendrogram
+    options_clone = copy.deepcopy(options)
+    options_clone.morphology.axon_branch_order = 1e3
+    options_clone.morphology.apical_dendrite_branch_order = 1e3
+    options_clone.morphology.basal_dendrites_branch_order = 1e3
 
-    # Ensure that the scene is clear before drawing anything in it
+    # Render a simplified dendrogram
+    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options_clone)
     nmv.scene.clear_scene()
-
-    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
-                                      resolution=1500)
+                                      resolution=3000)
 
-    # Ensure that the scene is clear before drawing anything in it
+    # Render a detailed dendrogram
     nmv.scene.clear_scene()
-
-    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
+    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options_clone)
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
-                                      resolution=2000)
+                                      resolution=4000)
 
-    # Ensure that the scene is clear before drawing anything in it
+    # Render the arbors
     nmv.scene.clear_scene()
-
-    # Draw the dendrogram PDF and append it to the list
-    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
-    builder.draw_morphology_skeleton_with_matplotlib()
-
-    exit(0)
-
-
-
-
-    builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options)
+    builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options_clone)
     builder.render_highlighted_arbors()
 
-
-
-    # Draw the morphology skeleton to append it to the analysis PDF
-    # builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
-
-    # Apply the analysis kernels and compile the analysis PDF
+    # Apply the analysis kernels and compile the analysis distributions
     for distribution in nmv.analysis.distributions:
         distribution.apply_kernel(morphology=morphology, options=options)
-
-

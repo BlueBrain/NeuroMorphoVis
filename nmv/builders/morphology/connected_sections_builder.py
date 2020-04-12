@@ -448,15 +448,13 @@ class ConnectedSectionsBuilder:
         """
 
         # Update the radii of the arbors according to the given options
-        nmv.logger.info('Updating radii')
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
-        nmv.logger.info('Updating branching to primary and secondary')
+        # Branching
         nmv.builders.morphology.update_sections_branching(builder=self)
 
         # Update the style of the arbors
-        nmv.logger.info('Updating drawing style')
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
@@ -625,18 +623,7 @@ class ConnectedSectionsBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
-
-        # Update the radii
-        nmv.skeleton.update_arbors_radii(
-            morphology=self.morphology, morphology_options=self.options.morphology)
-
-        # Update the branching
-        nmv.builders.morphology.update_sections_branching(builder=self)
-
-        # Update the style of the arbors
-        nmv.skeleton.ops.update_arbors_style(
-            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+        nmv.logger.header('Building Skeleton: ConnectedSectionsBuilder')
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
@@ -649,6 +636,17 @@ class ConnectedSectionsBuilder:
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
+
+        # Update the radii
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
+
+        # Update the branching
+        nmv.builders.morphology.update_sections_branching(builder=self)
+
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
         # Resample the sections of the morphology skeleton
         nmv.builders.morphology.resample_skeleton_sections(builder=self)

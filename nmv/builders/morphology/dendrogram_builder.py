@@ -171,7 +171,7 @@ class DendrogramBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using SamplesBuilder')
+        nmv.logger.header('Building Dendrogram')
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -424,7 +424,7 @@ class DendrogramBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using DendrogamBuilder')
+        nmv.logger.header('Building Dendrogram')
 
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
@@ -528,9 +528,9 @@ class DendrogramBuilder:
         bounding_box.extend_bbox(delta_x=1.5 * delta, delta_y=delta)
 
         if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
-            file_name = '%s_dendrogram_simplified' % self.morphology.label
+            file_name = 'dendrogram_simplified'
         else:
-            file_name = '%s_dendrogram_detailed' % self.morphology.label
+            file_name = 'dendrogram_detailed'
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=nmv.enums.Camera.View.FRONT,

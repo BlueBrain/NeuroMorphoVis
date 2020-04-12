@@ -43,6 +43,25 @@ def clean_and_create_directory(path):
 
 
 ####################################################################################################
+# @create_directory
+####################################################################################################
+def create_directory(path):
+    """Creates a new directory of it doesn't exist.
+
+    :param path :
+        The path of the directory to be created.
+    """
+
+    # if the path exists, remove it and create another one.
+    if os.path.exists(path):
+        return
+    try:
+        os.mkdir(path)
+    except ValueError:
+        print('ERROR: cannot create directory %s' % path)
+
+
+####################################################################################################
 # @get_files_in_directory
 ####################################################################################################
 def get_files_in_directory(directory,
@@ -116,7 +135,7 @@ def create_output_tree(output_directory):
     """
 
     # Output directory
-    clean_and_create_directory(output_directory)
+    create_directory(output_directory)
 
     # SLURM directory
     slurm_directory = '%s/%s' % (output_directory, Paths.SLURM_FOLDER)

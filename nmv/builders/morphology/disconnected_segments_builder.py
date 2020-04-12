@@ -307,10 +307,7 @@ class DisconnectedSegmentsBuilder:
             A list of all the drawn morphology objects including the soma and arbors.
         """
 
-        nmv.logger.header('Building skeleton using DisconnectedSegmentsBuilder')
-
-        nmv.logger.info('Updating Radii')
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+        nmv.logger.header('Building Skeleton: DisconnectedSegmentsBuilder')
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
@@ -323,6 +320,9 @@ class DisconnectedSegmentsBuilder:
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
+
+        # Updating radii
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Resample the sections of the morphology skeleton
         nmv.builders.morphology.resample_skeleton_sections(builder=self)

@@ -668,10 +668,7 @@ class DisconnectedSectionsBuilder:
         # Clearing the scene
         nmv.scene.clear_scene()
 
-        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
-
-        nmv.logger.info('Updating Radii')
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+        nmv.logger.header('Building Skeleton: DisconnectedSectionsBuilder')
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
@@ -692,6 +689,9 @@ class DisconnectedSectionsBuilder:
         self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
             name='soma_skeleton', material_type=self.options.shading.morphology_material,
             color=nmv.consts.Color.BLACK)
+
+        # Updating radii
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Resample the sections of the morphology skeleton
         nmv.builders.morphology.resample_skeleton_sections(builder=self)
@@ -799,7 +799,8 @@ class DisconnectedSectionsBuilder:
     ################################################################################################
     # @render_highlighted_arbors
     ################################################################################################
-    def render_highlighted_arbors(self):
+    def render_highlighted_arbors(self,
+                                  image_resolution=3000):
         """Render the morphology with different colors per arbor for analysis.
         """
 
@@ -818,11 +819,11 @@ class DisconnectedSectionsBuilder:
         for view, suffix in zip([nmv.enums.Camera.View.FRONT,
                                  nmv.enums.Camera.View.SIDE,
                                  nmv.enums.Camera.View.TOP],
-                                ['original_front', 'original_side', 'original_top']):
+                                ['front', 'side', 'top']):
             nmv.rendering.render(
                 bounding_box=bounding_box,
                 camera_view=view,
-                image_resolution=2048,
+                image_resolution=image_resolution,
                 image_name='%s_%s' % (self.morphology.label, suffix),
                 image_directory='%s/%s' % (self.options.io.analysis_directory,
                                            self.options.morphology.label))
@@ -846,8 +847,8 @@ class DisconnectedSectionsBuilder:
                     nmv.rendering.render(
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
-                        image_resolution=2048,
-                        image_name=arbor.label,
+                        image_resolution=image_resolution,
+                        image_name='arbor_%s' % arbor.tag,
                         image_directory='%s/%s' % (self.options.io.analysis_directory,
                                                    self.options.morphology.label))
 
@@ -862,8 +863,8 @@ class DisconnectedSectionsBuilder:
                     nmv.rendering.render(
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
-                        image_resolution=2048,
-                        image_name=arbor.label,
+                        image_resolution=image_resolution,
+                        image_name='arbor_%s' % arbor.tag,
                         image_directory='%s/%s' % (self.options.io.analysis_directory,
                                                    self.options.morphology.label))
 
@@ -878,8 +879,8 @@ class DisconnectedSectionsBuilder:
                     nmv.rendering.render(
                         bounding_box=bounding_box,
                         camera_view=nmv.enums.Camera.View.FRONT,
-                        image_resolution=2048,
-                        image_name=arbor.label,
+                        image_resolution=image_resolution,
+                        image_name='arbor_%s' % arbor.tag,
                         image_directory='%s/%s' % (self.options.io.analysis_directory,
                                                    self.options.morphology.label))
 
@@ -891,11 +892,11 @@ class DisconnectedSectionsBuilder:
         for view, suffix in zip([nmv.enums.Camera.View.FRONT,
                                  nmv.enums.Camera.View.SIDE,
                                  nmv.enums.Camera.View.TOP],
-                             ['front', 'side', 'top']):
+                             ['front_simplified', 'side_simplified', 'top_simplified']):
             nmv.rendering.render(
                 bounding_box=bounding_box,
                 camera_view=view,
-                image_resolution=2048,
+                image_resolution=image_resolution,
                 image_name='%s_%s' % (self.morphology.label, suffix),
                 image_directory='%s/%s' % (self.options.io.analysis_directory,
                                            self.options.morphology.label))

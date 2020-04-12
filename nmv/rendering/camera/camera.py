@@ -324,8 +324,12 @@ class Camera:
         self.camera.data.ortho_scale = orthographic_scale
 
         # Set the image resolution
-        bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale) * 2
-        bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale) * 2
+        if nmv.utilities.is_blender_280():
+            bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale)
+            bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale)
+        else:
+            bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale) * 2
+            bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale) * 2
 
     ################################################################################################
     # @update_camera_resolution_to_scale

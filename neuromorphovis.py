@@ -279,7 +279,6 @@ if __name__ == "__main__":
     arguments = arguments_parser.parse_command_line_arguments()
 
     # Verify the output directory before screwing things !
-    file_ops.clean_and_create_directory(arguments.output_directory)
     if not file_ops.path_exists(arguments.output_directory):
         print('ERROR: Please set the output directory to a valid path')
         exit(0)
