@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import sys
+import time
 
 # Blender imports
 import bpy
@@ -40,6 +40,9 @@ from .mesh_panel_ops import *
 
 # Is the mesh reconstructed or not
 is_mesh_reconstructed = False
+
+# Is the mesh rendered or not
+is_mesh_rendered = False
 
 
 ####################################################################################################
@@ -99,6 +102,14 @@ class MeshPanel(bpy.types.Panel):
 
         # Rendering options
         draw_rendering_options(panel=self, scene=context.scene)
+
+        global is_mesh_rendered
+        if is_mesh_rendered:
+            morphology_stats_row = self.layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            rendering_time_row = self.layout.row()
+            rendering_time_row.prop(context.scene, 'NMV_MeshRenderingTime')
+            rendering_time_row.enabled = False
 
         # Mesh export options
         draw_mesh_export_options(panel=self, scene=context.scene)
@@ -213,10 +224,21 @@ class RenderMeshFront(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
             image_format=nmv.interface.ui_options.mesh.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_mesh_rendered
+        is_mesh_rendered = True
+        context.scene.NMV_MeshRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MeshRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -244,10 +266,21 @@ class RenderMeshSide(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
             image_format=nmv.interface.ui_options.mesh.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_mesh_rendered
+        is_mesh_rendered = True
+        context.scene.NMV_MeshRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MeshRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -275,10 +308,21 @@ class RenderMeshTop(bpy.types.Operator):
             'FINISHED'.
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
             image_format=nmv.interface.ui_options.mesh.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_mesh_rendered
+        is_mesh_rendered = True
+        context.scene.NMV_MeshRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MeshRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -295,6 +339,7 @@ class RenderMesh360(bpy.types.Operator):
     bl_label = "360"
 
     # Timer parameters
+    start_time = 0
     event_timer = None
     timer_limits = 0
 
@@ -326,6 +371,14 @@ class RenderMesh360(bpy.types.Operator):
 
             # Reset the orientation of the mesh
             nmv.scene.reset_orientation_of_objects(scene_objects=self.scene_objects)
+
+            # Stats.
+            rendering_time = time.time()
+            global is_mesh_rendered
+            is_mesh_rendered = True
+            context.scene.NMV_MeshRenderingTime = rendering_time - self.start_time
+            nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                                  context.scene.NMV_MeshRenderingTime)
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -389,6 +442,9 @@ class RenderMesh360(bpy.types.Operator):
         :param context:
             Panel context.
         """
+
+        # Timer
+        self.start_time = time.time()
 
         # If no morphology is loaded, report it
         if nmv.interface.ui_morphology is None:

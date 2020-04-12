@@ -149,3 +149,9 @@ bpy.types.Scene.NMV_SomaRenderingProgress = bpy.props.IntProperty(
     name='Rendering Progress',
     description='Rendering progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
+
+# Rendering time
+bpy.types.Scene.NMV_SomaRenderingTime = bpy.props.FloatProperty(
+    name='Rendering (Sec)',
+    description='The time it takes to render the soma into an image',
+    default=0, min=0, max=1000000)

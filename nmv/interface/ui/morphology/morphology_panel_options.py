@@ -385,3 +385,9 @@ bpy.types.Scene.NMV_MorphologyReconstructionTime = bpy.props.FloatProperty(
     name='Reconstruction (Sec)',
     description='The time it takes to reconstruct the morphology and draw it to the viewport',
     default=0, min=0, max=1000000)
+
+# Rendering time
+bpy.types.Scene.NMV_MorphologyRenderingTime = bpy.props.FloatProperty(
+    name='Rendering (Sec)',
+    description='The time it takes to render the morphology into an image',
+    default=0, min=0, max=1000000)

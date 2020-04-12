@@ -39,6 +39,9 @@ from .morphology_panel_options import *
 # Is the morphology reconstructed or not
 is_morphology_reconstructed = False
 
+# Is the morphology rendered or not
+is_morphology_rendered = False
+
 # What is the selected morphology builder
 morphology_builder = None
 
@@ -94,6 +97,7 @@ class MorphologyPanel(bpy.types.Panel):
         reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
         reconstruct_morphology_button_row.enabled = True
 
+        global is_morphology_reconstructed
         if is_morphology_reconstructed:
             morphology_stats_row = layout.row()
             morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
@@ -104,6 +108,14 @@ class MorphologyPanel(bpy.types.Panel):
         # Set the rendering options
         nmv.interface.ui.morphology_panel_ops.set_rendering_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+
+        global is_morphology_rendered
+        if is_morphology_rendered:
+            morphology_stats_row = layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            rendering_time_row = layout.row()
+            rendering_time_row.prop(context.scene, 'NMV_MorphologyRenderingTime')
+            rendering_time_row.enabled = False
 
         # Set the rendering options
         nmv.interface.ui.morphology_panel_ops.set_export_options(
@@ -224,10 +236,21 @@ class RenderMorphologyFront(bpy.types.Operator):
             'FINISHED'.
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
             image_format=nmv.interface.ui_options.morphology.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_morphology_rendered
+        is_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MorphologyRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -255,10 +278,21 @@ class RenderMorphologySide(bpy.types.Operator):
             'FINISHED'.
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
             image_format=nmv.interface.ui_options.morphology.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_morphology_rendered
+        is_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MorphologyRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -286,10 +320,21 @@ class RenderMorphologyTop(bpy.types.Operator):
             'FINISHED'.
         """
 
+        # Timer
+        start_time = time.time()
+
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
             image_format=nmv.interface.ui_options.morphology.image_format)
+
+        # Stats.
+        rendering_time = time.time()
+        global is_morphology_rendered
+        is_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                              context.scene.NMV_MorphologyRenderingTime)
 
         # Confirm operation done
         return {'FINISHED'}
@@ -308,6 +353,7 @@ class RenderMorphology360(bpy.types.Operator):
     # Timer parameters
     event_timer = None
     timer_limits = 0
+    start_time = 0
 
     # Output data
     output_directory = None
@@ -332,6 +378,14 @@ class RenderMorphology360(bpy.types.Operator):
             # Reset the orientation of the mesh
             nmv.scene.reset_orientation_of_objects(
                 scene_objects=nmv.interface.ui_reconstructed_skeleton)
+
+            # Stats.
+            rendering_time = time.time()
+            global is_morphology_rendered
+            is_morphology_rendered = True
+            context.scene.NMV_MorphologyRenderingTime = rendering_time - self.start_time
+            nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                                  context.scene.NMV_MorphologyRenderingTime)
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -373,8 +427,8 @@ class RenderMorphology360(bpy.types.Operator):
                     morphology=nmv.interface.ui_morphology)
 
             # Compute a 360 bounding box to fit the arbors
-            bounding_box_360 = nmv.bbox.compute_360_bounding_box(rendering_bbox,
-                nmv.interface.ui_morphology.soma.centroid)
+            bounding_box_360 = nmv.bbox.compute_360_bounding_box(
+                rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
 
             # Stretch the bounding box by few microns
             bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
@@ -409,6 +463,9 @@ class RenderMorphology360(bpy.types.Operator):
 
         :param context: Panel context.
         """
+
+        # Timer
+        self.start_time = time.time()
 
         # Verify the output directory
         if not nmv.interface.validate_output_directory(self, context.scene):
@@ -466,6 +523,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
     bl_label = "Progressive"
 
     # Timer parameters
+    start_time = 0
     event_timer = None
     timer_limits = 0
 
@@ -488,6 +546,14 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
         if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > bpy.context.scene.frame_end:
+
+            # Stats.
+            rendering_time = time.time()
+            global is_morphology_rendered
+            is_morphology_rendered = True
+            context.scene.NMV_MorphologyRenderingTime = rendering_time - self.start_time
+            nmv.logger.statistics('Morphology rendered in [%f] seconds' %
+                                  context.scene.NMV_MorphologyRenderingTime)
 
             # Reset the timer limits
             self.timer_limits = 0
@@ -572,6 +638,9 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
         :param context: Panel context.
         """
+
+        # Timer
+        self.start_time = time.time()
 
         # Verify the output directory
         if not nmv.interface.validate_output_directory(self, context.scene):

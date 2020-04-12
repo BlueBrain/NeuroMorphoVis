@@ -489,7 +489,8 @@ def set_rendering_options(layout,
     render_animation_row.label(text='Render Animation:', icon='CAMERA_DATA')
     render_animations_buttons_row = layout.row(align=True)
     render_animations_buttons_row.operator('nmv.render_morphology_360', icon='FORCE_MAGNETIC')
-    render_animations_buttons_row.operator('nmv.render_morphology_progressive', icon='FORCE_HARMONIC')
+    render_animations_buttons_row.operator('nmv.render_morphology_progressive',
+                                           icon='FORCE_HARMONIC')
     render_animations_buttons_row.enabled = True
 
     # Progress bar
