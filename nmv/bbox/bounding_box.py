@@ -93,6 +93,23 @@ class BoundingBox:
         self.center = self.p_min + (self.bounds / 2.0)
 
     ################################################################################################
+    # @get_largest_dimension
+    ################################################################################################
+    def get_largest_dimension(self):
+        """Gets the largest dimension of the bounding box
+
+        :return:
+            The largest dimension of the bounding box.
+        """
+
+        largest_dimension = self.bounds[0]
+        if self.bounds[1] > largest_dimension:
+            largest_dimension = self.bounds[1]
+        if self.bounds[2] > largest_dimension:
+            largest_dimension = self.bounds[2]
+        return largest_dimension
+
+    ################################################################################################
     # @print_details
     ################################################################################################
     def print_details(self,

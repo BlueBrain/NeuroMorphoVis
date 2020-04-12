@@ -202,7 +202,7 @@ class CreateNeuronCard(bpy.types.Operator):
 
         # Export the analysis results
         nmv.interface.ui.export_analysis_results(
-            morphology=nmv.interface.ui_morphology, directory=morphology_analysis_directory)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         nmv.interface.ui_morphology.create_morphology_color_palette()
 

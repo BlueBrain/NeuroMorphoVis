@@ -642,7 +642,6 @@ class ConnectedSectionsBuilder:
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        nmv.scene.hide_object(bevel_object)
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors

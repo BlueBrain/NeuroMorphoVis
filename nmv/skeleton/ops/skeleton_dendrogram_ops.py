@@ -253,7 +253,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
                                                max_branching_order=nmv.consts.Math.INFINITY,
                                                dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
                                                stretch_legs=True,
-                                               arbor_material_index=-1):
+                                               arbor_material_index=-1,
+                                               const_radius=nmv.consts.Dendrogram.ARBOR_CONST_RADIUS):
 
     # Stop if the maximum branching order has been reached
     if section.branching_order > max_branching_order:
@@ -275,10 +276,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     samples = list()
 
     if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
-        samples.append([(point_1[0], point_1[1], point_1[2], 1),
-                        nmv.consts.Dendrogram.ARBOR_CONST_RADIUS])
-        samples.append([(point_2[0], point_2[1], point_2[2], 1),
-                        nmv.consts.Dendrogram.ARBOR_CONST_RADIUS])
+        samples.append([(point_1[0], point_1[1], point_1[2], 1), const_radius])
+        samples.append([(point_2[0], point_2[1], point_2[2], 1), const_radius])
     else:
 
         # Add the first sample
@@ -336,7 +335,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     for child in section.children:
         create_dendrogram_poly_lines_list_of_arbor(
             section=child, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order,
-            dendrogram_type=dendrogram_type, arbor_material_index=arbor_material_index)
+            dendrogram_type=dendrogram_type, arbor_material_index=arbor_material_index,
+            const_radius=const_radius)
 
 
 ####################################################################################################

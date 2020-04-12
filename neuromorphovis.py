@@ -156,16 +156,15 @@ def run_local_neuromorphovis(arguments):
 
         # Run NeuroMorphoVis from Blender in the background mode
         for shell_command in shell_commands:
-            print('RUNNING: ' + shell_command)
+            # print('RUNNING: ' + shell_command)
             subprocess.call(shell_command, shell=True)
 
     # Load a directory morphology files (.H5 or .SWC)
     elif arguments.input == 'directory':
 
         # Get all the morphology files in this directory
-        # TODO: Verify the installation of H5Py before running the workflow
-        # TODO: Add the support to load .SWC files from a directory at the same time
         morphology_files = file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
+        morphology_files.extend(file_ops.get_files_in_directory(arguments.morphology_directory, '.swc'))
 
         # If the directory is empty, give an error message
         if len(morphology_files) == 0:

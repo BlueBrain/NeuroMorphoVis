@@ -432,23 +432,34 @@ def export_analysis_results(morphology,
     options.morphology.apical_dendrite_branch_order = 1e3
     options.morphology.basal_dendrites_branch_order = 1e3
 
+    # Ensure that the scene is clear before drawing anything in it
+    nmv.scene.clear_scene()
+
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
-                                      resolution=2048)
+                                      resolution=1500)
 
+    # Ensure that the scene is clear before drawing anything in it
     nmv.scene.clear_scene()
 
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
-                                      resolution=4000)
+                                      resolution=3000)
 
+    print('hoaoaoooa')
+    # Ensure that the scene is clear before drawing anything in it
     nmv.scene.clear_scene()
+
+    print('asassasaas')
 
     # Draw the dendrogram PDF and append it to the list
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
+    print('xxx')
+
     builder.draw_morphology_skeleton_with_matplotlib()
 
-    exit(0)
+
+
 
     builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors()

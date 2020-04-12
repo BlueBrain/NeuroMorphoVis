@@ -45,8 +45,7 @@ def create_skeleton_materials_and_illumination(builder):
            'apical_dendrite_skeleton' in material.name or \
            'articulation' in material.name or \
            'gray' in material.name:
-            material.user_clear()
-            bpy.data.materials.remove(material)
+            bpy.data.materials.remove(material, do_unlink=True)
 
     # Soma
     builder.soma_materials = nmv.skeleton.ops.create_skeleton_materials(

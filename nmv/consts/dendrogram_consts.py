@@ -33,4 +33,4 @@ class Dendrogram:
     DELTA_SCALE_FACTOR = 8.0
 
     # The constant radius of the arbor
-    ARBOR_CONST_RADIUS = 2.0
+    ARBOR_CONST_RADIUS = 1.0

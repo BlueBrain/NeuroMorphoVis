@@ -50,11 +50,8 @@ def create_skeleton_materials(builder):
            'apical_dendrite_skeleton' in material.name or   \
            'spines' in material.name:
 
-            # Clear
-            material.user_clear()
-
             # Remove
-            bpy.data.materials.remove(material)
+            bpy.data.materials.remove(material, do_unlink=True)
 
     # Soma
     builder.soma_materials = nmv.shading.create_materials(

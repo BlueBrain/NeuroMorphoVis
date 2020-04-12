@@ -125,8 +125,7 @@ class DendrogramBuilder:
                     'apical_dendrite_skeleton' in material.name or \
                     'articulation' in material.name or \
                     'gray' in material.name:
-                material.user_clear()
-                bpy.data.materials.remove(material)
+                bpy.data.materials.remove(material, do_unlink=True)
 
         # Apical materials
         if self.morphology.has_apical_dendrites():
@@ -161,6 +160,8 @@ class DendrogramBuilder:
             material_type=self.options.shading.morphology_material,
             color=self.morphology.soma_color)
         self.skeleton_materials.extend(soma_materials)
+
+        print(self.skeleton_materials)
 
     ################################################################################################
     # @draw_morphology_skeleton
@@ -227,7 +228,6 @@ class DendrogramBuilder:
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        nmv.scene.hide_object(bevel_object)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -431,15 +431,6 @@ class DendrogramBuilder:
 
         nmv.logger.header('Building skeleton using DendrogamBuilder')
 
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Create the skeleton materials
-        # self.create_single_skeleton_materials_list()
-        self.create_per_arbor_material_list()
-
-        # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
-
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
             morphology=self.morphology).morphology_result
@@ -494,7 +485,6 @@ class DendrogramBuilder:
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
-        nmv.scene.hide_object(bevel_object)
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -519,8 +509,11 @@ class DendrogramBuilder:
         # NOTE: Readjust the parameters here to plot everything for the whole morphology
         self.options.morphology.adjust_to_analysis_mode()
 
-        # Use flat shading to get the same one we get with matplot lib
+        # Use flat shading to get the same one we get with matplotlib
         self.options.shading.morphology_material = nmv.enums.Shader.FLAT
+
+        # Create the materials
+        self.create_per_arbor_material_list()
 
         # Draw the dendrogram, all arbors with same radius
         self.draw_highlighted_arbors(dendrogram_type=dendrogram_type)
