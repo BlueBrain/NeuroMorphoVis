@@ -51,7 +51,9 @@ def create_skeleton_materials(builder):
            'spines' in material.name:
 
             # Remove
+            nmv.utilities.disable_std_output()
             bpy.data.materials.remove(material, do_unlink=True)
+            nmv.utilities.enable_std_output()
 
     # Soma
     builder.soma_materials = nmv.shading.create_materials(

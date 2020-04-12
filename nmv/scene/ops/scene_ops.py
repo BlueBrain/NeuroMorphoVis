@@ -357,23 +357,33 @@ def clear_scene():
     # Unlink all the objects in all the layers
     for scene in bpy.data.scenes:
         for scene_object in scene.objects:
+            nmv.utilities.disable_std_output()
             unlink_object_from_scene(scene_object)
+            nmv.utilities.enable_std_output()
 
     # Select all the meshes, unlink them and clear their data
     for scene_mesh in bpy.data.meshes:
+        nmv.utilities.disable_std_output()
         bpy.data.meshes.remove(scene_mesh, do_unlink=True)
+        nmv.utilities.enable_std_output()
 
     # Select all the curves, unlink them and clear their data
     for scene_curve in bpy.data.curves:
+        nmv.utilities.disable_std_output()
         bpy.data.curves.remove(scene_curve, do_unlink=True)
+        nmv.utilities.enable_std_output()
 
     # Select all the scene objects, unlink them and clear their data
     for scene_object in bpy.data.objects:
+        nmv.utilities.disable_std_output()
         bpy.data.objects.remove(scene_object, do_unlink=True)
+        nmv.utilities.enable_std_output()
 
     # Select all the scene materials, unlink them and clear their data
     for scene_material in bpy.data.materials:
+        nmv.utilities.disable_std_output()
         bpy.data.materials.remove(scene_material, do_unlink=True)
+        nmv.utilities.enable_std_output()
 
 
 ####################################################################################################
@@ -398,10 +408,15 @@ def clear_lights():
     # Select all the light, unlink them and clear their data
     if nmv.utilities.is_blender_280():
         for scene_lamp in bpy.data.lights:
+            nmv.utilities.disable_std_output()
             bpy.data.lights.remove(scene_lamp, do_unlink=True)
+            nmv.utilities.enable_std_output()
+
     else:
         for scene_lamp in bpy.data.lamps:
+            nmv.utilities.disable_std_output()
             bpy.data.lamps.remove(scene_lamp, do_unlink=True)
+            nmv.utilities.enable_std_output()
 
 
 ####################################################################################################

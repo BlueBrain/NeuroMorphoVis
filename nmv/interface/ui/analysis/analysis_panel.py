@@ -145,8 +145,7 @@ class ExportAnalysisResults(bpy.types.Operator):
 
         # Export the analysis results
         nmv.interface.ui.export_analysis_results(
-            morphology=nmv.interface.ui_morphology,
-            directory=nmv.interface.ui_options.io.analysis_directory)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         return {'FINISHED'}
 

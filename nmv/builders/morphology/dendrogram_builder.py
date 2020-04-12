@@ -125,7 +125,10 @@ class DendrogramBuilder:
                     'apical_dendrite_skeleton' in material.name or \
                     'articulation' in material.name or \
                     'gray' in material.name:
+
+                nmv.utilities.disable_std_output()
                 bpy.data.materials.remove(material, do_unlink=True)
+                nmv.utilities.enable_std_output()
 
         # Apical materials
         if self.morphology.has_apical_dendrites():
