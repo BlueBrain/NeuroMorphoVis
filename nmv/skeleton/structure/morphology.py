@@ -18,6 +18,9 @@
 # System imports
 import copy
 
+# Blender imports
+from mathutils import Vector
+
 # Internal imports
 import nmv.bbox
 import nmv.skeleton
@@ -341,6 +344,9 @@ class Morphology:
             self.apical_dendrites_colors = list()
             for arbor in self.apical_dendrites:
                 self.apical_dendrites_colors.append(palette[color_index])
+                arbor.color = Vector((palette[color_index][0],
+                                      palette[color_index][1],
+                                      palette[color_index][2]))
                 color_index += 1
 
         # Basal dendrites
@@ -348,6 +354,9 @@ class Morphology:
             self.basal_dendrites_colors = list()
             for arbor in self.basal_dendrites:
                 self.basal_dendrites_colors.append(palette[color_index])
+                arbor.color = Vector((palette[color_index][0],
+                                      palette[color_index][1],
+                                      palette[color_index][2]))
                 color_index += 1
 
         # Axons
@@ -355,6 +364,9 @@ class Morphology:
             self.axons_colors = list()
             for arbor in self.axons:
                 self.axons_colors.append(palette[color_index])
+                arbor.color = Vector((palette[color_index][0],
+                                      palette[color_index][1],
+                                      palette[color_index][2]))
                 color_index += 1
 
         # Soma

@@ -50,6 +50,9 @@ class Color:
     # Gray
     GRAY = Vector((0.5, 0.5, 0.5))
 
+    # Greysh
+    GREYSH = Vector((0.9, 0.9, 0.9))
+
     # Matt black
     MATT_BLACK = Vector((0.1, 0.1, 0.1))
 

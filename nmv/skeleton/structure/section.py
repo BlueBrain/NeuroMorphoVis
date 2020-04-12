@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+from mathutils import Vector
+
 # Internal imports
 import nmv.enums
 
@@ -139,6 +142,9 @@ class Section:
 
         # The Y-coordinate of the dendrogram of this section
         self.dendrogram_y = None
+
+        # Arbor color
+        self.color = Vector((1.0, 1.0, 1.0))
 
     ################################################################################################
     # @get_type_string

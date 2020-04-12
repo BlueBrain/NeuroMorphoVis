@@ -92,6 +92,36 @@ def is_object_deleted(scene_object):
 
 
 ####################################################################################################
+# @set_transparent_background
+####################################################################################################
+def set_transparent_background():
+    """Sets the background image to transparent.
+    """
+
+    # 2.80 or higher
+    if nmv.utilities.is_blender_280():
+
+        # Transparency
+        bpy.context.scene.render.film_transparent = True
+
+    # 2.79
+    else:
+        bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+        bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+
+
+####################################################################################################
+# @set_colors_to_raw
+####################################################################################################
+def set_colors_to_raw():
+    """
+    Use RAW colors with FLAT shading to lighten the results
+    :return:
+    """
+    bpy.context.scene.view_settings.view_transform = 'Raw'
+
+
+####################################################################################################
 # @set_background_color
 ####################################################################################################
 def set_background_color(color,

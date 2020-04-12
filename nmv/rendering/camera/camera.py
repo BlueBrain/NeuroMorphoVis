@@ -169,7 +169,9 @@ class Camera:
         bpy.data.scenes['Scene'].render.filepath = '%s.%s' % (image_name, image_extension)
 
         # Render the image and ignore Blender verbosity
+        nmv.utilities.disable_std_output()
         bpy.ops.render.render(write_still=True)
+        nmv.utilities.enable_std_output()
 
     ################################################################################################
     # @get_camera_positions

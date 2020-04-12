@@ -192,6 +192,9 @@ class LoadMorphology(bpy.types.Operator):
         import nmv.scene
         nmv.scene.ops.clear_scene()
 
+        # By default set the background to transparent
+        nmv.scene.set_transparent_background()
+
         # Load the images
         logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
         logo_tex.image = bpy.data.images.load("%s/%s" % (nmv.consts.Paths.IMAGES_PATH,
