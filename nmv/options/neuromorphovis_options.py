@@ -194,8 +194,8 @@ class NeuroMorphoVisOptions:
             self.morphology.scale_sections_radii = False
             self.morphology.unify_sections_radii = False
 
-        # Export the morphology to .h5 file
-        self.morphology.export_h5 = arguments.export_morphology_h5
+        # Export the morphology to .segments file
+        self.morphology.export_segments = arguments.export_morphology_segments
 
         # Export the morphology to .swc file
         self.morphology.export_swc = arguments.export_morphology_swc

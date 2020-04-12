@@ -444,19 +444,16 @@ def export_analysis_results(morphology,
 
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
-                                      resolution=3000)
+                                      resolution=2000)
 
-    print('hoaoaoooa')
     # Ensure that the scene is clear before drawing anything in it
     nmv.scene.clear_scene()
 
-    print('asassasaas')
-
     # Draw the dendrogram PDF and append it to the list
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
-    print('xxx')
-
     builder.draw_morphology_skeleton_with_matplotlib()
+
+    exit(0)
 
 
 

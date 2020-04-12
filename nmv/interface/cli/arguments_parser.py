@@ -509,10 +509,10 @@ def parse_command_line_arguments():
         action='store_true', default=False,
         help=arg_help)
 
-    # Export the morphologies in .H5 format (after fixing the artifacts)
-    arg_help = 'Exports the morphology to (.H5) file. \n'
+    # Export the morphologies in .SEGMENTS format (after fixing the artifacts)
+    arg_help = 'Exports the morphology to (SEGMENTS) file. \n'
     export_args.add_argument(
-        Args.EXPORT_H5_MORPHOLOGY,
+        Args.EXPORT_SEGMENTS_MORPHOLOGY,
         action='store_true', default=False,
         help=arg_help)
 

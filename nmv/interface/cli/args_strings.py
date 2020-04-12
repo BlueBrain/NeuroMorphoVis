@@ -205,7 +205,7 @@ class Args:
     EXPORT_SWC_MORPHOLOGY = '--export-morphology-swc'
 
     # Export .H5 morphology
-    EXPORT_H5_MORPHOLOGY = '--export-morphology-h5'
+    EXPORT_SEGMENTS_MORPHOLOGY = '--export-morphology-segments'
 
     # Export .BLEND morphology
     EXPORT_BLEND_MORPHOLOGY = '--export-morphology-blend'

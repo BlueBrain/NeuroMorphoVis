@@ -201,6 +201,20 @@ def compute_morphology_dendrogram_per_arbor_individually(morphology,
 
 
 ####################################################################################################
+# compute_simplified_dendrogram_radius_from_morphology
+####################################################################################################
+def compute_simplified_dendrogram_radius_from_morphology(morphology):
+    """Computes the radius of the simplified dendrogram based on the extent of the morphology.
+
+    :param morphology:
+    :return:
+    """
+
+    # This value was computed based on trial-and-error
+    return 2.0 * morphology.bounding_box.get_largest_dimension() / 1300.0
+
+
+####################################################################################################
 # compute_morphology_dendrogram
 ####################################################################################################
 def compute_morphology_dendrogram(morphology,
@@ -252,9 +266,9 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
                                                max_branching_order=nmv.consts.Math.INFINITY,
                                                dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
+                                               radius=nmv.consts.Dendrogram.ARBOR_CONST_RADIUS,
                                                stretch_legs=True,
-                                               arbor_material_index=-1,
-                                               const_radius=nmv.consts.Dendrogram.ARBOR_CONST_RADIUS):
+                                               arbor_material_index=-1):
 
     # Stop if the maximum branching order has been reached
     if section.branching_order > max_branching_order:
@@ -276,8 +290,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     samples = list()
 
     if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
-        samples.append([(point_1[0], point_1[1], point_1[2], 1), const_radius])
-        samples.append([(point_2[0], point_2[1], point_2[2], 1), const_radius])
+        samples.append([(point_1[0], point_1[1], point_1[2], 1), radius])
+        samples.append([(point_2[0], point_2[1], point_2[2], 1), radius])
     else:
 
         # Add the first sample
@@ -314,8 +328,13 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             child_2 = section.children[i + 1]
 
             samples = list()
-            radius_1 = 1 # child_1.samples[0].radius
-            radius_2 = 1 # child_2.samples[0].radius
+
+            if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
+                radius_1 = radius
+                radius_2 = radius
+            else:
+                radius_1 = child_1.samples[0].radius
+                radius_2 = child_2.samples[0].radius
             if stretch_legs:
                 x_1 = child_1.dendrogram_x - radius_1
                 x_2 = child_2.dendrogram_x + radius_2
@@ -324,9 +343,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
                 x_2 = child_2.dendrogram_x
             samples.append([(x_1, end_y, 0, 1), radius_1])
             samples.append([(x_2, end_y, 0, 1), radius_2])
-            poly_line = nmv.geometry.PolyLine(
-                name='section_%s' % str(section.index),
-                samples=samples, material_index=material_index)
+            poly_line = nmv.geometry.PolyLine(name='section_%s' % str(section.index),
+                                              samples=samples, material_index=material_index)
 
             # Append the polyline to the list
             poly_lines_data.append(poly_line)
@@ -336,7 +354,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
         create_dendrogram_poly_lines_list_of_arbor(
             section=child, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order,
             dendrogram_type=dendrogram_type, arbor_material_index=arbor_material_index,
-            const_radius=const_radius)
+            radius=radius)
 
 
 ####################################################################################################
@@ -347,7 +365,9 @@ def add_soma_to_stems_line(morphology,
                            ignore_apical_dendrites=True,
                            ignore_basal_dendrites=True,
                            ignore_axons=True,
-                           soma_material_index=0):
+                           soma_material_index=0,
+                           dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
+                           radius=nmv.consts.Dendrogram.ARBOR_CONST_RADIUS):
 
     """Create the dendrogram connection from the soma to the stems.
 
@@ -389,15 +409,18 @@ def add_soma_to_stems_line(morphology,
                 radii.append(arbor.samples[0].radius)
 
     # Average radius
-    avg_radius = sum(radii) / len(radii)
+    if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
+        avg_radius = radius
+    else:
+        avg_radius = sum(radii) / len(radii)
 
     # Final value
     center = (min(x_values) + max(x_values)) * 0.5
     center = Vector((-center, -avg_radius * 2.0, 0))
 
     # Compute the line points
-    point_1 = Vector((min(x_values), -avg_radius, 0))
-    point_2 = Vector((max(x_values), -avg_radius, 0))
+    point_1 = Vector((min(x_values) - avg_radius, -avg_radius, 0))
+    point_2 = Vector((max(x_values) + avg_radius, -avg_radius, 0))
 
     # Construct a simple poly-line with two points at the start and end of the poly-line
     samples = list()

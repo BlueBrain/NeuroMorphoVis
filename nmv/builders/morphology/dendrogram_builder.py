@@ -161,8 +161,6 @@ class DendrogramBuilder:
             color=self.morphology.soma_color)
         self.skeleton_materials.extend(soma_materials)
 
-        print(self.skeleton_materials)
-
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
@@ -437,7 +435,12 @@ class DendrogramBuilder:
 
         # Compute the dendrogram of the morphology
         nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 4)
+            morphology=self.morphology, delta=maximum_radius * 8.0)
+
+        # In case of the simplified one, compute the radius of the arbors
+        simplified_dendrogram_radius = \
+            nmv.skeleton.compute_simplified_dendrogram_radius_from_morphology(
+                morphology=self.morphology)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -451,7 +454,8 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type)
+                        dendrogram_type=dendrogram_type,
+                        radius=simplified_dendrogram_radius)
                     material_index += 2
 
         if not self.options.morphology.ignore_basal_dendrites:
@@ -462,7 +466,8 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type)
+                        dendrogram_type=dendrogram_type,
+                        radius=simplified_dendrogram_radius)
                     material_index += 2
 
         if not self.options.morphology.ignore_axons:
@@ -473,7 +478,8 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.axon_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type)
+                        dendrogram_type=dendrogram_type,
+                        radius=simplified_dendrogram_radius)
                     material_index += 2
 
         # The soma to stems line
@@ -481,7 +487,8 @@ class DendrogramBuilder:
             morphology=self.morphology, poly_lines_data=skeleton_poly_lines,
             ignore_apical_dendrites=self.options.morphology.ignore_apical_dendrites,
             ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
-            ignore_axons=self.options.morphology.ignore_axons, soma_material_index=material_index)
+            ignore_axons=self.options.morphology.ignore_axons, soma_material_index=material_index,
+            dendrogram_type=dendrogram_type, radius=simplified_dendrogram_radius)
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
@@ -520,7 +527,8 @@ class DendrogramBuilder:
 
         # Compute the bounding box of the dendrogram and stretch it
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
-        bounding_box.extend_bbox(delta_x=40, delta_y=20)
+        delta = bounding_box.get_largest_dimension() * 0.05
+        bounding_box.extend_bbox(delta_x=delta, delta_y=2.0 * delta)
 
         if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
             file_name = '%s_dendrogram_simplified' % self.morphology.label

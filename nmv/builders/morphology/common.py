@@ -50,7 +50,7 @@ def create_skeleton_materials_and_illumination(builder):
     # Soma
     builder.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
         name='soma_skeleton', material_type=builder.options.shading.morphology_material,
-        color=builder.options.shading.soma_color)
+        color=builder.options.shading.morphology_soma_color)
 
     # Axon
     builder.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
