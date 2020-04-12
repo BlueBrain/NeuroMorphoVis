@@ -47,11 +47,17 @@ def draw_soma_to_arbors_connectivity(panel,
         Blender scene.
     """
 
-    # Add the soma connection
-    soma_connection_row = panel.layout.row()
-    soma_connection_row.label(text='Soma:')
-    soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
-    nmv.interface.ui_options.mesh.soma_connection = scene.NMV_SomaArborsConnection
+    # Meshing options reference
+    meshing_options = nmv.interface.ui_options.mesh
+
+    # The soft body soma must be used to connect the arbors
+    if meshing_options.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
+        soma_connection_row = panel.layout.row()
+        soma_connection_row.label(text='Arbors to Soma:')
+        soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
+        meshing_options.soma_connection = scene.NMV_SomaArborsConnection
+    else:
+        meshing_options.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
 
 
 ####################################################################################################
@@ -72,13 +78,9 @@ def draw_mesh_connectivity_options(panel,
 
     # If the soma is connected, then by default, the arbors are connected
     if meshing_options.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-
-        # Objects are connected
         meshing_options.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
 
     else:
-
-        # Mesh objects connection
         mesh_objects_connection_row = panel.layout.row()
         mesh_objects_connection_row.label(text='Skeleton Objects:')
         mesh_objects_connection_row.prop(scene, 'NMV_MeshObjectsConnection', expand=True)
