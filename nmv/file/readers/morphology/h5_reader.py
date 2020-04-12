@@ -221,7 +221,7 @@ class H5Reader:
         # Import h5py and install it if it does not exist
         try:
             import h5py
-        except ModuleNotFoundError:
+        except ImportError:
             print('Package *h5py* is not installed. Installing it.')
             nmv.utilities.pip_install_wheel(package_name='h5py')
 

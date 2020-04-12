@@ -431,7 +431,7 @@ class RenderMorphology360(bpy.types.Operator):
                 rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
 
             # Stretch the bounding box by few microns
-            bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+            bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
             # Render a frame
             nmv.rendering.renderer.render_at_angle(
@@ -627,7 +627,7 @@ class RenderMorphologyProgressive(bpy.types.Operator):
                     morphology=nmv.interface.ui_morphology)
 
         # Stretch the bounding box by few microns
-        self.morphology_bounding_box.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+        self.morphology_bounding_box.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
     ################################################################################################
     # @execute

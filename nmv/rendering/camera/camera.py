@@ -502,9 +502,8 @@ class Camera:
             Keep the camera in the scene after rendering.
         """
 
-        # All the image are transparency with RGBA mode
-        bpy.context.scene.render.film_transparent = True
-        bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+        # Transparent background
+        nmv.scene.set_transparent_background()
 
         # Get the scene bounding box to adjust the camera accordingly, if the bounds are not set
         if bounding_box is None:

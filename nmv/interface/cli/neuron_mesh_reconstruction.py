@@ -271,7 +271,7 @@ def render_neuron_mesh_360(cli_options,
                                                              cli_morphology.soma.centroid)
 
         # Stretch the bounding box by few microns
-        bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+        bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
         # Create a specific directory for this mesh
         output_directory = '%s/%s_mesh_360' % (

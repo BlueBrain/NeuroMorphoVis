@@ -82,17 +82,17 @@ def construct_samples_list_from_morphology_tree(morphology_object):
     samples_list = list()
 
     # Apical dendrites
-    if morphology_object.apical_dendrites is not None:
+    if morphology_object.has_apical_dendrites():
         for arbor in morphology_object.apical_dendrites:
             construct_samples_list_from_arbor(arbor, samples_list)
 
     # Basal dendrites
-    if morphology_object.dendrites is not None:
+    if morphology_object.has_basal_dendrites():
         for arbor in morphology_object.basal_dendrites:
             construct_samples_list_from_arbor(arbor, samples_list)
 
     # Axons
-    if morphology_object.axons is not None:
+    if morphology_object.has_axons():
         for arbor in morphology_object.axons:
             construct_samples_list_from_arbor(arbor, samples_list)
 

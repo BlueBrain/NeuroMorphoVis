@@ -121,7 +121,7 @@ class RandomSpineBuilder:
 
         # Create the material
         material = nmv.shading.create_material(
-            name='%spine_material', color=self.options.mesh.spines_color,
+            name='%spine_material', color=self.options.shading.mesh_spines_color,
             material_type=self.options.shading.material)
 
         # Apply the shader

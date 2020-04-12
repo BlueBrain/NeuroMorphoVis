@@ -488,7 +488,7 @@ class RenderMesh360(bpy.types.Operator):
             rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
 
         # Stretch the bounding box by few microns
-        self.bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+        self.bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
         # Create a specific directory for this mesh
         self.output_directory = '%s/%s%s' % (

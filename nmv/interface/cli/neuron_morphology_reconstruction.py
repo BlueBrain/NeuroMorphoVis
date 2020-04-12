@@ -190,7 +190,7 @@ def reconstruct_neuron_morphology(cli_morphology,
                                                              cli_morphology.soma.centroid)
 
         # Stretch the bounding box by few microns
-        bounding_box_360.extend_bbox(delta=nmv.consts.Image.GAP_DELTA)
+        bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
         for i in range(0, 360):
 

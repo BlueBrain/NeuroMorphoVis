@@ -103,24 +103,24 @@ def verify_plotting_packages():
     # Installing dependencies
     try:
         import numpy
-    except ModuleNotFoundError:
+    except ImportError:
         print('Package *numpy* is not installed. Installing it.')
         pip_install_wheel(package_name='numpy')
 
     try:
         import matplotlib
-    except ModuleNotFoundError:
+    except ImportError:
         print('Package *matplotlib* is not installed. Installing it.')
         pip_install_wheel(package_name='matplotlib')
 
     try:
         import seaborn
-    except ModuleNotFoundError:
+    except ImportError:
         print('Package *seaborn* is not installed. Installing it.')
         pip_install_wheel(package_name='seaborn')
 
     try:
         import pandas
-    except ModuleNotFoundError:
+    except ImportError:
         print('Package *pandas* is not installed. Installing it.')
         pip_install_wheel(package_name='pandas')

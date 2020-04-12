@@ -55,10 +55,10 @@ class BoundingBox:
             self.p_max = center + (self.bounds / 2.0)
 
     ################################################################################################
-    # @extend_bbox
+    # @extend_bbox_uniformly
     ################################################################################################
-    def extend_bbox(self,
-                    delta=1.0):
+    def extend_bbox_uniformly(self,
+                              delta=1.0):
         """Extends the bounding box few microns uniformly in all the directions.
 
         :param delta:
