@@ -174,9 +174,6 @@ class DendrogramBuilder:
 
         nmv.logger.header('Building skeleton using SamplesBuilder')
 
-        nmv.logger.info('Updating Radii')
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
 
@@ -200,7 +197,8 @@ class DendrogramBuilder:
                     nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        dendrogram_type=self.options.morphology.dendrogram_type)
 
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
@@ -208,7 +206,8 @@ class DendrogramBuilder:
                     nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.axon_branch_order)
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        dendrogram_type=self.options.morphology.dendrogram_type)
 
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
@@ -216,7 +215,8 @@ class DendrogramBuilder:
                     nmv.skeleton.create_dendrogram_poly_lines_list_of_arbor(
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order)
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        dendrogram_type=self.options.morphology.dendrogram_type)
 
         # The soma to stems line
         center = nmv.skeleton.add_soma_to_stems_line(
@@ -240,8 +240,10 @@ class DendrogramBuilder:
         # Always switch to the top view to see the dendrogram quite well
         nmv.scene.view_axis(axis='TOP')
 
+        # View all the objects in the scene
+        nmv.scene.ops.view_all_scene()
+
         # Return the list of the drawn morphology objects
-        nmv.logger.info('Done')
         return self.morphology_objects
 
     ################################################################################################
@@ -420,7 +422,7 @@ class DendrogramBuilder:
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_highlighted_arbors(self,
-                                flat_mode=True):
+                                dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED):
         """Reconstruct and draw the morphological skeleton.
 
         :return
@@ -458,7 +460,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         arbor_material_index=material_index,
-                        flat_mode=flat_mode)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         if not self.options.morphology.ignore_basal_dendrites:
@@ -469,7 +471,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         arbor_material_index=material_index,
-                        flat_mode=flat_mode)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         if not self.options.morphology.ignore_axons:
@@ -480,7 +482,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.axon_branch_order,
                         arbor_material_index=material_index,
-                        flat_mode=flat_mode)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         # The soma to stems line
@@ -508,7 +510,9 @@ class DendrogramBuilder:
     ################################################################################################
     # @render_highlighted_arbors
     ################################################################################################
-    def render_highlighted_arbors(self, flat_mode=True, resolution=2048):
+    def render_highlighted_arbors(self,
+                                  dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
+                                  resolution=2048):
         """Render the morphology with different colors per arbor for analysis.
         """
 
@@ -517,18 +521,18 @@ class DendrogramBuilder:
 
         # Use flat shading to get the same one we get with matplot lib
         self.options.shading.morphology_material = nmv.enums.Shader.FLAT
-        
+
         # Draw the dendrogram, all arbors with same radius
-        self.draw_highlighted_arbors(flat_mode=flat_mode)
+        self.draw_highlighted_arbors(dendrogram_type=dendrogram_type)
 
         # Compute the bounding box of the dendrogram and stretch it
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
         bounding_box.extend_bbox(delta_x=40, delta_y=20)
 
-        if flat_mode:
-            file_name = '%s_dendrogram' % self.morphology.label
+        if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
+            file_name = '%s_dendrogram_simplified' % self.morphology.label
         else:
-            file_name = '%s_dendrogram_to_scale' % self.morphology.label
+            file_name = '%s_dendrogram_detailed' % self.morphology.label
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=nmv.enums.Camera.View.FRONT,

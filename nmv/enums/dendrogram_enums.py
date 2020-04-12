@@ -30,15 +30,15 @@ class Dendrogram:
         pass
 
     ################################################################################################
-    # @Method
+    # @Type
     ################################################################################################
-    class Radius:
+    class Type:
 
-        # Draw the dendrogram with a fixed radius
-        FIXED = 'DENDROGRAM_FIXED_RADIUS'
+        # Draw a simplified dendrogram with a fixed radius at all the samples
+        SIMPLIFIED = 'DENDROGRAM_SIMPLIFIED'
 
-        # Draw the dendrogram with a varying radii to see the frequency of the tapering
-        VARYING = 'DENDROGRAM_VARYING_RADIUS'
+        # Draw a detailed dendrogram with varying radii to see the frequency of the tapering
+        DETAILED = 'DENDROGRAM_DETAILED'
 
         ############################################################################################
         # @__init__
@@ -53,13 +53,13 @@ class Dendrogram:
         def get_enum(argument):
 
             # Fixed radius
-            if argument == 'fixed':
-                return Dendrogram.Radius.FIXED
+            if argument == 'simplified':
+                return Dendrogram.Type.SIMPLIFIED
 
             # Varying radius
-            elif argument == 'varying':
-                return Dendrogram.Radius.VARYING
+            elif argument == 'detailed':
+                return Dendrogram.Type.DETAILED
 
             # Default
             else:
-                return Dendrogram.Radius.FIXED
+                return Dendrogram.Type.SIMPLIFIED

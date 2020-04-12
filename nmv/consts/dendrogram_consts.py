@@ -15,19 +15,22 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .analysis_consts import *
-from .skeleton_consts import *
-from .paths_consts import *
-from .color_consts import *
-from .dendrogram_consts import *
-from .image_consts import *
-from .math_consts import *
-from .meshing_consts import *
-from .messages_consts import *
-from .morphology_consts import *
-from .mtypes_consts import *
-from .simulation_consts import *
-from .soft_body_consts import *
-from .spines_consts import *
-from .suffix_consts import *
-from .meta_ball_consts import *
+
+####################################################################################################
+# Dendrogram
+####################################################################################################
+class Dendrogram:
+    """Dendrogram constants
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        pass
+
+    # A scale factor to change the distance between the arbors
+    DELTA_SCALE_FACTOR = 8.0
+
+    # The constant radius of the arbor
+    ARBOR_CONST_RADIUS = 2.0

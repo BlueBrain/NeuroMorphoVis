@@ -21,6 +21,7 @@ from mathutils import Vector
 # Internal imports
 import nmv.geometry
 import nmv.consts
+import nmv.enums
 
 
 ####################################################################################################
@@ -250,7 +251,7 @@ def compute_morphology_dendrogram(morphology,
 def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
                                                max_branching_order=nmv.consts.Math.INFINITY,
-                                               flat_mode=True,
+                                               dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
                                                stretch_legs=True,
                                                arbor_material_index=-1):
 
@@ -273,9 +274,11 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     # Construct a simple poly-line with two points at the start and end of the poly-line
     samples = list()
 
-    if flat_mode:
-        samples.append([(point_1[0], point_1[1], point_1[2], 1), 1.0])
-        samples.append([(point_2[0], point_2[1], point_2[2], 1), 1.0])
+    if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
+        samples.append([(point_1[0], point_1[1], point_1[2], 1),
+                        nmv.consts.Dendrogram.ARBOR_CONST_RADIUS])
+        samples.append([(point_2[0], point_2[1], point_2[2], 1),
+                        nmv.consts.Dendrogram.ARBOR_CONST_RADIUS])
     else:
 
         # Add the first sample
@@ -324,7 +327,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             samples.append([(x_2, end_y, 0, 1), radius_2])
             poly_line = nmv.geometry.PolyLine(
                 name='section_%s' % str(section.index),
-                    samples=samples, material_index=material_index)
+                samples=samples, material_index=material_index)
 
             # Append the polyline to the list
             poly_lines_data.append(poly_line)
@@ -333,7 +336,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     for child in section.children:
         create_dendrogram_poly_lines_list_of_arbor(
             section=child, poly_lines_data=poly_lines_data, max_branching_order=max_branching_order,
-            flat_mode=flat_mode, arbor_material_index=arbor_material_index)
+            dendrogram_type=dendrogram_type, arbor_material_index=arbor_material_index)
 
 
 ####################################################################################################
@@ -358,6 +361,8 @@ def add_soma_to_stems_line(morphology,
         A flag to indicate whether to include the basal dendrites or not.
     :param ignore_axons:
         A flag to indicate whether to include the axon or not.
+    :param soma_material_index:
+        The index of the soma material.
     :return:
         The center of the drawn line to connect it to the dendrogram body.
     """

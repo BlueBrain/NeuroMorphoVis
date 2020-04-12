@@ -164,15 +164,25 @@ def set_reconstruction_options(layout,
         branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
         options.morphology.branching = scene.NMV_MorphologyBranching
 
+        # Connection to somata
+        arbor_to_soma_connection_row = layout.row()
+        arbor_to_soma_connection_row.label(text='Arbors to Soma:')
+        arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
+        options.morphology.arbors_to_soma_connection = scene.NMV_SomaConnectionToRoot
+
+    # Dendrogram options
+    elif scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
+
+        # Type
+        dendrogram_type_row = layout.row()
+        dendrogram_type_row.label(text='Dendrogram Type:')
+        dendrogram_type_row.prop(scene, 'NMV_DendrogramType', expand=True)
+        options.morphology.dendrogram_type = scene.NMV_DendrogramType
+
     else:
         options.morphology.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
-        options.morphology.arbor_style = nmv.enums.Skeleton.Branching.RADII
-
-    # Connection to somata
-    arbor_to_soma_connection_row = layout.row()
-    arbor_to_soma_connection_row.label(text='Arbors to Soma:')
-    arbor_to_soma_connection_row.prop(scene, 'NMV_SomaConnectionToRoot')
-    options.morphology.arbors_to_soma_connection = scene.NMV_SomaConnectionToRoot
+        options.morphology.branching = nmv.enums.Skeleton.Branching.RADII
+        options.morphology.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA
 
     # Sections resampling
     resampling_row = layout.row()
@@ -187,80 +197,82 @@ def set_reconstruction_options(layout,
         resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
         options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
-    # Sections diameters option
-    sections_radii_row = layout.row()
-    sections_radii_row.label(text='Arbors Radii:')
-    sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
+    if not scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
 
-    # Radii as specified in the morphology file
-    if scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.ORIGINAL:
-        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.ORIGINAL
-        options.morphology.scale_sections_radii = False
-        options.morphology.unify_sections_radii = False
-        options.morphology.sections_radii_scale = 1.0
+        # Sections diameters option
+        sections_radii_row = layout.row()
+        sections_radii_row.label(text='Arbors Radii:')
+        sections_radii_row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
 
-    # Unified diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED:
-        fixed_diameter_row = layout.row()
-        fixed_diameter_row.label(text='Fixed Radius Value:')
-        fixed_diameter_row.prop(scene, 'NMV_UnifiedRadiusValue')
-        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-        options.morphology.scale_sections_radii = False
-        options.morphology.unify_sections_radii = True
-        options.morphology.samples_unified_radii_value = scene.NMV_UnifiedRadiusValue
+        # Radii as specified in the morphology file
+        if scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.ORIGINAL:
+            options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.ORIGINAL
+            options.morphology.scale_sections_radii = False
+            options.morphology.unify_sections_radii = False
+            options.morphology.sections_radii_scale = 1.0
 
-    # Unified diameter per arbor type
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE:
-        options.morphology.arbors_radii = \
-            nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE
-        options.morphology.scale_sections_radii = False
-        options.morphology.unify_sections_radii = True
+        # Unified diameter
+        elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED:
+            fixed_diameter_row = layout.row()
+            fixed_diameter_row.label(text='Fixed Radius Value:')
+            fixed_diameter_row.prop(scene, 'NMV_UnifiedRadiusValue')
+            options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+            options.morphology.scale_sections_radii = False
+            options.morphology.unify_sections_radii = True
+            options.morphology.samples_unified_radii_value = scene.NMV_UnifiedRadiusValue
 
-        if nmv.interface.ui_morphology.has_axons():
-            axon_radius_row = layout.row()
-            axon_radius_row.label(text='Axon Radius:')
-            axon_radius_row.prop(scene, 'NMV_AxonUnifiedRadiusValue')
-            options.morphology.axon_samples_unified_radii_value = scene.NMV_AxonUnifiedRadiusValue
+        # Unified diameter per arbor type
+        elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE:
+            options.morphology.arbors_radii = \
+                nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE
+            options.morphology.scale_sections_radii = False
+            options.morphology.unify_sections_radii = True
 
-        if nmv.interface.ui_morphology.has_apical_dendrites():
-            apical_dendrite_radius_row = layout.row()
-            apical_dendrite_radius_row.label(text='Apical Dendrite Radius:')
-            apical_dendrite_radius_row.prop(scene, 'NMV_ApicalDendriteUnifiedRadiusValue')
-            options.morphology.apical_dendrite_samples_unified_radii_value = \
-                scene.NMV_ApicalDendriteUnifiedRadiusValue
+            if nmv.interface.ui_morphology.has_axons():
+                axon_radius_row = layout.row()
+                axon_radius_row.label(text='Axon Radius:')
+                axon_radius_row.prop(scene, 'NMV_AxonUnifiedRadiusValue')
+                options.morphology.axon_samples_unified_radii_value = scene.NMV_AxonUnifiedRadiusValue
 
-        if nmv.interface.ui_morphology.has_basal_dendrites():
-            basal_dendrites_radius_row = layout.row()
-            basal_dendrites_radius_row.label(text='Basal Dendrites Radius:')
-            basal_dendrites_radius_row.prop(scene, 'NMV_BasalDendritesUnifiedRadiusValue')
-            options.morphology.basal_dendrites_samples_unified_radii_value = \
-                scene.NMV_BasalDendritesUnifiedRadiusValue
+            if nmv.interface.ui_morphology.has_apical_dendrites():
+                apical_dendrite_radius_row = layout.row()
+                apical_dendrite_radius_row.label(text='Apical Dendrite Radius:')
+                apical_dendrite_radius_row.prop(scene, 'NMV_ApicalDendriteUnifiedRadiusValue')
+                options.morphology.apical_dendrite_samples_unified_radii_value = \
+                    scene.NMV_ApicalDendriteUnifiedRadiusValue
 
-    # Scaled diameter
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.SCALED:
-        scaled_diameter_row = layout.row()
-        scaled_diameter_row.label(text='Radius Scale Factor:')
-        scaled_diameter_row.prop(scene, 'NMV_RadiusScaleValue')
-        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.SCALED
-        options.morphology.unify_sections_radii = False
-        options.morphology.scale_sections_radii = True
-        options.morphology.sections_radii_scale = scene.NMV_RadiusScaleValue
+            if nmv.interface.ui_morphology.has_basal_dendrites():
+                basal_dendrites_radius_row = layout.row()
+                basal_dendrites_radius_row.label(text='Basal Dendrites Radius:')
+                basal_dendrites_radius_row.prop(scene, 'NMV_BasalDendritesUnifiedRadiusValue')
+                options.morphology.basal_dendrites_samples_unified_radii_value = \
+                    scene.NMV_BasalDendritesUnifiedRadiusValue
 
-    # Filtered
-    elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.FILTERED:
-        minimum_row = layout.row()
-        minimum_row.label(text='Minimum Radius:')
-        minimum_row.prop(scene, 'NMV_MinimumRadiusThreshold')
-        maximum_row = layout.row()
-        maximum_row.label(text='Maximum Radius:')
-        maximum_row.prop(scene, 'NMV_MaximumRadiusThreshold')
-        options.morphology.unify_sections_radii = False
-        options.morphology.scale_sections_radii = False
-        options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.FILTERED
-        options.morphology.minimum_threshold_radius = scene.NMV_MinimumRadiusThreshold
-        options.morphology.maximum_threshold_radius = scene.NMV_MaximumRadiusThreshold
-    else:
-        nmv.logger.log('ERROR')
+        # Scaled diameter
+        elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.SCALED:
+            scaled_diameter_row = layout.row()
+            scaled_diameter_row.label(text='Radius Scale Factor:')
+            scaled_diameter_row.prop(scene, 'NMV_RadiusScaleValue')
+            options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.SCALED
+            options.morphology.unify_sections_radii = False
+            options.morphology.scale_sections_radii = True
+            options.morphology.sections_radii_scale = scene.NMV_RadiusScaleValue
+
+        # Filtered
+        elif scene.NMV_SectionsRadii == nmv.enums.Skeleton.Radii.FILTERED:
+            minimum_row = layout.row()
+            minimum_row.label(text='Minimum Radius:')
+            minimum_row.prop(scene, 'NMV_MinimumRadiusThreshold')
+            maximum_row = layout.row()
+            maximum_row.label(text='Maximum Radius:')
+            maximum_row.prop(scene, 'NMV_MaximumRadiusThreshold')
+            options.morphology.unify_sections_radii = False
+            options.morphology.scale_sections_radii = False
+            options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.FILTERED
+            options.morphology.minimum_threshold_radius = scene.NMV_MinimumRadiusThreshold
+            options.morphology.maximum_threshold_radius = scene.NMV_MaximumRadiusThreshold
+        else:
+            nmv.logger.log('ERROR')
 
     # Arbor quality option
     arbor_quality_row = layout.row()

@@ -26,6 +26,7 @@ from bpy.props import BoolProperty
 import nmv.analysis
 import nmv.builders
 import nmv.scene
+import nmv.enums
 
 
 ####################################################################################################
@@ -432,12 +433,14 @@ def export_analysis_results(morphology,
     options.morphology.basal_dendrites_branch_order = 1e3
 
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
-    builder.render_highlighted_arbors(flat_mode=True, resolution=2048)
+    builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
+                                      resolution=2048)
 
     nmv.scene.clear_scene()
 
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
-    builder.render_highlighted_arbors(flat_mode=False, resolution=2048)
+    builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
+                                      resolution=4000)
 
     nmv.scene.clear_scene()
 

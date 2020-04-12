@@ -117,6 +117,9 @@ class MorphologyOptions:
         # Maximum threshold radius value, where any section with bigger radius values will not drawn
         self.maximum_threshold_radius = 1e5
 
+        # Dendrogram type
+        self.dendrogram_type = nmv.enums.Dendrogram.Type.SIMPLIFIED
+
         # Global coordinates
         self.global_coordinates = False
 

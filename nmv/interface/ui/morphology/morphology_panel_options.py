@@ -331,6 +331,18 @@ bpy.types.Scene.SkeletonizationTechnique = bpy.props.EnumProperty(
             'Create a zigzagged and tapered skeleton.')],
     name='Skeleton', default=nmv.enums.Skeleton.Style.ORIGINAL)
 
+# Dendrogram type
+bpy.types.Scene.NMV_DendrogramType = bpy.props.EnumProperty(
+    items=[(nmv.enums.Dendrogram.Type.SIMPLIFIED,
+            'Simplified',
+            'Draw a simplified dendrogram with a fixed radius at all the samples'),
+           (nmv.enums.Dendrogram.Type.DETAILED,
+            'Detailed',
+            'Draw a detailed dendrogram with varying radii to see the frequency of the tapering')],
+    name='Type',
+    default=nmv.enums.Dendrogram.Type.SIMPLIFIED)
+
+
 # Rendering type
 bpy.types.Scene.NMV_RenderingType = bpy.props.EnumProperty(
     items=[(nmv.enums.Rendering.Resolution.FIXED,
