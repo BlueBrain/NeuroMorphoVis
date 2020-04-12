@@ -164,6 +164,10 @@ def set_reconstruction_options(layout,
         branching_row.prop(scene, 'NMV_MorphologyBranching', expand=True)
         options.morphology.branching = scene.NMV_MorphologyBranching
 
+    else:
+        options.morphology.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
+        options.morphology.arbor_style = nmv.enums.Skeleton.Branching.RADII
+
     # Connection to somata
     arbor_to_soma_connection_row = layout.row()
     arbor_to_soma_connection_row.label(text='Arbors to Soma:')

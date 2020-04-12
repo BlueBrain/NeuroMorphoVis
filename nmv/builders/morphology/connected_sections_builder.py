@@ -627,15 +627,14 @@ class ConnectedSectionsBuilder:
 
         nmv.logger.header('Building skeleton using ConnectedSectionsBuilder')
 
-        nmv.logger.info('Updating radii')
+        # Update the radii
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
-        nmv.logger.info('Updating branching to primary and secondary')
+        # Update the branching
         nmv.builders.morphology.update_sections_branching(builder=self)
 
         # Update the style of the arbors
-        nmv.logger.info('Updating arbor style')
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
