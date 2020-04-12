@@ -71,6 +71,28 @@ class BoundingBox:
         self.center = self.p_min + (self.bounds / 2.0)
 
     ################################################################################################
+    # @extend_bbox
+    ################################################################################################
+    def extend_bbox(self,
+                    delta_x=1.0,
+                    delta_y=1.0,
+                    delta_z=1.0):
+        """Extends the bounding box few microns uniformly in all the directions.
+
+        :param delta_x:
+            The value that will be used to extend the bounding box around the x-axis.
+        :param delta_y:
+            The value that will be used to extend the bounding box around the y-axis.
+        :param delta_z:
+            The value that will be used to extend the bounding box around the z-axis.
+        """
+
+        self.p_min -= Vector((delta_x, delta_y, delta_z))
+        self.p_max += Vector((delta_x, delta_y, delta_z))
+        self.bounds = self.p_max - self.p_min
+        self.center = self.p_min + (self.bounds / 2.0)
+
+    ################################################################################################
     # @print_details
     ################################################################################################
     def print_details(self,

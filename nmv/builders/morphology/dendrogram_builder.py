@@ -419,7 +419,8 @@ class DendrogramBuilder:
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
-    def draw_highlighted_arbors(self):
+    def draw_highlighted_arbors(self,
+                                flat_mode=True):
         """Reconstruct and draw the morphological skeleton.
 
         :return
@@ -443,7 +444,7 @@ class DendrogramBuilder:
 
         # Compute the dendrogram of the morphology
         nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 8)
+            morphology=self.morphology, delta=maximum_radius * 4)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -456,7 +457,8 @@ class DendrogramBuilder:
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                        arbor_material_index=material_index)
+                        arbor_material_index=material_index,
+                        flat_mode=flat_mode)
                     material_index += 2
 
         if not self.options.morphology.ignore_basal_dendrites:
@@ -466,7 +468,8 @@ class DendrogramBuilder:
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        arbor_material_index=material_index)
+                        arbor_material_index=material_index,
+                        flat_mode=flat_mode)
                     material_index += 2
 
         if not self.options.morphology.ignore_axons:
@@ -476,7 +479,8 @@ class DendrogramBuilder:
                         section=arbor,
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.axon_branch_order,
-                        arbor_material_index=material_index)
+                        arbor_material_index=material_index,
+                        flat_mode=flat_mode)
                     material_index += 2
 
         # The soma to stems line
@@ -504,25 +508,33 @@ class DendrogramBuilder:
     ################################################################################################
     # @render_highlighted_arbors
     ################################################################################################
-    def render_highlighted_arbors(self):
+    def render_highlighted_arbors(self, flat_mode=True, resolution=2048):
         """Render the morphology with different colors per arbor for analysis.
         """
 
         # NOTE: Readjust the parameters here to plot everything for the whole morphology
         self.options.morphology.adjust_to_analysis_mode()
 
-        # Draw the whole morphology with individual colors, but to-scale
+        # Use flat shading to get the same one we get with matplot lib
         self.options.shading.morphology_material = nmv.enums.Shader.FLAT
-        self.draw_highlighted_arbors()
+        
+        # Draw the dendrogram, all arbors with same radius
+        self.draw_highlighted_arbors(flat_mode=flat_mode)
 
         # Compute the bounding box of the dendrogram and stretch it
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
-        bounding_box.extend_bbox(delta=20)
+        bounding_box.extend_bbox(delta_x=40, delta_y=20)
 
+        if flat_mode:
+            file_name = '%s_dendrogram' % self.morphology.label
+        else:
+            file_name = '%s_dendrogram_to_scale' % self.morphology.label
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=nmv.enums.Camera.View.FRONT,
-            image_resolution=2048,
-            image_name='%s_%s' % (self.morphology.label, 'dendrogram'),
+            image_resolution=resolution,
+            image_name=file_name,
             image_directory='%s/%s' % (self.options.io.analysis_directory,
                                        self.options.morphology.label))
+
+

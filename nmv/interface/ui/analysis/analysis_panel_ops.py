@@ -432,7 +432,14 @@ def export_analysis_results(morphology,
     options.morphology.basal_dendrites_branch_order = 1e3
 
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
-    builder.render_highlighted_arbors()
+    builder.render_highlighted_arbors(flat_mode=True, resolution=2048)
+
+    nmv.scene.clear_scene()
+
+    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
+    builder.render_highlighted_arbors(flat_mode=False, resolution=2048)
+
+    nmv.scene.clear_scene()
 
     # Draw the dendrogram PDF and append it to the list
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)

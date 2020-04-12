@@ -250,7 +250,7 @@ def compute_morphology_dendrogram(morphology,
 def create_dendrogram_poly_lines_list_of_arbor(section,
                                                poly_lines_data=[],
                                                max_branching_order=nmv.consts.Math.INFINITY,
-                                               flat_mode=False,
+                                               flat_mode=True,
                                                stretch_legs=True,
                                                arbor_material_index=-1):
 
@@ -274,8 +274,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     samples = list()
 
     if flat_mode:
-        samples.append([(point_1[0], point_1[1], point_1[2], 1), 2.0])
-        samples.append([(point_2[0], point_2[1], point_2[2], 1), 2.0])
+        samples.append([(point_1[0], point_1[1], point_1[2], 1), 1.0])
+        samples.append([(point_2[0], point_2[1], point_2[2], 1), 1.0])
     else:
 
         # Add the first sample
@@ -312,8 +312,8 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
             child_2 = section.children[i + 1]
 
             samples = list()
-            radius_1 = 1.0 # child_1.samples[0].radius
-            radius_2 = 1.0 # child_2.samples[0].radius
+            radius_1 = 1 # child_1.samples[0].radius
+            radius_2 = 1 # child_2.samples[0].radius
             if stretch_legs:
                 x_1 = child_1.dendrogram_x - radius_1
                 x_2 = child_2.dendrogram_x + radius_2
