@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import copy
+
 # Blender imports
 import bpy
 from bpy.props import BoolProperty
@@ -371,14 +374,19 @@ def sketch_morphology_skeleton_guide(morphology,
 # @export_analysis_results
 ####################################################################################################
 def export_analysis_results(morphology,
-                            directory):
+                            options):
     """Export the analysis results into a file.
 
     :param morphology:
         The morphology that is analysed.
-    :param directory:
-        The output directory where the report will be written.
+    :param options:
+        NMV options.
     """
+
+    # Create a specific directory per morphology
+    morphology_analysis_directory = '%s/%s' % (options.io.analysis_directory, morphology.label)
+    if not nmv.file.ops.path_exists(morphology_analysis_directory):
+        nmv.file.ops.clean_and_create_directory(morphology_analysis_directory)
 
     # Analysis results
     analysis_results_string = '*' * 80 + '\n'
@@ -391,9 +399,9 @@ def export_analysis_results(morphology,
         if morphology.soma is not None else 'Not Found \n'
 
     if morphology.has_apical_dendrites():
-        analysis_results_string += '\t* Apical Dendrite: %d \n' % len(morphology.apical_dendrites)
+        analysis_results_string += '\t* Apical Dendrites: %d \n' % len(morphology.apical_dendrites)
     else:
-        analysis_results_string += '\t* Apical Dendrite: 0 \n'
+        analysis_results_string += '\t* Apical Dendrites: 0 \n'
 
     if morphology.has_basal_dendrites():
         analysis_results_string += '\t* Basal Dendrites: %d \n' % len(morphology.basal_dendrites)
@@ -410,6 +418,32 @@ def export_analysis_results(morphology,
         analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)
 
     # Write the text to file
-    analysis_results_file = open('%s/%s-analysis.txt' % (directory, morphology.label), 'w')
+    analysis_results_file = open('%s/%s/analysis.txt' % (morphology_analysis_directory,
+                                                         morphology.label), 'w')
     analysis_results_file.write(analysis_results_string)
     analysis_results_file.close()
+
+    # Create the color palette of the neuron
+    morphology.create_morphology_color_palette()
+
+    # Ensure to set the branching order to the maximum to draw the entire skeleton
+    # and the dendrogram
+    options = copy.deepcopy(nmv.interface.ui_options)
+    options.morphology.axon_branch_order = 1e3
+    options.morphology.apical_dendrite_branch_order = 1e3
+    options.morphology.basal_dendrites_branch_order = 1e3
+
+    builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options)
+    builder.render_highlighted_arbors()
+
+    # Draw the morphology skeleton to append it to the analysis PDF
+    builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
+
+    # Draw the dendrogram PDF and append it to the list
+    builder = nmv.builders.DendrogramBuilder(
+        morphology=nmv.interface.ui_morphology, options=options)
+    builder.draw_morphology_skeleton_with_matplotlib()
+
+    # Apply the analysis kernels and compile the analysis PDF
+    for distribution in nmv.analysis.distributions:
+        distribution.apply_kernel(morphology=morphology, options=options)

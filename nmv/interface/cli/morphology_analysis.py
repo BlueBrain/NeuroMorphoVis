@@ -87,36 +87,36 @@ if __name__ == "__main__":
         print('Output: [%s]' % arguments.output_directory)
 
     # Get the options from the arguments
-    cli_options = nmv.options.NeuroMorphoVisOptions()
+    input_options = nmv.options.NeuroMorphoVisOptions()
 
     # Convert the CLI arguments to system options
-    cli_options.consume_arguments(arguments=arguments)
+    input_options.consume_arguments(arguments=arguments)
 
     # Read the morphology
-    cli_morphology = None
+    input_morphology = None
 
     # If the input is a GID, then open the circuit and read it
     if arguments.input == 'gid':
 
         # Load the morphology from the file
-        loading_flag, cli_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
-            blue_config=cli_options.morphology.blue_config,
-            gid=cli_options.morphology.gid)
+        loading_flag, input_morphology = nmv.file.BBPReader.load_morphology_from_circuit(
+            blue_config=input_options.morphology.blue_config,
+            gid=input_options.morphology.gid)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the GID [%s] from the circuit [%s]' %
-                           cli_options.morphology.blue_config, str(cli_options.morphology.gid))
+                           input_options.morphology.blue_config, str(input_options.morphology.gid))
             exit(0)
 
     # If the input is a morphology file, then use the parser to load it directly
     elif arguments.input == 'file':
 
         # Read the morphology file
-        loading_flag, cli_morphology = nmv.file.read_morphology_from_file(options=cli_options)
+        loading_flag, input_morphology = nmv.file.read_morphology_from_file(options=input_options)
 
         if not loading_flag:
             nmv.logger.log('ERROR: Cannot load the morphology file [%s]' %
-                           str(cli_options.morphology.morphology_file_path))
+                           str(input_options.morphology.morphology_file_path))
             exit(0)
 
     else:
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         exit(0)
 
     # Morphology analysis
-    analyze_morphology_skeleton(cli_morphology=cli_morphology, cli_options=cli_options)
-    nmv.logger.log('NMV Done')
+    analyze_morphology_skeleton(cli_morphology=input_morphology, cli_options=input_options)
+    nmv.logger.log('Analysis done')
 
 

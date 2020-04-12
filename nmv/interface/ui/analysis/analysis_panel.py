@@ -205,6 +205,7 @@ class CreateNeuronCard(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology, directory=morphology_analysis_directory)
 
         nmv.interface.ui_morphology.create_morphology_color_palette()
+
         # Compile a list of PDFs that will be gathered together in a single document
         analysis_pdfs = list()
 
