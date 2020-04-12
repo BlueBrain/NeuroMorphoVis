@@ -464,6 +464,14 @@ class RenderMorphology360(bpy.types.Operator):
         :param context: Panel context.
         """
 
+        # If this is a dendrogram rendering, handle it in a very specific way.
+        if nmv.interface.ui_options.morphology.reconstruction_method == \
+            nmv.enums.Skeleton.Method.DENDROGRAM:
+
+            # Cannot render a 360 of the dendrogram
+            self.report({'INFO'}, 'Cannot render a 360 of the dendrogram')
+            return {'FINISHED'}
+
         # Timer
         self.start_time = time.time()
 
@@ -638,6 +646,13 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
         :param context: Panel context.
         """
+
+        # If this is a dendrogram rendering, handle it in a very specific way.
+        if nmv.interface.ui_options.morphology.reconstruction_method == \
+            nmv.enums.Skeleton.Method.DENDROGRAM:
+            # Cannot render a 360 of the dendrogram
+            self.report({'INFO'}, 'Cannot render a progressive reconstruction of the dendrogram')
+            return {'FINISHED'}
 
         # Timer
         self.start_time = time.time()

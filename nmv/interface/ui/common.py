@@ -351,63 +351,85 @@ def render_morphology_image(panel_object,
     # Update the image file format
     bpy.context.scene.render.image_settings.file_format = image_format
 
-    # Compute the bounding box for a close up view
-    if context_scene.NMV_MorphologyRenderingView == \
-            nmv.enums.Rendering.View.CLOSE_UP:
+    # If this is a dendrogram rendering, handle it in a very specific way.
+    if nmv.interface.ui_options.morphology.reconstruction_method == \
+            nmv.enums.Skeleton.Method.DENDROGRAM:
 
-        # Compute the bounding box for a close up view
-        bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=context_scene.NMV_MorphologyCloseUpDimensions)
-
-    # Compute the bounding box for a mid shot view
-    elif context_scene.NMV_MorphologyRenderingView == \
-            nmv.enums.Rendering.View.MID_SHOT:
-
-        # Compute the bounding box for the available curves and meshes
-        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
-
-    # Compute the bounding box for the wide shot view that correspond to the whole morphology
-    else:
-
-        # Compute the full morphology bounding box
-        bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
-            morphology=nmv.interface.ui_morphology)
-
-    # Get the image suffix
-    if view == nmv.enums.Camera.View.FRONT:
-        suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
-    elif view == nmv.enums.Camera.View.SIDE:
-        suffix = nmv.consts.Suffix.MORPHOLOGY_SIDE
-    elif view == nmv.enums.Camera.View.TOP:
-        suffix = nmv.consts.Suffix.MORPHOLOGY_TOP
-    else:
-        suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
-
-    # Render at a specific resolution
-    if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
+        # Compute the bounding box of the dendrogram and stretch it
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
+        delta = bounding_box.get_largest_dimension() * 0.05
+        bounding_box.extend_bbox(delta_x=1.5 * delta, delta_y=delta)
 
         # Render the image
         nmv.rendering.render(
             bounding_box=bounding_box,
-            camera_view=view,
+            camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=context_scene.NMV_MorphologyFrameResolution,
-            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
+            image_name='%s_dendrogram' % nmv.interface.ui_options.morphology.label,
             image_format=image_format,
             image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=False)
 
-    # Render at a specific scale factor
+    # All other cases are okay
     else:
 
-        # Render the image
-        nmv.rendering.render_to_scale(
-            bounding_box=bounding_box,
-            camera_view=view,
-            image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
-            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
-            image_format=image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=False)
+        # Compute the bounding box for a close up view
+        if context_scene.NMV_MorphologyRenderingView == \
+                nmv.enums.Rendering.View.CLOSE_UP:
+
+            # Compute the bounding box for a close up view
+            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=context_scene.NMV_MorphologyCloseUpDimensions)
+
+        # Compute the bounding box for a mid shot view
+        elif context_scene.NMV_MorphologyRenderingView == \
+                nmv.enums.Rendering.View.MID_SHOT:
+
+            # Compute the bounding box for the available curves and meshes
+            bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+        # Compute the bounding box for the wide shot view that correspond to the whole morphology
+        else:
+
+            # Compute the full morphology bounding box
+            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=nmv.interface.ui_morphology)
+
+        # Get the image suffix
+        if view == nmv.enums.Camera.View.FRONT:
+            suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
+        elif view == nmv.enums.Camera.View.SIDE:
+            suffix = nmv.consts.Suffix.MORPHOLOGY_SIDE
+        elif view == nmv.enums.Camera.View.TOP:
+            suffix = nmv.consts.Suffix.MORPHOLOGY_TOP
+        else:
+            suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
+
+        # Render at a specific resolution
+        if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
+
+            # Render the image
+            nmv.rendering.render(
+                bounding_box=bounding_box,
+                camera_view=view,
+                image_resolution=context_scene.NMV_MorphologyFrameResolution,
+                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
+                image_format=image_format,
+                image_directory=nmv.interface.ui_options.io.images_directory,
+                keep_camera_in_scene=False)
+
+        # Render at a specific scale factor
+        else:
+
+            # Render the image
+            nmv.rendering.render_to_scale(
+                bounding_box=bounding_box,
+                camera_view=view,
+                image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
+                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
+                image_format=image_format,
+                image_directory=nmv.interface.ui_options.io.images_directory,
+                keep_camera_in_scene=False)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 
