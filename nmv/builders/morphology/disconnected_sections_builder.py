@@ -541,9 +541,7 @@ class DisconnectedSectionsBuilder:
         # Clearing the scene
         nmv.scene.clear_scene()
 
-        nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
-
-        nmv.logger.info('Updating Radii')
+        # Radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Create a static bevel object that you can use to scale the samples along the arbors
@@ -805,14 +803,41 @@ class DisconnectedSectionsBuilder:
     # @render_highlighted_arbors
     ################################################################################################
     def render_highlighted_arbors(self):
+        """Render the morphology with different colors per arbor for analysis.
+        """
 
-        # Set the arbors radii to be fixed to 1.0
+        # Set the default options
+        import nmv.options
+        self.options = nmv.options.NeuroMorphoVisOptions()
+
+        # Draw the whole morphology with individual colors, but to-scale
         self.options.shading.morphology_material = nmv.enums.Shader.FLAT
-        self.options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-        self.options.morphology.samples_unified_radii_value = 1.0
+        self.draw_arbors_with_individual_colors()
 
         bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
             morphology=self.morphology)
+
+        # Original skeleton ########################################################################
+        # Render the image at different projections
+        for view, suffix in zip([nmv.enums.Camera.View.FRONT,
+                                 nmv.enums.Camera.View.SIDE,
+                                 nmv.enums.Camera.View.TOP],
+                                ['original_front', 'original_side', 'original_top']):
+            nmv.rendering.render(
+                bounding_box=bounding_box,
+                camera_view=view,
+                image_resolution=2048,
+                image_name='%s_%s' % (self.morphology.label, suffix),
+                image_directory='%s/%s' % (self.options.io.analysis_directory,
+                                           self.options.morphology.label))
+
+        # Clear the scene
+        nmv.scene.clear_scene()
+
+        # Unified radius skeleton ##################################################################
+        # Set the arbors radii to be fixed to 1.0
+        self.options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+        self.options.morphology.samples_unified_radii_value = 1.0
 
         # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:
@@ -862,6 +887,7 @@ class DisconnectedSectionsBuilder:
                         image_directory='%s/%s' % (self.options.io.analysis_directory,
                                                    self.options.morphology.label))
 
+        # Projections ##############################################################################
         # Draw the whole morphology with individual colors
         self.draw_arbors_with_individual_colors()
 

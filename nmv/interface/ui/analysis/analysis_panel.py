@@ -236,7 +236,6 @@ class CreateNeuronCard(bpy.types.Operator):
         dendrogram_pdf = builder.draw_morphology_skeleton_with_matplotlib()
         analysis_pdfs.append(dendrogram_pdf)
 
-
         # Apply the analysis kernels and compile the analysis PDF
         for distribution in nmv.analysis.distributions:
 

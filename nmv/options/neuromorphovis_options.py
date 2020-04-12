@@ -270,9 +270,6 @@ class NeuroMorphoVisOptions:
         # Surface
         self.mesh.surface = nmv.enums.Meshing.Surface.get_enum(arguments.surface)
 
-
-
-
         # Save the reconstructed mesh as a .PLY file to the meshes directory
         self.mesh.export_ply = arguments.export_neuron_mesh_ply
 
@@ -383,3 +380,5 @@ class NeuroMorphoVisOptions:
         # The file format of the image
         self.rendering.image_format = nmv.enums.Image.Extension.get_enum(
             arguments.image_file_format)
+
+        def set
