@@ -91,7 +91,7 @@ class Args:
     SOMA_REPRESENTATION = '--soma-representation'
 
     # Ignore axon
-    IGNORE_AXON = '--ignore-axon'
+    IGNORE_AXON = '--ignore-axons'
 
     # Ignore apical dendrites
     IGNORE_APICAL_DENDRITES = '--ignore-apical-dendrites'
@@ -139,7 +139,7 @@ class Args:
     SOMA_COLOR = '--soma-color'
 
     # Axon color
-    AXON_COLOR = '--axon-color'
+    AXONS_COLOR = '--axons-color'
 
     # Apical dendrites color
     APICAL_DENDRITES_COLOR = '--apical-dendrites-color'

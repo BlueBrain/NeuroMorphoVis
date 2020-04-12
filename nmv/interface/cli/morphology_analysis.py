@@ -59,8 +59,7 @@ def analyze_morphology_skeleton(cli_morphology,
             nmv.file.ops.clean_and_create_directory(cli_options.io.analysis_directory)
 
         # Export the analysis results
-        nmv.interface.ui.export_analysis_results(
-            morphology=cli_morphology, directory=cli_options.io.analysis_directory)
+        nmv.interface.ui.export_analysis_results(morphology=cli_morphology, options=cli_options)
 
     else:
         nmv.logger.log('ERROR: Cannot analyze the morphology file [%s]' %

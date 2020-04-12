@@ -418,8 +418,7 @@ def export_analysis_results(morphology,
         analysis_results_string += item.write_analysis_results_to_string(morphology=morphology)
 
     # Write the text to file
-    analysis_results_file = open('%s/%s/analysis.txt' % (morphology_analysis_directory,
-                                                         morphology.label), 'w')
+    analysis_results_file = open('%s/analysis.txt' % morphology_analysis_directory, 'w')
     analysis_results_file.write(analysis_results_string)
     analysis_results_file.close()
 
@@ -428,7 +427,6 @@ def export_analysis_results(morphology,
 
     # Ensure to set the branching order to the maximum to draw the entire skeleton
     # and the dendrogram
-    options = copy.deepcopy(nmv.interface.ui_options)
     options.morphology.axon_branch_order = 1e3
     options.morphology.apical_dendrite_branch_order = 1e3
     options.morphology.basal_dendrites_branch_order = 1e3
@@ -437,11 +435,10 @@ def export_analysis_results(morphology,
     builder.render_highlighted_arbors()
 
     # Draw the morphology skeleton to append it to the analysis PDF
-    builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
+    # builder = nmv.builders.ConnectedSectionsBuilder(morphology=morphology, options=options)
 
     # Draw the dendrogram PDF and append it to the list
-    builder = nmv.builders.DendrogramBuilder(
-        morphology=nmv.interface.ui_morphology, options=options)
+    builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options)
     builder.draw_morphology_skeleton_with_matplotlib()
 
     # Apply the analysis kernels and compile the analysis PDF

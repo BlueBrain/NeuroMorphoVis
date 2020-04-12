@@ -60,35 +60,35 @@ def reconstruct_neuron_morphology(cli_morphology,
     method = cli_options.morphology.reconstruction_method
     if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
         morphology_builder = nmv.builders.DisconnectedSegmentsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS or \
             method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     # Draw the morphology as a set of spheres, where each SPHERE represents a sample
     elif method == nmv.enums.Skeleton.Method.SAMPLES:
         morphology_builder = nmv.builders.SamplesBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
         morphology_builder = nmv.builders.ConnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
         morphology_builder = nmv.builders.ProgressiveBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
         morphology_builder = nmv.builders.DendrogramBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     # Default: DisconnectedSectionsBuilder
     else:
         morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=cli_morphology, options=cli_options)
 
     # Draw the morphology skeleton and return a list of all the reconstructed objects
     morphology_skeleton_objects = morphology_builder.draw_morphology_skeleton()

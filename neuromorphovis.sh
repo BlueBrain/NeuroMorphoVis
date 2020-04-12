@@ -28,7 +28,7 @@ source $1
 #####################################################################################################
 BOOL_ARGS=''
 if [ "$IGNORE_AXON" == "yes" ];
-    then BOOL_ARGS+=' --ignore-axon '; fi
+    then BOOL_ARGS+=' --ignore-axons '; fi
 if [ "$IGNORE_BASAL_DENDRITES" == "yes" ];
     then BOOL_ARGS+=' --ignore-basal-dendrites '; fi
 if [ "$IGNORE_APICAL_DENDRITES" == "yes" ];
@@ -124,7 +124,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --spines-quality=SPINES_QUALITY                                                                 \
     --random-spines-percentage=$RANDOM_SPINES_PERCENTAGE                                            \
     --soma-color=$SOMA_COLOR                                                                        \
-    --axon-color=$AXON_COLOR                                                                        \
+    --axons-color=$AXON_COLOR                                                                        \
     --apical-dendrites-color=$APICAL_DENDRITE_COLOR                                                 \
     --basal-dendrites-color=$BASAL_DENDRITES_COLOR                                                  \
     --spines-color=$SPINES_COLOR                                                                    \

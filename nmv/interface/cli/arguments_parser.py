@@ -362,9 +362,9 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Axon color
-    arg_help = 'Axon color'
+    arg_help = 'Axons color'
     materials_args.add_argument(
-        Args.AXON_COLOR,
+        Args.AXONS_COLOR,
         action='store', default='0.0_0.0_0.0',
         help=arg_help)
 
@@ -376,7 +376,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Basal dendrites color
-    arg_help = 'Apical dendrite color'
+    arg_help = 'Apical dendrites color'
     materials_args.add_argument(
         Args.APICAL_DENDRITES_COLOR,
         action='store', default='0.0_0.0_0.0',
