@@ -700,6 +700,9 @@ def create_material(name,
         A reference to the created material
     """
 
+    # By default, set colors to filmic
+    nmv.scene.set_colors_to_filimc()
+
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_material(name='%s_color' % name, color=color)
@@ -734,7 +737,6 @@ def create_material(name,
 
     # Flat
     elif material_type == nmv.enums.Shader.FLAT:
-
         # Always set the colors to raw when using the flat material
         nmv.scene.set_colors_to_raw()
         return create_flat_material(name='%s_color' % name, color=color)

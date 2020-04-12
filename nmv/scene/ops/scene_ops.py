@@ -114,11 +114,18 @@ def set_transparent_background():
 # @set_colors_to_raw
 ####################################################################################################
 def set_colors_to_raw():
-    """
-    Use RAW colors with FLAT shading to lighten the results
-    :return:
+    """Use RAW colors with FLAT shading to lighten the results
     """
     bpy.context.scene.view_settings.view_transform = 'Raw'
+
+
+####################################################################################################
+# @set_colors_to_filimc
+####################################################################################################
+def set_colors_to_filimc():
+    """Use filmic mode for rendering.
+    """
+    bpy.context.scene.view_settings.view_transform = 'Filmic'
 
 
 ####################################################################################################

@@ -865,14 +865,18 @@ class DisconnectedSectionsBuilder:
         # Draw the whole morphology with individual colors
         self.draw_arbors_with_individual_colors()
 
-        # Render the image
-        nmv.rendering.render(
-            bounding_box=bounding_box,
-            camera_view=nmv.enums.Camera.View.FRONT,
-            image_resolution=2048,
-            image_name='morphology',
-            image_directory='%s/%s' % (self.options.io.analysis_directory,
-                                       self.options.morphology.label))
+        # Render the image at different projections
+        for view, suffix in zip([nmv.enums.Camera.View.FRONT,
+                                 nmv.enums.Camera.View.SIDE,
+                                 nmv.enums.Camera.View.TOP],
+                             ['front', 'side', 'top']):
+            nmv.rendering.render(
+                bounding_box=bounding_box,
+                camera_view=view,
+                image_resolution=2048,
+                image_name='%s_%s' % (self.morphology.label, suffix),
+                image_directory='%s/%s' % (self.options.io.analysis_directory,
+                                           self.options.morphology.label))
 
         # Clear the scene
         nmv.scene.clear_scene()
