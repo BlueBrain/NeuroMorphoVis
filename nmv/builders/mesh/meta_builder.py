@@ -450,6 +450,8 @@ class MetaBuilder:
         """Reconstructs the neuronal mesh using meta objects.
         """
 
+        nmv.logger.header('Building Mesh: MetaBuilder')
+
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
@@ -500,8 +502,8 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.log(self.profiling_statistics)
+        nmv.logger.info('Mesh Reconstruction Done!')
+        nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='meta')

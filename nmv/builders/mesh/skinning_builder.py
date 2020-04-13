@@ -116,6 +116,9 @@ class SkinningBuilder:
         # Reindexing time
         self.reindexing_time = 0
 
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
     ################################################################################################
     # @update_morphology_skeleton
     ################################################################################################
@@ -298,11 +301,20 @@ class SkinningBuilder:
                 arbor, samples_global_arbor_index, max_branching_order)
             self.reindexing_time += time.time() - reindexing_time
 
-            # Create the initial vertex of the arbor skeleton at the origin
-            arbor_bmesh_object = nmv.bmeshi.create_vertex()
+            # If the arbor is not far from soma, then connect it to the origin
+            if not arbor.far_from_soma:
+                arbor_bmesh_object = nmv.bmeshi.create_vertex()
 
-            # Add an auxiliary sample just before the arbor starts
-            auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[0].point.normalized()
+                # Add an auxiliary sample just before the arbor starts
+                auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[
+                    0].point.normalized()
+
+            else:
+                arbor_bmesh_object = nmv.bmeshi.create_vertex(location=arbor.samples[0].point)
+
+                # Add an auxiliary sample just after the arbor starts
+                auxiliary_point = arbor.samples[0].point + 0.01 * arbor.samples[
+                    0].point.normalized()
 
             # Extrude to the auxiliary sample
             nmv.bmeshi.ops.extrude_vertex_towards_point(arbor_bmesh_object, 0, auxiliary_point)
@@ -462,6 +474,8 @@ class SkinningBuilder:
         """Reconstructs the neuronal mesh using the skinning modifiers in Blender.
         """
 
+        nmv.logger.header('Building Mesh: SkinningBuilder')
+
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
         nmv.builders.create_skeleton_materials(builder=self)
@@ -494,35 +508,35 @@ class SkinningBuilder:
             self.profiling_statistics += stats
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('extrusion',
-                                                                 self.extrusion_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('extrusion',
+                                                                   self.extrusion_time)
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('subdivision',
-                                                                 self.subdivision_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('subdivision',
+                                                                   self.subdivision_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('skin_modifier',
-                                                                 self.skin_modifier_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('skin_modifier',
+                                                                   self.skin_modifier_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('update_radii',
-                                                                 self.update_radii_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('update_radii',
+                                                                   self.update_radii_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('mesh_conversion',
-                                                                 self.mesh_conversion_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('mesh_conversion',
+                                                                   self.mesh_conversion_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('reindexing',
-                                                                 self.reindexing_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('reindexing',
+                                                                   self.reindexing_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('smooth_shading',
-                                                                 self.smooth_shading_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('smooth_shading',
+                                                                   self.smooth_shading_time)
 
         # Details about the arbors building
-        self.profiling_statistics += '\tStats. @%s: [%.3f]\n' % ('creating_modifier',
-                                                                 self.creating_modifier_time)
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('creating_modifier',
+                                                                   self.creating_modifier_time)
 
         # Tessellation
         result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
@@ -552,8 +566,8 @@ class SkinningBuilder:
         self.profiling_statistics += stats
 
         # Done
-        nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.log(self.profiling_statistics)
+        nmv.logger.info('Mesh Reconstruction Done!')
+        nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='skinning')

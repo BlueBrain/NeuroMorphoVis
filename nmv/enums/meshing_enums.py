@@ -236,10 +236,10 @@ class Meshing:
         """
 
         # Smooth surface
-        SMOOTH = 'SURFACE_ROUGH'
+        SMOOTH = 'SURFACE_SMOOTH'
 
         # Add noise to the surface to make it rough
-        ROUGH = 'SURFACE_SMOOTH'
+        ROUGH = 'SURFACE_ROUGH'
 
         ############################################################################################
         # @__init__

@@ -51,7 +51,7 @@ def draw_soma_to_arbors_connectivity(panel,
     meshing_options = nmv.interface.ui_options.mesh
 
     # The soft body soma must be used to connect the arbors
-    if meshing_options.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
+    if meshing_options.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
         soma_connection_row = panel.layout.row()
         soma_connection_row.label(text='Arbors to Soma:')
         soma_connection_row.prop(scene, 'NMV_SomaArborsConnection', expand=True)
@@ -191,8 +191,8 @@ def draw_piece_wise_meshing_options(panel,
     # Which technique to use to reconstruct the soma
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
-    soma_type_row.prop(scene, 'NMV_MeshingPiecewiseSoma', expand=True)
-    nmv.interface.ui_options.mesh.soma_reconstruction_technique = scene.NMV_MeshingPiecewiseSoma
+    soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Edges
     mesh_edges_row = panel.layout.row()
@@ -238,8 +238,8 @@ def draw_skinning_meshing_options(panel,
     # Which technique to use to reconstruct the soma
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
-    soma_type_row.prop(scene, 'NMV_MeshingPiecewiseSoma', expand=True)
-    nmv.interface.ui_options.mesh.soma_reconstruction_technique = scene.NMV_MeshingPiecewiseSoma
+    soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Surface roughness
     if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
@@ -296,22 +296,26 @@ def draw_union_meshing_options(panel,
     # Which technique to use to reconstruct the soma
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
-    soma_type_row.prop(scene, 'NMV_MeshingPiecewiseSoma', expand=True)
-    nmv.interface.ui_options.mesh.soma_reconstruction_technique = scene.NMV_MeshingPiecewiseSoma
-
-    # Surface roughness
-    mesh_surface_row = panel.layout.row()
-    mesh_surface_row.label(text='Surface:')
-    mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-
-    # Pass options from UI to system
-    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
+    soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Edges
     mesh_edges_row = panel.layout.row()
     mesh_edges_row.label(text='Edges:')
     mesh_edges_row.prop(scene, 'NMV_MeshSmoothing', expand=True)
     nmv.interface.ui_options.mesh.edges = scene.NMV_MeshSmoothing
+
+    if scene.NMV_MeshSmoothing == nmv.enums.Meshing.Edges.SMOOTH:
+
+        # Surface roughness
+        mesh_surface_row = panel.layout.row()
+        mesh_surface_row.label(text='Surface:')
+        mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
+
+    # Use a smooth surface
+    else:
+        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
@@ -404,7 +408,7 @@ def draw_color_options(panel,
             # If the homogeneous color flag is set
             if scene.NMV_MeshHomogeneousColor or  nmv.interface.ui_options.mesh.soma_connection == \
                     nmv.enums.Meshing.SomaConnection.CONNECTED and  \
-                nmv.interface.ui_options.mesh.soma_reconstruction_technique == \
+                nmv.interface.ui_options.mesh.soma_type == \
                     nmv.enums.Soma.Representation.META_BALLS:
                 neuron_color_row = layout.row()
                 neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')

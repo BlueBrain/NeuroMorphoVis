@@ -159,7 +159,7 @@ def reconstruct_soma_mesh(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
     
-    if builder.options.mesh.soma_reconstruction_technique == \
+    if builder.options.mesh.soma_type == \
             nmv.enums.Soma.Representation.META_BALLS:
 
         # If the soma is connected to the root arbors
@@ -215,8 +215,8 @@ def get_neuron_mesh_objects(builder,
             if 'Apical' in scene_object.name or \
                'Basal' in scene_object.name or \
                'Axon' in scene_object.name or \
-               'soma' in scene_object.name or \
-                 builder.morphology.label in scene_object.name:
+               'Soma' in scene_object.name or \
+                    builder.morphology.label in scene_object.name:
                 neuron_mesh_objects.append(scene_object)
 
     # Return the list
@@ -237,20 +237,11 @@ def adjust_texture_mapping(mesh_objects,
         Texture space size, by default 5.0.
     """
 
-    nmv.logger.info('UV Mapping')
+    nmv.logger.info('UV mapping')
 
-    # Do it mesh by mesh
+    # Adjust the UVs
     for i, mesh_object in enumerate(mesh_objects):
-
-        # Adjust the size
         nmv.shading.adjust_material_uv(mesh_object, size=texspace_size)
-
-        # Show the progress
-        nmv.utilities.show_progress(
-            '* Adjusting the UV mapping', float(i), float(len(mesh_objects)))
-
-    # Show the progress
-    nmv.utilities.show_progress('* Adjusting the UV mapping', 0, 0, done=True)
 
 
 ####################################################################################################
@@ -343,7 +334,7 @@ def smooth_arbors_to_soma_connections(builder):
                 for arbor in builder.morphology.axons:
                     select_arbor_to_soma_vertices(soma_mesh=builder.soma_mesh, arbor=arbor)
 
-    if builder.options.mesh.soma_reconstruction_technique == \
+    if builder.options.mesh.soma_type == \
             nmv.enums.Soma.Representation.META_BALLS:
 
         # Apply the smoothing filter on the selected vertices
@@ -370,17 +361,17 @@ def connect_arbors_to_soma(builder):
     """
 
     # Determine the connection function
-    if builder.options.mesh.soma_reconstruction_technique == \
+    if builder.options.mesh.soma_type == \
             nmv.enums.Soma.Representation.SOFT_BODY:
         connection_function = nmv.skeleton.ops.connect_arbor_to_soft_body_soma
-    elif builder.options.mesh.soma_reconstruction_technique == \
+    elif builder.options.mesh.soma_type == \
             nmv.enums.Soma.Representation.META_BALLS:
         connection_function = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma
     else:
         return
 
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-        nmv.logger.header('Connecting arbors to soma')
+        nmv.logger.info('Connecting arbors to soma')
 
         # Connecting axons
         if not builder.options.morphology.ignore_axons:
@@ -425,7 +416,7 @@ def decimate_neuron_mesh(builder):
 
     # Ensure that the tessellation level is within range
     if 0.01 < builder.options.mesh.tessellation_level < 1.0:
-        nmv.logger.header('Decimating Mesh')
+        nmv.logger.info('Decimating Mesh')
 
         # Get neuron objects
         neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=True)
@@ -460,7 +451,7 @@ def add_surface_noise_to_arbor(builder):
     """
 
     if builder.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-        nmv.logger.header('Adding surface roughness to arbors')
+        nmv.logger.info('Adding surface roughness to arbors')
 
         # Get a list of all the meshes of the reconstructed arbors
         mesh_objects = get_neuron_mesh_objects(builder=builder)
@@ -469,47 +460,28 @@ def add_surface_noise_to_arbor(builder):
         # and the arbors are reconstructed with minimal number of samples that is sufficient to
         # make them smooth. Therefore, we must add the noise around the soma and its connections
         # to the arbors (the stable extent) with a different amplitude.
-        stable_extent_center, stable_extent_radius = nmv.skeleton.ops.get_stable_soma_extent(
-            builder.morphology)
+        stable_extent_center, stable_extent_radius = \
+            nmv.skeleton.ops.get_stable_soma_extent_for_morphology(builder.morphology)
 
-        # Apply the operation to every mesh object in the list
-        for mesh_object in mesh_objects:
+        # The subdivision parameters are based on the mesh builder
+        meshing_technique = builder.options.mesh.meshing_technique
+        if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
+            for mesh_object in mesh_objects:
+                nmv.mesh.add_surface_noise_to_mesh(
+                    mesh_object=mesh_object, subdivision_level=1, noise_strength=0.40)
 
-            # Apply the noise addition filter
-            for i in range(len(mesh_object.data.vertices)):
-                vertex = mesh_object.data.vertices[i]
-                if nmv.geometry.ops.is_point_inside_sphere(
-                        stable_extent_center, stable_extent_radius, vertex.co):
-                    if nmv.geometry.ops.is_point_inside_sphere(
-                            stable_extent_center, builder.morphology.soma.smallest_radius,
-                            vertex.co):
-                        vertex.select = True
-                        vertex.co = vertex.co + (vertex.normal * random.uniform(0, 0.1))
-                        vertex.select = False
-                    else:
-                        if 0.0 < random.uniform(0, 1.0) < 0.1:
-                            vertex.select = True
-                            vertex.co = vertex.co + (vertex.normal * random.uniform(-0.1, 0.3))
-                            vertex.select = False
-                else:
+        elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
+            for mesh_object in mesh_objects:
+                nmv.mesh.add_surface_noise_to_mesh(
+                    mesh_object=mesh_object, subdivision_level=1, noise_strength=0.25)
 
-                    value = random.uniform(-0.1, 0.1)
-                    if 0.0 < random.uniform(0, 1.0) < 0.045:
-                        value += random.uniform(0.05, 0.1)
-                    elif 0.045 < random.uniform(0, 1.0) < 0.06:
-                        value += random.uniform(0.2, 0.4)
-                    vertex.select = True
-                    vertex.co = vertex.co + (vertex.normal * value)
-                    vertex.select = False
-
-            # Deselect all the vertices
-            nmv.mesh.ops.deselect_all_vertices(mesh_object=mesh_object)
-
-            # Decimate each mesh object
-            nmv.mesh.ops.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.5)
-
-            # Smooth each mesh object
-            nmv.mesh.ops.smooth_object(mesh_object=mesh_object, level=1)
+        elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
+            for mesh_object in mesh_objects:
+                nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
+                nmv.mesh.add_surface_noise_to_mesh(
+                    mesh_object=mesh_object, subdivision_level=0, noise_strength=0.25)
+        else:
+            return
 
 
 ####################################################################################################
@@ -530,14 +502,14 @@ def add_spines_to_surface(builder,
 
     # Build spines from a BBP circuit
     if builder.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-        nmv.logger.header('Adding Spines from a BBP Circuit')
+        nmv.logger.info('Adding Spines from a BBP Circuit')
         spines_objects = nmv.builders.build_circuit_spines(
             morphology=builder.morphology, blue_config=builder.options.morphology.blue_config,
             gid=builder.options.morphology.gid, material=builder.spines_materials[0])
 
     # Just add some random spines for the look only
     elif builder.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-        nmv.logger.header('Adding Random Spines')
+        nmv.logger.info('Adding Random Spines')
         spines_builder = nmv.builders.RandomSpineBuilder(
             morphology=builder.morphology, options=builder.options)
         spines_objects = spines_builder.add_spines_to_morphology()
@@ -692,7 +664,7 @@ def transform_to_global_coordinates(builder):
         if builder.options.morphology.gid is None:
             return 
 
-        nmv.logger.header('Transforming to global coordinates')
+        nmv.logger.info('Transforming to global coordinates')
         
         # Get neuron objects
         neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)

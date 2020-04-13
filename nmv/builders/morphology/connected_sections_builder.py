@@ -75,6 +75,9 @@ class ConnectedSectionsBuilder:
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
 
+        # Validate the arbors connectivity to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)
+
     ################################################################################################
     # @create_single_skeleton_materials_list
     ################################################################################################

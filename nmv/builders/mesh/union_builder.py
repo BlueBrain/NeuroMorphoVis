@@ -80,6 +80,9 @@ class UnionBuilder:
         # Stats. about the mesh
         self.mesh_statistics = 'UnionBuilder Mesh: \n'
 
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
     ################################################################################################
     # @update_morphology_skeleton
     ################################################################################################
@@ -164,8 +167,9 @@ class UnionBuilder:
         nmv.skeleton.ops.get_connected_sections_poly_lines_recursively(
             section=arbor, poly_lines=arbor_poly_lines, max_branching_order=max_branching_order)
 
-        # If the arbor not connected to the soma, then add a point at the origin
-        if not connection_to_soma:
+        # If the arbor not connected to the soma, then add a point at the origin, only if the arbor
+        # is actually connected to the soma
+        if not connection_to_soma and not arbor.far_from_soma:
 
             # Add an auxiliary point at the origin to the first poly-line in the list
             arbor_poly_lines[0].samples.insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
@@ -359,6 +363,8 @@ class UnionBuilder:
     def reconstruct_mesh(self):
         """Reconstructs the mesh.
         """
+
+        nmv.logger.header('Building Mesh: UnionBuilder')
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment

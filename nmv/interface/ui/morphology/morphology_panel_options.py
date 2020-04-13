@@ -195,17 +195,18 @@ bpy.types.Scene.NMV_MorphologyBranching = bpy.props.EnumProperty(
 
 # Soma connection to roots
 bpy.types.Scene.NMV_SomaConnectionToRoot = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN,
+    items=[(nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN,
             'Connect Connected',
-            'Connect the arbors that are physically connected to the origin of the soma'),
-           (nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN,
+            'Connect all the arbors that are physically connected to the origin of the soma'),
+           (nmv.enums.Skeleton.Roots.ALL_CONNECTED,
             'All Connected',
-            'Connect the all the arbors to the origin of the soma even if they intersect'),
-           (nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA,
+            'Connect all the arbors to the origin of the soma even if they intersect or too far '
+            'away from the soma'),
+           (nmv.enums.Skeleton.Roots.ALL_DISCONNECTED,
             'All Disconnected',
             'Disconnect all the arbors from the soma')],
     name='',
-    default=nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN)
+    default=nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN)
 
 # Arbor quality
 bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(

@@ -182,7 +182,7 @@ def set_reconstruction_options(layout,
     else:
         options.morphology.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
         options.morphology.branching = nmv.enums.Skeleton.Branching.RADII
-        options.morphology.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA
+        options.morphology.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_DISCONNECTED
 
     # Sections resampling
     resampling_row = layout.row()

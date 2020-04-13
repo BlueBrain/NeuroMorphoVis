@@ -53,7 +53,7 @@ bpy.types.Scene.NMV_MeshingTechnique = bpy.props.EnumProperty(
     default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
 # Build soma
-bpy.types.Scene.NMV_MeshingPiecewiseSoma = bpy.props.EnumProperty(
+bpy.types.Scene.NMV_MeshingSomaType = bpy.props.EnumProperty(
     items=[(nmv.enums.Soma.Representation.META_BALLS,
             'MetaBalls',
             'Reconstruct a rough shape of the soma using MetaBalls. '

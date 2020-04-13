@@ -243,7 +243,7 @@ class NeuroMorphoVisOptions:
         self.mesh.reconstruct_neuron_mesh = arguments.reconstruct_neuron_mesh
 
         # Soma reconstruction technique 
-        self.mesh.soma_reconstruction_technique = nmv.enums.Soma.Representation.get_enum(
+        self.mesh.soma_type = nmv.enums.Soma.Representation.get_enum(
             arguments.soma_representation)
 
         # Tessellation level (between 0.1 and 1.0)

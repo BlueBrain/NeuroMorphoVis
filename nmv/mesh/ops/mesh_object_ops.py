@@ -634,3 +634,77 @@ def join_mesh_objects(mesh_list,
 
     # Return a reference to the resulting mesh
     return result_mesh
+
+
+####################################################################################################
+# @subdivide_mesh
+####################################################################################################
+def subdivide_mesh(mesh_object,
+                   level):
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Toggle from the object mode to edit mode
+    bpy.ops.object.editmode_toggle()
+
+    # Select all the vertices of the mesh
+    bpy.ops.mesh.select_all(action='TOGGLE')
+
+    # Smooth
+    for i in range(level):
+        bpy.ops.mesh.subdivide(smoothness=1)
+
+    # Toggle from the edit mode to the object mode
+    bpy.ops.object.editmode_toggle()
+
+
+####################################################################################################
+# @add_surface_noise_to_mesh_using_displacement_modifier
+####################################################################################################
+def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
+                                                          strength=0.25):
+
+    # Deselect everything in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Set the 0th mesh to be active
+    nmv.scene.set_active_object(mesh_object)
+
+    # Create a displacement modifier
+    displacement_modifier = mesh_object.modifiers.new(name="Displace", type='DISPLACE')
+
+    # Add a new texture for the modifier
+    displacement_modifier.texture = bpy.data.textures.new(name='SurfaceNoise%s' % mesh_object.name,
+                                                          type='DISTORTED_NOISE')
+
+    # Update the noise range
+    displacement_modifier.strength = strength
+
+    # Apply the modifiers
+    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
+
+
+####################################################################################################
+# @add_surface_noise_to_mesh
+####################################################################################################
+def add_surface_noise_to_mesh(mesh_object,
+                              noise_strength=0.25,
+                              subdivision_level=1):
+
+    # Subdivide the surface
+    if subdivision_level > 0:
+        subdivide_mesh(mesh_object=mesh_object, level=subdivision_level)
+
+    # Adding the noise
+    add_surface_noise_to_mesh_using_displacement_modifier(mesh_object=mesh_object,
+                                                          strength=noise_strength)
+
+    # Decimate
+    decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
+
+    # Smooth using Catmull-Clark subdivision
+    smooth_object(mesh_object=mesh_object, level=1)

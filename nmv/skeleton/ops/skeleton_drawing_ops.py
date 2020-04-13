@@ -142,7 +142,7 @@ def extrude_connected_sections(section,
                                render_frame=False,
                                frame_destination=None,
                                camera=None,
-                               roots_connection=nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA):
+                               roots_connection=nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:
@@ -405,7 +405,7 @@ def draw_connected_sections(section, name,
                             frame_destination=None,
                             camera=None,
                             ignore_branching_samples=False,
-                            roots_connection=nmv.enums.Skeleton.Roots.DISCONNECTED_FROM_SOMA):
+                            roots_connection=nmv.enums.Skeleton.Roots.ALL_DISCONNECTED):
     """Draw a list of sections connected together as a poly-line.
 
     :param section:

@@ -64,7 +64,7 @@ class MorphologyOptions:
         self.edges = nmv.enums.Skeleton.Edges.SHARP
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED
 
         # Enable/Disable axon reconstruction
         self.ignore_axons = False
@@ -157,7 +157,7 @@ class MorphologyOptions:
         self.edges = nmv.enums.Skeleton.Edges.SHARP
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED
 
         # Enable/Disable axon reconstruction
         self.ignore_axons = False
@@ -224,7 +224,7 @@ class MorphologyOptions:
         self.edges = nmv.enums.Skeleton.Edges.SHARP
 
         # The arbors connectivity to the soma
-        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED_TO_ORIGIN
+        self.arbors_to_soma_connection = nmv.enums.Skeleton.Roots.ALL_CONNECTED
 
         # Enable/Disable axon reconstruction
         self.ignore_axons = False

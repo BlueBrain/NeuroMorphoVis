@@ -97,6 +97,9 @@ class PiecewiseBuilder:
         # Stats. about the mesh
         self.mesh_statistics = 'PiecewiseBuilder Mesh: \n'
 
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
     ################################################################################################
     # @build_arbors
     ################################################################################################
@@ -237,11 +240,13 @@ class PiecewiseBuilder:
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED and \
-            self.options.mesh.soma_reconstruction_technique == nmv.enums.Soma.Representation.SOFT_BODY:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+            if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+                roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA
+            else:
+                roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN
         else:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
@@ -273,9 +278,9 @@ class PiecewiseBuilder:
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
         if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_SOMA
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA
         else:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECTED_TO_ORIGIN
+            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN
 
         # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
         self.build_arbors(bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
@@ -333,6 +338,8 @@ class PiecewiseBuilder:
         builder.
         """
 
+        nmv.logger.header('Building Mesh: PiecewiseBuilder')
+
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
         nmv.builders.mesh.create_skeleton_materials(builder=self)
@@ -388,8 +395,8 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.header('Mesh Reconstruction Done!')
-        nmv.logger.info(self.profiling_statistics)
+        nmv.logger.info('Mesh Reconstruction Done!')
+        nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='piecewise')

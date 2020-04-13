@@ -58,6 +58,9 @@ class ShadingOptions:
         # Axon color for the mesh toolbox
         self.mesh_axons_color = nmv.enums.Color.AXONS
 
+        # Apical dendrites color for the mesh toolbox
+        self.mesh_apical_dendrites_color = nmv.enums.Color.APICAL_DENDRITES
+
         # Basal dendrites color for the mesh toolbox
         self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
 

@@ -395,15 +395,19 @@ class Skeleton:
         def __init__(self):
             pass
 
-        # The arbors are disconnected from the soma
-        DISCONNECTED_FROM_SOMA = 'ARBORS_ROOTS_DISCONNECTED_FROM_SOMA'
-
-        # The arbors are connected to the soma if they are primary with no intersection
-        CONNECTED_TO_SOMA = 'ARBORS_ROOTS_CONNECTED_TO_SOMA'
-
-        # The arbors are connected to the origin (0, 0, 0) if they are primary
-        CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_CONNECTED_TO_ORIGIN'
-
         # All the arbors are connected to the origin even if some of them are not physically
         # connected to the soma. This mode is used for piecewise meshing
-        ALL_CONNECTED_TO_ORIGIN = 'ARBORS_ROOTS_ALL_CONNECTED_TO_ORIGIN'
+        ALL_CONNECTED = 'ALL_ROOTS_CONNECTED_TO_ORIGIN'
+
+        # The arbors are disconnected from the soma, either the extrusion points ot the origin
+        ALL_DISCONNECTED = 'ALL_ROOTS_DISCONNECTED'
+
+        # The arbors are connected to the origin if the are physically connected to the soma
+        CONNECT_CONNECTED_TO_ORIGIN = 'ROOTS_CONNECT_CONNECTED_TO_ORIGIN'
+
+        # The arbors are connected to the soma if they are primary with no intersection
+        CONNECT_CONNECTED_TO_SOMA = 'ROOTS_CONNECT_CONNECTED_TO_SOMA'
+
+
+
+
