@@ -280,7 +280,9 @@ def create_transparent_material(name,
         material_reference.metallic = 0.0
 
         # Transparent shading
-        bpy.context.scene.shading.show_xray = True
+        bpy.context.scene.display.shading.light = 'STUDIO'
+        bpy.context.scene.display.shading.studio_light = 'Default'
+        bpy.context.scene.display.shading.show_xray = True
 
     else:
 

@@ -48,7 +48,7 @@ bpy.types.Scene.NMV_SomaMetaBallResolution = bpy.props.FloatProperty(
     name='MetaBall Resolution',
     description='The resolution of the MetaBall object if the MetaBalls method is selected. '
                 'This resolution is valid between 0.01 - 1.0',
-    default=0.2, min=0.05, max=1.0)
+    default=nmv.consts.MetaBall.SOMA_META_DEFAULT_RESOLUTION, min=0.05, max=1.0)
 
 # Profile
 bpy.types.Scene.NMV_SomaProfile = bpy.props.EnumProperty(
@@ -116,8 +116,8 @@ bpy.types.Scene.NMV_IrregularSubdivisions = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_SimulationSteps = bpy.props.IntProperty(
     name='Simulation Steps',
     description='The number of time steps required to perform the simulation, by default 100. '
-                'Minimum value 50, maximum value is 300',
-    default=100, min=50, max=300)
+                'Minimum value 100, maximum value is 300',
+    default=100, min=100, max=300)
 
 # Soma simulation progress bar
 bpy.types.Scene.NMV_SomaSimulationProgress = bpy.props.IntProperty(

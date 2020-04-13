@@ -166,6 +166,30 @@ def draw_soma_sphere(builder):
 
 
 ####################################################################################################
+# @draw_meta_balls_soma
+####################################################################################################
+def draw_meta_balls_soma(builder):
+    """Draws the soma.
+
+    :param builder:
+        A given skeleton builder.
+    """
+
+    # Create the MetaBuilder
+    soma_builder_object = nmv.builders.SomaMetaBuilder(builder.morphology, builder.options)
+
+    # Reconstruct the soma, don't apply the default shader and use the one from the
+    # morphology panel
+    soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+    # Apply the shader given in the morphology options, not the one in the soma toolbox
+    nmv.shading.set_material_to_object(soma_mesh, builder.soma_materials[0])
+
+    # Add the soma mesh to the morphology objects
+    builder.morphology_objects.append(soma_mesh)
+
+
+####################################################################################################
 # @draw_soma
 ####################################################################################################
 def draw_soma(builder):
@@ -207,19 +231,7 @@ def draw_soma(builder):
 
     elif builder.options.morphology.soma_representation == \
             nmv.enums.Soma.Representation.META_BALLS:
-
-        # Create the MetaBuilder
-        soma_builder_object = nmv.builders.SomaMetaBuilder(builder.morphology, builder.options)
-
-        # Reconstruct the soma, don't apply the default shader and use the one from the
-        # morphology panel
-        soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader given in the morphology options, not the one in the soma toolbox
-        nmv.shading.set_material_to_object(soma_mesh, builder.soma_materials[0])
-
-        # Add the soma mesh to the morphology objects
-        builder.morphology_objects.append(soma_mesh)
+        draw_meta_balls_soma(builder=builder)
 
     # Otherwise, ignore the soma drawing
     else:

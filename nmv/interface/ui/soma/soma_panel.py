@@ -197,9 +197,9 @@ class SomaPanel(bpy.types.Panel):
         render_animations_buttons_row.operator('nmv.render_soma_360', icon='FORCE_MAGNETIC')
 
         # Progressive rendering is only for the soft body physics
-        if bpy.context.scene.NMV_SomaReconstructionMethod == \
-            nmv.enums.Soma.Representation.SOFT_BODY:
-            render_animations_buttons_row.operator('nmv.render_soma_progressive', icon='FORCE_HARMONIC')
+        if bpy.context.scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.Representation.SOFT_BODY:
+            render_animations_buttons_row.operator('nmv.render_soma_progressive',
+                                                   icon='FORCE_HARMONIC')
 
         # Soma rendering progress bar
         soma_rendering_progress_row = layout.row()

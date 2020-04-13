@@ -46,7 +46,7 @@ def plot_analysis_results(morphology,
     """
 
     # Create the color palette
-    nmv.interface.ui_morphology.create_morphology_color_palette()
+    morphology.create_morphology_color_palette()
 
     # Ensure to set the branching order to maximum to draw the entire skeleton and dendrogram
     options_clone = copy.deepcopy(options)
@@ -70,7 +70,7 @@ def plot_analysis_results(morphology,
                                                        options=options_clone)
     builder.render_highlighted_arbors()
 
-    # TODO:
+    # TODO: Verify the installation of matplotlib
     # Apply the analysis kernels and compile the analysis distributions
     for distribution in nmv.analysis.distributions:
         distribution.apply_kernel(morphology=morphology, options=options)

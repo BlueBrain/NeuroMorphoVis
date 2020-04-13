@@ -46,7 +46,8 @@ class DisconnectedSectionsBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 force_meta_ball_soma=False):
         """Constructor.
 
         :param morphology:
@@ -85,6 +86,9 @@ class DisconnectedSectionsBuilder:
 
         # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
         self.articulations_spheres = list()
+
+        # Force using the MetaBalls soma in case loading a new morphology
+        self.force_meta_ball = force_meta_ball_soma
 
     ################################################################################################
     # @create_single_skeleton_materials_list
@@ -519,7 +523,12 @@ class DisconnectedSectionsBuilder:
             self.draw_articulations()
 
         # Draw the soma
-        nmv.builders.morphology.draw_soma(builder=self)
+        if self.force_meta_ball:
+
+            # In case of reloading morphology
+            nmv.builders.draw_meta_balls_soma(builder=self)
+        else:
+            nmv.builders.morphology.draw_soma(builder=self)
 
         # Transforming to global coordinates
         nmv.builders.morphology.transform_to_global_coordinates(builder=self)

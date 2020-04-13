@@ -226,14 +226,10 @@ class LoadMorphology(bpy.types.Operator):
 
         # Always use meta builder to reconstruct the initial soma
         options = copy.deepcopy(nmv.interface.ui_options)
-        options.soma.method = nmv.enums.Soma.Representation.META_BALLS
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology,
-            options=options)
-
-        # Draw the morphology skeleton and return a list of all the reconstructed objects
+            morphology=nmv.interface.ui_morphology, options=options, force_meta_ball_soma=True)
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
 
         drawing_time = time.time()
