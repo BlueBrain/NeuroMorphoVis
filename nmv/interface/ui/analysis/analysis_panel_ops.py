@@ -444,11 +444,13 @@ def export_analysis_results(morphology,
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
                                       resolution=4000)
 
-    return
+
     # Render the arbors
     nmv.scene.clear_scene()
     builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options_clone)
     builder.render_highlighted_arbors()
+
+    return
 
     # Apply the analysis kernels and compile the analysis distributions
     for distribution in nmv.analysis.distributions:

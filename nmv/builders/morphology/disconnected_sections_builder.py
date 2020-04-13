@@ -834,7 +834,8 @@ class DisconnectedSectionsBuilder:
         # Unified radius skeleton ##################################################################
         # Set the arbors radii to be fixed to 1.0
         self.options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-        self.options.morphology.samples_unified_radii_value = 1.0
+        largest_dimension = self.morphology.bounding_box.get_largest_dimension()
+        self.options.morphology.samples_unified_radii_value = largest_dimension / 1000.0
 
         # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:
@@ -885,6 +886,12 @@ class DisconnectedSectionsBuilder:
                                                    self.options.morphology.label))
 
         # Projections ##############################################################################
+
+        # To draw the projections to scale, we must compute the radii based on extents
+        # Get the largest dimension of the bounding box of the morphology
+        largest_dimension = self.morphology.bounding_box.get_largest_dimension()
+        self.options.morphology.samples_unified_radii_value = largest_dimension / 1000.0
+
         # Draw the whole morphology with individual colors
         self.draw_arbors_with_individual_colors()
 
