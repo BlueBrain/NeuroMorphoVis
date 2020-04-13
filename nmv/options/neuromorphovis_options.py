@@ -106,7 +106,7 @@ class NeuroMorphoVisOptions:
         ############################################################################################
 
         # Morphology skeleton style
-        self.morphology.skeleton = nmv.enums.Skeleton.Style.get_enum(
+        self.morphology.arbor_style = nmv.enums.Skeleton.Style.get_enum(
             arguments.morphology_skeleton_style)
 
         # Morphology reconstruction method

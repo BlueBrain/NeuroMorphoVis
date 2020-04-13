@@ -168,6 +168,8 @@ class Camera:
         # Set the image file name
         bpy.data.scenes['Scene'].render.filepath = '%s.%s' % (image_name, image_extension)
 
+        nmv.scene.set_transparent_background()
+
         # Render the image and ignore Blender verbosity
         nmv.utilities.disable_std_output()
         bpy.ops.render.render(write_still=True)

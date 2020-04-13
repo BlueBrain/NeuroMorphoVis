@@ -103,6 +103,7 @@ def set_transparent_background():
 
         # Transparency
         bpy.context.scene.render.film_transparent = True
+        bpy.context.scene.render.image_settings.color_mode = 'RGBA'
 
     # 2.79
     else:

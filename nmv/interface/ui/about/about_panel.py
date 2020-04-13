@@ -183,8 +183,8 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
             'FINISHED'
         """
 
-        import webbrowser
-        webbrowser.open('http://thisisaurl.org')
+        # TODO: Verify git or use wget or curl.
+        # TODO: Ignore this option for windows.
 
         # Get the current path
         current_path = os.path.dirname(os.path.realpath(__file__))

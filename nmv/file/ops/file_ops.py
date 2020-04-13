@@ -139,39 +139,39 @@ def create_output_tree(output_directory):
 
     # SLURM directory
     slurm_directory = '%s/%s' % (output_directory, Paths.SLURM_FOLDER)
-    clean_and_create_directory(slurm_directory)
+    create_directory(slurm_directory)
 
     # SLURM jobs directory
     slurm_jobs_directory = '%s/%s' % (output_directory, Paths.SLURM_JOBS_FOLDER)
-    clean_and_create_directory(slurm_jobs_directory)
+    create_directory(slurm_jobs_directory)
 
     # SLURM logs directory
     slurm_logs_directory = '%s/%s' % (output_directory, Paths.SLURM_LOGS_FOLDER)
-    clean_and_create_directory(slurm_logs_directory)
+    create_directory(slurm_logs_directory)
 
     # Analysis directory
     analysis_directory = '%s/%s' % (output_directory, Paths.ANALYSIS_FOLDER)
-    clean_and_create_directory(analysis_directory)
+    create_directory(analysis_directory)
 
     # Morphologies directory
     meshes_directory = '%s/%s' % (output_directory, Paths.MORPHOLOGIES_FOLDER)
-    clean_and_create_directory(meshes_directory)
+    create_directory(meshes_directory)
 
     # Meshes directory
     meshes_directory = '%s/%s' % (output_directory, Paths.MESHES_FOLDER)
-    clean_and_create_directory(meshes_directory)
+    create_directory(meshes_directory)
 
     # Images directory
     images_directory = '%s/%s' % (output_directory, Paths.IMAGES_FOLDER)
-    clean_and_create_directory(images_directory)
+    create_directory(images_directory)
 
     # Sequences directory
     sequences_directory = '%s/%s' % (output_directory, Paths.SEQUENCES_FOLDER)
-    clean_and_create_directory(sequences_directory)
+    create_directory(sequences_directory)
 
     # Stats directory
     stats_directory = '%s/%s' % (output_directory, Paths.STATS_FOLDER)
-    clean_and_create_directory(stats_directory)
+    create_directory(stats_directory)
 
 
 ####################################################################################################

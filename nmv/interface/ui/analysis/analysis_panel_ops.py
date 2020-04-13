@@ -411,7 +411,7 @@ def export_analysis_results(morphology,
         analysis_results_string += '\t* Basal Dendrites: 0 \n'
 
     if morphology.has_axons():
-        analysis_results_string += '\t* Axons: %d \n\n' % len(morphology.basal_dendrites)
+        analysis_results_string += '\t* Axons: %d \n\n' % len(morphology.axons)
     else:
         analysis_results_string += '\t* Axons: 0 \n\n'
 
@@ -430,9 +430,7 @@ def export_analysis_results(morphology,
 
     # Ensure to set the branching order to the maximum to draw the entire skeleton and dendrogram
     options_clone = copy.deepcopy(options)
-    options_clone.morphology.axon_branch_order = 1e3
-    options_clone.morphology.apical_dendrite_branch_order = 1e3
-    options_clone.morphology.basal_dendrites_branch_order = 1e3
+    options_clone.morphology.adjust_to_analysis_mode()
 
     # Render a simplified dendrogram
     builder = nmv.builders.DendrogramBuilder(morphology=morphology, options=options_clone)
@@ -446,6 +444,7 @@ def export_analysis_results(morphology,
     builder.render_highlighted_arbors(dendrogram_type=nmv.enums.Dendrogram.Type.DETAILED,
                                       resolution=4000)
 
+    return
     # Render the arbors
     nmv.scene.clear_scene()
     builder = nmv.builders.DisconnectedSectionsBuilder(morphology=morphology, options=options_clone)

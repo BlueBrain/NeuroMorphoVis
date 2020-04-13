@@ -187,8 +187,12 @@ class DendrogramBuilder:
             morphology=self.morphology).morphology_result
 
         # Compute the dendrogram of the morphology
-        nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 8)
+        if self.options.morphology.dendrogram_type == nmv.enums.Dendrogram.Type.DETAILED:
+            nmv.skeleton.compute_morphology_dendrogram(
+                morphology=self.morphology, delta=maximum_radius * 8)
+        else:
+            nmv.skeleton.compute_morphology_dendrogram(
+                morphology=self.morphology, delta=8)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -434,13 +438,12 @@ class DendrogramBuilder:
             morphology=self.morphology).morphology_result
 
         # Compute the dendrogram of the morphology
-        nmv.skeleton.compute_morphology_dendrogram(
-            morphology=self.morphology, delta=maximum_radius * 8.0)
-
-        # In case of the simplified one, compute the radius of the arbors
-        simplified_dendrogram_radius = \
-            nmv.skeleton.compute_simplified_dendrogram_radius_from_morphology(
-                morphology=self.morphology)
+        if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:
+            nmv.skeleton.compute_morphology_dendrogram(
+                morphology=self.morphology, delta=8.0)
+        else:
+            nmv.skeleton.compute_morphology_dendrogram(
+                morphology=self.morphology, delta=maximum_radius * 8.0)
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -454,8 +457,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type,
-                        radius=simplified_dendrogram_radius)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         if not self.options.morphology.ignore_basal_dendrites:
@@ -466,8 +468,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type,
-                        radius=simplified_dendrogram_radius)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         if not self.options.morphology.ignore_axons:
@@ -478,8 +479,7 @@ class DendrogramBuilder:
                         poly_lines_data=skeleton_poly_lines,
                         max_branching_order=self.options.morphology.axon_branch_order,
                         arbor_material_index=material_index,
-                        dendrogram_type=dendrogram_type,
-                        radius=simplified_dendrogram_radius)
+                        dendrogram_type=dendrogram_type)
                     material_index += 2
 
         # The soma to stems line
@@ -488,7 +488,7 @@ class DendrogramBuilder:
             ignore_apical_dendrites=self.options.morphology.ignore_apical_dendrites,
             ignore_basal_dendrites=self.options.morphology.ignore_basal_dendrites,
             ignore_axons=self.options.morphology.ignore_axons, soma_material_index=material_index,
-            dendrogram_type=dendrogram_type, radius=simplified_dendrogram_radius)
+            dendrogram_type=dendrogram_type)
 
         bevel_object = nmv.mesh.create_bezier_circle(
             radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
@@ -527,7 +527,7 @@ class DendrogramBuilder:
 
         # Compute the bounding box of the dendrogram and stretch it
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves()
-        delta = bounding_box.get_largest_dimension() * 0.05
+        delta = bounding_box.get_largest_dimension() * 0.025
         bounding_box.extend_bbox(delta_x=1.5 * delta, delta_y=delta)
 
         if dendrogram_type == nmv.enums.Dendrogram.Type.SIMPLIFIED:

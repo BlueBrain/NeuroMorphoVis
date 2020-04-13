@@ -333,8 +333,16 @@ class Morphology:
         # TODO: Add further palettes
         # palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
 
-        palette = matplotlib.pyplot.get_cmap('Spectral_r')
-        palette = palette(numpy.linspace(0, 1.0, 1 + self.get_total_number_of_arbors()))
+        palette = matplotlib.pyplot.get_cmap('Spectral')
+
+        step = 1
+        palette = palette(numpy.linspace(0, 1.0, step * (1 + self.get_total_number_of_arbors())))
+
+        shade_factor = 0.9
+        for i in range(len(palette)):
+            palette[i][0] *= shade_factor
+            palette[i][1] *= shade_factor
+            palette[i][2] *= shade_factor
 
         # An index to keep track on the colors
         color_index = 0
@@ -347,7 +355,7 @@ class Morphology:
                 arbor.color = Vector((palette[color_index][0],
                                       palette[color_index][1],
                                       palette[color_index][2]))
-                color_index += 1
+                color_index += step
 
         # Basal dendrites
         if self.has_basal_dendrites():
@@ -357,7 +365,7 @@ class Morphology:
                 arbor.color = Vector((palette[color_index][0],
                                       palette[color_index][1],
                                       palette[color_index][2]))
-                color_index += 1
+                color_index += step
 
         # Axons
         if self.has_axons():
@@ -367,7 +375,7 @@ class Morphology:
                 arbor.color = Vector((palette[color_index][0],
                                       palette[color_index][1],
                                       palette[color_index][2]))
-                color_index += 1
+                color_index += step
 
         # Soma
         self.soma_color = Vector((palette[color_index][0],

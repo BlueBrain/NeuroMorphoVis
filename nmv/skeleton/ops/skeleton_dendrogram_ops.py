@@ -211,7 +211,7 @@ def compute_simplified_dendrogram_radius_from_morphology(morphology):
     """
 
     # This value was computed based on trial-and-error
-    return 2.0 * morphology.bounding_box.get_largest_dimension() / 1300.0
+    return 2.0 * morphology.bounding_box.get_largest_dimension() / 600
 
 
 ####################################################################################################
@@ -257,6 +257,8 @@ def compute_morphology_dendrogram(morphology,
 
             # Add the leaves count
             continuing_index += len(get_arbor_leaves(arbor=arbor))
+
+    return continuing_index
 
 
 ####################################################################################################

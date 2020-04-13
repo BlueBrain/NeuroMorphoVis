@@ -51,10 +51,7 @@ class MorphologyOptions:
         self.label = None
 
         # RECONSTRUCTION OPTIONS ###################################################################
-        # Skeletonization algorithm, ORIGINAL by default
-        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
-
-        # Arbor style
+        # Arbor style, ORIGINAL by default
         self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
@@ -147,9 +144,6 @@ class MorphologyOptions:
         """Sets the default options for duplicated objects.
         """
 
-        # Skeletonization algorithm, ORIGINAL by default
-        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
-
         # Arbor style
         self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
 
@@ -209,8 +203,13 @@ class MorphologyOptions:
         # Selected a method to reconstruct the morphology
         self.reconstruction_method = nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS
 
+    ################################################################################################
+    # @adjust_to_analysis_mode
+    ################################################################################################
     def adjust_to_analysis_mode(self):
-        self.skeleton = nmv.enums.Skeleton.Style.ORIGINAL
+        """Ajust the options to be used during the analysis mode. For example setting the branching
+        orders to maximum, not ignoring any branches, etc....
+        """
 
         # Arbor style
         self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL

@@ -84,11 +84,15 @@ class Soma:
             if (self.mean_radius / 2.0) < value < (self.mean_radius * 2.0):
                 self.possible_radii.append(value)
 
-        # The smallest radius
-        self.smallest_radius = self.possible_radii[0] - nmv.consts.Math.LITTLE_EPSILON
+        # Ensure that the possible radii list is available
+        if len(self.possible_radii) > 0:
+            self.smallest_radius = self.possible_radii[0] - nmv.consts.Math.LITTLE_EPSILON
+            self.largest_radius = self.possible_radii[-1] + nmv.consts.Math.LITTLE_EPSILON
 
-        # The largest radius
-        self.largest_radius = self.possible_radii[-1] + nmv.consts.Math.LITTLE_EPSILON
+        else:
+            self.smallest_radius = self.mean_radius
+            self.largest_radius = self.mean_radius
+
 
 
 

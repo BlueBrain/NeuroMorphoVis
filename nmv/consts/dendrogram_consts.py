@@ -1,4 +1,6 @@
 ####################################################################################################
+        simplified_dendrogram_radius = 1
+
 # Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
