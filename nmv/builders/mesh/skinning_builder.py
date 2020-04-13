@@ -414,7 +414,7 @@ class SkinningBuilder:
         """
 
         # Header
-        nmv.logger.header('Building Arbors')
+        nmv.logger.info('Building arbors')
 
         # Apical dendrites
         if not self.options.morphology.ignore_apical_dendrites:

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -75,8 +75,8 @@ def run_command(shell_command,
     """
 
     if verbose:
-        subprocess.call(shell_command, shell=True)
         print('\t* SHELL: ' + shell_command)
+        subprocess.call(shell_command, shell=True)
     else:
         devnull = open(os.devnull, 'w')
         subprocess.call(shlex.split(shell_command), stdout=devnull)
@@ -136,27 +136,37 @@ def install_for_linux(directory, blender_version, verbose=False):
     if blender_version == '2.79':
         python_version = '3.5'
         package_name = 'blender-2.79-linux-glibc219-x86_64'
+        extension = 'tar.bz2'
     elif blender_version == '2.80':
         python_version = '3.7'
         package_name = 'blender-2.80-linux-glibc217-x86_64'
+        extension = 'tar.bz2'
     elif blender_version == '2.81':
         python_version = '3.7'
         package_name = 'blender-2.81-linux-glibc217-x86_64'
+        extension = 'tar.bz2'
+    elif blender_version == '2.82':
+        python_version = '3.7'
+        package_name = 'blender-2.82a-linux64'
+        extension = 'tar.xz'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
 
     # Blender url
     server = 'https://download.blender.org/release/Blender%s/' % blender_version
-    blender_url = '%s/%s.tar.bz2' % (server, package_name)
+    blender_url = '%s/%s.%s' % (server, package_name, extension)
 
     # wet (Download)
     log_process('Downloading Blender [%s] from %s' % (blender_version, blender_url))
-    shell_command = 'wget -O %s/blender.tar.bz2 %s' % (directory, blender_url)
+    shell_command = 'wget -O %s/blender.%s %s' % (directory, extension, blender_url)
     run_command(shell_command, verbose)
 
     # Extract
-    shell_command = 'tar xjfv %s/blender.tar.bz2 -C %s' % (directory, directory)
+    if '.bz2' in extension:
+        shell_command = 'tar xjfv %s/blender.%s -C %s' % (directory, extension, directory)
+    else:
+        shell_command = 'tar xf %s/blender.%s -C %s' % (directory, extension, directory)
     run_command(shell_command, verbose)
 
     # Moving to blender
@@ -209,7 +219,7 @@ def install_for_linux(directory, blender_version, verbose=False):
 
     # Remove the archive
     log_process('Cleaning')
-    shell_command = 'rm %s/blender.tar.bz2' % directory
+    shell_command = 'rm %s/blender.%s' % (directory, extension)
     run_command(shell_command, verbose)
 
 
@@ -240,6 +250,9 @@ def install_for_mac(directory, blender_version, verbose=False):
     elif blender_version == '2.81':
         python_version = '3.7'
         package_name = 'blender-2.81-macOS.dmg'
+    elif blender_version == '2.82':
+        python_version = '3.7'
+        package_name = 'blender-2.82a-macOS.dmg'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
@@ -385,6 +398,8 @@ if __name__ == "__main__":
         log_header('Blender 2.80')
     elif args.blender_version == '2.81':
         log_header('Blender 2.81')
+    elif args.blender_version == '2.82':
+        log_header('Blender 2.82')
     else:
         log_header('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81')
         exit(0)

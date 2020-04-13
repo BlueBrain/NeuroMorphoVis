@@ -267,7 +267,7 @@ class MetaBuilder:
         """
 
         # Header
-        nmv.logger.header('Building Arbors')
+        nmv.logger.info('Building arbors')
 
         # Apical Dendrites
         if not self.options.morphology.ignore_apical_dendrites:
@@ -362,7 +362,7 @@ class MetaBuilder:
     def build_soma_from_meta_objects(self):
 
         # Header
-        nmv.logger.header('Building Soma from Meta Objects')
+        nmv.logger.info('Building soma from Meta Objects')
 
         # Verify the proximity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
