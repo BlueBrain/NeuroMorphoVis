@@ -81,7 +81,7 @@ class Soma:
         self.possible_radii = list()
 
         for value in self.distances_to_soma:
-            if (self.mean_radius / 2.0) < value < (self.mean_radius * 2.0):
+            if (self.mean_radius / 2.0) < value < (self.mean_radius * 3.0):
                 self.possible_radii.append(value)
 
         # Ensure that the possible radii list is available
