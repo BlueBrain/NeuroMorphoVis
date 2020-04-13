@@ -203,48 +203,9 @@ class CreateNeuronCard(bpy.types.Operator):
         nmv.interface.ui.export_analysis_results(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
-        nmv.interface.ui_morphology.create_morphology_color_palette()
-
-        # Compile a list of PDFs that will be gathered together in a single document
-        analysis_pdfs = list()
-
-        # Ensure to set the branching order to the maximum to draw the entire skeketon
-        # and the dendrogram
-        options = copy.deepcopy(nmv.interface.ui_options)
-        options.morphology.axon_branch_order = 1e3
-        options.morphology.apical_dendrite_branch_order = 1e3
-        options.morphology.basal_dendrites_branch_order = 1e3
-
-        builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=options)
-        builder.render_highlighted_arbors()
-
-        # Draw the morphology skeleton to append it to the analysis PDF
-        builder = nmv.builders.ConnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=options)
-
-        for projection in [nmv.enums.Camera.View.FRONT,
-                           nmv.enums.Camera.View.SIDE,
-                           nmv.enums.Camera.View.TOP]:
-            skeleton_pdf = builder.draw_morphology_skeleton_with_matplotlib(projection=projection)
-            analysis_pdfs.append(skeleton_pdf)
-        
-        # Draw the dendrogram PDF and append it to the list
-        builder = nmv.builders.DendrogramBuilder(
-            morphology=nmv.interface.ui_morphology, options=options)
-        dendrogram_pdf = builder.draw_morphology_skeleton_with_matplotlib()
-        analysis_pdfs.append(dendrogram_pdf)
-
-        # Apply the analysis kernels and compile the analysis PDF
-        for distribution in nmv.analysis.distributions:
-
-            # Apply the kernels
-            distribution.apply_kernel(morphology=nmv.interface.ui_morphology,
-                                      options=options)
-
-            # Append to the list
-            pdf = '%s/%s.pdf' % (morphology_analysis_directory, distribution.figure_name)
-            analysis_pdfs.append(pdf)
+        # Analysis plots
+        nmv.analysis.plot_analysis_results(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Morphology analyzed
         analysis_time = time.time()

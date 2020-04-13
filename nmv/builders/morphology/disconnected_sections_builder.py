@@ -899,7 +899,9 @@ class DisconnectedSectionsBuilder:
         for view, suffix in zip([nmv.enums.Camera.View.FRONT,
                                  nmv.enums.Camera.View.SIDE,
                                  nmv.enums.Camera.View.TOP],
-                             ['front_simplified', 'side_simplified', 'top_simplified']):
+                             ['front%s' % nmv.consts.Suffix.FIXED_RADIUS,
+                              'side%s' % nmv.consts.Suffix.FIXED_RADIUS,
+                              'top%s' % nmv.consts.Suffix.FIXED_RADIUS]):
             nmv.rendering.render(
                 bounding_box=bounding_box,
                 camera_view=view,

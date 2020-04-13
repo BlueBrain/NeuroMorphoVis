@@ -76,3 +76,6 @@ class Suffix:
 
     # Suffix appended to the name of a directory where a 360 of the mesh will be rendered
     MESH_360 = '_mesh_360'
+
+    # Rendered with a fixed radius
+    FIXED_RADIUS = '_fixed_radius'
