@@ -20,7 +20,7 @@ import os
 
 
 ####################################################################################################
-# @_version_
+# @get_nmv_version
 ####################################################################################################
 def get_nmv_version():
     """Gets NeuroMorphoVis version.
@@ -40,6 +40,49 @@ def get_nmv_version():
             break
     version_file.close()
     return version
+
+
+####################################################################################################
+# @get_nmv_online_version
+####################################################################################################
+def get_nmv_online_version():
+    """Gets NeuroMorphoVis version from the repository .
+
+    :return:
+        NeuroMorphoVis version tuple.
+    """
+
+    # Load the version from the version file
+    import urllib2
+    online_version_file = version_file_path = urllib2.urlopen(
+        'https://raw.githubusercontent.com/BlueBrain/NeuroMorphoVis/master/__init__.py')
+    version_string = ''
+    for line in online_version_file:
+        if '"version":' in line:
+            string = line.split('\"version\": (')[1].split(')')[0].split(', ')
+            version = (int(string[0]), int(string[1]), int(string[2]))
+            break
+    return version
+
+
+####################################################################################################
+# @get_nmv_online_version
+####################################################################################################
+def verify_nmv_version():
+
+
+    # Get the installed version of NMV
+    installed_version = get_nmv_version()
+
+    # Get the available online version
+    online_version = get_nmv_online_version()
+
+    if online_version < installed_version:
+        print('The current version is similar to the online version')
+        return
+
+
+
 
 
 ####################################################################################################

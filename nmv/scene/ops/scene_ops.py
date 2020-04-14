@@ -1163,6 +1163,9 @@ def view_all_scene():
     # View all the objects in the scene
     bpy.ops.view3d.view_all()
 
+    # Update the end
+    bpy.context.space_data.clip_end = 1e4
+
 
 ####################################################################################################
 # @switch_scene_shading
@@ -1181,12 +1184,22 @@ def switch_scene_shading(shading_type='SOLID'):
                 space.shading.type = shading_type
 
 
+####################################################################################################
+# @switch_interface_to_edit_mode
+####################################################################################################
 def switch_interface_to_edit_mode():
+    """Switch the user interface to the edit mode style.
+    """
     nmv.scene.switch_scene_shading('WIREFRAME')
     bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
 
 
+####################################################################################################
+# @switch_interface_to_visualization_mode
+####################################################################################################
 def switch_interface_to_visualization_mode():
+    """Switches the user interface to the visualization mode style.
+    """
     nmv.scene.switch_scene_shading('SOLID')
 
     bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0

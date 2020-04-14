@@ -206,11 +206,6 @@ class SomaMetaBuilder:
 
         nmv.logger.info('Adding random noise')
 
-        nmv.mesh.add_surface_noise_to_mesh(mesh_object=self.meta_mesh, subdivision_level=1,
-                                           noise_strength=0.25)
-
-        return
-
         # Decimation
         nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.5)
 

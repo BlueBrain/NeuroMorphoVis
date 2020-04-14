@@ -77,8 +77,10 @@ def create_shadow_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use 64 samples per pixel to create a nice image.
+    bpy.context.scene.cycles.samples = 64
 
     # Import the material from the library
     material_reference = import_shader(shader_name='shadow-material')
@@ -93,6 +95,9 @@ def create_shadow_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -136,6 +141,9 @@ def create_super_electron_light_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
 
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
     # Return a reference to the material
     return material_reference
 
@@ -178,6 +186,9 @@ def create_super_electron_dark_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
 
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
     # Return a reference to the material
     return material_reference
 
@@ -218,6 +229,7 @@ def create_flat_material(name,
 
         # Flat shading
         bpy.context.scene.display.shading.light = 'FLAT'
+        bpy.context.scene.display.shading.show_xray = False
 
     else:
 
@@ -240,6 +252,9 @@ def create_flat_material(name,
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -284,6 +299,9 @@ def create_transparent_material(name,
         bpy.context.scene.display.shading.studio_light = 'Default'
         bpy.context.scene.display.shading.show_xray = True
 
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('SOLID')
+
     else:
 
         # Switch the rendering engine to cycles to be able to create the material
@@ -305,6 +323,9 @@ def create_transparent_material(name,
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -347,7 +368,10 @@ def create_toon_material(name,
         # Flat shading
         bpy.context.scene.display.shading.light = 'MATCAP'
         bpy.context.scene.display.shading.studio_light = 'toon.exr'
+        bpy.context.scene.display.shading.show_xray = False
 
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('SOLID')
 
     else:
 
@@ -369,6 +393,9 @@ def create_toon_material(name,
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
         material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -393,8 +420,7 @@ def create_voronoi_cells_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
 
     # Import the material from the library
     material_reference = import_shader(shader_name='voronoi-cells')
@@ -409,6 +435,9 @@ def create_voronoi_cells_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -452,6 +481,9 @@ def create_wire_frame_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
 
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
     # Return a reference to the material
     return material_reference
 
@@ -494,6 +526,9 @@ def create_electron_light_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
 
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
     # Return a reference to the material
     return material_reference
 
@@ -535,6 +570,9 @@ def create_electron_dark_material(name,
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1] / 2.0
     material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2] / 2.0
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -582,6 +620,10 @@ def create_lambert_ward_material(name,
 
         bpy.context.scene.display.shading.light = 'STUDIO'
         bpy.context.scene.display.shading.studio_light = 'Default'
+        bpy.context.scene.display.shading.show_xray = False
+
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('SOLID')
 
         # Return a reference to the material
         return line_material
@@ -608,6 +650,9 @@ def create_lambert_ward_material(name,
         # Set the ambient parameters
         material_reference.ambient = 1.0
 
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('SOLID')
+
         # Return a reference to the material
         return material_reference
 
@@ -631,8 +676,10 @@ def create_glossy_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use 64 samples per pixel to create a nice image.
+    bpy.context.scene.cycles.samples = 64
 
     # Import the material from the library
     material_reference = import_shader(shader_name='glossy')
@@ -643,6 +690,9 @@ def create_glossy_material(name,
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[0] = color[0]
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[1] = color[1]
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[2] = color[2]
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference
@@ -667,8 +717,10 @@ def create_glossy_bumpy_material(name,
     current_scene = bpy.context.scene
 
     # Switch the rendering engine to cycles to be able to create the material
-    if not current_scene.render.engine == 'CYCLES':
-        current_scene.render.engine = 'CYCLES'
+    current_scene.render.engine = 'CYCLES'
+
+    # Use 64 samples per pixel to create a nice image.
+    bpy.context.scene.cycles.samples = 64
 
     # Import the material from the library
     material_reference = import_shader(shader_name='glossy-bumpy')
@@ -679,6 +731,9 @@ def create_glossy_bumpy_material(name,
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[0] = color[0]
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[1] = color[1]
     material_reference.node_tree.nodes["RGB"].outputs[0].default_value[2] = color[2]
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
 
     # Return a reference to the material
     return material_reference

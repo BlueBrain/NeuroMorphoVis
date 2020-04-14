@@ -31,8 +31,7 @@ import nmv.utilities
 # @create_lambert_ward_illumination
 ####################################################################################################
 def create_lambert_ward_illumination():
-    """
-
+    """Creates an illumination specific for the default shader.
     """
 
     # Deselect all
@@ -69,6 +68,8 @@ def create_lambert_ward_illumination():
 # @create_shadow_illumination
 ####################################################################################################
 def create_shadow_illumination():
+    """Creates an illumination specific for the shadow shader.
+    """
 
     # If no light sources in the scene, then create two sources one towards the top and the
     # other one towards the bottom
@@ -101,6 +102,8 @@ def create_shadow_illumination():
 # @create_glossy_illumination
 ####################################################################################################
 def create_glossy_illumination():
+    """Creates an illumination specific for the glossy shader.
+    """
 
     nmv.scene.ops.clear_lights()
 
@@ -112,20 +115,20 @@ def create_glossy_illumination():
                       (-1.57, 0.000, 0.000),
                       (0.000, -1.57, 0.000)]
 
-    light_position = [(0, 0, 100),
-                      (0, 100, 0),
-                      (-100, 0, 0)]
+    light_position = [(0, 0, 0.1),
+                      (0, 0.1, 0),
+                      (-0.1, 0, 0)]
 
     # Add the light sources
     for i, angle in enumerate(light_rotation):
 
         if nmv.utilities.is_blender_280():
-            bpy.ops.object.light_add(type='AREA', radius=1, location=light_position[i])
+            bpy.ops.object.light_add(type='SUN', radius=1, location=light_position[i])
             lamp_reference = bpy.context.object
             lamp_reference.name = 'Lamp%d' % i
             lamp_reference.data.name = "Lamp%d" % i
             lamp_reference.rotation_euler = angle
-            lamp_reference.data.energy = 1e5
+            lamp_reference.data.energy = 2.5
 
         else:
             lamp_data = bpy.data.lamps.new(name='Lamp%d' % i, type='HEMI')
@@ -139,7 +142,41 @@ def create_glossy_illumination():
 
 
 ####################################################################################################
-# @create_illumination
+# @create_glossy_bumpy_illumination
+####################################################################################################
+def create_glossy_bumpy_illumination():
+    """Creates an illumination specific for the glossy-bumpy shader.
+    """
+
+    # Deselect all
+    nmv.scene.ops.deselect_all()
+
+    # Multiple light sources from different directions
+    light_rotation = [(-1.57, 0.000, 0.000),
+                      (0.000, 1.570, 0.000),
+                      (0.000, -1.57, 0.000)]
+
+    # Add the lights
+    for i, angle in enumerate(light_rotation):
+        if nmv.utilities.is_blender_280():
+            bpy.ops.object.light_add(type='SUN', radius=1, location=(0, 0, 0))
+            lamp_reference = bpy.context.object
+            lamp_reference.name = 'Lamp%d' % i
+            lamp_reference.data.name = "Lamp%d" % i
+            lamp_reference.rotation_euler = angle
+            lamp_reference.data.energy = 10
+        else:
+            bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+            lamp_reference = bpy.context.object
+            lamp_reference.name = 'Lamp%d' % i
+            lamp_reference.data.name = "Lamp%d" % i
+            lamp_reference.rotation_euler = angle
+            lamp_reference.data.use_specular = True if i == 0 else False
+            lamp_reference.data.energy = 10
+
+
+####################################################################################################
+# @create_material_specific_illumination
 ####################################################################################################
 def create_material_specific_illumination(material_type):
     """Create a specific illumination that corresponds to a given material.
@@ -159,6 +196,9 @@ def create_material_specific_illumination(material_type):
     # Glossy
     elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_illumination()
+
+    elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
+        return create_glossy_bumpy_illumination()
 
     # Default, just use the lambert shader illumination
     else:

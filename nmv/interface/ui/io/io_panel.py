@@ -231,6 +231,7 @@ class LoadMorphology(bpy.types.Operator):
 
         # Always use meta builder to reconstruct the initial soma
         options = copy.deepcopy(nmv.interface.ui_options)
+        options.shading.set_default()
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(

@@ -183,8 +183,7 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         :param context:
             Rendering context
         :return:
-            'FINISHED'
-        """
+            'FINISHED        """
 
         if nmv.interface.ui_morphology is None:
             self.report({'ERROR'}, 'Please select a morphology file')

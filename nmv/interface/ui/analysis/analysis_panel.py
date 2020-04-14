@@ -72,6 +72,9 @@ class AnalysisPanel(bpy.types.Panel):
         # components based on its arbors count
         if nmv.interface.ui_morphology is not None:
 
+            morphology_name_row = layout.row()
+            morphology_name_row.label(text='Name: %s' % nmv.interface.ui_morphology.label)
+
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_groups_to_panel(
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)
