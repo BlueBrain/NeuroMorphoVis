@@ -150,10 +150,14 @@ class SketchSkeleton(bpy.types.Operator):
             self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
+        # Clone the options to avoid messing the other panels
+        options_clone = copy.deepcopy(nmv.interface.ui_options)
+        options_clone.shading.set_default()
+
         # Plot the morphology (whatever issues it contains)
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology,
-            options=copy.deepcopy(nmv.interface.ui_options))
+            options=options_clone)
 
         return {'FINISHED'}
 
