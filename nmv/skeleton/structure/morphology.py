@@ -328,6 +328,8 @@ class Morphology:
         nmv.utilities.verify_plotting_packages()
 
         import numpy
+        import matplotlib
+        matplotlib.use('agg')
         import matplotlib.pyplot
 
         # TODO: Add further palettes

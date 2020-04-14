@@ -403,6 +403,7 @@ class ConnectedSectionsBuilder:
         # Plotting imports
         import numpy
         import matplotlib
+        matplotlib.use('agg')
         import matplotlib.pyplot as pyplot
 
         # The soma
@@ -466,6 +467,8 @@ class ConnectedSectionsBuilder:
 
         # Plotting imports
         import seaborn
+        import matplotlib
+        matplotlib.use('agg')
         import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
 

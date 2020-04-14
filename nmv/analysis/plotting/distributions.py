@@ -55,6 +55,8 @@ def plot_per_arbor_result(analysis_results,
     # Plotting imports
     import numpy
     import seaborn
+    import matplotlib
+    matplotlib.use('agg') # To resolve the tkinter issue
     import matplotlib.pyplot as pyplot
     from matplotlib import font_manager
 
@@ -235,6 +237,8 @@ def plot_per_arbor_range(minimum_results,
 
     import numpy
     import seaborn
+    import matplotlib
+    matplotlib.use('agg')
     from matplotlib import pyplot
     from matplotlib import font_manager
 

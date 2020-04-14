@@ -262,6 +262,8 @@ class DendrogramBuilder:
         # Plotting imports
         import numpy
         import seaborn
+        import matplotlib
+        matplotlib.use('agg')
         import matplotlib.pyplot as pyplot
         from matplotlib import font_manager
 
