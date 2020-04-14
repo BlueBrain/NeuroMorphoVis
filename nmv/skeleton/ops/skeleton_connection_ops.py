@@ -468,7 +468,7 @@ def verify_arbor_proximity_to_soma(arbor,
     """
 
     # TODO: nmv.consts.Skeleton.MAXIMUM_SOMA_RADIUS_REPORTED
-    if arbor.samples[0].point.length < soma.largest_radius:
+    if arbor.samples[0].point.length < 20.0: # soma.largest_radius:
         arbor.far_from_soma = False
 
 

@@ -73,6 +73,11 @@ class EditPanel(bpy.types.Panel):
         # Get a reference to the panel layout
         layout = self.layout
 
+        # Documentation button
+        documentation_button = layout.column()
+        documentation_button.operator('nmv.documentation_editing', icon='URL')
+        documentation_button.separator()
+
         # Morphology sketching button
         if not in_edit_mode:
             sketching_morphology_column = layout.column(align=True)
@@ -304,6 +309,34 @@ class ExportMorphologySWC(bpy.types.Operator):
 
 
 ####################################################################################################
+# @MorphologyEditingDocumentation
+####################################################################################################
+class MorphologyEditingDocumentation(bpy.types.Operator):
+    """Open the documentation page of the Morphology Editing panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_editing"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Editing')
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -313,16 +346,11 @@ def register_panel():
     # Morphology analysis panel
     bpy.utils.register_class(EditPanel)
 
-    # Morphology analysis button
+    # Buttons
+    bpy.utils.register_class(MorphologyEditingDocumentation)
     bpy.utils.register_class(SketchSkeleton)
-
-    # Edit morphology coordinates button
     bpy.utils.register_class(EditMorphologyCoordinates)
-
-    # Morphology analysis button
     bpy.utils.register_class(UpdateMorphologyCoordinates)
-
-    # Export morphology as SWC file
     bpy.utils.register_class(ExportMorphologySWC)
 
 
@@ -336,14 +364,9 @@ def unregister_panel():
     # Morphology analysis panel
     bpy.utils.unregister_class(EditPanel)
 
-    # Morphology analysis button
+    # Buttons
+    bpy.utils.unregister_class(MorphologyEditingDocumentation)
     bpy.utils.unregister_class(SketchSkeleton)
-
-    # Edit morphology coordinates button
     bpy.utils.unregister_class(EditMorphologyCoordinates)
-
-    # Update the coordinates
     bpy.utils.unregister_class(UpdateMorphologyCoordinates)
-
-    # Export the morphology
     bpy.utils.unregister_class(ExportMorphologySWC)

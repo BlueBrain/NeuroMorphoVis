@@ -100,8 +100,8 @@ class AboutPanel(bpy.types.Panel):
 
         update_button = layout.column()
         update_button.operator('update.nmv', emboss=True, icon='NODETREE')
-        update_button.operator('open.github', emboss=True, icon='URL')
-        update_button.operator('open.wiki', emboss=True, icon='SCRIPT')
+        update_button.operator('open.github', emboss=True, icon='SCRIPT')
+        update_button.operator('open.wiki', emboss=True, icon='URL')
 
 
 ####################################################################################################

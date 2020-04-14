@@ -83,6 +83,11 @@ class MeshPanel(bpy.types.Panel):
             Rendering context.
         """
 
+        # Documentation button
+        documentation_button = self.layout.column()
+        documentation_button.operator('nmv.documentation_mesh', icon='URL')
+        documentation_button.separator()
+
         # Meshing options
         draw_meshing_options(panel=self, scene=context.scene)
 
@@ -574,6 +579,34 @@ class ExportMesh(bpy.types.Operator):
 
 
 ####################################################################################################
+# @InputOutputDocumentation
+####################################################################################################
+class MeshReconstructionDocumentation(bpy.types.Operator):
+    """Open the documentation page of the Mesh Reconstruction panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_mesh"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Mesh-Reconstruction')
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -582,16 +615,13 @@ def register_panel():
     # Mesh reconstruction panel
     bpy.utils.register_class(MeshPanel)
 
-    # Mesh reconstruction button
+    # Buttons
+    bpy.utils.register_class(MeshReconstructionDocumentation)
     bpy.utils.register_class(ReconstructNeuronMesh)
-
-    # Mesh rendering
     bpy.utils.register_class(RenderMeshFront)
     bpy.utils.register_class(RenderMeshSide)
     bpy.utils.register_class(RenderMeshTop)
     bpy.utils.register_class(RenderMesh360)
-
-    # Neuron mesh saving operators
     bpy.utils.register_class(ExportMesh)
 
 
@@ -604,15 +634,12 @@ def unregister_panel():
     # Mesh reconstruction panel
     bpy.utils.unregister_class(MeshPanel)
 
-    # Mesh reconstruction button
+    # Buttons
+    bpy.utils.unregister_class(MeshReconstructionDocumentation)
     bpy.utils.unregister_class(ReconstructNeuronMesh)
-
-    # Mesh rendering
     bpy.utils.unregister_class(RenderMeshFront)
     bpy.utils.unregister_class(RenderMeshSide)
     bpy.utils.unregister_class(RenderMeshTop)
     bpy.utils.unregister_class(RenderMesh360)
-
-    # Neuron mesh saving operators
     bpy.utils.unregister_class(ExportMesh)
 

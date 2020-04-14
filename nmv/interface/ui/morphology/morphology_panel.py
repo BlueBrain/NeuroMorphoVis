@@ -78,6 +78,11 @@ class MorphologyPanel(bpy.types.Panel):
         # Get a reference to the scene
         current_scene = context.scene
 
+        # Documentation button
+        documentation_button = layout.column()
+        documentation_button.operator('nmv.documentation_morphology', icon='URL')
+        documentation_button.separator()
+
         # Set the reconstruction options
         nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
@@ -836,6 +841,34 @@ class SaveMorphologyBLEND(bpy.types.Operator):
 
 
 ####################################################################################################
+# @MorphologyReconstructionDocumentation
+####################################################################################################
+class MorphologyReconstructionDocumentation(bpy.types.Operator):
+    """Open the documentation page of the Morphology Reconstruction panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_morphology"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Reconstruction')
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -844,17 +877,14 @@ def register_panel():
     # Soma reconstruction panel
     bpy.utils.register_class(MorphologyPanel)
 
-    # Soma reconstruction operator
+    # Buttons
+    bpy.utils.register_class(MorphologyReconstructionDocumentation)
     bpy.utils.register_class(ReconstructMorphologyOperator)
-
-    # Morphology rendering
     bpy.utils.register_class(RenderMorphologyFront)
     bpy.utils.register_class(RenderMorphologySide)
     bpy.utils.register_class(RenderMorphologyTop)
     bpy.utils.register_class(RenderMorphology360)
     bpy.utils.register_class(RenderMorphologyProgressive)
-
-    # Saving morphology
     bpy.utils.register_class(SaveMorphologyBLEND)
     bpy.utils.register_class(SaveMorphologySWC)
     bpy.utils.register_class(SaveMorphologySegments)
@@ -869,17 +899,14 @@ def unregister_panel():
     # Morphology reconstruction panel
     bpy.utils.unregister_class(MorphologyPanel)
 
-    # Morphology reconstruction operator
+    # Buttons
+    bpy.utils.unregister_class(MorphologyReconstructionDocumentation)
     bpy.utils.unregister_class(ReconstructMorphologyOperator)
-
-    # Morphology rendering
     bpy.utils.unregister_class(RenderMorphologyTop)
     bpy.utils.unregister_class(RenderMorphologySide)
     bpy.utils.unregister_class(RenderMorphologyFront)
     bpy.utils.unregister_class(RenderMorphology360)
     bpy.utils.unregister_class(RenderMorphologyProgressive)
-
-    # Saving morphology
     bpy.utils.unregister_class(SaveMorphologyBLEND)
     bpy.utils.unregister_class(SaveMorphologySWC)
     bpy.utils.unregister_class(SaveMorphologySegments)

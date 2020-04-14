@@ -62,6 +62,11 @@ class IOPanel(bpy.types.Panel):
         # Get a reference to the scene
         scene = context.scene
 
+        # Documentation button
+        documentation_button = layout.column()
+        documentation_button.operator('nmv.documentation_io', icon='URL')
+        documentation_button.separator()
+
         # Input data options
         input_data_options_row = layout.row()
         input_data_options_row.label(text='Input Data Options:', icon='LIBRARY_DATA_DIRECT')
@@ -258,6 +263,34 @@ class LoadMorphology(bpy.types.Operator):
 
 
 ####################################################################################################
+# @InputOutputDocumentation
+####################################################################################################
+class InputOutputDocumentation(bpy.types.Operator):
+    """Open the documentation page of the IO module."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_io"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Input-&-Output')
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -267,6 +300,7 @@ def register_panel():
     bpy.utils.register_class(IOPanel)
 
     # Buttons
+    bpy.utils.register_class(InputOutputDocumentation)
     bpy.utils.register_class(LoadMorphology)
 
 
@@ -283,4 +317,5 @@ def unregister_panel():
     bpy.utils.unregister_class(IOPanel)
 
     # Buttons
+    bpy.utils.unregister_class(InputOutputDocumentation)
     bpy.utils.unregister_class(LoadMorphology)

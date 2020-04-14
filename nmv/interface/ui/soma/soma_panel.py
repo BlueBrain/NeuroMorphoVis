@@ -70,6 +70,11 @@ class SomaPanel(bpy.types.Panel):
         # Get a reference to the panel layout
         layout = self.layout
 
+        # Documentation button
+        documentation_button = layout.column()
+        documentation_button.operator('nmv.documentation_soma', icon='URL')
+        documentation_button.separator()
+
         # Get a reference to the soma options
         soma_options = nmv.interface.ui_options.soma
 
@@ -1096,6 +1101,34 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
 
 
 ####################################################################################################
+# @SomaReconstructionDocumentation
+####################################################################################################
+class SomaReconstructionDocumentation(bpy.types.Operator):
+    """Open the documentation page of the Soma Reconstruction panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_soma"
+    bl_label = "Documentation"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self,
+                context):
+        """Execute the operator.
+
+        :param context:
+            Blender context
+        :return:
+            'FINISHED'
+        """
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Soma-Reconstruction')
+        return {'FINISHED'}
+
+
+####################################################################################################
 # @register_panel
 ####################################################################################################
 def register_panel():
@@ -1105,17 +1138,14 @@ def register_panel():
     # Soma reconstruction panel
     bpy.utils.register_class(SomaPanel)
 
-    # Soma reconstruction operators
+    # Buttons
+    bpy.utils.register_class(SomaReconstructionDocumentation)
     bpy.utils.register_class(ReconstructSomaOperator)
-
-    # Soma rendering operators
     bpy.utils.register_class(RenderSomaFront)
     bpy.utils.register_class(RenderSomaSide)
     bpy.utils.register_class(RenderSomaTop)
     bpy.utils.register_class(RenderSoma360)
     bpy.utils.register_class(RenderSomaProgressive)
-
-    # Soma saving operators
     bpy.utils.register_class(SaveSomaMeshOBJ)
     bpy.utils.register_class(SaveSomaMeshPLY)
     bpy.utils.register_class(SaveSomaMeshSTL)
@@ -1132,17 +1162,14 @@ def unregister_panel():
     # Soma reconstruction panel
     bpy.utils.unregister_class(SomaPanel)
 
-    # Soma reconstruction
+    # Buttons
+    bpy.utils.unregister_class(SomaReconstructionDocumentation)
     bpy.utils.unregister_class(ReconstructSomaOperator)
-
-    # Soma rendering
     bpy.utils.unregister_class(RenderSomaFront)
     bpy.utils.unregister_class(RenderSomaSide)
     bpy.utils.unregister_class(RenderSomaTop)
     bpy.utils.unregister_class(RenderSoma360)
     bpy.utils.unregister_class(RenderSomaProgressive)
-
-    # Soma saving
     bpy.utils.unregister_class(SaveSomaMeshOBJ)
     bpy.utils.unregister_class(SaveSomaMeshPLY)
     bpy.utils.unregister_class(SaveSomaMeshSTL)
