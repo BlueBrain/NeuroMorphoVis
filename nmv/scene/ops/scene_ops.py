@@ -1162,3 +1162,34 @@ def view_all_scene():
 
     # View all the objects in the scene
     bpy.ops.view3d.view_all()
+
+
+####################################################################################################
+# @switch_scene_shading
+####################################################################################################
+def switch_scene_shading(shading_type='SOLID'):
+    """Switches the scene panel to the given shading type
+
+    :param shading_type:
+        One of the following:  'WIREFRAME' '(SOLID)' 'MATERIAL' 'RENDERED'
+    """
+
+    areas = bpy.context.workspace.screens[0].areas
+    for area in areas:
+        for space in area.spaces:
+            if space.type == 'VIEW_3D':
+                space.shading.type = shading_type
+
+
+def switch_interface_to_edit_mode():
+    nmv.scene.switch_scene_shading('WIREFRAME')
+    bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
+
+
+def switch_interface_to_visualization_mode():
+    nmv.scene.switch_scene_shading('SOLID')
+
+    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex_size = 3

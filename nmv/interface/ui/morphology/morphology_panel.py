@@ -844,11 +844,11 @@ class SaveMorphologyBLEND(bpy.types.Operator):
 # @MorphologyReconstructionDocumentation
 ####################################################################################################
 class MorphologyReconstructionDocumentation(bpy.types.Operator):
-    """Open the documentation page of the Morphology Reconstruction panel."""
+    """Open the online documentation page of the Morphology Reconstruction panel."""
 
     # Operator parameters
     bl_idname = "nmv.documentation_morphology"
-    bl_label = "Documentation"
+    bl_label = "Online User Guide"
 
     ################################################################################################
     # @execute

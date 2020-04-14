@@ -1104,11 +1104,11 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
 # @SomaReconstructionDocumentation
 ####################################################################################################
 class SomaReconstructionDocumentation(bpy.types.Operator):
-    """Open the documentation page of the Soma Reconstruction panel."""
+    """Open the online documentation page of the Soma Reconstruction panel."""
 
     # Operator parameters
     bl_idname = "nmv.documentation_soma"
-    bl_label = "Documentation"
+    bl_label = "Online User Guide"
 
     ################################################################################################
     # @execute

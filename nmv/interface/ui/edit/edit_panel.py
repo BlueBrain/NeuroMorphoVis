@@ -192,6 +192,14 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
+        # Switch to the wire-frame mode
+        nmv.scene.switch_interface_to_edit_mode()
+
+        # Sketch the guide to make sure users can see something
+        nmv.interface.ui.sketch_morphology_skeleton_guide(
+            morphology=nmv.interface.ui_morphology,
+            options=copy.deepcopy(nmv.interface.ui_options))
+
         # Sketch the morphological skeleton for repair
         morphology_editor = nmv.edit.MorphologyEditor(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
@@ -234,6 +242,9 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
         :return:
             'FINISHED'
         """
+
+        # Switch back to the solid mode
+        nmv.scene.switch_interface_to_visualization_mode()
 
         # Create an object of the repairer
         global morphology_editor
@@ -312,11 +323,11 @@ class ExportMorphologySWC(bpy.types.Operator):
 # @MorphologyEditingDocumentation
 ####################################################################################################
 class MorphologyEditingDocumentation(bpy.types.Operator):
-    """Open the documentation page of the Morphology Editing panel."""
+    """Open the online documentation page of the Morphology Editing panel."""
 
     # Operator parameters
     bl_idname = "nmv.documentation_editing"
-    bl_label = "Documentation"
+    bl_label = "Online User Guide"
 
     ################################################################################################
     # @execute

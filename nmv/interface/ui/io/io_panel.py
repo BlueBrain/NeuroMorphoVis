@@ -266,11 +266,11 @@ class LoadMorphology(bpy.types.Operator):
 # @InputOutputDocumentation
 ####################################################################################################
 class InputOutputDocumentation(bpy.types.Operator):
-    """Open the documentation page of the IO module."""
+    """Open the online documentation page of the IO panel."""
 
     # Operator parameters
     bl_idname = "nmv.documentation_io"
-    bl_label = "Documentation"
+    bl_label = "Online User Guide"
 
     ################################################################################################
     # @execute

@@ -582,11 +582,11 @@ class ExportMesh(bpy.types.Operator):
 # @InputOutputDocumentation
 ####################################################################################################
 class MeshReconstructionDocumentation(bpy.types.Operator):
-    """Open the documentation page of the Mesh Reconstruction panel."""
+    """Open the online documentation page of the Mesh Reconstruction panel."""
 
     # Operator parameters
     bl_idname = "nmv.documentation_mesh"
-    bl_label = "Documentation"
+    bl_label = "Online User Guide"
 
     ################################################################################################
     # @execute

@@ -366,7 +366,9 @@ def sketch_morphology_skeleton_guide(morphology,
     nmv.scene.clear_scene()
 
     # Create a skeletonizer object to build the morphology skeleton
-    builder = nmv.builders.DisconnectedSectionsBuilder(morphology, options)
+    options_clone = copy.deepcopy(options)
+    options_clone.morphology.branching = nmv.enums.Skeleton.Branching.RADII
+    builder = nmv.builders.ConnectedSectionsBuilder(morphology, options_clone)
 
     # Draw the morphology skeleton and return a list of all the reconstructed objects
     nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
