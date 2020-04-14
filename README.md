@@ -1,4 +1,4 @@
-# NeuroMorphoVis
+# Introduction 
 
 <p align="center">
   <img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/logos/neuromorphovis-logo.png" width=700>
@@ -28,6 +28,7 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 + [Blender 2.80](http://download.blender.org/release/Blender2.80/)
 + [Blender 2.81](http://download.blender.org/release/Blender2.81/)
++ [Blender 2.82](http://download.blender.org/release/Blender2.82/)
 
 _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender__ that can be easily extracted and used [out-of-the-box](https://en.wikipedia.org/wiki/Out_of_the_box_(feature)). The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective platform. This package (released every minor version update of the software) is recommended for __Windows users__ or those who cannot use the [__Terminal__](https://en.wikipedia.org/wiki/Unix_shell). Otherwise, users can just download an installation script that will automatically install the entire package to a user-specified directory. This script __does not__ require __sudo__ permissions. 
 
@@ -38,9 +39,7 @@ _NeuroMorphoVis_ packages are available for Ubuntu, RedHat, macOSX and Windows f
 ## Installation 
 _NeuroMorphoVis_ can be installed to a user-specified directory from a Unix (Linux or macOSX) terminal. Installation procedures are available in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation).   
 
-## User Documentation 
-The user documentation is available for Blender 2.8 from this [link](https://github.com/BlueBrain/NeuroMorphoVis/wiki). 
- 
+
 # Interfaces
 
 _NeuroMorphoVis_ is primarily designed as a plug-in in [Blender](https://www.blender.org/). It comes with a user-friendly GUI and a rich set of command line options. Moreover, the tool is configurable via input configuration files making it possible to link it to web interface or using it on massively parallel visualization clusters for batch production. 
@@ -51,10 +50,10 @@ The tool is also extensible via its powerful python API that can be imported in 
 
 To make it accessible to end users with minimal programming knowledge or even with no programming experience at all, the core functionality of _NeuroMorphoVis_ is exposed to users via a friendly graphical user interface that would allow them to navigate and adjust the parameters of the different toolboxes seamlessly. A detailed guide to use NeuroMorphoVis from its GUI is available in this [user guide](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Graphical-User-Interface).
 
-<p align="center">
-<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/modules/panels/interface-2.8.jpeg" width=800><br>
+<figure align="center">
+<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/modules/panels/interface-2.8.jpeg" width=800>
 <figcaption><center>A screen shot of a neuronal morphology skeleton reconstructed by  NeuroMorphoVis and sketched in the 3D view port of Blender. Note that the neurites are tagged with different colors (green for apical dendrite, red for basal dendrites and blue for the axon) and the soma (in yellow) is reconstructed as a realistic three-dimensional profile not as a sphere.</figcaption>
-</p>
+</figure>
 
 ## Command Line Options
 
@@ -72,7 +71,7 @@ Users can easily configure and use _NeuroMorphoVis_ via editable configuration f
 </p>
 
 <p align="center">
-	<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/renderings/bumpy-shading.png" width=704>
+	<img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/renderings/bumpy-shading.png" width=704>
 </p>
 
 <p align="center">
@@ -136,14 +135,14 @@ The mesh generation algorithm with skin modifiers is described in this paper [Ge
 
 ```
 @inproceedings{abdellah2019generating,
-booktitle={Computer Graphics and Visual Computing (CGVC)},
-editor={Vidal, Franck P. and Tam, Gary K. L. and Roberts, Jonathan C.},
-title={Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers},
-author={Abdellah, Marwan and Favreau, Cyrille and Hernando, Juan and Lapere, Samuel and Schürmann, Felix},
-year={2019},
-publisher={The Eurographics Association},
-isbn={978-3-03868-096-3},
-doi={10.2312/cgvc.20191257}
+  booktitle={Computer Graphics and Visual Computing (CGVC)},
+  editor={Vidal, Franck P. and Tam, Gary K. L. and Roberts, Jonathan C.},
+  title={Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers},
+  author={Abdellah, Marwan and Favreau, Cyrille and Hernando, Juan and Lapere, Samuel and Schürmann, Felix},
+  year={2019},
+  publisher={The Eurographics Association},
+  isbn={978-3-03868-096-3},
+  doi={10.2312/cgvc.20191257}
 }
 ```
 
