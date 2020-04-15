@@ -1168,15 +1168,26 @@ def view_all_scene():
 
 
 ####################################################################################################
-# @switch_scene_shading
+# @activate_neuromorphovis_mode
 ####################################################################################################
 def activate_neuromorphovis_mode():
-    """
+    """Switches the scene to black to make it easy to see the morphologies.
     """
 
     theme = bpy.context.preferences.themes['Default']
     theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
     theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
+    theme.view_3d.grid = Vector((0, 0, 0, 0))
+
+
+####################################################################################################
+# @deactivate_neuromorphovis_mode
+####################################################################################################
+def deactivate_neuromorphovis_mode():
+    """Switches the scene the default theme.
+    """
+
+    bpy.ops.preferences.reset_default_theme()
 
 
 ####################################################################################################

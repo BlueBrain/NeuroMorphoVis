@@ -314,6 +314,9 @@ def register_panel():
 def unregister_panel():
     """Un-registers all the classes in this panel"""
 
+    # Get back to the original theme
+    nmv.scene.deactivate_neuromorphovis_mode()
+
     # InputOutput data
     bpy.utils.unregister_class(IOPanel)
 
