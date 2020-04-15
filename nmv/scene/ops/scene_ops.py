@@ -1170,6 +1170,18 @@ def view_all_scene():
 ####################################################################################################
 # @switch_scene_shading
 ####################################################################################################
+def activate_neuromorphovis_mode():
+    """
+    """
+
+    theme = bpy.context.preferences.themes['Default']
+    theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
+    theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
+
+
+####################################################################################################
+# @switch_scene_shading
+####################################################################################################
 def switch_scene_shading(shading_type='SOLID'):
     """Switches the scene panel to the given shading type
 

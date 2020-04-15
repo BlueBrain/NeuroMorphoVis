@@ -297,6 +297,9 @@ class InputOutputDocumentation(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
+    # Once loaded activate the mode
+    nmv.scene.activate_neuromorphovis_mode()
+
     # InputOutput data
     bpy.utils.register_class(IOPanel)
 
@@ -310,9 +313,6 @@ def register_panel():
 ####################################################################################################
 def unregister_panel():
     """Un-registers all the classes in this panel"""
-
-    # Unload the icons
-    nmv.interface.unload_icons()
 
     # InputOutput data
     bpy.utils.unregister_class(IOPanel)
