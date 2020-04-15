@@ -254,12 +254,49 @@ class LoadMorphology(bpy.types.Operator):
         # Configure the output directory
         nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
 
+        # Use the event timer to update the UI during the soma building
+        wm = context.window_manager
+        # self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
+        wm.modal_handler_add(self)
+
+        # Modal
+        return {'RUNNING_MODAL'}
+
+    ###############################################################################################
+    # @modal
+    ################################################################################################
+    def modal(self,
+              context,
+              event):
+        """
+        Threading and non-blocking handling.
+
+        :param context:
+            Panel context.
+        :param event:
+            A given event for the panel.
+        """
+
         # Analyze the morphology once loaded as well
         analysis_time = time.time()
         nmv.interface.analyze_morphology(morphology=nmv.interface.ui_morphology, context=context)
         nmv.logger.info_done('Morphology analyzed in [%f] seconds' % (time.time() - analysis_time))
 
         # Done
+        return {'FINISHED'}
+
+    ################################################################################################
+    # @cancel
+    ################################################################################################
+    def cancel(self, context):
+        """
+        Cancel the panel processing and return to the interaction mode.
+
+        :param context:
+            Panel context.
+        """
+
+        # Finished
         return {'FINISHED'}
 
 

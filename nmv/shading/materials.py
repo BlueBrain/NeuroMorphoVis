@@ -231,6 +231,9 @@ def create_flat_material(name,
         bpy.context.scene.display.shading.light = 'FLAT'
         bpy.context.scene.display.shading.show_xray = False
 
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('RENDERED')
+
     else:
 
         # Switch the rendering engine to cycles to be able to create the material
@@ -301,6 +304,9 @@ def create_transparent_material(name,
 
         # Switch the view port shading
         nmv.scene.switch_scene_shading('SOLID')
+
+        # Switch to transparent
+        nmv.scene.set_scene_transparency(transparent=True)
 
     else:
 
@@ -873,6 +879,9 @@ def create_materials(material_type,
         A list of two elements (different or same colors) where we can apply later to the drawn
         sections or segments.
     """
+
+    # By default, no transparency
+    nmv.scene.set_scene_transparency(transparent=False)
 
     # A list of the created materials
     materials_list = list()

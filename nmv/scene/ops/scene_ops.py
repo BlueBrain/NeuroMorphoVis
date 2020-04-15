@@ -1191,6 +1191,22 @@ def deactivate_neuromorphovis_mode():
 
 
 ####################################################################################################
+# @set_scene_transparency
+####################################################################################################
+def set_scene_transparency(transparent=False):
+    """Enables or disables scene transparency.
+
+    :param transparent:
+        If True, switch to the transparent mode, otherwise normal mode.
+    """
+
+    views3d = [a for a in bpy.context.screen.areas if a.type == 'VIEW_3D']
+    for a in views3d:
+        shading = a.spaces.active.shading
+        shading.show_xray = transparent
+
+
+####################################################################################################
 # @switch_scene_shading
 ####################################################################################################
 def switch_scene_shading(shading_type='SOLID'):
