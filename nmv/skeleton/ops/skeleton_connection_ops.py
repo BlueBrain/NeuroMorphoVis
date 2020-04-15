@@ -120,7 +120,6 @@ def label_primary_and_secondary_sections_based_on_radii(section):
 
     # Iterate over the children of the section
     for child in section.children:
-        print(child)
 
         # If the radius of the child is greater than the greatest radius, then refer to this
         # child to be the primary child

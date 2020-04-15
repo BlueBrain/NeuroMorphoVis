@@ -276,6 +276,9 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
         global in_edit_mode
         in_edit_mode = False
 
+        # Switch back from the analysis mode to the visualization mode
+        nmv.scene.switch_interface_to_visualization_mode()
+
         return {'FINISHED'}
 
 

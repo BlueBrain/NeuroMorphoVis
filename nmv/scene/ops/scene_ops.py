@@ -1229,17 +1229,27 @@ def switch_scene_shading(shading_type='SOLID'):
 def switch_interface_to_edit_mode():
     """Switch the user interface to the edit mode style.
     """
-    nmv.scene.switch_scene_shading('WIREFRAME')
+
+    # Update the transparency
+    set_scene_transparency(True)
+
+    # Use the solid mode
+    nmv.scene.switch_scene_shading('SOLID')
+
+    # Increase the vertex size
     bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
-    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 1
-    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.r = 1
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.g = 0
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.b = 0
-    bpy.context.preferences.themes['Default'].view_3d.wire.r = 0.5
-    bpy.context.preferences.themes['Default'].view_3d.wire.g = 0.5
-    bpy.context.preferences.themes['Default'].view_3d.wire.b = 0.0
+
+    # Make the vertex red
+    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 1.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
+
+    # Make the selected vertex white
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.r = 1.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.g = 1.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.b = 1.0
+
+    # Make the wire white to be able to see it
     bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 1.0
     bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 1.0
     bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 1.0
@@ -1251,9 +1261,22 @@ def switch_interface_to_edit_mode():
 def switch_interface_to_visualization_mode():
     """Switches the user interface to the visualization mode style.
     """
-    nmv.scene.switch_scene_shading('SOLID')
 
-    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0
+    # Update the transparency
+    set_scene_transparency(False)
+
+    # Solid mode
+    switch_scene_shading('SOLID')
+
+    # Make the vertex black again
+    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
+
+    # Adjust the vertex size to the default value
     bpy.context.preferences.themes['Default'].view_3d.vertex_size = 3
+
+    # Make the wire black again
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 0.0
