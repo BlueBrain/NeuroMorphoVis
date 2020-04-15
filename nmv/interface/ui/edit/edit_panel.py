@@ -195,9 +195,6 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
-        # Switch to the wire-frame mode
-        nmv.scene.switch_interface_to_edit_mode()
-
         # Sketch the guide to make sure users can see something
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology,
@@ -207,6 +204,9 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         morphology_editor = nmv.edit.MorphologyEditor(
             morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
         morphology_editor.sketch_morphology_skeleton()
+
+        # Switch to the wire-frame mode
+        nmv.scene.switch_interface_to_edit_mode()
 
         # Switch to edit mode, to be able to export the mesh
         bpy.ops.object.mode_set(mode='EDIT')

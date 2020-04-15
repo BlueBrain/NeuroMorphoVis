@@ -1231,6 +1231,18 @@ def switch_interface_to_edit_mode():
     """
     nmv.scene.switch_scene_shading('WIREFRAME')
     bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
+    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 1
+    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.r = 1
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.g = 0
+    bpy.context.preferences.themes['Default'].view_3d.vertex_select.b = 0
+    bpy.context.preferences.themes['Default'].view_3d.wire.r = 0.5
+    bpy.context.preferences.themes['Default'].view_3d.wire.g = 0.5
+    bpy.context.preferences.themes['Default'].view_3d.wire.b = 0.0
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 1.0
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 1.0
+    bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 1.0
 
 
 ####################################################################################################
