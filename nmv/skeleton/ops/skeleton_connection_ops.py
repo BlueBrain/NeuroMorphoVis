@@ -116,10 +116,11 @@ def label_primary_and_secondary_sections_based_on_radii(section):
     primary_child = None
 
     # The radius of the greatest child
-    greatest_radius = 0
+    greatest_radius = nmv.consts.Math.MINUS_INFINITY
 
     # Iterate over the children of the section
     for child in section.children:
+        print(child)
 
         # If the radius of the child is greater than the greatest radius, then refer to this
         # child to be the primary child
@@ -815,7 +816,7 @@ def get_stable_soma_extent_for_morphology(morphology):
     """
 
     # The distance to the most far branch
-    largest_distance = 0
+    largest_distance = nmv.consts.Math.MINUS_INFINITY
 
     # Apical dendrite
     if morphology.has_apical_dendrites():
@@ -880,7 +881,7 @@ def get_stable_soma_extent_for_connected_arbors(arbors):
     """
 
     # The distance to the most far branch
-    largest_distance = 0
+    largest_distance = nmv.consts.Math.MINUS_INFINITY
 
     for arbor in arbors:
 

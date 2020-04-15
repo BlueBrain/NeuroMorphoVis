@@ -35,6 +35,9 @@ class Math:
     # Infinity
     INFINITY = 1e30
 
+    # Minus infinity
+    MINUS_INFINITY = -1e30
+
     # Epsilon
     EPSILON = 0.99
 
