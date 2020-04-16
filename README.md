@@ -32,13 +32,14 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 
 _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender__ that can be easily extracted and used [out-of-the-box](https://en.wikipedia.org/wiki/Out_of_the_box_(feature)). The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective platform. This package (released every minor version update of the software) is recommended for __Windows users__ or those who cannot use the [__Terminal__](https://en.wikipedia.org/wiki/Unix_shell). Otherwise, users can just download an installation script that will automatically install the entire package to a user-specified directory. This script __does not__ require __sudo__ permissions. 
 
-## Downloading Package 
-
-_NeuroMorphoVis_ packages are available for Ubuntu, RedHat, macOSX and Windows from the [__releases__](https://github.com/BlueBrain/NeuroMorphoVis/releases) page. After downloading the package, users can load NeuroMorphoVis into Blender as explained in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Running-NeuroMorphoVis).   
 
 ## Installation 
 _NeuroMorphoVis_ can be installed to a user-specified directory from a Unix (Linux or macOSX) terminal. Installation procedures are available in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation).   
 
+
+## Downloading Package 
+
+_NeuroMorphoVis_ packages are available for Ubuntu, RedHat, macOSX and Windows from the [__releases__](https://github.com/BlueBrain/NeuroMorphoVis/releases) page. After downloading the package, users can load NeuroMorphoVis into Blender as explained in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Running-NeuroMorphoVis).   
 
 # Interfaces
 
