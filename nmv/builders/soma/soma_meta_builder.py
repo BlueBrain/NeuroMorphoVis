@@ -328,24 +328,41 @@ class SomaMetaBuilder:
         # Verify the proximity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
+        # Get a list of valid arbors where we can pull the sphere towards without being intersecting
+        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+
+        # Re-classify the arbors to be able to deal with the selectivity
+        valid_apical_dendrites = list()
+        valid_basal_dendrites = list()
+        valid_axons = list()
+
+        for arbor in valid_arbors:
+            if arbor.is_axon():
+                valid_axons.append(arbor)
+            elif arbor.is_apical_dendrite():
+                valid_apical_dendrites.append(arbor)
+            else:
+                valid_basal_dendrites.append(arbor)
+
         # Emanate towards the apical dendrites, if exist
         if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
-                for arbor in self.morphology.apical_dendrites:
+                for arbor in valid_apical_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards basal dendrites, if exist
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
-                for arbor in self.morphology.basal_dendrites:
+                for arbor in valid_basal_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards axons, if exist
         if self.morphology.has_axons():
             if not self.options.morphology.ignore_axons:
-                for arbor in self.morphology.axons:
+                for arbor in valid_axons:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
