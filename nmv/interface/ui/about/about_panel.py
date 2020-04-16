@@ -183,6 +183,11 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
             'FINISHED'
         """
 
+        # git must be installed to update the tool.
+        if not nmv.utilities.command_exists('git'):
+            self.report({'INFO'}, 'Cannot update NeuroMorphoVis! git must be installed.')
+            return {'FINISHED'}
+
         # TODO: Verify git or use wget or curl.
         # TODO: Ignore this option for windows.
 

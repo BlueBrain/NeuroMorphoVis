@@ -15,13 +15,26 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .colors import *
-from .parser import *
-from .parser import *
-from .installation import *
-from .std_output import *
-from .time_line import *
-from .timer import *
-from .version import *
-from .system import *
+# System imports
+import os
+import subprocess
 
+
+####################################################################################################
+# @command_exists
+####################################################################################################
+def command_exists(name):
+    """Checks if a given command exists or not.
+
+    :param name:
+        Command.
+    :return:
+        True of False.
+    """
+
+    try:
+        devnull = open(os.devnull)
+        subprocess.Popen([name], stdout=devnull, stderr=devnull).communicate()
+    except OSError as e:
+        return False
+    return True
