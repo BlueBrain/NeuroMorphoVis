@@ -80,11 +80,13 @@ def get_connected_arbors_to_soma_after_verification(morphology,
         for secondary in close_arbors:
 
             # Ignore the same arbor
-            if primary.index == secondary.index:
+            if primary.label == secondary.label:
                 continue
 
             # Check the intersection
             if nmv.skeleton.arbors_intersect(primary, secondary, soma_radius):
+
+                print('%s %s' % (primary.label, secondary.label))
 
                 # The arbor is intersecting
                 is_intersecting = True

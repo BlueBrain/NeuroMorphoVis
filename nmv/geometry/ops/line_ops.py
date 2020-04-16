@@ -223,7 +223,7 @@ def draw_line(point1=Vector((0, 0, 0)),
     # Return a reference to the line object
     return line_object
 
-
+import nmv.mesh
 ####################################################################################################
 # @draw_cone_line
 ####################################################################################################
@@ -231,7 +231,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    point2=Vector((1, 1, 1)),
                    point1_radius=0.0,
                    point2_radius=1.0,
-                   color=(1, 1, 1),
+                   color=(1, 1, 1, 1),
                    name='line',
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
@@ -272,6 +272,8 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     # For a thick line, the caps are always filled in contrast to the thin line
     line_data.use_fill_caps = True
 
+    line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=32, name=name)
+
     # Create a new material (color) and assign it to the line
     line_material = bpy.data.materials.new('color.%s' % name)
     line_material.diffuse_color = color
@@ -279,7 +281,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
 
     # Create a line object and link it to the scene
     line_object = bpy.data.objects.new(str(name), line_data)
-    bpy.context.scene.objects.link(line_object)
+    nmv.scene.link_object_to_scene(line_object)
 
     # Add the two points to the line object and scale their radii
     line_strip = line_data.splines.new('NURBS')
@@ -291,9 +293,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     line_strip.order_u = 1
 
     # Convert the cone to a mesh object and smooth it using a given smoothness factor
-    line_object = nmv.scene.ops.convert_object_to_mesh(line_object)
-    bpy.ops.object.modifier_add(type='SUBSURF')
-    bpy.context.object.modifiers["Subsurf"].levels = smoothness_factor
+    # line_object = nmv.scene.ops.convert_object_to_mesh(line_object)
 
     # Return a reference to the line object
     return line_object

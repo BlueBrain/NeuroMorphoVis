@@ -15,13 +15,17 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.geometry
+import nmv.scene
+
 
 ####################################################################################################
 # @branches_intersect
 ####################################################################################################
 def arbors_intersect(branch_1,
-                       branch_2,
-                       soma_radius):
+                     branch_2,
+                     soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
     Since the two branches would not be exactly located at the given soma radius, therefore, a good
     intersection test requires mapping their initial segments to the initial
@@ -54,20 +58,78 @@ def arbors_intersect(branch_1,
     scaled_point_2 = is_direction_2 * soma_radius
 
     # Compute the scaled radii based on [ tan(angle) = r1/x1 = r2/x2 ]
-    scaled_radius1 = is_radius_1 * (scaled_point_1.length / is_point_1.length)
-    scaled_radius2 = is_radius_2 * (scaled_point_2.length / is_point_2.length)
+    scaled_radius_1 = is_radius_1 * (scaled_point_1.length / is_point_1.length)
+    scaled_radius_2 = is_radius_2 * (scaled_point_2.length / is_point_2.length)
 
     # Compute the arc distance between the two scaled points
     arc_length = scaled_point_1.angle(scaled_point_2) * soma_radius
 
     # If the distance between the centers is less than the radii sum, then they intersect
-    if arc_length < (scaled_radius1 + scaled_radius2):
+    if arc_length < (scaled_radius_1 + scaled_radius_2):
 
         # Positive intersection
         return True
 
     # Negative intersection, the branches do not intersect at all
     return False
+
+
+####################################################################################################
+# @arbors_intersect_with_bvh
+####################################################################################################
+def arbors_intersect_with_bvh(branch_1,
+                              branch_2,
+                              soma_radius):
+    """Check if the given branches intersect at their connections with the soma or not.
+    Since the two branches would not be exactly located at the given soma radius, therefore, a good
+    intersection test requires mapping their initial segments to the initial
+    soma sphere at the given soma radius and then applying the default intersection test.
+
+    :param branch_1:
+        The first branch.
+    :param branch_2:
+        The second branch.
+    :param soma_radius:
+        The radius of the soma.
+    :return:
+        True or False.
+    """
+
+    # Get the initial segment (is) points of the two branches
+    is_point_1 = branch_1.samples[0].point
+    is_point_2 = branch_2.samples[0].point
+
+    # Get the initial segments radii of the two branches
+    is_radius_1 = branch_1.samples[0].radius
+    is_radius_2 = branch_2.samples[0].radius
+
+    # Get the directions of the initial segments of the two branches
+    is_direction_1 = is_point_1.normalized()
+    is_direction_2 = is_point_2.normalized()
+
+    # Compute the mapping radii (i.e. the scale required to connect the branch to the soma radius)
+    scaled_point_1 = is_direction_1 * soma_radius
+    scaled_point_2 = is_direction_2 * soma_radius
+
+    # Compute the scaled radii based on [ tan(angle) = r1/x1 = r2/x2 ]
+    scaled_radius_1 = is_radius_1 * (scaled_point_1.length / is_point_1.length)
+    scaled_radius_2 = is_radius_2 * (scaled_point_2.length / is_point_2.length)
+
+    # Create two cones representing the arbors
+    branch_1_segment = nmv.geometry.draw_cone_line(is_point_1, scaled_point_1,
+                                                   is_radius_1, scaled_radius_1)
+    branch_2_segment = nmv.geometry.draw_cone_line(is_point_2, scaled_point_2,
+                                                   is_radius_2, scaled_radius_2)
+
+    # Verify the intersections
+    value = nmv.skeleton.poly_lines_intersect(branch_1_segment, branch_2_segment)
+
+    # Delete the duplicated objects
+    nmv.scene.ops.delete_list_objects([branch_1_segment, branch_2_segment])
+
+    # Return the value
+    return value
+
 
 
 ####################################################################################################

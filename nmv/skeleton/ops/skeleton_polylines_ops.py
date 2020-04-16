@@ -21,6 +21,7 @@ import copy
 # Blender imports
 from mathutils import Vector, Matrix, bvhtree
 import bmesh
+import bpy
 
 # Internal imports
 import nmv.consts
@@ -28,6 +29,13 @@ import nmv.enums
 import nmv.scene
 import nmv.geometry
 
+import bpy
+import bmesh
+import time
+
+from mathutils.bvhtree import BVHTree
+from mathutils import Vector
+from random import randint
 
 ####################################################################################################
 # @get_segments_poly_lines
@@ -629,6 +637,69 @@ def get_poly_line_normalized_start_factor(distance,
 
 
 ####################################################################################################
+# @create_bvh
+####################################################################################################
+def create_bvh(scene_object):
+    """Creates the BVH of a given scene object.
+
+    :param scene_object:
+        A given scene object.
+    :return:
+        A reference to the BVH
+    """
+
+    bm = bmesh.new()
+    bm.from_mesh(scene_object.data)
+    bm.transform(scene_object.matrix_world)
+    object_bvh = BVHTree.FromBMesh(bm)
+    bm.free()
+
+    return object_bvh
+
+
+####################################################################################################
+# @are_intersecting
+####################################################################################################
+def are_intersecting(objects):
+    """If the list of objects are intersecting.
+
+    :param objects:
+        A given list of objects to check their intersection
+    :return:
+    """
+
+    # Check every object for intersection with every other object
+    i = 0
+    intersections = 0
+
+    # Check for a primary one
+    for primary in objects:
+
+        # Create a BVH
+        primary_bvh = create_bvh(primary)
+
+        # Secondary
+        for secondary in objects[i:]:
+            if primary == secondary:
+                continue
+
+            # Create the BVH
+            secondary_bvh = create_bvh(secondary)
+
+            # Get intersecting pairs
+            intersection_list = primary_bvh.overlap(secondary_bvh)
+
+            # if list is empty, no objects are touching
+            if len(intersection_list) > 0:
+                intersections += 1
+
+        i += 1
+    if intersections > 0:
+        return True
+    return False
+
+
+####################################################################################################
 # @poly_lines_intersect
 ####################################################################################################
 def poly_lines_intersect(poly_line_1,
@@ -649,36 +720,23 @@ def poly_lines_intersect(poly_line_1,
     poly_line_2_duplicate = nmv.scene.ops.duplicate_object(poly_line_2)
 
     # Convert them to meshes
-    nmv.scene.ops.convert_object_to_mesh(poly_line_1_duplicate)
-    nmv.scene.ops.convert_object_to_mesh(poly_line_2_duplicate)
+    poly_line_1_duplicate = nmv.scene.ops.convert_object_to_mesh(poly_line_1_duplicate)
+    poly_line_2_duplicate = nmv.scene.ops.convert_object_to_mesh(poly_line_2_duplicate)
+    
+    # Deselect all the object s
+    nmv.scene.deselect_all()
+    
+    # Select the specific ones 
+    nmv.scene.select_objects([poly_line_1_duplicate, poly_line_2_duplicate])
 
-    # Create a new bmesh from the meshes
-    poly_line_1_bmesh = bmesh.new()
-    poly_line_2_bmesh = bmesh.new()
-
-    poly_line_1_bmesh.from_mesh(poly_line_1_duplicate.data)
-    poly_line_2_bmesh.from_mesh(poly_line_2_duplicate.data)
-
-    # To make the intersection faster, transform the poly-lines
-    poly_line_1_bmesh.transform(poly_line_1_duplicate.matrix_world)
-    poly_line_2_bmesh.transform(poly_line_2_duplicate.matrix_world)
-
-    # Create the BVH for the two meshes
-    bv_m1 = bvhtree.BVHTree.FromBMesh(poly_line_1_bmesh)
-    bv_m2 = bvhtree.BVHTree.FromBMesh(poly_line_2_bmesh)
-
-    # Find the overlap between the two poly-line meshes
-    overlap_list = bv_m1.overlap(bv_m2)
+    # Are those objects intersecting
+    value = are_intersecting(bpy.context.selected_objects)
 
     # Delete the duplicated objects
     nmv.scene.ops.delete_list_objects([poly_line_1_duplicate, poly_line_2_duplicate])
 
-    # If the overlap list is empty, then there is no intersection between the two poly-lines
-    if len(overlap_list) == 0:
-        return False
-
-    # Otherwise, the two poly-lines do intersect
-    return True
+    # Return the value
+    return value
 
 
 ####################################################################################################

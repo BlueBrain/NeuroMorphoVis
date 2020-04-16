@@ -573,7 +573,7 @@ class SomaSoftBodyBuilder:
         """
 
         # Log
-        nmv.logger.header('Building soma')
+        nmv.logger.header('Soma reconstruction with SoftBody')
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
         valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
