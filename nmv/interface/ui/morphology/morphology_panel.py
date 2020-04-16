@@ -99,7 +99,9 @@ class MorphologyPanel(bpy.types.Panel):
         quick_reconstruction_row = layout.row()
         quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
         reconstruct_morphology_button_row = layout.row()
-        reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology', icon='RNA_ADD')
+        reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology',
+                                                   text=bpy.types.Scene.NMV_MorphologyButtonLabel,
+                                                   icon='RNA_ADD')
         reconstruct_morphology_button_row.enabled = True
 
         global is_morphology_reconstructed

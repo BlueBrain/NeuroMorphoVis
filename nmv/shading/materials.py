@@ -229,7 +229,7 @@ def create_flat_material(name,
 
         # Flat shading
         bpy.context.scene.display.shading.light = 'FLAT'
-        bpy.context.scene.display.shading.show_xray = False
+        nmv.scene.set_scene_transparency(transparent=False)
 
         # Switch the view port shading
         nmv.scene.switch_scene_shading('RENDERED')
@@ -374,7 +374,7 @@ def create_toon_material(name,
         # Flat shading
         bpy.context.scene.display.shading.light = 'MATCAP'
         bpy.context.scene.display.shading.studio_light = 'toon.exr'
-        bpy.context.scene.display.shading.show_xray = False
+        nmv.scene.set_scene_transparency(transparent=False)
 
         # Switch the view port shading
         nmv.scene.switch_scene_shading('SOLID')
@@ -624,12 +624,12 @@ def create_lambert_ward_material(name,
         line_material.roughness = 0.0
         line_material.metallic = 0.0
 
-        bpy.context.scene.display.shading.light = 'STUDIO'
-        bpy.context.scene.display.shading.studio_light = 'Default'
-        bpy.context.scene.display.shading.show_xray = False
-
         # Switch the view port shading
         nmv.scene.switch_scene_shading('SOLID')
+
+        bpy.context.scene.display.shading.light = 'STUDIO'
+        bpy.context.scene.display.shading.studio_light = 'Default'
+        nmv.scene.set_scene_transparency(transparent=False)
 
         # Return a reference to the material
         return line_material
@@ -765,6 +765,9 @@ def create_material(name,
 
     # By default, set colors to filmic
     nmv.scene.set_colors_to_filimc()
+
+    # Setting the scene transparency to False before the creating of any shader
+    nmv.scene.set_scene_transparency(transparent=False)
 
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:

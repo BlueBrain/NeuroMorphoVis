@@ -206,6 +206,9 @@ def set_reconstruction_options(layout,
     # Dendrogram options
     elif scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
 
+        # Update the button name
+        bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Dendrogram'
+
         # Type
         dendrogram_type_row = layout.row()
         dendrogram_type_row.label(text='Dendrogram Type:')
@@ -231,9 +234,6 @@ def set_reconstruction_options(layout,
         options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
     if not scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
-
-        # Update the button name
-        bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Dendrogram'
 
         # Sections diameters option
         sections_radii_row = layout.row()
