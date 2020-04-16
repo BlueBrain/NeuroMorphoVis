@@ -58,11 +58,6 @@ def get_connected_arbors_to_soma_after_verification(morphology,
     # Sort the close arbors based on radii of the first samples of the arbors
     close_arbors.sort(key=lambda close_arbor: close_arbor.samples[0].radius, reverse=True)
 
-
-    for arbor in close_arbors:
-        print(arbor.label)
-
-
     # Valid arbors
     valid_arbors = list()
 
@@ -71,7 +66,6 @@ def get_connected_arbors_to_soma_after_verification(morphology,
 
     # Check the intersecting arbors
     for primary in close_arbors:
-        print(primary.label)
 
         # This flag indicates that the primary arbor is not intersecting with any other arbors
         # in the morphology. If this flag stays False after the loop, then we can safely append
@@ -116,9 +110,6 @@ def get_connected_arbors_to_soma_after_verification(morphology,
 
             # We therefore can switch the connected_to_soma flag to True
             primary.connected_to_soma = True
-
-
-        print(primary.connected_to_soma)
 
     # Return the valid arbors list for extrusion
     return valid_arbors

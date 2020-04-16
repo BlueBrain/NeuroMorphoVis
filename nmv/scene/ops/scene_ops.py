@@ -1168,6 +1168,25 @@ def view_all_scene():
 
 
 ####################################################################################################
+# @view_region
+####################################################################################################
+def view_region(x=0, y=0, delta=1):
+    """View a specific region in the scene.
+
+    :param x:
+        Minimum X.
+    :param y:
+        Minimum Y.
+    :param delta:
+        Delta
+    """
+    bpy.ops.view3d.zoom(mx=x, my=y, delta=delta)
+
+    # Update the end
+    bpy.context.space_data.clip_end = 1e4
+
+
+####################################################################################################
 # @activate_neuromorphovis_mode
 ####################################################################################################
 def activate_neuromorphovis_mode():

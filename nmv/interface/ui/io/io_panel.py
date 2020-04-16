@@ -234,6 +234,9 @@ class LoadMorphology(bpy.types.Operator):
         options.morphology.set_default()
         options.shading.set_default()
 
+        # Use branching order of 2 for the axons to ensure that we can see the whole morphology
+        options.morphology.axon_branch_order = 2
+
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=nmv.interface.ui_morphology, options=options, force_meta_ball_soma=True)
