@@ -77,11 +77,17 @@ class Soma:
         # Sort the radii in the list
         self.distances_to_soma = sorted(self.distances_to_soma)
 
+        # If the mean radius is already smaller than the minimum radius
+        if self.mean_radius < self.distances_to_soma[0]:
+            actual_mean_radius = sum(self.distances_to_soma) / (len(self.distances_to_soma) * 1.0)
+        else:
+            actual_mean_radius = mean_radius
+
         # Clean the possible radii list
         self.possible_radii = list()
 
         for value in self.distances_to_soma:
-            if (self.mean_radius / 2.0) < value < (self.mean_radius * 3.0):
+            if (actual_mean_radius / 2.0) < value < (actual_mean_radius * 3.0):
                 self.possible_radii.append(value)
 
         # Ensure that the possible radii list is available
@@ -90,9 +96,5 @@ class Soma:
             self.largest_radius = self.possible_radii[-1] + nmv.consts.Math.LITTLE_EPSILON
 
         else:
-            self.smallest_radius = self.mean_radius
-            self.largest_radius = self.mean_radius
-
-
-
-
+            self.smallest_radius = actual_mean_radius
+            self.largest_radius = actual_mean_radius

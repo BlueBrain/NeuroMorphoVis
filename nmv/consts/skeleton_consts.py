@@ -36,7 +36,7 @@ class Skeleton:
     AXON_DEFAULT_BRANCHING_ORDER = 2
 
     # The maximum radius of soma reported in the literature
-    MAXIMUM_SOMA_RADIUS_REPORTED = 15
+    MAXIMUM_SOMA_RADIUS_REPORTED = 30
 
     # Soma prefix
     SOMA_PREFIX = 'Soma'

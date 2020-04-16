@@ -409,3 +409,7 @@ bpy.types.Scene.NMV_MorphologyRenderingTime = bpy.props.FloatProperty(
     name='Rendering (Sec)',
     description='The time it takes to render the morphology into an image',
     default=0, min=0, max=1000000)
+
+
+# By default, it is 'Reconstruct Morphology' unless otherwise specified
+bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Morphology'

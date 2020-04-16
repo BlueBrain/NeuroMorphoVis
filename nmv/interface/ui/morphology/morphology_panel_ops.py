@@ -16,11 +16,42 @@
 ####################################################################################################
 
 # Blender imports
+import bpy
 from mathutils import Vector
 
 # Internal imports
 import nmv.consts
 import nmv.enums
+
+
+####################################################################################################
+# @set_resampling_options
+####################################################################################################
+def set_resampling_options(layout,
+                           scene,
+                           options):
+    """Set the resampling options in the UI.
+
+    :param layout:
+        Panel layout.
+    :param scene:
+        Context scene.
+    :param options:
+        System options.
+    """
+
+    # Resampling step
+    resampling_row = layout.row()
+    resampling_row.label(text='Resampling:')
+    resampling_row.prop(scene, 'NMV_MorphologyResampling')
+    options.morphology.resampling_method = scene.NMV_MorphologyResampling
+
+    # If Fixed Step resampling method is selected, add the sampling step
+    if scene.NMV_MorphologyResampling == nmv.enums.Skeleton.Resampling.FIXED_STEP:
+        resampling_step_row = layout.row()
+        resampling_step_row.label(text='Resampling Step:')
+        resampling_step_row.prop(scene, 'NMV_MorphologyResamplingStep')
+        options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
 
 ####################################################################################################
@@ -43,13 +74,12 @@ def set_skeleton_options(layout,
     skeleton_row = layout.row()
     skeleton_row.label(text='Morphology Skeleton:', icon='QUESTION')
 
-    # Build soma options
-    build_soma_row = layout.row()
-    build_soma_row.label(text='Soma:')
-    build_soma_row.prop(scene, 'NMV_BuildSoma')
-
-    # Pass options from UI to system
-    options.morphology.soma_representation = scene.NMV_BuildSoma
+    # Build soma options if not dendrogram
+    if not scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
+        build_soma_row = layout.row()
+        build_soma_row.label(text='Soma:')
+        build_soma_row.prop(scene, 'NMV_BuildSoma')
+        options.morphology.soma_representation = scene.NMV_BuildSoma
 
     # The morphology must be loaded to be able to draw these options
     if nmv.interface.ui_morphology is not None:
@@ -139,6 +169,9 @@ def set_reconstruction_options(layout,
         System options.
     """
 
+    # Update the reconstruction button name
+    bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Morphology'
+
     # Reconstruction options
     reconstruction_options_row = layout.row()
     reconstruction_options_row.label(text='Reconstruction Options:', icon='OUTLINER_OB_EMPTY')
@@ -198,6 +231,9 @@ def set_reconstruction_options(layout,
         options.morphology.resampling_step = scene.NMV_MorphologyResamplingStep
 
     if not scene.NMV_MorphologyReconstructionTechnique == nmv.enums.Skeleton.Method.DENDROGRAM:
+
+        # Update the button name
+        bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Dendrogram'
 
         # Sections diameters option
         sections_radii_row = layout.row()

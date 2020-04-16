@@ -138,7 +138,7 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
     # Operator parameters
     bl_idname = "nmv.reconstruct_morphology"
-    bl_label = "Reconstruct Morphology"
+    bl_label = bpy.types.Scene.NMV_MorphologyButtonLabel
 
     ################################################################################################
     # @load_morphology

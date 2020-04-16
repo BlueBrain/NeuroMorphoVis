@@ -461,57 +461,22 @@ class SWCReader:
 
             # For each arbor
             for arbor in axons_arbors:
-
-                # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0].point
-
-                # Append this point to the list
-                soma_profile_points_on_arbors.append(soma_profile_point)
+                soma_profile_points_on_arbors.append(arbor.samples[0].point)
 
         # Arbor points of the apical dendrites
         if apical_dendrites_arbors is not None:
 
             # For each arbor
             for arbor in apical_dendrites_arbors:
-
-                # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0].point
-
-                # Append this point to the list
-                soma_profile_points_on_arbors.append(soma_profile_point)
+                soma_profile_points_on_arbors.append(arbor.samples[0].point)
 
         # Arbor points of the basal dendrites
         if basal_dendrites_arbors is not None:
 
             # For each arbor
             for arbor in basal_dendrites_arbors:
-
-                # Get the initial sample along the arbor
-                soma_profile_point = arbor.samples[0].point
-
                 # Append this point to the list
-                soma_profile_points_on_arbors.append(soma_profile_point)
-
-        # If the soma radius is zero, then get the average of the profile points if exist
-        if soma_radius < 1e-5:
-
-            # Set a new radius based on the profile points if they are there
-            if len(soma_profile_points) > 0:
-                soma_radius = 0.0
-                for point in soma_profile_points:
-                    soma_radius += point.length
-                soma_radius = soma_radius / len(soma_profile_points)
-
-            # Otherwise, use the profile points to get the average radius
-            else:
-
-                if len(soma_profile_points_on_arbors) > 0:
-                    soma_radius = 0.0
-                    for point in soma_profile_points_on_arbors:
-                        soma_radius += point.length
-                    soma_radius = soma_radius / len(soma_profile_points_on_arbors)
-                else:
-                    soma_radius = 1.0
+                soma_profile_points_on_arbors.append(arbor.samples[0].point)
 
         # Construct the soma object
         soma_object = nmv.skeleton.Soma(
