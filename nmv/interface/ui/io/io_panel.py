@@ -231,6 +231,7 @@ class LoadMorphology(bpy.types.Operator):
 
         # Always use meta builder to reconstruct the initial soma
         options = copy.deepcopy(nmv.interface.ui_options)
+        options.morphology.set_default()
         options.shading.set_default()
 
         # Create the builder
