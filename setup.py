@@ -45,7 +45,8 @@ def parse_command_line_arguments(arguments=None):
                   'NOTE: git, wget or curl must be installed to run this script.'
     parser = argparse.ArgumentParser(description=description)
 
-    arg_help = 'Blender version. 2.79, 2.80, or 2.81. By default it is 2.80.'
+    arg_help = 'Blender version. 2.79, 2.80, or 2.81. By default it is 2.80. It is recommended ' \
+               'to avoid 2.79.'
     parser.add_argument('--blender-version',
                         action='store', dest='blender_version', default='2.80', help=arg_help)
 

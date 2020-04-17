@@ -29,6 +29,7 @@ import nmv.interface
 import nmv.scene
 import nmv.consts
 import nmv.utilities
+import nmv.enums
 
 # Globals
 # Morphology editor
@@ -196,9 +197,10 @@ class EditMorphologyCoordinates(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Sketch the guide to make sure users can see something
+        options_clone = copy.deepcopy(nmv.interface.ui_options)
+        options_clone.morphology.soma_representation = nmv.enums.Soma.Representation.META_BALLS
         nmv.interface.ui.sketch_morphology_skeleton_guide(
-            morphology=nmv.interface.ui_morphology,
-            options=copy.deepcopy(nmv.interface.ui_options))
+            morphology=nmv.interface.ui_morphology, options=options_clone)
 
         # Sketch the morphological skeleton for repair
         morphology_editor = nmv.edit.MorphologyEditor(
