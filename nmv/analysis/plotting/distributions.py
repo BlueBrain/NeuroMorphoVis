@@ -60,12 +60,6 @@ def plot_per_arbor_result(analysis_results,
     import matplotlib.pyplot as pyplot
     from matplotlib import font_manager
 
-    # Import the fonts
-    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
-    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-    for font_file in font_files:
-        font_manager.fontManager.addfont(font_file)
-
     # Clean the figure
     pyplot.clf()
 
@@ -244,12 +238,6 @@ def plot_per_arbor_range(minimum_results,
 
     # Clear any figure
     pyplot.clf()
-
-    # Import the fonts
-    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
-    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-    for font_file in font_files:
-        font_manager.fontManager.addfont(font_file)
 
     # Labels on the independent axis
     labels = list()

@@ -20,6 +20,10 @@ import os
 import sys
 import subprocess
 
+# Internal imports
+import nmv.utilities
+import nmv.consts
+
 
 ####################################################################################################
 # @get_python_executable
@@ -124,3 +128,18 @@ def verify_plotting_packages():
     except ImportError:
         print('Package *pandas* is not installed. Installing it.')
         pip_install_wheel(package_name='pandas')
+
+    import matplotlib
+    matplotlib.use('agg')  # To resolve the tkinter issue
+    from matplotlib import font_manager
+
+    # Import the fonts
+    font_dirs = [nmv.consts.Paths.FONTS_DIRECTORY]
+    font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+    if nmv.utilities.is_blender_280():
+        for font_file in font_files:
+            font_manager.fontManager.addfont(font_file)
+    else:
+        font_list = font_manager.createFontList(font_files)
+        font_manager.fontManager.ttflist.extend(font_list)
+
