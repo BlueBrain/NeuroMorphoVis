@@ -1193,10 +1193,11 @@ def activate_neuromorphovis_mode():
     """Switches the scene to black to make it easy to see the morphologies.
     """
 
-    theme = bpy.context.preferences.themes['Default']
-    theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
-    theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
-    theme.view_3d.grid = Vector((0, 0, 0, 0))
+    if nmv.utilities.is_blender_280():
+        theme = bpy.context.preferences.themes['Default']
+        theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
+        theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
+        theme.view_3d.grid = Vector((0, 0, 0, 0))
 
 
 ####################################################################################################
@@ -1206,7 +1207,8 @@ def deactivate_neuromorphovis_mode():
     """Switches the scene the default theme.
     """
 
-    bpy.ops.preferences.reset_default_theme()
+    if nmv.utilities.is_blender_280():
+        bpy.ops.preferences.reset_default_theme()
 
 
 ####################################################################################################
@@ -1219,10 +1221,11 @@ def set_scene_transparency(transparent=False):
         If True, switch to the transparent mode, otherwise normal mode.
     """
 
-    views3d = [a for a in bpy.context.screen.areas if a.type == 'VIEW_3D']
-    for a in views3d:
-        shading = a.spaces.active.shading
-        shading.show_xray = transparent
+    if nmv.utilities.is_blender_280():
+        views3d = [a for a in bpy.context.screen.areas if a.type == 'VIEW_3D']
+        for a in views3d:
+            shading = a.spaces.active.shading
+            shading.show_xray = transparent
 
 
 ####################################################################################################
@@ -1235,11 +1238,12 @@ def switch_scene_shading(shading_type='SOLID'):
         One of the following:  'WIREFRAME' '(SOLID)' 'MATERIAL' 'RENDERED'
     """
 
-    areas = bpy.context.workspace.screens[0].areas
-    for area in areas:
-        for space in area.spaces:
-            if space.type == 'VIEW_3D':
-                space.shading.type = shading_type
+    if nmv.utilities.is_blender_280():
+        areas = bpy.context.workspace.screens[0].areas
+        for area in areas:
+            for space in area.spaces:
+                if space.type == 'VIEW_3D':
+                    space.shading.type = shading_type
 
 
 ####################################################################################################
@@ -1249,29 +1253,31 @@ def switch_interface_to_edit_mode():
     """Switch the user interface to the edit mode style.
     """
 
-    # Update the transparency
-    set_scene_transparency(True)
+    if nmv.utilities.is_blender_280():
 
-    # Use the solid mode
-    nmv.scene.switch_scene_shading('SOLID')
+        # Update the transparency
+        set_scene_transparency(True)
 
-    # Increase the vertex size
-    bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
+        # Use the solid mode
+        nmv.scene.switch_scene_shading('SOLID')
 
-    # Make the vertex red
-    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 1.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
+        # Increase the vertex size
+        bpy.context.preferences.themes['Default'].view_3d.vertex_size = 8
 
-    # Make the selected vertex white
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.r = 1.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.g = 1.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex_select.b = 1.0
+        # Make the vertex red
+        bpy.context.preferences.themes['Default'].view_3d.vertex.r = 1.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
 
-    # Make the wire white to be able to see it
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 1.0
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 1.0
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 1.0
+        # Make the selected vertex white
+        bpy.context.preferences.themes['Default'].view_3d.vertex_select.r = 1.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex_select.g = 1.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex_select.b = 1.0
+
+        # Make the wire white to be able to see it
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 1.0
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 1.0
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 1.0
 
 
 ####################################################################################################
@@ -1281,21 +1287,23 @@ def switch_interface_to_visualization_mode():
     """Switches the user interface to the visualization mode style.
     """
 
-    # Update the transparency
-    set_scene_transparency(False)
+    if nmv.utilities.is_blender_280():
 
-    # Solid mode
-    switch_scene_shading('SOLID')
+        # Update the transparency
+        set_scene_transparency(False)
 
-    # Make the vertex black again
-    bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
-    bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
+        # Solid mode
+        switch_scene_shading('SOLID')
 
-    # Adjust the vertex size to the default value
-    bpy.context.preferences.themes['Default'].view_3d.vertex_size = 3
+        # Make the vertex black again
+        bpy.context.preferences.themes['Default'].view_3d.vertex.r = 0.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex.g = 0.0
+        bpy.context.preferences.themes['Default'].view_3d.vertex.b = 0.0
 
-    # Make the wire black again
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 0.0
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 0.0
-    bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 0.0
+        # Adjust the vertex size to the default value
+        bpy.context.preferences.themes['Default'].view_3d.vertex_size = 3
+
+        # Make the wire black again
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.r = 0.0
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.g = 0.0
+        bpy.context.preferences.themes['Default'].view_3d.wire_edit.b = 0.0
