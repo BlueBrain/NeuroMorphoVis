@@ -253,7 +253,7 @@ class LoadMorphology(bpy.types.Operator):
         nmv.scene.view_axis()
 
         # View all the objects in the scene
-        nmv.scene.ops.view_all_scene()
+        # nmv.scene.ops.view_all_scene()
 
         # Configure the output directory
         nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
