@@ -246,6 +246,7 @@ def montage_images_to_one_image(input_directory,
             current_height += heights[i]
 
     new_im.save('%s/%s.png' % (output_directory, output_image_name))
+    new_im.save('%s/%s.pdf' % (output_directory, output_image_name))
 
 
 ####################################################################################################
@@ -411,7 +412,7 @@ def group_results(input_directory, output_directory):
     morphology_name = os.path.basename(input_directory)
     image_files.append(get_image(os.listdir(output_directory), '%s_front_fixed_radius.png' %
                                  morphology_name))
-    image_files.append(get_image(os.listdir(output_directory), 'z-dendrogram-simplified'))
+    #image_files.append(get_image(os.listdir(output_directory), 'z-dendrogram-simplified'))
     image_files.append(get_image(os.listdir(output_directory), 'z-numbers-1'))
     image_files.append(get_image(os.listdir(output_directory), 'z-numbers-2'))
     image_files.append(get_image(os.listdir(output_directory), 'z-lengths'))

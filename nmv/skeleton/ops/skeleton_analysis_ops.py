@@ -695,6 +695,9 @@ def get_continuation_child(section):
     if len(section.children) == 1:
         return section.children[0]
 
+    if len(section.parent.samples) < 2:
+        return section.children[0]
+
     # Get the vector of the parent section based on its last two samples
     parent_vector = (section.samples[-2].point - section.samples[-1].point).normalized()
 

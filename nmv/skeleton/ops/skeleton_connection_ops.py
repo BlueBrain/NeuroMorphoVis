@@ -180,8 +180,6 @@ def label_primary_and_secondary_sections_based_on_angles(section):
 
     # If the section does not have any children, then this filter is not valid
     if not section.has_children():
-
-        # Return
         return
 
     # If this section is a root, then its primary by default
@@ -189,6 +187,10 @@ def label_primary_and_secondary_sections_based_on_angles(section):
 
         # Set the section to a primary
         section.is_primary = True
+
+    # If the section has less than two samples
+    if len(section.samples) < 2:
+        return
 
     # Get the vector of the parent section based on its last two samples
     parent_vector = (section.samples[-2].point - section.samples[-1].point).normalized()
@@ -231,7 +233,8 @@ def label_primary_and_secondary_sections_based_on_angles(section):
             # Compute the angle between the two vectors
             angle = parent_vector.angle(child_vector)
 
-            # If the angle is greater than the greatest angle, then update the @primary_child reference
+            # If the angle is greater than the greatest angle, then update
+            # the @primary_child reference
             if angle > greatest_angle:
 
                 # Update the angle
@@ -308,6 +311,11 @@ def label_primary_and_secondary_sections_based_on_angles_with_fixed_radii(sectio
 
         # Set the section to a primary
         section.is_primary = True
+
+    # If the section has less than two samples
+    if len(section.samples) < 2:
+        section.is_primary = False
+        return
 
     # Get the vector of the parent section based on its last two samples
     parent_vector = (section.samples[-2].point - section.samples[-1].point).normalized()

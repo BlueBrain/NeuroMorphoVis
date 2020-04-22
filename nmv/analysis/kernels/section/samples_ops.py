@@ -665,26 +665,29 @@ def compute_parent_daughter_ratios(section,
     # The section must have children
     if section.has_children():
 
-        # Get the parent last segment radius
-        parent_radius = 0.5 * (section.samples[-1].radius + section.samples[-2].radius)
-
-        # Make sure that the section has at least one sample
+        # The section must have at least two samples
         if len(section.samples) > 1:
 
-            # For every child
-            for child in section.children:
+            # Get the parent last segment radius
+            parent_radius = 0.5 * (section.samples[-1].radius + section.samples[-2].radius)
 
-                # The child must have at least one sample as well
-                if len(child.samples) > 1:
+            # Make sure that the section has at least one sample
+            if len(section.samples) > 1:
 
-                    # Get the child first segment radius
-                    child_radius = 0.5 * (child.samples[0].radius + child.samples[1].radius)
+                # For every child
+                for child in section.children:
 
-                    # Compute the ratio, irrespective to which one is bigger
-                    parent_daughter_ratio = child_radius / parent_radius
+                    # The child must have at least one sample as well
+                    if len(child.samples) > 1:
 
-                    # Append the result to the list
-                    analysis_data.append(parent_daughter_ratio)
+                        # Get the child first segment radius
+                        child_radius = 0.5 * (child.samples[0].radius + child.samples[1].radius)
+
+                        # Compute the ratio, irrespective to which one is bigger
+                        parent_daughter_ratio = child_radius / parent_radius
+
+                        # Append the result to the list
+                        analysis_data.append(parent_daughter_ratio)
 
 
 ####################################################################################################

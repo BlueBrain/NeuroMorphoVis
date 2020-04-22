@@ -467,6 +467,7 @@ def add_surface_noise_to_arbor(builder):
         meshing_technique = builder.options.mesh.meshing_technique
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             for mesh_object in mesh_objects:
+                nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
                 nmv.mesh.add_surface_noise_to_mesh(
                     mesh_object=mesh_object, subdivision_level=0, noise_strength=1.0)
 
