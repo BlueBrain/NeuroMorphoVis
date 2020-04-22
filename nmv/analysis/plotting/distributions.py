@@ -326,11 +326,11 @@ def plot_per_arbor_range(minimum_results,
 
     # Save a PNG figure
     pyplot.savefig('%s/%s/%s.png' % (options.io.analysis_directory, morphology.label, figure_name),
-                   bbox_inches='tight', transparent=True, dpi=300)
+                   bbox_inches='tight', transparent=True, dpi=600)
 
     # Save a PDF figure
     pyplot.savefig('%s/%s/%s.pdf' % (options.io.analysis_directory, morphology.label, figure_name),
-                   bbox_inches='tight', transparent=True, dpi=300)
+                   bbox_inches='tight', transparent=True, dpi=600)
 
     # Close the figures
     pyplot.close()

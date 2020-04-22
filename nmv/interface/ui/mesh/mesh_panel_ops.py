@@ -242,13 +242,10 @@ def draw_skinning_meshing_options(panel,
     nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Surface roughness
-    if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-        mesh_surface_row = panel.layout.row()
-        mesh_surface_row.label(text='Surface:')
-        mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
-    else:
-        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+    mesh_surface_row = panel.layout.row()
+    mesh_surface_row.label(text='Surface:')
+    mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
 
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
@@ -275,6 +272,12 @@ def draw_meta_objects_meshing_options(panel,
     :param scene:
         Blender scene.
     """
+
+    # Surface roughness
+    mesh_surface_row = panel.layout.row()
+    mesh_surface_row.label(text='Surface:')
+    mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
 
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)

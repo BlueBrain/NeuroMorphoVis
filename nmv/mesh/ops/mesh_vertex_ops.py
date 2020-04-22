@@ -687,3 +687,88 @@ def get_index_of_nearest_vertex_to_point(mesh_object,
 
     # Return the nearest vertex index
     return nearest_vertex_index
+
+
+####################################################################################################
+# @get_n_nearest_vertices_to_point
+####################################################################################################
+def get_n_nearest_vertices_to_point(mesh_object,
+                                    point,
+                                    n=1):
+    """Get the nearest n vertices of an object to a given point in the space.
+
+    :param mesh_object:
+        A given mesh object.
+    :param point:
+        A given point in the three-dimensional space.
+    :return:
+        The nearest vertex in the mesh to the given point.
+    """
+
+    # Initialize the nearest face index to -1
+    vertices = list()
+
+    # Initialize the shortest distance to infinity
+    shortest_distance = 1e10
+
+    # Iterate over all the vertices in the mesh
+    for vertex in mesh_object.data.vertices:
+
+        # Compute the distance between the point and the vertex
+        distance = (vertex.co - point).length
+
+        # Append to the list
+        vertices.append([vertex.co, distance])
+
+        if distance < shortest_distance:
+            shortest_distance = distance
+
+    # Sort the list
+    sorted(vertices, key=lambda v: v[1], reverse=False)
+
+    n_list = list()
+    for i in range(0, n - 1):
+        n_list.append(vertices[i])
+
+    # Return the result
+    return n_list, shortest_distance
+
+
+####################################################################################################
+# @get_n_nearest_vertices_to_point
+####################################################################################################
+def get_nearest_vertex_to_point(mesh_object,
+                                    point):
+    """Get the nearest n vertices of an object to a given point in the space.
+
+    :param mesh_object:
+        A given mesh object.
+    :param point:
+        A given point in the three-dimensional space.
+    :return:
+        The nearest vertex in the mesh to the given point.
+    """
+
+    # Initialize the nearest face index to -1
+    vertices = list()
+
+    # Initialize the shortest distance to infinity
+    shortest_distance = 1e10
+
+    nearest_vertex = None
+
+    # Iterate over all the vertices in the mesh
+    for vertex in mesh_object.data.vertices:
+
+        # Compute the distance between the point and the vertex
+        distance = (vertex.co - point).length
+
+        # Append to the list
+        vertices.append([vertex.co, distance])
+
+        if distance < shortest_distance:
+            shortest_distance = distance
+            nearest_vertex = vertex
+
+    # Return the result
+    return nearest_vertex.co

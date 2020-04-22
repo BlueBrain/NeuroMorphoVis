@@ -167,14 +167,14 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
         nmv.file.ops.clean_and_create_directory(cli_options.io.images_directory)
 
     # Compute the bounding box for a close up view
-    if cli_options.mesh.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
+    if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-            extent=cli_options.mesh.close_up_dimensions)
+            extent=cli_options.rendering.close_up_dimensions)
 
     # Compute the bounding box for a mid shot view
-    elif cli_options.mesh.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
+    elif cli_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
         # Compute the bounding box for the available meshes only
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -187,27 +187,27 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
             morphology=cli_morphology)
 
     # If rendering all views
-    if cli_options.mesh.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
+    if cli_options.rendering.camera_view == nmv.enums.Camera.View.ALL_VIEWS:
         views = [nmv.enums.Camera.View.FRONT,
                  nmv.enums.Camera.View.SIDE,
                  nmv.enums.Camera.View.TOP]
     else:
-        views = [cli_options.mesh.camera_view]
+        views = [cli_options.rendering.camera_view]
 
     # Get the image suffix
     suffixes = nmv.interface.get_morphology_image_suffixes_from_view(
-        cli_options.morphology.camera_view)
+        cli_options.rendering.camera_view)
 
     for view, suffix in zip(views, suffixes):
 
         # Render at a specific resolution
-        if cli_options.mesh.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
+        if cli_options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
 
             # Render the image
             nmv.rendering.render(
                 bounding_box=bounding_box,
-                camera_view=cli_options.mesh.camera_view,
-                image_resolution=cli_options.mesh.full_view_resolution,
+                camera_view=cli_options.rendering.camera_view,
+                image_resolution=cli_options.rendering.full_view_resolution,
                 image_name='%s%s' % (cli_options.morphology.label, suffix),
                 image_directory=cli_options.io.images_directory)
 
@@ -217,8 +217,8 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
             # Render the image
             nmv.rendering.render_to_scale(
                 bounding_box=bounding_box,
-                camera_view=cli_options.mesh.camera_view,
-                image_scale_factor=cli_options.mesh.resolution_scale_factor,
+                camera_view=cli_options.rendering.camera_view,
+                image_scale_factor=cli_options.rendering.resolution_scale_factor,
                 image_name='MESH_%s_%s' % (cli_options.morphology.label, suffix),
                 image_directory=cli_options.io.images_directory)
 
@@ -244,17 +244,17 @@ def render_neuron_mesh_360(cli_options,
         nmv.file.ops.clean_and_create_directory(cli_options.io.sequences_directory)
 
     # Render a 360 sequence
-    if cli_options.mesh.render_360:
+    if cli_options.rendering.render_360:
 
         # Compute the bounding box for a close up view
-        if cli_options.mesh.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
+        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=cli_options.mesh.close_up_dimensions)
+                extent=cli_options.rendering.close_up_dimensions)
 
         # Compute the bounding box for a mid shot view
-        elif cli_options.mesh.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
+        elif cli_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
 
             # Compute the bounding box for the available meshes only
             bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
@@ -288,7 +288,7 @@ def render_neuron_mesh_360(cli_options,
             image_name = '%s/%s' % (output_directory, '{0:05d}'.format(i))
 
             # Render at a specific resolution
-            if cli_options.mesh.resolution_basis == \
+            if cli_options.rendering.resolution_basis == \
                     nmv.enums.Rendering.Resolution.FIXED:
 
                 # Render the image
@@ -297,7 +297,7 @@ def render_neuron_mesh_360(cli_options,
                     angle=i,
                     bounding_box=bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_resolution=cli_options.mesh.full_view_resolution,
+                    image_resolution=cli_options.rendering.full_view_resolution,
                     image_name=image_name)
 
             # Render at a specific scale factor
@@ -309,7 +309,7 @@ def render_neuron_mesh_360(cli_options,
                     angle=i,
                     bounding_box=bounding_box_360,
                     camera_view=nmv.enums.Camera.View.FRONT_360,
-                    image_scale_factor=cli_options.mesh.resolution_scale_facto,
+                    image_scale_factor=cli_options.rendering.resolution_scale_facto,
                     image_name=image_name)
 
 
@@ -380,11 +380,11 @@ if __name__ == "__main__":
         export_neuron_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Render the mesh
-    if cli_options.mesh.render:
+    if cli_options.rendering.render_mesh_static_frame:
         render_neuron_mesh_to_static_frame(cli_options=cli_options, cli_morphology=cli_morphology)
 
     # Render 360 of the mesh
-    if cli_options.mesh.render_360:
+    if cli_options.rendering.render_mesh_360:
         render_neuron_mesh_360(cli_options=cli_options, cli_morphology=cli_morphology)
 
     # Rendering the mesh

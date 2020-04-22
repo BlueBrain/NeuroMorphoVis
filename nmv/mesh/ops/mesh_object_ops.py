@@ -666,7 +666,7 @@ def subdivide_mesh(mesh_object,
 # @add_surface_noise_to_mesh_using_displacement_modifier
 ####################################################################################################
 def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
-                                                          strength=0.25):
+                                                          strength=1.0):
 
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
@@ -679,10 +679,13 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
 
     # Add a new texture for the modifier
     displacement_modifier.texture = bpy.data.textures.new(name='SurfaceNoise%s' % mesh_object.name,
-                                                          type='DISTORTED_NOISE')
+                                                          type='CLOUDS')
 
     # Update the noise range
     displacement_modifier.strength = strength
+
+    # Update the noise range
+    displacement_modifier.texture.noise_scale = 1.5
 
     # Apply the modifiers
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
@@ -692,7 +695,7 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
 # @add_surface_noise_to_mesh
 ####################################################################################################
 def add_surface_noise_to_mesh(mesh_object,
-                              noise_strength=0.25,
+                              noise_strength=1.0,
                               subdivision_level=1):
 
     # Subdivide the surface

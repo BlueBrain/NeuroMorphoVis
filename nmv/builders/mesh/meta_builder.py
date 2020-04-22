@@ -15,12 +15,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Syetsm imports
+# System imports
 import copy
+import random
 
-# Blender imports
+# Blender importsget_n_nearest_vertices_to_point
 import bpy, mathutils
-from mathutils import Vector
+from mathutils import Vector, Matrix
 
 # Internal modules
 import nmv.builders
@@ -30,6 +31,7 @@ import nmv.shading
 import nmv.skeleton
 import nmv.utilities
 import nmv.scene
+import nmv.geometry
 
 
 ####################################################################################################
@@ -209,7 +211,11 @@ class MetaBuilder:
         # Proceed segment by segment
         for i in range(len(samples) - 1):
 
-            radius_0 = samples[i].radius
+            if not section.is_root():
+                radius_0 = 0.5 * (samples[i].radius + section.parent.samples[-1].radius)
+            else:
+                radius_0 = samples[i].radius
+
             radius_1 = samples[i + 1].radius
 
             if radius_0 < 0.1:
@@ -367,24 +373,44 @@ class MetaBuilder:
         # Verify the proximity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
+        # Verify the proximity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
+        # Get a list of valid arbors where we can pull the sphere towards without being intersecting
+        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+            morphology=self.morphology, soma_radius=self.morphology.soma.smallest_radius)
+
+        # Re-classify the arbors to be able to deal with the selectivity
+        valid_apical_dendrites = list()
+        valid_basal_dendrites = list()
+        valid_axons = list()
+
+        for arbor in valid_arbors:
+            if arbor.is_axon():
+                valid_axons.append(arbor)
+            elif arbor.is_apical_dendrite():
+                valid_apical_dendrites.append(arbor)
+            else:
+                valid_basal_dendrites.append(arbor)
+
         # Emanate towards the apical dendrites, if exist
-        if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.has_apical_dendrites():
-                for arbor in self.morphology.apical_dendrites:
+        if self.morphology.has_apical_dendrites():
+            if not self.options.morphology.ignore_apical_dendrites:
+                for arbor in valid_apical_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
-        # Emanate towards the basal dendrites, if exist
+        # Emanate towards basal dendrites, if exist
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
-                for arbor in self.morphology.basal_dendrites:
+                for arbor in valid_basal_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
-        # Emanate towards the axons, if exist
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                for arbor in self.morphology.axons:
+        # Emanate towards axons, if exist
+        if self.morphology.has_axons():
+            if not self.options.morphology.ignore_axons:
+                for arbor in valid_axons:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
@@ -422,6 +448,30 @@ class MetaBuilder:
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
+
+    ################################################################################################
+    # @add_surface_roughness
+    ################################################################################################
+    def add_surface_roughness(self):
+        """Adds roughness to the surface of the mesh, compatible with the MetaBuilder.
+        """
+
+        # Ensure that the surface is rough
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+
+            # Decimate the neuron according to the meta resolution
+            if self.meta_skeleton.resolution < 1.0:
+                nmv.mesh.ops.decimate_mesh_object(mesh_object=self.meta_mesh,
+                                                  decimation_ratio=self.meta_skeleton.resolution)
+
+            # Add the surface distortion map
+            nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
+                mesh_object=self.meta_mesh, strength=1.0)
+
+            nmv.mesh.ops.decimate_mesh_object(mesh_object=self.meta_mesh,
+                                              decimation_ratio=0.25)
+
+            nmv.mesh.ops.smooth_object(mesh_object=self.meta_mesh, level=1)
 
     ################################################################################################
     # @assign_material_to_mesh
@@ -478,6 +528,10 @@ class MetaBuilder:
 
         # Finalize the meta object and construct a solid object
         result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
+        self.profiling_statistics += stats
+
+        # Surface roughness
+        result, stats = nmv.utilities.profile_function(self.add_surface_roughness)
         self.profiling_statistics += stats
 
         # Tessellation

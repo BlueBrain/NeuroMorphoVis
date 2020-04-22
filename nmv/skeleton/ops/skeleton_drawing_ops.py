@@ -271,8 +271,9 @@ def extrude_connected_sections(section,
             roots_connection=roots_connection)
 
 
-
-
+####################################################################################################
+# @get_connected_sections_poly_lines_recursively
+####################################################################################################
 def get_connected_sections_poly_lines_recursively(section,
                                                   poly_lines=[],
                                                   poly_line_samples=[],
@@ -318,6 +319,9 @@ def get_connected_sections_poly_lines_recursively(section,
             branching_order=branching_order, max_branching_order=max_branching_order)
 
 
+####################################################################################################
+# @get_connected_sections_poly_line_recursively
+####################################################################################################
 def get_connected_sections_poly_line_recursively(section,
                                                  poly_lines_data=[],
                                                  poly_line_data=[],
@@ -358,6 +362,9 @@ def get_connected_sections_poly_line_recursively(section,
             branching_order=branching_order, max_branching_order=max_branching_order)
 
 
+####################################################################################################
+# @draw_connected_sections_poly_lines
+####################################################################################################
 def draw_connected_sections_poly_lines(arbor,
                                        bevel_object,
                                        caps=True,

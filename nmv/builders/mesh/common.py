@@ -468,18 +468,18 @@ def add_surface_noise_to_arbor(builder):
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             for mesh_object in mesh_objects:
                 nmv.mesh.add_surface_noise_to_mesh(
-                    mesh_object=mesh_object, subdivision_level=1, noise_strength=0.40)
+                    mesh_object=mesh_object, subdivision_level=0, noise_strength=1.0)
 
         elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
             for mesh_object in mesh_objects:
                 nmv.mesh.add_surface_noise_to_mesh(
-                    mesh_object=mesh_object, subdivision_level=1, noise_strength=0.25)
+                    mesh_object=mesh_object, subdivision_level=0, noise_strength=1.0)
 
         elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
             for mesh_object in mesh_objects:
                 nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
                 nmv.mesh.add_surface_noise_to_mesh(
-                    mesh_object=mesh_object, subdivision_level=0, noise_strength=0.25)
+                    mesh_object=mesh_object, subdivision_level=0, noise_strength=1.0)
         else:
             return
 
