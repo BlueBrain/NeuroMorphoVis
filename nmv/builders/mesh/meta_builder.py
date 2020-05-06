@@ -170,13 +170,17 @@ class MetaBuilder:
         z = p1[2]
 
         # Construct the meta elements along the segment
+        i = 0
         while travelled_distance < segment_length:
 
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 
             # Set its radius
-            meta_element.radius = r
+            if i == 0:
+                meta_element.radius = r * 0.90
+            else:
+                meta_element.radius = r
 
             # Update its coordinates
             meta_element.co = (x, y, z)
@@ -190,6 +194,8 @@ class MetaBuilder:
             x = p1[0] + (travelled_distance * dx / segment_length)
             y = p1[1] + (travelled_distance * dy / segment_length)
             z = p1[2] + (travelled_distance * dz / segment_length)
+
+            i += 1
 
     ################################################################################################
     # @create_meta_section
@@ -551,7 +557,7 @@ class MetaBuilder:
 
         # Report
         nmv.logger.info('Mesh Reconstruction Done!')
-        nmv.logger.statistics(self.profiling_statistics)
+        nmv.logger.statistics_overall(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='meta')

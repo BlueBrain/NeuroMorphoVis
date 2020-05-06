@@ -226,6 +226,22 @@ class Logger:
         self.log('%s* %s\n' % (SIX_SPACES, log_string))
 
     ################################################################################################
+    # @statistics_overall
+    ################################################################################################
+    def statistics_overall(self,
+                           *args):
+        """Log a summary of all stages in the builder.
+
+        :param args:
+            Input arguments.
+        """
+        print("")  # Add a new line
+        self.line()
+        log_string = ''.join(map(str, args))
+        self.log('%s* Stats.' % FOUR_SPACES)
+        self.log('%s\n' % log_string)
+
+    ################################################################################################
     # @warning
     ################################################################################################
     def warning(self,
