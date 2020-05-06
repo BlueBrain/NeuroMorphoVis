@@ -652,11 +652,14 @@ def subdivide_mesh(mesh_object,
     bpy.ops.object.editmode_toggle()
 
     # Select all the vertices of the mesh
-    bpy.ops.mesh.select_all(action='TOGGLE')
+    bpy.ops.mesh.select_all(action='SELECT')
 
     # Smooth
     for i in range(level):
-        bpy.ops.mesh.subdivide(smoothness=1)
+        if nmv.utilities.is_blender_280():
+            bpy.ops.mesh.subdivide(quadcorner='INNERVERT')
+        else:
+            bpy.ops.mesh.subdivide(smoothness=1)
 
     # Toggle from the edit mode to the object mode
     bpy.ops.object.editmode_toggle()

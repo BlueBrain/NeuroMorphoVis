@@ -70,7 +70,6 @@ def get_nmv_online_version():
 ####################################################################################################
 def verify_nmv_version():
 
-
     # Get the installed version of NMV
     installed_version = get_nmv_version()
 
@@ -80,9 +79,6 @@ def verify_nmv_version():
     if online_version < installed_version:
         print('The current version is similar to the online version')
         return
-
-
-
 
 
 ####################################################################################################

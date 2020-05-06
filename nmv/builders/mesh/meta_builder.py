@@ -171,6 +171,7 @@ class MetaBuilder:
 
         # Construct the meta elements along the segment
         while travelled_distance < segment_length:
+
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 
@@ -180,8 +181,8 @@ class MetaBuilder:
             # Update its coordinates
             meta_element.co = (x, y, z)
 
-            # Proceed to the second point
-            travelled_distance += r / 2
+            # Proceed to the next point
+            travelled_distance += r / 2.0
 
             r = r1 + (travelled_distance * dr / segment_length)
 
@@ -211,17 +212,14 @@ class MetaBuilder:
         # Proceed segment by segment
         for i in range(len(samples) - 1):
 
-            if not section.is_root():
-                radius_0 = 0.5 * (samples[i].radius + section.parent.samples[-1].radius)
-            else:
-                radius_0 = samples[i].radius
-
+            # Get the radii
+            radius_0 = samples[i].radius
             radius_1 = samples[i + 1].radius
 
+            # Limit the radii to 100 nano-meters
             if radius_0 < 0.1:
                 self.radii_error.append(1.0 - radius_0)
                 radius_0 = 0.1
-
             if radius_1 < 0.1:
                 radius_1 = 0.1
 
@@ -501,10 +499,6 @@ class MetaBuilder:
         """
 
         nmv.logger.header('Building Mesh: MetaBuilder')
-
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
-        self.profiling_statistics += stats
 
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(

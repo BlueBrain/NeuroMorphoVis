@@ -1195,9 +1195,9 @@ def activate_neuromorphovis_mode():
 
     if nmv.utilities.is_blender_280():
         theme = bpy.context.preferences.themes['Default']
-        theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
-        theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
-        theme.view_3d.grid = Vector((0, 0, 0, 0))
+        # theme.view_3d.space.gradients.high_gradient = Vector((0, 0, 0))
+        # theme.view_3d.space.gradients.gradient = Vector((0, 0, 0))
+        # theme.view_3d.grid = Vector((0, 0, 0, 0))
 
 
 ####################################################################################################

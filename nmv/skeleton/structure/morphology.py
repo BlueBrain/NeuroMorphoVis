@@ -335,7 +335,7 @@ class Morphology:
         # TODO: Add further palettes
         # palette = seaborn.color_palette("pastel", self.get_total_number_of_arbors())
 
-        palette = matplotlib.pyplot.get_cmap('Spectral')
+        palette = matplotlib.pyplot.get_cmap('Spectral_R')
 
         step = 1
         palette = palette(numpy.linspace(0, 1.0, step * (1 + self.get_total_number_of_arbors())))
