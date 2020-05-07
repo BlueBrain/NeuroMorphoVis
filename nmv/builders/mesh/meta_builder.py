@@ -186,7 +186,7 @@ class MetaBuilder:
             meta_element.co = (x, y, z)
 
             # Proceed to the next point
-            travelled_distance += r / 2.0
+            travelled_distance += 0.5 * r
 
             r = r1 + (travelled_distance * dr / segment_length)
 

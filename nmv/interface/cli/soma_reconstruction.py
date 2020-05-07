@@ -82,21 +82,18 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
     # Reconstruct the three-dimensional profile of the soma mesh
     soma_mesh = soma_builder.reconstruct_soma_mesh()
 
-    # Export the reconstructed soma mesh
-    if cli_options.soma.reconstruct_soma_mesh:
+    # Soma mesh file prefix
+    soma_mesh_file_name = 'SOMA_MESH_%s' % cli_options.morphology.label
 
-        # Soma mesh file prefix
-        soma_mesh_file_name = 'SOMA_MESH_%s' % cli_options.morphology.label
-
-        # Export the mesh
-        nmv.file.export_mesh_object(
-            soma_mesh,
-            cli_options.io.meshes_directory,
-            soma_mesh_file_name,
-            ply=cli_options.soma.export_ply,
-            obj=cli_options.soma.export_obj,
-            stl=cli_options.soma.export_stl,
-            blend=cli_options.soma.export_blend)
+    # Export the mesh
+    nmv.file.export_mesh_object(
+        soma_mesh,
+        cli_options.io.meshes_directory,
+        soma_mesh_file_name,
+        ply=cli_options.soma.export_ply,
+        obj=cli_options.soma.export_obj,
+        stl=cli_options.soma.export_stl,
+        blend=cli_options.soma.export_blend)
 
     # Render a static frame of the reconstructed soma mesh
     if cli_options.soma.render_soma_mesh:
@@ -235,8 +232,8 @@ if __name__ == "__main__":
     # render_soma_two_dimensional_profile(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Soma mesh reconstruction and visualization
-    reconstruct_soma_three_dimensional_profile_mesh(cli_morphology=cli_morphology,
-                                                    cli_options=cli_options)
+    # reconstruct_soma_three_dimensional_profile_mesh(cli_morphology=cli_morphology,
+    #                                                cli_options=cli_options)
     nmv.logger.log('NMV Done')
 
 

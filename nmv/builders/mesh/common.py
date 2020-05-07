@@ -561,22 +561,22 @@ def collect_morphology_stats(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
-    builder.morphology_statistics += '\tSoma: ' + 'Found \n' \
+    builder.morphology_statistics += '\t* Soma: ' + 'Found \n' \
         if builder.morphology.soma is not None else 'Not Found \n'
     if builder.morphology.apical_dendrites is not None:
-        builder.morphology_statistics += '\tApical Dendrites: %d \n' \
+        builder.morphology_statistics += '\t* Apical Dendrites: %d \n' \
                                          % len(builder.morphology.apical_dendrites)
     else:
         builder.morphology_statistics += '\t* Apical Dendrites: 0 \n'
 
     if builder.morphology.basal_dendrites is not None:
-        builder.morphology_statistics += '\tBasal Dendrites: %d \n' \
+        builder.morphology_statistics += '\t* Basal Dendrites: %d \n' \
                                          % len(builder.morphology.basal_dendrites)
     else:
         builder.morphology_statistics += '\t* Basal Dendrites: 0 \n'
 
     if builder.morphology.axons is not None:
-        builder.morphology_statistics += '\tAxons: %d \n' \
+        builder.morphology_statistics += '\t* Axons: %d \n' \
                                          % len(builder.morphology.axons)
     else:
         builder.morphology_statistics += '\t* Axons: 0 \n'
