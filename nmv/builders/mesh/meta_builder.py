@@ -38,7 +38,13 @@ import nmv.geometry
 # @MetaBuilder
 ####################################################################################################
 class MetaBuilder:
-    """Mesh builder that creates high quality meshes with nice bifurcations based on meta objects"""
+    """Mesh builder that creates high quality meshes with nice bifurcations based on meta objects.
+
+    This builder is inspired by the SWC Mesher written by Bob Kuczewski, Oliver Ernst from the
+    MCell team. The code is available on Github at [https://github.com/mcellteam/swc_mesher].
+    This code is subject to the GPL license based on the original Blender license.
+    For further information refer to this page [https://www.blender.org/about/license/].
+    """
 
     ################################################################################################
     # @__init__
@@ -82,6 +88,7 @@ class MetaBuilder:
         self.meta_mesh = None
 
         # A scale factor that was figured out by trial and error to correct the scaling of the radii
+        # The results are validated by computing the Hausdorff distance.
         self.magic_scale_factor = 1.575
 
         # The smallest detected radius while building the model, to be used for meta-ball resolution
