@@ -135,13 +135,13 @@ def compute_average_section_volume(arbor):
     # Total arbor length
     arbor_total_volume = 0.0
 
-    # At least a single item
-    if len(sections_volumes) == 0:
-        return  0.0
-
     # Remove zeros in the list if any
     if 0 in sections_volumes:
         sections_volumes.remove(0)
+
+    # At least a single item, otherwise return 0
+    if len(sections_volumes) == 0:
+        return 0.0
 
     # Iterate and sum up all the sections volumes
     for volume in sections_volumes:

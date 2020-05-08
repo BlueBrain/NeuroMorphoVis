@@ -398,7 +398,7 @@ class SomaMetaBuilder:
             self.assign_material_to_mesh()
 
         # A dd a little bit of noise
-        self.add_noise_to_soma_surface()
+        # self.add_noise_to_soma_surface()
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh

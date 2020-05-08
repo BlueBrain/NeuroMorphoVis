@@ -30,7 +30,7 @@ class MetaBall:
         pass
 
     # Default meta resolution of the soma
-    SOMA_META_DEFAULT_RESOLUTION = 0.4
+    SOMA_META_DEFAULT_RESOLUTION = 0.99
 
     # Resolution
     META_DEFAULT_RESOLUTION = 0.99
