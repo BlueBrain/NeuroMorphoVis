@@ -212,11 +212,11 @@ def decimate_mesh_object(mesh_object,
     :param mesh_object:
         A given mesh object.
     :param decimation_ratio:
-        Decimation ratio between 0.01 and 1.0
+        Decimation ratio.
     """
 
     # If the decimation ration is not within range, skip this operation
-    if 1.0 < decimation_ratio < 0.01:
+    if decimation_ratio < 0.00001:
 
         # Return
         return
