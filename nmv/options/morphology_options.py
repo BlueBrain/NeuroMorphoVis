@@ -148,7 +148,7 @@ class MorphologyOptions:
         self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
 
         # Soma reconstruction technique (IGNORE, SPHERE, or REALISTIC by default)
-        self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
+        self.soma_representation = nmv.enums.Soma.Representation.SPHERE
 
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeleton.Branching.RADII

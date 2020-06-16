@@ -175,6 +175,8 @@ class H5Reader:
             soma_centroid += i_point
         soma_centroid /= len(soma_profile_points)
 
+        print(soma_centroid)
+
         # Compute the soma mean radius
         mean_soma_radius = 0.0
         for i_point in soma_profile_points:
@@ -259,6 +261,52 @@ class H5Reader:
         return True
 
     ################################################################################################
+    # @center_morphology_at_the_origin
+    ################################################################################################
+    def center_morphology_at_the_origin(self):
+        """Centers the morohology at the origin.
+        """
+
+        # Get the index of the starting point of the soma section
+        soma_section_first_point_index = self.structure_list[0][0]
+
+        # Get the index of the last point of the soma section
+        soma_section_last_point_index = self.structure_list[1][0]
+
+        # Get the positions of each sample along the soma section
+        soma_profile_points = list()
+
+        # Update the soma profile point list
+        for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
+            # Profile point
+            x = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
+            y = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
+            z = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
+            profile_point = Vector((x, y, z))
+
+            # Add the profile point to the list
+            soma_profile_points.append(profile_point)
+
+        # Compute soma centroid
+        soma_centroid = Vector((0.0, 0.0, 0.0))
+        for i_point in soma_profile_points:
+            soma_centroid += i_point
+        soma_centroid /= len(soma_profile_points)
+
+        # Compute the soma mean radius
+        mean_soma_radius = 0.0
+        for i_point in soma_profile_points:
+            distance = i_point - soma_centroid
+            mean_soma_radius += distance.length
+        mean_soma_radius /= len(soma_profile_points)
+
+        # Center the morphology at the origin
+        for point in self.points_list:
+            point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
+            point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
+            point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
+
+    ################################################################################################
     # @build_sections_from_points_and_structures
     ################################################################################################
     def build_sections_from_points_and_structures(self):
@@ -340,6 +388,9 @@ class H5Reader:
 
         # Read the content of the .H5 file
         self.read_points_and_structures()
+
+        # Center the morphology at the origin
+        self.center_morphology_at_the_origin()
 
         # Build sections from the parsed points and structures from the morphology file
         sections_list = self.build_sections_from_points_and_structures()
