@@ -55,6 +55,12 @@ class H5Reader:
         # A list of all the perimeters that are specific to astrocyte morphologies
         self.perimeters_list = list()
 
+        # A list of the profile points of the soma
+        self.soma_profile_points = list()
+
+        # Soma mean radius
+        self.soma_mean_radius = 0
+
     ################################################################################################
     # @build_tree
     ################################################################################################
@@ -124,6 +130,53 @@ class H5Reader:
         return arbor_profile_points
 
     ################################################################################################
+    # @center_morphology_at_the_origin
+    ################################################################################################
+    def center_morphology_at_the_origin(self):
+        """Centers the morohology at the origin.
+        """
+
+        # Get the index of the starting point of the soma section
+        soma_section_first_point_index = self.structure_list[0][0]
+
+        # Get the index of the last point of the soma section
+        soma_section_last_point_index = self.structure_list[1][0]
+
+        # Update the soma profile point list
+        for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
+
+            # Profile point
+            x = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
+            y = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
+            z = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
+            profile_point = Vector((x, y, z))
+
+            # Add the profile point to the list
+            self.soma_profile_points.append(profile_point)
+
+        # Compute soma centroid
+        soma_centroid = Vector((0.0, 0.0, 0.0))
+        for i_point in self.soma_profile_points:
+            soma_centroid += i_point
+        soma_centroid /= len(self.soma_profile_points)
+
+        # Center the morphology at the origin
+        for point in self.soma_profile_points:
+            point -= soma_centroid
+
+        # Compute the soma mean radius
+        for i_point in self.soma_profile_points:
+            distance = i_point
+            self.soma_mean_radius += distance.length
+        self.soma_mean_radius /= len(self.soma_profile_points)
+
+        # Center the morphology at the origin
+        for point in self.points_list:
+            point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
+            point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
+            point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
+
+    ################################################################################################
     # @build_soma
     ################################################################################################
     def build_soma(self,
@@ -148,42 +201,6 @@ class H5Reader:
             A reference to the soma object.
         """
 
-        # Get the index of the starting point of the soma section
-        soma_section_first_point_index = structure_list[0][0]
-
-        # Get the index of the last point of the soma section
-        soma_section_last_point_index = structure_list[1][0]
-
-        # Get the positions of each sample along the soma section
-        soma_profile_points = list()
-
-        # Update the soma profile point list
-        for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
-
-            # Profile point
-            x = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
-            y = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
-            z = points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
-            profile_point = Vector((x, y, z))
-
-            # Add the profile point to the list
-            soma_profile_points.append(profile_point)
-
-        # Compute soma centroid
-        soma_centroid = Vector((0.0, 0.0, 0.0))
-        for i_point in soma_profile_points:
-            soma_centroid += i_point
-        soma_centroid /= len(soma_profile_points)
-
-        print(soma_centroid)
-
-        # Compute the soma mean radius
-        mean_soma_radius = 0.0
-        for i_point in soma_profile_points:
-            distance = i_point - soma_centroid
-            mean_soma_radius += distance.length
-        mean_soma_radius /= len(soma_profile_points)
-
         # Compute the profile points from the arbors
         arbors_profile_points = list()
 
@@ -201,8 +218,8 @@ class H5Reader:
 
         # Construct the soma object
         nmv_soma = nmv.skeleton.Soma(
-            centroid=soma_centroid, mean_radius=mean_soma_radius,
-            profile_points=soma_profile_points, arbors_profile_points=arbors_profile_points)
+            centroid=Vector((0, 0, 0)), mean_radius=self.soma_mean_radius,
+            profile_points=self.soma_profile_points, arbors_profile_points=arbors_profile_points)
 
         # Return a reference to the soma object
         return nmv_soma
@@ -259,52 +276,6 @@ class H5Reader:
 
         # The file has been read successfully
         return True
-
-    ################################################################################################
-    # @center_morphology_at_the_origin
-    ################################################################################################
-    def center_morphology_at_the_origin(self):
-        """Centers the morohology at the origin.
-        """
-
-        # Get the index of the starting point of the soma section
-        soma_section_first_point_index = self.structure_list[0][0]
-
-        # Get the index of the last point of the soma section
-        soma_section_last_point_index = self.structure_list[1][0]
-
-        # Get the positions of each sample along the soma section
-        soma_profile_points = list()
-
-        # Update the soma profile point list
-        for i_sample in range(soma_section_first_point_index, soma_section_last_point_index):
-            # Profile point
-            x = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX]
-            y = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX]
-            z = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX]
-            profile_point = Vector((x, y, z))
-
-            # Add the profile point to the list
-            soma_profile_points.append(profile_point)
-
-        # Compute soma centroid
-        soma_centroid = Vector((0.0, 0.0, 0.0))
-        for i_point in soma_profile_points:
-            soma_centroid += i_point
-        soma_centroid /= len(soma_profile_points)
-
-        # Compute the soma mean radius
-        mean_soma_radius = 0.0
-        for i_point in soma_profile_points:
-            distance = i_point - soma_centroid
-            mean_soma_radius += distance.length
-        mean_soma_radius /= len(soma_profile_points)
-
-        # Center the morphology at the origin
-        for point in self.points_list:
-            point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
-            point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
-            point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
 
     ################################################################################################
     # @build_sections_from_points_and_structures

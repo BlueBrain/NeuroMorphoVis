@@ -239,7 +239,7 @@ class LoadMorphology(bpy.types.Operator):
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
-            morphology=nmv.interface.ui_morphology, options=options, force_meta_ball_soma=False)
+            morphology=nmv.interface.ui_morphology, options=options, force_meta_ball_soma=True)
         nmv.interface.ui_reconstructed_skeleton = builder.draw_morphology_skeleton()
 
         drawing_time = time.time()
