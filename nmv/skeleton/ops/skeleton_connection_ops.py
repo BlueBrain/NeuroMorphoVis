@@ -1115,7 +1115,7 @@ def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
 def get_random_spines_on_section(current_branching_level,
                                  max_branching_order,
                                  section,
-                                 probability=5.0,
+                                 probability=50.0,
                                  spines_list=[]):
     """Gets the data of some random spines on a given section.
 
@@ -1153,7 +1153,7 @@ def get_random_spines_on_section(current_branching_level,
             continue
 
         # Random spines
-        if probability > random.uniform(0.0, 1.0) * 100:
+        if probability > random.uniform(0.0, 1.0) * 100.0:
 
             # Get the position of sample
             sample_position = sample.point
