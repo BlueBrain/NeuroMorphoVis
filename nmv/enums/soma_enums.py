@@ -136,5 +136,3 @@ class Soma:
             # Arbors only by default
             else:
                 return Soma.Profile.ARBORS_ONLY
-
-
