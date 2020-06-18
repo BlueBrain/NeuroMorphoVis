@@ -798,6 +798,23 @@ def get_object_orientation(scene_object):
 
 
 ####################################################################################################
+# @translate_object
+####################################################################################################
+def translate_object(scene_object,
+                     shift):
+    """Set the given object a given location in the scene.
+
+    :param scene_object:
+        A given object in the scene to be translated.
+    :param shift:
+        A given shift to translate the object.
+    """
+
+    # Set location
+    scene_object.location += shift
+
+
+####################################################################################################
 # @set_object_location
 ####################################################################################################
 def set_object_location(scene_object,

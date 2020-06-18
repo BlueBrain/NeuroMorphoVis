@@ -660,30 +660,56 @@ def transform_to_global_coordinates(builder):
 
     # Transform the neuron object to the global coordinates
     if builder.options.mesh.global_coordinates:
-        
-        # Make sure that a GID is selected 
-        if builder.options.morphology.gid is None:
-            return 
 
-        nmv.logger.info('Transforming to global coordinates')
-        
-        # Get neuron objects
-        neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+        # Ignore if no information is given
+        if builder.options.morphology.gid is None and builder.morphology.original_center is None:
+            return
 
-        # Do it mesh by mesh
-        for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
+        # Make sure that a GID is selected
+        if builder.options.morphology.gid is not None:
+
+            nmv.logger.info('Transforming to global coordinates')
+
+            # Get neuron objects
+            neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+
+            # Do it mesh by mesh
+            for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
+                # Show the progress
+                nmv.utilities.show_progress(
+                    '* Transforming to global coordinates', float(i),
+                    float(len(neuron_mesh_objects)))
+
+                # Transforming to global coordinates
+                nmv.skeleton.ops.transform_to_global_coordinates(
+                    mesh_object=neuron_mesh_object,
+                    blue_config=builder.options.morphology.blue_config,
+                    gid=builder.options.morphology.gid)
 
             # Show the progress
-            nmv.utilities.show_progress(
-                '* Transforming to global coordinates', float(i), float(len(neuron_mesh_objects)))
+            nmv.utilities.show_progress('* Transforming to global coordinates', 0, 0, done=True)
 
-            # Transforming to global coordinates 
-            nmv.skeleton.ops.transform_to_global_coordinates(
-                mesh_object=neuron_mesh_object, blue_config=builder.options.morphology.blue_config,
-                gid=builder.options.morphology.gid)
+            # Don't proceed
+            return
 
-        # Show the progress
-        nmv.utilities.show_progress('* Decimating the mesh', 0, 0, done=True)
+        # If the original center is updated
+        if builder.morphology.original_center is not None:
+            nmv.logger.info('Transforming to global coordinates')
+
+            # Get neuron objects
+            neuron_mesh_objects = get_neuron_mesh_objects(builder=builder, exclude_spines=False)
+
+            # Do it mesh by mesh
+            for i, mesh_object in enumerate(neuron_mesh_objects):
+
+                # Progress
+                nmv.utilities.show_progress('* Transforming to global coordinates',
+                                            float(i),
+                                            float(len(neuron_mesh_objects)))
+
+                # Translate the object
+                nmv.scene.translate_object(scene_object=mesh_object,
+                                           shift=builder.morphology.original_center)
 
 
 ################################################################################################

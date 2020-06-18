@@ -23,6 +23,8 @@ import nmv.enums
 import nmv.shading
 import nmv.skeleton
 import nmv.mesh
+import nmv.utilities
+import nmv.scene
 
 
 ####################################################################################################
@@ -244,12 +246,35 @@ def draw_soma(builder):
 def transform_to_global_coordinates(builder):
 
     # Transform the arbors to the global coordinates if required for a circuit
-    if builder.options.morphology.global_coordinates and \
-            builder.options.morphology.blue_config is not None and \
-            builder.options.morphology.gid is not None:
-        # Transforming
-        nmv.logger.log('Transforming morphology to global coordinates ')
-        nmv.skeleton.ops.transform_morphology_to_global_coordinates(
-            morphology_objects=builder.morphology_objects,
-            blue_config=builder.options.morphology.blue_config,
-            gid=builder.options.morphology.gid)
+    if builder.options.morphology.global_coordinates:
+
+        # Ignore if no information is given
+        if builder.options.morphology.gid is None and builder.morphology.original_center is None:
+            return
+
+        # Make sure that a GID is selected
+        if builder.options.morphology.gid is not None:
+            nmv.logger.log('Transforming morphology to global coordinates ')
+            nmv.skeleton.ops.transform_morphology_to_global_coordinates(
+                morphology_objects=builder.morphology_objects,
+                blue_config=builder.options.morphology.blue_config,
+                gid=builder.options.morphology.gid)
+
+            # Don't proceed
+            return
+
+        # If the original center is updated
+        if builder.morphology.original_center is not None:
+            nmv.logger.info('Transforming to global coordinates')
+
+            # Do it mesh by mesh
+            for i, morphology_object in enumerate(builder.morphology_objects):
+
+                # Progress
+                nmv.utilities.show_progress('* Transforming to global coordinates',
+                                            float(i),
+                                            float(len(builder.morphology_objects)))
+
+                # Translate the object
+                nmv.scene.translate_object(scene_object=morphology_object,
+                                           shift=builder.morphology.original_center)

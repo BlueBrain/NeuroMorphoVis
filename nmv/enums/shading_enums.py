@@ -44,6 +44,9 @@ class Shader:
     # Glossy shader
     GLOSSY = 'GLOSSY_SHADER'
 
+    # Wax shader
+    WAX = 'WAX_SHADER'
+
     # Glossy bympy shader
     GLOSSY_BUMPY = 'GLOSSY_BUMPY_SHADER'
 
@@ -143,6 +146,11 @@ class Shader:
         (SUPER_ELECTRON_DARK,
          'Super Electron Dark',
          "Highly detailed dark electron shader"),
+
+        (WAX,
+         'Wax',
+         "Creates high quality images. This shader might take up to few hours to create a single "
+         "image depending on the complexity of the neuron"),
 
         (GLOSSY,
          'Plastic',

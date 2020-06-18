@@ -16,7 +16,7 @@
 ####################################################################################################
 
 from .soma import *
-from .mesh import *
 from .nucleus import *
 from .morphology import *
+from .mesh import *
 from .spine import *

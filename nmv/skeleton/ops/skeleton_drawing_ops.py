@@ -503,21 +503,6 @@ def draw_connected_sections(section, name,
             data=poly_line_data, name=section_name, material=section_material,
             bevel_object=bevel_object, caps=caps)
 
-        # Render frame for progressive rendering
-        if render_frame:
-
-            global progressive_frame_index
-
-            # The file path of the frame
-            frame_file_path = '%s/%s' % (
-                frame_destination, '{0:05d}'.format(progressive_frame_index))
-
-            # Render the image to film
-            # camera_ops.render_scene_to_image(camera, frame_file_path)
-
-            # Increment the progressive frame index
-            progressive_frame_index += 1
-
         # Add the section object to the sections_objects list
         sections_objects.append(section_object)
 

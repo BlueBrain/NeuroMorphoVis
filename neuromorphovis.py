@@ -188,7 +188,9 @@ def run_local_neuromorphovis(arguments):
         # Run NeuroMorphoVis from Blender in the background mode
         for shell_command in shell_commands:
 
-            print('RUNNING: ' + shell_command)
+            print('RUNNING: **********************************************************************')
+            print(shell_command)
+            print('*******************************************************************************')
             subprocess.call(shell_command, shell=True)
 
     else:

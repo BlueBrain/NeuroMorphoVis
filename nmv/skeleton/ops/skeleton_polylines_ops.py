@@ -220,10 +220,12 @@ def get_connected_poly_line(section,
 ####################################################################################################
 # @get_section_poly_line
 ####################################################################################################
-def get_arbor_poly_lines_as_connected_sections(
-    root, poly_lines_data=[], poly_line_data=[], branching_order=0,
-    connection_to_soma=nmv.enums.Skeleton.Roots.ALL_DISCONNECTED,
-    max_branching_order=nmv.consts.Math.INFINITY):
+def get_arbor_poly_lines_as_connected_sections(root,
+                                               poly_lines_data=[],
+                                               poly_line_data=[],
+                                               branching_order=0,
+                                               connection_to_soma=nmv.enums.Skeleton.Roots.ALL_DISCONNECTED,
+                                               max_branching_order=nmv.consts.Math.INFINITY):
     """
 
     :param root:

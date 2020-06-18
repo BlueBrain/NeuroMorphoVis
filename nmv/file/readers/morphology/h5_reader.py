@@ -61,6 +61,9 @@ class H5Reader:
         # Soma mean radius
         self.soma_mean_radius = 0
 
+        # Original centroid
+        self.centroid = None
+
     ################################################################################################
     # @build_tree
     ################################################################################################
@@ -175,6 +178,9 @@ class H5Reader:
             point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
             point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
             point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
+
+        # Original centroid
+        self.centroid = soma_centroid
 
     ################################################################################################
     # @build_soma
@@ -491,6 +497,9 @@ class H5Reader:
                                                  basal_dendrites=basal_dendrites,
                                                  apical_dendrites=apical_dendrites,
                                                  label=label)
+
+        # Update the centroid
+        nmv_morphology.original_center = self.centroid
 
         # Return a reference to the reconstructed morphology skeleton
         return nmv_morphology

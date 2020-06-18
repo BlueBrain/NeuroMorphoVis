@@ -93,6 +93,9 @@ class Morphology:
         # Morphology type
         self.mtype = mtype
 
+        # The original center of the morphology
+        self.original_center = None
+
         # Number of stems as reported in the morphology file
         self.number_stems = 0
 

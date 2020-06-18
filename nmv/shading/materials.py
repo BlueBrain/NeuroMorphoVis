@@ -793,6 +793,10 @@ def create_material(name,
     elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_material(name='%s_color' % name, color=color)
 
+    # Glossy
+    elif material_type == nmv.enums.Shader.WAX:
+        return create_glossy_material(name='%s_color' % name, color=color)
+
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
         return create_glossy_bumpy_material(name='%s_color' % name, color=color)
