@@ -294,6 +294,9 @@ class SWCReader:
             y = y - translation[1]
             z = z - translation[2]
 
+            if sample_type == 0 and parent_index > -1:
+                sample_type = nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE
+
             # Add the sample to the list
             self.parsed_samples_list.append([index, sample_type, x, y, z, radius, parent_index])
 
