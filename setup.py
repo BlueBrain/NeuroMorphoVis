@@ -408,12 +408,12 @@ if __name__ == "__main__":
     elif args.blender_version == '2.83':
         log_header('Blender 2.83')
     else:
-        log_header('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81, 2.82, 2.83')
+        log_header('NeuroMorphoVis is ONLY available for Blender versions '
+            '2.79, 2.80, 2.81, 2.82, 2.83. Recommended version: 2.83')
         exit(0)
 
     # Installation directory
-    installation_directory = '%s/neuromorphovis-blender-%s' % (args.install_prefix,
-                                                               args.blender_version)
+    installation_directory = '%s/bluebrain-blender-%s' % (args.install_prefix, args.blender_version)
 
     # Verify the installation directory
     if not os.path.exists(installation_directory):
