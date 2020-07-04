@@ -258,6 +258,9 @@ def install_for_mac(directory, blender_version, verbose=False):
     elif blender_version == '2.82':
         python_version = '3.7'
         package_name = 'blender-2.82a-macOS.dmg'
+    elif blender_version == '2.83':
+        python_version = '3.7'
+        package_name = 'blender-2.83.1-macOS.dmg'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
