@@ -150,6 +150,10 @@ def install_for_linux(directory, blender_version, verbose=False):
         python_version = '3.7'
         package_name = 'blender-2.82a-linux64'
         extension = 'tar.xz'
+    elif blender_version == '2.83':
+        python_version = '3.7'
+        package_name = 'blender-2.83a-linux64'
+        extension = 'tar.xz'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
@@ -401,8 +405,10 @@ if __name__ == "__main__":
         log_header('Blender 2.81')
     elif args.blender_version == '2.82':
         log_header('Blender 2.82')
+    elif args.blender_version == '2.83':
+        log_header('Blender 2.83')
     else:
-        log_header('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81')
+        log_header('NeuroMorphoVis is ONLY available for Blender versions 2.79, 2.80, 2.81, 2.82, 2.83')
         exit(0)
 
     # Installation directory
