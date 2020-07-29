@@ -69,8 +69,17 @@ def construct_generation_command(args, gids):
     return commands
 
 
-def run_parallel_astrocyte_generation(commands):
-    pass
+####################################################################################################
+# @run_command
+####################################################################################################
+def run_command(command):
+    """Runs a given command
+    :param command:
+        A given command to be executed
+    :return:
+    """
+    print(command)
+    subprocess.call(command, shell=True)
 
 
 ####################################################################################################
@@ -110,7 +119,7 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Execution mode, serial or parallel'
     parser.add_argument('--execution',
-                        action='store', dest='execution', default='serial', help=arg_help)
+                        action='store', dest='execution', default='parallel', help=arg_help)
 
     arg_help = 'The path to the NGV circuit'
     parser.add_argument('--circuit-path',
@@ -144,8 +153,13 @@ if __name__ == "__main__":
     commands = construct_generation_command(args, gids)
 
     # Execute the commands
-    if args.execution is 'parallel':
-        run_parallel_astrocyte_generation(commands)
+    if 'parallel' in args.execution:
+        print('parallel')
+        from joblib import Parallel, delayed
+        import multiprocessing
+        Parallel(n_jobs=multiprocessing.cpu_count())(delayed(run_command)(command) for command in commands)
     else:
-        run_serial_astrocyte_generation(commands)
+        for command in commands:
+            run_command(command)
+
 

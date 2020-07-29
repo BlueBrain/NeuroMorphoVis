@@ -29,7 +29,7 @@ CIRCUIT='/ssd1/projects/astrocytes-circuit/20200930'
 GIDS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/astrocyte-reconstruction/gids'
 
 # Execution, serial or parallel
-EXECUTION='serial'
+EXECUTION='parallel'
 
 # Decimation factor (range: 1.0 - 0.01) to reduce the number of polygons in the mesh
 DECIMATION_FACTOR=0.5
