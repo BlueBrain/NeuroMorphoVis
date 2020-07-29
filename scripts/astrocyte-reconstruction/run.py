@@ -46,10 +46,20 @@ def get_gids_from_file(gids_file):
 ####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
-def construct_generation_command(args, gids):
+def construct_generation_command(args,
+                                 gids):
+    """Construct the command line per gid.
+
+    :param args:
+        Input arguments.
+    :param gids:
+        List of GIDs.
+    :return:
+        A list of command.
+    """
 
     # A list of commands that will be executed either in serial or in parallel
-    commands = list()
+    commands_list = list()
 
     # Per astrocyte
     for gid in gids:
@@ -63,10 +73,10 @@ def construct_generation_command(args, gids):
         command += ' --decimation-factor=%s' % args.decimation_factor
 
         # Append to the commands list
-        commands.append(command)
+        commands_list.append(command)
 
     # Return the commands list
-    return commands
+    return commands_list
 
 
 ####################################################################################################
@@ -80,18 +90,6 @@ def run_command(command):
     """
     print(command)
     subprocess.call(command, shell=True)
-
-
-####################################################################################################
-# @parse_command_line_arguments
-####################################################################################################
-def run_serial_astrocyte_generation(commands):
-
-    # Run every command one by one
-    for command in commands:
-        print(command)
-        subprocess.call(command, shell=True)
-        break
 
 
 ####################################################################################################
@@ -125,9 +123,13 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--circuit-path',
                         action='store', dest='circuit_path', help=arg_help)
 
-    arg_help = 'The GID of the astrocyte'
+    arg_help = 'The GIDs of the astrocytes'
     parser.add_argument('--gids-file',
                         action='store', dest='gids_file', help=arg_help)
+
+    arg_help = 'A range of GIDs'
+    parser.add_argument('--gids-range',
+                        action='store', dest='gids_range', default='0', help=arg_help)
 
     arg_help = 'Decimation factor, between 1.0 and 0.01'
     parser.add_argument('--decimation-factor',
@@ -147,17 +149,20 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Get the GIDs
-    gids = get_gids_from_file(gids_file=args.gids_file)
+    if args.gids_range is not '0':
+        gids_string = args.gids_range.split('-')
+        gids = list(range(int(gids_string[0]), int(gids_string[1] + 1)))
+    else:
+        gids = get_gids_from_file(gids_file=args.gids_file)
 
     # Build the commands
     commands = construct_generation_command(args, gids)
 
     # Execute the commands
     if 'parallel' in args.execution:
-        print('parallel')
         from joblib import Parallel, delayed
         import multiprocessing
-        Parallel(n_jobs=multiprocessing.cpu_count())(delayed(run_command)(command) for command in commands)
+        Parallel(n_jobs=multiprocessing.cpu_count())(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:
             run_command(command)
