@@ -26,7 +26,7 @@ OUTPUT_DIRECTORY='/projects/astrocytes-circuit/astrocytes-meshes/generated'
 CIRCUIT='/ssd1/projects/astrocytes-circuit/20200930'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored
-GIDS_RANGE='1-5'
+GIDS_RANGE='1-1000'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/astrocyte-reconstruction/gids'

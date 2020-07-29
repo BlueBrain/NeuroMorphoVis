@@ -117,7 +117,7 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Execution mode, serial or parallel'
     parser.add_argument('--execution',
-                        action='store', dest='execution', default='parallel', help=arg_help)
+                        action='store', dest='execution', default='serial', help=arg_help)
 
     arg_help = 'The path to the NGV circuit'
     parser.add_argument('--circuit-path',
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     # Get the GIDs
     if args.gids_range is not '0':
         gids_string = args.gids_range.split('-')
-        gids = list(range(int(gids_string[0]), int(gids_string[1] + 1)))
+        gids = list(range(int(gids_string[0]), int(gids_string[1]) + 1))
     else:
         gids = get_gids_from_file(gids_file=args.gids_file)
 
