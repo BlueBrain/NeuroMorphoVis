@@ -36,11 +36,14 @@ class H5Reader:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 h5_file):
+                 h5_file,
+                 center_morphology=True):
         """Constructor
 
         :param h5_file:
             A given .H5 morphology file.
+        :param center_morphology:
+            Center the morphology at the origin, by default True.
         """
 
         # Set the path to the given h5 file
@@ -63,6 +66,9 @@ class H5Reader:
 
         # Original centroid
         self.centroid = None
+
+        # Centering the morphology at the origin
+        self.center_morphology = center_morphology
 
     ################################################################################################
     # @build_tree
@@ -164,8 +170,9 @@ class H5Reader:
         soma_centroid /= len(self.soma_profile_points)
 
         # Center the morphology at the origin
-        for point in self.soma_profile_points:
-            point -= soma_centroid
+        if self.center_morphology:
+            for point in self.soma_profile_points:
+                point -= soma_centroid
 
         # Compute the soma mean radius
         for i_point in self.soma_profile_points:
@@ -174,13 +181,14 @@ class H5Reader:
         self.soma_mean_radius /= len(self.soma_profile_points)
 
         # Center the morphology at the origin
-        for point in self.points_list:
-            point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
-            point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
-            point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
+        if self.center_morphology:
+            for point in self.points_list:
+                point[nmv.consts.Skeleton.H5_SAMPLE_X_COORDINATES_IDX] -= soma_centroid[0]
+                point[nmv.consts.Skeleton.H5_SAMPLE_Y_COORDINATES_IDX] -= soma_centroid[1]
+                point[nmv.consts.Skeleton.H5_SAMPLE_Z_COORDINATES_IDX] -= soma_centroid[2]
 
-        # Original centroid
-        self.centroid = soma_centroid
+            # Original centroid
+            self.centroid = soma_centroid
 
     ################################################################################################
     # @build_soma

@@ -255,3 +255,43 @@ def create_cube(radius=1,
 
     # Return a reference to it
     return cube_mesh
+
+
+####################################################################################################
+# @create_mesh_from_raw_data
+####################################################################################################
+def create_mesh_from_raw_data(verts,
+                              faces,
+                              edges=[],
+                              name='Mesh',
+                              collection_name="Collection"):
+    """Creates a mesh from the raw data.
+
+    :param name:
+        Mesh name.
+    :param verts:
+        A list of the vertices of the mesh.
+    :param faces:
+        A list of the faces of the mesh.
+    :param edges:
+        A list of the edges of the mesh.
+    :param collection_name:
+        The collection name in Blender, for Blender 2.8x.
+    :return:
+        A reference to the created mesh object.
+    """
+
+    # Create a new mesh object
+    mesh = bpy.data.meshes.new(name)
+    mesh_object = bpy.data.objects.new(mesh.name, mesh)
+
+    # Link the mesh to the scene
+    collection = bpy.data.collections.get(collection_name)
+    collection.objects.link(mesh_object)
+
+    # Update the data in the mesh
+    bpy.context.view_layer.objects.active = mesh_object
+    mesh.from_pydata(verts, edges, faces)
+
+    # Return a reference to the mesh
+    return mesh

@@ -579,7 +579,7 @@ class SWCReader:
         return sections_list
 
     ################################################################################################
-    # @read_file
+    # @build_arbors_from_samples
     ################################################################################################
     def build_arbors_from_samples(self,
                                   arbor_type):
