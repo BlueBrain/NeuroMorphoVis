@@ -58,16 +58,18 @@ class BBPReader:
 
         # Import brain
         try:
-            import brain
+            import bluepy.v2
         except ImportError:
-            print('ERROR: Cannot import brain')
+            print('ERROR: Cannot import [BluePy], please install it')
             return None
 
-        # Open a circuit with a given blue config
-        bbp_circuit = brain.Circuit(blue_config)
+        from bluepy.v2 import Circuit
 
-        # Create a GID-set and load the morphologies from these GIDs
-        gids = bbp_circuit.gids(target)
+        # Loading a circuit
+        circuit = Circuit(blue_config)
+
+        # Loading the GIDs of the sample target within the circuit
+        gids = circuit.cells.ids(target)
 
         # Return a list of all the GIDs
         return gids

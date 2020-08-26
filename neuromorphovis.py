@@ -34,7 +34,7 @@ import subprocess
 # Append the internal modules into the system paths to avoid Blender importing conflicts
 import_paths = ['nmv/interface/cli', 'nmv/file/ops', 'nmv/slurm']
 for import_path in import_paths:
-    sys.path.append(('%s/%s' %(os.path.dirname(os.path.realpath(__file__)), import_path)))
+    sys.path.append(('%s/%s' % (os.path.dirname(os.path.realpath(__file__)), import_path)))
     
 # Internal imports
 import arguments_parser
@@ -156,6 +156,7 @@ def run_local_neuromorphovis(arguments):
 
         # Run NeuroMorphoVis from Blender in the background mode
         for shell_command in shell_commands:
+
             # print('RUNNING: ' + shell_command)
             subprocess.call(shell_command, shell=True)
 
@@ -164,7 +165,8 @@ def run_local_neuromorphovis(arguments):
 
         # Get all the morphology files in this directory
         morphology_files = file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
-        morphology_files.extend(file_ops.get_files_in_directory(arguments.morphology_directory, '.swc'))
+        morphology_files.extend(file_ops.get_files_in_directory(
+            arguments.morphology_directory, '.swc'))
 
         # If the directory is empty, give an error message
         if len(morphology_files) == 0:
@@ -219,18 +221,45 @@ def run_cluster_neuromorphovis(arguments):
             print('ERROR: Empty circuit configuration file or target')
             exit(0)
 
-        # Import brain
+        # Import bluepy
         try:
-            import brain
+            import bluepy.v2
         except ImportError:
-            print('ERROR: Cannot import [brain], please load brain or install it')
+            print('ERROR: Cannot import [BluePy], please install it')
             exit(0)
 
-        # Open a circuit with a given blue config
-        bbp_circuit = brain.Circuit(arguments.blue_config)
+        from bluepy.v2 import Circuit
 
-        # Create a GID-set and load the morphologies from these GIDs
-        gids = bbp_circuit.gids(arguments.target)
+        # Loading a circuit
+        circuit = Circuit(arguments.blue_config)
+
+        # Loading the GIDs of the sample target within the circuit
+        gids = circuit.cells.ids(arguments.target)
+
+        '''
+        ### This code can be used to load the morphology path for H5 loading later.
+         
+        # Load the cells in the target
+        cells_in_target = circuit.cells.get(arguments.target)
+
+        # Get the full path of the directory and extension of the morphologies
+        sample_morphology_path = circuit.morph.get_filepath(gids[0])
+
+        # Get the morphology label
+        sample_morphology_label = cells_in_target.morphology.get(gids[0])
+
+        # Get the path and file extension
+        path_and_extension = sample_morphology_path.split(sample_morphology_label)
+
+        # Loading the morphology files from the GIDs in the circuit
+        morphologies = list()
+        for gid in gids:
+            # Add the morphology path
+            morphology_path = '%s/%s%s' % (path_and_extension[0],
+                                           cells_in_target.morphology.get(gid),
+                                           path_and_extension[1])
+            morphologies.append(morphology_path)
+        '''
 
         # Run the jobs on the cluster
         slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=gids)
