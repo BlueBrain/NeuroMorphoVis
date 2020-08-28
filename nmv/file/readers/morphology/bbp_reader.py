@@ -140,9 +140,13 @@ class BBPReader:
         # Use the H5 morphology loader to load this file
         # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
         h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_morphology=False)
+        morphology_file = h5_reader.read_file()
+
+        # Adjust the label to be set according to the GID not the morphology label
+        morphology_file.label = str(gid)
 
         # Return a reference to the morphology
-        return h5_reader.read_file()
+        return morphology_file
 
     ################################################################################################
     # @get_neuron_from_gid

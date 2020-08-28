@@ -116,15 +116,16 @@ def emanate_a_spine(spines_list,
     spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier, link_to_scene=False)
 
     # Scale the spine
-    #nmv.scene.ops.scale_object_uniformly(spine_object,
-    #    random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR, nmv.consts.Spines.MAX_SCALE_FACTOR))
+    nmv.scene.ops.scale_object_uniformly(
+        spine_object,
+        random.uniform(nmv.consts.Spines.MIN_SCALE_FACTOR, nmv.consts.Spines.MAX_SCALE_FACTOR))
 
     # Translate the spine to the post synaptic position
-    # nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
+    nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
 
     # Rotate the spine towards the pre-synaptic point
-    #nmv.scene.ops.rotate_object_towards_target(
-    #    spine_object, post_synaptic_position, pre_synaptic_position)
+    nmv.scene.ops.rotate_object_towards_target(
+        spine_object, post_synaptic_position, pre_synaptic_position)
 
     # Return a reference to the spine
     return spine_object
@@ -154,31 +155,57 @@ def build_circuit_spines(morphology,
     # Keep a list of all the spines objects
     spines_objects = []
 
-    # Import brain
-    import brain
+    # Loading a circuit
+    from bluepy.v2 import Circuit
+    circuit = Circuit(blue_config)
 
-    # Load the circuit, silently please
-    circuit = brain.Circuit(blue_config)
+    # Get the IDs of the afferent (or incoming) synapses
+    synapse_ids = circuit.connectome.afferent_synapses(int(gid))
 
-    # Get all the synapses for the corresponding gid.
-    synapses = circuit.afferent_synapses({int(gid)})
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_pos = circuit.connectome.synapse_positions(synapse_ids, 'post', 'center')
+
+    pre_pos = circuit.connectome.synapse_positions(synapse_ids, 'pre', 'contour')
+
+    # Get the neuron
+    neuron = circuit.cells.get(int(gid))
+
+    # Translation
+    translation = Vector((neuron['x'], neuron['y'], neuron['z']))
+
+    # Orientation
+    o = neuron['orientation']
+    o0 = Vector((o[0][0], o[0][1], o[0][2]))
+    o1 = Vector((o[1][0], o[1][1], o[1][2]))
+    o2 = Vector((o[2][0], o[2][1], o[2][2]))
+
+    # Initialize the transformation matrix to I
+    transformation_matrix = Matrix()
+
+    transformation_matrix[0][0] = o0[0]
+    transformation_matrix[0][1] = o0[1]
+    transformation_matrix[0][2] = o0[2]
+    transformation_matrix[0][3] = translation[0]
+
+    transformation_matrix[1][0] = o1[0]
+    transformation_matrix[1][1] = o1[1]
+    transformation_matrix[1][2] = o1[2]
+    transformation_matrix[1][3] = translation[1]
+
+    transformation_matrix[2][0] = o2[0]
+    transformation_matrix[2][1] = o2[1]
+    transformation_matrix[2][2] = o2[2]
+    transformation_matrix[2][3] = translation[2]
+
+    transformation_matrix[3][0] = 0.0
+    transformation_matrix[3][1] = 0.0
+    transformation_matrix[3][2] = 0.0
+    transformation_matrix[3][3] = 1.0
+
+    print(transformation_matrix)
 
     # Load all the template spines and ignore the verbose messages of loading
     templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
-
-    # Apply the shader
-    for spine_object in templates_spines_list:
-
-        # Apply the shader to each spine mesh
-        nmv.shading.set_material_to_object(spine_object, material)
-
-    # Get the local to global transforms
-    local_to_global_transform = circuit.transforms({int(gid)})[0]
-
-    # Local_to_global_transform
-    transformation_matrix = Matrix()
-    for i in range(4):
-        transformation_matrix[i][:] = local_to_global_transform[i]
 
     # Invert the transformation matrix
     transformation_matrix = transformation_matrix.inverted()
@@ -190,26 +217,23 @@ def build_circuit_spines(morphology,
     building_timer.start()
 
     # Load the synapses from the file
-    number_spines = len(synapses)
-    for i, synapse in enumerate(synapses):
+    number_spines = len(synapse_ids)
+    for i, synapse in enumerate(synapse_ids):
 
         # Show progress
         nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
 
-        """ Ignore soma synapses """
-        # If the post-synaptic section index is zero, then revoke it, and continue
-        post_section_id = synapse.post_section()
-        if post_section_id == 0:
-                continue
-        # Get the pre-and post-positions in the global coordinates
-        pre_position = synapse.pre_center_position()
-        post_position = synapse.post_center_position()
+        # Pre and post synaptic positions in Vectors
+        pre_position = Vector((pre_pos['x'][synapse],
+                               pre_pos['y'][synapse],
+                               pre_pos['z'][synapse]))
+        post_position = Vector((post_pos['x'][synapse],
+                                post_pos['y'][synapse],
+                                post_pos['z'][synapse]))
 
         # Transform the spine positions to the circuit coordinates
-        pre_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
-        post_position = Vector((post_position[0], post_position[1], post_position[2]))
-        post_position = transformation_matrix * post_position
-        pre_position = transformation_matrix * pre_position
+        post_position = transformation_matrix @ post_position
+        pre_position = transformation_matrix @ pre_position
 
         # Emanate a spine
         spine_object = emanate_a_spine(templates_spines_list, post_position, pre_position, i)

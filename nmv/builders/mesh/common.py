@@ -354,7 +354,7 @@ def connect_arbors_to_soma(builder):
     following to the initial validation steps that determines if the arbor has a valid
     connection point to the soma or not.
     If the arbor is 'logically' connected to the soma, this function returns immediately.
-    The arbor is a Section object, see Section() @ section.py.
+    The arbor is a Section object, see Section() @section.py.
 
     :param builder:
         An object of the builder that is used to reconstruct the neuron mesh.
