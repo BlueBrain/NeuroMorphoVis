@@ -238,6 +238,11 @@ def build_circuit_spines(morphology,
         # Emanate a spine
         spine_object = emanate_a_spine(templates_spines_list, post_position, pre_position, i)
 
+        # Apply the material to the spine object
+        if material is not None:
+            nmv.shading.set_material_to_object(
+                mesh_object=spine_object, material_reference=material)
+
         # Append the spine to spines list
         spines_objects.append(spine_object)
 
