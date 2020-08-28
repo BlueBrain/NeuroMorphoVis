@@ -56,16 +56,15 @@ class BBPReader:
             A list of GIDs composing the target.
         """
 
-        # Import brain
+        # Import BluePy
         try:
             import bluepy.v2
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             return None
 
-        from bluepy.v2 import Circuit
-
         # Loading a circuit
+        from bluepy.v2 import Circuit
         circuit = Circuit(blue_config)
 
         # Loading the GIDs of the sample target within the circuit
@@ -90,62 +89,60 @@ class BBPReader:
             A reference to a BBP morphology structure
         """
 
-        # Import brain
+        # Import BluePy
         try:
-            import brain
+            import bluepy.v2
         except ImportError:
-            print('ERROR: Cannot import brain')
+            print('ERROR: Cannot import [BluePy], please install it')
             return None
 
-        # Load the circuit
-        bbp_circuit = brain.Circuit(blue_config)
+        # Loading a circuit
+        from bluepy.v2 import Circuit
+        circuit = Circuit(blue_config)
 
-        # Create a GID-set and load the morphology corresponding to the given GID
-        gids_set = bbp_circuit.gids('a' + str(gid))
-
-        loaded = bbp_circuit.load_morphologies(gids_set, bbp_circuit.Coordinates.local)
-        uris_set = bbp_circuit.morphology_uris(gids_set)
-
-        # Get a BBP morphology object loaded from the circuit
-        bbp_morphology_object = brain.neuron.Morphology(uris_set[0])
+        # Get the morphology from its GID
+        bbp_morphology = circuit.morph.get(int(gid), True)
 
         # Return a reference to the morphology
-        return bbp_morphology_object
+        return bbp_morphology
 
     ################################################################################################
-    # @load_morphologies_from_target
+    # @load_bbp_morphology_from_gid_using_h5_file
     ################################################################################################
     @staticmethod
-    def load_morphologies_from_target(blue_config,
-                                      target):
-        """Returns a reference to all the morphologies in a circuit given by certain target.
+    def load_bbp_morphology_from_gid_using_h5_file(blue_config,
+                                                   gid):
+        """This function returns a reference to a morphology in a circuit given by its gid.
 
         :param blue_config:
-            A given circuit configuration file.
-        :param target:
-            Input target
+            A given BBP circuit configuration file.
+        :param gid:
+            A given neuron GID.
         :return:
-            A reference to all the BBP morphologies loaded from the target and their GIDs
+            A reference to a BBP morphology structure
         """
 
-        # Import brain
+        # Import BluePy
         try:
-            import brain
+            import bluepy.v2
         except ImportError:
-            print('ERROR: Cannot import brain')
+            print('ERROR: Cannot import [BluePy], please install it')
             return None
 
-        # Open a circuit with a given blue config
-        bbp_circuit = brain.Circuit(blue_config)
+        # Loading a circuit
+        from bluepy.v2 import Circuit
+        circuit = Circuit(blue_config)
 
-        # Create a GID-set and load the morphologies from these GIDs
-        gids = bbp_circuit.gids(target)
-        uris = bbp_circuit.morphology_uris(gids)[0]
-        brain.neuron.Morphology(uris)
-        bbp_morphologies = bbp_circuit.load_morphologies(gids, bbp_circuit.Coordinates.local)
+        # Get the morphology file path from its GID
+        # We must ensure that the GID is integer, that's why the cast is there
+        h5_morphology_path = circuit.morph.get_filepath(int(gid))
 
-        # Return a reference to the morphologies and their GIDs
-        return bbp_morphologies, gids
+        # Use the H5 morphology loader to load this file
+        # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
+        h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_morphology=False)
+
+        # Return a reference to the morphology
+        return h5_reader.read_file()
 
     ################################################################################################
     # @get_neuron_from_gid
@@ -163,28 +160,19 @@ class BBPReader:
             A reference to the BBP neuron
         """
 
-        # Import BBP-SDK module inside the function to avoid the BBP tree complexity for non-BBP
-        # morphologies.
-        import bbp
+        # Import BluePy
+        try:
+            import bluepy.v2
+        except ImportError:
+            print('ERROR: Cannot import [BluePy], please install it')
+            return None
 
-        # Create a new experiment
-        bbp_experiment = bbp.Experiment()
+        # Loading a circuit
+        from bluepy.v2 import Circuit
+        circuit = Circuit(blue_config)
 
-        # Open the blue-config file
-        bbp_experiment.open(blue_config)
-
-        # Create a micro-circuit
-        bbp_microcircuit = bbp_experiment.microcircuit()
-
-        # Set the cell target to the given gid
-        bbp_cell_target = bbp.Cell_Target()
-        bbp_cell_target.insert(int(gid))
-
-        # Load the circuit
-        bbp_microcircuit.load(bbp_cell_target, bbp.Loading_Flags.NEURONS)
-
-        # Get the neuron from the microcircuit
-        bbp_neuron = bbp_microcircuit.neurons()
+        # Get a reference to the neuron where you can access its data later
+        bbp_neuron = circuit.cells.get(gid)
 
         # Return a reference to the BBP neuron
         return bbp_neuron
@@ -209,8 +197,7 @@ class BBPReader:
         neuron = BBPReader.get_neuron_from_gid(blue_config, gid)
 
         # Return the position of the neuron
-        for data in neuron:
-            return data.position()
+        return Vector((neuron['x'], neuron['y'], neuron['z']))
 
     ################################################################################################
     # @get_neuron_orientation_from_gid
@@ -232,8 +219,11 @@ class BBPReader:
         neuron = BBPReader.get_neuron_from_gid(blue_config, gid)
 
         # Return the orientation of he neuron
-        for data in neuron:
-            return data.orientation()
+        o = neuron['orientation']
+        o0 = Vector((o[0][0], o[0][1], o[0][2]))
+        o1 = Vector((o[1][0], o[1][1], o[1][2]))
+        o2 = Vector((o[2][0], o[2][1], o[2][2]))
+        return Matrix(o0, o1, o2)
 
     ################################################################################################
     # @get_neuron_mtype_name_from_gid
@@ -255,8 +245,7 @@ class BBPReader:
         neuron = BBPReader.get_neuron_from_gid(blue_config, gid)
 
         # Return the mtype name
-        for data in neuron:
-            return data.morphology_type().name()
+        return neuron['mtype']
 
     ################################################################################################
     # @get_neuron_morphology_label_from_gid
@@ -278,8 +267,7 @@ class BBPReader:
         neuron = BBPReader.get_neuron_from_gid(blue_config, gid)
 
         # Return morphology label
-        for data in neuron:
-            return data.morphology_label()
+        return neuron['morphology']
 
     ################################################################################################
     # @get_section_from_id
@@ -298,500 +286,9 @@ class BBPReader:
         """
 
         for section in sections:
-            if section.index == index:
+            if section.id == index:
                 return section
         return None
-
-    ################################################################################################
-    # @get_starting_sections_from_sections_list
-    ################################################################################################
-    @staticmethod
-    def get_starting_sections_from_sections_list(sections_list):
-        """Returns the starting sections from a sections list.
-        For example, it will return the first section on the axon and the apical dendrite.
-        In case of dendrites, it will return a list of all the starting sections.
-
-        :param sections_list:
-            A BBP section list with IDs
-        :return:
-            A list of BBP sections
-        """
-
-        # Filter all the sections given in a list and return the root (that have no parents)
-        sections = []
-
-        # Do it section by section
-        for section in sections_list:
-
-            # The section should not have any parents
-            if section.parent_index is None:
-
-                # Append it to the list
-                sections.append(BBPReader.get_section_from_id(sections_list, section.index))
-
-        return sections
-
-    ################################################################################################
-    # @get_soma
-    ################################################################################################
-    @staticmethod
-    def get_soma(bbp_morphology):
-        """Returns a reference to the soma of a given BBP morphology.
-
-        :param bbp_morphology:
-            BBP morphology.
-        :return:
-            A reference to the soma of the given BBP morphology
-        """
-
-        return bbp_morphology.soma()
-
-    ################################################################################################
-    # @get_axon
-    ################################################################################################
-    @staticmethod
-    def get_axon(bbp_morphology):
-        """This function returns the sections of the axon of a given BBP morphology.
-
-        :param bbp_morphology:
-            BBP morphology.
-        :return:
-            The sections of the axon of the given BBP morphology.
-        """
-
-        # Import brain
-        try:
-            import brain
-        except ImportError:
-            print('ERROR: Cannot import brain')
-            return None
-
-        return bbp_morphology.sections({brain.neuron.SectionType.axon})
-
-    ################################################################################################
-    # @get_dendrites
-    ################################################################################################
-    @staticmethod
-    def get_dendrites(bbp_morphology):
-        """This function returns the sections of the dendrites of a given BBP morphology.
-
-        :param bbp_morphology:
-            BBP morphology.
-        :return:
-            The sections of the dendrites of the given BBP morphology.
-        """
-
-        # Import brain
-        try:
-            import brain
-        except ImportError:
-            print('ERROR: Cannot import brain')
-            return None
-
-        dendrites = [bbp_morphology.section(int(index)) for index in
-                     bbp_morphology.section_ids({brain.neuron.SectionType.dendrite})]
-        return dendrites
-
-    ################################################################################################
-    # @get_apical_dendrite
-    ################################################################################################
-    @staticmethod
-    def get_apical_dendrite(bbp_morphology):
-        """Returns the sections of the apical dendrite of a given BBP morphology.
-
-        :param bbp_morphology:
-            BBP morphology.
-        :return:
-            The sections of the apical dendrite of the given BBP morphology.
-        """
-
-        # Import brain
-        try:
-            import brain
-        except ImportError:
-            print('ERROR: Cannot import brain')
-            return None
-
-        apical_dendrite = [bbp_morphology.section(int(index)) for index in
-                           bbp_morphology.section_ids({brain.neuron.SectionType.apical_dendrite})]
-        return apical_dendrite
-
-    ################################################################################################
-    # @get_soma_profile_points
-    ################################################################################################
-    @staticmethod
-    def get_soma_profile_points(bbp_soma):
-        """Returns a list of all the profile points of the soma.
-
-        :param bbp_soma:
-            Soma of a BBP morphology.
-        :return:
-            A list of all the profile points of a BBP soma.
-        """
-
-        # List of all profile points of the soma
-        soma_profile_points = []
-        for point in bbp_soma.profile_points():
-            soma_profile_points.append(Vector((point[0], point[1], point[2])))
-        return soma_profile_points
-
-    ################################################################################################
-    # @get_soma_profile_points_data
-    ################################################################################################
-    @staticmethod
-    def get_soma_profile_points_data(bbp_soma):
-        """Returns a list of positions and radii of the profile points.
-        The structure of the data is as follows:
-            @data[0] position, @data[1] radius, @data[2] index
-            The index of a soma profile point is 0.
-            The radius of a soma profile point is 1.0.
-
-        :param bbp_soma:
-            Soma of a BBP morphology.
-        :return:
-            A list of positions and radii of the profile points of the soma.
-        """
-
-        # List of all profile points of the soma
-        soma_profile_points_data = []
-        for point in bbp_soma.profile_points():
-            soma_profile_points_data.append([Vector((point[0], point[1], point[2])), 1.0, 0])
-        return soma_profile_points_data
-
-    ################################################################################################
-    # @get_axon_profile_points_data
-    ################################################################################################
-    @staticmethod
-    def get_axon_profile_points_data(bbp_axon):
-        """Returns the data of the first point on the axon initial segment.
-        The structure of the data is as follows:
-            @data[0] position, @data[1] radius, @data[2] index
-            The index of an axon profile point is 1.
-            The radius of an axon profile point is set to the sample radius.
-        :param bbp_axon:
-            Axon of a BBP morphology
-        :return:
-            A list of positions and radii of the profile points of the axon
-        """
-
-        # List of all profile points of the axon
-        axon_profile_points_data = []
-        if len(bbp_axon) > 0:  # Ensure that the axon is present in the skeleton
-            axon_profile_points_data.append([Vector((bbp_axon[0].samples()[0][0],
-                                                     bbp_axon[0].samples()[0][1],
-                                                     bbp_axon[0].samples()[0][2])),
-                                             bbp_axon[0].samples()[0][3] / 2.0, 1])
-        return axon_profile_points_data
-
-    ################################################################################################
-    # @get_dendrites_profile_points_data
-    ################################################################################################
-    @staticmethod
-    def get_dendrites_profile_points_data(bbp_dendrites):
-        """This function returns the data of the first points on dendrites initial segments.
-        The structure of the data is as follows:
-            @data[0] position, @data[1] radius, @data[2] index
-            The index of a dendrite profile point is 2.
-            The radius of an axon profile point is set to the sample radius.
-
-        :param bbp_dendrites:
-            Dendrites of a BBP morphology
-        :return:
-            A list of positions and radii of the profile points of the dendrites
-        """
-
-        # List of all profile points of the axon
-        dendrites_profile_points_data = []
-        if bbp_dendrites is not None:
-            for dendrite in bbp_dendrites:
-
-                # The profile points are only available for root sections
-                if dendrite.parent() is None:
-                    dendrites_profile_points_data.append([Vector((dendrite.samples()[0][0],
-                                                                  dendrite.samples()[0][1],
-                                                                  dendrite.samples()[0][2])),
-                                                          dendrite.samples()[0][3] / 2.0, 2])
-        return dendrites_profile_points_data
-
-    ################################################################################################
-    # @get_apical_dendrite_profile_points_data
-    ################################################################################################
-    @staticmethod
-    def get_apical_dendrite_profile_points_data(bbp_apical_dendrite):
-        """
-        This function returns the data of the first points on apical dendrite initial segments.
-        The structure of the data is as follows:
-            @data[0] position, @data[1] radius, @data[2] index
-            The index of an apical dendrite profile point is 3.
-            The radius of an axon profile point is set to the sample radius.
-
-        :param bbp_apical_dendrite:
-            Apical dendrite of a BBP morphology.
-        :return:
-            A list of positions and radii of the profile points of an apical dendrite.
-        """
-
-        # List of all profile points of the apical dendrite
-        apical_dendrite_profile_points_data = []
-
-        # Ensure that the apical dendrite is present in the skeleton
-        if len(bbp_apical_dendrite) > 0:
-            apical_dendrite_profile_points_data.append(
-                [Vector((bbp_apical_dendrite[0].samples()[0][0],
-                         bbp_apical_dendrite[0].samples()[0][1],
-                         bbp_apical_dendrite[0].samples()[0][2])),
-                 bbp_apical_dendrite[0].samples()[0][3] / 2.0,
-                 3])
-        return apical_dendrite_profile_points_data
-
-    ################################################################################################
-    # @get_axon_starting_point
-    ################################################################################################
-    @staticmethod
-    def get_axon_starting_point(bbp_axon):
-        """Returns the first sample on the axon initial segment.
-
-        :param bbp_axon:
-            Axon of a BBP morphology.
-        :return:
-            The first sample on the axon initial segment.
-        """
-
-        axon_starting_point = [Vector((bbp_axon[0].samples()[0][0],
-                                       bbp_axon[0].samples()[0][1],
-                                       bbp_axon[0].samples()[0][2]))]
-        return axon_starting_point
-
-    ################################################################################################
-    # @get_axon_starting_radius
-    ################################################################################################
-    @staticmethod
-    def get_axon_starting_radius(bbp_axon):
-        """
-        This function returns the radius of the first point on the axon initial segment.
-
-        :param bbp_axon:
-            Axon of a BBP morphology.
-        :return:
-            The radius of the first sample on the axon initial segment.
-        """
-
-        axon_starting_radius = bbp_axon[0].samples()[0][3] / 2.0
-        return axon_starting_radius
-
-    ################################################################################################
-    # @get_dendrites_starting_points
-    ################################################################################################
-    @staticmethod
-    def get_dendrites_starting_points(bbp_dendrites):
-        """
-        This function returns a list of the first points of each dendrite.
-
-        :param bbp_dendrites:
-            A list of dendrites of a BBP morphology.
-        :return:
-            A list of points representing first samples on the initial segments of the dendrites.
-        """
-
-        dendrites_starting_points = []
-        if bbp_dendrites is not None:
-            for dendrite in bbp_dendrites:
-
-                # Only consider the roots
-                if dendrite.parent() is None:
-                    dendrites_starting_points.append(Vector((dendrite.samples()[0][0],
-                                                             dendrite.samples()[0][1],
-                                                             dendrite.samples()[0][2])))
-        return dendrites_starting_points
-
-    ################################################################################################
-    # @get_dendrites_starting_radii
-    ################################################################################################
-    @staticmethod
-    def get_dendrites_starting_radii(bbp_dendrites):
-        """Returns a list of the radii of the first points of each dendrite.
-
-        :param bbp_dendrites:
-            A list of dendrites of a BBP morphology.
-        :return:
-            A list of radii representing the first samples on the initial segments of the dendrites.
-        """
-
-        dendrites_starting_radii = []
-        if bbp_dendrites is not None:
-            for dendrite in bbp_dendrites:
-
-                # Only consider the roots
-                if dendrite.parent() is None:
-                    dendrites_starting_radii.append(dendrite.samples()[0][3] / 2.0)
-        return dendrites_starting_radii
-
-    ################################################################################################
-    # @get_apical_dendrite_starting_point
-    ################################################################################################
-    @staticmethod
-    def get_apical_dendrite_starting_point(bbp_apical_dendrite):
-        """Return the first point on the apical dendrite.
-
-        :param bbp_apical_dendrite:
-            Apical dendrite of a BBP morphology.
-        :return:
-            The first point on the apical dendrite.
-        """
-
-        apical_dendrite_starting_point = [Vector((bbp_apical_dendrite[0].samples()[0][0],
-                                                  bbp_apical_dendrite[0].samples()[0][1],
-                                                  bbp_apical_dendrite[0].samples()[0][2]))]
-        return apical_dendrite_starting_point
-
-    ################################################################################################
-    # @get_apical_dendrite_starting_radius
-    ################################################################################################
-    @staticmethod
-    def get_apical_dendrite_starting_radius(bbp_apical_dendrite):
-        """Return the radius of the first point on the apical_dendrite.
-
-        :param bbp_apical_dendrite:
-            Apical dendrite of a BBP morphology.
-        :return:
-            The radius of the first point on the apical dendrite.
-        """
-
-        apical_dendrite_starting_radius = bbp_apical_dendrite[0].samples()[0][3] / 2.0
-        return apical_dendrite_starting_radius
-
-    ################################################################################################
-    # @get_morphology_exemplars
-    ################################################################################################
-    @staticmethod
-    def get_morphology_exemplars(blue_config,
-                                 random_selection=False):
-        """Returns a list of exemplars where each one represent a category of the different
-        morphologies. If the random selection flag is set, then they will be picked up randomly,
-        otherwise, the first one of each selected type will be picked.
-
-        :param blue_config:
-            A circuit configuration file.
-        :param random_selection:
-            Randomly selected cells.
-        :return:
-            A list of exemplars to all the mtypes that exist in the circuit.
-        """
-
-        # Import bbp
-        try:
-            import bbp
-        except ImportError:
-            print('ERROR: Cannot import brain')
-            return None
-
-        # Create an experiment
-        bbp_experiment = bbp.Experiment()
-
-        # Open the blue config
-        bbp_experiment.open(blue_config)
-
-        # Load the entire mc2_Column in the micro-circuit
-        bbp_microcircuit = bbp_experiment.microcircuit()
-        bbp_cell_target = bbp_experiment.cell_target('mc2_Column')
-        bbp_microcircuit.load(bbp_cell_target, bbp.Loading_Flags.NEURONS)
-
-        # retrieve a list of all the neurons in the circuit
-        bbp_neurons = bbp_microcircuit.neurons()
-
-        # create a list of selected exemplars
-        exemplars_list = []
-        for m_type in nmv.consts.MTYPES:
-
-            # All the cells with that specific m-type
-            m_type_cells = []
-
-            # Get all the cells with that specific m-type
-            for neuron in bbp_neurons:
-
-                # Get BBP neuron data from the BBP-SDK
-                neuron_gid = neuron.gid()
-                neuron_m_type = neuron.morphology_type().name()
-                if neuron_m_type == m_type:
-                    m_type_cells.append([neuron_gid, neuron_m_type])
-
-            # Select a random cell and add it to the exemplars list, otherwise, use the first m-type
-            if random_selection:
-                exemplars_list.append(random.choice(m_type_cells))
-            else:
-                exemplars_list.append(m_type_cells[0])
-
-        # Return the exemplars list
-        return exemplars_list
-
-    ################################################################################################
-    # @convert_bbp_sections
-    ################################################################################################
-    @staticmethod
-    def convert_bbp_sections(bbp_morphology_sections):
-        """Converts BBP morphology sections to the unifying structure.
-
-        :param bbp_morphology_sections:
-            Input sections of a BBP morphology.
-        :return:
-            A list of converted sections.
-        """
-
-        sections = []
-        for bbp_morphology_section in bbp_morphology_sections:
-
-            # Get the section ID
-            section_id = bbp_morphology_section.index()
-
-            # Get the parent section ID
-            if bbp_morphology_section.parent() is None:
-                parent_section_id = None
-            else:
-                parent_section_id = bbp_morphology_section.parent().index()
-
-            # Get the section type
-            section_type = bbp_morphology_section.type()
-
-            # Retrieve all the segments (point or samples) along the section
-            bbp_morphology_samples = bbp_morphology_section.samples()
-
-            # Build the morphology skeleton samples
-            samples = []
-            for i, morphology_sample in enumerate(bbp_morphology_samples):
-
-                # Sample position
-                point = Vector((morphology_sample[0], morphology_sample[1], morphology_sample[2]))
-
-                # Sample radius
-                radius = morphology_sample[3] / 2.0
-
-                # Construct a Sample object and add the data to it
-                morphology_sample = nmv.skeleton.Sample(point=point, radius=radius, index=i)
-                samples.append(morphology_sample)
-
-            # Retrieve all children IDs
-            children_ids = []
-            for child in bbp_morphology_section.children():
-                children_ids.append(child.index())
-
-            # Build section
-            section = nmv.skeleton.Section(
-                index=section_id, parent_index=parent_section_id, children_ids=children_ids,
-                samples=samples, type=section_type)
-
-            # Set the parenting
-            if parent_section_id is None:
-                section.parent = None
-
-            for i_section in sections:
-                if i_section.index == parent_section_id:
-                    section.parent = i_section.parent
-
-            # Add the section to the list
-            sections.append(section)
-
-        # Return a list of the converted sections
-        return sections
 
     ################################################################################################
     # @create_morphology_skeleton
@@ -831,156 +328,6 @@ class BBPReader:
         return root
 
     ################################################################################################
-    # @convert_bbp_morphology_to_list
-    ################################################################################################
-    @staticmethod
-    def convert_bbp_morphology_to_list(gid, bbp_morphology_object):
-        """Converts a BBP morphology to list.
-
-        :param gid:
-            BBP neuron GID.
-        :param bbp_morphology_object:
-            BBP morphology object.
-        :return:
-            A list of BBP morphology sections.
-        """
-
-        # Soma
-        bbp_morphology_soma = BBPReader.get_soma(bbp_morphology_object)
-
-        # Axon
-        bbp_morphology_axon = BBPReader.get_axon(bbp_morphology_object)
-
-        # Dendrites
-        bbp_morphology_dendrites = BBPReader.get_dendrites(bbp_morphology_object)
-
-        # Apical dendrite
-        bbp_morphology_apical_dendrites = BBPReader.get_apical_dendrite(bbp_morphology_object)
-
-        # Soma center
-        centroid = bbp_morphology_soma.centroid()
-
-        # Soma mean radius
-        mean_radius = bbp_morphology_soma.mean_radius()
-
-        # Soma profile points
-        profile_points = list()
-        for bbp_morphology_soma_profile_point in bbp_morphology_soma.profile_points():
-
-            # Profile points
-            profile_point = Vector((bbp_morphology_soma_profile_point[0],
-                                    bbp_morphology_soma_profile_point[1],
-                                    bbp_morphology_soma_profile_point[2]))
-            profile_points.append(profile_point)
-
-        # Create the soma
-        soma = nmv.skeleton.Soma(
-            centroid=centroid, mean_radius=mean_radius, profile_points=profile_points)
-
-        # Create a linear list of the axon
-        axon = BBPReader.convert_bbp_sections(bbp_morphology_axon)
-
-        # Create a linear list of the dendrites
-        dendrites = BBPReader.convert_bbp_sections(bbp_morphology_dendrites)
-
-        # Create a linear list of the apical dendrite, if exists
-        apical_dendrite = None
-        if len(bbp_morphology_apical_dendrites) > 0:
-            apical_dendrite = BBPReader.convert_bbp_sections(bbp_morphology_apical_dendrites)
-
-        # Return a reference to each part
-        return soma, axon, dendrites, apical_dendrite
-
-    ################################################################################################
-    # @convert_morphology_to_skeleton
-    ################################################################################################
-    @staticmethod
-    def convert_morphology_to_skeleton(gid,
-                                       bbp_morphology):
-        """Converts BBP morphologies into our format that is used in this framework.
-
-        :param gid:
-            BBP neuron GID.
-        :param bbp_morphology:
-            Original BBP morphology.
-        :return:
-            Morphology skeleton.
-        """
-
-        # Convert a BBP morphology into a list of all the sections
-        soma, axons_list, basal_dendrites_list, apical_dendrites_list = \
-            BBPReader.convert_bbp_morphology_to_list(gid, bbp_morphology)
-
-        # Create the apical dendrites trees
-        apical_dendrites_roots = BBPReader.get_starting_sections_from_sections_list(
-            apical_dendrites_list)
-        apical_dendrites = None
-        if apical_dendrites_list is not None:
-            apical_dendrites = list()
-            for root in apical_dendrites_roots:
-                apical_dendrite = BBPReader.create_morphology_skeleton(root, apical_dendrites_list)
-                apical_dendrites.append(apical_dendrite)
-
-        # Create the axons trees
-        axons_roots = BBPReader.get_starting_sections_from_sections_list(axons_list)
-        axons = None
-        if axons_list is not None:
-            axons = list()
-            for root in axons_roots:
-                axon = BBPReader.create_morphology_skeleton(root, axons_list)
-                axons.append(axon)
-
-        # Create the basal dendrites trees
-        basal_dendrites_roots = BBPReader.get_starting_sections_from_sections_list(
-            basal_dendrites_list)
-        basal_dendrites = None
-        if basal_dendrites_list is not None:
-            basal_dendrites = list()
-            for root in basal_dendrites_roots:
-                basal_dendrite = BBPReader.create_morphology_skeleton(root, basal_dendrites_list)
-                basal_dendrites.append(basal_dendrite)
-
-        # Labeling and tagging the apical dendrites
-        if apical_dendrites is not None:
-            if len(apical_dendrites) == 1:
-                apical_dendrites[0].label = 'Apical Dendrite'
-                apical_dendrites[0].tag = 'ApicalDendrite'
-            else:
-                for i in range(len(apical_dendrites)):
-                    apical_dendrites[i].label = 'Apical Dendrite %d' % (i + 1)
-                    apical_dendrites[i].tag = 'ApicalDendrite%d' % (i + 1)
-
-        # Labeling the basal dendrites
-        if basal_dendrites is not None:
-            if len(basal_dendrites) == 1:
-                basal_dendrites[0].label = 'Basal Dendrite'
-                basal_dendrites[0].tag = 'BasalDendrite'
-            else:
-                for i in range(len(basal_dendrites)):
-                    basal_dendrites[i].label = 'Basal Dendrite %d' % (i + 1)
-                    basal_dendrites[i].tag = 'BasalDendrite%d' % (i + 1)
-
-        # Labeling and tagging the axons
-        if axons is not None:
-            if len(axons) == 1:
-                axons[0].label = 'Axon'
-                axons[0].tag = 'Axon'
-            else:
-                for i in range(len(axons)):
-                    axons[i].label = 'Axon %d' % (i + 1)
-                    axons[i].tag = 'Axon%d' % (i + 1)
-
-        # Create the tree representation of the morphology
-        nmv_morphology = nmv.skeleton.Morphology(soma=soma,
-                                                 axons=axons,
-                                                 basal_dendrites=basal_dendrites,
-                                                 apical_dendrites=apical_dendrites,
-                                                 gid=gid)
-
-        # Return the morphology tree skeleton
-        return nmv_morphology
-
-    ################################################################################################
     # @load_morphology_from_circuit
     ################################################################################################
     @staticmethod
@@ -996,17 +343,16 @@ class BBPReader:
             A reference to a BBP morphology structure
         """
 
-        # Load the BBP morphology object
-        bbp_morphology_object = BBPReader.load_bbp_morphology_from_gid(
+        # Load the BBP morphology object using the H5 file reader
+        # NOTE: This approach is quite straight forward, but we should make it extensible in
+        # the future for SONATA circuits.
+        morphology_object = BBPReader.load_bbp_morphology_from_gid_using_h5_file(
             blue_config=blue_config, gid=gid)
-
-        # Convert the BBP morphology object to a skeleton
-        morphology_object = BBPReader.convert_morphology_to_skeleton(
-            gid=gid, bbp_morphology=bbp_morphology_object)
 
         if morphology_object is not None:
 
             # Return a reference to the loaded morphology object
             return True, morphology_object
 
+        # There is no morphology
         return False, None

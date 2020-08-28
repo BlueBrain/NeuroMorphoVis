@@ -221,7 +221,7 @@ def run_cluster_neuromorphovis(arguments):
             print('ERROR: Empty circuit configuration file or target')
             exit(0)
 
-        # Import bluepy
+        # Import BluePy
         try:
             import bluepy.v2
         except ImportError:
