@@ -384,9 +384,6 @@ class MetaBuilder:
         # Verify the proximity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
-        # Verify the proximity of the arbors to the soma
-        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
-
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
         valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
             morphology=self.morphology, soma_radius=self.morphology.soma.smallest_radius)
@@ -407,21 +404,21 @@ class MetaBuilder:
         # Emanate towards the apical dendrites, if exist
         if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
-                for arbor in valid_apical_dendrites:
+                for arbor in self.morphology.apical_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards basal dendrites, if exist
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
-                for arbor in valid_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
         # Emanate towards axons, if exist
         if self.morphology.has_axons():
             if not self.options.morphology.ignore_axons:
-                for arbor in valid_axons:
+                for arbor in self.morphology.axons:
                     nmv.logger.detail(arbor.label)
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
@@ -568,3 +565,6 @@ class MetaBuilder:
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='meta')
+
+        # Return a reference to the reconstructed mesh
+        return self.meta_mesh

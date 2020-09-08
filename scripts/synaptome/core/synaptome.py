@@ -1,0 +1,303 @@
+####################################################################################################
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
+
+# System imports
+import random
+import os
+import sys
+
+import_paths = ['core']
+for import_path in import_paths:
+    sys.path.append(('%s/%s' % (os.path.dirname(os.path.realpath(__file__)), import_path)))
+
+# Internals
+import rendering
+
+# BBP imports
+import bluepy
+from bluepy.v2 import Circuit
+
+# Blender
+from mathutils import Vector, Matrix
+
+# Internal imports
+import nmv.bbox
+import nmv.builders
+import nmv.consts
+import nmv.enums
+import nmv.geometry
+import nmv.options
+import nmv.mesh
+import nmv.rendering
+import nmv.scene
+import nmv.shading
+import nmv.utilities
+
+
+####################################################################################################
+# @get_cell_transformation
+####################################################################################################
+def get_cell_transformation(circuit,
+                            gid):
+    """Get the transformation matrix of a neuron identified by a GID.
+
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID.
+    :return:
+        The transformation matrix of the neuron in Blender format.
+    """
+
+    # Get the neuron
+    neuron = circuit.cells.get(gid)
+
+    # Translation
+    translation = Vector((neuron['x'], neuron['y'], neuron['z']))
+
+    # Orientation
+    o = neuron['orientation']
+    o0 = Vector((o[0][0], o[0][1], o[0][2]))
+    o1 = Vector((o[1][0], o[1][1], o[1][2]))
+    o2 = Vector((o[2][0], o[2][1], o[2][2]))
+
+    # Initialize the transformation matrix to I
+    transformation_matrix = Matrix()
+
+    transformation_matrix[0][0] = o0[0]
+    transformation_matrix[0][1] = o0[1]
+    transformation_matrix[0][2] = o0[2]
+    transformation_matrix[0][3] = translation[0]
+
+    transformation_matrix[1][0] = o1[0]
+    transformation_matrix[1][1] = o1[1]
+    transformation_matrix[1][2] = o1[2]
+    transformation_matrix[1][3] = translation[1]
+
+    transformation_matrix[2][0] = o2[0]
+    transformation_matrix[2][1] = o2[1]
+    transformation_matrix[2][2] = o2[2]
+    transformation_matrix[2][3] = translation[2]
+
+    transformation_matrix[3][0] = 0.0
+    transformation_matrix[3][1] = 0.0
+    transformation_matrix[3][2] = 0.0
+    transformation_matrix[3][3] = 1.0
+
+    return transformation_matrix
+
+
+####################################################################################################
+# @create_synapses_mesh
+####################################################################################################
+def create_synapses_mesh(circuit,
+                         gid,
+                         synapse_size,
+                         synapse_percentage,
+                         inverted_transformation,
+                         color_map_materials):
+    """Creates a mesh of all the synapses
+
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID.
+    :param synapse_size:
+        The size of the synapses.
+    :param synapse_percentage:
+        The percentage of the syanpses to be drawn.
+    :param inverted_transformation:
+        The inverted transformation that will take the synapses to the origin.
+    :param color_map_materials:
+        A dictionary of all the mtype materials.
+    :return:
+        A reference to the created synapse mesh.
+    """
+
+    # Get the IDs of the afferent synapses of a given GID
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(gid)
+
+    # Get the synapse type
+    synapse_types = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.v2.enums.Synapse.TYPE]).values
+
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+    pre_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'contour').values.tolist()
+
+    # Get the GIDs of the pre-synaptic cells
+    pre_gids = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+    pre_synaptic_gids = [gid[0] for gid in pre_gids]
+
+    # Get the pre-synaptic mtypes
+    pre_synaptic_mtypes = circuit.cells.get(pre_synaptic_gids)['mtype'].values.tolist()
+
+    # We need the color and the position to draw the synaptome
+    synapse_objects = list()
+    synapse_groups = list()
+
+    # Do it for all the synapses
+    for i in range(len(post_synaptic_positions)):
+
+        # Show progress
+        nmv.utilities.time_line.show_iteration_progress('Synapses', i, len(post_synaptic_positions))
+
+        # Random selection
+        if synapse_percentage < random.uniform(0, 100):
+            continue
+
+            # Material
+        if not (pre_synaptic_mtypes[i] in color_map_materials):
+            continue
+
+        material = color_map_materials[pre_synaptic_mtypes[i]]
+
+        # Position
+        post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                         post_synaptic_positions[i][1],
+                                         post_synaptic_positions[i][2]))
+        position = inverted_transformation @ post_synaptic_position
+
+        # A synapse sphere object
+        synapse_sphere = nmv.geometry.create_ico_sphere(
+            radius=synapse_size, location=position, subdivisions=3, name='synapse_%d' % i)
+
+        # Add the sphere to the group
+        synapse_objects.append(synapse_sphere)
+
+        # Material
+        nmv.shading.set_material_to_object(mesh_object=synapse_sphere, material_reference=material)
+
+        # Group every 100 objects into a single group
+        if i % 50 == 0:
+            # Join the meshes into a group
+            synapse_group = nmv.mesh.join_mesh_objects(
+                mesh_list=synapse_objects, name='group_%d' % (i % 100))
+
+            # Add the group to the list
+            synapse_groups.append(synapse_group)
+
+            # Clear the object list
+            synapse_objects.clear()
+
+    # Join the meshes into a group
+    synapse_group = nmv.mesh.join_mesh_objects(
+        mesh_list=synapse_objects, name='group_%d' % (i % 100))
+
+    # Add the group to the list
+    synapse_groups.append(synapse_group)
+
+    # Done
+    nmv.utilities.time_line.show_iteration_progress(
+        'Synapses', len(post_synaptic_positions), len(post_synaptic_positions), done=True)
+
+    # Join the meshes into a group
+    synapses_mesh = nmv.mesh.join_mesh_objects(mesh_list=synapse_groups, name='synapses')
+
+    # Return a reference to the synapse mesh
+    return synapses_mesh
+
+
+####################################################################################################
+# @create_neuron_mesh
+####################################################################################################
+def create_neuron_mesh(circuit,
+                       gid,
+                       neuron_material):
+    """Creates the mesh of the neuron.
+
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID.
+    :param neuron_color:
+        The color of the neuron in a RGB Vector((R, G, B)) format
+    :return:
+    """
+    # Get the morphology file path from its GID
+    # We must ensure that the GID is integer, that's why the cast is there
+    h5_morphology_path = circuit.morph.get_filepath(int(gid))
+
+    # Use the H5 morphology loader to load this file
+    # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
+    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_morphology=False)
+    morphology = h5_reader.read_file()
+
+    # Adjust the label to be set according to the GID not the morphology label
+    morphology.label = str(gid)
+
+    # Create default NMV options
+    nmv_options = nmv.options.NeuroMorphoVisOptions()
+    nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+    nmv_options.morphology.samples_unified_radii_value = 1.0
+    nmv_options.shading.mesh_material = nmv.enums.shading_enums.Shader.FLAT
+
+    # Create a meta balls meshing builder
+    meta_builder = nmv.builders.MetaBuilder(morphology=morphology, options=nmv_options)
+
+    # Create the neuron mesh
+    neuron_mesh = meta_builder.reconstruct_mesh()
+
+    # Add the material top the reconstructed mesh
+    nmv.shading.set_material_to_object(mesh_object=neuron_mesh, material_reference=neuron_material)
+
+    # Return a reference to the neuron mesh
+    return neuron_mesh
+
+
+####################################################################################################
+# @create_synaptome
+####################################################################################################
+def create_synaptome(circuit_config,
+                     gid,
+                     synapse_size,
+                     synapse_percentage,
+                     synaptome_color_map_materials,
+                     neuron_material):
+
+    # Loading a circuit
+    circuit = Circuit(circuit_config)
+
+    # Get the cell transformation matrix
+    transformation = get_cell_transformation(circuit=circuit, gid=gid)
+
+    # Invert the transformation matrix
+    inverted_transformation = transformation.inverted()
+
+    # Neuron mtype
+    mtype = circuit.cells.get(gid).mtype
+
+    # Create neuron mesh
+    neuron_mesh = create_neuron_mesh(circuit=circuit, gid=gid,
+                                     neuron_material=neuron_material)
+
+    # Create synapse mesh
+    synapses_mesh = create_synapses_mesh(circuit=circuit, gid=gid,
+                                         synapse_size=synapse_size,
+                                         synapse_percentage=synapse_percentage,
+                                         inverted_transformation=inverted_transformation,
+                                         color_map_materials=synaptome_color_map_materials)
+
+    # Merge
+    synaptome_mesh = nmv.mesh.join_mesh_objects(
+        mesh_list=[neuron_mesh, synapses_mesh], name='synaptome_%s_%d' % (mtype, gid))
+
+    # Returns a reference to the synaptome mesh
+    return synaptome_mesh

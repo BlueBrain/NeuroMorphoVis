@@ -750,7 +750,7 @@ def create_glossy_bumpy_material(name,
 ####################################################################################################
 def create_material(name,
                     color,
-                    material_type):
+                    material_type=nmv.enums.Shader.LAMBERT_WARD):
     """Create a specific material given its type and color.
 
     :param name:
