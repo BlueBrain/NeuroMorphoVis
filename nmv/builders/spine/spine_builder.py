@@ -165,6 +165,7 @@ def build_circuit_spines(morphology,
     # Get the positions of the incoming synapses at the post synaptic side
     post_pos = circuit.connectome.synapse_positions(synapse_ids, 'post', 'center')
 
+    # The pre-synaptic position
     pre_pos = circuit.connectome.synapse_positions(synapse_ids, 'pre', 'contour')
 
     # Get the neuron
@@ -201,8 +202,6 @@ def build_circuit_spines(morphology,
     transformation_matrix[3][1] = 0.0
     transformation_matrix[3][2] = 0.0
     transformation_matrix[3][3] = 1.0
-
-    print(transformation_matrix)
 
     # Load all the template spines and ignore the verbose messages of loading
     templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)

@@ -123,13 +123,14 @@ def label_primary_and_secondary_sections_based_on_radii(section):
 
         # If the radius of the child is greater than the greatest radius, then refer to this
         # child to be the primary child
-        if child.samples[0].radius > greatest_radius:
+        if len(child.samples) > 0:
+            if child.samples[0].radius > greatest_radius:
 
-            # Update the primary_child
-            primary_child = child
+                # Update the primary_child
+                primary_child = child
 
-            # Update the greatest radius
-            greatest_radius = child.samples[0].radius
+                # Update the greatest radius
+                greatest_radius = child.samples[0].radius
 
     # Create a new children list with update order, where the primary section comes first and the
     # secondary ones come later in the loop for the smooth continuation of the meshing
@@ -154,7 +155,8 @@ def label_primary_and_secondary_sections_based_on_radii(section):
             child.is_primary = False
 
             # Set the radius of a secondary child to half of the primary branch, for clean branching
-            child.samples[0].radius = greatest_radius * 0.5
+            if len (child.samples) > 0:
+                child.samples[0].radius = greatest_radius * 0.5
 
             # Append the secondary child to the children list that has the new order
             children_list_with_updated_order.append(child)

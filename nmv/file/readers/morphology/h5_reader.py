@@ -296,6 +296,7 @@ class H5Reader:
     ################################################################################################
     def build_sections_from_points_and_structures(self):
         """Builds a list of sections from the data obtained from the .H5 files
+        NOTE: https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/h5v1.html
 
         :return:
             A linear list of sections of the entire morphology.
@@ -304,13 +305,27 @@ class H5Reader:
         # Parse the sections and add them to a linear list [index, parent, type, samples]
         sections_list = list()
 
-        for i_section in range(1, len(self.structure_list) - 1):
+        for i_section in range(1, len(self.structure_list)):
 
-            # Get the index of the starting point of the section
-            section_first_point_index = self.structure_list[i_section][0]
+            # For all the sections, except the last one, the points go until the next start offset
+            # defined by the next row in the structure dataset. For the last one, then it runs until
+            # the end of the points dataset.
+            if i_section < len(self.structure_list) - 1:
 
-            # Get the index of the last point of the section
-            section_last_point_index = self.structure_list[i_section + 1][0]
+                # Get the index of the starting point of the section (offset)
+                section_first_point_index = self.structure_list[i_section][0]
+
+                # Get the index of the last point of the section
+                section_last_point_index = self.structure_list[i_section + 1][0]
+
+            # Last section
+            else:
+
+                # Get the index of the starting point of the section (offset)
+                section_first_point_index = self.structure_list[i_section][0]
+
+                # Get the index of the last point of the section
+                section_last_point_index = len(self.points_list) - 1
 
             # Section index
             section_index = i_section
@@ -342,9 +357,8 @@ class H5Reader:
                 radius = self.points_list[i_sample][nmv.consts.Skeleton.H5_SAMPLE_RADIUS_IDX] / 2.0
 
                 # Build a NeuroMorphoVis sample
-                nmv_sample = nmv.skeleton.Sample(
-                    point=point, radius=radius, index=sample_index, morphology_id=sample_index,
-                    type=section_type)
+                nmv_sample = nmv.skeleton.Sample(point=point, radius=radius, index=sample_index,
+                                                 morphology_id=sample_index, type=section_type)
 
                 # Add the sample to the list
                 samples.append(nmv_sample)
