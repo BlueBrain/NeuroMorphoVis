@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -26,7 +26,7 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 NEURON_GID='956172'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/images/trial-2'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/images/trial-3'
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -41,10 +41,10 @@ SYNAPSE_PERCENTAGE='25'
 SYNAPSE_SIZE='2.0'
 
 # Base image resolution
-IMAGE_RESOLUTION='6000'
+IMAGE_RESOLUTION='2000'
 
 # Base video resolution
-VIDEO_RESOLUTION='1000'
+VIDEO_RESOLUTION='500'
 
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'

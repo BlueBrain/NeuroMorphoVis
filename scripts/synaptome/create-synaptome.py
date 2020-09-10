@@ -76,8 +76,9 @@ if __name__ == "__main__":
                            image_name=synaptome_mesh.name,
                            resolution=args.video_resolution)
     # Render a 360
-    # render_360(output_directory=options.output_directory, label=synaptome_mesh.name,
-    # resolution=args.video_resolution)
+    rendering.render_360(output_directory=args.output_directory,
+                         label=synaptome_mesh.name,
+                         resolution=args.video_resolution)
 
     # Export
     nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,
