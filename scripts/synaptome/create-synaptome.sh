@@ -26,7 +26,8 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 NEURON_GID='956172'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/images/trial-3'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/rendering-examples/example-2'
+OUTPUT_DIRECTORY='/home/abdellah/Desktop/sample/example-2'
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -38,13 +39,21 @@ NEURON_COLOR='255_255_255'
 SYNAPSE_PERCENTAGE='25'
 
 # Synapse size
-SYNAPSE_SIZE='2.0'
+SYNAPSE_SIZE='4.0'
 
 # Base image resolution
 IMAGE_RESOLUTION='2000'
 
 # Base video resolution
 VIDEO_RESOLUTION='500'
+
+# The background image the frames will get blended to
+BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/background.png'
+BACKGROUND_IMAGE='/home/abdellah/Desktop/sample/background.png'
+
+# 360 frames directory
+ROTATION_360_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/360s/1'
+ROTATION_360_DIRECTORY='/home/abdellah/Desktop/sample/360-1'
 
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'
@@ -58,6 +67,8 @@ $BLENDER -b --verbose 0 --python create-synaptome.py --                         
     --video-resolution=$IMAGE_RESOLUTION                                                            \
     --synapse-percentage=$SYNAPSE_PERCENTAGE                                                        \
     --synapse-size=$SYNAPSE_SIZE                                                                    \
+    --background-image=$BACKGROUND_IMAGE                                                            \
+    --rotation-360-directory=$ROTATION_360_DIRECTORY                                                \
     $BOOL_ARGS
 
 echo 'SYNAPTOME DONE ...'

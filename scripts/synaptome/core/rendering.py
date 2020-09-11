@@ -28,14 +28,15 @@ import nmv.consts
 import nmv.enums
 import nmv.rendering
 import nmv.scene
+import nmv.file
 
 
 ####################################################################################################
 # @render_image
 ####################################################################################################
 def scale_frame(input_frame,
-                output_directory,
-                desired_base_resolution):
+                desired_base_resolution,
+                output_directory=None):
     """Scales or resizes an input frame to a new one with a given base resolution.
 
     :param input_frame:
@@ -45,6 +46,7 @@ def scale_frame(input_frame,
     :param desired_base_resolution:
         The base (largest) resolution of the scaled image.
     :return:
+        A reference to the resized frame
     """
 
     # Open the original frame
@@ -68,7 +70,11 @@ def scale_frame(input_frame,
     original_frame.close()
 
     # Get the name of the frame
-    resized_frame.save('%s/%s' % (output_directory, os.path.basename(input_frame)))
+    if output_directory is not None:
+        resized_frame.save('%s/%s' % (output_directory, os.path.basename(input_frame)))
+
+    # Return a reference to the resized frame
+    return resized_frame
 
 
 ####################################################################################################
@@ -119,6 +125,8 @@ def render_360(output_directory,
         The output directory where the frames and final movie will be generated.
     :param resolution:
         The base resolution of the video frames.
+    :return
+        A list of all the raw frames that were rendered for the synaptomes.
     """
 
     # The directory where the original frames will be rendered
@@ -147,6 +155,7 @@ def render_360(output_directory,
     bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
 
     # Render the sequence
+    frames = list()
     for i in range(360):
 
         # Set the frame name
@@ -161,7 +170,68 @@ def render_360(output_directory,
             image_resolution=resolution,
             image_name=frame_name)
 
+        # Add the frame to the list
+        frames.append('%s.png' % frame_name)
+
+    # Return a list of frames
+    return frames
+
+
+####################################################################################################
+# @add_background_and_360_to_raw_frames
+####################################################################################################
+def add_background_and_360_to_raw_frames(raw_frames_list,
+                                         background_image_file,
+                                         rotation_frames_directory):
+    """Add the background image and the 360 legend to the frames.
+
+    :param raw_frames_list:
+        A list of the raw frames.
+    :param background_image_file:
+        The background image.
+    :param rotation_frames_directory:
+        The directory that contains the 360 frames of the legend.
+    """
+
+    for i, frame in enumerate(raw_frames_list):
+        print(frame)
+
         # Scale the frame
-        scale_frame(input_frame='%s.png' % frame_name,
-                    output_directory=scaled_frames_directory,
-                    desired_base_resolution=500)
+        synaptome_frame = scale_frame(input_frame=frame, desired_base_resolution=1000)
+
+        # Rotation file
+        rotation_image_path = '%s/%s' % (rotation_frames_directory, os.path.basename(frame))
+
+        # Background image
+        background_image = Image.open(background_image_file)
+
+        # Rotation image
+        rotation_image = Image.open(rotation_image_path)
+        rotation_image = rotation_image.resize(size=(250, 250))
+        background_image.paste(rotation_image, (10, 560 - 125), rotation_image)
+
+        # Create a new frame that is transparent and add it to the background
+        transparent_frame = Image.new('RGBA',
+                                      (synaptome_frame.width - 100, synaptome_frame.height - 100),
+                                      (255, 255, 255, 10))
+
+        # Overlay the transparent frame
+        if transparent_frame.width > transparent_frame.height:
+            x = 880 + 50
+            y = 40 + int((1000 - transparent_frame.height) / 2.0)
+        else:
+            x = 880 + 40 + int((1000 - transparent_frame.width) / 2.0)
+            y = 40 + 50
+        #background_image.paste(transparent_frame, (x, y), transparent_frame)
+
+        # Overlay the original image over the background image
+        if synaptome_frame.width > synaptome_frame.height:
+            x = 880
+            y = 40 + int((1000 - synaptome_frame.height) / 2.0)
+        else:
+            x = 880 + 40 + int((1000 - synaptome_frame.width) / 2.0)
+            y = 40
+        background_image.paste(synaptome_frame, (x, y), synaptome_frame)
+
+        # Save the final image
+        background_image.save(frame)

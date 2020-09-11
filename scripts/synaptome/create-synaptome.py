@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Clear the scene
     nmv.scene.clear_scene()
 
-    shader = nmv.enums.Shader.SUPER_ELECTRON_LIGHT
+    shader = nmv.enums.Shader.LAMBERT_WARD
 
     # Neuron material
     neuron_material = color_map.create_neuron_material(neuron_color=args.neuron_color,
@@ -76,9 +76,14 @@ if __name__ == "__main__":
                            image_name=synaptome_mesh.name,
                            resolution=args.video_resolution)
     # Render a 360
-    rendering.render_360(output_directory=args.output_directory,
-                         label=synaptome_mesh.name,
-                         resolution=args.video_resolution)
+    frames = rendering.render_360(output_directory=args.output_directory,
+                                  label=synaptome_mesh.name,
+                                  resolution=args.video_resolution)
+
+    # Compose the frames with the background and the 360 frames
+    rendering.add_background_and_360_to_raw_frames(
+        raw_frames_list=frames, background_image_file=args.background_image,
+        rotation_frames_directory=args.rotation_360_directory)
 
     # Export
     nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,

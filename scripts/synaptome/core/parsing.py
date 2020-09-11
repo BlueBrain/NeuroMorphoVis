@@ -69,11 +69,21 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Base image resolution'
     parser.add_argument('--image-resolution',
-                        action='store', default=2000, type=int, dest='image_resolution', help=arg_help)
+                        action='store', default=2000, type=int, dest='image_resolution',
+                        help=arg_help)
 
     arg_help = 'Base video resolution'
     parser.add_argument('--video-resolution',
-                        action='store', default=1000, type=int, dest='video_resolution', help=arg_help)
+                        action='store', default=1000, type=int, dest='video_resolution',
+                        help=arg_help)
+
+    arg_help = 'Background image'
+    parser.add_argument('--background-image',
+                        action='store', dest='background_image', help=arg_help)
+
+    arg_help = '360 rotation frames directory'
+    parser.add_argument('--rotation-360-directory',
+                        action='store', dest='rotation_360_directory', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
