@@ -400,3 +400,7 @@ class PiecewiseBuilder:
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='piecewise')
+
+        # Return a list of all the mesh objects in the scene
+        mesh_objects = nmv.builders.get_neuron_mesh_objects(builder=self)
+        return mesh_objects

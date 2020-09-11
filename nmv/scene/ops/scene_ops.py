@@ -476,6 +476,22 @@ def select_object_by_name(object_name):
 
 
 ####################################################################################################
+# @get_object_by_name
+####################################################################################################
+def get_object_by_name(object_name):
+    """Gets an object in the scene given its name.
+
+    :param object_name:
+        The name of object to be returned.
+    """
+
+    # Set the '.select' flag of the object to True
+    for scene_object in bpy.context.scene.objects:
+        if scene_object.name == object_name:
+            return scene_object
+
+
+####################################################################################################
 # @select_object_containing_string
 ####################################################################################################
 def select_object_containing_string(search_string):
@@ -489,6 +505,7 @@ def select_object_containing_string(search_string):
     for scene_object in bpy.context.scene.objects:
         if search_string in scene_object.name:
             select_object(scene_object)
+
 
 ####################################################################################################
 # @deselect_object_by_name

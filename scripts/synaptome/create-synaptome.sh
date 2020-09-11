@@ -36,7 +36,7 @@ COLOR_MAP_FILE=$PWD'/data/ColorMap'
 NEURON_COLOR='255_255_255'
 
 # Synapse percentage
-SYNAPSE_PERCENTAGE='25'
+SYNAPSE_PERCENTAGE='50'
 
 # Synapse size
 SYNAPSE_SIZE='4.0'
