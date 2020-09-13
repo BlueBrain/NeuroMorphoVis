@@ -44,7 +44,7 @@ if __name__ == "__main__":
     sys.argv = args[args.index("--") + 0:]
 
     # Parse the command line arguments
-    args = parsing.parse_command_line_arguments()
+    args = parsing.parse_synaptome_command_line_arguments()
 
     # Clear the scene
     nmv.scene.clear_scene()

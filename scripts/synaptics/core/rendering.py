@@ -93,22 +93,22 @@ def render_image(output_directory,
         The base resolution of the image.
     """
 
-    # Images directory
-    images_directory = output_directory + '/images'
-
     # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(images_directory):
-        nmv.file.ops.clean_and_create_directory(images_directory)
+    if not nmv.file.ops.path_exists(output_directory):
+        nmv.file.ops.clean_and_create_directory(output_directory)
 
     # Get the bounding box
-    bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+    bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
 
     # Render the image
-    nmv.rendering.render(
-        bounding_box=bounding_box,
-        image_resolution=resolution,
-        image_name=image_name,
-        image_directory=images_directory)
+    for view in [nmv.enums.Camera.View.FRONT]:
+        image_name_with_view = image_name + '_%s' % view
+        nmv.rendering.render(
+            camera_view=view,
+            bounding_box=bounding_box,
+            image_resolution=resolution,
+            image_name=image_name_with_view,
+            image_directory=output_directory)
 
 
 ####################################################################################################

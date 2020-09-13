@@ -83,6 +83,9 @@ class SkinningBuilder:
         # A reference to the reconstructed spines mesh
         self.spines_mesh = None
 
+        # A list of all the meshes created by the builder
+        self.neuron_meshes = list()
+
         # Statistics
         self.profiling_statistics = ''
 

@@ -20,12 +20,12 @@ import random
 import os
 import sys
 
+# Internal imports
 import_paths = ['core']
 for import_path in import_paths:
     sys.path.append(('%s/%s' % (os.path.dirname(os.path.realpath(__file__)), import_path)))
 
-# Internals
-import rendering
+import circuit_data
 
 # BBP imports
 import bluepy
@@ -46,59 +46,6 @@ import nmv.rendering
 import nmv.scene
 import nmv.shading
 import nmv.utilities
-
-
-####################################################################################################
-# @get_cell_transformation
-####################################################################################################
-def get_cell_transformation(circuit,
-                            gid):
-    """Get the transformation matrix of a neuron identified by a GID.
-
-    :param circuit:
-        BBP circuit.
-    :param gid:
-        Neuron GID.
-    :return:
-        The transformation matrix of the neuron in Blender format.
-    """
-
-    # Get the neuron
-    neuron = circuit.cells.get(gid)
-
-    # Translation
-    translation = Vector((neuron['x'], neuron['y'], neuron['z']))
-
-    # Orientation
-    o = neuron['orientation']
-    o0 = Vector((o[0][0], o[0][1], o[0][2]))
-    o1 = Vector((o[1][0], o[1][1], o[1][2]))
-    o2 = Vector((o[2][0], o[2][1], o[2][2]))
-
-    # Initialize the transformation matrix to I
-    transformation_matrix = Matrix()
-
-    transformation_matrix[0][0] = o0[0]
-    transformation_matrix[0][1] = o0[1]
-    transformation_matrix[0][2] = o0[2]
-    transformation_matrix[0][3] = translation[0]
-
-    transformation_matrix[1][0] = o1[0]
-    transformation_matrix[1][1] = o1[1]
-    transformation_matrix[1][2] = o1[2]
-    transformation_matrix[1][3] = translation[1]
-
-    transformation_matrix[2][0] = o2[0]
-    transformation_matrix[2][1] = o2[1]
-    transformation_matrix[2][2] = o2[2]
-    transformation_matrix[2][3] = translation[2]
-
-    transformation_matrix[3][0] = 0.0
-    transformation_matrix[3][1] = 0.0
-    transformation_matrix[3][2] = 0.0
-    transformation_matrix[3][3] = 1.0
-
-    return transformation_matrix
 
 
 ####################################################################################################
@@ -276,7 +223,7 @@ def create_synaptome(circuit_config,
     circuit = Circuit(circuit_config)
 
     # Get the cell transformation matrix
-    transformation = get_cell_transformation(circuit=circuit, gid=gid)
+    transformation = circuit_data.get_cell_transformation(circuit=circuit, gid=gid)
 
     # Invert the transformation matrix
     inverted_transformation = transformation.inverted()

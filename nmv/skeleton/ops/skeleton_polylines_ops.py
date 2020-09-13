@@ -37,6 +37,7 @@ from mathutils.bvhtree import BVHTree
 from mathutils import Vector
 from random import randint
 
+
 ####################################################################################################
 # @get_segments_poly_lines
 ####################################################################################################

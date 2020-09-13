@@ -50,7 +50,7 @@ def export_scene_to_blend_file(output_directory,
     export_timer = nmv.utilities.Timer()
     export_timer.start()
 
-    bpy.ops.wm.save_as_mainfile(filepath=output_file_path, check_existing=True)
+    bpy.ops.wm.save_as_mainfile(filepath=output_file_path, check_existing=False)
 
     export_timer.end()
     nmv.logger.log('Exporting done in [%f] seconds' % export_timer.duration())

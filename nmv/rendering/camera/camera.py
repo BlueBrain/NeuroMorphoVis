@@ -259,11 +259,6 @@ class Camera:
             nmv.logger.log('WARNING: Scene Bounding Box is Recomputed!')
             bounds = nmv.bbox.compute_scene_bounding_box().bounds
 
-        # Compute the orthographic scale based in the give camera view
-        orthographic_scale = 1.0
-        x_bounds = 0.0
-        y_bounds = 0.0
-
         # Front view
         if camera_view == nmv.enums.Camera.View.FRONT:
 

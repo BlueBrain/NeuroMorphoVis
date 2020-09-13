@@ -186,7 +186,7 @@ def build_arbor_as_single_object(section, name,
         is_continuous=is_continuous,
         is_last_section=is_last_section,
         ignore_branching_samples=ignore_branching_samples,
-        process_section_terminals=repair_morphology)
+        process_section_terminals=False)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_data)

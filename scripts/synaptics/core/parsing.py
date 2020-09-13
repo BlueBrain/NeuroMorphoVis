@@ -24,9 +24,9 @@ from mathutils import Vector
 
 
 ####################################################################################################
-# @parse_command_line_arguments
+# @parse_synaptomes_command_line_arguments
 ####################################################################################################
-def parse_command_line_arguments(arguments=None):
+def parse_synaptomes_command_line_arguments(arguments=None):
     """Parses the input arguments.
 
     :param arguments:
@@ -84,6 +84,63 @@ def parse_command_line_arguments(arguments=None):
     arg_help = '360 rotation frames directory'
     parser.add_argument('--rotation-360-directory',
                         action='store', dest='rotation_360_directory', help=arg_help)
+
+    # Parse the arguments
+    return parser.parse_args()
+
+
+####################################################################################################
+# @parse_synaptic_pairs_command_line_arguments
+####################################################################################################
+def parse_synaptic_pairs_command_line_arguments(arguments=None):
+    """Parses the input arguments.
+
+    :param arguments:
+        Command line arguments.
+    :return:
+        Arguments list.
+    """
+
+    # add all the options
+    description = 'Synaptic pairs creator: creates static images synaptic pairs'
+    parser = argparse.ArgumentParser(description=description)
+
+    arg_help = 'Circuit configuration file'
+    parser.add_argument('--circuit-config',
+                        action='store', dest='circuit_config', help=arg_help)
+
+    arg_help = 'Synaptic pairs file'
+    parser.add_argument('--synaptic-pairs-file',
+                        action='store', dest='synaptic_pairs_file', help=arg_help)
+
+    arg_help = 'Output directory, where the final image/movies and scene will be stored'
+    parser.add_argument('--output-directory',
+                        action='store', dest='output_directory', help=arg_help)
+
+    arg_help = 'Pre-GID Neuron color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--pre-neuron-color',
+                        action='store', dest='pre_neuron_color', help=arg_help)
+
+    arg_help = 'Post-GID Neuron color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--post-neuron-color',
+                        action='store', dest='post_neuron_color', help=arg_help)
+
+    arg_help = 'Synapse color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--synapse-color',
+                        action='store', dest='synapse_color', help=arg_help)
+
+    arg_help = 'Synapse size (in um)'
+    parser.add_argument('--synapse-size',
+                        action='store', dest='synapse_size', type=float, help=arg_help)
+
+    arg_help = 'Base image resolution'
+    parser.add_argument('--image-resolution',
+                        action='store', default=2000, type=int, dest='image_resolution',
+                        help=arg_help)
+
+    arg_help = 'Background image'
+    parser.add_argument('--background-image',
+                        action='store', dest='background_image', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
@@ -156,3 +213,60 @@ def parse_json_color_map(color_map_file):
 
     # Return the dictionary
     return json.loads(color_map_string)
+
+
+####################################################################################################
+# @parse_synaptic_pairs
+####################################################################################################
+def parse_synaptic_pairs(synaptic_pairs_file):
+    """Parse the synaptic pairs.
+
+    :param synaptic_pairs_file:
+        A file containing the synaptic pairs.
+    :return:
+        A list of the pre- and post-synaptic neurons.
+    """
+
+    # Open the file
+    handle = open(synaptic_pairs_file, 'r')
+
+    # A list that will contain the pairs
+    pairs = list()
+
+    # Get every pair
+    for line in handle:
+
+        # If empty line skip
+        if not line.strip():
+            continue
+
+        # String processing
+        line = line.replace('\n', '')
+        line = line.replace('(', '')
+        line = line.replace(')', '')
+        line = line.split(', ')
+
+        # Append it to the pairs list
+        pairs.append([int(line[0]), int(line[1])])
+
+        # Close the file
+    handle.close()
+
+    # Return a reference to the pairs
+    return pairs
+
+
+####################################################################################################
+# @parse_color
+####################################################################################################
+def parse_color(color_string):
+    """Gets the vector of a color.
+
+    :param color_string:
+        String representing the color.
+    :return:
+        A Vector of the color code.
+    """
+
+    color = color_string.split('_')
+    return Vector((float(color[0]) / 255.0, int(color[1]) / 255.0, int(color[2]) / 255.0))

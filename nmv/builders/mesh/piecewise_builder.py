@@ -142,7 +142,7 @@ class PiecewiseBuilder:
                         name=arbor.label,
                         material_list=self.apical_dendrites_materials,
                         bevel_object=bevel_object,
-                        repair_morphology=True,
+                        repair_morphology=False,
                         caps=caps,
                         sections_objects=arbor_objects,
                         roots_connection=roots_connection)
@@ -176,7 +176,7 @@ class PiecewiseBuilder:
                         name=arbor.label,
                         material_list=self.basal_dendrites_materials,
                         bevel_object=bevel_object,
-                        repair_morphology=True,
+                        repair_morphology=False,
                         caps=caps,
                         sections_objects=arbor_objects,
                         roots_connection=roots_connection)
@@ -210,7 +210,7 @@ class PiecewiseBuilder:
                         name=arbor.label,
                         material_list=self.axons_materials,
                         bevel_object=bevel_object,
-                        repair_morphology=True,
+                        repair_morphology=False,
                         caps=caps,
                         sections_objects=arbor_objects,
                         roots_connection=roots_connection)

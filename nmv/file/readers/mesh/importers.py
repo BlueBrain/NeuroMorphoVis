@@ -166,7 +166,8 @@ def import_object_from_blend_file(input_directory,
 
     # Append all groups from the .blend file
     with bpy.data.libraries.load(file_path, link=False) as (data_src, data_dst):
-        data_dst.objects = [i_object for i_object in data_src.objects]
+        for i_object in data_src.objects:
+            data_dst.objects.append(i_object)
 
     # Add the group instance to the current scene
     current_scene = bpy.context.scene
