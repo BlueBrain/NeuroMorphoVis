@@ -27,6 +27,7 @@ import nmv.geometry
 import nmv.scene
 import nmv.bmeshi
 import nmv.shading
+import nmv.utilities
 
 
 ####################################################################################################
@@ -183,12 +184,12 @@ class SamplesBuilder:
                     sphere_objects=sphere_objects)
 
     ################################################################################################
-    # @link_and_shade_spheres
+    # @link_and_shade_spheres_as_group
     ################################################################################################
-    def link_and_shade_spheres(self,
-                               sphere_list,
-                               materials_list,
-                               prefix):
+    def link_and_shade_spheres_as_group(self,
+                                        sphere_list,
+                                        materials_list,
+                                        prefix):
         """Links the added sphere to the scene.
 
         :param sphere_list:
@@ -212,6 +213,79 @@ class SamplesBuilder:
 
         # Append the sphere mesh to the morphology objects
         self.morphology_objects.append(sphere_mesh)
+
+    ################################################################################################
+    # @link_and_shade_spheres
+    ################################################################################################
+    def link_and_shade_spheres(self,
+                               sphere_list,
+                               materials_list,
+                               prefix):
+        """Links the added sphere to the scene.
+
+        :param sphere_list:
+            A list of sphere to be linked to the scene and shaded with the corresponding materials.
+        :param materials_list:
+            A list of materials to be applied to the spheres after being linked to the scene.
+        :param prefix:
+            Prefix to name each sphere object after linking it to the scene.
+        """
+
+        # A list that will contain all the objects to be joint in a single mesh for performance
+        joint_objects = list()
+
+        # Iteration objects
+        iteration_objects = list()
+
+        for i, sphere in enumerate(sphere_list):
+
+            # Show progress
+            nmv.utilities.time_line.show_iteration_progress('Sample', i, len(sphere_list))
+
+            name = '%s_%d' % (prefix, i)
+
+            # Link the bmesh spheres to the scene
+            sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(sphere, name)
+
+            # Add the sphere to the group
+            iteration_objects.append(sphere_mesh)
+
+            # Group every 100 objects into a single group
+            if i % 50 == 0:
+
+                # Join the meshes into a group
+                joint_object = nmv.mesh.join_mesh_objects(
+                    mesh_list=iteration_objects, name='group_%d' % (i % 100))
+
+                # Add to the joint objects list
+                joint_objects.append(joint_object)
+
+                # Clear the iteration objects
+                iteration_objects.clear()
+
+        # Join the meshes into a group, if @iteration_objects has more than one object
+        if len(iteration_objects) > 1:
+            joint_object = nmv.mesh.join_mesh_objects(
+                mesh_list=iteration_objects, name='group_%d' % (i % 100))
+
+            # Add to the joint objects
+            joint_objects.append(joint_object)
+
+        # Done
+        nmv.utilities.time_line.show_iteration_progress(
+            'Sample', len(sphere_list), len(sphere_list), done=True)
+
+        # Compile the arbor mesh
+        arbor_mesh = nmv.mesh.join_mesh_objects(mesh_list=joint_objects, name=prefix)
+
+        # Smooth shading
+        nmv.mesh.shade_smooth_object(arbor_mesh)
+
+        # Assign the material
+        nmv.shading.set_material_to_object(arbor_mesh, materials_list[0])
+
+        # Append the sphere mesh to the morphology objects
+        self.morphology_objects.append(arbor_mesh)
 
     ################################################################################################
     # @draw_morphology_skeleton

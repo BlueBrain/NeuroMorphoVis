@@ -134,6 +134,7 @@ def create_synapses_mesh(circuit,
 
         # Group every 100 objects into a single group
         if i % 50 == 0:
+
             # Join the meshes into a group
             synapse_group = nmv.mesh.join_mesh_objects(
                 mesh_list=synapse_objects, name='group_%d' % (i % 100))
