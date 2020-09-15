@@ -156,7 +156,8 @@ def render_360(output_directory,
 
     # Render the sequence
     frames = list()
-    for i in range(360):
+    factor = 10
+    for i in range(360 * factor):
 
         # Set the frame name
         frame_name = '%s/%s' % (original_frames_directory, '{0:05d}'.format(i))
@@ -164,7 +165,7 @@ def render_360(output_directory,
         # Render the frame
         nmv.rendering.renderer.render_at_angle(
             scene_objects=scene_objects,
-            angle=i,
+            angle=i / (factor * 1.0),
             bounding_box=bounding_box_360,
             camera_view=nmv.enums.Camera.View.FRONT_360,
             image_resolution=resolution,
