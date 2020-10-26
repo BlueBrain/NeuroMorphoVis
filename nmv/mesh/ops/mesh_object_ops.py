@@ -75,14 +75,20 @@ def smooth_object(mesh_object,
         # bpy.context.object.modifiers["Subdivision"].use_subsurf_uv = False
 
         # Apply the smoothing modifier
-        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
+        if nmv.utilities.is_blender_290():
+            bpy.ops.object.modifier_apply(modifier="Subdivision")
+        else:
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
     else:
 
         # Set the smoothing level
         bpy.context.object.modifiers["Subsurf"].levels = level
 
         # Apply the smoothing modifier
-        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subsurf")
+        if nmv.utilities.is_blender_290():
+            bpy.ops.object.modifier_apply(modifier="Subsurf")
+        else:
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subsurf")
 
 
 ####################################################################################################
@@ -230,8 +236,11 @@ def decimate_mesh_object(mesh_object,
     # set the decimation ratio
     bpy.context.object.modifiers["Decimate"].ratio = decimation_ratio
 
-    # apply the modifier
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Decimate")
+    # Apply the modifier
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Decimate")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Decimate")
 
 
 ####################################################################################################
@@ -316,7 +325,10 @@ def clip_mesh_object(primary_object,
     bpy.context.object.modifiers["Boolean"].operation = 'DIFFERENCE'
 
     # Apply the union operator
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Boolean")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
 
     # Return the final mesh object, 'a reference to mesh_object1'
     return primary_object
@@ -486,7 +498,10 @@ def union_mesh_objects(mesh_object_1,
     bpy.context.object.modifiers["Boolean"].operation = 'UNION'
 
     # apply the union operator
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Boolean")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
 
     # return the final mesh object, 'a reference to mesh_object1'
     return mesh_object_1
@@ -571,7 +586,10 @@ def intersect_mesh_objects(mesh_object1,
     bpy.context.object.modifiers["Boolean"].operation = 'INTERSECT'
 
     # Apply the intersection operator
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Boolean")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
 
     # Return the final mesh object, 'a reference to mesh_object1'
     return mesh_object1
@@ -691,7 +709,10 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
     displacement_modifier.texture.noise_scale = 1.5
 
     # Apply the modifiers
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Displace")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
 
 
 ####################################################################################################

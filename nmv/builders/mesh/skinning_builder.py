@@ -364,7 +364,11 @@ class SkinningBuilder:
 
         # Apply the modifier
         skin_modifier_time = time.time()
-        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
+
+        if nmv.utilities.is_blender_290():
+            bpy.ops.object.modifier_apply(modifier="Skin")
+        else:
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
         self.skin_modifier_time += time.time() - skin_modifier_time
 
         # Assign the material to the reconstructed arbor mesh

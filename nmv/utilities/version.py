@@ -125,3 +125,19 @@ def is_blender_280():
     if get_blender_version() >= (2, 80, 0):
         return True
     return False
+
+
+####################################################################################################
+# @is_blender_290
+####################################################################################################
+def is_blender_290():
+    """Checks if the used version of Blender is greater than 2.9 or not.
+
+    :return:
+        True if this version of Blender is 2.9 or greater to work with the new API, otherwise False.
+    """
+
+    if get_blender_version() >= (2, 90, 0):
+        return True
+    return False
+

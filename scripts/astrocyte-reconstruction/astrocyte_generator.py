@@ -30,6 +30,7 @@ import nmv.scene
 import nmv.mesh
 import nmv.enums
 import nmv.file
+import nmv.utilities
 
 # BBP imports
 from archngv import NGVCircuit
@@ -82,7 +83,11 @@ def create_end_feet_proxy_mesh(area,
     bpy.context.object.modifiers["Subdivision"].levels = 4
     bpy.context.object.modifiers["Subdivision"].show_only_control_edges = True
     bpy.context.object.modifiers["Subdivision"].uv_smooth = 'PRESERVE_CORNERS'
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
+
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Subdivision")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Subdivision")
 
     # Return a reference to the mesh
     return end_feet_proxy_mesh
