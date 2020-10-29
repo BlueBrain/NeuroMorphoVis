@@ -123,6 +123,7 @@ def create_shared_synapses_mesh(circuit,
                                 synapse_color,
                                 synapse_size=4.0,
                                 shader=nmv.enums.Shader.FLAT):
+
     material = nmv.shading.create_material(
         color=synapse_color, name='synapse_material', material_type=shader)
 
@@ -175,6 +176,43 @@ def create_shared_synapses_mesh(circuit,
     synapse_group = nmv.mesh.join_mesh_objects(mesh_list=synapse_objects, name='synapses')
 
     return synapse_group
+
+
+####################################################################################################
+# @create_pre_synaptic_neuron_material
+####################################################################################################
+def create_pre_synaptic_neuron_material():
+
+    # Load the material from the shaders gallery
+    material = nmv.shading.create_principled_shader(name='pre_synaptic_material')
+    node = material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (1, 0.319934, 0.110362, 1)
+    node.inputs[3].default_value = (1, 0.616414, 0.310381, 1)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+
+    # Return a reference to the material
+    return material
+
+
+####################################################################################################
+# @create_post_synaptic_neuron_material
+####################################################################################################
+def create_post_synaptic_neuron_material():
+    # Load the material from the shaders gallery
+    material = nmv.shading.create_principled_shader(name='pre_synaptic_material')
+    node = material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (0.37715, 0.427243, 1, 1)
+    node.inputs[3].default_value = (0.163552, 0.423125, 1, 1)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+
+    # Return a reference to the material
+    return material
 
 
 ####################################################################################################
@@ -242,20 +280,19 @@ def create_synaptic_pathway_scene(circuit_config,
 
     # Select the pre-synaptic mesh to assign the material
     pre_synaptic_mesh = nmv.scene.get_object_by_name(str(pre_gid))
-    pre_material = nmv.shading.create_material(name='pre_neuron_material',
-                                               color=pre_synaptic_neuron_color,
-                                               material_type=shader)
+    pre_material = create_pre_synaptic_neuron_material()
 
     nmv.shading.set_material_to_object(mesh_object=pre_synaptic_mesh,
                                        material_reference=pre_material)
 
     # Select the post-synaptic mesh to assign the color
     post_synaptic_mesh = nmv.scene.get_object_by_name(str(post_gid))
-    post_material = nmv.shading.create_material(name='post_neuron_material',
-                                                color=post_synaptic_neuron_color,
-                                                material_type=shader)
+    post_material = create_post_synaptic_neuron_material()
     nmv.shading.set_material_to_object(mesh_object=post_synaptic_mesh,
                                        material_reference=post_material)
+
+    # Create sun light
+    bpy.ops.object.light_add(type='SUN', radius=2.5, location=(0, 0, 0))
 
     # Save
     nmv.file.export_scene_to_blend_file(output_directory, str('All'))

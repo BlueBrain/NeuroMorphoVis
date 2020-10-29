@@ -23,7 +23,7 @@ BLENDER='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/blender'
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/CircuitConfig'
 
 # A file
-SYNAPTIC_PAIRS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/synaptics/L5_TTPC_pairs.txt'
+SYNAPTIC_PAIRS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/synaptics/sample-pairs.txt'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/rendering-examples/example-2'

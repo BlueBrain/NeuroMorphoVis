@@ -46,6 +46,8 @@ def import_shader(shader_name):
     current_file = os.path.dirname(os.path.realpath(__file__))
     shaders_directory = '%s/shaders/%s.blend/Material' % (current_file, shader_name)
 
+    print(shaders_directory)
+
     # Import the material
     bpy.ops.wm.append(filename='material', directory=shaders_directory)
 
@@ -143,6 +145,30 @@ def create_super_electron_light_material(name,
 
     # Switch the view port shading
     nmv.scene.switch_scene_shading('MATERIAL')
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
+# @create_super_electron_dark_material
+####################################################################################################
+def create_principled_shader(name,
+                             color=nmv.consts.Color.WHITE):
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
+
+    # Import the material from the library
+    material_reference = import_shader(shader_name='principled')
+
+    # Rename the material
+    material_reference.name = str(name)
 
     # Return a reference to the material
     return material_reference
