@@ -164,8 +164,10 @@ def export_mesh_objects_to_file(mesh_objects,
 
             # Export each mesh in the given list
             for mesh_object in mesh_objects:
+                name = mesh_object.name
+                name = name.replace(' ', '_')
                 export_mesh_object_to_file(
-                    mesh_object, mesh_directory, mesh_object.name, file_format)
+                    mesh_object, mesh_directory, name, file_format)
         else:
 
             # Clone all the mesh objects

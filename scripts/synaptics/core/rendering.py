@@ -20,6 +20,7 @@ import os
 from PIL import Image
 
 # Blender
+import bpy
 from mathutils import Vector
 
 # Internal imports
@@ -29,6 +30,7 @@ import nmv.enums
 import nmv.rendering
 import nmv.scene
 import nmv.file
+import nmv.utilities
 
 
 ####################################################################################################
@@ -109,6 +111,35 @@ def render_image(output_directory,
             image_resolution=resolution,
             image_name=image_name_with_view,
             image_directory=output_directory)
+
+
+def render_close_up(close_up_mesh,
+                    image_name,
+                    resolution=2000):
+    camera_object = nmv.rendering.Camera('closeup_camera')
+    camera = camera_object.create_base_camera()
+    nmv.scene.select_object(close_up_mesh)
+    nmv.scene.set_active_object(close_up_mesh)
+
+    camera.data.type = 'ORTHO'
+
+    bpy.context.scene.camera = bpy.data.objects["closeup_camera"]
+    bpy.ops.view3d.camera_to_view_selected()
+
+    camera.location[2] = 0
+    camera.data.ortho_scale = camera.data.ortho_scale * 2
+    camera.data.clip_end = 100000
+
+    # Set the image file name
+    bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
+
+    nmv.scene.set_transparent_background()
+
+    bpy.context.scene.render.resolution_percentage = 10
+
+    # Render the image and ignore Blender verbosity
+    bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    bpy.ops.render.render(write_still=True)
 
 
 ####################################################################################################

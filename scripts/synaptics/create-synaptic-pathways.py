@@ -77,11 +77,9 @@ if __name__ == "__main__":
         nmv.scene.clear_scene()
 
         # Create the synaptic pathway scene
-        synaptic_pathways.create_synaptic_pathway_scene(
+        synapse_mesh = synaptic_pathways.create_synaptic_pathway_scene_with_mesh_components(
             circuit_config=args.circuit_config, pre_gid=pair[0], post_gid=pair[1],
             output_directory=meshes_directory, synapse_size=args.synapse_size, shader=shader,
-            pre_synaptic_neuron_color=parsing.parse_color(args.pre_neuron_color),
-            post_synaptic_neuron_color=parsing.parse_color(args.post_neuron_color),
             synapses_color=parsing.parse_color(args.synapse_color))
 
         # Create a dummy
@@ -91,6 +89,8 @@ if __name__ == "__main__":
         rendering.render_image(output_directory=images_directory,
                                image_name='%d_%d_pathways' % (pair[0], pair[1]),
                                resolution=args.image_resolution)
+        # Render a close-up on the synapses
+        rendering.render_close_up(synapse_mesh, '%s/%d_%d_pathways_closeup' % (images_directory, pair[0], pair[1]))
 
         # Save the final scene
         nmv.file.export_scene_to_blend_file(scenes_directory,
