@@ -49,8 +49,6 @@ if __name__ == "__main__":
     # Clear the scene
     nmv.scene.clear_scene()
 
-
-
     # Neuron material
     neuron_material = color_map.create_neuron_material(neuron_color=args.neuron_color,
                                                        shader=shader)

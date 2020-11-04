@@ -27,7 +27,7 @@ SYNAPTIC_PAIRS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/rendering-examples/example-2'
-OUTPUT_DIRECTORY='/hdd1/samples/'
+OUTPUT_DIRECTORY='/hdd1/samples' # L5_TTPC_pairs/'
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
@@ -38,11 +38,12 @@ SYNAPSE_COLOR='255_255_0'
 SYNAPSE_SIZE='8.0'
 
 # Base image resolution
-IMAGE_RESOLUTION='8000'
+IMAGE_RESOLUTION='4000'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/background.png'
 BACKGROUND_IMAGE='/home/abdellah/Desktop/sample/background.png'
+BACKGROUND_IMAGE='/hdd1/samples/data/background.png'
 
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'

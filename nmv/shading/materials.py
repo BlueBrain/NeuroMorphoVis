@@ -46,8 +46,6 @@ def import_shader(shader_name):
     current_file = os.path.dirname(os.path.realpath(__file__))
     shaders_directory = '%s/shaders/%s.blend/Material' % (current_file, shader_name)
 
-    print(shaders_directory)
-
     # Import the material
     bpy.ops.wm.append(filename='material', directory=shaders_directory)
 

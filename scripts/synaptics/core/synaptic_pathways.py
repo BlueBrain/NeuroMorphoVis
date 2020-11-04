@@ -63,7 +63,12 @@ def clear_lights():
             nmv.scene.delete_object_in_scene(scene_object)
 
 
+####################################################################################################
+# @create_neuron_mesh
+####################################################################################################
 def clear_materials():
+    """Clears all the materials in the scene.
+    """
 
     # Select all the scene materials, unlink them and clear their data
     for scene_material in bpy.data.materials:
@@ -111,8 +116,31 @@ def create_neuron_meshes_with_piecewise_builder(circuit,
     builder.reconstruct_mesh()
     neuron_meshes = nmv.scene.get_list_of_meshes_in_scene()
 
+    # Create three-lists to group the meshes
+    apical_meshes = list()
+    basal_meshes = list()
+    axon_meshes = list()
+    soma_meshes = list()
+
+    # Filter
+    for mesh in neuron_meshes:
+        if 'Apical' in mesh.name:
+            apical_meshes.append(mesh)
+        elif 'Basal' in mesh.name:
+            basal_meshes.append(mesh)
+        elif 'Axon' in mesh.name:
+            axon_meshes.append(mesh)
+        else:
+            soma_meshes.append(mesh)
+
+    # Join
+    apical_mesh = nmv.mesh.join_mesh_objects(mesh_list=apical_meshes, name='Apical Dendrite')
+    basal_mesh = nmv.mesh.join_mesh_objects(mesh_list=basal_meshes, name='Basal Dendrite')
+    axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axon')
+    soma_mesh = nmv.mesh.join_mesh_objects(mesh_list=soma_meshes, name='Soma')
+
     # Return a reference to the neuron mesh
-    return neuron_meshes
+    return [apical_mesh, basal_mesh, axon_mesh, soma_mesh]
 
 
 ####################################################################################################
@@ -165,7 +193,9 @@ def create_neuron_mesh(circuit,
     return neuron_mesh
 
 
-
+####################################################################################################
+# @create_neuron_meshes_with_skinning
+####################################################################################################
 def create_neuron_meshes_with_skinning(circuit,
                                        gid,
                                        with_axon):
@@ -312,7 +342,7 @@ def create_pre_synaptic_neuron_material():
 ####################################################################################################
 def create_post_synaptic_neuron_material():
     # Load the material from the shaders gallery
-    material = nmv.shading.create_principled_shader(name='pre_synaptic_material')
+    material = nmv.shading.create_principled_shader(name='post_synaptic_material')
     node = material.node_tree.nodes["Principled BSDF"]
 
     # Set the parameters that were given by Caitlin
@@ -323,6 +353,67 @@ def create_post_synaptic_neuron_material():
 
     # Return a reference to the material
     return material
+
+
+####################################################################################################
+# @create_pre_synaptic_neuron_material
+####################################################################################################
+def create_pre_synaptic_neuron_materials():
+
+    # Load the material from the shaders gallery
+    dendrite_material = nmv.shading.create_principled_shader(name='pre_dendrite_material')
+    node = dendrite_material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (0.13, 0.198, 0.753, 1)
+    node.inputs[3].default_value = (0.13, 0.198, 0.753, 1)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+    node.inputs[18].default_value = 0.15
+
+    axon_material = nmv.shading.create_principled_shader(name='pre_axon_material')
+    node = axon_material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (0.13, 0.198, 0.753, 1)
+    node.inputs[3].default_value = (0.13, 0.198, 0.753, 1)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+    node.inputs[18].default_value = 1.0
+
+    # Return a reference to the materials
+    return dendrite_material, axon_material
+
+
+####################################################################################################
+# @create_post_synaptic_neuron_material
+####################################################################################################
+def create_post_synaptic_neuron_materials():
+
+    # Load the material from the shaders gallery
+    dendrite_material = nmv.shading.create_principled_shader(name='post_dendrite_material')
+    node = dendrite_material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (1, 0.319934, 0.110362, 1.0)
+    node.inputs[3].default_value = (1, 0.319934, 0.110362, 1.0)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+    node.inputs[18].default_value = 1.0
+
+    # Load the material from the shaders gallery
+    axon_material = nmv.shading.create_principled_shader(name='post_axon_material')
+    node = axon_material.node_tree.nodes["Principled BSDF"]
+
+    # Set the parameters that were given by Caitlin
+    node.inputs[0].default_value = (1, 0.319934, 0.110362, 1.0) # (0.37715, 0.427243, 1, 1)
+    node.inputs[3].default_value = (1, 0.319934, 0.110362, 1.0) # (0.163552, 0.423125, 1, 1)
+    node.inputs[10].default_value = 0.05
+    node.inputs[13].default_value = 0
+    node.inputs[18].default_value = 0.15
+
+    # Return a reference to the materials
+    return dendrite_material, axon_material
 
 
 ####################################################################################################
@@ -508,16 +599,20 @@ def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
         post_component.rotation_euler[0] = 0
         post_meshes_list.append(post_component)
 
-    pre_material = create_pre_synaptic_neuron_material()
+    pre_dendrite_material, pre_axon_material = create_pre_synaptic_neuron_materials()
     for mesh_component in pre_meshes_list:
-        nmv.shading.set_material_to_object(mesh_object=mesh_component,
-                                           material_reference=pre_material)
+        if 'Dendrite' in mesh_component.name or 'Soma' in mesh_component.name:
+            nmv.shading.set_material_to_object(mesh_object=mesh_component,
+                                               material_reference=pre_dendrite_material)
+        else:
+            nmv.shading.set_material_to_object(mesh_object=mesh_component,
+                                               material_reference=pre_axon_material)
 
     # Select the post-synaptic mesh to assign the color
-    post_material = create_post_synaptic_neuron_material()
+    post_dendrite_material, post_axon_material = create_post_synaptic_neuron_materials()
     for mesh_component in post_meshes_list:
         nmv.shading.set_material_to_object(mesh_object=mesh_component,
-                                           material_reference=post_material)
+                                           material_reference=post_dendrite_material)
 
     # Create sun light
     bpy.ops.object.light_add(type='SUN', radius=1.0, location=(0, 0, 0))

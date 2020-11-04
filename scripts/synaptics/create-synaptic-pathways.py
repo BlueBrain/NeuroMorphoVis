@@ -68,6 +68,11 @@ if __name__ == "__main__":
     if not nmv.file.ops.path_exists(images_directory):
         nmv.file.ops.clean_and_create_directory(images_directory)
 
+    # Create the compositing directory
+    composite_directory = '%s/composite' % args.output_directory
+    if not nmv.file.ops.path_exists(composite_directory):
+        nmv.file.ops.clean_and_create_directory(composite_directory)
+
     shader = nmv.enums.Shader.ELECTRON_LIGHT
 
     # Create an image for every pair
@@ -86,12 +91,18 @@ if __name__ == "__main__":
         dummy_material = color_map.create_dummy_material(shader=shader)
 
         # Render an image
-        rendering.render_image(output_directory=images_directory,
-                               image_name='%d_%d_pathways' % (pair[0], pair[1]),
-                               resolution=args.image_resolution)
+        full_view_image = rendering.render_image(output_directory=images_directory,
+                                                 image_name='%d_%d_pathways' % (pair[0], pair[1]),
+                                                 resolution=args.image_resolution)
         # Render a close-up on the synapses
-        rendering.render_close_up(synapse_mesh, '%s/%d_%d_pathways_closeup' % (images_directory, pair[0], pair[1]))
+        close_up_image = rendering.render_close_up(synapse_mesh, '%s/%d_%d_pathways_closeup' %
+                                                   (images_directory, pair[0], pair[1]))
 
         # Save the final scene
         nmv.file.export_scene_to_blend_file(scenes_directory,
                                             '%d_%d_pathways' % (pair[0], pair[1]))
+
+        # Composite the final image
+        rendering.compose_synaptic_pathway_frame(
+            full_view_image, close_up_image, args.background_image,
+            output_directory=composite_directory, edge_gap=100)
