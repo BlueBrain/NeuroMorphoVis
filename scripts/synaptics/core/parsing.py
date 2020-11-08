@@ -24,9 +24,9 @@ from mathutils import Vector
 
 
 ####################################################################################################
-# @parse_synaptomes_command_line_arguments
+# @parse_synaptome_command_line_arguments
 ####################################################################################################
-def parse_synaptomes_command_line_arguments(arguments=None):
+def parse_synaptome_command_line_arguments(arguments=None):
     """Parses the input arguments.
 
     :param arguments:

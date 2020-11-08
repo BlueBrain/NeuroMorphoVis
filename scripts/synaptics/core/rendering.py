@@ -18,7 +18,8 @@
 # System imports
 import os
 import ntpath
-from PIL import Image, ImageOps
+import copy
+from PIL import Image, ImageOps, ImageDraw, ImageFont
 
 # Blender
 import bpy
@@ -32,52 +33,6 @@ import nmv.rendering
 import nmv.scene
 import nmv.file
 import nmv.utilities
-
-
-####################################################################################################
-# @render_image
-####################################################################################################
-def scale_frame(input_frame,
-                desired_base_resolution,
-                output_directory=None):
-    """Scales or resizes an input frame to a new one with a given base resolution.
-
-    :param input_frame:
-        The input frame or image to be resized.
-    :param output_directory:
-        The output directory where the resized frame will be generated to.
-    :param desired_base_resolution:
-        The base (largest) resolution of the scaled image.
-    :return:
-        A reference to the resized frame
-    """
-
-    # Open the original frame
-    original_frame = Image.open(input_frame)
-
-    # Get the dimensions to compute the scaling factor
-    aspect_ratio = (1.0 * original_frame.width) / (1.0 * original_frame.height)
-
-    # Compute the new dimensions of the image
-    if aspect_ratio > 1.0:
-        new_width = desired_base_resolution
-        new_height = int(1.0 * desired_base_resolution / aspect_ratio)
-    else:
-        new_width = int(desired_base_resolution * aspect_ratio)
-        new_height = desired_base_resolution
-
-    # Resize the frame
-    resized_frame = original_frame.resize(size=(new_width, new_height))
-
-    # Close the original frame
-    original_frame.close()
-
-    # Get the name of the frame
-    if output_directory is not None:
-        resized_frame.save('%s/%s' % (output_directory, os.path.basename(input_frame)))
-
-    # Return a reference to the resized frame
-    return resized_frame
 
 
 ####################################################################################################
@@ -172,12 +127,79 @@ def render_close_up(close_up_mesh,
 
 
 ####################################################################################################
-# @render_360
+# @render_synaptome_close_up_on_soma_360
 ####################################################################################################
-def render_360(output_directory,
-               label,
-               resolution):
-    """Renders a 360 of the synaptome.
+def render_synaptome_close_up_on_soma_360(output_directory,
+                                          label,
+                                          close_up_size,
+                                          resolution=2000):
+
+    # Adjust shading
+    bpy.context.scene.display.shading.light = 'STUDIO'
+    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+
+    # The directory where the original frames will be rendered
+    frames_directory = output_directory + '/%s_close_up_360' % label
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(frames_directory):
+        nmv.file.ops.clean_and_create_directory(frames_directory)
+
+    # Adjust the resolution
+    bpy.context.scene.render.resolution_x = int (0.5 * resolution)
+    bpy.context.scene.render.resolution_y = resolution
+
+    # Create the camera
+    camera_object = nmv.rendering.Camera('CloseupCamera')
+    camera = camera_object.create_base_camera()
+
+    # Activate the camera
+    bpy.context.scene.camera = bpy.data.objects["CloseupCamera"]
+
+    # Adjust the ortho scale to get a bigger FOV
+    camera.data.ortho_scale = close_up_size
+
+    # Adjust the clipping plane
+    camera.data.clip_end = 100000
+
+    # Avoid chopping
+    camera.location[2] = 500
+
+    # Get a list of all the meshes in the scene
+    scene_objects = nmv.scene.get_list_of_meshes_in_scene()
+
+    # Render the sequence
+    frames = list()
+    for i in range(360):
+
+        # Rotate all the objects as if they are a single object
+        for scene_object in scene_objects:
+            # Rotate the mesh object around the y axis
+            scene_object.rotation_euler[1] = i * 2 * 3.14 / 360.0
+
+        # Set the frame name
+        frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
+
+        # Set the image file name
+        bpy.data.scenes['Scene'].render.filepath = '%s.png' % frame_name
+
+        # Render the image
+        bpy.ops.render.render(write_still=True)
+
+        # Add the frame to the list
+        frames.append('%s.png' % frame_name)
+
+    # Return the list of frames
+    return frames
+
+
+####################################################################################################
+# @render_synaptome_full_view_360
+####################################################################################################
+def render_synaptome_full_view_360(output_directory,
+                                   label,
+                                   resolution):
+    """Renders a 360 of the synaptome full view.
 
     :param label:
         label
@@ -189,19 +211,15 @@ def render_360(output_directory,
         A list of all the raw frames that were rendered for the synaptomes.
     """
 
+    bpy.context.scene.display.shading.light = 'STUDIO'
+    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+
     # The directory where the original frames will be rendered
-    original_frames_directory = output_directory + '/%s_360' % label
+    frames_directory = output_directory + '/%s_full_view_360' % label
 
     # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(original_frames_directory):
-        nmv.file.ops.clean_and_create_directory(original_frames_directory)
-
-    # The directory where the resized frames will be rendered
-    scaled_frames_directory = output_directory + '/%s_360_scaled' % label
-
-    # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(scaled_frames_directory):
-        nmv.file.ops.clean_and_create_directory(scaled_frames_directory)
+    if not nmv.file.ops.path_exists(frames_directory):
+        nmv.file.ops.clean_and_create_directory(frames_directory)
 
     # Get a list of all the meshes in the scene
     scene_objects = nmv.scene.get_list_of_meshes_in_scene()
@@ -216,16 +234,15 @@ def render_360(output_directory,
 
     # Render the sequence
     frames = list()
-    factor = 10
-    for i in range(360 * factor):
+    for i in range(360):
 
         # Set the frame name
-        frame_name = '%s/%s' % (original_frames_directory, '{0:05d}'.format(i))
+        frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
 
         # Render the frame
         nmv.rendering.renderer.render_at_angle(
             scene_objects=scene_objects,
-            angle=i / (factor * 1.0),
+            angle=i,
             bounding_box=bounding_box_360,
             camera_view=nmv.enums.Camera.View.FRONT_360,
             image_resolution=resolution,
@@ -239,75 +256,16 @@ def render_360(output_directory,
 
 
 ####################################################################################################
-# @add_background_and_360_to_raw_frames
+# @compose_frame
 ####################################################################################################
-def add_background_and_360_to_raw_frames(raw_frames_list,
-                                         background_image_file,
-                                         rotation_frames_directory):
-    """Add the background image and the 360 legend to the frames.
-
-    :param raw_frames_list:
-        A list of the raw frames.
-    :param background_image_file:
-        The background image.
-    :param rotation_frames_directory:
-        The directory that contains the 360 frames of the legend.
-    """
-
-    for i, frame in enumerate(raw_frames_list):
-        print(frame)
-
-        # Scale the frame
-        synaptome_frame = scale_frame(input_frame=frame, desired_base_resolution=1000)
-
-        # Rotation file
-        rotation_image_path = '%s/%s' % (rotation_frames_directory, os.path.basename(frame))
-
-        # Background image
-        background_image = Image.open(background_image_file)
-
-        # Rotation image
-        rotation_image = Image.open(rotation_image_path)
-        rotation_image = rotation_image.resize(size=(250, 250))
-        background_image.paste(rotation_image, (10, 560 - 125), rotation_image)
-
-        # Create a new frame that is transparent and add it to the background
-        transparent_frame = Image.new('RGBA',
-                                      (synaptome_frame.width - 100, synaptome_frame.height - 100),
-                                      (255, 255, 255, 10))
-
-        # Overlay the transparent frame
-        if transparent_frame.width > transparent_frame.height:
-            x = 880 + 50
-            y = 40 + int((1000 - transparent_frame.height) / 2.0)
-        else:
-            x = 880 + 40 + int((1000 - transparent_frame.width) / 2.0)
-            y = 40 + 50
-        #background_image.paste(transparent_frame, (x, y), transparent_frame)
-
-        # Overlay the original image over the background image
-        if synaptome_frame.width > synaptome_frame.height:
-            x = 880
-            y = 40 + int((1000 - synaptome_frame.height) / 2.0)
-        else:
-            x = 880 + 40 + int((1000 - synaptome_frame.width) / 2.0)
-            y = 40
-        background_image.paste(synaptome_frame, (x, y), synaptome_frame)
-
-        # Save the final image
-        background_image.save(frame)
-
-
-####################################################################################################
-# @compose_synaptic_pathway_frame
-####################################################################################################
-def compose_synaptic_pathway_frame(full_view_file,
-                                   close_up_file,
-                                   background_image_file,
-                                   output_directory,
-                                   edge_gap=100,
-                                   close_up_frame_border_thickness=2,
-                                   full_view_to_close_up_ratio=0.6):
+def compose_frame(full_view_file,
+                  close_up_file,
+                  background_image_file,
+                  output_directory,
+                  edge_gap=100,
+                  close_up_frame_border_thickness=2,
+                  full_view_to_close_up_ratio=0.6,
+                  bounding_box=None):
     """Composite the final frame with the full view image and the close-up image on the
     final background.
 
@@ -377,6 +335,21 @@ def compose_synaptic_pathway_frame(full_view_file,
     background_image.paste(full_view_resized_image, (full_view_starting_x, full_view_starting_y),
                            full_view_resized_image)
 
+    # Compute the scale bar
+    if bounding_box is not None:
+        full_view_image_width = full_view_resized_image.size[1]
+        synaptome_width = bounding_box.bounds[0]
+        width_per_pixel = (1.0 * full_view_image_width) / (1.0 * synaptome_width)
+
+        graphic = ImageDraw.Draw(background_image)
+        graphic.line((edge_gap, full_view_starting_y + full_view_drawing_height,
+                      edge_gap + 83, full_view_starting_y + full_view_drawing_height),
+                     fill=(255, 255, 255, 255))
+
+        font = ImageFont.truetype('%s/font.ttf' % os.path.dirname(os.path.realpath(__file__)), 25)
+        graphic.text((edge_gap, full_view_starting_y + full_view_drawing_height + 5),
+                     "%d µm" % int(width_per_pixel * 83), font=font, fill=(255, 255, 255, 128))
+
     # The drawing areas, where the final images are drawn should consider the edge gap
     close_up_drawing_width = int(close_up_area_width - (edge_gap * 2))
     close_up_drawing_height = int(background_height - (edge_gap * 2))
@@ -414,3 +387,32 @@ def compose_synaptic_pathway_frame(full_view_file,
     background_image.close()
     full_view_image.close()
     close_up_image.close()
+
+
+def compose_360_frames(full_view_frames,
+                       close_up_frames,
+                       background_image_file,
+                       output_directory,
+                       edge_gap=100,
+                       close_up_frame_border_thickness=2,
+                       full_view_to_close_up_ratio=0.6,
+                       bounding_box=None):
+
+    # The directory where the original frames will be rendered
+    original_frames_directory = output_directory + '/composite'
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(original_frames_directory):
+        nmv.file.ops.clean_and_create_directory(original_frames_directory)
+
+    for i in range(len(full_view_frames)):
+
+        full_view_frame = full_view_frames[i]
+        close_up_frame = close_up_frames[i]
+
+        compose_frame(full_view_file=full_view_frame,
+                      close_up_file=close_up_frame,
+                      background_image_file=background_image_file,
+                      output_directory=original_frames_directory,
+                      bounding_box=bounding_box)
+

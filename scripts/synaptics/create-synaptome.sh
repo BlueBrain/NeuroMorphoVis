@@ -45,11 +45,11 @@ SYNAPSE_SIZE='4.0'
 IMAGE_RESOLUTION='2000'
 
 # Base video resolution
-VIDEO_RESOLUTION='500'
+VIDEO_RESOLUTION='250'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/background.png'
-BACKGROUND_IMAGE='/home/abdellah/Desktop/sample/background.png'
+BACKGROUND_IMAGE='/ssd1/scratch/background.png'
 
 # 360 frames directory
 ROTATION_360_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/360s/1'

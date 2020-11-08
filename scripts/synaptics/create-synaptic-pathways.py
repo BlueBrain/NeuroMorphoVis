@@ -32,6 +32,7 @@ import rendering
 import nmv.scene
 import nmv.file
 import nmv.enums
+import nmv.bbox
 
 
 ################################################################################
@@ -102,7 +103,11 @@ if __name__ == "__main__":
         nmv.file.export_scene_to_blend_file(scenes_directory,
                                             '%d_%d_pathways' % (pair[0], pair[1]))
 
+        # Compute the mesh bounding box
+        synaptic_pair_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
         # Composite the final image
-        rendering.compose_synaptic_pathway_frame(
+        rendering.compose_frame(
             full_view_image, close_up_image, args.background_image,
-            output_directory=composite_directory, edge_gap=100)
+            output_directory=composite_directory, edge_gap=100,
+            bounding_box=synaptic_pair_bounding_box)
