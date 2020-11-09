@@ -226,6 +226,17 @@ def install_for_linux(directory, blender_version, verbose=False):
         print('INSTALL: %s' % shell_command)
         run_command(shell_command, verbose)
 
+    try:
+        bbp_devpi = 'https://bbpteam.epfl.ch/repository/devpi/simple/'
+        log_detail('Installing: BBP dependencies')
+        shell_command = '%s install -i %s bluepy' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+
+        shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+    except ImportError:
+        print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
+
     # Remove the archive
     log_process('Cleaning')
     shell_command = 'rm %s/blender.%s' % (directory, extension)
@@ -340,11 +351,20 @@ def install_for_mac(directory, blender_version, verbose=False):
     pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     for wheel in pip_wheels:
-
-        # Command
         log_detail('Installing: %s' % wheel)
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         run_command(shell_command, verbose)
+
+    try:
+        bbp_devpi = 'https://bbpteam.epfl.ch/repository/devpi/simple/'
+        log_detail('Installing: BBP dependencies')
+        shell_command = '%s install -i %s bluepy' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+
+        shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+    except ImportError:
+        print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
 
     # Copying the perf file to loade NMV directly
 
