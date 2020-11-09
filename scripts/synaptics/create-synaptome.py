@@ -50,7 +50,7 @@ if __name__ == "__main__":
     nmv.scene.clear_scene()
 
     # Add a flat shader to forc NMV to switch to Blender workbench render
-    shader = nmv.enums.Shader.FLAT
+    shader = nmv.enums.Shader.ELECTRON_LIGHT
 
     # Neuron material
     neuron_material = color_map.create_neuron_material(neuron_color=args.neuron_color,

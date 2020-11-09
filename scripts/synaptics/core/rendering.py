@@ -153,8 +153,14 @@ def render_synaptome_full_view_360(output_directory,
         A list of all the raw frames that were rendered for the synaptomes.
     """
 
-    bpy.context.scene.display.shading.light = 'STUDIO'
-    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+    # bpy.context.scene.display.shading.light = 'STUDIO'
+    # bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+
+    # Switch the rendering engine to cycles to be able to create the material
+    bpy.context.scene.render.engine = 'CYCLES'
+
+    # Use 64 samples per pixel to create a nice image.
+    bpy.context.scene.cycles.samples = 4
 
     # The directory where the original frames will be rendered
     frames_directory = output_directory + '/1_full_view_360'
@@ -219,8 +225,8 @@ def render_synaptome_close_up_on_soma_360(output_directory,
     """
 
     # Adjust shading
-    bpy.context.scene.display.shading.light = 'STUDIO'
-    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+    # bpy.context.scene.display.shading.light = 'STUDIO'
+    # bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
 
     # The directory where the original frames will be rendered
     frames_directory = output_directory + '/2_close_up_360'

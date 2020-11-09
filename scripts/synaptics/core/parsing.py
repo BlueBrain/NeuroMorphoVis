@@ -325,6 +325,44 @@ def parse_synaptic_pairs(synaptic_pairs_file):
 
 
 ####################################################################################################
+# @parse_synaptomes_gids
+####################################################################################################
+def parse_synaptomes_gids(synaptome_gids_file):
+    """Parse the synaptic pairs.
+
+    :param synaptome_gids_file:
+        A file containing the GIDs of the synaptomes.
+    :return:
+        A list of GIDs.
+    """
+
+    # Open the file
+    handle = open(synaptome_gids_file, 'r')
+
+    # A list that will contain the GIDs
+    pairs = list()
+
+    # Get every GID in the file
+    for line in handle:
+
+        # If empty line skip
+        if not line.strip():
+            continue
+
+        # String processing
+        line = line.replace('\n', '')
+
+        # Append it to the pairs list
+        pairs.append(line)
+
+        # Close the file
+    handle.close()
+
+    # Return a reference to the GIDs
+    return pairs
+
+
+####################################################################################################
 # @parse_color
 ####################################################################################################
 def parse_color(color_string):
