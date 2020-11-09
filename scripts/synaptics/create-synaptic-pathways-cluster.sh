@@ -29,7 +29,7 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/L5_TTPC-pairs.txt'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-4-09.11.2020'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-5-09.11.2020'
 
 # Color
 PRE_NEURON_COLOR='255_204_203'

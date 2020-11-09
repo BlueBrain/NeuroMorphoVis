@@ -17,7 +17,7 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/blender'
+BLENDER=$PWD/../../../../../../blender
 
 # Circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/CircuitConfig'
@@ -26,8 +26,7 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 NEURON_GID='956172'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/rendering-examples/example-2'
-OUTPUT_DIRECTORY='/home/abdellah/Desktop/sample/example-2'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -51,12 +50,10 @@ FULL_VIEW_RESOLUTION='1000'
 CLOSE_UP_RESOLUTION='4000'
 
 # The background image the frames will get blended to
-BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/background.png'
-BACKGROUND_IMAGE='/ssd1/scratch/background.png'
+BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # 360 frames directory
 ROTATION_360_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/360s/1'
-ROTATION_360_DIRECTORY='/home/abdellah/Desktop/sample/360-1'
 
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'

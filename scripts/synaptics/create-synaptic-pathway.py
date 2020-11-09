@@ -35,9 +35,9 @@ import nmv.enums
 import nmv.bbox
 
 
-################################################################################
+####################################################################################################
 # @ Main
-################################################################################
+####################################################################################################
 if __name__ == "__main__":
 
     # Get all arguments after the '--'
@@ -47,27 +47,30 @@ if __name__ == "__main__":
     # Parse the command line arguments
     args = parsing.parse_synaptic_pathway_command_line_arguments()
 
-    # Make sure that the given output directory exists
-    if not nmv.file.ops.path_exists(args.output_directory):
-        nmv.file.ops.clean_and_create_directory(args.output_directory)
+    # Create an output directory per pair
+    output_directory = '%s/%s_%s' % (args.output_directory, str(args.pre_gid), str(args.post_gid))
+
+    # Make sure that the output directory exists
+    if not nmv.file.ops.path_exists(output_directory):
+        nmv.file.ops.clean_and_create_directory(output_directory)
 
     # Create the meshes directory
-    meshes_directory = '%s/meshes' % args.output_directory
+    meshes_directory = '%s/meshes' % output_directory
     if not nmv.file.ops.path_exists(meshes_directory):
         nmv.file.ops.clean_and_create_directory(meshes_directory)
 
     # Create the scenes directory
-    scenes_directory = '%s/scenes' % args.output_directory
+    scenes_directory = '%s/scenes' % output_directory
     if not nmv.file.ops.path_exists(scenes_directory):
         nmv.file.ops.clean_and_create_directory(scenes_directory)
 
     # Create the images directory
-    images_directory = '%s/images' % args.output_directory
+    images_directory = '%s/images' % output_directory
     if not nmv.file.ops.path_exists(images_directory):
         nmv.file.ops.clean_and_create_directory(images_directory)
 
     # Create the compositing directory
-    composite_directory = '%s/composite' % args.output_directory
+    composite_directory = '%s/composite' % output_directory
     if not nmv.file.ops.path_exists(composite_directory):
         nmv.file.ops.clean_and_create_directory(composite_directory)
 

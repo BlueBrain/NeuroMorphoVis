@@ -631,7 +631,7 @@ def write_statistics_to_file(builder, tag):
 
     # Write the stats to file
     if builder.options.io.statistics_directory is None:
-        output_directory = os.getcwd()
+        output_directory = os.getenv("HOME")
     else:
         output_directory = builder.options.io.statistics_directory
     stats_file = open('%s/%s-%s.stats' % (output_directory, builder.morphology.label, tag), 'w')

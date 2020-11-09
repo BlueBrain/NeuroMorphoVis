@@ -29,13 +29,10 @@ sys.path.append(('%s/core' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Blender imports
 import parsing
+import slurm
 
-# NeuroMorphoVis imports
-import nmv.scene
+# Internal imports
 import nmv.file
-import nmv.enums
-import nmv.bbox
-import nmv.slurm
 
 
 ####################################################################################################
@@ -110,6 +107,7 @@ def create_synaptic_pair_script(blender_executable,
                                 pre_gid,
                                 post_gid,
                                 arguments,
+                                results_directory,
                                 jobs_directory,
                                 logs_directory):
 
@@ -133,7 +131,7 @@ def create_synaptic_pair_script(blender_executable,
     script_string += ' --circuit-config=%s ' % arguments.circuit_config
     script_string += ' --pre-gid=%s ' % pre_gid
     script_string += ' --post-gid=%s ' % post_gid
-    script_string += ' --output-directory=%s ' % arguments.output_directory
+    script_string += ' --output-directory=%s ' % results_directory
     script_string += ' --pre-neuron-color=%s ' % arguments.pre_neuron_color
     script_string += ' --post-neuron-color=%s ' % arguments.post_neuron_color
     script_string += ' --synapse-color=%s ' % arguments.synapse_color
@@ -191,35 +189,21 @@ if __name__ == "__main__":
     if not nmv.file.ops.path_exists(logs_directory):
         nmv.file.ops.clean_and_create_directory(logs_directory)
 
-    # Create the meshes directory
-    meshes_directory = '%s/meshes' % args.output_directory
-    if not nmv.file.ops.path_exists(meshes_directory):
-        nmv.file.ops.clean_and_create_directory(meshes_directory)
-
-    # Create the scenes directory
-    scenes_directory = '%s/scenes' % args.output_directory
-    if not nmv.file.ops.path_exists(scenes_directory):
-        nmv.file.ops.clean_and_create_directory(scenes_directory)
-
-    # Create the images directory
-    images_directory = '%s/images' % args.output_directory
-    if not nmv.file.ops.path_exists(images_directory):
-        nmv.file.ops.clean_and_create_directory(images_directory)
-
-    # Create the compositing directory
-    composite_directory = '%s/composite' % args.output_directory
-    if not nmv.file.ops.path_exists(composite_directory):
-        nmv.file.ops.clean_and_create_directory(composite_directory)
+    # Results directory
+    results_directory = '%s/results' % args.output_directory
+    if not nmv.file.ops.path_exists(results_directory):
+        nmv.file.ops.clean_and_create_directory(results_directory)
 
     # Create a job for every pair
     jobs = list()
     for pair in pairs:
         job = create_synaptic_pair_script(
             blender_executable=blender_executable, pre_gid=str(pair[0]), post_gid=str(pair[1]),
-            arguments=args, jobs_directory=jobs_directory, logs_directory=logs_directory)
+            arguments=args, results_directory=results_directory, jobs_directory=jobs_directory,
+            logs_directory=logs_directory)
         print(job)
         jobs.append(job)
 
     # Submit the slurm jobs
-    nmv.slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
+    slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
 

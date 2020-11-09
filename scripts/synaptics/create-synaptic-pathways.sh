@@ -17,19 +17,16 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/blender'
-# BLENDER='/gpfs/bbp.cscs.ch/project/proj3/resources/blender/bluebrain-blender-2.81/blender-neuromorphovis/blender'
+BLENDER=$PWD/../../../../../../blender
 
 # Circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/CircuitConfig'
 
 # A file
-SYNAPTIC_PAIRS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/synaptics/sample-pairs.txt'
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/L5_TTPC-pairs.txt'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-2-04.10.2020'
-OUTPUT_DIRECTORY='/ssd1/scratch/synaptic-pathways'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-3-09.11.2020'
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
@@ -43,8 +40,7 @@ SYNAPSE_SIZE='8.0'
 IMAGE_RESOLUTION='4000'
 
 # The background image the frames will get blended to
-BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/background.png'
-BACKGROUND_IMAGE='/ssd1/scratch/background.png'
+BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'
