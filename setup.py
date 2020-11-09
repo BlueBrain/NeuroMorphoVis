@@ -192,7 +192,7 @@ def install_for_linux(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     # Removing the site-packages directory
     blender_python_wheels = '%s/blender-neuromorphovis/%s/python/lib/python%s/site-packages/' % \
@@ -221,10 +221,15 @@ def install_for_linux(directory, blender_version, verbose=False):
     pip_executable = '%s/pip' % blender_python_prefix
 
     # packages
-    for wheel in pip_wheels:
+    for i, wheel in enumerate(pip_wheels):
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         print('INSTALL: %s' % shell_command)
         run_command(shell_command, verbose)
+
+    # h5py specific version
+    shell_command = '%s install --ignore-installed h5py==2.10.0' % pip_executable
+    print('INSTALL: %s' % shell_command)
+    run_command(shell_command, verbose)
 
     try:
         bbp_devpi = 'https://bbpteam.epfl.ch/repository/devpi/simple/'
@@ -233,6 +238,9 @@ def install_for_linux(directory, blender_version, verbose=False):
         run_command(shell_command, verbose)
 
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+
+        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
@@ -348,12 +356,17 @@ def install_for_mac(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['h5py', 'numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow']
 
     for wheel in pip_wheels:
         log_detail('Installing: %s' % wheel)
         shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
         run_command(shell_command, verbose)
+
+    # h5py specific version
+    shell_command = '%s install --ignore-installed h5py==2.10.0' % pip_executable
+    print('INSTALL: %s' % shell_command)
+    run_command(shell_command, verbose)
 
     try:
         bbp_devpi = 'https://bbpteam.epfl.ch/repository/devpi/simple/'
@@ -362,6 +375,9 @@ def install_for_mac(directory, blender_version, verbose=False):
         run_command(shell_command, verbose)
 
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
+        run_command(shell_command, verbose)
+
+        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
