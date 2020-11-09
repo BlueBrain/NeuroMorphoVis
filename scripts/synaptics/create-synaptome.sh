@@ -41,11 +41,14 @@ SYNAPSE_PERCENTAGE='50'
 # Synapse size
 SYNAPSE_SIZE='4.0'
 
-# Base image resolution
-IMAGE_RESOLUTION='2000'
+# Close-up view size
+CLOSE_UP_SIZE='50'
 
-# Base video resolution
-VIDEO_RESOLUTION='250'
+# Base full view resolution
+FULL_VIEW_RESOLUTION='1000'
+
+# Base close-up resolution
+CLOSE_UP_RESOLUTION='4000'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/background.png'
@@ -63,10 +66,11 @@ $BLENDER -b --verbose 0 --python create-synaptome.py --                         
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --color-map=$COLOR_MAP_FILE                                                                     \
     --neuron-color=$NEURON_COLOR                                                                    \
-    --image-resolution=$IMAGE_RESOLUTION                                                            \
-    --video-resolution=$IMAGE_RESOLUTION                                                            \
+    --full-view-resolution=$FULL_VIEW_RESOLUTION                                                    \
+    --close-up-resolution=$CLOSE_UP_RESOLUTION                                                      \
     --synapse-percentage=$SYNAPSE_PERCENTAGE                                                        \
     --synapse-size=$SYNAPSE_SIZE                                                                    \
+    --close-up-size=$CLOSE_UP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     --rotation-360-directory=$ROTATION_360_DIRECTORY                                                \
     $BOOL_ARGS

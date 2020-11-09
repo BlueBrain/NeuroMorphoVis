@@ -92,22 +92,23 @@ if __name__ == "__main__":
         dummy_material = color_map.create_dummy_material(shader=shader)
 
         # Render an image
-        full_view_image = rendering.render_image(output_directory=images_directory,
-                                                 image_name='%d_%d_pathways' % (pair[0], pair[1]),
-                                                 resolution=args.image_resolution)
+        full_view_image = rendering.render_synaptic_path_way_full_view(
+            output_directory=images_directory, image_name='%d_%d_pathways' % (pair[0], pair[1]),
+            resolution=args.image_resolution)
+
         # Render a close-up on the synapses
-        close_up_image = rendering.render_close_up(synapse_mesh, '%s/%d_%d_pathways_closeup' %
-                                                   (images_directory, pair[0], pair[1]))
+        close_up_image = rendering.render_synaptic_pathway_close_up(
+            synapse_mesh, '%s/%d_%d_pathways_closeup' % (images_directory, pair[0], pair[1]))
 
         # Save the final scene
-        nmv.file.export_scene_to_blend_file(scenes_directory,
-                                            '%d_%d_pathways' % (pair[0], pair[1]))
+        nmv.file.export_scene_to_blend_file(
+            scenes_directory, '%d_%d_pathways' % (pair[0], pair[1]))
 
         # Compute the mesh bounding box
         synaptic_pair_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
         # Composite the final image
-        rendering.compose_frame(
+        composed_frames = rendering.compose_frame(
             full_view_image, close_up_image, args.background_image,
             output_directory=composite_directory, edge_gap=100,
             bounding_box=synaptic_pair_bounding_box)

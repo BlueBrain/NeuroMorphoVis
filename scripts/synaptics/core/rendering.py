@@ -36,11 +36,11 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @render_image
+# @render_synaptic_path_way_full_view
 ####################################################################################################
-def render_image(output_directory,
-                 image_name,
-                 resolution):
+def render_synaptic_path_way_full_view(output_directory,
+                                       image_name,
+                                       resolution):
     """Render an image of the synaptome.
 
     :param image_name:
@@ -73,10 +73,19 @@ def render_image(output_directory,
 
 
 ####################################################################################################
-# @render_close_up
+# @render_synaptic_pathway_close_up
 ####################################################################################################
-def render_close_up(close_up_mesh,
-                    image_name):
+def render_synaptic_pathway_close_up(close_up_mesh,
+                                     image_name):
+    """Render a close-up of the synaptic pathways.
+
+    :param close_up_mesh:
+        The mesh where we will have the close-up.
+    :param image_name:
+        The name of the rendered image.
+    :return:
+        The full path of the rendered image.
+    """
 
     # Use the denoiser
     bpy.context.scene.view_layers[0].cycles.use_denoising = True
@@ -127,26 +136,101 @@ def render_close_up(close_up_mesh,
 
 
 ####################################################################################################
+# @render_synaptome_full_view_360
+####################################################################################################
+def render_synaptome_full_view_360(output_directory,
+                                   resolution,
+                                   frames_per_angle=1):
+    """Renders a 360 of the synaptome full view.
+
+    :param output_directory:
+        The output directory where the frames and final movie will be generated.
+    :param resolution:
+        The base resolution of the video frames.
+    :param frames_per_angle:
+        The number of frames per step in the 360.
+    :return
+        A list of all the raw frames that were rendered for the synaptomes.
+    """
+
+    bpy.context.scene.display.shading.light = 'STUDIO'
+    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+
+    # The directory where the original frames will be rendered
+    frames_directory = output_directory + '/1_full_view_360'
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(frames_directory):
+        nmv.file.ops.clean_and_create_directory(frames_directory)
+
+    # Get a list of all the meshes in the scene
+    scene_objects = nmv.scene.get_list_of_meshes_in_scene()
+
+    # Compute the bounding box
+    rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
+    bounding_box_360 = nmv.bbox.compute_360_bounding_box(
+        rendering_bbox, Vector((0, 0, 0)))
+
+    # Stretch the bounding box by few microns
+    bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
+
+    # Render the sequence
+    frames = list()
+    for i in range(frames_per_angle * 360):
+
+        # Set the frame name
+        frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
+
+        # Render the frame
+        nmv.rendering.renderer.render_at_angle(
+            scene_objects=scene_objects,
+            angle=i / (frames_per_angle * 1.0),
+            bounding_box=bounding_box_360,
+            camera_view=nmv.enums.Camera.View.FRONT_360,
+            image_resolution=resolution,
+            image_name=frame_name)
+
+        # Add the frame to the list
+        frames.append('%s.png' % frame_name)
+
+    # Return a list of frames
+    return frames
+
+
+####################################################################################################
 # @render_synaptome_close_up_on_soma_360
 ####################################################################################################
 def render_synaptome_close_up_on_soma_360(output_directory,
-                                          label,
                                           close_up_size,
-                                          resolution=2000):
+                                          resolution=2000,
+                                          frames_per_angle=1):
+    """Render a close up on the synaptome around the soma.
+
+    :param output_directory:
+        The output directory where the final frames will be rendered.
+    :param close_up_size:
+        The size of the close-up image.
+    :param resolution:
+        The resolution of the close-up image.
+    :param frames_per_angle:
+        The number of frames per step in the 360.
+    :return:
+        A list of all the rendered frames.
+    """
 
     # Adjust shading
     bpy.context.scene.display.shading.light = 'STUDIO'
     bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
 
     # The directory where the original frames will be rendered
-    frames_directory = output_directory + '/%s_close_up_360' % label
+    frames_directory = output_directory + '/2_close_up_360'
 
     # Create the images directory if it does not exist
     if not nmv.file.ops.path_exists(frames_directory):
         nmv.file.ops.clean_and_create_directory(frames_directory)
 
     # Adjust the resolution
-    bpy.context.scene.render.resolution_x = int (0.5 * resolution)
+    bpy.context.scene.render.resolution_x = int(0.5 * resolution)
     bpy.context.scene.render.resolution_y = resolution
 
     # Create the camera
@@ -170,12 +254,13 @@ def render_synaptome_close_up_on_soma_360(output_directory,
 
     # Render the sequence
     frames = list()
-    for i in range(360):
+    for i in range(frames_per_angle * 360):
 
         # Rotate all the objects as if they are a single object
         for scene_object in scene_objects:
+
             # Rotate the mesh object around the y axis
-            scene_object.rotation_euler[1] = i * 2 * 3.14 / 360.0
+            scene_object.rotation_euler[1] = i * 3.14 / (frames_per_angle * 360.0)
 
         # Set the frame name
         frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
@@ -190,68 +275,6 @@ def render_synaptome_close_up_on_soma_360(output_directory,
         frames.append('%s.png' % frame_name)
 
     # Return the list of frames
-    return frames
-
-
-####################################################################################################
-# @render_synaptome_full_view_360
-####################################################################################################
-def render_synaptome_full_view_360(output_directory,
-                                   label,
-                                   resolution):
-    """Renders a 360 of the synaptome full view.
-
-    :param label:
-        label
-    :param output_directory:
-        The output directory where the frames and final movie will be generated.
-    :param resolution:
-        The base resolution of the video frames.
-    :return
-        A list of all the raw frames that were rendered for the synaptomes.
-    """
-
-    bpy.context.scene.display.shading.light = 'STUDIO'
-    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
-
-    # The directory where the original frames will be rendered
-    frames_directory = output_directory + '/%s_full_view_360' % label
-
-    # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(frames_directory):
-        nmv.file.ops.clean_and_create_directory(frames_directory)
-
-    # Get a list of all the meshes in the scene
-    scene_objects = nmv.scene.get_list_of_meshes_in_scene()
-
-    # Compute the bounding box
-    rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
-    bounding_box_360 = nmv.bbox.compute_360_bounding_box(
-        rendering_bbox, Vector((0, 0, 0)))
-
-    # Stretch the bounding box by few microns
-    bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
-
-    # Render the sequence
-    frames = list()
-    for i in range(360):
-
-        # Set the frame name
-        frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
-
-        # Render the frame
-        nmv.rendering.renderer.render_at_angle(
-            scene_objects=scene_objects,
-            angle=i,
-            bounding_box=bounding_box_360,
-            camera_view=nmv.enums.Camera.View.FRONT_360,
-            image_resolution=resolution,
-            image_name=frame_name)
-
-        # Add the frame to the list
-        frames.append('%s.png' % frame_name)
-
-    # Return a list of frames
     return frames
 
 
@@ -283,6 +306,8 @@ def compose_frame(full_view_file,
         The border thickness of the close-up image.
     :param full_view_to_close_up_ratio:
         The ratio between the full-view image to the close-up image in the frame.
+    :param bounding_box:
+        The bounding box of the scene we need to compute the scale bars.
     """
 
     # Open the background image
@@ -335,21 +360,6 @@ def compose_frame(full_view_file,
     background_image.paste(full_view_resized_image, (full_view_starting_x, full_view_starting_y),
                            full_view_resized_image)
 
-    # Compute the scale bar
-    if bounding_box is not None:
-        full_view_image_width = full_view_resized_image.size[1]
-        synaptome_width = bounding_box.bounds[0]
-        width_per_pixel = (1.0 * full_view_image_width) / (1.0 * synaptome_width)
-
-        graphic = ImageDraw.Draw(background_image)
-        graphic.line((edge_gap, full_view_starting_y + full_view_drawing_height,
-                      edge_gap + 83, full_view_starting_y + full_view_drawing_height),
-                     fill=(255, 255, 255, 255))
-
-        font = ImageFont.truetype('%s/font.ttf' % os.path.dirname(os.path.realpath(__file__)), 25)
-        graphic.text((edge_gap, full_view_starting_y + full_view_drawing_height + 5),
-                     "%d µm" % int(width_per_pixel * 83), font=font, fill=(255, 255, 255, 128))
-
     # The drawing areas, where the final images are drawn should consider the edge gap
     close_up_drawing_width = int(close_up_area_width - (edge_gap * 2))
     close_up_drawing_height = int(background_height - (edge_gap * 2))
@@ -380,15 +390,41 @@ def compose_frame(full_view_file,
     background_image.paste(close_up_resized_image, (close_up_starting_x, close_up_starting_y),
                            close_up_resized_image)
 
+    # Compute the scale bar
+    if bounding_box is not None:
+        full_view_image_width = full_view_resized_image.size[1]
+        synaptome_width = bounding_box.bounds[0]
+        width_per_pixel = (1.0 * full_view_image_width) / (1.0 * synaptome_width)
+
+        # The scale bar width is 55 for 2 digits and 56 for 3 digits at font size of 20
+        scale_bar_width = 65
+        graphic = ImageDraw.Draw(background_image)
+        graphic.line((edge_gap, edge_gap + full_view_drawing_height,
+                      edge_gap + scale_bar_width, edge_gap + full_view_drawing_height),
+                     fill=(255, 255, 255, 255))
+
+        scale_bar_value = int(width_per_pixel * scale_bar_width)
+        scale_bar_value = round(scale_bar_value / 10) * 10
+        font = ImageFont.truetype('%s/font.ttf' % os.path.dirname(os.path.realpath(__file__)), 20)
+        graphic.text((edge_gap, edge_gap + full_view_drawing_height + 5),
+                     "%d µm" % scale_bar_value, font=font, fill=(255, 255, 255, 128))
+
     # Save the background image with the new data
-    background_image.save('%s/%s' % (output_directory, ntpath.basename(full_view_file)))
+    final_image_path = '%s/%s' % (output_directory, ntpath.basename(full_view_file))
+    background_image.save(final_image_path)
 
     # Close all the images
     background_image.close()
     full_view_image.close()
     close_up_image.close()
 
+    # Return a reference to the final composed image
+    return final_image_path
 
+
+####################################################################################################
+# @compose_360_frames
+####################################################################################################
 def compose_360_frames(full_view_frames,
                        close_up_frames,
                        background_image_file,
@@ -397,22 +433,52 @@ def compose_360_frames(full_view_frames,
                        close_up_frame_border_thickness=2,
                        full_view_to_close_up_ratio=0.6,
                        bounding_box=None):
+    """Composes the full-view and close-up frames over the 360 angles.
+
+    :param full_view_frames:
+        A list of all the full view frames.
+    :param close_up_frames:
+        A list of all the close-up frames.
+    :param background_image_file:
+        The background image.
+    :param output_directory:
+        The output directory of the project.
+    :param edge_gap:
+        The gap along the edges.
+    :param close_up_frame_border_thickness:
+        The border thickness of the close-up frame.
+    :param full_view_to_close_up_ratio:
+        THe ratio between the full-view frame and the close-up frame.
+    :param bounding_box:
+        The bounding box of the scene, where we need it to compute the scale bars.
+    :return:
+        The list of all the composed images for creating the video.
+    """
 
     # The directory where the original frames will be rendered
-    original_frames_directory = output_directory + '/composite'
+    original_frames_directory = output_directory + '/3_composite'
 
     # Create the images directory if it does not exist
     if not nmv.file.ops.path_exists(original_frames_directory):
         nmv.file.ops.clean_and_create_directory(original_frames_directory)
 
+    # Compose the 360 frames
+    composed_frames = list()
     for i in range(len(full_view_frames)):
 
+        # Get the individual frames
         full_view_frame = full_view_frames[i]
         close_up_frame = close_up_frames[i]
 
-        compose_frame(full_view_file=full_view_frame,
-                      close_up_file=close_up_frame,
-                      background_image_file=background_image_file,
-                      output_directory=original_frames_directory,
-                      bounding_box=bounding_box)
+        # Compose the frames
+        composed_frame = compose_frame(
+            full_view_file=full_view_frame, close_up_file=close_up_frame,
+            background_image_file=background_image_file, output_directory=original_frames_directory,
+            edge_gap=edge_gap, close_up_frame_border_thickness=close_up_frame_border_thickness,
+            full_view_to_close_up_ratio=full_view_to_close_up_ratio, bounding_box=bounding_box)
 
+        # Append to the final image
+        composed_frames.append(composed_frame)
+
+    # Return the composed frames list
+    return composed_frames

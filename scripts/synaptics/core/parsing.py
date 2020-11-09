@@ -67,14 +67,19 @@ def parse_synaptome_command_line_arguments(arguments=None):
     parser.add_argument('--synapse-size',
                         action='store', dest='synapse_size', type=float, help=arg_help)
 
-    arg_help = 'Base image resolution'
-    parser.add_argument('--image-resolution',
-                        action='store', default=2000, type=int, dest='image_resolution',
+    arg_help = 'Close-up view size'
+    parser.add_argument('--close-up-size',
+                        action='store', default=50, type=int, dest='close_up_size',
                         help=arg_help)
 
-    arg_help = 'Base video resolution'
-    parser.add_argument('--video-resolution',
-                        action='store', default=1000, type=int, dest='video_resolution',
+    arg_help = 'Base full-view resolution'
+    parser.add_argument('--full-view-resolution',
+                        action='store', default=2000, type=int, dest='full_view_resolution',
+                        help=arg_help)
+
+    arg_help = 'Base close-up resolution'
+    parser.add_argument('--close-up-resolution',
+                        action='store', default=1000, type=int, dest='close_up_resolution',
                         help=arg_help)
 
     arg_help = 'Background image'
