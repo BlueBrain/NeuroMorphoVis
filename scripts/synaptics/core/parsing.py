@@ -95,10 +95,73 @@ def parse_synaptome_command_line_arguments(arguments=None):
 
 
 ####################################################################################################
-# @parse_synaptic_pairs_command_line_arguments
+# @parse_synaptic_pathway_command_line_arguments
 ####################################################################################################
-def parse_synaptic_pairs_command_line_arguments(arguments=None):
-    """Parses the input arguments.
+def parse_synaptic_pathway_command_line_arguments(arguments=None):
+    """Parses the input arguments of the synaptic pathway script.
+
+    :param arguments:
+        Command line arguments.
+    :return:
+        Arguments list.
+    """
+
+    # add all the options
+    description = 'Synaptic pairs creator: creates static images synaptic pairs'
+    parser = argparse.ArgumentParser(description=description)
+
+    arg_help = 'Circuit configuration file'
+    parser.add_argument('--circuit-config',
+                        action='store', dest='circuit_config', help=arg_help)
+
+    arg_help = 'Pre-synaptic neuron GID'
+    parser.add_argument('--pre-gid',
+                        action='store', type=int, dest='pre_gid',
+                        help=arg_help)
+
+    arg_help = 'Post-synaptic neuron GID'
+    parser.add_argument('--post-gid',
+                        action='store', type=int, dest='post_gid',
+                        help=arg_help)
+
+    arg_help = 'Output directory, where the final image/movies and scene will be stored'
+    parser.add_argument('--output-directory',
+                        action='store', dest='output_directory', help=arg_help)
+
+    arg_help = 'Pre-GID Neuron color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--pre-neuron-color',
+                        action='store', dest='pre_neuron_color', help=arg_help)
+
+    arg_help = 'Post-GID Neuron color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--post-neuron-color',
+                        action='store', dest='post_neuron_color', help=arg_help)
+
+    arg_help = 'Synapse color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--synapse-color',
+                        action='store', dest='synapse_color', help=arg_help)
+
+    arg_help = 'Synapse size (in um)'
+    parser.add_argument('--synapse-size',
+                        action='store', dest='synapse_size', type=float, help=arg_help)
+
+    arg_help = 'Base image resolution'
+    parser.add_argument('--image-resolution',
+                        action='store', default=2000, type=int, dest='image_resolution',
+                        help=arg_help)
+
+    arg_help = 'Background image'
+    parser.add_argument('--background-image',
+                        action='store', dest='background_image', help=arg_help)
+
+    # Parse the arguments
+    return parser.parse_args()
+
+
+####################################################################################################
+# @parse_synaptic_pathways_command_line_arguments
+####################################################################################################
+def parse_synaptic_pathways_command_line_arguments(arguments=None):
+    """Parses the input arguments of the synaptic pathways script.
 
     :param arguments:
         Command line arguments.

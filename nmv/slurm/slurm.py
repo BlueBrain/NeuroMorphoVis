@@ -16,7 +16,10 @@
 ####################################################################################################
 
 # System imports
-import sys, os, subprocess, time
+import sys
+import os
+import subprocess
+import time
 
 # Add other modules
 sys.path.append("%s/../consts" % os.path.dirname(os.path.realpath(__file__)))

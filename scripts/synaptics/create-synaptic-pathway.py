@@ -45,10 +45,7 @@ if __name__ == "__main__":
     sys.argv = args[args.index("--") + 0:]
 
     # Parse the command line arguments
-    args = parsing.parse_synaptic_pathways_command_line_arguments()
-
-    # Parse the pairs file
-    pairs = parsing.parse_synaptic_pairs(args.synaptic_pairs_file)
+    args = parsing.parse_synaptic_pathway_command_line_arguments()
 
     # Make sure that the given output directory exists
     if not nmv.file.ops.path_exists(args.output_directory):
@@ -76,39 +73,37 @@ if __name__ == "__main__":
 
     shader = nmv.enums.Shader.ELECTRON_LIGHT
 
-    # Create an image for every pair
-    for pair in pairs:
+    # Clear the scene
+    nmv.scene.clear_scene()
 
-        # Clear the scene
-        nmv.scene.clear_scene()
+    # Create the synaptic pathway scene
+    synapse_mesh = synaptic_pathways.create_synaptic_pathway_scene_with_mesh_components(
+        circuit_config=args.circuit_config, pre_gid=args.pre_gid, post_gid=args.post_gid,
+        output_directory=meshes_directory, synapse_size=args.synapse_size, shader=shader,
+        synapses_color=parsing.parse_color(args.synapse_color))
 
-        # Create the synaptic pathway scene
-        synapse_mesh = synaptic_pathways.create_synaptic_pathway_scene_with_mesh_components(
-            circuit_config=args.circuit_config, pre_gid=pair[0], post_gid=pair[1],
-            output_directory=meshes_directory, synapse_size=args.synapse_size, shader=shader,
-            synapses_color=parsing.parse_color(args.synapse_color))
+    # Create a dummy
+    dummy_material = color_map.create_dummy_material(shader=shader)
 
-        # Create a dummy
-        dummy_material = color_map.create_dummy_material(shader=shader)
+    # Render an image
+    full_view_image = rendering.render_synaptic_path_way_full_view(
+        output_directory=images_directory,
+        image_name='%d_%d_pathways' % (args.pre_gid, args.post_gid),
+        resolution=args.image_resolution)
 
-        # Render an image
-        full_view_image = rendering.render_synaptic_path_way_full_view(
-            output_directory=images_directory, image_name='%d_%d_pathways' % (pair[0], pair[1]),
-            resolution=args.image_resolution)
+    # Render a close-up on the synapses
+    close_up_image = rendering.render_synaptic_pathway_close_up(
+        synapse_mesh, '%s/%d_%d_pathways_closeup' % (images_directory, args.pre_gid, args.post_gid))
 
-        # Render a close-up on the synapses
-        close_up_image = rendering.render_synaptic_pathway_close_up(
-            synapse_mesh, '%s/%d_%d_pathways_closeup' % (images_directory, pair[0], pair[1]))
+    # Save the final scene
+    nmv.file.export_scene_to_blend_file(
+        scenes_directory, '%d_%d_pathways' % (args.pre_gid, args.post_gid))
 
-        # Save the final scene
-        nmv.file.export_scene_to_blend_file(
-            scenes_directory, '%d_%d_pathways' % (pair[0], pair[1]))
+    # Compute the mesh bounding box
+    synaptic_pair_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
-        # Compute the mesh bounding box
-        synaptic_pair_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
-
-        # Composite the final image
-        composed_frames = rendering.compose_frame(
-            full_view_image, close_up_image, args.background_image,
-            output_directory=composite_directory, edge_gap=100,
-            bounding_box=synaptic_pair_bounding_box)
+    # Composite the final image
+    composed_frames = rendering.compose_frame(
+        full_view_image, close_up_image, args.background_image,
+        output_directory=composite_directory, edge_gap=100,
+        bounding_box=synaptic_pair_bounding_box)
