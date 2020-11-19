@@ -152,7 +152,7 @@ def install_for_linux(directory, blender_version, verbose=False):
         extension = 'tar.xz'
     elif blender_version == '2.83':
         python_version = '3.7'
-        package_name = 'blender-2.83a-linux64'
+        package_name = 'blender-2.83.9-linux64'
         extension = 'tar.xz'
     elif blender_version == '2.90':
         python_version = '3.7'
