@@ -310,18 +310,46 @@ class SurfaceParticleSystem:
                 mirror_co[axis] *= -1
                 self.new_particle(mirror_co)
 
-    def new_particle(self, location, dir=None):
-        location, normal, dir, s, c = self.field.sample_point(location, dir)
+    ################################################################################################
+    # @new_particle
+    ################################################################################################
+    def new_particle(self,
+                     location,
+                     direction=None):
+
+        location, normal, direction, s, c = self.field.sample_point(location, direction)
+
+        # Create a new particle
         particle = nmv.physics.Particle(location, normal, self.field.bvh)
-        particle.dir = dir
+
+        # Update its direction
+        particle.dir = direction
+
+        # Update its radius
         particle.radius = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
+
+        # Add the particle to the system
         self.particles.add(particle)
+
+        # Insert the particle in the grid
         self.grid.insert(particle)
+
+        # Return a reference to the particle
         return particle
 
-    def remove_particle(self, particle):
+    ################################################################################################
+    # @remove_particle
+    ################################################################################################
+    def remove_particle(self,
+                        particle):
+
+        # Remove the particle from the system
         self.particles.remove(particle)
+
+        # Remove it from the grid
         self.grid.remove(particle)
+
+        # Update its tag
         particle.tag = "REMOVED"
 
     def draw_particles(self, relaxation_steps=3):

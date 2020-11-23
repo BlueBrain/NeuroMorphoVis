@@ -454,15 +454,13 @@ class MetaBuilder:
             apply_shader=False, add_noise_to_surface=False)
 
         # Run the particles simulation remesher
-        remsher = nmv.physics.ParticleRemesher()
-        stepper = remsher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
-
+        mesher = nmv.physics.ParticleRemesher()
+        stepper = mesher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
 
         for i in range(1000000):
             finished = next(stepper)
             if finished:
                 break
-
 
         # Remove the faces that are located around the initial segment
         valid_arbors = soft_body_soma_builder.remove_faces_within_arbor_initial_segment(
@@ -490,6 +488,9 @@ class MetaBuilder:
             # Compute the radius of the meta-element by trial-and-error
             meta_element.radius = radius * 2 * self.magic_scale_factor
 
+            if meta_element.radius < self.smallest_radius:
+                self.smallest_radius = meta_element.radius
+
             # Update its coordinates
             meta_element.co = face.center - (face.normal * radius * self.soma_scaling_factor)
 
@@ -514,8 +515,6 @@ class MetaBuilder:
 
         # Update the resolution
         self.meta_skeleton.resolution = self.smallest_radius
-        if self.meta_skeleton.resolution > 0.1:
-            self.meta_skeleton.resolution = 0.1
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
@@ -525,7 +524,7 @@ class MetaBuilder:
         nmv.scene.set_active_object(self.meta_mesh)
 
         # Convert it to a mesh from meta-balls
-        nmv.logger.info('Converting the Meta-object to a Mesh')
+        nmv.logger.info('Converting the Meta-object to a Mesh (Patience Please!)')
         bpy.ops.object.convert(target='MESH')
 
         # Update the label of the reconstructed mesh
