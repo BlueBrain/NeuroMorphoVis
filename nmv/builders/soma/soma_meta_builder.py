@@ -370,13 +370,16 @@ class SomaMetaBuilder:
     # @reconstruct_soma_mesh
     ################################################################################################
     def reconstruct_soma_mesh(self,
-                              apply_shader=True):
+                              apply_shader=True,
+                              add_noise_to_surface=False):
         """Reconstructs the mesh of the soma of the neuron in a single step.
 
         :param apply_shader:
             Apply the given soma shader in the configuration. This flag will be set to False when
             the soma is created in another builder such as the skeleton builder or the piecewise
             mesh builder.
+        :param add_noise_to_surface:
+            Adds noise to the surface of the soma to make it much more realistic.
         :return:
             A reference to the reconstructed mesh of the soma.
         """
@@ -398,7 +401,8 @@ class SomaMetaBuilder:
             self.assign_material_to_mesh()
 
         # A dd a little bit of noise
-        # self.add_noise_to_soma_surface()
+        if add_noise_to_surface:
+            self.add_noise_to_soma_surface()
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh

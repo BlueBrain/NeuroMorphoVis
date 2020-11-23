@@ -172,10 +172,7 @@ def smooth_object_vertices(mesh_object,
 
     # Smooth
     for i in range(level):
-        bpy.ops.mesh.subdivide(smoothness=1)
-
-    # Close all the holes in the mesh, if any
-    bpy.ops.mesh.edge_face_add()
+        bpy.ops.mesh.vertices_smooth(factor=0.5)
 
     # Toggle from the edit mode to the object mode
     bpy.ops.object.editmode_toggle()
@@ -659,6 +656,12 @@ def join_mesh_objects(mesh_list,
 ####################################################################################################
 def subdivide_mesh(mesh_object,
                    level):
+    """Subdivide the mesh.
+
+    :param mesh_object:
+    :param level:
+    :return:
+    """
 
     # Deselect all the objects in the scene
     nmv.scene.ops.deselect_all()
@@ -735,3 +738,56 @@ def add_surface_noise_to_mesh(mesh_object,
 
     # Smooth using Catmull-Clark subdivision
     smooth_object(mesh_object=mesh_object, level=1)
+
+
+def remove_small_partitions(mesh_object):
+    """Detects the number of partitions (or islands) in the mesh object and removes the small ones.
+
+    :param mesh_object:
+        A given mesh object to process.
+    """
+
+    # Get the paths along the edges of the mesh
+    paths = {v.index: set() for v in mesh_object.data.vertices}
+    for e in mesh_object.data.edges:
+        paths[e.vertices[0]].add(e.vertices[1])
+        paths[e.vertices[1]].add(e.vertices[0])
+
+    # A list that will contain the different partitions in the mesh. Each partition will be
+    # represented by a list of indices of the vertices of that partition.
+    partitions_vertices_indices = list()
+
+    # Search
+    while True:
+
+        # Get the next path
+        try:
+            iterator = next(iter(paths.keys()))
+        except StopIteration:
+            break
+        partition = {iterator}
+        current = {iterator}
+        while True:
+            eligible = {sc for sc in current if sc in paths}
+            if not eligible:
+                break
+            current = {ve for sc in eligible for ve in paths[sc]}
+            partition.update(current)
+            for key in eligible:
+                paths.pop(key)
+
+        # Add
+        partitions_vertices_indices.append(partition)
+
+    # Convert the set to a list
+    partitions_vertices_indices = list(partitions_vertices_indices)
+
+    # Sort it
+    partitions_vertices_indices.sort()
+
+    # Select all the vertices of the small partitions
+    for i in range(1, len(partitions_vertices_indices)):
+
+        # Remove the vertices of the small partitions
+        nmv.mesh.remove_vertices(
+            mesh_object=mesh_object, vertices_indices=partitions_vertices_indices[i])

@@ -72,3 +72,175 @@ def extrude_vertex_towards_point(bmesh_object,
 
     # Return a reference to the extruded vertex
     return extruded_vertex
+
+
+####################################################################################################
+# @relax_topology
+####################################################################################################
+def relax_topology(bmesh_object):
+    """
+    NOTE: This implementation is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
+
+    :param bmesh_object:
+    :return:
+    """
+
+    # For every vertex in the bmesh object
+    for vertex in bmesh_object.verts:
+
+        # Make sure that this vertex is not a boundary vertex
+        if vertex.is_boundary:
+            continue
+
+        # Construct an average vector
+        avg = Vector()
+
+        # Get the number of edges connected to this vertex
+        number_edges_connected_to_vertex = len(vertex.link_edges)
+        for edge in vertex.link_edges:
+
+            # If the edge is seam, then ignore it
+            if edge.seam:
+                number_edges_connected_to_vertex = 0
+                break
+
+            # Get the other edge
+            other = edge.other_vert(vertex)
+
+            # Extend the average vector
+            avg += other.co
+
+        # If the vertex is connected to 3, 5 or 0 edges, continue
+        if number_edges_connected_to_vertex in (3, 5, 0):
+            continue
+
+        # Otherwise, compute the final result of the average vector
+        avg /= number_edges_connected_to_vertex
+        avg -= vertex.co
+        avg -= vertex.normal * vertex.normal.dot(avg)
+
+        # Update the vertex position
+        vertex.co += avg * 0.5
+
+
+####################################################################################################
+# @straigthen_quad_topology
+####################################################################################################
+def straigthen_quad_topology(bmesh_object):
+    """
+    NOTE: This implementation is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
+
+    :param bmesh_object:
+        The given bmesh object.
+    """
+
+    # For each vertex in the bmesh object
+    for vertex in bmesh_object.verts:
+
+        # Ignore boundary vertices
+        if vertex.is_boundary:
+            continue
+
+        # If the vertex is connected to three edges
+        if len(vertex.link_edges) == 3:
+
+            # It is a valida candidate
+            valid = True
+
+            # For each edge connected to the vertex
+            for edge in vertex.link_edges:
+
+                # If it is a seam edge, then ignore it
+                if edge.seam:
+
+                    # It is not a valid edge, next
+                    valid = False
+                    break
+
+            # If it is a valid vertex
+            if valid:
+
+                # Make new pairs
+                pairs = [(e_a.other_vert(vertex).co, e_b.other_vert(vertex).co)
+                         for e_a in vertex.link_edges
+                         for e_b in vertex.link_edges
+                         if e_a is not e_b]
+
+                # Pick the best pair
+                best_pair = min(pairs, key=lambda pair: (pair[0] - pair[1]).length_squared)
+
+                # Update the vertex position
+                vertex.co = sum(best_pair, vertex.co * 0.2) / 2.2
+
+
+####################################################################################################
+# @bvh_snap
+####################################################################################################
+def bvh_snap(bvh, vertices):
+    """Snaps a given list of vertices to a given BVH.
+    NOTE: This implementation is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
+
+    :param bvh:
+        A given BVH to snap the vertices to.
+    :param vertices:
+        A list of vertices to be snapped to the given BVH.
+    """
+
+    # For every vertex in the given list
+    for vertex in vertices:
+
+        # If this vertex is a boundary one, ignore it
+        if vertex.is_boundary:
+            continue
+
+        # Initially, set the proceed flag to False
+        proceed = False
+
+        # For every edge connected to the vertex
+        for edge in vertex.link_edges:
+
+            # If the edge is seam, break and go for the next vertex
+            if edge.seam:
+                proceed = True
+                break
+
+        # Next vertex please, no valid conditions were found
+        if proceed:
+            continue
+
+        # Final vertex position, initially set to None to check if is valid or not
+        final_position = None
+
+        # Get the initial position
+        start = vertex.co
+
+        # Build a normal ray
+        ray = vertex.normal
+
+        # Get the candidate locations by casting the ray along the normal directions
+        location1, normal, index, distance1 = bvh.ray_cast(start, ray)
+        location2, normal, index, distance2 = bvh.ray_cast(start, -ray)
+
+        # Get a candidate position based on the nearest vertex
+        location3, normal, index, distance3 = bvh.find_nearest(vertex.co)
+
+        # Compute the final position based on the output
+        if location1 and location2:
+            final_position = location2 if distance2 < distance1 else location1
+        elif location1:
+            final_position = location1
+            if location3:
+                if distance3 * 3 < distance1:
+                    final_position = location3
+        elif location2:
+            final_position = location2
+            if location3:
+                if distance3 * 3 < distance2:
+                    final_position = location3
+        else:
+            if location3:
+                final_position = location3
+
+        # Finally, if the final position is computed, then update the vertex position
+        if final_position:
+            vertex.co = final_position

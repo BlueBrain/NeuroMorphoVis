@@ -17,6 +17,7 @@
 
 # System imports
 import random
+import math
 
 # Blender imports
 import bpy
@@ -25,12 +26,14 @@ import bpy
 import nmv.bmeshi
 import nmv.consts
 import nmv.enums
+import nmv.geometry
 import nmv.mesh
 import nmv.physics
 import nmv.scene
 import nmv.shading
 import nmv.skeleton
 import nmv.utilities
+
 
 
 ####################################################################################################
@@ -756,6 +759,7 @@ class SomaSoftBodyBuilder:
 
         # Attach the hooks to the faces that correspond to the branches
         for root_and_face_center in roots_and_faces_centroids:
+
             # Get the arbor
             arbor = root_and_face_center[0]
 
@@ -800,6 +804,7 @@ class SomaSoftBodyBuilder:
         # Apply the soma shader directly to the soft body object, otherwise create the soma here
         # and apply the material later.
         if apply_shader:
+
             # Create the soma material and assign it to the ico-sphere
             soma_material = nmv.shading.create_material(
                 name=nmv.consts.Skeleton.SOMA_PREFIX, color=self.options.shading.soma_color,
@@ -845,9 +850,6 @@ class SomaSoftBodyBuilder:
         # Smoothing the soma via shade smoothing
         nmv.mesh.ops.shade_smooth_object(soma_mesh)
 
-        # Add noise to the soma surface to make it more realistic
-        self.add_noise_to_soma_surface(soma_mesh)
-
         # Return the reconstructed soma object
         return soma_mesh
 
@@ -855,13 +857,16 @@ class SomaSoftBodyBuilder:
     # @reconstruct_soma_mesh
     ################################################################################################
     def reconstruct_soma_mesh(self,
-                              apply_shader=True):
+                              apply_shader=True,
+                              add_noise_to_surface=True):
         """Reconstructs the mesh of the soma of the neuron in a single step.
 
         :param apply_shader:
             Apply the given soma shader in the configuration. This flag will be set to False when
             the soma is created in another builder such as the skeleton builder or the piecewise
             mesh builder.
+        :param add_noise_to_surface:
+            Adds noise to the soma surface to make it much more realistic.
         :return:
             A reference to the reconstructed mesh of the soma.
         """
@@ -888,10 +893,96 @@ class SomaSoftBodyBuilder:
         reconstructed_soma_mesh = self.build_soma_mesh_from_soft_body_object(soma_soft_body)
 
         # Add noise to the soma surface to make it more realistic
-        self.add_noise_to_soma_surface(reconstructed_soma_mesh)
+        if add_noise_to_surface:
+            self.add_noise_to_soma_surface(reconstructed_soma_mesh)
 
         # Return a reference to the reconstructed soma
         return reconstructed_soma_mesh
+
+    ################################################################################################
+    # @remove_vertices_within_arbor_initial_segment
+    ################################################################################################
+    def remove_vertices_within_arbor_initial_segment(self,
+                                                     mesh_object,
+                                                     radius_scale=1.0):
+        """Removes the vertices that are located around the initial segments of the arbors to
+        make a smooth transition along the arbors when using the soft-body somata with the
+        MetaBuilder.
+
+        :param mesh_object:
+            A given mesh object that should represent the reconstructed soma.
+        :param radius_scale:
+            The scale of the radius to avoid destroying the extrusion faces.
+        """
+
+        # Get a list of valid arbors where we can pull the sphere towards without being intersecting
+        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+
+        nmv.scene.select_object(mesh_object)
+        # Prepare a list of vertices to be deleted
+        to_be_deleted_vertices = list()
+
+        # For every valid arbor
+        for arbor in valid_arbors:
+
+            # For each vertex in the mesh object
+            for vertex in mesh_object.data.vertices:
+
+                # Check if the vertex is inside the sphere or not
+                if nmv.geometry.is_point_inside_sphere(
+                        arbor.samples[0].point, arbor.samples[0].radius * radius_scale, vertex.co):
+
+                    angle = arbor.samples[0].point.normalized().angle(vertex.normal)
+                    print(math.degrees(angle))
+                    if math.degrees(angle) < 10:
+                        # Append the vertices to the list
+                        to_be_deleted_vertices.append(vertex.index)
+
+        # Remove the vertices from the mesh
+        nmv.mesh.remove_vertices(mesh_object, to_be_deleted_vertices)
+
+        return valid_arbors
+
+    def remove_faces_within_arbor_initial_segment(self,
+                                                  mesh_object):
+
+        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+
+        nmv.mesh.deselect_all_vertices(mesh_object)
+        # For every valid arbor
+        for arbor in valid_arbors:
+
+            for face in mesh_object.data.polygons.values():
+
+                # Check if the vertex is inside the sphere or not
+                if nmv.geometry.is_point_inside_sphere(
+                        arbor.samples[0].point, arbor.samples[0].radius, face.center):
+
+                    angle = arbor.samples[0].point.normalized().angle(face.normal)
+                    #print(math.degrees(angle))
+                    if math.degrees(angle) < 25:
+                        face.select = True
+
+        # Switch to edit mode
+        bpy.ops.object.editmode_toggle()
+
+        # Delete the face
+        bpy.ops.mesh.delete(type='FACE')
+
+        # Switch back to the edit more
+        bpy.ops.object.editmode_toggle()
+
+        return valid_arbors
+
+        '''
+        nmv.mesh.select_all_vertices(mesh_object)
+
+        bpy.ops.object.editmode_toggle()
+        bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+        bpy.ops.object.editmode_toggle()
+        '''
 
     ################################################################################################
     # @reconstruct_soma_profile_mesh

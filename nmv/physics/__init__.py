@@ -16,4 +16,5 @@
 ####################################################################################################
 
 from .hook import *
+from .particel_system import *
 from .soft_body import *

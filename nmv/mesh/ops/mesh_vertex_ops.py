@@ -17,6 +17,7 @@
 
 # Blender imports
 import bpy
+import bmesh
 from mathutils import Vector, Matrix
 
 # Internal modules
@@ -365,6 +366,35 @@ def remove_doubles_of_selected_vertices(mesh_object,
 
     # Make beauty faces
     bpy.ops.mesh.beautify_fill()
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
+# @remove_vertices
+####################################################################################################
+def remove_vertices(mesh_object,
+                    vertices_indices):
+    """Deletes the vertices of the mesh.
+
+    :param mesh_object:
+        A given mesh object.
+    :param vertices_indices:
+        A list of the indices of the vertices that must be deleted.
+    """
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+
+    # Select the vertices
+    select_vertices(mesh_object, vertices_indices)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Delete the vertices
+    bpy.ops.mesh.delete(type='VERT')
 
     # Switch to edit mode to be able to implement the bridging operator
     bpy.ops.object.mode_set(mode='OBJECT')
@@ -772,3 +802,76 @@ def get_nearest_vertex_to_point(mesh_object,
 
     # Return the result
     return nearest_vertex.co
+
+
+####################################################################################################
+# @detect_mesh_partitions_by_vertices
+####################################################################################################
+def detect_mesh_partitions_by_vertices(mesh_object):
+    """Detect how many partitions are in the mesh.
+
+    :param mesh_object:
+        A given mesh object to be checked.
+    :return:
+        A list of the vertices of each partition in the mesh. If the list has ONLY one list, this
+        means that the mesh has only a single partition.
+    """
+
+    # A list that contains the mesh data in 1D
+    raw = list()
+    island = list()
+    visited = list()
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    mesh = bmesh.from_edit_mesh(mesh_object.data)
+
+    # Switch to the vertex mode
+    bpy.ops.mesh.select_mode(type="VERT")
+
+    # Deselect all meshes
+    bpy.ops.mesh.select_all(action='DESELECT')
+
+    # For every face in the mesh object
+    for face in mesh.faces:
+
+        # For every vertex in the face
+        for vertex in face.verts:
+
+            # If the vertex is not in the raw list
+            if vertex.index not in raw:
+
+                # Select the vertex
+                vertex.select = True
+
+                # Select all vertices linked to the active mesh
+                bpy.ops.mesh.select_linked()
+
+                # For each vertex in the mesh object
+                for mesh_vertex in mesh.verts:
+
+                    # If the mesh vertex is selected
+                    if mesh_vertex.select:
+                        # Append the index to the island list
+                        island.append(mesh_vertex.index)
+
+                        # Add to the 1D list
+                        raw.append(mesh_vertex.index)
+
+                # Deselect all the meshes
+                bpy.ops.mesh.select_all(action='DESELECT')
+
+                # If the island not in visited list, add it
+                if island not in visited:
+                    visited.append(island[:])
+                    island.clear()
+
+    # Switch back to the object mode
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    # Return the list of vertices of each partition
+    return visited

@@ -15,20 +15,34 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .analysis_consts import *
-from .skeleton_consts import *
-from .paths_consts import *
-from .color_consts import *
-from .dendrogram_consts import *
-from .drawing_consts import *
-from .image_consts import *
-from .math_consts import *
-from .meshing_consts import *
-from .messages_consts import *
-from .morphology_consts import *
-from .mtypes_consts import *
-from .simulation_consts import *
-from .soft_body_consts import *
-from .spines_consts import *
-from .suffix_consts import *
-from .meta_ball_consts import *
+# Blender imports
+from mathutils import Vector
+
+
+####################################################################################################
+# @Color
+####################################################################################################
+class Drawing:
+    """Drawing constants, to draw the particle simulations
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        pass
+
+    # Blend only
+    BLEND = 0
+
+    # Multiply blend
+    MULTIPLY_BLEND = 1
+
+    # Add and blend
+    ADDITIVE_BLEND = 2
+
+    # The width of the edge in a particle system
+    LINE_WIDTH = 1
+
+    # The radius of a particle
+    PARTICLE_SIZE = 3

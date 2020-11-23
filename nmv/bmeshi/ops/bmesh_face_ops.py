@@ -991,3 +991,110 @@ def scale_face(bmesh_object,
 
         # Compute the mapping point along that direction and set the vertex coordinates to it
         vertex.co = face_center + direction * scale_factor
+
+
+####################################################################################################
+# @get_largest_radius_in_face
+####################################################################################################
+def get_largest_radius_in_face(bmesh_object,
+                               face_index):
+    """Gets the largest radius of a face. This radius represents the circle that can cover the
+    entire face.
+
+    :param bmesh_object:
+        An input bmesh object.
+    :param face_index:
+        The index of the corresponding face in the bmesh object.
+    :return:
+        The largest radius in the face.
+    """
+
+    # Get a reference to the face and its centroid
+    face = get_face_from_index(bmesh_object, face_index)
+
+    # Get face center
+    face_center = face.calc_center_median()
+
+    # The largest radius in the face
+    largest_radius = 0
+
+    # Perform the operation per vertex in the face
+    for vertex in face.verts[:]:
+
+        # Compute the distance from the center to the vertex
+        distance = (vertex.co - face_center).length
+
+        # Update
+        if distance > largest_radius:
+            largest_radius = distance
+
+    # Return the largest radius
+    return largest_radius
+
+
+####################################################################################################
+# @subdivide_split_triangles
+####################################################################################################
+def subdivide_split_triangles(bmesh_object):
+    """
+    NOTE: This implementation is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
+
+    :param bmesh_object:
+        A given bmesh object to subdivide and split its triangles
+    """
+
+    # Subdivide the edges of a bmesh with a single cut
+    bmesh.ops.subdivide_edges(
+        bmesh_object, edges=bmesh_object.edges, cuts=1, use_grid_fill=True, smooth=True)
+
+    # Lists to collect the data
+    collapse = list()
+    triangulate = set()
+    visited_vertices = set()
+
+    # For each vertex in the bmesh object
+    for vertex in bmesh_object.verts:
+
+        # If the vertex is shared within five edges to five vertices
+        if len(vertex.link_faces) == 5:
+
+            # Get the face signature
+            face_signature = tuple(sorted(len(face.verts) for face in vertex.link_faces))
+
+            # Signature must be a tuple of (3, 4, 4, 4, 4)
+            if face_signature == (3, 4, 4, 4, 4):
+
+                # For every face in the faces containing the vertex
+                for face in vertex.link_faces:
+
+                    # If the face is a triangle, i.e. must have three vertices
+                    if len(face.verts) == 3:
+
+                        # For each edge in the face
+                        for edge in face.edges:
+
+                            # Construct a set of vertices for searching
+                            vertices = set(edge.verts)
+
+                            # If this vertex has not been processed
+                            if vertex not in vertices and not vertices & visited_vertices:
+
+                                # Operate
+                                visited_vertices |= vertices
+
+                                # Add to the collapse list
+                                collapse.append(edge)
+
+                            # Add to the triangulate set
+                            triangulate |= set(face for v in vertices for face in v.link_faces)
+
+    # Triangulate the bmesh object from the built list of triangles with the SORT_EDGE method
+    bmesh.ops.triangulate(bmesh_object, faces=list(triangulate), quad_method="SHORT_EDGE")
+
+    # Collapse
+    bmesh.ops.collapse(bmesh_object, edges=collapse)
+
+    # Build the mesh by joining the triangles together
+    bmesh.ops.join_triangles(bmesh_object, faces=bmesh_object.faces,
+                             angle_face_threshold=3.16, angle_shape_threshold=3.16,
+                             cmp_seam=True)

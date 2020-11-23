@@ -167,6 +167,46 @@ def map_face_to_circle(mesh_object,
 
 
 ####################################################################################################
+# @get_largest_radius_in_face
+####################################################################################################
+def get_largest_radius_in_face(mesh_object,
+                               face_index):
+    """Returns the largest radius of a given face in the mesh.
+
+    :param mesh_object:
+        A given mesh object.
+    :param face_index:
+        The index of the face.
+    :return:
+        The largest radius of the face.
+    """
+
+    # Get a list of vertices in the object
+    vertices = mesh_object.data.vertices
+
+    # Get the face center
+    face = mesh_object.data.polygons[face_index]
+    face_center = Vector((face.center[0], face.center[1], face.center[2]))
+
+    # Largest distance from the center to the vertices
+    largest_radius = 0
+
+    # For each vertex, get the largest distance from the center to each vertex
+    for index in face.vertices:
+
+        # Get the vertex
+        vertex = mesh_object.data.vertices[index]
+
+        # Update the distance
+        distance = (face_center - vertex.co).length
+        if distance > largest_radius:
+            largest_radius = distance
+
+    # Return the largest radius
+    return largest_radius
+
+
+####################################################################################################
 # @extrude_face_to_face
 ####################################################################################################
 def extrude_face_to_face(mesh_object,

@@ -32,6 +32,7 @@ import nmv.skeleton
 import nmv.utilities
 import nmv.scene
 import nmv.geometry
+import nmv.physics
 
 
 ####################################################################################################
@@ -89,7 +90,9 @@ class MetaBuilder:
 
         # A scale factor that was figured out by trial and error to correct the scaling of the radii
         # The results are validated by computing the Hausdorff distance.
-        self.magic_scale_factor = 1.575
+        self.magic_scale_factor = 1.575 * 1.025
+
+        self.soma_profile_scaling_factor = 1.5
 
         # The smallest detected radius while building the model, to be used for meta-ball resolution
         self.smallest_radius = 1e5
@@ -347,7 +350,8 @@ class MetaBuilder:
     # @emanate_soma_towards_arbor
     ################################################################################################
     def emanate_soma_towards_arbor(self,
-                                   arbor):
+                                   arbor,
+                                   soma_smallest_radius=None):
         """Extends the space of the soma towards the given arbor to make a shape that is not sphere.
 
         NOTE: The arbor must be connected to the soma to apply this operation, otherwise it
@@ -355,6 +359,9 @@ class MetaBuilder:
 
         :param arbor:
             A given arbor to emanate the soma towards.
+        :param soma_smallest_radius:
+            The smallest radius to be assigned to the first point at the origin. By default is None.
+            This means it is assigned to the auto-value detected by NeuroMorphoVis.
         """
 
         # The arbor must NOT be far from the soma to emanate towards it
@@ -366,17 +373,23 @@ class MetaBuilder:
                          self.morphology.soma.centroid[2]))
             p2 = arbor.samples[0].point
 
+            # Starting radius
+            r1 = self.morphology.soma.smallest_radius
+            if soma_smallest_radius is not None:
+                r1 = soma_smallest_radius
             # Add the meta segment to the object 
             self.create_meta_segment(
                 p1=p1,
                 p2=p2,
-                r1=self.morphology.soma.smallest_radius,
+                r1=r1,
                 r2=arbor.samples[0].radius * self.magic_scale_factor)
 
     ################################################################################################
     # @build_soma_from_meta_objects
     ################################################################################################
     def build_soma_from_meta_objects(self):
+        """Builds the soma from meta-objects ONLY.
+        """
 
         # Header
         nmv.logger.info('Building soma from Meta Objects')
@@ -423,6 +436,69 @@ class MetaBuilder:
                     self.emanate_soma_towards_arbor(arbor=arbor)
 
     ################################################################################################
+    # @build_soma_from_soft_body
+    ################################################################################################
+    def build_soma_from_soft_body(self):
+        """Builds the soma profile with the soft-body algorithm.
+        """
+
+        # If the soma is connected to the root arbors
+        soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
+            morphology=self.morphology, options=self.options)
+        soft_body_soma = soma_builder_object.reconstruct_soma_mesh(apply_shader=False,
+                                                                   add_noise_to_surface=False)
+
+
+        # Adjust it
+        stepper = nmv.physics.algorithm.run_algorithm(soft_body_soma, bpy.context)
+        for i in range(1000000):
+            finished = next(stepper)
+            if finished:
+                break
+
+        #soma_builder_object.remove_faces_within_arbor_initial_segment(soft_body_soma)
+        valid_arbors = soma_builder_object.remove_faces_within_arbor_initial_segment(soft_body_soma)
+
+        for arbor in valid_arbors:
+            meta_element = self.meta_skeleton.elements.new()
+            meta_element.radius = arbor.samples[0].radius * self.magic_scale_factor * 1.0
+            meta_element.co = arbor.samples[0].point
+
+        for face in soft_body_soma.data.polygons:
+
+            # Add the meta element
+            meta_element = self.meta_skeleton.elements.new()
+
+            radius = nmv.mesh.get_largest_radius_in_face(mesh_object=soft_body_soma,
+                                                         face_index=face.index)
+
+            meta_element.radius = 2 * radius * self.magic_scale_factor
+
+            # Update its coordinates
+            meta_element.co = face.center - (face.normal * radius * self.soma_profile_scaling_factor)
+
+        # Delete the mesh
+        nmv.scene.delete_object_in_scene(scene_object=soft_body_soma)
+        return valid_arbors
+
+        '''
+        for vertex in soft_body_soma.data.vertices:
+
+            # Add the meta element
+            meta_element = self.meta_skeleton.elements.new()
+
+            radius = 0.25  # nmv.mesh.get_largest_radius_in_face(self.soft_body_soma, f.index)
+
+            # Set its radius
+            meta_element.radius = radius * self.magic_scale_factor
+
+            # Update its coordinates
+            meta_element.co = vertex.co - (vertex.normal * radius * self.magic_scale_factor)
+
+            # self.meta_skeleton.resolution = 0.1
+        '''
+
+    ################################################################################################
     # @finalize_meta_object
     ################################################################################################
     def finalize_meta_object(self):
@@ -437,6 +513,8 @@ class MetaBuilder:
 
         # Update the resolution
         self.meta_skeleton.resolution = self.smallest_radius
+        if self.meta_skeleton.resolution > 0.1:
+            self.meta_skeleton.resolution = 0.1
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
@@ -456,6 +534,9 @@ class MetaBuilder:
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
+
+        # Remove the small partitions
+        nmv.mesh.remove_small_partitions(self.meta_mesh)
 
     ################################################################################################
     # @add_surface_roughness
@@ -522,9 +603,13 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Build the soma
-        result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
-        self.profiling_statistics += stats
+        #result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
+        #self.profiling_statistics += stats
 
+        self.build_soma_from_soft_body()
+
+
+        #
         # Build the arbors
         # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
@@ -533,6 +618,9 @@ class MetaBuilder:
         # Finalize the meta object and construct a solid object
         result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
         self.profiling_statistics += stats
+
+        nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.1)
+        nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
 
         # Surface roughness
         result, stats = nmv.utilities.profile_function(self.add_surface_roughness)
