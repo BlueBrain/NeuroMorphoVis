@@ -273,6 +273,12 @@ def draw_meta_objects_meshing_options(panel,
         Blender scene.
     """
 
+    # Which technique to use to reconstruct the soma
+    soma_type_row = panel.layout.row()
+    soma_type_row.label(text='Soma:')
+    soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
+
     # Surface roughness
     mesh_surface_row = panel.layout.row()
     mesh_surface_row.label(text='Surface:')

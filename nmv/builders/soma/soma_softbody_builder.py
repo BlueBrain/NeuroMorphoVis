@@ -71,6 +71,9 @@ class SomaSoftBodyBuilder:
         # A list of all the hooks that are created to stretch the soma
         self.hooks_list = None
 
+        # A list of all the arbors that are connected to the soma.
+        self.valid_arbors = None
+
         # Set the initial soma radius to half of its mean radius
         self.initial_soma_radius = \
             options.soma.radius_scale_factor * morphology.soma.smallest_radius
@@ -579,7 +582,7 @@ class SomaSoftBodyBuilder:
         nmv.logger.header('Soma reconstruction with SoftBody')
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
-        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+        self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
             morphology=self.morphology, soma_radius=self.initial_soma_radius)
 
         # Create a ico-sphere bmesh to represent the starting shape of the soma
@@ -587,7 +590,7 @@ class SomaSoftBodyBuilder:
             radius=self.initial_soma_radius, subdivisions=self.options.soma.subdivision_level)
 
         # subdivide the extrusion faces around the valid arbors
-        for arbor in valid_arbors:
+        for arbor in self.valid_arbors:
             self.subdivide_at_extrusion_point(soma_bmesh_sphere, arbor)
 
         # Keep a list of all the extrusion face centroids, for later
@@ -598,7 +601,7 @@ class SomaSoftBodyBuilder:
         valid_basal_dendrites = list()
         valid_axons = list()
 
-        for arbor in valid_arbors:
+        for arbor in self.valid_arbors:
             if arbor.is_axon():
                 valid_axons.append(arbor)
             elif arbor.is_apical_dendrite():
@@ -904,7 +907,8 @@ class SomaSoftBodyBuilder:
     ################################################################################################
     def remove_vertices_within_arbor_initial_segment(self,
                                                      mesh_object,
-                                                     radius_scale=1.0):
+                                                     radius_scale=1.0,
+                                                     angle=25):
         """Removes the vertices that are located around the initial segments of the arbors to
         make a smooth transition along the arbors when using the soft-body somata with the
         MetaBuilder.
@@ -913,18 +917,26 @@ class SomaSoftBodyBuilder:
             A given mesh object that should represent the reconstructed soma.
         :param radius_scale:
             The scale of the radius to avoid destroying the extrusion faces.
+        :param angle:
+            The angle in degrees between the normal of the connection face and the vertices to be
+            deleted, by default 25.
+        :return
+            Returns the valid arbors that are connected to the soma.
         """
 
-        # Get a list of valid arbors where we can pull the sphere towards without being intersecting
-        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+        # Check if the valid arbors are there or not
+        if self.valid_arbors is None:
+            self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+                morphology=self.morphology, soma_radius=self.initial_soma_radius)
 
+        # Select the mesh object
         nmv.scene.select_object(mesh_object)
-        # Prepare a list of vertices to be deleted
-        to_be_deleted_vertices = list()
+
+        # Compose a list of the indices of the vertices that will be deleted
+        vertices_indices = list()
 
         # For every valid arbor
-        for arbor in valid_arbors:
+        for arbor in self.valid_arbors:
 
             # For each vertex in the mesh object
             for vertex in mesh_object.data.vertices:
@@ -933,56 +945,81 @@ class SomaSoftBodyBuilder:
                 if nmv.geometry.is_point_inside_sphere(
                         arbor.samples[0].point, arbor.samples[0].radius * radius_scale, vertex.co):
 
-                    angle = arbor.samples[0].point.normalized().angle(vertex.normal)
-                    print(math.degrees(angle))
-                    if math.degrees(angle) < 10:
-                        # Append the vertices to the list
-                        to_be_deleted_vertices.append(vertex.index)
+                    # Compute the angle between the normals
+                    angle_between_vertex_normal_and_face_normal = math.degrees(
+                        arbor.samples[0].point.normalized().angle(vertex.normal))
+
+                    # If the angle is less than the given, then add it to the list
+                    if angle_between_vertex_normal_and_face_normal < angle:
+                        vertices_indices.append(vertex.index)
 
         # Remove the vertices from the mesh
-        nmv.mesh.remove_vertices(mesh_object, to_be_deleted_vertices)
+        nmv.mesh.remove_vertices(mesh_object=mesh_object, vertices_indices=vertices_indices)
 
-        return valid_arbors
+        # Return a list of the valid arbors that are connected to the soma.
+        return self.valid_arbors
 
+    ################################################################################################
+    # @remove_faces_within_arbor_initial_segment
+    ################################################################################################
     def remove_faces_within_arbor_initial_segment(self,
-                                                  mesh_object):
+                                                  mesh_object,
+                                                  radius_scale=1.0,
+                                                  angle=25):
+        """Removes the faces that are located around the initial segments of the arbors to
+        make a smooth transition along the arbors when using the soft-body somata with the
+        MetaBuilder.
 
-        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+        :param mesh_object:
+            A given mesh object that should represent the reconstructed soma.
+        :param radius_scale:
+            The scale of the radius to avoid destroying the extrusion faces.
+        :param angle:
+            The angle in degrees between the normal of the connection face and the vertices to be
+            deleted, by default 25.
+        :return
+            Returns the valid arbors that are connected to the soma.
+        """
 
+        # Check if the valid arbors are there or not
+        if self.valid_arbors is None:
+            self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+                morphology=self.morphology, soma_radius=self.initial_soma_radius)
+
+        # Select the mesh object
+        nmv.scene.select_object(mesh_object)
+
+        # Deselect all the vertices in the mesh
         nmv.mesh.deselect_all_vertices(mesh_object)
-        # For every valid arbor
-        for arbor in valid_arbors:
 
+        # For every valid arbor
+        for arbor in self.valid_arbors:
+
+            # For every face in the mesh
             for face in mesh_object.data.polygons.values():
 
                 # Check if the vertex is inside the sphere or not
                 if nmv.geometry.is_point_inside_sphere(
                         arbor.samples[0].point, arbor.samples[0].radius, face.center):
 
-                    angle = arbor.samples[0].point.normalized().angle(face.normal)
-                    #print(math.degrees(angle))
-                    if math.degrees(angle) < 25:
+                    # Compute the angles between the normals
+                    angle_between_normals = arbor.samples[0].point.normalized().angle(face.normal)
+
+                    # If the angle is less than the given one, select the face
+                    if math.degrees(angle_between_normals) < angle:
                         face.select = True
 
         # Switch to edit mode
         bpy.ops.object.editmode_toggle()
 
-        # Delete the face
+        # Delete the selected face
         bpy.ops.mesh.delete(type='FACE')
 
-        # Switch back to the edit more
+        # Switch back to the object more
         bpy.ops.object.editmode_toggle()
 
-        return valid_arbors
-
-        '''
-        nmv.mesh.select_all_vertices(mesh_object)
-
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
-        bpy.ops.object.editmode_toggle()
-        '''
+        # Return a reference to the valid arbors that are connected to the soma
+        return self.valid_arbors
 
     ################################################################################################
     # @reconstruct_soma_profile_mesh

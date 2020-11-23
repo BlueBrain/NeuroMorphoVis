@@ -17,7 +17,6 @@
 
 # System imports
 import copy
-import random
 
 # Blender importsget_n_nearest_vertices_to_point
 import bpy, mathutils
@@ -88,11 +87,13 @@ class MetaBuilder:
         # Meta object mesh, used to build the mesh of the morphology
         self.meta_mesh = None
 
-        # A scale factor that was figured out by trial and error to correct the scaling of the radii
+        # A scale factor that was figured out by trial-and-error to correct the scaling of the radii
         # The results are validated by computing the Hausdorff distance.
         self.magic_scale_factor = 1.575 * 1.025
 
-        self.soma_profile_scaling_factor = 1.5
+        # A scale factor that was figured by trial-and-error to correct the scaling of the somata
+        # reconstructed from the soft-body meshes
+        self.soma_scaling_factor = 1.5
 
         # The smallest detected radius while building the model, to be used for meta-ball resolution
         self.smallest_radius = 1e5
@@ -239,9 +240,9 @@ class MetaBuilder:
             if radius_1 < 0.1:
                 radius_1 = 0.1
 
+            # Adjust the radii
             if radius_0 < self.smallest_radius:
                 self.smallest_radius = radius_0
-
             if radius_1 < self.smallest_radius:
                 self.smallest_radius = radius_1
 
@@ -377,6 +378,7 @@ class MetaBuilder:
             r1 = self.morphology.soma.smallest_radius
             if soma_smallest_radius is not None:
                 r1 = soma_smallest_radius
+
             # Add the meta segment to the object 
             self.create_meta_segment(
                 p1=p1,
@@ -438,65 +440,60 @@ class MetaBuilder:
     ################################################################################################
     # @build_soma_from_soft_body
     ################################################################################################
-    def build_soma_from_soft_body(self):
-        """Builds the soma profile with the soft-body algorithm.
+    def build_soma_from_soft_body_mesh(self):
+        """Builds the soma profile in the meta skeleton based on a soma that is reconstructed with
+        the with soft-body algorithm.
         """
 
-        # If the soma is connected to the root arbors
-        soma_builder_object = nmv.builders.SomaSoftBodyBuilder(
-            morphology=self.morphology, options=self.options)
-        soft_body_soma = soma_builder_object.reconstruct_soma_mesh(apply_shader=False,
-                                                                   add_noise_to_surface=False)
+        # Use the SomaSoftBodyBuilder to reconstruct the soma
+        soft_body_soma_builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology,
+                                                                  options=self.options)
 
+        # Construct the soft-body-based soma and avoid adding noise to the profile
+        soft_body_soma = soft_body_soma_builder.reconstruct_soma_mesh(
+            apply_shader=False, add_noise_to_surface=False)
 
-        # Adjust it
+        # Run the particles simulation remesher
         stepper = nmv.physics.algorithm.run_algorithm(soft_body_soma, bpy.context)
         for i in range(1000000):
             finished = next(stepper)
             if finished:
                 break
 
-        #soma_builder_object.remove_faces_within_arbor_initial_segment(soft_body_soma)
-        valid_arbors = soma_builder_object.remove_faces_within_arbor_initial_segment(soft_body_soma)
+        # Remove the faces that are located around the initial segment
+        valid_arbors = soft_body_soma_builder.remove_faces_within_arbor_initial_segment(
+            soft_body_soma)
 
+        # For every valid arbor
         for arbor in valid_arbors:
+
+            # Construct a meta-element at the initial sample of each arbor
             meta_element = self.meta_skeleton.elements.new()
             meta_element.radius = arbor.samples[0].radius * self.magic_scale_factor * 1.0
             meta_element.co = arbor.samples[0].point
 
+        # Build the soma profile from the soft-body mesh
         for face in soft_body_soma.data.polygons:
 
-            # Add the meta element
+            # Add a new meta element
             meta_element = self.meta_skeleton.elements.new()
 
-            radius = nmv.mesh.get_largest_radius_in_face(mesh_object=soft_body_soma,
-                                                         face_index=face.index)
+            # Compute the largest radius in the triangle, but since we re-mesh the soma, we will
+            # get almost equi-sides faces
+            radius = nmv.mesh.get_largest_radius_in_face(
+                mesh_object=soft_body_soma, face_index=face.index)
 
-            meta_element.radius = 2 * radius * self.magic_scale_factor
+            # Compute the radius of the meta-element by trial-and-error
+            meta_element.radius = radius * 2 * self.magic_scale_factor
 
             # Update its coordinates
-            meta_element.co = face.center - (face.normal * radius * self.soma_profile_scaling_factor)
+            meta_element.co = face.center - (face.normal * radius * self.soma_scaling_factor)
 
         # Delete the mesh
         nmv.scene.delete_object_in_scene(scene_object=soft_body_soma)
+
+        # Return a reference to the valid arbors that are connected to the soma
         return valid_arbors
-
-        '''
-        for vertex in soft_body_soma.data.vertices:
-
-            # Add the meta element
-            meta_element = self.meta_skeleton.elements.new()
-
-            radius = 0.25  # nmv.mesh.get_largest_radius_in_face(self.soft_body_soma, f.index)
-
-            # Set its radius
-            meta_element.radius = radius * self.magic_scale_factor
-
-            # Update its coordinates
-            meta_element.co = vertex.co - (vertex.normal * radius * self.magic_scale_factor)
-
-            # self.meta_skeleton.resolution = 0.1
-        '''
 
     ################################################################################################
     # @finalize_meta_object
@@ -524,8 +521,10 @@ class MetaBuilder:
         nmv.scene.set_active_object(self.meta_mesh)
 
         # Convert it to a mesh from meta-balls
+        nmv.logger.info('Converting the Meta-object to a Mesh')
         bpy.ops.object.convert(target='MESH')
 
+        # Update the label of the reconstructed mesh
         self.meta_mesh = bpy.context.scene.objects[0]
         self.meta_mesh.name = self.morphology.label
 
@@ -535,8 +534,20 @@ class MetaBuilder:
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
 
-        # Remove the small partitions
-        nmv.mesh.remove_small_partitions(self.meta_mesh)
+        # Remove the islands (or small partitions from the mesh) and smooth it to look nice
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+
+            # Remove the small partitions
+            nmv.logger.info('Removing Partitions')
+            nmv.mesh.remove_small_partitions(self.meta_mesh)
+
+            # Decimate
+            nmv.logger.info('Decimating the Mesh')
+            nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.1)
+
+            # Smooth vertices to remove any sphere-like shapes
+            nmv.logger.info('Smoothing the Mesh')
+            nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
 
     ################################################################################################
     # @add_surface_roughness
@@ -602,14 +613,15 @@ class MetaBuilder:
             self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
 
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+            soma_building_function = self.build_soma_from_soft_body_mesh
+        else:
+            soma_building_function = self.build_soma_from_meta_objects
+
         # Build the soma
-        #result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
-        #self.profiling_statistics += stats
+        result, stats = nmv.utilities.profile_function(soma_building_function)
+        self.profiling_statistics += stats
 
-        self.build_soma_from_soft_body()
-
-
-        #
         # Build the arbors
         # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
@@ -618,9 +630,6 @@ class MetaBuilder:
         # Finalize the meta object and construct a solid object
         result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
         self.profiling_statistics += stats
-
-        nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.1)
-        nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
 
         # Surface roughness
         result, stats = nmv.utilities.profile_function(self.add_surface_roughness)

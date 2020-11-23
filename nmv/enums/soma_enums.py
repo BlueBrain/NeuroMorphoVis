@@ -48,10 +48,6 @@ class Soma:
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
         SOFT_BODY = 'SOMA_SOFT_BODY_MESH'
 
-        # Reconstruct a realistic soma with soft body physics and use it later to connect it to
-        # a meta-object
-        SOFT_BODY_FOR_META_BALLS = 'SOFT_BODY_FOR_META_BALLS'
-
         ############################################################################################
         # @__init__
         ############################################################################################
