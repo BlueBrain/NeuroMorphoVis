@@ -20,5 +20,5 @@ from .field import *
 from .particle import *
 from .surface_particle_system import *
 from .spatial_hash import *
-from .algorithm import *
-
+from .particle_remesher import *
+from .utilities import *

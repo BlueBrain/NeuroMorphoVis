@@ -454,11 +454,15 @@ class MetaBuilder:
             apply_shader=False, add_noise_to_surface=False)
 
         # Run the particles simulation remesher
-        stepper = nmv.physics.algorithm.run_algorithm(soft_body_soma, bpy.context)
+        remsher = nmv.physics.ParticleRemesher()
+        stepper = remsher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
+
+
         for i in range(1000000):
             finished = next(stepper)
             if finished:
                 break
+
 
         # Remove the faces that are located around the initial segment
         valid_arbors = soft_body_soma_builder.remove_faces_within_arbor_initial_segment(

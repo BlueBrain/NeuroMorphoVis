@@ -114,10 +114,10 @@ class Field:
         # For each vertex in the bmesh object
         for vert in self.bm.verts:
             i = vert.index
-            self.field[i] = self.curvature_direction(vert)
-            self.normals[i] = self.vert_normal(vert)
+            self.field[i] = nmv.physics.curvature_direction(vert)
+            self.normals[i] = nmv.physics.vert_normal(vert)
             self.scale[i] = vert[mask_layer]
-            self.curvature[i] = self.average_curvature(vert)
+            self.curvature[i] = nmv.physics.average_curvature(vert)
             self.adjacent_counts[i] = min(len(vert.link_edges), max_adjacent)
             if vert.is_boundary:
                 self.weights[vert.index] = 0
@@ -126,102 +126,12 @@ class Field:
                     continue
                 self.connectivity[i, j] = e.other_vert(vert).index
 
-    @staticmethod
-    def average_curvature_(vert):
-        return sum(
-            (abs(edge.other_vert(vert).normal.dot(vert.normal)) for edge in vert.link_edges)) / len(
-            vert.link_edges)
-
-    @staticmethod
-    def random_tangent_vector(normal):
-        return normal.cross(numpy.random.sample(3) - 0.5).normalized()
-
-    @staticmethod
-    def vert_normal(vert):
-        return vert.normal
-
-    @staticmethod
-    def normalize_vectors_array(arr):
-        magnitudes = numpy.sqrt((arr ** 2).sum(axis=1))
-        return arr / magnitudes[:, numpy.newaxis]
-
-    @staticmethod
-    def best_matching_vector(tests, reference):
-        return max(tests, key=lambda v: v.dot(reference))
-
-    @staticmethod
-    def best_matching_vector_unsigned(tests, reference):
-        return max(tests, key=lambda v: abs(v.dot(reference)))
-
-    @staticmethod
-    def best_vector_combination(vecs_a, vecs_b):
-        a, b = max(product(vecs_a, vecs_b), key=lambda a: a[0].dot(a[1]))
-        return a, b
-
-    @staticmethod
-    def symmetry_space(vec, normal):
-        vec1 = Vector(vec).cross(normal)
-        vec = Vector(vec)
-        return vec, vec1, -vec, -vec1
-
-    @staticmethod
-    def hex_symmetry_space(vec, normal):
-        x = Vector(vec)
-        y = Vector(vec).cross(normal)
-        e = x * 0.5 + y * 0.866025
-        f = x * -0.5 + y * 0.866025
-        return x, e, f, -x, -e, -f
-
-    @staticmethod
-    def get_gp_frame(context):
-        frame = None
-        gp = context.scene.grease_pencil
-        if gp:
-            if gp.layers:
-                if gp.layers.active:
-                    if gp.layers.active.active_frame:
-                        frame = gp.layers.active.active_frame
-                        print(frame)
-        return frame
-
-    @staticmethod
-    def average_curvature(vert):
-        curv = 0
-        tot = 0
-        for edge in vert.link_edges:
-            other = edge.other_vert(vert)
-            d = other.co - vert.co
-            nd = other.normal - vert.normal
-            curv += nd.dot(d) / d.length_squared
-            tot += 1
-        if not tot:
-            return 0
-        else:
-            return curv / tot
-
-    def curvature_direction(self, vert):
-        if vert.is_boundary:
-            for edge in vert.link_edges:
-                if edge.is_boundary:
-                    other = edge.other_vert(vert)
-                    d = vert.co - other.co
-                    return d.normalized()
-        try:
-            other = min((edge.other_vert(vert) for edge in vert.link_edges),
-                        key=lambda v: v.normal.dot(vert.normal))
-            vec = other.normal.cross(vert.normal).normalized()
-            if vec.length_squared == 0:
-                raise ValueError()
-            return vec
-        except ValueError:
-            return self.random_tangent_vector(vert.normal)
-
     ################################################################################################
     # @initialize_from_gp
     ################################################################################################
     def initialize_from_gp(self, context):
         mat = self.matrix.inverted()
-        frame = self.get_gp_frame(context)
+        frame = nmv.physics.get_grease_pencil_frame(context)
         seen_verts = set()
         if frame:
             for stroke in frame.strokes:
@@ -258,8 +168,8 @@ class Field:
                         if not tot:
                             d = Vector(self.field[other.index])
                         else:
-                            d += self.best_matching_vector(
-                                self.symmetry_space(self.field[other.index], other.normal),
+                            d += nmv.physics.best_matching_vector(
+                                nmv.physics.symmetry_space(self.field[other.index], other.normal),
                                 d
                             )
                         tot += 1
@@ -343,13 +253,13 @@ class Field:
                 best = best - self.normals * (best * self.normals).sum(axis=1)[:, numpy.newaxis]
                 self.field = best
 
-        self.field = self.normalize_vectors_array(self.field)
+        self.field = nmv.physics.normalize_vectors_array(self.field)
 
     ################################################################################################
     # @autoscale
     ################################################################################################
     def autoscale(self):
-        symmetry = self.hex_symmetry_space if self.hex_mode else self.symmetry_space
+        symmetry = nmv.physics.hex_symmetry_space if self.hex_mode else nmv.physics.symmetry_space
 
         for vert in self.bm.verts:
             u = Vector(self.field[vert.index])
@@ -364,7 +274,7 @@ class Field:
                 else:
                     vert1_vec = last_vec
 
-                vert2_vec = self.best_matching_vector(symmetry(self.field[vert2.index], vert2.normal), vert1_vec)
+                vert2_vec = nmv.physics.best_matching_vector(symmetry(self.field[vert2.index], vert2.normal), vert1_vec)
 
                 vert1_vec = Vector((vert1_vec.dot(u), vert1_vec.dot(v)))
                 vert2_vec = Vector((vert2_vec.dot(u), vert2_vec.dot(v)))
@@ -394,7 +304,7 @@ class Field:
     # @detect_singularities
     ################################################################################################
     def detect_singularities(self):
-        symmetry = self.hex_symmetry_space if self.hex_mode else self.symmetry_space
+        symmetry = nmv.physics.hex_symmetry_space if self.hex_mode else nmv.physics.symmetry_space
         cache = {}
 
         def symmetry_cached(vert):
@@ -413,16 +323,16 @@ class Field:
                 v1 = face.verts[1]
                 v2 = face.verts[2]
                 vec0 = self.field[v0.index]
-                vec1 = self.best_matching_vector(symmetry_cached(v1), vec0)
+                vec1 = nmv.physics.best_matching_vector(symmetry_cached(v1), vec0)
                 v2_symmetry = symmetry_cached(v2)
-                match0 = self.best_matching_vector(v2_symmetry, vec0)
-                match1 = self.best_matching_vector(v2_symmetry, vec1)
+                match0 = nmv.physics.best_matching_vector(v2_symmetry, vec0)
+                match1 = nmv.physics.best_matching_vector(v2_symmetry, vec1)
                 if match0.dot(match1) < 0.5:
                     singularities.append(face.calc_center_median())
         else:
             for vert in self.bm.verts:
                 ang = 0
-                u = self.random_tangent_vector(vert.normal)
+                u = nmv.physics.random_tangent_vector(vert.normal)
                 v = u.cross(vert.normal)
                 last_vec = None
                 for loop in vert.link_loops:
@@ -432,7 +342,7 @@ class Field:
                         vert1_vec = symmetry_cached(vert1)[0]
                     else:
                         vert1_vec = last_vec
-                    vert2_vec = self.best_matching_vector(symmetry_cached(vert2), vert1_vec)
+                    vert2_vec = nmv.physics.best_matching_vector(symmetry_cached(vert2), vert1_vec)
                     last_vec = vert2_vec
                     vert1_vec = Vector((vert1_vec.dot(u), vert1_vec.dot(v)))
                     vert2_vec = Vector((vert2_vec.dot(u), vert2_vec.dot(v)))
@@ -454,10 +364,10 @@ class Field:
                 ref_dir = self.field[face.verts[0].index]
 
             field = [
-                self.best_matching_vector(
-                    self.symmetry_space(
+                nmv.physics.best_matching_vector(
+                    nmv.physics.symmetry_space(
                         self.field[vert.index], vert.normal) if not self.hex_mode
-                    else self.hex_symmetry_space(self.field[vert.index], vert.normal),
+                    else nmv.physics.hex_symmetry_space(self.field[vert.index], vert.normal),
                     reference=ref_dir
                 )
                 for vert in face.verts
@@ -495,7 +405,7 @@ class Field:
             color /= 3
             size = sum(edge.calc_length() for edge in vert.link_edges) / len(vert.link_edges)
             u = Vector(self.field[vert.index]) * size
-            vecs = self.symmetry_space(u, vert.normal) if not self.hex_mode else self.hex_symmetry_space(u, vert.normal)
+            vecs = nmv.physics.symmetry_space(u, vert.normal) if not self.hex_mode else nmv.physics.hex_symmetry_space(u, vert.normal)
             for v in vecs:
                 draw.add_line(loc, loc + v, color1=color, color2=white)
 

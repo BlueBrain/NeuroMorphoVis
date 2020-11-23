@@ -17,6 +17,7 @@
 
 # System imports
 import numpy
+import math
 
 # Blender imports
 import bmesh
@@ -50,8 +51,7 @@ class SurfaceParticleSystem:
         self.ignore_drawing = True
         if not self.ignore_drawing:
             self.draw = nmv.physics.DrawCallback()
-
-        self.draw.matrix = mesh_object.matrix_world
+            self.draw.matrix = mesh_object.matrix_world
 
         self.particle_size = model_size / resolution
         self.particle_size_mask = model_size / mask_resolution
@@ -62,7 +62,7 @@ class SurfaceParticleSystem:
 
     def curvature_spawn_particles(self, n=10):
         d_sqr = self.particle_size ** 2
-        verts = sorted(self.field.bm.verts, key=vector_fields.average_curvature)
+        verts = sorted(self.field.bm.verts, key=nmv.physics.average_curvature)
         for i in range(n):
             vert = verts[i]
             not_valid = False
@@ -76,7 +76,7 @@ class SurfaceParticleSystem:
     def gp_spawn_particles(self, context):
         r = max(self.particle_size, self.particle_size_mask)
         mat = self.field.matrix.inverted()
-        frame = vector_fields.get_gp_frame(context)
+        frame = nmv.physics.get_grease_pencil_frame(context)
         if frame:
             for stroke in frame.strokes:
                 for point in stroke.points:
@@ -126,7 +126,7 @@ class SurfaceParticleSystem:
             for edge in new_bm.edges:
                 center = (edge.verts[0].co + edge.verts[1].co) / 2
                 location, normal, dir, s, c = self.field.sample_point(center)
-                size = lerp(s, self.particle_size, self.particle_size_mask)
+                size = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
                 if edge.calc_length() > size * 0.1:
                     subdivide.append(edge)
             if not subdivide or n <= 0:
@@ -142,7 +142,7 @@ class SurfaceParticleSystem:
 
         for vert in sorted(new_bm.verts, key=lambda v: v.co.dot(dir)):
             location, normal, dir, s, c = self.field.sample_point(vert.co)
-            size = lerp(s, self.particle_size, self.particle_size_mask)
+            size = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
             valid = True
             for neighbor in self.grid.test_sphere(location, radius=size):
                 valid = False
@@ -176,10 +176,10 @@ class SurfaceParticleSystem:
                         continue
 
                 if self.triangle_mode:
-                    vecs = vector_fields.hex_symmetry_space(particle.dir, particle.normal)
+                    vecs = nmv.physics.hex_symmetry_space(particle.dir, particle.normal)
                     vecs = (vecs[0], vecs[1], vecs[4])
                 else:
-                    vecs = vector_fields.symmetry_space(particle.dir, particle.normal)
+                    vecs = nmv.physics.symmetry_space(particle.dir, particle.normal)
                     vecs = (vecs[0], vecs[1], vecs[3])
 
                 for dir in vecs:
@@ -245,16 +245,7 @@ class SurfaceParticleSystem:
 
             current_front = new_front
 
-        # particles = list(self.particles)
-        # for particle in particles:
-        #     if particle.tag not in {"SHARP", "REMOVED"}:
-        #         remove = False
-        #         for intruder in grid.test_sphere(particle.co, particle.radius * 0.7, exclude=(particle,)):
-        #             remove = True
-        #             break
-        #         if remove:
-        #             self.remove_particle(particle)
-        #             particle.tag = "REMOVED"
+
 
     def repeal_particles(self, iterations=20, factor=0.01):
         particles = list(self.particles)
@@ -321,9 +312,9 @@ class SurfaceParticleSystem:
 
     def new_particle(self, location, dir=None):
         location, normal, dir, s, c = self.field.sample_point(location, dir)
-        particle = Particle(location, normal, self.field.bvh)
+        particle = nmv.physics.Particle(location, normal, self.field.bvh)
         particle.dir = dir
-        particle.radius = lerp(s, self.particle_size, self.particle_size_mask)
+        particle.radius = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
         self.particles.add(particle)
         self.grid.insert(particle)
         return particle
@@ -354,7 +345,7 @@ class SurfaceParticleSystem:
                 le = edge.calc_length()
 
                 s = (edge.verts[0][mask_layer] + edge.verts[1][mask_layer]) / 2
-                target_le = lerp(s, self.particle_size, self.particle_size_mask)
+                target_le = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
                 if target_le * 0.5 <= le:
                     subdivide_edges.append(edge)
             print(len(subdivide_edges))
@@ -470,7 +461,7 @@ class SurfaceParticleSystem:
             if stop:
                 break
 
-        bvh_snap(source_bvh, bm.verts)
+        nmv.physics.bvh_snap(source_bvh, bm.verts)
 
         bmesh.ops.holes_fill(new_bm, edges=new_bm.edges)
         bmesh.ops.triangulate(new_bm, faces=new_bm.faces)
@@ -494,10 +485,10 @@ class SurfaceParticleSystem:
                                          angle_face_threshold=3.14,
                                          angle_shape_threshold=3.14,
                                          cmp_seam=True)
-                relax_topology(new_bm)
-                bvh_snap(source_bvh, new_bm.verts)
+                nmv.physics.relax_topology(new_bm)
+                nmv.physics.bvh_snap(source_bvh, new_bm.verts)
 
 
-        relax_topology(new_bm)
-        bvh_snap(source_bvh, new_bm.verts)
+        nmv.physics.relax_topology(new_bm)
+        nmv.physics.bvh_snap(source_bvh, new_bm.verts)
         return new_bm, source_bvh
