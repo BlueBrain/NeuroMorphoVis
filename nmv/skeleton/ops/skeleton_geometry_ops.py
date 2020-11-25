@@ -643,3 +643,13 @@ def simplify_morphology(section):
 
         # Omit the children
         section.children = list()
+
+
+####################################################################################################
+# @center_morphology
+####################################################################################################
+def center_morphology(section,
+                      soma_centroid):
+
+    for sample in section.samples:
+        sample.point -= soma_centroid

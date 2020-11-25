@@ -4,6 +4,10 @@
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
+# The code in this file is based on the Tesselator add-on, version 1.28, that is provided by
+# Jean Da Costa Machado. The code is available at https://github.com/jeacom25b/Tesselator-1-28
+# which has a GPL license similar to NeuroMorphoVis.
+#
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, version 3 of the License.
 #
@@ -44,16 +48,25 @@ class Field:
     ################################################################################################
     def __init__(self,
                  mesh_object,
-                 max_adjacent=20):
+                 max_adjacent=20,
+                 enable_drawing=False):
+        """Constructor
+
+        :param mesh_object:
+            A given mesh object to calculate the field around.
+        :param max_adjacent:
+            Maximum number of adjacent vertices or edges per vertex.
+        :param enable_drawing:
+            Enable the drawing functions in the interactive mode.
+        """
 
         # World matrix
         self.matrix = mesh_object.matrix_world.copy()
 
-        # Drawing function
-        self.draw = nmv.physics.DrawCallback()
-
-        # Drawing matrix
-        self.draw.matrix = self.matrix
+        # Drawing function and matrix
+        if enable_drawing:
+            self.draw = nmv.physics.DrawCallback()
+            self.draw.matrix = self.matrix
 
         # Field mesh represented by a bmesh object
         self.bm = bmesh.new()
@@ -112,27 +125,54 @@ class Field:
         mask_layer = self.bm.verts.layers.paint_mask.verify()
 
         # For each vertex in the bmesh object
-        for vert in self.bm.verts:
-            i = vert.index
-            self.field[i] = nmv.physics.curvature_direction(vert)
-            self.normals[i] = nmv.physics.vert_normal(vert)
-            self.scale[i] = vert[mask_layer]
-            self.curvature[i] = nmv.physics.average_curvature(vert)
-            self.adjacent_counts[i] = min(len(vert.link_edges), max_adjacent)
-            if vert.is_boundary:
-                self.weights[vert.index] = 0
-            for j, e in enumerate(vert.link_edges):
+        for vertex in self.bm.verts:
+
+            # A reference to the vertex index
+            i = vertex.index
+
+            #
+            self.field[i] = nmv.physics.curvature_direction(vertex)
+
+            # Get the normal of the vertex
+            self.normals[i] = nmv.physics.vert_normal(vertex)
+
+            # Get the scale of the field from the mask layer
+            self.scale[i] = vertex[mask_layer]
+
+            # Get the average curvature of the vertex
+            self.curvature[i] = nmv.physics.average_curvature(vertex)
+
+            # Get the adjacent vertices
+            self.adjacent_counts[i] = min(len(vertex.link_edges), max_adjacent)
+
+            # If this is a boundary vertex, set its weight to zero to avoid creating distorted mesh
+            if vertex.is_boundary:
+                self.weights[vertex.index] = 0
+
+            # Update the connectivity matrix
+            for j, edge in enumerate(vertex.link_edges):
+
+                # Reached maximum adjacent edges
                 if j >= max_adjacent:
                     continue
-                self.connectivity[i, j] = e.other_vert(vert).index
+
+                # Update the connectivity matrix
+                self.connectivity[i, j] = edge.other_vert(vertex).index
 
     ################################################################################################
-    # @initialize_from_gp
+    # @initialize_from_grease_pencil
     ################################################################################################
-    def initialize_from_gp(self, context):
+    def initialize_from_grease_pencil(self,
+                                      context):
+        """
+
+        :param context:
+        :return:
+        """
+
         mat = self.matrix.inverted()
         frame = nmv.physics.get_grease_pencil_frame(context)
-        seen_verts = set()
+        seen_vertices = set()
         if frame:
             for stroke in frame.strokes:
                 le = len(stroke.points)
@@ -148,13 +188,13 @@ class Field:
                     vert = min(face.verts, key=lambda v: (v.co - p1).length_squared)
                     self.field[vert.index] = d.normalized()
                     self.weights[vert.index] = 0
-                    seen_verts.add(vert)
+                    seen_vertices.add(vert)
 
         current_front = set()
-        for vert in seen_verts:
+        for vert in seen_vertices:
             for edge in vert.link_edges:
                 other = edge.other_vert(vert)
-                if other not in seen_verts:
+                if other not in seen_vertices:
                     current_front.add(vert)
 
         while current_front:
@@ -164,7 +204,7 @@ class Field:
                 tot = 0
                 for edge in vert.link_edges:
                     other = edge.other_vert(vert)
-                    if other in seen_verts:
+                    if other in seen_vertices:
                         if not tot:
                             d = Vector(self.field[other.index])
                         else:
@@ -178,31 +218,51 @@ class Field:
                         self.weights[other.index] = self.weights[vert.index] + 1
                     if tot:
                         self.field[vert.index] = d.normalized().cross(vert.normal)
-            seen_verts |= current_front
-            new_front -= seen_verts
+            seen_vertices |= current_front
+            new_front -= seen_vertices
             current_front = new_front
         self.weights /= self.weights.max()
 
     ################################################################################################
     # @walk_edges
     ################################################################################################
-    def walk_edges(self, depth=0):
+    def walk_edges(self,
+                   depth=0):
+        """
+
+        :param depth:
+        :return:
+        """
+
+
         cols = numpy.arange(self.number_vertices)
-        ids = numpy.random.randint(0, self.max_adjacent, (self.number_vertices,)) % self.adjacent_counts
+
+        ids = numpy.random.randint(0, self.max_adjacent,
+                                   (self.number_vertices,)) % self.adjacent_counts
+
         ids = ids.astype(numpy.int_)
+
         adjacent_edges = self.connectivity[cols, ids]
+
         for _ in range(depth):
-            ids = numpy.random.randint(0, self.max_adjacent, (self.number_vertices,)) % self.adjacent_counts[adjacent_edges]
+            ids = numpy.random.randint(0, self.max_adjacent, (self.number_vertices,)) % \
+                  self.adjacent_counts[adjacent_edges]
+
             ids = ids.astype(numpy.int_)
+
             adjacent_edges = self.connectivity[adjacent_edges, ids]
+
         return adjacent_edges
 
     ################################################################################################
     # @smooth
     ################################################################################################
-    def smooth(self, iterations=100, depth=3, hex_mode=False):
+    def smooth(self,
+               iterations=100,
+               depth=3):
 
         def find_best_combinations(a, b):
+
             w = self.weights[:, numpy.newaxis]
             scores = []
             vectors = []
@@ -221,7 +281,7 @@ class Field:
 
         if not self.hex_mode:
             for i in range(iterations):
-                print(i)
+
                 a = self.field
                 b = numpy.cross(self.field, self.normals)
                 adjacent_edges = self.walk_edges(depth)
@@ -234,7 +294,6 @@ class Field:
                 self.field = best
         else:
             for i in range(iterations):
-                print(i)
                 x = self.field
                 y = numpy.cross(self.field, self.normals)
                 a = x
@@ -383,7 +442,7 @@ class Field:
             return location, normal, dir, scale, curv
         else:
             return None, None, None, None
-
+    '''
     ################################################################################################
     # @detect_singularities
     ################################################################################################
@@ -413,7 +472,7 @@ class Field:
             draw.add_point(singularity, red)
 
         draw.update_batch()
-
+    
     ################################################################################################
     # @detect_singularities
     ################################################################################################
@@ -432,3 +491,4 @@ class Field:
         draw.line_colors[0::2] = numpy.repeat(blue, [self.number_vertices], axis=0)
         draw.line_colors[1::2] = numpy.repeat(white, [self.number_vertices], axis=0)
         self.draw.update_batch()
+    '''

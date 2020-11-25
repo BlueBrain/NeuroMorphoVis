@@ -30,6 +30,8 @@ import nmv.shading
 import nmv.skeleton
 import nmv.utilities
 import nmv.scene
+import nmv.physics
+import nmv.options
 
 
 ####################################################################################################
@@ -44,7 +46,6 @@ class AstroMetaBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 soma_centroid,
                  soma_radius,
                  end_feet_proxy_meshes=None,
                  end_feet_thicknesses=None):
@@ -66,7 +67,7 @@ class AstroMetaBuilder:
         self.morphology = copy.deepcopy(morphology)
 
         # Soma centroid
-        self.soma_centroid = soma_centroid
+        # self.soma_centroid = soma_centroid
 
         # Soma radius
         self.soma_radius = soma_radius
@@ -85,6 +86,10 @@ class AstroMetaBuilder:
 
         # A scale factor that was figured out by trial and error to correct the scaling of the radii
         self.magic_scale_factor = 1.575
+
+        # A scale factor that was figured by trial-and-error to correct the scaling of the somata
+        # reconstructed from the soft-body meshes
+        self.soma_scaling_factor = 1.5
 
         # The smallest detected radius while building the model, to be used for meta-ball resolution
         self.smallest_radius = 1e5
@@ -315,8 +320,8 @@ class AstroMetaBuilder:
         # Create a new meta object that reflects the reconstructed mesh at the end of the operation
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
 
-        # Get a reference to the scene
-        scene = bpy.context.scene
+        # Make sure that the mesh is located at the centroid
+        self.meta_mesh.location = self.morphology.soma.centroid
 
         # Link the meta object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
@@ -341,7 +346,7 @@ class AstroMetaBuilder:
 
         # Assume that from the soma center towards the first point along the arbor is a segment
         self.create_meta_segment(
-            p1=self.soma_centroid,
+            p1=self.morphology.soma.centroid,
             p2=arbor.samples[0].point,
             r1=self.soma_radius,
             r2=arbor.samples[0].radius * self.magic_scale_factor)
@@ -372,6 +377,66 @@ class AstroMetaBuilder:
                 self.emanate_soma_towards_arbor(arbor=axon)
 
     ################################################################################################
+    # @build_soma_from_soft_body
+    ################################################################################################
+    def build_soma_from_soft_body_mesh(self):
+        """Builds the soma profile in the meta skeleton based on a soma that is reconstructed with
+        the with soft-body algorithm.
+        """
+
+        options = nmv.options.NeuroMorphoVisOptions()
+        # Use the SomaSoftBodyBuilder to reconstruct the soma
+        soft_body_soma_builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology,
+                                                                  options=options)
+
+        # Construct the soft-body-based soma and avoid adding noise to the profile
+        soft_body_soma = soft_body_soma_builder.reconstruct_soma_mesh(
+            apply_shader=False, add_noise_to_surface=False)
+
+        # Run the particles simulation remesher
+        mesher = nmv.physics.ParticleRemesher()
+        stepper = mesher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
+
+        for i in range(1000000):
+            finished = next(stepper)
+            if finished:
+                break
+
+        # Remove the faces that are located around the initial segment
+        valid_arbors = soft_body_soma_builder.remove_faces_within_arbor_initial_segment(
+            soft_body_soma)
+
+        # For every valid arbor
+        for arbor in valid_arbors:
+            # Construct a meta-element at the initial sample of each arbor
+            meta_element = self.meta_skeleton.elements.new()
+            meta_element.radius = arbor.samples[0].radius * self.magic_scale_factor * 1.0
+            meta_element.co = arbor.samples[0].point
+
+        # Build the soma profile from the soft-body mesh
+        for i, face in enumerate(soft_body_soma.data.polygons):
+
+            # Add a new meta element
+            meta_element = self.meta_skeleton.elements.new()
+
+            # Compute the largest radius in the triangle, but since we re-mesh the soma, we will
+            # get almost equi-sides faces
+            radius = nmv.mesh.get_largest_radius_in_face(
+                mesh_object=soft_body_soma, face_index=face.index)
+
+            # Compute the radius of the meta-element by trial-and-error
+            meta_element.radius = radius * 2 * self.magic_scale_factor
+
+            # Update its coordinates
+            meta_element.co = face.center - (face.normal * radius * self.soma_scaling_factor)
+
+        # Delete the mesh
+        nmv.scene.delete_object_in_scene(scene_object=soft_body_soma)
+
+        # Return a reference to the valid arbors that are connected to the soma
+        return valid_arbors
+
+    ################################################################################################
     # @finalize_meta_object
     ################################################################################################
     def finalize_meta_object(self):
@@ -385,7 +450,7 @@ class AstroMetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = self.smallest_radius
+        self.meta_skeleton.resolution = self.smallest_radius * 0.5
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
@@ -395,8 +460,10 @@ class AstroMetaBuilder:
         nmv.scene.set_active_object(self.meta_mesh)
 
         # Convert it to a mesh from meta-balls
+        nmv.logger.info('Converting the Meta-object to a Mesh')
         bpy.ops.object.convert(target='MESH')
 
+        nmv.logger.info('Labeling')
         self.meta_mesh = bpy.context.scene.objects[0]
         self.meta_mesh.name = self.morphology.label
 
@@ -418,7 +485,7 @@ class AstroMetaBuilder:
         nmv.scene.set_active_object(self.meta_mesh)
 
         # Assign the material to the selected mesh
-        nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
+        # nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
 
         # Update the UV mapping
         nmv.shading.adjust_material_uv(self.meta_mesh)
@@ -439,7 +506,7 @@ class AstroMetaBuilder:
         self.profiling_statistics += stats
 
         # Build the soma
-        result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
+        result, stats = nmv.utilities.profile_function(self.build_soma_from_soft_body_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors

@@ -100,6 +100,9 @@ class SomaMetaBuilder:
         # Create a new meta object that reflects the reconstructed mesh at the end of the operation
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
 
+        # Adjust the location of the meta_mesh
+        self.meta_mesh.location = self.morphology.soma.centroid
+
         # Link the meta object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
 
@@ -266,6 +269,7 @@ class SomaMetaBuilder:
 
         # Construct the meta elements along the segment
         while travelled_distance < segment_length:
+
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 

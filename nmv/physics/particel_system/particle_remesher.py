@@ -1,3 +1,24 @@
+####################################################################################################
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# The code in this file is based on the Tesselator add-on, version 1.28, that is provided by
+# Jean Da Costa Machado. The code is available at https://github.com/jeacom25b/Tesselator-1-28
+# which has a GPL license similar to NeuroMorphoVis.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
+
 # System
 import numpy
 import math
@@ -122,10 +143,10 @@ class ParticleRemesher:
 
         # Pencil
         if self.gp_influence > 0:
-            particle_manager.field.initialize_from_gp(context)
+            particle_manager.field.initialize_from_grease_pencil(context)
             particle_manager.field.weights /= max(0.00000001, 1 - self.gp_influence)
             particle_manager.field.weights = particle_manager.field.weights.clip(0, 1)
-            particle_manager.gp_spawn_particles(context)
+            particle_manager.grease_pencil_gp_spawn_particles(context)
 
         # Smooth
         for i in range(3):

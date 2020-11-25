@@ -67,7 +67,7 @@ class Soma:
 
         # Add the soma profile points radii to the distances_to_soma list
         for point in self.profile_points:
-            self.distances_to_soma.append(point.length)
+            self.distances_to_soma.append((point - self.centroid).length)
 
         # Add the arbors profile points radii to the distances_to_soma list
         if self.arbors_profile_points is not None:

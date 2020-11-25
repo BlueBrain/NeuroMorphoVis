@@ -4,6 +4,10 @@
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
+# The code in this file is based on the Tesselator add-on, version 1.28, that is provided by
+# Jean Da Costa Machado. The code is available at https://github.com/jeacom25b/Tesselator-1-28
+# which has a GPL license similar to NeuroMorphoVis.
+#
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, version 3 of the License.
 #
@@ -60,8 +64,13 @@ class SurfaceParticleSystem:
 
         self.grid = nmv.physics.SpatialHash(self.particle_size * 2)
 
+    ################################################################################################
+    # @curvature_spawn_particles
+    ################################################################################################
     def curvature_spawn_particles(self, n=10):
-        d_sqr = self.particle_size ** 2
+
+        d_sqr = self.particle_size * self.particle_size
+
         verts = sorted(self.field.bm.verts, key=nmv.physics.average_curvature)
         for i in range(n):
             vert = verts[i]
@@ -73,7 +82,10 @@ class SurfaceParticleSystem:
             if not not_valid:
                 self.new_particle(vert.co)
 
-    def gp_spawn_particles(self, context):
+    ################################################################################################
+    # @grease_pencil_gp_spawn_particles
+    ################################################################################################
+    def grease_pencil_gp_spawn_particles(self, context):
         r = max(self.particle_size, self.particle_size_mask)
         mat = self.field.matrix.inverted()
         frame = nmv.physics.get_grease_pencil_frame(context)
@@ -91,6 +103,9 @@ class SurfaceParticleSystem:
                         p.tag = "GREASE"
                         p.color = Vector((0, 1, 0, 1))
 
+    ################################################################################################
+    # @singularity_spawn_particles
+    ################################################################################################
     def singularity_spawn_particles(self):
         r = max(self.particle_size, self.particle_size_mask)
         for singularity in self.field.singularities:
@@ -102,7 +117,12 @@ class SurfaceParticleSystem:
             if valid:
                 self.new_particle(singularity)
 
-    def sharp_edge_spawn_particles(self, source_bm, sharp_angle=0.523599):
+    ################################################################################################
+    # @sharp_edge_spawn_particles
+    ################################################################################################
+    def sharp_edge_spawn_particles(self,
+                                   source_bm,
+                                   sharp_angle=0.523599):
 
         def sharp_particle_from_vert(vert):
             p = self.new_particle(vert.co)
@@ -151,7 +171,12 @@ class SurfaceParticleSystem:
             if valid:
                 sharp_particle_from_vert(vert)
 
-    def propagate_particles(self, relaxation=3, factor=0.5):
+    ################################################################################################
+    # @propagate_particles
+    ################################################################################################
+    def propagate_particles(self,
+                            relaxation=3,
+                            factor=0.5):
         grid = self.grid
         current_front = list(self.particles)
         while len(current_front) > 0:
@@ -245,8 +270,9 @@ class SurfaceParticleSystem:
 
             current_front = new_front
 
-
-
+    ################################################################################################
+    # @repeal_particles
+    ################################################################################################
     def repeal_particles(self, iterations=20, factor=0.01):
         particles = list(self.particles)
         tree = KDTree(len(particles))
@@ -294,6 +320,9 @@ class SurfaceParticleSystem:
 
             yield i
 
+    ################################################################################################
+    # @mirror_particles
+    ################################################################################################
     def mirror_particles(self, axis):
         particles = list(self.particles)
         for particle in particles:
@@ -352,6 +381,9 @@ class SurfaceParticleSystem:
         # Update its tag
         particle.tag = "REMOVED"
 
+    ################################################################################################
+    # @draw_particles
+    ################################################################################################
     def draw_particles(self, relaxation_steps=3):
         self.draw.clear_data()
         self.draw.point_size = 8
@@ -360,87 +392,188 @@ class SurfaceParticleSystem:
                                 particle.color * (particle.tag_number / relaxation_steps))
         self.draw.update_batch()
 
-    def create_mesh(self, bm, sharp_angle=0.52):
+    ################################################################################################
+    # @create_mesh
+    ################################################################################################
+    def create_mesh(self,
+                    bmesh_object,
+                    sharp_angle=0.52):
+        """
 
-        bmesh.ops.triangulate(bm, faces=bm.faces)
-        source_bvh = BVHTree.FromBMesh(bm)
+        :param bmesh_object:
+        :param sharp_angle:
+        :return:
+        """
 
-        mask_layer = bm.verts.layers.paint_mask.verify()
-        n = 5
+        # Triangulate the faces in the bmesh object
+        bmesh.ops.triangulate(bmesh_object, faces=bmesh_object.faces)
+
+        # Compute the BVH of the given bmesh object
+        source_bvh = BVHTree.FromBMesh(bmesh_object)
+
+        # Verify the mask of the given bmesh object
+        mask_layer = bmesh_object.verts.layers.paint_mask.verify()
+
+        subdivision_iterations = 5
         while True:
-            subdivide_edges = []
-            for edge in bm.edges:
-                le = edge.calc_length()
 
-                s = (edge.verts[0][mask_layer] + edge.verts[1][mask_layer]) / 2
-                target_le = nmv.physics.lerp(s, self.particle_size, self.particle_size_mask)
-                if target_le * 0.5 <= le:
+            # A list of the subdivided edges
+            subdivide_edges = list()
+
+            # For each edge in the edges
+            for edge in bmesh_object.edges:
+
+                # Get its length
+                edge_length = edge.calc_length()
+
+                # Get the center point of the edge
+                edge_center = (edge.verts[0][mask_layer] + edge.verts[1][mask_layer]) / 2.0
+
+                # Compute the target edge length
+                target_edge_length = nmv.physics.lerp(edge_center,
+                                                      self.particle_size,
+                                                      self.particle_size_mask)
+
+                # Subdivide the edge and add it to the list
+                if target_edge_length * 0.5 <= edge_length:
                     subdivide_edges.append(edge)
-            print(len(subdivide_edges))
-            print("subdivide", n)
-            n -= 1
-            if not subdivide_edges or n < 0:
+
+            # Adjust the counter to see if we are done or not
+            subdivision_iterations -= 1
+            if not subdivide_edges or subdivision_iterations < 0:
                 break
-            print("subdivide")
-            bmesh.ops.subdivide_edges(bm, edges=subdivide_edges, cuts=1, use_grid_fill=True, use_only_quads=True)
-            bmesh.ops.triangulate(bm, faces=bm.faces, quad_method="SHORT_EDGE")
-            bmesh.ops.beautify_fill(bm, edges=bm.edges, faces=bm.faces, method="AREA")
-        print("done")
 
-        # ==========================================================================================
+            # Add the new edges in the mesh
+            bmesh.ops.subdivide_edges(
+                bmesh_object, edges=subdivide_edges, cuts=1,
+                use_grid_fill=True, use_only_quads=True)
 
-        bm.verts.ensure_lookup_table()
-        bm.edges.ensure_lookup_table()
-        bm.faces.ensure_lookup_table()
-        n = len(bm.verts)
+            # Triangulate the mesh
+            bmesh.ops.triangulate(bmesh_object, faces=bmesh_object.faces, quad_method="SHORT_EDGE")
 
-        bvh = BVHTree.FromBMesh(bm)
+            # Use the beauty method to recreate the topology of the mesh
+            bmesh.ops.beautify_fill(
+                bmesh_object, edges=bmesh_object.edges, faces=bmesh_object.faces, method="AREA")
+
+        # Update the bmesh object lookup tables
+        bmesh_object.verts.ensure_lookup_table()
+        bmesh_object.edges.ensure_lookup_table()
+        bmesh_object.faces.ensure_lookup_table()
+
+        # A reference to the number of the vertices in the bmesh object
+        number_vertices = len(bmesh_object.verts)
+
+        # Build the BVH tree of the bmesh object
+        bvh = BVHTree.FromBMesh(bmesh_object)
+
 
         sharp = 20
         smooth = 10
 
-        particles = numpy.array([particle.co for particle in self.particles], dtype=numpy.float64, ndmin=2)
-        weights = numpy.array([smooth if particle.tag == "SHARP" else sharp for particle in self.particles], dtype=numpy.int8)
-        locations = numpy.array([vert.co for vert in bm.verts], dtype=numpy.float64, ndmin=2)
-        particles_mapping = numpy.full((n,), -1, dtype=numpy.int64)
+        # Compile a list of the particles
+        particles = numpy.array(
+            [particle.co for particle in self.particles], dtype=numpy.float64, ndmin=2)
 
+        # Compile a list of weights
+        weights = numpy.array(
+            [smooth if particle.tag == "SHARP" else sharp for particle in self.particles],
+            dtype=numpy.int8)
+
+        # Compile a list of the locations
+        locations = numpy.array(
+            [vert.co for vert in bmesh_object.verts], dtype=numpy.float64, ndmin=2)
+
+        # Particle mapping list
+        particles_mapping = numpy.full((number_vertices,), -1, dtype=numpy.int64)
+
+        # Current front surface of the mesh
         current_front = set()
+
+        # For each particle
         for i in range(len(self.particles)):
+
+            # Get its coordinates
             co = particles[i]
+
+            # Find the nearest coordinate to this one in the BHV
             location, normal, index, dist = bvh.find_nearest(co)
 
+            # If the location is valid
             if location:
-                vert = min(bm.faces[index].verts,
+
+                # Compute the new vertex
+                vert = min(bmesh_object.faces[index].verts,
                            key=lambda v: (v.co - Vector(co)).length_squared * (
                                2 if particles_mapping[v.index] == -1 else 1))
+
+                # Update the tag
                 vert.tag = True
+
+                # Update the particle mapping list
                 particles_mapping[vert.index] = i
+
+                # Add the new vertex to the front array
                 current_front.add(vert)
 
+        # As long as this set is filled
         while current_front:
+
+            # An empty new set
             new_front = set()
+
+            # For every vertex along the current front
             for vert in current_front:
+
+                # For each edge connected to this vertex
                 for edge in vert.link_edges:
-                    other = edge.other_vert(vert)
-                    if not other.tag:
-                        new_front.add(other)
-                        particles_mapping[other.index] = particles_mapping[vert.index]
-                        other.tag = True
+
+                    # Get the other vertex
+                    other_vertex = edge.other_vert(vert)
+
+                    # If the tag of the other vertex is False
+                    if not other_vertex.tag:
+
+                        # Add the other vertex to the new front
+                        new_front.add(other_vertex)
+
+                        # Update the mapping
+                        particles_mapping[other_vertex.index] = particles_mapping[vert.index]
+
+                        # Update the tag
+                        other_vertex.tag = True
+
+            # Current front is the new front
             current_front = new_front
 
         edges_limit = 10
-        edges = numpy.empty((n, edges_limit), dtype=numpy.int64)
-        edges_count = numpy.empty((n,), dtype=numpy.int64)
 
-        for vert in bm.verts:
+        # Create an array of edges
+        edges = numpy.empty((number_vertices, edges_limit), dtype=numpy.int64)
+
+        # Compute the edge counts
+        edges_count = numpy.empty((number_vertices,), dtype=numpy.int64)
+
+        # For every vertex in the bmesh object
+        for vert in bmesh_object.verts:
+
+            # Update the edges connected to this vertex
             edges_count[vert.index] = min(edges_limit, len(vert.link_edges))
+
+            # For every edge in the edges connected to the vertex
             for i, edge in enumerate(vert.link_edges):
+
+                # If the index is beyond the limit, break
                 if i >= edges_limit:
                     break
-                other = edge.other_vert(vert)
-                edges[vert.index][i] = other.index
 
-        ids = numpy.arange(n)
+                # Otherwise, update the connected vertex
+                other_vertex = edge.other_vert(vert)
+                edges[vert.index][i] = other_vertex.index
+
+        # Create an array of the IDs
+        ids = numpy.arange(number_vertices)
+
+        # TODO: What is this?
         for i in range(30):
             cols = numpy.random.randint(0, edges_limit) % edges_count
             edge_indexes = edges[ids, cols]
@@ -449,74 +582,130 @@ class SurfaceParticleSystem:
             edge_distance = ((particles[edge_mappings] - locations) ** 2).sum(axis=1) * weights[edge_mappings]
             particles_mapping = numpy.where(edge_distance > distance, particles_mapping, edge_mappings)
 
-        # ==========================================================================================
+        # Create a new bmesh that will contain the final mesh
+        new_bmesh_object = bmesh.new()
 
-        new_bm = bmesh.new()
+        # Create the vertices list from the particles
+        verts = [new_bmesh_object.verts.new(co) for co in particles]
 
-        # ==========================================================================================
-
-        verts = [new_bm.verts.new(co) for co in particles]
+        # For each particle in the system
         for index, particle in enumerate(self.particles):
+
+            # Sharp particle
             if particle.tag == "SHARP":
+
+                # Update the vertex tag to True
                 verts[index].tag = True
 
-        for face in bm.faces:
+        # For each face in the bmesh object
+        for face in bmesh_object.faces:
+
+            # Get the indices of the particles after the mapping
             particles_indexes = set(particles_mapping[vert.index] for vert in face.verts)
+
+            # With three-particles (vertices)
             if len(particles_indexes) == 3:
+
+                # Compile a new face in the new bmesh object
                 try:
-                    new_bm.faces.new((verts[i] for i in particles_indexes))
+                    new_bmesh_object.faces.new((verts[i] for i in particles_indexes))
                 except ValueError:
                     pass
-        bmesh.ops.recalc_face_normals(new_bm, faces=new_bm.faces)
 
-        # ==========================================================================================
+        # Recalculate the normals of the new mesh after adding the new vertices
+        bmesh.ops.recalc_face_normals(new_bmesh_object, faces=new_bmesh_object.faces)
 
+        # Create the mesh
         for i in range(50):
             stop = True
-            for vert in new_bm.verts:
-                le = len(vert.link_edges)
-                if le < 3:
-                    new_bm.verts.remove(vert)
+
+            # For every vertex in the new bmesh object
+            for vert in new_bmesh_object.verts:
+
+                # If the vertex is connected to less than three-vertices
+                if len(vert.link_edges) < 3:
+
+                    # Remove the vertex
+                    new_bmesh_object.verts.remove(vert)
+
+                    # Do not stop the iterations
                     stop = False
 
-            for edge in new_bm.edges:
+            # For every edge in the new bmesh object
+            for edge in new_bmesh_object.edges:
+
+                # If the edge is connected to less than two faces
                 if len(edge.link_faces) < 2:
-                    new_bm.edges.remove(edge)
+
+                    # Remove the edge
+                    new_bmesh_object.edges.remove(edge)
+
+                    # Do not stop the iterations
                     stop = False
-            bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=min(self.particle_size, self.particle_size_mask) * 0.1)
-            bmesh.ops.holes_fill(new_bm, edges=new_bm.edges)
-            bmesh.ops.triangulate(new_bm, faces=new_bm.faces, quad_method="SHORT_EDGE")
+
+            # Remove doubles to clean the mesh
+            bmesh.ops.remove_doubles(
+                bmesh_object, verts=bmesh_object.verts,
+                dist=min(self.particle_size, self.particle_size_mask) * 0.1)
+
+            # Fill the holes in the new bmesh object
+            bmesh.ops.holes_fill(new_bmesh_object, edges=new_bmesh_object.edges)
+
+            # Triangulate the new bmesh object
+            bmesh.ops.triangulate(
+                new_bmesh_object, faces=new_bmesh_object.faces, quad_method="SHORT_EDGE")
+
+            # If done, break the loop
             if stop:
                 break
 
-        nmv.physics.bvh_snap(source_bvh, bm.verts)
+        # Snap the vertices of the bmesh object along the source BVH
+        nmv.physics.bvh_snap(source_bvh, bmesh_object.verts)
 
-        bmesh.ops.holes_fill(new_bm, edges=new_bm.edges)
-        bmesh.ops.triangulate(new_bm, faces=new_bm.faces)
-        bmesh.ops.recalc_face_normals(new_bm, faces=new_bm.faces)
+        # Fill the holes in the new bmesh object
+        bmesh.ops.holes_fill(new_bmesh_object, edges=new_bmesh_object.edges)
 
-        # ==========================================================================================
+        # Triangulate the new bmesh object
+        bmesh.ops.triangulate(new_bmesh_object, faces=new_bmesh_object.faces)
 
+        # Recalculate the face normals
+        bmesh.ops.recalc_face_normals(new_bmesh_object, faces=new_bmesh_object.faces)
+
+        # If the sharp angle is less then 180
         if sharp_angle < math.pi:
-            crease = new_bm.edges.layers.crease.verify()
-            for edge in new_bm.edges:
+
+            # Verify the edges
+            crease = new_bmesh_object.edges.layers.crease.verify()
+
+            # For every edge in the bmesh object
+            for edge in new_bmesh_object.edges:
+
+                # If edge with sharp angle, update the seam to True
                 if edge.calc_face_angle(0) > sharp_angle:
                     edge[crease] = 1.0
                     edge.seam = True
 
-        # ==========================================================================================
-
+        # If faces are not triangulated
         if not self.triangle_mode:
             for i in range(2):
                 stop = True
-                bmesh.ops.join_triangles(new_bm, faces=new_bm.faces,
-                                         angle_face_threshold=3.14,
-                                         angle_shape_threshold=3.14,
-                                         cmp_seam=True)
-                nmv.physics.relax_topology(new_bm)
-                nmv.physics.bvh_snap(source_bvh, new_bm.verts)
 
+                # Add the new triangles
+                bmesh.ops.join_triangles(
+                    new_bmesh_object, faces=new_bmesh_object.faces, angle_face_threshold=3.14,
+                    angle_shape_threshold=3.14, cmp_seam=True)
 
-        nmv.physics.relax_topology(new_bm)
-        nmv.physics.bvh_snap(source_bvh, new_bm.verts)
-        return new_bm, source_bvh
+                # Relax the topology of the bmesh object
+                nmv.physics.relax_topology(new_bmesh_object)
+
+                # Snap again along the source BVH
+                nmv.physics.bvh_snap(source_bvh, new_bmesh_object.verts)
+
+        # Relax the topology of the new bmesh object
+        nmv.physics.relax_topology(new_bmesh_object)
+
+        # Snap again
+        nmv.physics.bvh_snap(source_bvh, new_bmesh_object.verts)
+
+        # Return a reference to the new bmesh object and the source BVH
+        return new_bmesh_object, source_bvh

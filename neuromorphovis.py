@@ -136,10 +136,71 @@ def run_local_neuromorphovis(arguments):
         Command line arguments.
     """
 
-    # Target and GID options are only available on the BBP visualization clusters
-    if arguments.input == 'target' or arguments.input == 'gid':
-        print('ERROR, Target and GID options are only available on the BBP visualization clusters')
-        exit(0)
+    # Use a specific circuit target
+    if arguments.input == 'target':
+
+        # Log
+        print('Loading a target [%s] in circuit [%s]' % (arguments.target, arguments.blue_config))
+
+        # Ensure a valid blue config and a target
+        if arguments.blue_config is None or arguments.target is None:
+            print('ERROR: Empty circuit configuration file or target')
+            exit(0)
+
+        # Import BluePy
+        try:
+            import bluepy.v2
+        except ImportError:
+            print('ERROR: Cannot import [BluePy], please install it')
+            exit(0)
+
+        from bluepy.v2 import Circuit
+
+        # Loading a circuit
+        circuit = Circuit(arguments.blue_config)
+
+        # Loading the GIDs of the sample target within the circuit
+        gids = circuit.cells.ids(arguments.target)
+
+        shell_commands = list()
+        for gid in gids:
+
+            # Get the argument string for an individual file
+            arguments_string = arguments_parser.get_arguments_string_for_individual_gid(
+                arguments=arguments, gid=gid)
+
+            # Construct the shell command to run the workflow
+            shell_commands.extend(
+                create_shell_commands_for_local_execution(arguments, arguments_string))
+
+        # Run NeuroMorphoVis from Blender in the background mode
+        for shell_command in shell_commands:
+            subprocess.call(shell_command, shell=True)
+
+
+    # Use a single GID
+    elif arguments.input == 'gid':
+
+        print('Loading a gid [%s] in circuit [%s]' % (str(arguments.gid), arguments.blue_config))
+
+        # Ensure a valid blue config and a GID
+        if arguments.blue_config is None or arguments.gid is None:
+            print('ERROR: Empty circuit configuration file or GID')
+            exit(0)
+
+            # Get the argument string for an individual file
+            arguments_string = arguments_parser.get_arguments_string_for_individual_gid(
+                arguments=arguments, gid=arguments.gid)
+
+            # Construct the shell command to run the workflow
+            shell_commands = create_shell_commands_for_local_execution(arguments, arguments_string)
+
+            # Run NeuroMorphoVis from Blender in the background mode
+            for shell_command in shell_commands:
+                subprocess.call(shell_command, shell=True)
+
+        # Run the jobs on the cluster
+        slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=[str(arguments.gid)])
 
     # Load morphology files (.H5 or .SWC)
     elif arguments.input == 'file':
@@ -156,8 +217,6 @@ def run_local_neuromorphovis(arguments):
 
         # Run NeuroMorphoVis from Blender in the background mode
         for shell_command in shell_commands:
-
-            # print('RUNNING: ' + shell_command)
             subprocess.call(shell_command, shell=True)
 
     # Load a directory morphology files (.H5 or .SWC)
@@ -235,31 +294,6 @@ def run_cluster_neuromorphovis(arguments):
 
         # Loading the GIDs of the sample target within the circuit
         gids = circuit.cells.ids(arguments.target)
-
-        '''
-        ### This code can be used to load the morphology path for H5 loading later.
-         
-        # Load the cells in the target
-        cells_in_target = circuit.cells.get(arguments.target)
-
-        # Get the full path of the directory and extension of the morphologies
-        sample_morphology_path = circuit.morph.get_filepath(gids[0])
-
-        # Get the morphology label
-        sample_morphology_label = cells_in_target.morphology.get(gids[0])
-
-        # Get the path and file extension
-        path_and_extension = sample_morphology_path.split(sample_morphology_label)
-
-        # Loading the morphology files from the GIDs in the circuit
-        morphologies = list()
-        for gid in gids:
-            # Add the morphology path
-            morphology_path = '%s/%s%s' % (path_and_extension[0],
-                                           cells_in_target.morphology.get(gid),
-                                           path_and_extension[1])
-            morphologies.append(morphology_path)
-        '''
 
         # Run the jobs on the cluster
         slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=gids)

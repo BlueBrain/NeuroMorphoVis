@@ -1,8 +1,12 @@
 ####################################################################################################
-# Copyright (c) 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# The code in this file is based on the Tesselator add-on, version 1.28, that is provided by
+# Jean Da Costa Machado. The code is available at https://github.com/jeacom25b/Tesselator-1-28
+# which has a GPL license similar to NeuroMorphoVis.
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -289,7 +293,7 @@ def subdivide_split_triangles(bmesh_object):
 ####################################################################################################
 def relax_topology(bmesh_object):
     """
-    NOTE: This implementation is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
+    NOTE: This code is based on the code of https://github.com/jeacom25b/Tesselator-1-28.
 
     :param bmesh_object:
     :return:
@@ -454,6 +458,22 @@ def bvh_snap(bvh, vertices):
             vertex.co = final_position
 
 
-def lerp(v, a, b):
+####################################################################################################
+# @lerp
+####################################################################################################
+def lerp(v,
+         a,
+         b):
+    """Linear interpolation
+
+    :param v:
+        Vector
+    :param a:
+        Minimum value.
+    :param b:
+        Maximum value.
+    :return:
+        Interpolated value.
+    """
     return (1 - v) * a + v * b
 

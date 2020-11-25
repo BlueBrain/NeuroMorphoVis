@@ -20,22 +20,22 @@
 BLENDER='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/blender'
 
 # Output directory 
-OUTPUT_DIRECTORY='/projects/astrocytes-circuit/astrocytes-meshes/generated'
+OUTPUT_DIRECTORY='/hdd1/projects-data/11.24.2020-astrocytes-with-softbody'
 
 # Circuit
 CIRCUIT='/ssd1/projects/astrocytes-circuit/20200930'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored
-GIDS_RANGE='1-1000'
+GIDS_RANGE='0'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE='/blender/neuromorphovis-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/astrocyte-reconstruction/gids'
 
 # Execution, serial or parallel
-EXECUTION='parallel'
+EXECUTION='serial'
 
 # Decimation factor (range: 1.0 - 0.01) to reduce the number of polygons in the mesh
-DECIMATION_FACTOR=0.1
+DECIMATION_FACTOR=1.0
 
 ####################################################################################################
 python3 run.py                                                                                      \

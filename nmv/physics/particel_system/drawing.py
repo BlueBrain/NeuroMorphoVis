@@ -4,9 +4,9 @@
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
-# This implementation of the DrawCallback class in this file and the shaders are based on the
-# code of https://github.com/jeacom25b/Tesselator-1-28 which has a GPL license to NeuroMorphoVis.
-# Tesselator is provided by Jean Da Costa Machado.
+# The code in this file is based on the Tesselator add-on, version 1.28, that is provided by
+# Jean Da Costa Machado. The code is available at https://github.com/jeacom25b/Tesselator-1-28
+# which has a GPL license similar to NeuroMorphoVis.
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, version 3 of the License.

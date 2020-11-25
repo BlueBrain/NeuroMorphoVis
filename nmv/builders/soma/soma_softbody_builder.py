@@ -18,6 +18,7 @@
 # System imports
 import random
 import math
+import copy
 
 # Blender imports
 import bpy
@@ -33,7 +34,6 @@ import nmv.scene
 import nmv.shading
 import nmv.skeleton
 import nmv.utilities
-
 
 
 ####################################################################################################
@@ -60,7 +60,7 @@ class SomaSoftBodyBuilder:
         """
 
         # Morphology
-        self.morphology = morphology
+        self.morphology = copy.deepcopy(morphology)
 
         # All the options of the project (an instance of NeuroMorphoVisOptions)
         self.options = options
@@ -123,9 +123,11 @@ class SomaSoftBodyBuilder:
             The ratio between the given soma radius and the extrusion radius of the arbor.
         """
 
+        # Distance between the soma and initial sample of the arbor
+        distance = (arbor.samples[0].point - self.morphology.soma.centroid).length
+
         # Compute the extrusion radius based on the arbor radius and also the soma radius
-        extrusion_radius = \
-            arbor.samples[0].radius * self.initial_soma_radius / arbor.samples[0].point.length
+        extrusion_radius = arbor.samples[0].radius * self.initial_soma_radius / distance
 
         # Compute the scale factor between the two radii
         scale_factor = arbor.samples[0].radius / extrusion_radius
@@ -160,7 +162,7 @@ class SomaSoftBodyBuilder:
         """
 
         # Compute the direction from the origin to the profile point
-        direction = profile_point.normalized()
+        direction = (profile_point - self.morphology.soma.centroid).normalized()
 
         # Compute the intersecting point on the soma
         profile_point_on_soma = self.initial_soma_radius * direction
@@ -286,7 +288,8 @@ class SomaSoftBodyBuilder:
 
         # Create a ico-sphere 'bmesh' to represent the initial shape of the soma
         initial_soma_sphere_bmesh = nmv.bmeshi.create_ico_sphere(
-            radius=self.initial_soma_radius, subdivisions=self.options.soma.subdivision_level)
+            radius=self.initial_soma_radius, location=self.morphology.soma.centroid,
+            subdivisions=self.options.soma.subdivision_level)
 
         # NOTE: The face extrusion process requires two lists to proceed, the first keeps the
         # centers of all the faces that will be extruded and the other keeps the valid profile
@@ -387,14 +390,15 @@ class SomaSoftBodyBuilder:
         """
 
         # Compute the direction from the origin to the branching point
-        connection_direction = arbor.samples[0].point.normalized()
+        connection_direction = (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
 
         # Compute the intersecting point on the soma and the difference between that on the soma
         # and that on the arbor starting point
-        connection_point_on_soma = connection_direction * self.initial_soma_radius
+        connection_point_on_soma = self.morphology.soma.centroid + connection_direction * self.initial_soma_radius
 
         # Compute the extrusion radius that will be applied on the soma_sphere
-        scale_factor = self.initial_soma_radius / arbor.samples[0].point.length
+        distance_to_soma = (arbor.samples[0].point - self.morphology.soma.centroid).length
+        scale_factor = self.initial_soma_radius / distance_to_soma
         extrusion_radius = arbor.samples[0].radius * scale_factor
 
         # Create a reference circle for reshaping the connection cross section to a clean shape,
@@ -539,14 +543,16 @@ class SomaSoftBodyBuilder:
         """
 
         # Compute the direction from the origin to the branching point
-        connection_direction = arbor.samples[0].point.normalized()
+        connection_direction = (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
 
         # Compute the intersecting point on the soma and the difference between that on the soma
         # and that on the arbor starting point
-        connection_point_on_soma = connection_direction * self.initial_soma_radius
+        distance_to_soma = connection_direction * self.initial_soma_radius
+        connection_point_on_soma = self.morphology.soma.centroid + distance_to_soma
 
         # Compute the extrusion radius that will be applied on the soma_sphere
-        scale_factor = self.initial_soma_radius / arbor.samples[0].point.length
+        distance_to_soma = (arbor.samples[0].point - self.morphology.soma.centroid).length
+        scale_factor = self.initial_soma_radius / distance_to_soma
         extrusion_radius = arbor.samples[0].radius * scale_factor
 
         # Select the vertices that intersect with the extrusion sphere to prepare the face for
@@ -587,7 +593,8 @@ class SomaSoftBodyBuilder:
 
         # Create a ico-sphere bmesh to represent the starting shape of the soma
         soma_bmesh_sphere = nmv.bmeshi.create_ico_sphere(
-            radius=self.initial_soma_radius, subdivisions=self.options.soma.subdivision_level)
+            radius=self.initial_soma_radius, location=self.morphology.soma.centroid,
+            subdivisions=self.options.soma.subdivision_level)
 
         # subdivide the extrusion faces around the valid arbors
         for arbor in self.valid_arbors:

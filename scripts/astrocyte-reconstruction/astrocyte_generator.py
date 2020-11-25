@@ -43,7 +43,8 @@ import astro_meta_builder
 # @create_end_feet_proxy_mesh
 ####################################################################################################
 def create_end_feet_proxy_mesh(area,
-                               index):
+                               index,
+                               soma_centroid=None):
     """Creates the end-feet proxy mesh.
 
     :param area:
@@ -64,7 +65,11 @@ def create_end_feet_proxy_mesh(area,
 
     # Append verts
     for point in points:
-        location = Vector((point[0], point[1], point[2]))
+        if soma_centroid is None:
+            location = Vector((point[0], point[1], point[2]))
+        else:
+            location = Vector((point[0], point[1], point[2])) - soma_centroid
+
         verts.append(location)
 
     # Append faces
@@ -122,18 +127,18 @@ def generate_astrocyte(circuit_path,
     # Clear the scene
     nmv.scene.clear_scene()
 
+    center_morphology = True
+
     for astro_generator in astrocytes_data:
-
-        # Load the .h5 morphology
-        reader = nmv.file.readers.H5Reader(h5_file=astro_generator.filepath,
-                                           center_morphology=False)
-
-        # Get the morphology object
-        morphology_object = reader.read_file()
 
         soma_centroid = astro_generator.circuit_data['soma_position']
         soma_centroid = Vector((soma_centroid[0], soma_centroid[1], soma_centroid[2]))
         soma_radius = astro_generator.circuit_data['soma_radius']
+
+        # Load the .h5 morphology
+        reader = nmv.file.readers.H5Reader(h5_file=astro_generator.filepath,
+                                           center_morphology=center_morphology)
+        morphology_object = reader.read_file()
 
         end_feet_proxy_meshes = list()
         end_feet_thicknesses = list()
@@ -143,12 +148,16 @@ def generate_astrocyte(circuit_path,
             area = areas[process.endfoot_area_mesh.index]
 
             # Proxy end feet
-            end_feet_proxy_meshes.append(create_end_feet_proxy_mesh(area, j))
+            if center_morphology:
+                end_feet_proxy_meshes.append(create_end_feet_proxy_mesh(area, j, soma_centroid))
+            else:
+                end_feet_proxy_meshes.append(create_end_feet_proxy_mesh(area, j))
+
             end_feet_thicknesses.append(area.thickness)
 
             # Build the builder
         builder = astro_meta_builder.AstroMetaBuilder(
-            morphology=morphology_object, soma_centroid=soma_centroid, soma_radius=soma_radius,
+            morphology=morphology_object, soma_radius=soma_radius,
             end_feet_proxy_meshes=end_feet_proxy_meshes, end_feet_thicknesses=end_feet_thicknesses)
 
         # Reconstructing the mesh and return a reference to the astrocyte mesh
@@ -210,11 +219,14 @@ if __name__ == "__main__":
     astrocyte_mesh = generate_astrocyte(circuit_path=args.circuit_path, astrocyte_gid=int(args.gid))
 
     # Decimate the mesh on two iterations
-    nmv.mesh.decimate_mesh_object(
-        mesh_object=astrocyte_mesh, decimation_ratio=float(args.decimation_factor))
+    # nmv.mesh.decimate_mesh_object(
+    #    mesh_object=astrocyte_mesh, decimation_ratio=float(args.decimation_factor))
 
+    nmv.file.export_scene_to_blend_file(output_directory=args.output_directory, output_file_name=args.gid)
+    '''
     # Export the mesh
     nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
                                         output_file_name=args.gid,
                                         output_directory=args.output_directory,
-                                        file_format=nmv.enums.Meshing.ExportFormat.OBJ)
+                                        file_format=nmv.enums.Meshing.ExportFormat.BLEND)
+    '''
