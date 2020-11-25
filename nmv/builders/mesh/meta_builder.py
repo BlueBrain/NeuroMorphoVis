@@ -546,7 +546,7 @@ class MetaBuilder:
 
             # Decimate
             nmv.logger.info('Decimating the Mesh')
-            nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.1)
+            nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.25)
 
             # Smooth vertices to remove any sphere-like shapes
             nmv.logger.info('Smoothing the Mesh')
