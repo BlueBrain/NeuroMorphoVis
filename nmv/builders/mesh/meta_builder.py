@@ -619,14 +619,11 @@ class MetaBuilder:
         result, stats = nmv.utilities.profile_function(
             self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
-        '''
+
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
             soma_building_function = self.build_soma_from_soft_body_mesh
         else:
             soma_building_function = self.build_soma_from_meta_objects
-        '''
-
-        soma_building_function = self.build_soma_from_meta_objects
 
         # Build the soma
         result, stats = nmv.utilities.profile_function(soma_building_function)
