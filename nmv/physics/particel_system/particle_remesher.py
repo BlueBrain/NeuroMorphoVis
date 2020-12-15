@@ -187,7 +187,7 @@ class ParticleRemesher:
         for i, _ in enumerate(
                 particle_manager.propagate_particles(self.relaxation_steps,
                                                      self.particle_relaxation)):
-            nmv.logger.info('Propagating particles [%d]' % i)
+            nmv.logger.detail('Propagating particles [%d]' % i)
 
             '''
             if interactive:

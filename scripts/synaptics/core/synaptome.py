@@ -75,6 +75,8 @@ def create_synapses_mesh(circuit,
         A reference to the created synapse mesh.
     """
 
+    spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
+
     # Get the IDs of the afferent synapses of a given GID
     afferent_synapses_ids = circuit.connectome.afferent_synapses(gid)
 
@@ -100,6 +102,7 @@ def create_synapses_mesh(circuit,
     synapse_objects = list()
     synapse_groups = list()
 
+    x = list()
     # Do it for all the synapses
     for i in range(len(post_synaptic_positions)):
 
@@ -110,27 +113,71 @@ def create_synapses_mesh(circuit,
         if synapse_percentage < random.uniform(0, 100):
             continue
 
-            # Material
+        # Material, only for afferent synapses, efferent ones should be create as spheres
         if not (pre_synaptic_mtypes[i] in color_map_materials):
             continue
 
-        material = color_map_materials[pre_synaptic_mtypes[i]]
+        # Inhibitory synapse
+        if synapse_types[i] < 100:
 
-        # Position
-        post_synaptic_position = Vector((post_synaptic_positions[i][0],
-                                         post_synaptic_positions[i][1],
-                                         post_synaptic_positions[i][2]))
-        position = inverted_transformation @ post_synaptic_position
+            # Post-synaptic position
+            post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                             post_synaptic_positions[i][1],
+                                             post_synaptic_positions[i][2]))
+            post_synaptic_position = inverted_transformation @ post_synaptic_position
 
-        # A synapse sphere object
-        synapse_sphere = nmv.geometry.create_ico_sphere(
-            radius=synapse_size, location=position, subdivisions=3, name='synapse_%d' % i)
+            # A synapse sphere object
+            spine_object = nmv.geometry.create_ico_sphere(
+                radius=synapse_size, location=post_synaptic_position, subdivisions=3,
+                name='synapse_%d' % i)
+
+            # Material
+            material = color_map_materials['INH']
+            nmv.shading.set_material_to_object(mesh_object=spine_object,
+                                               material_reference=material)
+        # Excitatory
+        else:
+
+            material = color_map_materials[pre_synaptic_mtypes[i]]
+
+            # Pre-synaptic position
+            pre_synaptic_position = Vector((pre_synaptic_positions[i][0],
+                                            pre_synaptic_positions[i][1],
+                                            pre_synaptic_positions[i][2]))
+            pre_synaptic_position = inverted_transformation @ pre_synaptic_position
+
+            # Post-synaptic position
+            post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                             post_synaptic_positions[i][1],
+                                             post_synaptic_positions[i][2]))
+            post_synaptic_position = inverted_transformation @ post_synaptic_position
+
+            # Select a random spine from the spines list
+            spine_template = random.choice(spine_meshes)
+
+            # Get a copy of the template and update it
+            spine_object = nmv.scene.ops.duplicate_object(spine_template, i, link_to_scene=True)
+
+            # Get the spine extent
+            spine_extent = (post_synaptic_position - pre_synaptic_position).length
+
+            # Scale the spine
+            nmv.scene.ops.scale_object_uniformly(spine_object, synapse_size * 2)
+
+            # Translate the spine to the post synaptic position
+            nmv.scene.ops.set_object_location(spine_object, post_synaptic_position)
+
+            # Rotate the spine towards the pre-synaptic point
+            # We assume that the normal is heading towards to -Z axis for computing the rotation
+            nmv.scene.ops.rotate_object_towards_target(
+                spine_object, Vector((0, 0, -1)), pre_synaptic_position)
+
+            # Material
+            nmv.shading.set_material_to_object(mesh_object=spine_object,
+                                               material_reference=material)
 
         # Add the sphere to the group
-        synapse_objects.append(synapse_sphere)
-
-        # Material
-        nmv.shading.set_material_to_object(mesh_object=synapse_sphere, material_reference=material)
+        synapse_objects.append(spine_object)
 
         # Group every 100 objects into a single group
         if i % 50 == 0:

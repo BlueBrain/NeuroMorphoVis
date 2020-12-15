@@ -537,12 +537,16 @@ class MetaBuilder:
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
 
+        # Clean the mesh object and remove the non-manifold edges
+        nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+        nmv.mesh.clean_mesh_object(self.meta_mesh)
+
+        # Remove the small partitions
+        nmv.logger.info('Removing Partitions')
+        nmv.mesh.remove_small_partitions(self.meta_mesh)
+
         # Remove the islands (or small partitions from the mesh) and smooth it to look nice
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
-
-            # Remove the small partitions
-            nmv.logger.info('Removing Partitions')
-            nmv.mesh.remove_small_partitions(self.meta_mesh)
 
             # Decimate
             nmv.logger.info('Decimating the Mesh')
@@ -615,11 +619,14 @@ class MetaBuilder:
         result, stats = nmv.utilities.profile_function(
             self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
-
+        '''
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
             soma_building_function = self.build_soma_from_soft_body_mesh
         else:
             soma_building_function = self.build_soma_from_meta_objects
+        '''
+
+        soma_building_function = self.build_soma_from_meta_objects
 
         # Build the soma
         result, stats = nmv.utilities.profile_function(soma_building_function)
@@ -641,6 +648,12 @@ class MetaBuilder:
         # Tessellation
         result, stats = nmv.utilities.profile_function(
             nmv.builders.mesh.common.decimate_neuron_mesh, self)
+
+        # Clean the mesh object and remove the non-manifold edges
+        if 0.01 < self.options.mesh.tessellation_level < 1.0:
+            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+            nmv.mesh.clean_mesh_object(self.meta_mesh)
+
         self.profiling_statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the

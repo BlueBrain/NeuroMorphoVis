@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .mesh_cleaning_ops import *
 from .mesh_face_ops import *
 from .mesh_object_ops import *
 from .mesh_vertex_ops import *

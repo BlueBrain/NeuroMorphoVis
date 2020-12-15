@@ -67,6 +67,22 @@ def create_color_map_materials(color_map,
         # Add the material to the material list
         materials[item] = material
 
+    # Excitatory
+    excitatory_color = Vector((0.7, 0.06, 0.14))
+    excitatory_material = nmv.shading.create_material(
+        color=excitatory_color, name='material_exc', material_type=material_type)
+    materials['EXC'] = excitatory_material
+
+    # Inhibitory
+    inhibitory_color = Vector((0.23074, 0.496933, 0.938686))
+
+    # A new color from Caitlin
+    inhibitory_color = Vector((0.012983, 0.279, 0.93))
+
+    inhibitory_material = nmv.shading.create_material(
+        color=inhibitory_color, name='material_inh', material_type=material_type)
+    materials['INH'] = inhibitory_material
+
     # Return a reference to the materials list
     return materials
 
@@ -108,6 +124,18 @@ def create_json_color_map_materials(color_map,
 
         # Add the material to the material list
         materials[mtype] = material
+
+    # Excitatory
+    excitatory_color = Vector((1, 0, 0))
+    excitatory_material = nmv.shading.create_material(
+        color=excitatory_color, name='material_exc', material_type=material_type)
+    materials['EXC'] = excitatory_material
+
+    # Inhibitory
+    inhibitory_color = Vector((0, 0, 1))
+    inhibitory_material = nmv.shading.create_material(
+        color=inhibitory_color, name='material_inh', material_type=material_type)
+    materials['INH'] = inhibitory_material
 
     # Return a reference to the materials list
     return materials

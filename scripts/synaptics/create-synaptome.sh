@@ -27,6 +27,9 @@ NEURON_GID='956172'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
+OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
+OUTPUT_DIRECTORY='/hdd1/projects-data/12.14.2020-synaptomes-with-spines'
+
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -35,16 +38,16 @@ COLOR_MAP_FILE=$PWD'/data/ColorMap'
 NEURON_COLOR='255_255_255'
 
 # Synapse percentage
-SYNAPSE_PERCENTAGE='50'
+SYNAPSE_PERCENTAGE='100'
 
 # Synapse size
-SYNAPSE_SIZE='4.0'
+SYNAPSE_SIZE='2.0'
 
 # Close-up view size
 CLOSE_UP_SIZE='50'
 
 # Base full view resolution
-FULL_VIEW_RESOLUTION='1000'
+FULL_VIEW_RESOLUTION='2000'
 
 # Base close-up resolution
 CLOSE_UP_RESOLUTION='4000'
