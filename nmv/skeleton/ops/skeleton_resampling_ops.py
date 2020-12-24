@@ -353,21 +353,21 @@ def resample_section_adaptively_relaxed(section):
 
     # If the section has no samples, report this as an error and ignore this filter
     if len(section.samples) == 0:
-        nmv.logger.error('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
+        nmv.logger.warning('Section [%s: %d] has NO samples, cannot be re-sampled' %
+                           (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY one sample, report this as an error and ignore this filter
     elif len(section.samples) == 1:
-        nmv.logger.error('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
+        nmv.logger.warning('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
+                           (section.get_type_string(), section.index))
         return
 
     # If the section has ONLY two sample, report this as a warning
     elif len(section.samples) == 2:
 
-        nmv.logger.error('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
+        nmv.logger.warning('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
+                           (section.get_type_string(), section.index))
         return
 
     # The section has more than two samples, can be resampled
@@ -387,7 +387,7 @@ def resample_section_adaptively_relaxed(section):
             distance = (section.samples[i + 1].point - section.samples[i].point).length
 
             # Get the extent of the sample, where no other samples should be located
-            extent = section.samples[i].radius + section.samples[i].radius
+            extent = section.samples[i + 1].radius + section.samples[i].radius
 
             # If the next sample is located within the extent of this sample, then remove it
             if distance < extent:

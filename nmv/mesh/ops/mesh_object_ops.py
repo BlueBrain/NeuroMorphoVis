@@ -110,6 +110,9 @@ def triangulate_mesh(mesh_object):
     # Switch to geometry or edit mode from the object mode
     bpy.ops.object.editmode_toggle()
 
+    # Select all the vertices of the mesh object
+    bpy.ops.mesh.select_all(action='SELECT')
+
     # Convert the face to triangles
     bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
 
@@ -740,6 +743,9 @@ def add_surface_noise_to_mesh(mesh_object,
     smooth_object(mesh_object=mesh_object, level=1)
 
 
+####################################################################################################
+# @remove_small_partitions
+####################################################################################################
 def remove_small_partitions(mesh_object):
     """Detects the number of partitions (or islands) in the mesh object and removes the small ones.
 

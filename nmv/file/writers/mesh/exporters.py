@@ -108,9 +108,8 @@ def export_mesh_object_to_file(mesh_object,
 
     elif file_format == nmv.enums.Meshing.ExportFormat.OBJ:
         bpy.ops.export_scene.obj(
-            filepath=output_file_path, check_existing=True, axis_forward='Y', axis_up='Z',
-            use_selection=True, use_smooth_groups=True, use_smooth_groups_bitflags=False,
-            use_normals=True, use_triangles=True, path_mode='AUTO')
+            filepath=output_file_path, check_existing=False, axis_forward='Y', axis_up='Z',
+            use_selection=True, path_mode='AUTO')
 
     elif file_format == nmv.enums.Meshing.ExportFormat.STL:
         bpy.ops.export_mesh.stl(

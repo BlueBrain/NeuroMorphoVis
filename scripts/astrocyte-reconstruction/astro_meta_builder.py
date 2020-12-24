@@ -47,14 +47,15 @@ class AstroMetaBuilder:
     def __init__(self,
                  morphology,
                  soma_radius,
+                 soma_style,
                  end_feet_proxy_meshes=None,
                  end_feet_thicknesses=None):
         """Constructor
 
         :param morphology:
             A given astrocyte morphology.
-        :param soma_centroid:
-            The center of the astrocyte soma.
+        :param soma_style:
+            The style of the astrocyte soma, either MetaBall or SoftBody.
         :param soma_radius:
             The radius of the astrocyte soma.
         :param end_feet_proxy_meshes:
@@ -66,8 +67,8 @@ class AstroMetaBuilder:
         # Morphology
         self.morphology = copy.deepcopy(morphology)
 
-        # Soma centroid
-        # self.soma_centroid = soma_centroid
+        # Soma style
+        self.soma_style = soma_style
 
         # Soma radius
         self.soma_radius = soma_radius
@@ -152,18 +153,23 @@ class AstroMetaBuilder:
         z = p1[2]
 
         # Construct the meta elements along the segment
+        i = 0
         while travelled_distance < segment_length:
+
             # Make a meta ball (or sphere) at this point
             meta_element = self.meta_skeleton.elements.new()
 
             # Set its radius
-            meta_element.radius = r
+            if i == 0:
+                meta_element.radius = r * 0.90
+            else:
+                meta_element.radius = r
 
             # Update its coordinates
             meta_element.co = (x, y, z)
 
             # Proceed to the second point
-            travelled_distance += r / 2
+            travelled_distance += 0.5 * r
 
             r = r1 + (travelled_distance * dr / segment_length)
 
@@ -171,6 +177,8 @@ class AstroMetaBuilder:
             x = p1[0] + (travelled_distance * dx / segment_length)
             y = p1[1] + (travelled_distance * dy / segment_length)
             z = p1[2] + (travelled_distance * dz / segment_length)
+
+            i += 1
 
     ################################################################################################
     # @create_meta_section
@@ -197,15 +205,15 @@ class AstroMetaBuilder:
             radius_1 = samples[i + 1].radius
 
             if radius_0 < 0.1:
-                self.radii_error.append(1.0 - radius_0)
+                self.radii_error.append(0.1 - radius_0)
                 radius_0 = 0.1
 
             if radius_1 < 0.1:
+                self.radii_error.append(0.1 - radius_1)
                 radius_1 = 0.1
 
             if radius_0 < self.smallest_radius:
                 self.smallest_radius = radius_0
-
             if radius_1 < self.smallest_radius:
                 self.smallest_radius = radius_1
 
@@ -282,7 +290,7 @@ class AstroMetaBuilder:
         for i, mesh in enumerate(self.end_feet_proxy_meshes):
 
             vertex_list = list()
-            for v in mesh.vertices:
+            for v in mesh.data.vertices:
                 vertex_list.append(v.co)
 
             # Vertex list
@@ -394,8 +402,9 @@ class AstroMetaBuilder:
             apply_shader=False, add_noise_to_surface=False)
 
         # Run the particles simulation remesher
-        mesher = nmv.physics.ParticleRemesher()
-        stepper = mesher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
+        particle_remeshes = nmv.physics.ParticleRemesher()
+        stepper = particle_remeshes.run(mesh_object=soft_body_soma,
+                                        context=bpy.context, interactive=True)
 
         for i in range(1000000):
             finished = next(stepper)
@@ -450,7 +459,7 @@ class AstroMetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = self.smallest_radius * 0.5
+        self.meta_skeleton.resolution = self.smallest_radius
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
@@ -473,25 +482,20 @@ class AstroMetaBuilder:
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
 
-    ################################################################################################
-    # @assign_material_to_mesh
-    ################################################################################################
-    def assign_material_to_mesh(self):
+        
+        # Remove the small partitions
+        nmv.logger.info('Removing Partitions')
+        nmv.mesh.remove_small_partitions(self.meta_mesh)
+	
+        '''
+        # Clean the mesh object and remove the non-manifold edges
+        nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+        nmv.mesh.clean_mesh_object(self.meta_mesh)
 
-        # Deselect all objects
-        nmv.scene.ops.deselect_all()
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.meta_mesh)
-
-        # Assign the material to the selected mesh
-        # nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
-
-        # Update the UV mapping
-        nmv.shading.adjust_material_uv(self.meta_mesh)
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.meta_mesh)
+        # Remove the small partitions
+        nmv.logger.info('Removing Partitions')
+        nmv.mesh.remove_small_partitions(self.meta_mesh)
+        '''
 
     ################################################################################################
     # @reconstruct_mesh
@@ -500,13 +504,21 @@ class AstroMetaBuilder:
         """Reconstructs the neuronal mesh using meta objects.
         """
 
+        # Resample the sections of the morphology skeleton
+        nmv.logger.header('Relaxed Adaptive Resampling')
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
+
         # Initialize the meta object
         result, stats = nmv.utilities.profile_function(
             self.initialize_meta_object, self.morphology.label)
         self.profiling_statistics += stats
 
         # Build the soma
-        result, stats = nmv.utilities.profile_function(self.build_soma_from_soft_body_mesh)
+        if 'meta' in self.soma_style:
+            result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
+        else:
+            result, stats = nmv.utilities.profile_function(self.build_soma_from_soft_body_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors

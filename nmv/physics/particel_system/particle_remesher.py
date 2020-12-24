@@ -73,7 +73,7 @@ class ParticleRemesher:
         self.mirror_axes = [False, False, False]
         self.sharp_angle = 20 * (math.pi / 180.0)
 
-    def run(self, mesh_object, context, interactive=False):
+    def run(self, mesh_object, context, interactive=False, decimate_input=False):
 
         # Create a new bmesh from the given mesh object to improve the performance
         nmv.logger.info('Converting to BMesh')
@@ -104,17 +104,9 @@ class ParticleRemesher:
         nmv.logger.info('Decimating')
         model_size = max(mesh_object.dimensions)
 
-        # Switch to edit mode
-        bpy.ops.object.mode_set(mode="EDIT")
-
-        # Select all vertices
-        bpy.ops.mesh.select_all(action="SELECT")
-
         # Decimate based in the field resolution
-        bpy.ops.mesh.decimate(ratio=self.field_resolution / len(bmesh_object.verts))
-
-        # Switch back to the object mode
-        bpy.ops.object.mode_set(mode="OBJECT")
+        if decimate_input:
+            bpy.ops.mesh.decimate(ratio=self.field_resolution / len(bmesh_object.verts))
 
         # Return and keep the state if interactive
         if interactive:

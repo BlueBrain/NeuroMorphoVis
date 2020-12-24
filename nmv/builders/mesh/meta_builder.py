@@ -133,7 +133,7 @@ class MetaBuilder:
         # Label the primary and secondary sections based on angles
         nmv.skeleton.ops.apply_operation_to_morphology(
             *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
+              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
     ################################################################################################
     # @create_meta_segment
@@ -235,9 +235,10 @@ class MetaBuilder:
 
             # Limit the radii to 100 nano-meters
             if radius_0 < 0.1:
-                self.radii_error.append(1.0 - radius_0)
+                self.radii_error.append(0.1 - radius_0)
                 radius_0 = 0.1
             if radius_1 < 0.1:
+                self.radii_error.append(0.1 - radius_1)
                 radius_1 = 0.1
 
             # Adjust the radii
@@ -336,9 +337,6 @@ class MetaBuilder:
 
         # Create a new meta object that reflects the reconstructed mesh at the end of the operation
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
-
-        # Get a reference to the scene
-        scene = bpy.context.scene
 
         # Link the meta object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
@@ -545,6 +543,7 @@ class MetaBuilder:
         nmv.logger.info('Removing Partitions')
         nmv.mesh.remove_small_partitions(self.meta_mesh)
 
+        '''
         # Remove the islands (or small partitions from the mesh) and smooth it to look nice
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
 
@@ -555,7 +554,7 @@ class MetaBuilder:
             # Smooth vertices to remove any sphere-like shapes
             nmv.logger.info('Smoothing the Mesh')
             nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
-
+        '''
     ################################################################################################
     # @add_surface_roughness
     ################################################################################################

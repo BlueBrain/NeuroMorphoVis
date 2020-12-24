@@ -179,3 +179,35 @@ def import_object_from_blend_file(input_directory,
 
     # Return reference to the objects loaded
     return data_dst.objects
+
+
+####################################################################################################
+# @import_mesh
+####################################################################################################
+def import_mesh(mesh_file_path):
+    """Import a mesh file into Blender.
+
+    :param mesh_file_path:
+        The path to the mesh file.
+    :return:
+        Either a reference to the imported mesh, or None if the file does not exist.
+    """
+
+    # Get the extension
+    file_prefix, file_extension = os.path.splitext(mesh_file_path)
+
+    # Get the directory and file name
+    file_name = os.path.basename(mesh_file_path)
+    directory = os.path.dirname(mesh_file_path)
+
+    if 'obj' in file_extension or 'OBJ' in file_extension or 'Obj' in file_extension:
+        return import_obj_file(directory, file_name)
+    elif 'ply' in file_extension or 'PLY' in file_extension or 'Ply' in file_extension:
+        return import_ply_file(directory, file_name)
+    elif 'stl' in file_extension or 'STL' in file_extension or 'Stl' in file_extension:
+        return import_stl_file(directory, file_name)
+
+    # Otherwise, return None
+    return None
+
+

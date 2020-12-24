@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import sys
+import os
 import argparse
 import subprocess
 
@@ -65,15 +65,21 @@ def construct_generation_command(args,
     for gid in gids:
 
         # Make the command
-        command = '%s' % args.blender_executable
-        command += ' -b --verbose 0 --python astrocyte_generator.py --'
-        command += ' --gid=%s' % gid
-        command += ' --output-directory=%s' % args.output_directory
-        command += ' --circuit-path=%s' % args.circuit_path
-        command += ' --decimation-factor=%s' % args.decimation_factor
+        shell_command = '%s' % args.blender_executable
+        shell_command += ' -b --verbose 0 --python astrocyte_generator.py --'
+        shell_command += ' --gid=%s' % gid
+        shell_command += ' --output-directory=%s' % args.output_directory
+        shell_command += ' --circuit-path=%s' % args.circuit_path
+        shell_command += ' --soma-style=%s' % args.soma_style
+        shell_command += ' --mesh-type=%s' % args.mesh_type
+        shell_command += ' --decimation-factor=%s' % args.decimation_factor
+        if args.export_obj:
+            shell_command += ' --export-obj'
+        if args.export_blend:
+            shell_command += ' --export-blend'
 
         # Append to the commands list
-        commands_list.append(command)
+        commands_list.append(shell_command)
 
     # Return the commands list
     return commands_list
@@ -115,6 +121,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
 
+    arg_help = 'The type of the resulting meshes, [simulation], [visualization] or [both]'
+    parser.add_argument('--mesh-type',
+                        action='store', dest='mesh_type', help=arg_help)
+
     arg_help = 'Execution mode, serial or parallel'
     parser.add_argument('--execution',
                         action='store', dest='execution', default='serial', help=arg_help)
@@ -123,6 +133,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--circuit-path',
                         action='store', dest='circuit_path', help=arg_help)
 
+    arg_help = 'The style of the soma'
+    parser.add_argument('--soma-style',
+                        action='store', dest='soma_style', help=arg_help)
+
     arg_help = 'The GIDs of the astrocytes'
     parser.add_argument('--gids-file',
                         action='store', dest='gids_file', help=arg_help)
@@ -130,6 +144,14 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'A range of GIDs'
     parser.add_argument('--gids-range',
                         action='store', dest='gids_range', default='0', help=arg_help)
+
+    arg_help = 'Export the result into an .OBJ file'
+    parser.add_argument('--export-obj',
+                        action='store_true', dest='export_obj', default=False, help=arg_help)
+
+    arg_help = 'Export the result into an .BLEND file'
+    parser.add_argument('--export-blend',
+                        action='store_true', dest='export_blend', default=False, help=arg_help)
 
     arg_help = 'Decimation factor, between 1.0 and 0.01'
     parser.add_argument('--decimation-factor',
@@ -147,6 +169,11 @@ if __name__ == "__main__":
 
     # Parse the command line arguments
     args = parse_command_line_arguments()
+    print(args)
+    # One must export a valid mesh
+    if (not args.export_blend) and (not args.export_obj):
+        print('You must export either a .BLEND or .OBJ mesh')
+        exit(0)
 
     # Get the GIDs
     if args.gids_range is not '0':
@@ -158,11 +185,15 @@ if __name__ == "__main__":
     # Build the commands
     commands = construct_generation_command(args, gids)
 
+    # Create the output directory if it doesn't exist
+    if not os.path.exists(args.output_directory):
+        os.makedirs(args.output_directory)
+
     # Execute the commands
     if 'parallel' in args.execution:
         from joblib import Parallel, delayed
         import multiprocessing
-        Parallel(n_jobs=multiprocessing.cpu_count())(delayed(run_command)(i) for i in commands)
+        Parallel(n_jobs=7)(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:
             run_command(command)

@@ -293,5 +293,5 @@ def create_mesh_from_raw_data(verts,
     bpy.context.view_layer.objects.active = mesh_object
     mesh.from_pydata(verts, edges, faces)
 
-    # Return a reference to the mesh
-    return mesh
+    # Return a reference to the mesh object
+    return mesh_object

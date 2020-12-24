@@ -102,13 +102,16 @@ def create_end_feet_proxy_mesh(area,
 # @create_end_feet_proxy_mesh
 ####################################################################################################
 def generate_astrocyte(circuit_path,
-                       astrocyte_gid):
+                       astrocyte_gid,
+                       soma_style):
     """Generate astrocyte mesh for a specific GID in the circuit.
 
     :param circuit_path:
         The NGV circuit.
     :param astrocyte_gid:
         The GID of the astrocyte.
+    :param soma_style:
+        The style of the soma, whether metaball or softbody.
     :return:
         A reference to the astrocyte mesh
     """
@@ -127,8 +130,10 @@ def generate_astrocyte(circuit_path,
     # Clear the scene
     nmv.scene.clear_scene()
 
+    # Center the morphology at the origin
     center_morphology = True
 
+    # Astrocyte data
     for astro_generator in astrocytes_data:
 
         soma_centroid = astro_generator.circuit_data['soma_position']
@@ -155,13 +160,23 @@ def generate_astrocyte(circuit_path,
 
             end_feet_thicknesses.append(area.thickness)
 
-            # Build the builder
+        # Create the builder
         builder = astro_meta_builder.AstroMetaBuilder(
-            morphology=morphology_object, soma_radius=soma_radius,
-            end_feet_proxy_meshes=end_feet_proxy_meshes, end_feet_thicknesses=end_feet_thicknesses)
+            morphology=morphology_object,
+            soma_radius=soma_radius,
+            end_feet_proxy_meshes=end_feet_proxy_meshes,
+            end_feet_thicknesses=end_feet_thicknesses,
+            soma_style=soma_style)
 
         # Reconstructing the mesh and return a reference to the astrocyte mesh
-        return builder.reconstruct_mesh()
+        astrocyte_mesh = builder.reconstruct_mesh()
+
+        print(end_feet_proxy_meshes)
+        # Delete all the end-feet data
+        nmv.scene.delete_list_objects(end_feet_proxy_meshes)
+
+        # Return a reference to the astrocyte mesh
+        return astrocyte_mesh
 
 
 ####################################################################################################
@@ -195,9 +210,25 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--gid',
                         action='store', dest='gid', help=arg_help)
 
+    arg_help = 'The style of the soma'
+    parser.add_argument('--soma-style',
+                        action='store', dest='soma_style', help=arg_help)
+
+    arg_help = 'The type of the resulting mesh, [simulation], [visualization] or [both]'
+    parser.add_argument('--mesh-type',
+                        action='store', dest='mesh_type', help=arg_help)
+
     arg_help = 'Decimation factor, between 1.0 and 0.01'
     parser.add_argument('--decimation-factor',
                         action='store', dest='decimation_factor', default=1.0, help=arg_help)
+
+    arg_help = 'Export the result into an .OBJ file'
+    parser.add_argument('--export-obj',
+                        action='store_true', default=False, help=arg_help)
+
+    arg_help = 'Export the result into an .BLEND file'
+    parser.add_argument('--export-blend',
+                        action='store_true', default=False, help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
@@ -215,18 +246,57 @@ if __name__ == "__main__":
     # Parse the command line arguments
     args = parse_command_line_arguments()
 
+    # One must export a valid mesh
+    if (not args.export_blend) and (not args.export_obj):
+        print('You must export either a .BLEND or .OBJ mesh')
+        exit(0)
+
     # Generate the astrocyte
-    astrocyte_mesh = generate_astrocyte(circuit_path=args.circuit_path, astrocyte_gid=int(args.gid))
+    astrocyte_mesh = generate_astrocyte(circuit_path=args.circuit_path,
+                                        astrocyte_gid=int(args.gid),
+                                        soma_style=args.soma_style)
 
-    # Decimate the mesh on two iterations
-    # nmv.mesh.decimate_mesh_object(
-    #    mesh_object=astrocyte_mesh, decimation_ratio=float(args.decimation_factor))
+    # Export the meshes for simulation
+    if 'simulation' in args.mesh_type or 'both' in args.mesh_type:
 
-    nmv.file.export_scene_to_blend_file(output_directory=args.output_directory, output_file_name=args.gid)
-    '''
-    # Export the mesh
-    nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
-                                        output_file_name=args.gid,
-                                        output_directory=args.output_directory,
-                                        file_format=nmv.enums.Meshing.ExportFormat.BLEND)
-    '''
+        # Create the output directory if it doesn't exist
+        simulation_directory = '%s/simulation' % args.output_directory
+        if not os.path.exists(simulation_directory):
+            os.makedirs(simulation_directory)
+
+        # Export the mesh to a .BLEND file
+        nmv.file.export_scene_to_blend_file(output_directory=simulation_directory,
+                                            output_file_name=args.gid)
+
+        # Export the mesh to an .OBJ file
+        nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
+                                            output_file_name=args.gid,
+                                            output_directory=simulation_directory,
+                                            file_format=nmv.enums.Meshing.ExportFormat.OBJ)
+
+    # Export the meshes for visualization
+    if 'visualization' in args.mesh_type or 'both' in args.mesh_type:
+
+        # Decimate the mesh
+        nmv.logger.info('Decimating Mesh')
+        if float(args.decimation_factor) > 1.0 or float(args.decimation_factor) < 0.0:
+            decimation_factor = 0.1
+        else:
+            decimation_factor = float(args.decimation_factor)
+        nmv.mesh.decimate_mesh_object(mesh_object=astrocyte_mesh,
+                                      decimation_ratio=decimation_factor)
+
+        # Create the output directory if it doesn't exist
+        visualization_directory = '%s/visualization' % args.output_directory
+        if not os.path.exists(visualization_directory):
+            os.makedirs(visualization_directory)
+
+        # Export the mesh to a .BLEND file
+        nmv.file.export_scene_to_blend_file(output_directory=visualization_directory,
+                                            output_file_name=args.gid)
+
+        # Export the mesh to an .OBJ file
+        nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
+                                            output_file_name=args.gid,
+                                            output_directory=visualization_directory,
+                                            file_format=nmv.enums.Meshing.ExportFormat.OBJ)

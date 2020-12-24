@@ -17,28 +17,14 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='$PWD/../../../../../../blender'
+BLENDER=$PWD/../../../../../../blender
 
-# Output directory 
-OUTPUT_DIRECTORY='/projects-data/12.16.2020-astrocytes-generation/'
+# Input mesh
+INPUT_MESH='/projects-data/2020.12.25-remeshing/input-meshes/nuclei/nucleus-1.obj'
+INPUT_MESH='/projects-data/2020.12.25-remeshing/input-meshes/spine-1.obj'
 
-# Circuit
-CIRCUIT='/projects/astrocytes-circuit/20200930'
-
-# Soma style, 'metaball' or 'softbody'
-SOMA_STYLE='metaball'
-
-# A list of GIDs, if this is defined the GIDS_FILE is ignored, and if set to '0' the file is used
-GIDS_RANGE='1-20'
-
-# GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
-GIDS_FILE=$PWD/gids
-
-# Meshes type, for simulation/visualization/both
-MESH_TYPE='simulation'
-
-# Execution, serial or parallel
-EXECUTION='parallel'
+# Output directory
+OUTPUT_DIRECTORY='/projects-data/2020.12.25-remeshing/output-meshes'
 
 # Decimation factor (range: 0.5 - 0.01) to reduce the number of polygons in the mesh that is
 # generated for the visualization purposes.
@@ -58,14 +44,8 @@ if [ "$EXPORT_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
 
 ####################################################################################################
-python3 run.py                                                                                      \
-    --blender-executable=$BLENDER                                                                   \
-    --gids-file=$GIDS_FILE                                                                          \
-    --gids-range=$GIDS_RANGE                                                                        \
-    --soma-style=$SOMA_STYLE                                                                        \
-    --execution=$EXECUTION                                                                          \
-    --circuit-path=$CIRCUIT                                                                         \
-    --mesh-type=$MESH_TYPE                                                                          \
+$BLENDER -b --verbose 0 --python run.py --                                                         \
+    --input-mesh=$INPUT_MESH                                                                        \
     --decimation-factor=$DECIMATION_FACTOR                                                          \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     $BOOL_ARGS
