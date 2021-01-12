@@ -125,11 +125,6 @@ class MetaBuilderRemesher:
             # Update its coordinates
             meta_element.co = face.center - (face.normal * radius * self.magic_scale_factor)
 
-        # Export the mesh to a .BLEND file
-        nmv.file.export_scene_to_blend_file(
-            output_directory='/projects-data/2020.12.25-remeshing',
-            output_file_name='test-3')
-
     ################################################################################################
     # @initialize_meta_object
     ################################################################################################

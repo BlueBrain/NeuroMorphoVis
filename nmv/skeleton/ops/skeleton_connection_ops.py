@@ -155,7 +155,7 @@ def label_primary_and_secondary_sections_based_on_radii(section):
             child.is_primary = False
 
             # Set the radius of a secondary child to half of the primary branch, for clean branching
-            if len (child.samples) > 0:
+            if len(child.samples) > 0:
                 child.samples[0].radius = greatest_radius * 0.5
 
             # Append the secondary child to the children list that has the new order

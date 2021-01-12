@@ -370,6 +370,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
         # Reconstruction time
         self.reconstruction_time = time.time()
 
+        # Set the reconstruction flag to on
+        global is_soma_reconstructed
+
         # MetaBall reconstruction
         if bpy.context.scene.NMV_SomaReconstructionMethod == \
                 nmv.enums.Soma.Representation.META_BALLS:
@@ -388,7 +391,6 @@ class ReconstructSomaOperator(bpy.types.Operator):
                                  scene.NMV_MorphologyLoadingTime)
 
             # Set the reconstruction flag to on
-            global is_soma_reconstructed
             is_soma_reconstructed = True
 
             # View all the objects in the scene
@@ -397,6 +399,31 @@ class ReconstructSomaOperator(bpy.types.Operator):
             # Finished
             return {'FINISHED'}
 
+        # MetaBall reconstruction
+        elif bpy.context.scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.Representation.HYBRID:
+
+            # Create a some builder
+            self.soma_builder = nmv.builders.SomaHybridBuilder(
+                nmv.interface.ui_morphology, nmv.interface.ui_options)
+
+            # Reconstruct the soma in a single step
+            nmv.interface.ui_soma_mesh = self.soma_builder.reconstruct_soma_mesh()
+
+            # Get the reconstruction time to update the UI
+            self.reconstruction_time = time.time() - self.reconstruction_time
+            scene.NMV_SomaReconstructionTime = self.reconstruction_time
+            nmv.logger.info_done('Soma reconstructed in [%f] seconds' %
+                                 scene.NMV_MorphologyLoadingTime)
+
+            is_soma_reconstructed = True
+
+            # View all the objects in the scene
+            nmv.scene.ops.view_all_scene()
+
+            # Finished
+            return {'FINISHED'}
+
+        # Softbody reconstruction
         else:
 
             # SoftBody reconstruction

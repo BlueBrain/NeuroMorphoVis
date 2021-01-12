@@ -130,10 +130,16 @@ class MetaBuilder:
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
         nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)
 
-        # Label the primary and secondary sections based on angles
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology,
-              nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+        # Resample the sections of the morphology skeleton
+        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+
+        # Radii
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
+
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
     ################################################################################################
     # @create_meta_segment
@@ -539,13 +545,12 @@ class MetaBuilder:
         nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
         nmv.mesh.clean_mesh_object(self.meta_mesh)
 
-        # Remove the small partitions
-        nmv.logger.info('Removing Partitions')
-        nmv.mesh.remove_small_partitions(self.meta_mesh)
-
-        '''
         # Remove the islands (or small partitions from the mesh) and smooth it to look nice
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+
+            # Remove the small partitions
+            nmv.logger.info('Removing Partitions')
+            nmv.mesh.remove_small_partitions(self.meta_mesh)
 
             # Decimate
             nmv.logger.info('Decimating the Mesh')
@@ -554,7 +559,7 @@ class MetaBuilder:
             # Smooth vertices to remove any sphere-like shapes
             nmv.logger.info('Smoothing the Mesh')
             nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
-        '''
+
     ################################################################################################
     # @add_surface_roughness
     ################################################################################################
@@ -609,8 +614,7 @@ class MetaBuilder:
         nmv.logger.header('Building Mesh: MetaBuilder')
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.mesh.update_morphology_skeleton, self)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Initialize the meta object

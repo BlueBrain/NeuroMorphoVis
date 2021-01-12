@@ -28,7 +28,7 @@ NEURON_GID='956172'
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
 OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
-OUTPUT_DIRECTORY='/hdd1/projects-data/12.14.2020-synaptomes-with-spines'
+OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.12-synaptomes-final'
 
 
 # Color-map file

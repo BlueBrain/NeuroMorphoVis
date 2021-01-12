@@ -243,6 +243,7 @@ def create_neuron_mesh(circuit,
     nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
     nmv_options.morphology.samples_unified_radii_value = 1.0
     nmv_options.shading.mesh_material = nmv.enums.shading_enums.Shader.FLAT
+    nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
 
     # Create a meta balls meshing builder
     meta_builder = nmv.builders.MetaBuilder(morphology=morphology, options=nmv_options)

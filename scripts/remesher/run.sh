@@ -21,7 +21,7 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
 INPUT_MESH='/projects-data/2020.12.25-remeshing/input-meshes/nuclei/nucleus-1.obj'
-INPUT_MESH='/projects-data/2020.12.25-remeshing/input-meshes/spine-1.obj'
+INPUT_MESH='/projects-data/2020.12.25-remeshing/input-meshes/cow-simple.obj'
 
 # Output directory
 OUTPUT_DIRECTORY='/projects-data/2020.12.25-remeshing/output-meshes'

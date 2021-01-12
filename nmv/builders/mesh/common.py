@@ -368,6 +368,7 @@ def connect_arbors_to_soma(builder):
             nmv.enums.Soma.Representation.META_BALLS:
         connection_function = nmv.skeleton.ops.connect_arbor_to_meta_ball_soma
     else:
+        nmv.logger.warning('No soma-to-arbor connection function is used')
         return
 
     if builder.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:

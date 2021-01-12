@@ -48,6 +48,10 @@ class Soma:
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
         SOFT_BODY = 'SOMA_SOFT_BODY_MESH'
 
+        # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma with
+        # Metaballs
+        HYBRID = 'SOMA_HYBRID_MESH'
+
         ############################################################################################
         # @__init__
         ############################################################################################
@@ -82,6 +86,10 @@ class Soma:
             # Soft body reconstruction
             elif argument == 'softbody':
                 return Soma.Representation.SOFT_BODY
+
+            # Hybrid reconstruction
+            elif argument == 'hybrid':
+                return Soma.Representation.HYBRID
 
             # MetaBalls representation
             else:

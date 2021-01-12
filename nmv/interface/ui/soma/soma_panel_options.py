@@ -39,6 +39,14 @@ bpy.types.Scene.NMV_SomaReconstructionMethod = bpy.props.EnumProperty(
             'physics engine in Blender. This method takes few seconds to build the soma, but it is '
             'way more accurate than the MetaBalls method. Note that this method does not preserve '
             'the final volume of the reconstructed soma shape. It only creates a highly realistic '
+            'shape of the soma though for machine learning purposes'),
+           (nmv.enums.Soma.Representation.HYBRID,
+            'Hybrid',
+            'Use Soft Body physics to reconstruct an accurate shape of the neurons using the '
+            'physics engine in Blender and create the somatic surface using MetaBalls. '
+            'This method takes few seconds to build the soma, but it is '
+            'way more accurate than the MetaBalls method. Note that this method does not preserve '
+            'the final volume of the reconstructed soma shape. It only creates a highly realistic '
             'shape of the soma though for machine learning purposes')],
     name='Method',
     default=nmv.enums.Soma.Representation.META_BALLS)

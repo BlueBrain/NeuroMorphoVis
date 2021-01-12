@@ -492,6 +492,10 @@ class SkinningBuilder:
             nmv.builders.mesh.update_morphology_skeleton, self)
         self.profiling_statistics += stats
 
+        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
+        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
+        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
+
         # Build the soma, with the default parameters
         result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
         self.profiling_statistics += stats
