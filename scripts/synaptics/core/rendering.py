@@ -267,7 +267,7 @@ def render_synaptome_close_up_on_soma_360(output_directory,
         for scene_object in scene_objects:
 
             # Rotate the mesh object around the y axis
-            scene_object.rotation_euler[1] = i * 3.14 / (frames_per_angle * 360.0)
+            scene_object.rotation_euler[1] = i * 3.14 / (frames_per_angle * 180.0)
 
         # Set the frame name
         frame_name = '%s/%s' % (frames_directory, '{0:05d}'.format(i))
@@ -472,6 +472,8 @@ def compose_360_frames(full_view_frames,
     # Compose the 360 frames
     composed_frames = list()
     for i in range(len(full_view_frames)):
+
+        print('Composing Frame [%d/%d]' % (i + 1, len(full_view_frames)))
 
         # Get the individual frames
         full_view_frame = full_view_frames[i]

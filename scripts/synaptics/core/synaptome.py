@@ -49,15 +49,127 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @create_synapses_mesh
+# @create_mtype_based_synapses_mesh
 ####################################################################################################
-def create_synapses_mesh(circuit,
-                         gid,
-                         synapse_size,
-                         synapse_percentage,
-                         inverted_transformation,
-                         color_map_materials):
-    """Creates a mesh of all the synapses
+def create_mtype_based_synapses_mesh(circuit,
+                                     gid,
+                                     synapse_size,
+                                     synapse_percentage,
+                                     inverted_transformation,
+                                     color_map_materials):
+    """Creates a mesh of all the synapses based on their mtypes
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID.
+    :param synapse_size:
+        The size of the synapses.
+    :param synapse_percentage:
+        The percentage of the syanpses to be drawn.
+    :param inverted_transformation:
+        The inverted transformation that will take the synapses to the origin.
+    :param color_map_materials:
+        A dictionary of all the mtype materials.
+    :return:
+        A reference to the created synapse mesh.
+    """
+
+    # Get the IDs of the afferent synapses of a given GID
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(gid)
+
+    # Get the synapse type
+    synapse_types = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.v2.enums.Synapse.TYPE]).values
+
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+    pre_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'contour').values.tolist()
+
+    # Get the GIDs of the pre-synaptic cells
+    pre_gids = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+    pre_synaptic_gids = [gid[0] for gid in pre_gids]
+
+    # Get the pre-synaptic mtypes
+    pre_synaptic_mtypes = circuit.cells.get(pre_synaptic_gids)['mtype'].values.tolist()
+
+    # We need the color and the position to draw the synaptome
+    synapse_objects = list()
+    synapse_groups = list()
+
+    # Do it for all the synapses
+    for i in range(len(post_synaptic_positions)):
+
+        # Show progress
+        nmv.utilities.time_line.show_iteration_progress('Synapses', i, len(post_synaptic_positions))
+
+        # Random selection
+        if synapse_percentage < random.uniform(0, 100):
+            continue
+
+            # Material
+        if not (pre_synaptic_mtypes[i] in color_map_materials):
+            continue
+
+        material = color_map_materials[pre_synaptic_mtypes[i]]
+
+        # Position
+        post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                         post_synaptic_positions[i][1],
+                                         post_synaptic_positions[i][2]))
+        position = inverted_transformation @ post_synaptic_position
+
+        # A synapse sphere object
+        synapse_sphere = nmv.geometry.create_ico_sphere(
+            radius=synapse_size, location=position, subdivisions=3, name='synapse_%d' % i)
+
+        # Add the sphere to the group
+        synapse_objects.append(synapse_sphere)
+
+        # Material
+        nmv.shading.set_material_to_object(mesh_object=synapse_sphere, material_reference=material)
+
+        # Group every 100 objects into a single group
+        if i % 50 == 0:
+            # Join the meshes into a group
+            synapse_group = nmv.mesh.join_mesh_objects(
+                mesh_list=synapse_objects, name='group_%d' % (i % 100))
+
+            # Add the group to the list
+            synapse_groups.append(synapse_group)
+
+            # Clear the object list
+            synapse_objects.clear()
+
+    # Join the meshes into a group
+    synapse_group = nmv.mesh.join_mesh_objects(
+        mesh_list=synapse_objects, name='group_%d' % (i % 100))
+
+    # Add the group to the list
+    synapse_groups.append(synapse_group)
+
+    # Done
+    nmv.utilities.time_line.show_iteration_progress(
+        'Synapses', len(post_synaptic_positions), len(post_synaptic_positions), done=True)
+
+    # Join the meshes into a group
+    synapses_mesh = nmv.mesh.join_mesh_objects(mesh_list=synapse_groups, name='synapses')
+
+    # Return a reference to the synapse mesh
+    return synapses_mesh
+
+
+####################################################################################################
+# @create_excitatory_inhibitory_synapses_mesh
+####################################################################################################
+def create_excitatory_inhibitory_synapses_mesh(circuit,
+                                               gid,synapse_size,
+                                               synapse_percentage,
+                                               inverted_transformation,
+                                               color_map_materials):
+    """Creates a mesh of all the synapses with excitatory and inhibitory ones.
 
     :param circuit:
         BBP circuit.
@@ -266,7 +378,28 @@ def create_synaptome(circuit_config,
                      synapse_size,
                      synapse_percentage,
                      synaptome_color_map_materials,
-                     neuron_material):
+                     neuron_material,
+                     show_excitatory_inhibitory=True):
+    """Creates the synaptome mesh.
+
+    :param circuit_config:
+        BBP circuit config.
+    :param gid:
+        Neuron GID.
+    :param synapse_size:
+        The size of the synapse.
+    :param synapse_percentage:
+        The percentage of the synapses.
+    :param synaptome_color_map_materials:
+        A list of all the materials of the synapses.
+    :param neuron_material:
+        The material of the neuron.
+    :param show_excitatory_inhibitory:
+        If this flag is set to true, we will show the excitatory and inhibitory synapses, otherwise
+        we will show the synaptic map according to the mtype of the pre-synaptic pairs.
+    :return:
+        THe synaptome mesh.
+    """
 
     # Loading a circuit
     circuit = Circuit(circuit_config)
@@ -285,11 +418,16 @@ def create_synaptome(circuit_config,
                                      neuron_material=neuron_material)
 
     # Create synapse mesh
-    synapses_mesh = create_synapses_mesh(circuit=circuit, gid=gid,
-                                         synapse_size=synapse_size,
-                                         synapse_percentage=synapse_percentage,
-                                         inverted_transformation=inverted_transformation,
-                                         color_map_materials=synaptome_color_map_materials)
+    if show_excitatory_inhibitory:
+        synapses_mesh = create_excitatory_inhibitory_synapses_mesh(
+            circuit=circuit, gid=gid, synapse_size=synapse_size,
+            synapse_percentage=synapse_percentage, inverted_transformation=inverted_transformation,
+            color_map_materials=synaptome_color_map_materials)
+    else:
+        synapses_mesh = create_mtype_based_synapses_mesh(
+            circuit=circuit, gid=gid, synapse_size=synapse_size,
+            synapse_percentage=synapse_percentage, inverted_transformation=inverted_transformation,
+            color_map_materials=synaptome_color_map_materials)
 
     # Merge
     synaptome_mesh = nmv.mesh.join_mesh_objects(

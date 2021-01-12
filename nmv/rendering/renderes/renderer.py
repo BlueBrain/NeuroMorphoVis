@@ -143,7 +143,7 @@ def render_at_angle(scene_objects,
     for scene_object in scene_objects:
 
         # Rotate the mesh object around the y axis
-        scene_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0
+        scene_object.rotation_euler[1] = angle * 3.14 / 180.0
 
     # Render the image
     render(bounding_box=bounding_box,

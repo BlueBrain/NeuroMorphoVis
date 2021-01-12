@@ -16,6 +16,7 @@
 ####################################################################################################
 
 # System imports
+import sys
 import os
 import argparse
 import subprocess
@@ -44,6 +45,19 @@ def get_gids_from_file(gids_file):
 
 
 ####################################################################################################
+# @run_command
+####################################################################################################
+def run_command(shell_command):
+    """Runs a given command
+    :param shell_command:
+        A given command to be executed
+    :return:
+    """
+    print(shell_command)
+    subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
 def construct_generation_command(args,
@@ -66,36 +80,27 @@ def construct_generation_command(args,
 
         # Make the command
         shell_command = '%s' % args.blender_executable
-        shell_command += ' -b --verbose 0 --python astrocyte_generator.py --'
+        shell_command += ' -b --verbose 0 --python create-synaptome.py --'
+        shell_command += ' --circuit-config=%s' % args.circuit_config
         shell_command += ' --gid=%s' % gid
         shell_command += ' --output-directory=%s' % args.output_directory
-        shell_command += ' --circuit-path=%s' % args.circuit_path
-        shell_command += ' --soma-style=%s' % args.soma_style
-        shell_command += ' --mesh-type=%s' % args.mesh_type
-        shell_command += ' --decimation-factor=%s' % args.decimation_factor
-        if args.export_obj:
-            shell_command += ' --export-obj'
-        if args.export_blend:
-            shell_command += ' --export-blend'
+        shell_command += ' --color-map=%s' % args.color_map_file
+        shell_command += ' --neuron-color=%s' % args.neuron_color
+        shell_command += ' --full-view-resolution=%s' % args.full_view_resolution
+        shell_command += ' --close-up-resolution=%s' % args.close_up_resolution
+        shell_command += ' --synapse-percentage=%s' % args.synapse_percentage
+        shell_command += ' --synapse-size=%s' % args.synapse_size
+        shell_command += ' --close-up-size=%s' % args.close_up_size
+        shell_command += ' --background-image=%s' % args.background_image
+
+        if args.show_exc_inh:
+            shell_command += ' --show-exc-inh'
 
         # Append to the commands list
         commands_list.append(shell_command)
 
     # Return the commands list
     return commands_list
-
-
-####################################################################################################
-# @run_command
-####################################################################################################
-def run_command(command):
-    """Runs a given command
-    :param command:
-        A given command to be executed
-    :return:
-    """
-    print(command)
-    subprocess.call(command, shell=True)
 
 
 ####################################################################################################
@@ -110,52 +115,72 @@ def parse_command_line_arguments(arguments=None):
         Arguments list.
     """
 
-    description = 'Generating astrocytes'
+    # add all the options
+    description = 'Synaptome creator: creates static images and 360s of synaptomes'
     parser = argparse.ArgumentParser(description=description)
 
     arg_help = 'Blender executable'
     parser.add_argument('--blender-executable',
                         action='store', dest='blender_executable', help=arg_help)
 
-    arg_help = 'Output directory where the generated astrocyte will be written'
+    arg_help = 'Circuit configuration file'
+    parser.add_argument('--circuit-config',
+                        action='store', dest='circuit_config', help=arg_help)
+
+    arg_help = 'A list of all the neuron gids'
+    parser.add_argument('--gids-file',
+                        action='store', dest='gids_file', help=arg_help)
+
+    arg_help = 'The percentage of synapses to be drawn in the rendering'
+    parser.add_argument('--synapse-percentage',
+                        action='store', dest='synapse_percentage', type=float, help=arg_help)
+
+    arg_help = 'Show the excitatory and inhibitory neurons'
+    parser.add_argument('--show-exc-inh',
+                        action='store_true', default=False, dest='show_exc_inh', help=arg_help)
+
+    arg_help = 'Output directory, where the final image/movies and scene will be stored'
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
 
-    arg_help = 'The type of the resulting meshes, [simulation], [visualization] or [both]'
-    parser.add_argument('--mesh-type',
-                        action='store', dest='mesh_type', help=arg_help)
+    arg_help = 'Synaptic color map'
+    parser.add_argument('--color-map',
+                        action='store', dest='color_map_file', help=arg_help)
+
+    arg_help = 'Neuron color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--neuron-color',
+                        action='store', dest='neuron_color', help=arg_help)
+
+    arg_help = 'Synapse size (in um)'
+    parser.add_argument('--synapse-size',
+                        action='store', dest='synapse_size', type=float, help=arg_help)
+
+    arg_help = 'Close-up view size'
+    parser.add_argument('--close-up-size',
+                        action='store', default=50, type=int, dest='close_up_size',
+                        help=arg_help)
+
+    arg_help = 'Base full-view resolution'
+    parser.add_argument('--full-view-resolution',
+                        action='store', default=2000, type=int, dest='full_view_resolution',
+                        help=arg_help)
+
+    arg_help = 'Base close-up resolution'
+    parser.add_argument('--close-up-resolution',
+                        action='store', default=1000, type=int, dest='close_up_resolution',
+                        help=arg_help)
+
+    arg_help = 'Background image'
+    parser.add_argument('--background-image',
+                        action='store', dest='background_image', help=arg_help)
 
     arg_help = 'Execution mode, serial or parallel'
     parser.add_argument('--execution',
                         action='store', dest='execution', default='serial', help=arg_help)
 
-    arg_help = 'The path to the NGV circuit'
-    parser.add_argument('--circuit-path',
-                        action='store', dest='circuit_path', help=arg_help)
-
-    arg_help = 'The style of the soma'
-    parser.add_argument('--soma-style',
-                        action='store', dest='soma_style', help=arg_help)
-
-    arg_help = 'The GIDs of the astrocytes'
-    parser.add_argument('--gids-file',
-                        action='store', dest='gids_file', help=arg_help)
-
-    arg_help = 'A range of GIDs'
-    parser.add_argument('--gids-range',
-                        action='store', dest='gids_range', default='0', help=arg_help)
-
-    arg_help = 'Export the result into an .OBJ file'
-    parser.add_argument('--export-obj',
-                        action='store_true', dest='export_obj', default=False, help=arg_help)
-
-    arg_help = 'Export the result into an .BLEND file'
-    parser.add_argument('--export-blend',
-                        action='store_true', dest='export_blend', default=False, help=arg_help)
-
-    arg_help = 'Decimation factor, between 1.0 and 0.01'
-    parser.add_argument('--decimation-factor',
-                        action='store', dest='decimation_factor', type=float, default=1.0,
+    arg_help = 'Number of parallel cores. Valid only if the execution is parallel'
+    parser.add_argument('--number-parallel-cores',
+                        action='store', default=2, type=int, dest='number_parallel_cores',
                         help=arg_help)
 
     # Parse the arguments
@@ -170,17 +195,8 @@ if __name__ == "__main__":
     # Parse the command line arguments
     args = parse_command_line_arguments()
 
-    # One must export a valid mesh
-    if (not args.export_blend) and (not args.export_obj):
-        print('You must export either a .BLEND or .OBJ mesh')
-        exit(0)
-
-    # Get the GIDs
-    if args.gids_range is not '0':
-        gids_string = args.gids_range.split('-')
-        gids = list(range(int(gids_string[0]), int(gids_string[1]) + 1))
-    else:
-        gids = get_gids_from_file(gids_file=args.gids_file)
+    # Get a list of all the gids from a given file
+    gids = get_gids_from_file(gids_file=args.gids_file)
 
     # Build the commands
     commands = construct_generation_command(args, gids)
@@ -193,9 +209,7 @@ if __name__ == "__main__":
     if 'parallel' in args.execution:
         from joblib import Parallel, delayed
         import multiprocessing
-        Parallel(n_jobs=7)(delayed(run_command)(i) for i in commands)
+        Parallel(n_jobs=args.number_parallel_cores)(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:
             run_command(command)
-
-

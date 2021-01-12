@@ -67,7 +67,8 @@ if __name__ == "__main__":
         synapse_size=args.synapse_size,
         synapse_percentage=args.synapse_percentage,
         synaptome_color_map_materials=synaptome_color_map_materials,
-        neuron_material=neuron_material)
+        neuron_material=neuron_material,
+        show_excitatory_inhibitory=args.show_exc_inh)
 
     # Compute the mesh bounding box
     synaptome_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()

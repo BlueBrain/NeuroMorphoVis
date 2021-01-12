@@ -28,7 +28,11 @@ GIDS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
 OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
-OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.12-synaptomes-final'
+OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/mtypes'
+# OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/excitatory_inhibitory'
+
+# Show excitatory and inhibitory synapses, yes or no
+SHOW_EXC_INH='no'
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -46,23 +50,32 @@ SYNAPSE_SIZE='2.0'
 CLOSE_UP_SIZE='50'
 
 # Base full view resolution
-FULL_VIEW_RESOLUTION='250'
+FULL_VIEW_RESOLUTION='2000'
 
 # Base close-up resolution
-CLOSE_UP_RESOLUTION='250'
+CLOSE_UP_RESOLUTION='1000'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
-# 360 frames directory
-ROTATION_360_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/360s/1'
+# Execution, serial or parallel
+EXECUTION='parallel'
 
+# Number of parallel cores
+NUMBER_PARALLEL_CORES='4'
+
+#####################################################################################################
+BOOL_ARGS=''
+if [ "$SHOW_EXC_INH" == "yes" ];
+    then BOOL_ARGS+=' --show-exc-inh '; fi
 ####################################################################################################
-while IFS= read -r line;
-do echo 'CREATING SYNAPTOME ...';
-$BLENDER -b --verbose 0 --python create-synaptome.py --                                             \
+echo 'CREATING SYNAPTOMES ...';
+python3 create-synaptomes.py                                                                        \
+    --blender-executable=$BLENDER                                                                   \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
-    --gid=$line                                                                                     \
+    --gids-file=$GIDS_FILE                                                                          \
+    --execution=$EXECUTION                                                                          \
+    --number-parallel-cores=$NUMBER_PARALLEL_CORES                                                  \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --color-map=$COLOR_MAP_FILE                                                                     \
     --neuron-color=$NEURON_COLOR                                                                    \
@@ -72,8 +85,5 @@ $BLENDER -b --verbose 0 --python create-synaptome.py --                         
     --synapse-size=$SYNAPSE_SIZE                                                                    \
     --close-up-size=$CLOSE_UP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
-    --rotation-360-directory=$ROTATION_360_DIRECTORY                                                \
     $BOOL_ARGS;
-echo 'SYNAPTOME DONE ...';
-done < $GIDS_FILE
 

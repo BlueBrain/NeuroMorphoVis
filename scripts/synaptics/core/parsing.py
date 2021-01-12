@@ -51,6 +51,10 @@ def parse_synaptome_command_line_arguments(arguments=None):
     parser.add_argument('--synapse-percentage',
                         action='store', dest='synapse_percentage', type=float, help=arg_help)
 
+    arg_help = 'Show the excitatory and inhibitory neurons'
+    parser.add_argument('--show-exc-inh',
+                        action='store_true', default=False, dest='show_exc_inh', help=arg_help)
+
     arg_help = 'Output directory, where the final image/movies and scene will be stored'
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
@@ -85,10 +89,6 @@ def parse_synaptome_command_line_arguments(arguments=None):
     arg_help = 'Background image'
     parser.add_argument('--background-image',
                         action='store', dest='background_image', help=arg_help)
-
-    arg_help = '360 rotation frames directory'
-    parser.add_argument('--rotation-360-directory',
-                        action='store', dest='rotation_360_directory', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
