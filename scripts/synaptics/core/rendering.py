@@ -19,6 +19,7 @@
 import os
 import ntpath
 import copy
+import subprocess
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 
 # Blender
@@ -487,4 +488,36 @@ def compose_360_frames(full_view_frames,
         composed_frames.append(composed_frame)
 
     # Return the composed frames list
-    return composed_frames
+    return original_frames_directory, composed_frames
+
+
+####################################################################################################
+# @create_movie
+####################################################################################################
+def create_movie(frames_directory,
+                 movie_name,
+                 output_directory):
+    """Creates a movie of a list of frames with ffmpeg.
+
+    :param frames_directory:
+        The directory where the frames are located.
+    :param movie_name:
+        The name of the final movie.
+    :param output_directory:
+        The root output directory
+    """
+
+    # The directory where the final movie will be created
+    movie_directory = output_directory + '/4_movie'
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(movie_directory):
+        nmv.file.ops.clean_and_create_directory(movie_directory)
+
+    # Create the shell command
+    shell_command = 'ffmpeg -i %s/%%05d.png %s/%s.mp4' % (frames_directory,
+                                                          movie_directory,
+                                                          movie_name)
+    subprocess.call(shell_command, shell=True)
+
+

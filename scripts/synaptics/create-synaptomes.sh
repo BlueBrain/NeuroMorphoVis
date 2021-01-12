@@ -23,7 +23,7 @@ BLENDER=$PWD/../../../../../../blender
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/CircuitConfig'
 
 # Neuron GID
-NEURON_GID='956172'
+GIDS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/synaptome.gids'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
@@ -58,10 +58,11 @@ BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/syn
 ROTATION_360_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/360s/1'
 
 ####################################################################################################
-echo 'CREATING SYNAPTOME ...'
+while IFS= read -r line;
+do echo 'CREATING SYNAPTOME ...';
 $BLENDER -b --verbose 0 --python create-synaptome.py --                                             \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
-    --gid=$NEURON_GID                                                                               \
+    --gid=$line                                                                                     \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --color-map=$COLOR_MAP_FILE                                                                     \
     --neuron-color=$NEURON_COLOR                                                                    \
@@ -72,7 +73,7 @@ $BLENDER -b --verbose 0 --python create-synaptome.py --                         
     --close-up-size=$CLOSE_UP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     --rotation-360-directory=$ROTATION_360_DIRECTORY                                                \
-    $BOOL_ARGS
-
-echo 'SYNAPTOME DONE ...'
+    $BOOL_ARGS;
+echo 'SYNAPTOME DONE ...';
+done < $GIDS_FILE
 

@@ -92,10 +92,14 @@ if __name__ == "__main__":
         resolution=args.close_up_resolution)
 
     # Compose the 360 frames on the background
-    rendering.compose_360_frames(
+    frames_directory, composed_frames = rendering.compose_360_frames(
         full_view_frames=full_view_frames, close_up_frames=close_up_frames,
         background_image_file=args.background_image, output_directory=output_directory,
         bounding_box=synaptome_bounding_box)
+
+    # Create a movie from the final frames
+    rendering.create_movie(frames_directory=frames_directory, movie_name=synaptome_mesh.name,
+                           output_directory=output_directory)
 
     # Export the scene into a blender file for reference
     nmv.file.export_scene_to_blend_file(output_directory=output_directory,
