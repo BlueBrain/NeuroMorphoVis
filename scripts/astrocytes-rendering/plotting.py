@@ -23,6 +23,7 @@ import pandas
 import matplotlib
 import matplotlib.pyplot as pyplot
 import matplotlib.font_manager
+import matplotlib.ticker
 from matplotlib.ticker import PercentFormatter
 from matplotlib.ticker import FormatStrFormatter
 from PIL import Image
@@ -32,19 +33,21 @@ from PIL import Image
 # Per-adjust all the plotting configuration
 ####################################################################################################
 seaborn.set_style("whitegrid")
-pyplot.rcParams['axes.grid'] = 'False'
+pyplot.rcParams['axes.grid'] = 'True'
 pyplot.rcParams['font.family'] = 'NimbusSanL'
 pyplot.rcParams['font.monospace'] = 'Regular'
 pyplot.rcParams['font.style'] = 'normal'
 pyplot.rcParams['axes.linewidth'] = 0.0
-pyplot.rcParams['axes.labelsize'] = 30
+pyplot.rcParams['axes.labelsize'] = 50
 pyplot.rcParams['axes.labelweight'] = 'bold'
-pyplot.rcParams['xtick.labelsize'] = 30
-pyplot.rcParams['ytick.labelsize'] = 30
-pyplot.rcParams['legend.fontsize'] = 40
-pyplot.rcParams['figure.titlesize'] = 40
-pyplot.rcParams['axes.titlesize'] = 40
-pyplot.rcParams['axes.edgecolor'] = '0.1'
+pyplot.rcParams['xtick.labelsize'] = 50
+pyplot.rcParams['ytick.labelsize'] = 50
+pyplot.rcParams['legend.fontsize'] = 50
+pyplot.rcParams['figure.titlesize'] = 50
+pyplot.rcParams['axes.titlesize'] = 50
+pyplot.rcParams['xtick.major.pad'] = '20'
+pyplot.rcParams['ytick.major.pad'] = '12'
+pyplot.rcParams['axes.edgecolor'] = '1'
 
 
 ####################################################################################################
@@ -159,58 +162,66 @@ def create_adjusted_plot_images(input_directory, list_images, output_directory):
 def montage_distributions_into_one_image(name,
                                          distribution_images,
                                          input_directory,
-                                         output_directory):
+                                         output_directory,
+                                         delta=100):
 
     # Split them in two groups
     group_1 = list()
     group_2 = list()
 
     # Get the images one by one
-    group_1.append(get_image(distribution_images, 'condition-number'))
-    group_1.append(get_image(distribution_images, 'scaled-jacobian'))
+
+    group_1.append(get_image(distribution_images, 'min-angle'))
     group_1.append(get_image(distribution_images, 'radius-ratio'))
-    group_1.append(get_image(distribution_images, 'edge-ratio'))
     group_1.append(get_image(distribution_images, 'radius-to-edge-ratio'))
-    group_2.append(get_image(distribution_images, 'min-angle'))
+    group_1.append(get_image(distribution_images, 'relative-size'))
+
     group_2.append(get_image(distribution_images, 'max-angle'))
-    group_2.append(get_image(distribution_images, 'relative-size'))
+    group_2.append(get_image(distribution_images, 'edge-ratio'))
     group_2.append(get_image(distribution_images, 'triangle-shape'))
-    group_2.append(get_image(distribution_images, 'triangle-shape-size'))
+    group_2.append(get_image(distribution_images, 'scaled-jacobian'))
+
+    # group_1.append(get_image(distribution_images, 'condition-number'))
+    # group_2.append(get_image(distribution_images, 'triangle-size-shape'))
 
     # Get the dimensions from any image, all the images must have the same dimensions
-    any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'condition-number')))
+    any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'edge-ratio')))
     width, height = any_image.size
 
     # Vertical
     # Compute the dimensions of the new image
-    total_width = width * 2
-    total_height = height * 5
+    total_width = (width * 2) + (delta * 1)
+    total_height = (height * 4) + (delta * 3)
 
-    new_im = Image.new('RGB', (total_width, total_height))
+    new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
     for i, distribution_image in enumerate(group_1):
         im = Image.open('%s/%s' % (output_directory, distribution_image))
-        new_im.paste(im, (0, i * height))
+        h = 0 if i == 0 else i * (height + delta)
+        new_im.paste(im, (0, h))
 
     for i, distribution_image in enumerate(group_2):
         im = Image.open('%s/%s' % (output_directory, distribution_image))
-        new_im.paste(im, (width, i * height))
+        h = 0 if i == 0 else i * (height + delta)
+        new_im.paste(im, (width + delta, h))
 
     vertical_image_path = '%s/%s-vertical.png' % (output_directory, name)
     new_im.save(vertical_image_path)
 
     # Horizontal
     # Compute the dimensions of the new image
-    total_width = width * 5
-    total_height = height * 2
+    total_width = (width * 4) + (delta * 3)
+    total_height = height * 2 + (delta * 1)
 
-    new_im = Image.new('RGB', (total_width, total_height))
+    new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
     for i, distribution_image in enumerate(group_1):
         im = Image.open('%s/%s' % (output_directory, distribution_image))
-        new_im.paste(im, (i * width, 0))
+        w = 0 if i == 0 else i * (width + delta)
+        new_im.paste(im, (w, 0))
 
     for i, distribution_image in enumerate(group_2):
         im = Image.open('%s/%s' % (output_directory, distribution_image))
-        new_im.paste(im, (i * width, height))
+        w = 0 if i == 0 else i * (width + delta)
+        new_im.paste(im, (w, height + delta))
 
     horizontal_image_path = '%s/%s-horizontal.png' % (output_directory, name)
     new_im.save(horizontal_image_path)
@@ -275,20 +286,25 @@ def plot_distribution(input_directory,
     # Convert the data to numpy array
     np_data = numpy.array(data)
 
-    # Adjust the Y-axis format
-    pyplot.gca().yaxis.set_major_formatter(PercentFormatter(xmax=xmax, decimals=decimals, symbol=' %'))
-
     # Adjusting the figure size
     pyplot.figure(figsize=(10, 10))
 
     # Set the title inside the figure to save some space
     if plot_titles:
-        pyplot.title(title, y=0.9)
+        pyplot.title(title, y=0.8)
 
     # Plot the histogram
     seaborn.distplot(np_data, color='r', hist=True, kde=kde, norm_hist=True, bins=40,
                      hist_kws={"color": color, "lw": 0.5},
                      kde_kws={"color": color, "lw": 0.5})
+
+    # Percent formatter
+    pyplot.gca().yaxis.set_major_formatter(
+        PercentFormatter(xmax=xmax, decimals=decimals, symbol='%'))
+
+    # Adjust the Y-axis format
+    pyplot.gca().xaxis.set_major_locator(pyplot.MaxNLocator(4))
+    pyplot.gca().yaxis.set_major_locator(pyplot.MaxNLocator(4))
 
     # Image prefix
     image_prefix = '%s/%s' % (output_directory, dist_file.replace('.dist', ''))
@@ -305,6 +321,8 @@ def plot_distribution(input_directory,
         pyplot.savefig(image_prefix + '.svg', dpi=dpi, bbox_inches='tight')
 
     # Close figure to reset
+    pyplot.clf()
+    pyplot.cla()
     pyplot.close()
 
     # Return a reference to the png image
@@ -357,13 +375,13 @@ def plot_distributions(keyword,
             if 'min-angle' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Min. Dihedral Angle (deg)', xmax=1, color=colors[4],
+                    title='Min. Dihedral Angle $^\circ$', xmax=1, color=colors[4],
                     kde=use_kde, plot_titles=plot_titles))
 
             if 'max-angle' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Max. Dihedral Angle (deg)', xmax=1, color=colors[5],
+                    title='Max. Dihedral Angle $^\circ$', xmax=1, color=colors[5],
                     kde=use_kde, plot_titles=plot_titles))
 
             if 'relative-size' in distribution:
@@ -372,16 +390,16 @@ def plot_distributions(keyword,
                     title='Relative Size', color=colors[6], kde=use_kde,
                     plot_titles=plot_titles))
 
+            if 'triangle-size-shape' in distribution:
+                distributions_pngs.append(plot_distribution(
+                    input_directory, distribution, output_directory,
+                    title='Shape & Size', color=colors[8], kde=use_kde,
+                    plot_titles=plot_titles))
+
             if 'triangle-shape' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Shape', color=colors[7], kde=use_kde,
-                    plot_titles=plot_titles))
-
-            if 'triangle-shape-size' in distribution:
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Shape & Size', color=colors[8], kde=use_kde,
                     plot_titles=plot_titles))
 
             if 'scaled-jacobian' in distribution:
@@ -436,7 +454,8 @@ def plot_mesh_stats(name,
 def combine_stats_with_rendering(rendering_image,
                                  vertical_stats_image,
                                  horizontal_stats_image,
-                                 output_image_path):
+                                 output_image_path,
+                                 delta=100):
     """Creates a final image with the mesh and the stats. next to it.
 
     :param rendering_image:
@@ -446,7 +465,9 @@ def combine_stats_with_rendering(rendering_image,
     :param horizontal_stats_image:
         The horizontal stats. image.
     :param output_image_path:
-        THe path to the output directory.
+        The path to the output directory.
+    :param delta:
+        Distance between main figure and stats.
     :return:
         A reference to the combined vertical and horizontal images.
     """
@@ -469,19 +490,19 @@ def combine_stats_with_rendering(rendering_image,
     vertical_im = vertical_im.resize((vertical_im_width, vertical_im_height), resample=2)
 
     # Create the combined horizontal image
-    new_horizontal_im = Image.new('RGB', (rendering_im.size[0] + horizontal_im.size[0],
+    new_horizontal_im = Image.new('RGB', (rendering_im.size[0] + horizontal_im.size[0] + delta,
                                           rendering_im.size[1]), (255, 255, 255))
     new_horizontal_im.paste(rendering_im, (0, 0))
-    new_horizontal_im.paste(horizontal_im, (rendering_im.size[0], 0))
+    new_horizontal_im.paste(horizontal_im, (rendering_im.size[0] + delta, 0))
     combined_horizontal_path = '%s-horizontal.png' % output_image_path
     new_horizontal_im.save(combined_horizontal_path)
     new_horizontal_im.close()
 
     # Create the vertical image
-    new_vertical_im = Image.new('RGB', (rendering_im.size[0] + vertical_im.size[0],
+    new_vertical_im = Image.new('RGB', (rendering_im.size[0] + vertical_im.size[0] + delta,
                                         rendering_im.size[1]), (255, 255, 255))
     new_vertical_im.paste(rendering_im, (0, 0))
-    new_vertical_im.paste(vertical_im, (rendering_im.size[0], 0))
+    new_vertical_im.paste(vertical_im, (rendering_im.size[0] + delta, 0))
     combined_vertical_path = '%s-vertical.png' % output_image_path
     new_vertical_im.save(combined_vertical_path)
     new_vertical_im.close()
