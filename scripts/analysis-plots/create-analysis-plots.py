@@ -178,7 +178,8 @@ def parse_command_line_arguments(arguments=None):
 ####################################################################################################
 # @get_image
 ####################################################################################################
-def get_image(images, measure):
+def get_image(images,
+              measure):
     for file in images:
         if measure in file:
             if '.png' in file:
@@ -447,5 +448,3 @@ if __name__ == "__main__":
     group_taper_analysis(output, output)
 
     group_results(args.input, output)
-
-    exit(0)
