@@ -32,10 +32,13 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-re
 CONSIDER_OPTIMIZED='yes'
 
 # Mesh color
-WIREFRAME_MESH_COLOR='255_255_255'
+WIREFRAME_MESH_COLOR='255_128_10'
+
+# Wireframe thickness
+WIREFRAME_THICKNESS='0.05'
 
 # Base image resolution
-IMAGE_RESOLUTION='4000'
+IMAGE_RESOLUTION='2000'
 
 # Export Blender scenes
 EXPORT_BLENDER_SCENE='yes'
@@ -48,12 +51,13 @@ if [ "$CONSIDER_OPTIMIZED" == "yes" ];
     then BOOL_ARGS+=' --consider-optimized '; fi
 ####################################################################################################
 echo 'CREATING ASTROCYTE RENDERING ...'
-$BLENDER -b --verbose 0 --python render-astrocyte.py --                                                \
+$BLENDER -b --verbose 0 --python render-astrocyte.py --                                             \
     --astrocytes-list=$ASTROCYTES_LIST                                                              \
-    --input-directory=$INPUT_DIRECTORY                                                               \
+    --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --astrocyte-color=$WIREFRAME_MESH_COLOR                                                              \
+    --astrocyte-color=$WIREFRAME_MESH_COLOR                                                         \
     --resolution=$IMAGE_RESOLUTION                                                                  \
+    --wireframe-thickness=$WIREFRAME_THICKNESS                                                      \
     $BOOL_ARGS
 
 echo 'SYNAPTOME DONE ...'
