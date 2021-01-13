@@ -797,3 +797,52 @@ def remove_small_partitions(mesh_object):
         # Remove the vertices of the small partitions
         nmv.mesh.remove_vertices(
             mesh_object=mesh_object, vertices_indices=partitions_vertices_indices[i])
+
+
+####################################################################################################
+# @create_wire_frame
+####################################################################################################
+def create_wire_frame(mesh_object,
+                      wireframe_thickness=0.02):
+    """Creates a wireframe model for a given mesh
+
+    :param mesh_object:
+        A give mesh object.
+    :param wireframe_thickness:
+        Wireframe thickness.
+    :return:
+        A reference to the created wireframe mesh.
+    """
+
+    # Duplicate the mesh
+    duplicated_mesh = nmv.scene.duplicate_object(
+        original_object=mesh_object, duplicated_object_name='%s-wireframe' % mesh_object.name)
+
+    # Make sure to deselect all the objects
+    nmv.scene.deselect_all()
+
+    # Select the duplicate mesh
+    nmv.scene.select_object(scene_object=duplicated_mesh)
+
+    # Activate the duplicate mesh
+    nmv.scene.set_active_object(scene_object=duplicated_mesh)
+
+    # Apply the wireframe operator
+    bpy.ops.object.modifier_add(type='WIREFRAME')
+
+    # Adjust the thickness
+    bpy.context.object.modifiers["Wireframe"].thickness = wireframe_thickness
+
+    # Set the even-offset to False
+    # NOTE THis is important to avoid any artifacts in the resulting wireframe mesh
+    bpy.context.object.modifiers["Wireframe"].use_even_offset = False
+
+    # Apply the modifier
+    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Wireframe")
+
+    # Return a reference to the wireframe object
+    return duplicated_mesh
+
+
+
+

@@ -115,7 +115,7 @@ def parse_command_line_arguments(arguments=None):
         Arguments list.
     """
 
-    # add all the options
+    # Add all the options
     description = 'Synaptome creator: creates static images and 360s of synaptomes'
     parser = argparse.ArgumentParser(description=description)
 
@@ -180,7 +180,7 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Number of parallel cores. Valid only if the execution is parallel'
     parser.add_argument('--number-parallel-cores',
-                        action='store', default=2, type=int, dest='number_parallel_cores',
+                        action='store', default=4, type=int, dest='number_parallel_cores',
                         help=arg_help)
 
     # Parse the arguments
