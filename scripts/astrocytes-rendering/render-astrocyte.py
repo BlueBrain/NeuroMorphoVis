@@ -116,11 +116,9 @@ def run_quality_checker(mesh_path,
         The root output directory
     """
 
-    # Output directory
-    stats_output_directory = '%s/%s-stats' % (output_directory,
-                                              os.path.basename(mesh_path).replace('.obj', ''))
-    if not os.path.exists(stats_output_directory):
-        os.makedirs(stats_output_directory)
+    # Make sure that this directory exists
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
 
     # Construct the command
     command = '%s --mesh %s --output-directory %s' % \
@@ -190,10 +188,22 @@ if __name__ == "__main__":
     # Get the astrocytes
     astrocytes = get_astrocytes_paths_from_list(args.astrocytes_list)
 
+    # Create the output hierarchy
+    if not os.path.exists(args.output_directory):
+        os.makedirs(args.output_directory)
+    intermediate_directory = '%s/intermediate-images' % args.output_directory
+    if not os.path.exists(intermediate_directory):
+        os.makedirs(intermediate_directory)
+    images_directory = '%s/images' % args.output_directory
+    if not os.path.exists(images_directory):
+        os.makedirs(images_directory)
+    scenes_directory = '%s/scenes' % args.output_directory
+    if not os.path.exists(scenes_directory):
+        os.makedirs(scenes_directory)
+
     # For each astrocyte, do it
     for astrocyte in astrocytes:
 
-        '''
         # Clear the scene
         nmv.scene.clear_scene()
 
@@ -230,33 +240,48 @@ if __name__ == "__main__":
         nmv.shading.set_material_to_object(
             mesh_object=wireframe_mesh, material_reference=wireframe_material)
 
+        # Set the background to WHITE for the compositing
+        bpy.context.scene.render.film_transparent = False
+        bpy.context.scene.world.color[0] = 10
+        bpy.context.scene.world.color[1] = 10
+        bpy.context.scene.world.color[2] = 10
+
         # Render based on the bounding box
         nmv.rendering.render(bounding_box=astrocyte_bbox,
-                             image_directory=args.output_directory,
-                             image_name=astrocyte.replace('.obj', ''),
+                             image_directory=intermediate_directory,
+                             image_name=astrocyte_mesh.name,
                              image_resolution=args.resolution,
                              keep_camera_in_scene=True)
 
         # Save the final scene into a blender file
         if args.export_blend:
-            nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,
-                                                output_file_name=astrocyte.replace('.obj', ''))
-        '''
-        '''
-        # Run the quality checker app
-        run_quality_checker(mesh_path='%s/%s' % (args.input_directory, astrocyte),
-                            quality_checker_executable=args.quality_checker_executable,
-                            output_directory=args.output_directory)
-        '''
+            nmv.file.export_scene_to_blend_file(output_directory=scenes_directory,
+                                                output_file_name=astrocyte_mesh.name)
 
+        # Run the quality checker app
         mesh_path = '%s/%s' % (args.input_directory, astrocyte)
-        stats_output_directory = '%s/%s-stats' % (args.output_directory,
-                                                  os.path.basename(mesh_path).replace('.obj', ''))
-        plotting.plot_mesh_stats(distributions_directory=stats_output_directory,
-                                 output_directory='%s/%s' % (stats_output_directory, 'result'))
+        stats_output_directory = '%s/%s-stats' % (intermediate_directory, astrocyte_mesh.name)
+        run_quality_checker(mesh_path=mesh_path,
+                            quality_checker_executable=args.quality_checker_executable,
+                            output_directory=stats_output_directory)
+
+        # Plot the stats. of the mesh into a single image
+        vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
+            name=astrocyte_mesh.name,
+            distributions_directory=stats_output_directory,
+            output_directory=intermediate_directory)
+
+        # Combine the wire-frame rendering with the stats image side-by-side
+        plotting.combine_stats_with_rendering(
+            rendering_image='%s/%s.png' % (intermediate_directory, astrocyte_mesh.name),
+            vertical_stats_image=vertical_stats_image,
+            horizontal_stats_image=horizontal_stats_image,
+            output_image_path='%s/%s' % (images_directory, astrocyte_mesh.name))
 
         # Artistic rendering
         if args.artistic:
+
+            bpy.context.scene.render.film_transparent = True
 
             # Delete the wireframe mesh
             nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
@@ -286,13 +311,13 @@ if __name__ == "__main__":
 
             # Render based on the bounding box
             nmv.rendering.render(bounding_box=astrocyte_bbox,
-                                 image_directory=args.output_directory,
-                                 image_name='%s-artistic' % astrocyte.replace('.obj', ''),
+                                 image_directory=intermediate_directory,
+                                 image_name='%s-artistic' % astrocyte_mesh.name,
                                  image_resolution=args.resolution,
                                  keep_camera_in_scene=True)
 
             # Save the final scene into a blender file
             if args.export_blend:
                 nmv.file.export_scene_to_blend_file(
-                    output_directory=args.output_directory,
+                    output_directory=scenes_directory,
                     output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))

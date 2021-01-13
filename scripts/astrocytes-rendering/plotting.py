@@ -156,7 +156,8 @@ def create_adjusted_plot_images(input_directory, list_images, output_directory):
 ####################################################################################################
 # @create_adjusted_plot_images
 ####################################################################################################
-def montage_distributions_into_one_image(distribution_images,
+def montage_distributions_into_one_image(name,
+                                         distribution_images,
                                          input_directory,
                                          output_directory):
 
@@ -176,13 +177,12 @@ def montage_distributions_into_one_image(distribution_images,
     group_2.append(get_image(distribution_images, 'triangle-shape'))
     group_2.append(get_image(distribution_images, 'triangle-shape-size'))
 
-    total_width = 0
-    total_height = 0
-
     # Get the dimensions from any image, all the images must have the same dimensions
     any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'condition-number')))
     width, height = any_image.size
 
+    # Vertical
+    # Compute the dimensions of the new image
     total_width = width * 2
     total_height = height * 5
 
@@ -195,8 +195,11 @@ def montage_distributions_into_one_image(distribution_images,
         im = Image.open('%s/%s' % (output_directory, distribution_image))
         new_im.paste(im, (width, i * height))
 
-    new_im.save('%s/%s.png' % (output_directory, 'hola-vertical'))
+    vertical_image_path = '%s/%s-vertical.png' % (output_directory, name)
+    new_im.save(vertical_image_path)
 
+    # Horizontal
+    # Compute the dimensions of the new image
     total_width = width * 5
     total_height = height * 2
 
@@ -209,7 +212,12 @@ def montage_distributions_into_one_image(distribution_images,
         im = Image.open('%s/%s' % (output_directory, distribution_image))
         new_im.paste(im, (i * width, height))
 
-    new_im.save('%s/%s.png' % (output_directory, 'hola-horizontal'))
+    horizontal_image_path = '%s/%s-horizontal.png' % (output_directory, name)
+    new_im.save(horizontal_image_path)
+
+    # Return reference to the vertical and horizontal images
+    return vertical_image_path, horizontal_image_path
+
 
 ####################################################################################################
 # @plot_distribution
@@ -225,7 +233,8 @@ def plot_distribution(input_directory,
                       color='b',
                       invert=False,
                       save_pdf=False,
-                      save_svg=False):
+                      save_svg=False,
+                      dpi=150):
     """Plots a given distribution file into an image.
 
     :param input_directory:
@@ -285,15 +294,15 @@ def plot_distribution(input_directory,
     image_prefix = '%s/%s' % (output_directory, dist_file.replace('.dist', ''))
 
     # By default, save the figure into a PNG image
-    pyplot.savefig(image_prefix + '.png', dpi=300, bbox_inches='tight')
+    pyplot.savefig(image_prefix + '.png', dpi=dpi, bbox_inches='tight')
 
     # Save PDF
     if save_pdf:
-        pyplot.savefig(image_prefix + '.pdf', dpi=300, bbox_inches='tight')
+        pyplot.savefig(image_prefix + '.pdf', dpi=dpi, bbox_inches='tight')
 
     # Save SVG
     if save_svg:
-        pyplot.savefig(image_prefix + '.svg', dpi=300, bbox_inches='tight')
+        pyplot.savefig(image_prefix + '.svg', dpi=dpi, bbox_inches='tight')
 
     # Close figure to reset
     pyplot.close()
@@ -386,9 +395,10 @@ def plot_distributions(keyword,
 
 
 ####################################################################################################
-# @plot_group
+# @plot_mesh_stats
 ####################################################################################################
-def plot_mesh_stats(distributions_directory,
+def plot_mesh_stats(name,
+                    distributions_directory,
                     output_directory):
 
     # Verify the packages
@@ -413,8 +423,73 @@ def plot_mesh_stats(distributions_directory,
                                 list_images=distributions_pngs,
                                 output_directory=output_directory)
 
-    montage_distributions_into_one_image(input_directory=output_directory,
-                                         distribution_images=distributions_pngs,
-                                         output_directory=output_directory)
+    vertical_image, horizontal_image = montage_distributions_into_one_image(
+        name=name, input_directory=output_directory, distribution_images=distributions_pngs,
+        output_directory=output_directory)
+
+    return vertical_image, horizontal_image
 
 
+####################################################################################################
+# @combine_stats_with_rendering
+####################################################################################################
+def combine_stats_with_rendering(rendering_image,
+                                 vertical_stats_image,
+                                 horizontal_stats_image,
+                                 output_image_path):
+    """Creates a final image with the mesh and the stats. next to it.
+
+    :param rendering_image:
+        The image of the astrocyte mesh.
+    :param vertical_stats_image:
+        The vertical stats. image.
+    :param horizontal_stats_image:
+        The horizontal stats. image.
+    :param output_image_path:
+        THe path to the output directory.
+    :return:
+        A reference to the combined vertical and horizontal images.
+    """
+
+    # Open the images
+    rendering_im = Image.open(rendering_image)
+    horizontal_im = Image.open(horizontal_stats_image)
+    vertical_im = Image.open(vertical_stats_image)
+
+    # Compute the ratios for the horizontal image and scale it
+    horizontal_image_ratio = rendering_im.size[1] / (1.0 * horizontal_im.size[1])
+    horizontal_im_width = int(horizontal_im.size[0] * horizontal_image_ratio)
+    horizontal_im_height = rendering_im.size[1]
+    horizontal_im = horizontal_im.resize((horizontal_im_width, horizontal_im_height), resample=2)
+
+    # Compute the ratios for the vertical image and scale it
+    vertical_image_ratio = rendering_im.size[1] / (1.0 * vertical_im.size[1])
+    vertical_im_width = int(vertical_im.size[0] * vertical_image_ratio)
+    vertical_im_height = rendering_im.size[1]
+    vertical_im = vertical_im.resize((vertical_im_width, vertical_im_height), resample=2)
+
+    # Create the combined horizontal image
+    new_horizontal_im = Image.new('RGB', (rendering_im.size[0] + horizontal_im.size[0],
+                                          rendering_im.size[1]), (255, 255, 255))
+    new_horizontal_im.paste(rendering_im, (0, 0))
+    new_horizontal_im.paste(horizontal_im, (rendering_im.size[0], 0))
+    combined_horizontal_path = '%s-horizontal.png' % output_image_path
+    new_horizontal_im.save(combined_horizontal_path)
+    new_horizontal_im.close()
+
+    # Create the vertical image
+    new_vertical_im = Image.new('RGB', (rendering_im.size[0] + vertical_im.size[0],
+                                        rendering_im.size[1]), (255, 255, 255))
+    new_vertical_im.paste(rendering_im, (0, 0))
+    new_vertical_im.paste(vertical_im, (rendering_im.size[0], 0))
+    combined_vertical_path = '%s-vertical.png' % output_image_path
+    new_vertical_im.save(combined_vertical_path)
+    new_vertical_im.close()
+
+    # Close all the images
+    rendering_im.close()
+    vertical_im.close()
+    horizontal_im.close()
+
+    # Return a reference to the final images
+    return combined_vertical_path, combined_horizontal_path
