@@ -19,6 +19,7 @@
 import sys
 import os
 import argparse
+import subprocess
 
 # Blender imports
 import bpy
@@ -93,6 +94,34 @@ def get_astrocytes_paths_from_list(astrocytes_list):
 
 
 ####################################################################################################
+# @run_quality_checker
+####################################################################################################
+def run_quality_checker(mesh_path,
+                        quality_checker_executable,
+                        output_directory):
+    """Runs the quality checker to create stats. about the mesh.
+
+    :param mesh_path:
+        The path to the mesh file.
+    :param quality_checker_executable:
+        The executable of Ultraliser checker.
+    :param output_directory:
+        The root output directory
+    """
+
+    # Output directory
+    stats_output_directory = '%s/%s-stats' % (output_directory,
+                                              os.path.basename(mesh_path).replace('.obj', ''))
+    if not os.path.exists(stats_output_directory):
+        os.makedirs(stats_output_directory)
+
+    # Construct the command
+    command = '%s --mesh %s --output-directory %s' % \
+              (quality_checker_executable, mesh_path, stats_output_directory)
+    subprocess.call(command, shell=True)
+
+
+####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
 def parse_command_line_arguments(arguments=None):
@@ -117,8 +146,8 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'A list that contains all the names of the astrocytes'
     parser.add_argument('--astrocytes-list', action='store', help=arg_help)
 
-    arg_help = 'Render the optimized version including the high quality rendering'
-    parser.add_argument('--consider-optimized', action='store_true', default=False, help=arg_help)
+    arg_help = 'Render the artistic version with high quality rendering'
+    parser.add_argument('--artistic', action='store_true', default=False, help=arg_help)
 
     arg_help = 'Astrocyte color in R_G_B format, for example: 255_231_192'
     parser.add_argument('--astrocyte-color', action='store', help=arg_help)
@@ -131,6 +160,9 @@ def parse_command_line_arguments(arguments=None):
 
     arg_help = 'Export blender scene'
     parser.add_argument('--export-blend', action='store_true', default=False, help=arg_help)
+
+    arg_help = 'Quality checker executable'
+    parser.add_argument('--quality-checker-executable', action='store', help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
@@ -202,46 +234,52 @@ if __name__ == "__main__":
             nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,
                                                 output_file_name=astrocyte.replace('.obj', ''))
 
-        # Delete the wireframe mesh
-        nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
+        # Run the quality checker app
+        run_quality_checker(mesh_path='%s/%s' % (args.input_directory, astrocyte),
+                            quality_checker_executable=args.quality_checker_executable,
+                            output_directory=args.output_directory)
 
-        # Remove all the lights in the scene
-        nmv.scene.clear_lights()
+        if args.artistic:
 
-        # Create a wax shader
-        wax_shader = nmv.shading.create_glossy_material(name='astro-glossy')
+            # Delete the wireframe mesh
+            nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
 
-        # Assign the subsurface scattering shader
-        nmv.shading.set_material_to_object(
-            mesh_object=astrocyte_mesh, material_reference=wax_shader)
+            # Remove all the lights in the scene
+            nmv.scene.clear_lights()
 
-        # Get the light location from the camera
-        camera = nmv.scene.get_object_by_name('nmvCamera_FRONT')
-        light_location = Vector((0, 0, 0))
-        light_location[0] = camera.location[0]
-        light_location[1] = astrocyte_bbox.center[1] + astrocyte_bbox.bounds[1]
-        light_location[2] = camera.location[2]
+            # Create a wax shader
+            wax_shader = nmv.shading.create_glossy_material(name='astro-glossy')
 
-        # From the bounding box, clear an area light
-        area_light = create_area_light_from_bounding_box(location=light_location)
+            # Assign the subsurface scattering shader
+            nmv.shading.set_material_to_object(
+                mesh_object=astrocyte_mesh, material_reference=wax_shader)
 
-        # Use the denoiser
-        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+            # Get the light location from the camera
+            camera = nmv.scene.get_object_by_name('nmvCamera_FRONT')
+            light_location = Vector((0, 0, 0))
+            light_location[0] = camera.location[0]
+            light_location[1] = astrocyte_bbox.center[1] + astrocyte_bbox.bounds[1]
+            light_location[2] = camera.location[2]
 
-        # Render based on the bounding box
-        nmv.rendering.render(bounding_box=astrocyte_bbox,
-                             image_directory=args.output_directory,
-                             image_name='%s-artistic' % astrocyte.replace('.obj', ''),
-                             image_resolution=args.resolution,
-                             keep_camera_in_scene=True)
+            # From the bounding box, clear an area light
+            area_light = create_area_light_from_bounding_box(location=light_location)
 
-        # Save the final scene into a blender file
-        if args.export_blend:
-            nmv.file.export_scene_to_blend_file(
-                output_directory=args.output_directory,
-                output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))
+            # Use the denoiser
+            bpy.context.scene.view_layers[0].cycles.use_denoising = True
 
-        # Done
+            # Render based on the bounding box
+            nmv.rendering.render(bounding_box=astrocyte_bbox,
+                                 image_directory=args.output_directory,
+                                 image_name='%s-artistic' % astrocyte.replace('.obj', ''),
+                                 image_resolution=args.resolution,
+                                 keep_camera_in_scene=True)
+
+            # Save the final scene into a blender file
+            if args.export_blend:
+                nmv.file.export_scene_to_blend_file(
+                    output_directory=args.output_directory,
+                    output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))
+
 
     '''
     # Add a flat shader to forc NMV to switch to Blender workbench render

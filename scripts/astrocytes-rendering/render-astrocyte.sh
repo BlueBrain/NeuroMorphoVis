@@ -28,8 +28,8 @@ ASTROCYTES_LIST='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-ren
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/output'
 
-# Consider the optimized version
-CONSIDER_OPTIMIZED='yes'
+# Render artistic image, yes or no
+RENDER_ARTISTIC='no'
 
 # Mesh color
 WIREFRAME_MESH_COLOR='255_128_10'
@@ -43,12 +43,15 @@ IMAGE_RESOLUTION='2000'
 # Export Blender scenes
 EXPORT_BLENDER_SCENE='yes'
 
+# ultraQualityChecker executable
+QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker'
+
 #####################################################################################################
 BOOL_ARGS=''
 if [ "$EXPORT_BLENDER_SCENE" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
-if [ "$CONSIDER_OPTIMIZED" == "yes" ];
-    then BOOL_ARGS+=' --consider-optimized '; fi
+if [ "$ARTISTIC" == "yes" ];
+    then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
 echo 'CREATING ASTROCYTE RENDERING ...'
 $BLENDER -b --verbose 0 --python render-astrocyte.py --                                             \
@@ -58,6 +61,7 @@ $BLENDER -b --verbose 0 --python render-astrocyte.py --                         
     --astrocyte-color=$WIREFRAME_MESH_COLOR                                                         \
     --resolution=$IMAGE_RESOLUTION                                                                  \
     --wireframe-thickness=$WIREFRAME_THICKNESS                                                      \
+    --quality-checker-executable=$QUALITY_CHECKER_EXECUTABLE                                        \
     $BOOL_ARGS
 
 echo 'SYNAPTOME DONE ...'
