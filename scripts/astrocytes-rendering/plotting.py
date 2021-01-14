@@ -524,3 +524,75 @@ def combine_stats_with_rendering(rendering_image,
 
     # Return a reference to the final images
     return combined_vertical_path, combined_horizontal_path
+
+####################################################################################################
+# @combine_skinned_with_optimized
+####################################################################################################
+def combine_skinned_with_optimized(skinned_horizontal_image_path,
+                                   optimized_horizontal_image_path,
+                                   output_path,
+                                   delta=100):
+    
+    
+    # Open the images
+    skinned_im = Image.open(skinned_horizontal_image_path)
+    optimized_im = Image.open(optimized_horizontal_image_path)
+    
+    # Resize to make them with the exact same size 
+    optimized_im = optimized_im.resize(skinned_im.size, resample=2)
+    
+    # Make a new image 
+    combined_im = Image.new('RGB', (optimized_im.size[0], (optimized_im.size[1] * 2) + delta), (255, 255, 255))
+    combined_im.paste(skinned_im, (0, 0))
+    combined_im.paste(optimized_im, (0, optimized_im.size[1] + delta))
+    combined_im.save(output_path)
+    combined_im.close()
+    
+    # Close all the images
+    skinned_im.close()
+    optimized_im.close()
+
+
+####################################################################################################
+# @combine_skinned_with_optimized_with_artistic
+####################################################################################################
+def combine_skinned_with_optimized_with_artistic(skinned_horizontal_image_path,
+                                                 optimized_horizontal_image_path,
+                                                 artistic_image,
+                                                 output_path,
+                                                 delta=200,
+                                                 scale_size=2000):
+    
+    
+    # Open the images
+    skinned_im = Image.open(skinned_horizontal_image_path)
+    optimized_im = Image.open(optimized_horizontal_image_path)
+    artistic_im = Image.open(artistic_image)
+    
+    # Add background color to the artistic
+    artistic_white_im = Image.new("RGB", artistic_im.size, "WHITE")
+    artistic_white_im.paste(artistic_im, (0, 0), artistic_im)
+    artistic_im.close() 
+        
+    # Resize to make them with the exact same size 
+    optimized_im = optimized_im.resize(skinned_im.size, resample=2)
+    
+    # Scale the artistic
+    artistic_white_im = artistic_white_im.resize(
+        (optimized_im.size[1] * 2, optimized_im.size[1] * 2), resample=2)
+    
+    # Make a new image 
+    combined_im = Image.new('RGB', 
+        (optimized_im.size[0] + delta + artistic_white_im.size[0], 
+        (optimized_im.size[1] * 2) + delta), (255, 255, 255))
+    combined_im.paste(artistic_white_im, (0, 0))
+    combined_im.paste(skinned_im, (artistic_white_im.size[0] + delta, 0))
+    combined_im.paste(optimized_im, (artistic_white_im.size[0] + delta, optimized_im.size[1] + delta))
+    combined_im.save(output_path)
+    combined_im.close()
+    
+    # Close all the images
+    artistic_white_im.close()
+    skinned_im.close()
+    optimized_im.close()
+                                       

@@ -29,7 +29,7 @@ ASTROCYTES_LIST='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthe
 
 # The output directory where the scene and images will be generated
 #OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/output'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes/analysis-skinned'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes/analysis'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='no'
@@ -62,7 +62,7 @@ $BLENDER -b --verbose 0 --python render-astrocyte.py --                         
     --astrocytes-list=$ASTROCYTES_LIST                                                              \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --skinned-astrocyte-color=$SKINNED_MESH_COLOR                                                   \
+    --skinned-mesh-color=$SKINNED_MESH_COLOR                                                        \
     --optimized-mesh-color=$OPTIMIZED_MESH_COLOR                                                    \
     --resolution=$IMAGE_RESOLUTION                                                                  \
     --wireframe-thickness=$WIREFRAME_THICKNESS                                                      \

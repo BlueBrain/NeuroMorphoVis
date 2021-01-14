@@ -122,7 +122,7 @@ def run_quality_checker(mesh_path,
 
     # Construct the command
     command = '%s --mesh %s --output-directory %s' % \
-              (quality_checker_executable, mesh_path, stats_output_directory)
+              (quality_checker_executable, mesh_path, output_directory)
     subprocess.call(command, shell=True)
 
 
@@ -154,11 +154,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Render the artistic version with high quality rendering'
     parser.add_argument('--artistic', action='store_true', default=False, help=arg_help)
 
-    arg_help = 'Skinned astrocyte color in R_G_B format, for example: 255_231_192'
-    parser.add_argument('--skinned-astrocyte-color', action='store', help=arg_help)
+    arg_help = 'Skinned mesh color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--skinned-mesh-color', action='store', help=arg_help)
 
-    arg_help = 'Optimized astrocyte color in R_G_B format, for example: 255_231_192'
-    parser.add_argument('--optimized-astrocyte-color', action='store', help=arg_help)
+    arg_help = 'Optimized mesh color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--optimized-mesh-color', action='store', help=arg_help)
 
     arg_help = 'Wireframe thickness'
     parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float, help=arg_help)
@@ -176,7 +176,18 @@ def parse_command_line_arguments(arguments=None):
     return parser.parse_args()
 
 
-def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
+####################################################################################################
+# @process_mesh
+####################################################################################################
+def process_mesh(arguments, 
+                 astrocyte_mesh, 
+                 path_to_mesh, 
+                 mesh_name, 
+                 mesh_color,
+                 intermediate_directory,
+                 images_directory,
+                 scenes_directory, 
+                 render_artistic=False):
 
     # Rotate the astrocyte to adjust the orientation in front of the camera
     nmv.scene.rotate_object(astrocyte_mesh, 0, 0, 0)
@@ -229,9 +240,8 @@ def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
             output_file_name=mesh_name)
 
     # Run the quality checker app
-    mesh_path = '%s/%s' % (arguments.input_directory, astrocyte)
     stats_output_directory = '%s/%s-stats' % (intermediate_directory, mesh_name)
-    run_quality_checker(mesh_path=mesh_path,
+    run_quality_checker(mesh_path=path_to_mesh,
                         quality_checker_executable=arguments.quality_checker_executable,
                         output_directory=stats_output_directory)
 
@@ -240,17 +250,26 @@ def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
         name=mesh_name,
         distributions_directory=stats_output_directory,
         output_directory=intermediate_directory,
-        color=(mesh_color[0] * 0.75, mesh_color[1] * 0.75, mesh_color[2] * 0.75))
+        color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
 
     # Combine the wire-frame rendering with the stats image side-by-side
-    plotting.combine_stats_with_rendering(
+    combined_vert, combined_horiz = plotting.combine_stats_with_rendering(
         rendering_image='%s/%s.png' % (intermediate_directory, mesh_name),
         vertical_stats_image=vertical_stats_image,
         horizontal_stats_image=horizontal_stats_image,
         output_image_path='%s/%s' % (images_directory, mesh_name))
-
+    
+    # Just a reference to the artistic image path 
+    artistic_image = None
+    
     # Artistic rendering
-    if arguments.artistic:
+    if render_artistic:
+        
+        # Smooth the faces of the mesh 
+        nmv.mesh.shade_smooth_object(astrocyte_mesh)
+        
+        # Subdivide 
+        nmv.mesh.smooth_object(mesh_object=astrocyte_mesh, level=1)
 
         # Set back to transparent
         bpy.context.scene.render.film_transparent = True
@@ -283,17 +302,22 @@ def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
 
         # Render based on the bounding box
         nmv.rendering.render(bounding_box=astrocyte_bbox,
-                             image_directory=intermediate_directory,
-                             image_name='%s-artistic' % astrocyte_mesh.name,
+                             image_directory=images_directory,
+                             image_name='%s-artistic' % astrocyte_mesh.name.replace('-manifold', ''),
                              image_resolution=arguments.resolution,
                              keep_camera_in_scene=True)
+                             
+        # Path to the artistic image 
+        artistic_image = '%s/%s-artistic.png' % (images_directory, astrocyte_mesh.name.replace('-manifold', ''))
 
         # Save the final scene into a blender file
         if arguments.export_blend:
             nmv.file.export_scene_to_blend_file(
                 output_directory=scenes_directory,
-                output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))
-
+                output_file_name='%s-artistic' % astrocyte.replace('manifold.obj', ''))
+    
+    # Return all references 
+    return combined_vert, combined_horiz, artistic_image
 
 ################################################################################
 # @ Main
@@ -335,13 +359,21 @@ if __name__ == "__main__":
         # Load the skinned astrocyte mesh
         skinned_astrocyte_mesh = nmv.file.import_obj_file(
             input_directory=skinned_directory, input_file_name=astrocyte)
+        
+        # The path to the skinned mesh
+        skinned_mesh_path = '%s/%s' % (skinned_directory, astrocyte)
 
         # Skinned mesh name
         skinned_mesh_name = astrocyte.replace('.obj', '') + '-skinned'
 
         # Process the mesh
-        process_mesh(arguments=args, astrocyte_mesh=skinned_astrocyte_mesh,
-                     mesh_name=skinned_mesh_name, mesh_color=args.skinned_mesh_color)
+        skinned_vert, skinned_horiz, skinned_artistic = process_mesh(
+            arguments=args, astrocyte_mesh=skinned_astrocyte_mesh, 
+            path_to_mesh=skinned_mesh_path, mesh_name=skinned_mesh_name, 
+            mesh_color=args.skinned_mesh_color,
+            intermediate_directory=intermediate_directory, 
+            images_directory=images_directory, 
+            scenes_directory=scenes_directory)
 
         # Clear the scene
         nmv.scene.clear_scene()
@@ -352,11 +384,35 @@ if __name__ == "__main__":
         # Load the optimized astrocyte mesh
         optimized_astrocyte_mesh = nmv.file.import_obj_file(
             input_directory=optimized_directory,
-            input_file_name=astrocyte.replace('.obj', 'manifold.obj'))
-
+            input_file_name=astrocyte.replace('.obj', '-manifold.obj'))
+        
+        # The path to the skinned mesh
+        optimized_mesh_path = '%s/%s' % (optimized_directory, 
+            astrocyte.replace('.obj', '-manifold.obj'))
+        
         # Optimized mesh name
         optimized_mesh_name = astrocyte.replace('.obj', '') + '-optimized'
 
         # Process the mesh
-        process_mesh(arguments=args, astrocyte_mesh=optimized_astrocyte_mesh,
-                     mesh_name=optimized_mesh_name, mesh_color=args.optimized_mesh_color)
+        optimized_vert, optimized_horiz, optimized_artistic = process_mesh(
+            arguments=args, astrocyte_mesh=optimized_astrocyte_mesh,
+            path_to_mesh=optimized_mesh_path, mesh_name=optimized_mesh_name, 
+            mesh_color=args.optimized_mesh_color, 
+            intermediate_directory=intermediate_directory, 
+            images_directory=images_directory, 
+            scenes_directory=scenes_directory, 
+            render_artistic=True)
+        
+        # Create the combined image of skinned vs optimized
+        plotting.combine_skinned_with_optimized(
+            skinned_horizontal_image_path=skinned_horiz,
+            optimized_horizontal_image_path=optimized_horiz,
+            output_path='%s/%s' % (images_directory, astrocyte.replace('.obj', '-skinned-optimized.png')))
+        
+        # Create the combined image of skinned vs optimized and artistic
+        if optimized_artistic is not None:
+            plotting.combine_skinned_with_optimized_with_artistic(
+                skinned_horizontal_image_path=skinned_horiz,
+            optimized_horizontal_image_path=optimized_horiz,
+            artistic_image=optimized_artistic,
+            output_path='%s/%s' % (images_directory, astrocyte.replace('.obj', '-skinned-optimized-artistic.png')))
