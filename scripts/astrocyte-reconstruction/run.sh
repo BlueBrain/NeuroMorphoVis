@@ -21,34 +21,39 @@ BLENDER='$PWD/../../../../../../blender'
 
 # Output directory 
 OUTPUT_DIRECTORY='/projects-data/12.16.2020-astrocytes-generation/'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes'
 
 # Circuit
 CIRCUIT='/projects/astrocytes-circuit/20200930'
+CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20200701'
 
 # Soma style, 'metaball' or 'softbody'
 SOMA_STYLE='metaball'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored, and if set to '0' the file is used
-GIDS_RANGE='1-20'
+GIDS_RANGE='1-100'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE=$PWD/gids
 
 # Meshes type, for simulation/visualization/both
-MESH_TYPE='simulation'
+MESH_TYPE='both'
 
 # Execution, serial or parallel
 EXECUTION='parallel'
 
+# Number of cores parallel processing 
+NUMBER_CORES=15
+
 # Decimation factor (range: 0.5 - 0.01) to reduce the number of polygons in the mesh that is
 # generated for the visualization purposes.
-DECIMATION_FACTOR='0.1'
+DECIMATION_FACTOR='0.05'
 
 # Export the final mesh in a .OBJ file, 'yes' or 'no'
 EXPORT_OBJ='yes'
 
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
-EXPORT_BLEND='yes'
+EXPORT_BLEND='no'
 
 ####################################################################################################
 BOOL_ARGS=''
@@ -58,7 +63,7 @@ if [ "$EXPORT_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
 
 ####################################################################################################
-python3 run.py                                                                                      \
+$PWD/../../../../../python/bin/python3.7m run.py                                                    \
     --blender-executable=$BLENDER                                                                   \
     --gids-file=$GIDS_FILE                                                                          \
     --gids-range=$GIDS_RANGE                                                                        \
@@ -68,4 +73,5 @@ python3 run.py                                                                  
     --mesh-type=$MESH_TYPE                                                                          \
     --decimation-factor=$DECIMATION_FACTOR                                                          \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
+    --number-cores=$NUMBER_CORES                                                                    \
     $BOOL_ARGS

@@ -128,6 +128,10 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Execution mode, serial or parallel'
     parser.add_argument('--execution',
                         action='store', dest='execution', default='serial', help=arg_help)
+                        
+    arg_help = 'NUmber of cores for parallel processing'
+    parser.add_argument('--number-cores',
+                        action='store', dest='number_cores', default='4', type=int, help=arg_help)
 
     arg_help = 'The path to the NGV circuit'
     parser.add_argument('--circuit-path',
@@ -193,7 +197,7 @@ if __name__ == "__main__":
     if 'parallel' in args.execution:
         from joblib import Parallel, delayed
         import multiprocessing
-        Parallel(n_jobs=7)(delayed(run_command)(i) for i in commands)
+        Parallel(n_jobs=args.number_cores)(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:
             run_command(command)
