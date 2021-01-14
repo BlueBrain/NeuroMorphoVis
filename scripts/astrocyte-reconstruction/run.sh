@@ -31,7 +31,7 @@ CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20200701'
 SOMA_STYLE='metaball'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored, and if set to '0' the file is used
-GIDS_RANGE='1-100'
+GIDS_RANGE='1-150'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE=$PWD/gids
@@ -43,7 +43,7 @@ MESH_TYPE='both'
 CREATE_OPTIMIZED='yes'
 
 # ultraCleanMesh executable
-ULTRA_CLEAN_MESH_EXECUTABLE=''
+ULTRA_CLEAN_MESH_EXECUTABLE='/gpfs/bbp.cscs.ch/project/proj3/development/Ultraliser/build/bin/ultraCleanMesh'
 
 # Execution, serial or parallel
 EXECUTION='parallel'
@@ -79,7 +79,7 @@ $PWD/../../../../../python/bin/python3.7m run.py                                
     --execution=$EXECUTION                                                                          \
     --circuit-path=$CIRCUIT                                                                         \
     --mesh-type=$MESH_TYPE                                                                          \
-    --ultra-clean-mesh-executable=$ULTRA_CLEAN_MESH_EXECUTABLE                                        \
+    --ultra-clean-mesh-executable=$ULTRA_CLEAN_MESH_EXECUTABLE                                      \
     --decimation-factor=$DECIMATION_FACTOR                                                          \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --number-cores=$NUMBER_CORES                                                                    \

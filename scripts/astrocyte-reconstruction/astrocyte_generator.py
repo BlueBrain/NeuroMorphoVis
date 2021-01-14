@@ -197,9 +197,8 @@ def create_optimized_mesh(skinned_obj_mesh,
     """
 
     # Create the shell command
-    shell_command = '%s --mesh=%s --output-directory %s' % (ultra_clean_mesh_executable,
-                                                            skinned_obj_mesh,
-                                                            output_directory)
+    shell_command = '%s --mesh=%s --output-directory %s --optimization-iterations 1 --export-obj' % \
+        (ultra_clean_mesh_executable, skinned_obj_mesh, output_directory)
     subprocess.call(shell_command, shell=True)
 
 
@@ -318,7 +317,7 @@ if __name__ == "__main__":
             if not os.path.exists(optimized_directory):
                 os.makedirs(optimized_directory)
 
-            skinned_obj_mesh = '%s/%s.obj' % (simulation_directory, args.gid)
+            skinned_obj_mesh = '%s/%s.obj' % (skinned_directory, args.gid)
             create_optimized_mesh(skinned_obj_mesh=skinned_obj_mesh,
                                   ultra_clean_mesh_executable=args.ultra_clean_mesh_executable,
                                   output_directory=optimized_directory)
