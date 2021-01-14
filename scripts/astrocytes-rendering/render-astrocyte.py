@@ -154,11 +154,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Render the artistic version with high quality rendering'
     parser.add_argument('--artistic', action='store_true', default=False, help=arg_help)
 
-    arg_help = 'Skinned astrocyte color in R_G_B format, for example: 255_231_192'
-    parser.add_argument('--skinned-astrocyte-color', action='store', help=arg_help)
+    arg_help = 'Skinned mesh color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--skinned-mesh-color', action='store', help=arg_help)
 
-    arg_help = 'Optimized astrocyte color in R_G_B format, for example: 255_231_192'
-    parser.add_argument('--optimized-astrocyte-color', action='store', help=arg_help)
+    arg_help = 'Optimized mesh color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--optimized-mesh-color', action='store', help=arg_help)
 
     arg_help = 'Wireframe thickness'
     parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float, help=arg_help)
@@ -176,6 +176,9 @@ def parse_command_line_arguments(arguments=None):
     return parser.parse_args()
 
 
+####################################################################################################
+# @process_mesh
+####################################################################################################
 def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
 
     # Rotate the astrocyte to adjust the orientation in front of the camera

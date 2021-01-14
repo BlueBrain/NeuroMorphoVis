@@ -1,6 +1,7 @@
 ####################################################################################################
 # Copyright (c) 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#               Eleftherios Zisis <eleftherios.zisis@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -21,32 +22,26 @@ from itertools import starmap
 from collections import namedtuple
 from cached_property import cached_property
 import numpy as np
-
 # BBP imports
 import neurom
 from archngv import NGVCircuit
-
 # process types
 PERIVASCULAR = neurom.AXON
 PERISYNAPTIC = neurom.BASAL_DENDRITE
-
 # in the future we will need to add the synapse annotations
 PerisynapticProcess = namedtuple('PerisynapticProcess', ['root_section'])
 PerivascularProcess = namedtuple('PerivascularProcess', ['root_section',
                                                          'endfoot_area_mesh',
                                                          'endfoot_target'])
-
 EndfootAnnotation = namedtuple('Annotations', ['vessel_segment',
                                                'cell_section',
                                                'cell_segment',
                                                'cell_offset'])
-
 SynapseData = namedtuple('Synapses', ['ids',
                                       'coordinates',
                                       'cell_sections',
                                       'cell_segments',
                                       'cell_offsets'])
-
 MicrodomainData = namedtuple('Microdomain', ['geometry', 'neighbors'])
 
 
@@ -78,19 +73,15 @@ class AstrocyteData:
         self.filepath = filepath
         self._endfeet_data = endfeet_data
         self.circuit_data = circuit_data
-
     @cached_property
     def morphology(self):
         return neurom.load_neuron(self.filepath)
-
     def _filter_roots(self, neurite_type):
         return filter(lambda s: s.type == neurite_type, self.morphology.neurites)
-
     @property
     def perivascular_processes(self):
         roots_with_data = zip(self._filter_roots(PERIVASCULAR), self._endfeet_data)
         return list(starmap(_perivascular_process, roots_with_data))
-
     @property
     def perisynaptic_processes(self):
         return list(map(_perisynaptic_process, self._filter_roots(PERISYNAPTIC)))
@@ -99,22 +90,26 @@ class AstrocyteData:
 ####################################################################################################
 # @_zip_endfeet_data
 ####################################################################################################
-def _zip_endfeet_data(endfeet_ids, endfeetome):
+def _endfeet_data(gv_conn, astrocyte_id):
     """Returns a generator of the endfeet data per endfoot
-    
     :param endfeet_ids:
         THe IDs of the end-feet.
-    :param endfeetome: 
+    :param endfeetome:
         End-feet data.
     :return:
         End-feet data zipped in a specific structure.
     """
+    endfeet_ids = gv_conn.astrocyte_endfeet(astrocyte_id)
 
-    endfeet_areas = endfeetome.areas
-    endfeet_targets = endfeetome.targets.endfoot_surface_coordinates
+    if endfeet_ids.size == 0:
+        return []
 
-    for i, endfoot_id in enumerate(endfeet_ids):
-        yield endfeet_areas[endfoot_id], endfeet_targets[endfoot_id]
+    meshes = gv_conn.surface_meshes
+
+    targets = gv_conn.properties(
+        endfeet_ids, ['endfoot_surface_x', 'endfoot_surface_y', 'endfoot_surface_z']).to_numpy()
+
+    return [(meshes[endfoot_id], targets[i]) for i, endfoot_id in enumerate(endfeet_ids)]
 
 
 ####################################################################################################
@@ -122,18 +117,14 @@ def _zip_endfeet_data(endfeet_ids, endfeetome):
 ####################################################################################################
 def _circuit_data(astrocyte_point_data):
     """Returns circuit related info in a structured array
-
     :param astrocyte_point_data:
         Astricyte point data.
     """
-
     # The soma position of the astrocyte as reported in the circuit
     circuit_soma_position = astrocyte_point_data[:3]
-
     # The radius of the astrocyte as reported in the circuit
     circuit_radius = astrocyte_point_data[3]
-
-    # Specific structure !  
+    # Specific structure !
     struct_dtype = np.dtype([('soma_radius', 'f4'), ('soma_position', 'f4', (3,))])
     return np.array((circuit_radius, circuit_soma_position), dtype=struct_dtype)
 
@@ -145,45 +136,33 @@ def get_astrocyte_data(astrocyte_ids, circuit_directory):
     """
     This is a slow object oriented way to access the circuit data from the point of view of
     the astrocytes.
-
     Args:
         astrocyte_ids (iterable)
         circuit_directory (string): absolute path to circuit directory (parent of build/ directory)
-
     Returns:
         A generator of AstrocyteData objects that correspond to astrocyte_ids.
     """
-
     # NGV circuit
     ngv_circuit = NGVCircuit(circuit_directory)
 
-    # Configuration
-    cfg = ngv_circuit.config
-
     # The astrocyte bodies
-    astrocytes = ngv_circuit.data.astrocytes
-
-    # The end-feet
-    endfeetome = ngv_circuit.data.endfeetome
+    astrocytes = ngv_circuit.astrocytes
+    astro_data = astrocytes.get(group=astrocyte_ids, properties=['x', 'y', 'z', 'radius']).to_numpy()
 
     # The connectivity
-    gv_conn = ngv_circuit.connectome.gliovascular
+    gv_connectome = ngv_circuit.gliovascular_connectome
 
     # For each astrocyte, generate the astrocyte data w/o destroying the local variables
-    for astrocyte_id in astrocyte_ids:
-
-        # Astrocyte name
-        name = astrocytes.astrocyte_names[astrocyte_id].decode('utf-8')
+    for i, astrocyte_id in enumerate(astrocyte_ids):
 
         # Astrocyte morphology full path
-        file_path = os.path.join(cfg.morphology_directory, name + '.h5')
+        filepath = astrocytes.morph.get_filepath(astrocyte_id)
 
         # Construct the circuit data
-        circuit_data = _circuit_data(astrocytes.astrocyte_point_data[astrocyte_id])
+        circuit_data = _circuit_data(astro_data[i])
 
         # Get a list of all the end-feet
-        endfeet_data = list(
-            _zip_endfeet_data(gv_conn.astrocyte.to_endfoot(astrocyte_id), endfeetome))
+        endfeet_data = _endfeet_data(gv_connectome, astrocyte_id)
 
         # Generate the astrocyte data
-        yield AstrocyteData(file_path, circuit_data, endfeet_data)
+        yield AstrocyteData(filepath, circuit_data, endfeet_data)
