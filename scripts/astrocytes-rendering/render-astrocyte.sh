@@ -20,7 +20,7 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input directory
-INPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/input/skinned'
+INPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/input/optimized'
 
 # Astrocyte mesh
 ASTROCYTES_LIST='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/input/astrocytes'
@@ -32,10 +32,11 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-re
 RENDER_ARTISTIC='no'
 
 # Mesh color
-WIREFRAME_MESH_COLOR='255_128_10'
+WIREFRAME_MESH_COLOR='0.9_0.125_0.150'
+#WIREFRAME_MESH_COLOR='0.015_0.275_0.950'
 
 # Wireframe thickness
-WIREFRAME_THICKNESS='0.05'
+WIREFRAME_THICKNESS='0.075'
 
 # Base image resolution
 IMAGE_RESOLUTION='2000'

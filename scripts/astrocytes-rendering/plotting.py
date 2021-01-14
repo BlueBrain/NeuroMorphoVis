@@ -34,8 +34,10 @@ from PIL import Image
 ####################################################################################################
 seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
+pyplot.rcParams['grid.linestyle'] = '-'
+pyplot.rcParams['grid.linewidth'] = 2
 pyplot.rcParams['font.family'] = 'NimbusSanL'
-pyplot.rcParams['font.monospace'] = 'Regular'
+pyplot.rcParams['font.monospace'] = 'Bold'
 pyplot.rcParams['font.style'] = 'normal'
 pyplot.rcParams['axes.linewidth'] = 0.0
 pyplot.rcParams['axes.labelsize'] = 50
@@ -291,7 +293,7 @@ def plot_distribution(input_directory,
 
     # Set the title inside the figure to save some space
     if plot_titles:
-        pyplot.title(title, y=0.8)
+        pyplot.title(title, y=1.0)
 
     # Plot the histogram
     seaborn.distplot(np_data, color='r', hist=True, kde=kde, norm_hist=True, bins=40,
@@ -332,15 +334,34 @@ def plot_distribution(input_directory,
 ####################################################################################################
 # @plot_group
 ####################################################################################################
+def lighten_color(color, amount=1.0):
+    """Lightens the given color by multiplying (1-luminosity) by the given amount.
+    Input can be matplotlib color string, hex string, or RGB tuple.
+    """
+
+    import matplotlib.colors as mc
+    import colorsys
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
+
+####################################################################################################
+# @plot_group
+####################################################################################################
 def plot_distributions(keyword,
                        distributions,
                        input_directory,
                        output_directory,
                        plot_titles=False,
-                       use_kde=False):
+                       use_kde=False,
+                       color='tab:blue'):
 
     # Get the colormap
-    colors = seaborn.color_palette("icefire", 10)
+    colors = seaborn.color_palette("brg", 10)
 
     # A list of all the distributions in .png format
     distributions_pngs = list()
@@ -348,64 +369,52 @@ def plot_distributions(keyword,
     for distribution in distributions:
         if keyword in distribution:
 
-            if 'condition-number' in distribution:
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Condition Number', color=colors[0], kde=use_kde,
-                    plot_titles=plot_titles))
-
-            if 'radius-ratio' in distribution:
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Radius Ratio', color=colors[1], kde=use_kde,
-                    plot_titles=plot_titles, invert=True))
-
-            if 'edge-ratio' in distribution:
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Edge Ratio', color=colors[2], kde=use_kde,
-                    plot_titles=plot_titles, invert=True))
-
-            if 'radius-to-edge-ratio' in distribution:
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Radius to Edge Ratio', color=colors[3], kde=use_kde,
-                    plot_titles=plot_titles, invert=True))
-
             if 'min-angle' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Min. Dihedral Angle $^\circ$', xmax=1, color=colors[4],
+                    title='Min. Dihedral Angle$^\circ$', xmax=1, color=color,
                     kde=use_kde, plot_titles=plot_titles))
 
             if 'max-angle' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Max. Dihedral Angle $^\circ$', xmax=1, color=colors[5],
+                    title='Max. Dihedral Angle$^\circ$', xmax=1, color=color,
                     kde=use_kde, plot_titles=plot_titles))
 
-            if 'relative-size' in distribution:
+            if 'radius-ratio' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Relative Size', color=colors[6], kde=use_kde,
-                    plot_titles=plot_titles))
+                    title='Radius Ratio', color=color, kde=use_kde,
+                    plot_titles=plot_titles, invert=True))
 
-            if 'triangle-size-shape' in distribution:
+            if 'edge-ratio' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Shape & Size', color=colors[8], kde=use_kde,
-                    plot_titles=plot_titles))
+                    title='Edge Ratio', color=color, kde=use_kde,
+                    plot_titles=plot_titles, invert=True))
+
+            if 'radius-to-edge-ratio' in distribution:
+                distributions_pngs.append(plot_distribution(
+                    input_directory, distribution, output_directory,
+                    title='Radius to Edge Ratio', color=color, kde=use_kde,
+                    plot_titles=plot_titles, invert=True))
 
             if 'triangle-shape' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Shape', color=colors[7], kde=use_kde,
+                    title='Shape', color=color, kde=use_kde,
+                    plot_titles=plot_titles))
+
+            if 'relative-size' in distribution:
+                distributions_pngs.append(plot_distribution(
+                    input_directory, distribution, output_directory,
+                    title='Relative Size', color=color, kde=use_kde,
                     plot_titles=plot_titles))
 
             if 'scaled-jacobian' in distribution:
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Scaled Jacobian', color=colors[9], kde=use_kde,
+                    title='Scaled Jacobian', color=color, kde=use_kde,
                     plot_titles=plot_titles))
 
     # Return a reference to the images
@@ -417,7 +426,8 @@ def plot_distributions(keyword,
 ####################################################################################################
 def plot_mesh_stats(name,
                     distributions_directory,
-                    output_directory):
+                    output_directory,
+                    color):
 
     # Verify the packages
     verify_plotting_packages()
@@ -434,7 +444,7 @@ def plot_mesh_stats(name,
     # Plot the distributions
     distributions_pngs = plot_distributions(
         keyword='.dist', distributions=distributions, input_directory=distributions_directory,
-        output_directory=output_directory, plot_titles=True, use_kde=False)
+        output_directory=output_directory, plot_titles=True, use_kde=False, color=color)
 
     # Adjust the sizes to look nice
     create_adjusted_plot_images(input_directory=output_directory,
@@ -455,7 +465,7 @@ def combine_stats_with_rendering(rendering_image,
                                  vertical_stats_image,
                                  horizontal_stats_image,
                                  output_image_path,
-                                 delta=100):
+                                 delta=50):
     """Creates a final image with the mesh and the stats. next to it.
 
     :param rendering_image:

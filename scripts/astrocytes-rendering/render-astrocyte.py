@@ -214,13 +214,15 @@ if __name__ == "__main__":
         # Rotate the astrocyte to adjust the orientation in front of the camera
         nmv.scene.rotate_object(astrocyte_mesh, 0, 0, 0)
 
-        # Get the bounding box
+        # Get the bounding box and compute the unified one, to render the astrocyte in the middle
         astrocyte_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
+        astrocyte_bbox = nmv.bbox.compute_unified_bounding_box(astrocyte_bbox)
 
         # Create the illumination
         nmv.shading.create_lambert_ward_illumination()
 
         # Create a simple shader
+        color = nmv.utilities.parse_color_from_argument(args.astrocyte_color)
         mesh_material = nmv.shading.create_lambert_ward_material(
             name='astro', color=nmv.utilities.parse_color_from_argument(args.astrocyte_color))
 
@@ -269,7 +271,8 @@ if __name__ == "__main__":
         vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
             name=astrocyte_mesh.name,
             distributions_directory=stats_output_directory,
-            output_directory=intermediate_directory)
+            output_directory=intermediate_directory,
+            color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
 
         # Combine the wire-frame rendering with the stats image side-by-side
         plotting.combine_stats_with_rendering(
