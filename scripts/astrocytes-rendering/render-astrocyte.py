@@ -154,8 +154,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Render the artistic version with high quality rendering'
     parser.add_argument('--artistic', action='store_true', default=False, help=arg_help)
 
-    arg_help = 'Astrocyte color in R_G_B format, for example: 255_231_192'
-    parser.add_argument('--astrocyte-color', action='store', help=arg_help)
+    arg_help = 'Skinned astrocyte color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--skinned-astrocyte-color', action='store', help=arg_help)
+
+    arg_help = 'Optimized astrocyte color in R_G_B format, for example: 255_231_192'
+    parser.add_argument('--optimized-astrocyte-color', action='store', help=arg_help)
 
     arg_help = 'Wireframe thickness'
     parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float, help=arg_help)
@@ -171,6 +174,125 @@ def parse_command_line_arguments(arguments=None):
 
     # Parse the arguments
     return parser.parse_args()
+
+
+def process_mesh(arguments, astrocyte_mesh, mesh_name, mesh_color):
+
+    # Rotate the astrocyte to adjust the orientation in front of the camera
+    nmv.scene.rotate_object(astrocyte_mesh, 0, 0, 0)
+
+    # Get the bounding box and compute the unified one, to render the astrocyte in the middle
+    astrocyte_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
+    astrocyte_bbox = nmv.bbox.compute_unified_bounding_box(astrocyte_bbox)
+
+    # Create the illumination
+    nmv.shading.create_lambert_ward_illumination()
+
+    # Create a simple shader
+    color = nmv.utilities.parse_color_from_argument(mesh_color)
+    mesh_material = nmv.shading.create_lambert_ward_material(
+        name='mesh-color-%s' % mesh_name, color=color)
+
+    # Assign the wire-frame shader, using an input color
+    nmv.shading.set_material_to_object(
+        mesh_object=astrocyte_mesh, material_reference=mesh_material)
+
+    # Create a wireframe
+    wireframe_mesh = nmv.mesh.create_wire_frame(
+        mesh_object=astrocyte_mesh, wireframe_thickness=arguments.wireframe_thickness)
+
+    # Create a wireframe shader
+    wireframe_material = nmv.shading.create_lambert_ward_material(
+        name='wireframe-%s' % mesh_name, color=nmv.consts.Color.BLACK)
+
+    # Assign the wire-frame shader, using an input color
+    nmv.shading.set_material_to_object(
+        mesh_object=wireframe_mesh, material_reference=wireframe_material)
+
+    # Set the background to WHITE for the compositing
+    bpy.context.scene.render.film_transparent = False
+    bpy.context.scene.world.color[0] = 10
+    bpy.context.scene.world.color[1] = 10
+    bpy.context.scene.world.color[2] = 10
+
+    # Render based on the bounding box
+    nmv.rendering.render(bounding_box=astrocyte_bbox,
+                         image_directory=intermediate_directory,
+                         image_name=mesh_name,
+                         image_resolution=arguments.resolution,
+                         keep_camera_in_scene=True)
+
+    # Save the final scene into a blender file
+    if arguments.export_blend:
+        nmv.file.export_scene_to_blend_file(
+            output_directory=scenes_directory,
+            output_file_name=mesh_name)
+
+    # Run the quality checker app
+    mesh_path = '%s/%s' % (arguments.input_directory, astrocyte)
+    stats_output_directory = '%s/%s-stats' % (intermediate_directory, mesh_name)
+    run_quality_checker(mesh_path=mesh_path,
+                        quality_checker_executable=arguments.quality_checker_executable,
+                        output_directory=stats_output_directory)
+
+    # Plot the stats. of the mesh into a single image
+    vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
+        name=mesh_name,
+        distributions_directory=stats_output_directory,
+        output_directory=intermediate_directory,
+        color=(mesh_color[0] * 0.75, mesh_color[1] * 0.75, mesh_color[2] * 0.75))
+
+    # Combine the wire-frame rendering with the stats image side-by-side
+    plotting.combine_stats_with_rendering(
+        rendering_image='%s/%s.png' % (intermediate_directory, mesh_name),
+        vertical_stats_image=vertical_stats_image,
+        horizontal_stats_image=horizontal_stats_image,
+        output_image_path='%s/%s' % (images_directory, mesh_name))
+
+    # Artistic rendering
+    if arguments.artistic:
+
+        # Set back to transparent
+        bpy.context.scene.render.film_transparent = True
+
+        # Delete the wireframe mesh
+        nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
+
+        # Remove all the lights in the scene
+        nmv.scene.clear_lights()
+
+        # Create a wax shader
+        wax_shader = nmv.shading.create_glossy_material(name='astro-glossy')
+
+        # Assign the subsurface scattering shader
+        nmv.shading.set_material_to_object(
+            mesh_object=astrocyte_mesh, material_reference=wax_shader)
+
+        # Get the light location from the camera
+        camera = nmv.scene.get_object_by_name('nmvCamera_FRONT')
+        light_location = Vector((0, 0, 0))
+        light_location[0] = camera.location[0]
+        light_location[1] = astrocyte_bbox.center[1] + astrocyte_bbox.bounds[1]
+        light_location[2] = camera.location[2]
+
+        # From the bounding box, clear an area light
+        area_light = create_area_light_from_bounding_box(location=light_location)
+
+        # Use the denoiser
+        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+
+        # Render based on the bounding box
+        nmv.rendering.render(bounding_box=astrocyte_bbox,
+                             image_directory=intermediate_directory,
+                             image_name='%s-artistic' % astrocyte_mesh.name,
+                             image_resolution=arguments.resolution,
+                             keep_camera_in_scene=True)
+
+        # Save the final scene into a blender file
+        if arguments.export_blend:
+            nmv.file.export_scene_to_blend_file(
+                output_directory=scenes_directory,
+                output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))
 
 
 ################################################################################
@@ -207,120 +329,34 @@ if __name__ == "__main__":
         # Clear the scene
         nmv.scene.clear_scene()
 
-        # Load the astrocyte mesh
-        astrocyte_mesh = nmv.file.import_obj_file(
-            input_directory=args.input_directory, input_file_name=astrocyte)
+        # Skinned meshes directory
+        skinned_directory = '%s/skinned' % args.input_directory
 
-        # Rotate the astrocyte to adjust the orientation in front of the camera
-        nmv.scene.rotate_object(astrocyte_mesh, 0, 0, 0)
+        # Load the skinned astrocyte mesh
+        skinned_astrocyte_mesh = nmv.file.import_obj_file(
+            input_directory=skinned_directory, input_file_name=astrocyte)
 
-        # Get the bounding box and compute the unified one, to render the astrocyte in the middle
-        astrocyte_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
-        astrocyte_bbox = nmv.bbox.compute_unified_bounding_box(astrocyte_bbox)
+        # Skinned mesh name
+        skinned_mesh_name = astrocyte.replace('.obj', '') + '-skinned'
 
-        # Create the illumination
-        nmv.shading.create_lambert_ward_illumination()
+        # Process the mesh
+        process_mesh(arguments=args, astrocyte_mesh=skinned_astrocyte_mesh,
+                     mesh_name=skinned_mesh_name, mesh_color=args.skinned_mesh_color)
 
-        # Create a simple shader
-        color = nmv.utilities.parse_color_from_argument(args.astrocyte_color)
-        mesh_material = nmv.shading.create_lambert_ward_material(
-            name='astro', color=nmv.utilities.parse_color_from_argument(args.astrocyte_color))
+        # Clear the scene
+        nmv.scene.clear_scene()
 
-        # Assign the wire-frame shader, using an input color
-        nmv.shading.set_material_to_object(
-            mesh_object=astrocyte_mesh, material_reference=mesh_material)
+        # Optimized meshes directory
+        optimized_directory = '%s/optimized' % args.input_directory
 
-        # Create a wireframe
-        wireframe_mesh = nmv.mesh.create_wire_frame(
-            mesh_object=astrocyte_mesh, wireframe_thickness=args.wireframe_thickness)
+        # Load the optimized astrocyte mesh
+        optimized_astrocyte_mesh = nmv.file.import_obj_file(
+            input_directory=optimized_directory,
+            input_file_name=astrocyte.replace('.obj', 'manifold.obj'))
 
-        # Create a wireframe shader
-        wireframe_material = nmv.shading.create_lambert_ward_material(
-            name='wireframe', color=nmv.consts.Color.BLACK)
+        # Optimized mesh name
+        optimized_mesh_name = astrocyte.replace('.obj', '') + '-optimized'
 
-        # Assign the wire-frame shader, using an input color
-        nmv.shading.set_material_to_object(
-            mesh_object=wireframe_mesh, material_reference=wireframe_material)
-
-        # Set the background to WHITE for the compositing
-        bpy.context.scene.render.film_transparent = False
-        bpy.context.scene.world.color[0] = 10
-        bpy.context.scene.world.color[1] = 10
-        bpy.context.scene.world.color[2] = 10
-
-        # Render based on the bounding box
-        nmv.rendering.render(bounding_box=astrocyte_bbox,
-                             image_directory=intermediate_directory,
-                             image_name=astrocyte_mesh.name,
-                             image_resolution=args.resolution,
-                             keep_camera_in_scene=True)
-
-        # Save the final scene into a blender file
-        if args.export_blend:
-            nmv.file.export_scene_to_blend_file(output_directory=scenes_directory,
-                                                output_file_name=astrocyte_mesh.name)
-
-        # Run the quality checker app
-        mesh_path = '%s/%s' % (args.input_directory, astrocyte)
-        stats_output_directory = '%s/%s-stats' % (intermediate_directory, astrocyte_mesh.name)
-        run_quality_checker(mesh_path=mesh_path,
-                            quality_checker_executable=args.quality_checker_executable,
-                            output_directory=stats_output_directory)
-
-        # Plot the stats. of the mesh into a single image
-        vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
-            name=astrocyte_mesh.name,
-            distributions_directory=stats_output_directory,
-            output_directory=intermediate_directory,
-            color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
-
-        # Combine the wire-frame rendering with the stats image side-by-side
-        plotting.combine_stats_with_rendering(
-            rendering_image='%s/%s.png' % (intermediate_directory, astrocyte_mesh.name),
-            vertical_stats_image=vertical_stats_image,
-            horizontal_stats_image=horizontal_stats_image,
-            output_image_path='%s/%s' % (images_directory, astrocyte_mesh.name))
-
-        # Artistic rendering
-        if args.artistic:
-
-            bpy.context.scene.render.film_transparent = True
-
-            # Delete the wireframe mesh
-            nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
-
-            # Remove all the lights in the scene
-            nmv.scene.clear_lights()
-
-            # Create a wax shader
-            wax_shader = nmv.shading.create_glossy_material(name='astro-glossy')
-
-            # Assign the subsurface scattering shader
-            nmv.shading.set_material_to_object(
-                mesh_object=astrocyte_mesh, material_reference=wax_shader)
-
-            # Get the light location from the camera
-            camera = nmv.scene.get_object_by_name('nmvCamera_FRONT')
-            light_location = Vector((0, 0, 0))
-            light_location[0] = camera.location[0]
-            light_location[1] = astrocyte_bbox.center[1] + astrocyte_bbox.bounds[1]
-            light_location[2] = camera.location[2]
-
-            # From the bounding box, clear an area light
-            area_light = create_area_light_from_bounding_box(location=light_location)
-
-            # Use the denoiser
-            bpy.context.scene.view_layers[0].cycles.use_denoising = True
-
-            # Render based on the bounding box
-            nmv.rendering.render(bounding_box=astrocyte_bbox,
-                                 image_directory=intermediate_directory,
-                                 image_name='%s-artistic' % astrocyte_mesh.name,
-                                 image_resolution=args.resolution,
-                                 keep_camera_in_scene=True)
-
-            # Save the final scene into a blender file
-            if args.export_blend:
-                nmv.file.export_scene_to_blend_file(
-                    output_directory=scenes_directory,
-                    output_file_name='%s-artistic' % astrocyte.replace('.obj', ''))
+        # Process the mesh
+        process_mesh(arguments=args, astrocyte_mesh=optimized_astrocyte_mesh,
+                     mesh_name=optimized_mesh_name, mesh_color=args.optimized_mesh_color)

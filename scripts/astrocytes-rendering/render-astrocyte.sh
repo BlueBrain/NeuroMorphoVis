@@ -35,8 +35,8 @@ OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synth
 RENDER_ARTISTIC='no'
 
 # Mesh color
-WIREFRAME_MESH_COLOR='0.9_0.125_0.150'
-#WIREFRAME_MESH_COLOR='0.015_0.275_0.950'
+SKINNED_MESH_COLOR='0.9_0.125_0.150'
+OPTIMIZED_MESH_COLOR='0.015_0.275_0.950'
 
 # Wireframe thickness
 WIREFRAME_THICKNESS='0.075'
@@ -62,7 +62,8 @@ $BLENDER -b --verbose 0 --python render-astrocyte.py --                         
     --astrocytes-list=$ASTROCYTES_LIST                                                              \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --astrocyte-color=$WIREFRAME_MESH_COLOR                                                         \
+    --skinned-astrocyte-color=$SKINNED_MESH_COLOR                                                   \
+    --optimized-mesh-color=$OPTIMIZED_MESH_COLOR                                                    \
     --resolution=$IMAGE_RESOLUTION                                                                  \
     --wireframe-thickness=$WIREFRAME_THICKNESS                                                      \
     --quality-checker-executable=$QUALITY_CHECKER_EXECUTABLE                                        \

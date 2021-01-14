@@ -481,12 +481,11 @@ class AstroMetaBuilder:
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
-
         
         # Remove the small partitions
         nmv.logger.info('Removing Partitions')
         nmv.mesh.remove_small_partitions(self.meta_mesh)
-	
+        
         '''
         # Clean the mesh object and remove the non-manifold edges
         nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
