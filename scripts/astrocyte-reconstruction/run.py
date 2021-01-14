@@ -73,11 +73,14 @@ def construct_generation_command(args,
         shell_command += ' --soma-style=%s' % args.soma_style
         shell_command += ' --mesh-type=%s' % args.mesh_type
         shell_command += ' --decimation-factor=%s' % args.decimation_factor
+        shell_command += ' --ultra-clean-mesh-executable=%s' % args.ultra_clean_mesh_executable
+
         if args.export_obj:
             shell_command += ' --export-obj'
         if args.export_blend:
             shell_command += ' --export-blend'
-
+        if args.create_optimized:
+            shell_command += ' --create-optimized'
         # Append to the commands list
         commands_list.append(shell_command)
 
@@ -157,6 +160,14 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--export-blend',
                         action='store_true', dest='export_blend', default=False, help=arg_help)
 
+    arg_help = 'Create the optimized mesh'
+    parser.add_argument('--create-optimized',
+                        action='store_true', dest='create_optimized', default=False, help=arg_help)
+
+    arg_help = 'ultraCleanMesh executable'
+    parser.add_argument('--ultra-clean-mesh-executable',
+                        action='store', dest='ultra_clean_mesh_executable', help=arg_help)
+
     arg_help = 'Decimation factor, between 1.0 and 0.01'
     parser.add_argument('--decimation-factor',
                         action='store', dest='decimation_factor', type=float, default=1.0,
@@ -196,7 +207,6 @@ if __name__ == "__main__":
     # Execute the commands
     if 'parallel' in args.execution:
         from joblib import Parallel, delayed
-        import multiprocessing
         Parallel(n_jobs=args.number_cores)(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:

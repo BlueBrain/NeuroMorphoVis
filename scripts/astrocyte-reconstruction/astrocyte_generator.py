@@ -18,6 +18,7 @@
 # System imports
 import sys
 import os
+import subprocess
 import argparse
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
@@ -180,6 +181,29 @@ def generate_astrocyte(circuit_path,
 
 
 ####################################################################################################
+# @create_optimized_mesh
+####################################################################################################
+def create_optimized_mesh(skinned_obj_mesh,
+                          ultra_clean_mesh_executable,
+                          output_directory):
+    """Creates an optimized mesh from the skinned one.
+
+    :param skinned_obj_mesh:
+        A reference to the obj file of the skinned mesh.
+    :param ultra_clean_mesh_executable:
+        Ultraliser mesh cleaner.
+    :param output_directory:
+        Output directory where the final mesh will be written
+    """
+
+    # Create the shell command
+    shell_command = '%s --mesh=%s --output-directory %s' % (ultra_clean_mesh_executable,
+                                                            skinned_obj_mesh,
+                                                            output_directory)
+    subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
 def parse_command_line_arguments(arguments=None):
@@ -230,6 +254,14 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--export-blend',
                         action='store_true', default=False, help=arg_help)
 
+    arg_help = 'Create the optimized mesh'
+    parser.add_argument('--create-optimized',
+                        action='store_true', dest='create_optimized', default=False, help=arg_help)
+
+    arg_help = 'ultraCleanMesh executable'
+    parser.add_argument('--ultra-clean-mesh-executable',
+                        action='store', dest='ultra_clean_mesh_executable', help=arg_help)
+
     # Parse the arguments
     return parser.parse_args()
 
@@ -264,15 +296,32 @@ if __name__ == "__main__":
         if not os.path.exists(simulation_directory):
             os.makedirs(simulation_directory)
 
+        # Skinned directory
+        skinned_directory = '%s/skinned' % simulation_directory
+        if not os.path.exists(skinned_directory):
+            os.makedirs(skinned_directory)
+
         # Export the mesh to a .BLEND file
-        nmv.file.export_scene_to_blend_file(output_directory=simulation_directory,
-                                            output_file_name=args.gid)
+        if args.export_blend:
+            nmv.file.export_scene_to_blend_file(output_directory=skinned_directory,
+                                                output_file_name=args.gid)
 
         # Export the mesh to an .OBJ file
         nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
                                             output_file_name=args.gid,
-                                            output_directory=simulation_directory,
+                                            output_directory=skinned_directory,
                                             file_format=nmv.enums.Meshing.ExportFormat.OBJ)
+
+        # Create the optimized mesh
+        if args.create_optimized:
+            optimized_directory = '%s/optimized' % simulation_directory
+            if not os.path.exists(optimized_directory):
+                os.makedirs(optimized_directory)
+
+            skinned_obj_mesh = '%s/%s.obj' % (simulation_directory, args.gid)
+            create_optimized_mesh(skinned_obj_mesh=skinned_obj_mesh,
+                                  ultra_clean_mesh_executable=args.ultra_clean_mesh_executable,
+                                  output_directory=optimized_directory)
 
     # Export the meshes for visualization
     if 'visualization' in args.mesh_type or 'both' in args.mesh_type:

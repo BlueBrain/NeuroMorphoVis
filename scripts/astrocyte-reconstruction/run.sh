@@ -39,6 +39,12 @@ GIDS_FILE=$PWD/gids
 # Meshes type, for simulation/visualization/both
 MESH_TYPE='both'
 
+# Create optimized meshes
+CREATE_OPTIMIZED='yes'
+
+# ultraCleanMesh executable
+ULTRA_CLEAN_MESH_EXECUTABLE=''
+
 # Execution, serial or parallel
 EXECUTION='parallel'
 
@@ -47,7 +53,7 @@ NUMBER_CORES=15
 
 # Decimation factor (range: 0.5 - 0.01) to reduce the number of polygons in the mesh that is
 # generated for the visualization purposes.
-DECIMATION_FACTOR='0.05'
+DECIMATION_FACTOR='0.1'
 
 # Export the final mesh in a .OBJ file, 'yes' or 'no'
 EXPORT_OBJ='yes'
@@ -61,6 +67,8 @@ if [ "$EXPORT_OBJ" == 'yes' ];
     then BOOL_ARGS+=' --export-obj '; fi
 if [ "$EXPORT_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
+if [ "$CREATE_OPTIMIZED" == "yes" ];
+    then BOOL_ARGS+=' --create-optimized '; fi
 
 ####################################################################################################
 $PWD/../../../../../python/bin/python3.7m run.py                                                    \
@@ -71,6 +79,7 @@ $PWD/../../../../../python/bin/python3.7m run.py                                
     --execution=$EXECUTION                                                                          \
     --circuit-path=$CIRCUIT                                                                         \
     --mesh-type=$MESH_TYPE                                                                          \
+    --ultra-clean-mesh-executable=$ULTRA_CLEAN_MESH_EXECUTABLE                                        \
     --decimation-factor=$DECIMATION_FACTOR                                                          \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --number-cores=$NUMBER_CORES                                                                    \
