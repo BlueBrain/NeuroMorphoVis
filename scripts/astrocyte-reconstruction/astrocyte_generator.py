@@ -340,8 +340,9 @@ if __name__ == "__main__":
             os.makedirs(visualization_directory)
 
         # Export the mesh to a .BLEND file
-        nmv.file.export_scene_to_blend_file(output_directory=visualization_directory,
-                                            output_file_name=args.gid)
+        if args.export_blend:
+            nmv.file.export_scene_to_blend_file(output_directory=visualization_directory,
+                                                output_file_name=args.gid)
 
         # Export the mesh to an .OBJ file
         nmv.file.export_mesh_object_to_file(mesh_object=astrocyte_mesh,
