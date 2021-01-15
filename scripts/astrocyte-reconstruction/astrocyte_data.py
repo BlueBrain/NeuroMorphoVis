@@ -22,12 +22,15 @@ from itertools import starmap
 from collections import namedtuple
 from cached_property import cached_property
 import numpy as np
+
 # BBP imports
 import neurom
 from archngv import NGVCircuit
+
 # process types
 PERIVASCULAR = neurom.AXON
 PERISYNAPTIC = neurom.BASAL_DENDRITE
+
 # in the future we will need to add the synapse annotations
 PerisynapticProcess = namedtuple('PerisynapticProcess', ['root_section'])
 PerivascularProcess = namedtuple('PerivascularProcess', ['root_section',
@@ -73,15 +76,19 @@ class AstrocyteData:
         self.filepath = filepath
         self._endfeet_data = endfeet_data
         self.circuit_data = circuit_data
+
     @cached_property
     def morphology(self):
         return neurom.load_neuron(self.filepath)
+
     def _filter_roots(self, neurite_type):
         return filter(lambda s: s.type == neurite_type, self.morphology.neurites)
+
     @property
     def perivascular_processes(self):
         roots_with_data = zip(self._filter_roots(PERIVASCULAR), self._endfeet_data)
         return list(starmap(_perivascular_process, roots_with_data))
+
     @property
     def perisynaptic_processes(self):
         return list(map(_perisynaptic_process, self._filter_roots(PERISYNAPTIC)))
@@ -99,6 +106,7 @@ def _endfeet_data(gv_conn, astrocyte_id):
     :return:
         End-feet data zipped in a specific structure.
     """
+
     endfeet_ids = gv_conn.astrocyte_endfeet(astrocyte_id)
 
     if endfeet_ids.size == 0:
@@ -120,10 +128,13 @@ def _circuit_data(astrocyte_point_data):
     :param astrocyte_point_data:
         Astricyte point data.
     """
+
     # The soma position of the astrocyte as reported in the circuit
     circuit_soma_position = astrocyte_point_data[:3]
+
     # The radius of the astrocyte as reported in the circuit
     circuit_radius = astrocyte_point_data[3]
+
     # Specific structure !
     struct_dtype = np.dtype([('soma_radius', 'f4'), ('soma_position', 'f4', (3,))])
     return np.array((circuit_radius, circuit_soma_position), dtype=struct_dtype)
@@ -133,8 +144,7 @@ def _circuit_data(astrocyte_point_data):
 # @get_astrocyte_data
 ####################################################################################################
 def get_astrocyte_data(astrocyte_ids, circuit_directory):
-    """
-    This is a slow object oriented way to access the circuit data from the point of view of
+    """This is a slow object oriented way to access the circuit data from the point of view of
     the astrocytes.
     Args:
         astrocyte_ids (iterable)
@@ -142,6 +152,7 @@ def get_astrocyte_data(astrocyte_ids, circuit_directory):
     Returns:
         A generator of AstrocyteData objects that correspond to astrocyte_ids.
     """
+
     # NGV circuit
     ngv_circuit = NGVCircuit(circuit_directory)
 
