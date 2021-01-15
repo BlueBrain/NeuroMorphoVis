@@ -407,7 +407,11 @@ def group_number_analysis(input_directory,
                                 'z-numbers-2')
 
 
-def group_results(input_directory, output_directory):
+####################################################################################################
+# @group_results
+####################################################################################################
+def group_results(input_directory,
+                  output_directory):
 
     image_files = list()
     morphology_name = os.path.basename(input_directory)

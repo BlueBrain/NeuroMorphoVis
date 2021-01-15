@@ -123,7 +123,7 @@ def generate_astrocyte(circuit_path,
     circuit = NGVCircuit(circuit_path)
 
     # End-feet areas
-    areas = circuit.data.endfeetome.areas
+    areas = circuit.gliovascular_connectome.surface_meshes
 
     # Access the astrocytes data
     astrocytes_data = astrocyte_data.get_astrocyte_data(gids, circuit_path)

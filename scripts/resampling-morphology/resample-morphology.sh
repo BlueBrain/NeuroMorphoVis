@@ -17,13 +17,13 @@
 ####################################################################################################
 
 # Blender executable
-BLENDER='/bbp/bbp-blender-packages/blender-2.79b-linux-glibc219-x86_64/blender'
+BLENDER=$PWD/../../../../../../blender
 
 # The input directory where the meshes exist
-INPUT_MORPHOLOGY='/bbp/projects/2019-resampling-morphologies/input/000061cbfa9d8d7bc26c4a2c73614e61.h5'
+INPUT_MORPHOLOGY='/ssd1/projects/astrocytes-circuit/20200930/build/morphologies/GLIA_0000000009345.h5'
 
 # Output directory 
-OUTPUT_DIRECTORY='/bbp/projects/2019-resampling-morphologies/output'
+OUTPUT_DIRECTORY='/home/abdellah/neuromorphovis-output/analysis-glia/resampled'
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python resample-morphology.py --                                         \

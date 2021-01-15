@@ -179,7 +179,7 @@ def parse_command_line_arguments(arguments=None):
 ####################################################################################################
 # @process_mesh
 ####################################################################################################
-def process_mesh(arguments, 
+def process_mesh(arguments,
                  astrocyte_mesh, 
                  path_to_mesh, 
                  mesh_name, 
