@@ -409,6 +409,7 @@ if __name__ == "__main__":
             optimized_horizontal_image_path=optimized_horiz,
             output_path='%s/%s' % (images_directory, astrocyte.replace('.obj', '-skinned-optimized.png')))
         
+        '''
         # Create the combined image of skinned vs optimized and artistic
         if optimized_artistic is not None:
             plotting.combine_skinned_with_optimized_with_artistic(
@@ -416,3 +417,4 @@ if __name__ == "__main__":
             optimized_horizontal_image_path=optimized_horiz,
             artistic_image=optimized_artistic,
             output_path='%s/%s' % (images_directory, astrocyte.replace('.obj', '-skinned-optimized-artistic.png')))
+        '''

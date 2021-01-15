@@ -45,7 +45,7 @@ WIREFRAME_THICKNESS='0.075'
 IMAGE_RESOLUTION='2000'
 
 # Export Blender scenes
-EXPORT_BLENDER_SCENE='yes'
+EXPORT_BLENDER_SCENE='no'
 
 # ultraQualityChecker executable
 QUALITY_CHECKER_EXECUTABLE='/gpfs/bbp.cscs.ch/project/proj3/development/Ultraliser/build/bin/ultraMeshQualityChecker'
