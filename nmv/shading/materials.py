@@ -57,6 +57,20 @@ def import_shader(shader_name):
 
 
 ####################################################################################################
+# @switch_freestyle
+####################################################################################################
+def switch_freestyle(use_freestyle=False):
+    """Turns on and off the free-style mode.
+
+    :param use_freestyle:
+        A flag to switch on and off the free-style mode.
+    """
+
+    # Should we use the freestyle mode or not
+    bpy.context.scene.render.use_freestyle = use_freestyle
+
+
+####################################################################################################
 # @create_shadow_material
 ####################################################################################################
 def create_shadow_material(name,
@@ -688,6 +702,86 @@ def create_lambert_ward_material(name,
 
 
 ####################################################################################################
+# @create_free_style_material
+####################################################################################################
+def create_free_style_material(name,
+                               color=nmv.consts.Color.WHITE,
+                               specular=(1, 1, 1),
+                               alpha=0.0):
+    """Creates a a texture material.
+
+    :param name:
+        Material name.
+    :param color:
+        Diffuse component.
+    :param specular:
+        Specular component.
+    :param alpha:
+        Transparency value, default opaque alpha = 0.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Blender 2.8
+    if nmv.utilities.is_blender_280():
+
+        # Set the current rendering engine to Blender
+        current_scene.render.engine = 'BLENDER_EEVEE'
+
+        # Create a new material (color) and assign it to the line
+        color = mathutils.Vector((color[0], color[1], color[2], 1.0))
+
+        # Create a new material (color) and assign it to the line
+        line_material = bpy.data.materials.new('color.%s' % name)
+        line_material.diffuse_color = color
+
+        # Zero-metallic and roughness
+        line_material.specular_intensity = 0.5
+        line_material.roughness = 0.015
+        line_material.metallic = 0.0
+
+        # Disable the transparency
+        nmv.scene.set_scene_transparency(transparent=False)
+
+        # Use the free style
+        current_scene.render.use_freestyle = True
+
+        # Return a reference to the material
+        return line_material
+
+    else:
+        current_scene.render.engine = 'BLENDER_RENDER'
+
+        # Create a new material
+        material_reference = bpy.data.materials.new(name)
+
+        # Set the diffuse parameters
+        material_reference.diffuse_color = color
+        material_reference.diffuse_shader = 'LAMBERT'
+        material_reference.diffuse_intensity = 1.0
+
+        # Set the specular parameters
+        material_reference.specular_color = specular
+        material_reference.specular_shader = 'WARDISO'
+        material_reference.specular_intensity = 1
+
+        # Transparency
+        material_reference.alpha = alpha
+
+        # Set the ambient parameters
+        material_reference.ambient = 1.0
+
+        # Switch the view port shading
+        nmv.scene.switch_scene_shading('SOLID')
+
+        # Return a reference to the material
+        return material_reference
+
+
+####################################################################################################
 # @create_glossy_material
 ####################################################################################################
 def create_glossy_material(name,
@@ -793,9 +887,16 @@ def create_material(name,
     # Setting the scene transparency to False before the creating of any shader
     nmv.scene.set_scene_transparency(transparent=False)
 
+    # Turn off the free-style modes
+    switch_freestyle(use_freestyle=False)
+
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_material(name='%s_color' % name, color=color)
+
+    # Free-style material
+    elif material_type == nmv.enums.Shader.FREE_STYLE:
+        return create_free_style_material(name='%s_color' % name, color=color)
 
     # Super electron light
     elif material_type == nmv.enums.Shader.SUPER_ELECTRON_LIGHT:
@@ -913,6 +1014,9 @@ def create_materials(material_type,
 
     # By default, no transparency
     nmv.scene.set_scene_transparency(transparent=False)
+
+    # Turn off the free style mode
+    switch_freestyle(use_freestyle=False)
 
     # A list of the created materials
     materials_list = list()

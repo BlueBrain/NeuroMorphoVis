@@ -86,8 +86,8 @@ class SomaPanel(bpy.types.Panel):
             reconstruction_method_row.prop(scene, 'NMV_SomaMetaBallResolution')
             soma_options.meta_ball_resolution = scene.NMV_SomaMetaBallResolution
 
-        elif scene.NMV_SomaReconstructionMethod == \
-                nmv.enums.Soma.Representation.SOFT_BODY:
+        elif scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.Representation.SOFT_BODY or \
+                scene.NMV_SomaReconstructionMethod == nmv.enums.Soma.Representation.HYBRID:
 
             reconstruction_method_row = layout.row()
             reconstruction_method_row.prop(scene, 'NMV_SomaProfile')
