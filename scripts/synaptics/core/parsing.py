@@ -309,10 +309,11 @@ def parse_synaptic_pairs(synaptic_pairs_file):
             continue
 
         # String processing
+        line = line.replace("\t", " ")
         line = line.replace('\n', '')
         line = line.replace('(', '')
         line = line.replace(')', '')
-        line = line.split(', ')
+        line = line.split(' ')
 
         # Append it to the pairs list
         pairs.append([int(line[0]), int(line[1])])

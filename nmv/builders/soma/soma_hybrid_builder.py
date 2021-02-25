@@ -370,22 +370,24 @@ class SomaHybridBuilder:
         the with soft-body algorithm.
         """
 
-        options = nmv.options.NeuroMorphoVisOptions()
         # Use the SomaSoftBodyBuilder to reconstruct the soma
         soft_body_soma_builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology,
-                                                                  options=options)
+                                                                  options=self.options)
 
         # Construct the soft-body-based soma and avoid adding noise to the profile
         soft_body_soma = soft_body_soma_builder.reconstruct_soma_mesh(
             apply_shader=False, add_noise_to_surface=False)
 
-        # Run the particles simulation remesher
+        # Run the particles simulation re-mesher
         particle_remeshes = nmv.physics.ParticleRemesher()
         stepper = particle_remeshes.run(mesh_object=soft_body_soma,
                                         context=bpy.context, interactive=True)
 
+        # Iterate
         for i in range(1000000):
             finished = next(stepper)
+
+            # If the finished state was over, go ahead and break
             if finished:
                 break
 
@@ -395,6 +397,7 @@ class SomaHybridBuilder:
 
         # For every valid arbor
         for arbor in valid_arbors:
+
             # Construct a meta-element at the initial sample of each arbor
             meta_element = self.meta_skeleton.elements.new()
             meta_element.radius = arbor.samples[0].radius * self.magic_scale_factor * 1.0
@@ -455,6 +458,12 @@ class SomaHybridBuilder:
 
         # Update the meta object and convert it to a mesh
         self.finalize_meta_object(name=nmv.consts.Skeleton.SOMA_PREFIX)
+
+        # Remove the internal partition
+        nmv.mesh.remove_small_partitions(mesh_object=self.meta_mesh)
+
+        # Smooth the mesh surface, the level (13) was obtained by trial and error
+        nmv.mesh.smooth_object_vertices(mesh_object=self.meta_mesh, level=15)
 
         # Assign the material to the reconstructed mesh
         if apply_shader:

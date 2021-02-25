@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -28,6 +28,61 @@ import nmv.utilities
 
 
 ####################################################################################################
+# @create_six_sun_lights
+####################################################################################################
+def create_six_sun_lights(power=0.5,
+                          location=(0, 0, 0)):
+    """Creates a set of six sun-lights at specific location with a uniform power to cover the
+    illumination from all the directions around the object.
+
+    :param power:
+        The energy of the light sources.
+    :param location:
+        The locations of the light sources.
+    """
+
+    # Multiple light sources from different directions
+    light_directions = [(-0.78, 0.000, -0.78), (0.000, 3.140, 0.000), (1.570, 0.000, 0.000),
+                        (-1.57, 0.000, 0.000), (0.000, 1.570, 0.000), (0.000, -1.57, 0.000)]
+
+    # Add the lights
+    for i, direction in enumerate(light_directions):
+
+        # The light creation functions are different for Blender 2.79 and 2.8
+        if nmv.utilities.is_blender_280():
+            bpy.ops.object.light_add(type='SUN', radius=1, location=location)
+        else:
+            bpy.ops.object.lamp_add(type='SUN', radius=1, location=location)
+
+        # Get a reference to the lamp
+        lamp_reference = bpy.context.object
+
+        # Set the name
+        lamp_reference.name = 'Light%d_SUN' % i
+        lamp_reference.data.name = "Light%d_SUN" % i
+
+        # Set the direction
+        lamp_reference.rotation_euler = direction
+
+        # Set the power
+        lamp_reference.data.energy = power
+
+
+####################################################################################################
+# @create_free_style_illumination
+####################################################################################################
+def create_free_style_illumination():
+    """Creates an illumination specific for the default shader.
+    """
+
+    # Deselect all
+    nmv.scene.ops.deselect_all()
+
+    # Create the set of six sun lights
+    create_six_sun_lights(power=2.0)
+
+
+####################################################################################################
 # @create_lambert_ward_illumination
 ####################################################################################################
 def create_lambert_ward_illumination():
@@ -37,31 +92,11 @@ def create_lambert_ward_illumination():
     # Deselect all
     nmv.scene.ops.deselect_all()
 
-    # Multiple light sources from different directions
-    light_rotation = [(-0.78, 0.000, -0.78),
-                      (0.000, 3.140, 0.000),
-                      (1.570, 0.000, 0.000),
-                      (-1.57, 0.000, 0.000),
-                      (0.000, 1.570, 0.000),
-                      (0.000, -1.57, 0.000)]
+    # Deselect all
+    nmv.scene.ops.deselect_all()
 
-    # Add the lights
-    for i, angle in enumerate(light_rotation):
-        if nmv.utilities.is_blender_280():
-            bpy.ops.object.light_add(type='SUN', radius=1, location=(0, 0, 0))
-            lamp_reference = bpy.context.object
-            lamp_reference.name = 'Lamp%d' % i
-            lamp_reference.data.name = "Lamp%d" % i
-            lamp_reference.rotation_euler = angle
-            lamp_reference.data.energy = 0.5
-        else:
-            bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
-            lamp_reference = bpy.context.object
-            lamp_reference.name = 'Lamp%d' % i
-            lamp_reference.data.name = "Lamp%d" % i
-            lamp_reference.rotation_euler = angle
-            lamp_reference.data.use_specular = True if i == 0 else False
-            lamp_reference.data.energy = 0.5
+    # Create the set of six sun lights
+    create_six_sun_lights(power=1.0)
 
 
 ####################################################################################################
@@ -188,6 +223,10 @@ def create_material_specific_illumination(material_type):
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
         return create_lambert_ward_illumination()
+
+    # Free-style
+    elif material_type == nmv.enums.Shader.FREE_STYLE:
+        return create_free_style_illumination()
 
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:

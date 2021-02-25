@@ -139,8 +139,19 @@ def create_neuron_meshes_with_piecewise_builder(circuit,
     axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axon')
     soma_mesh = nmv.mesh.join_mesh_objects(mesh_list=soma_meshes, name='Soma')
 
+    # Ensure that you only add the meshes of the available components
+    mesh_list = list()
+    if apical_mesh is not None:
+        mesh_list.append(apical_mesh)
+    if basal_mesh is not None:
+        mesh_list.append(basal_mesh)
+    if axon_mesh is not None:
+        mesh_list.append(axon_mesh)
+    if soma_mesh is not None:
+        mesh_list.append(soma_mesh)
+
     # Return a reference to the neuron mesh
-    return [apical_mesh, basal_mesh, axon_mesh, soma_mesh]
+    return mesh_list
 
 
 ####################################################################################################
@@ -539,6 +550,7 @@ def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
 
     # Create the post-synaptic mesh
     post_meshes_list = create_neuron_meshes_with_piecewise_builder(circuit=circuit, gid=post_gid)
+    print(post_meshes_list)
 
     # Adjust the neuron transformation
     post_transformation = circuit_data.get_cell_transformation(circuit, post_gid)

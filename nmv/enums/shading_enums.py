@@ -32,6 +32,9 @@ class Shader:
     # Flat or 'shade-less' shader
     FLAT = 'FLAT_SHADER'
 
+    # Free-style shader
+    FREE_STYLE = 'FREE_STYLE_SHADER'
+
     # Blender default lambert shader
     LAMBERT_WARD = 'LAMBERT_WARD_SHADER'
 
@@ -85,6 +88,8 @@ class Shader:
         """
         if shader_type == 'flat':
             return Shader.FLAT
+        elif shader_type == 'free-style':
+            return Shader.FREE_STYLE
         elif shader_type == 'electron-light':
             return Shader.ELECTRON_LIGHT
         elif shader_type == 'electron-dark':
@@ -126,6 +131,12 @@ class Shader:
          'Toon',
          "Use Toon shader. This shader is used to create high resolution images in few seconds. "
          "The rendering quality of this shader is not the best"),
+
+        (FREE_STYLE,
+         'Free Style',
+         "Use Free Style shader. This shader is used to create high resolution images in few "
+         "seconds. The rendering quality of this shader is not the best, but it can be used for "
+         "sketches"),
 
         (TRANSPARENT,
          'Transparent',
