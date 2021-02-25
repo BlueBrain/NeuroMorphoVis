@@ -18,6 +18,7 @@
 # System imports
 import sys
 import os
+import time
 import subprocess
 import argparse
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
@@ -125,6 +126,9 @@ def generate_astrocyte(circuit_path,
     # End-feet areas
     areas = circuit.gliovascular_connectome.surface_meshes
 
+    # Neurons IDs
+    # neurons = circuit.neuroglial_connectome.astrocyte_neurons(astrocyte_gid)
+
     # Access the astrocytes data
     astrocytes_data = astrocyte_data.get_astrocyte_data(gids, circuit_path)
 
@@ -133,6 +137,9 @@ def generate_astrocyte(circuit_path,
 
     # Center the morphology at the origin
     center_morphology = True
+
+    # Center the final mesh
+    center_mesh = False
 
     # Astrocyte data
     for astro_generator in astrocytes_data:
@@ -170,14 +177,19 @@ def generate_astrocyte(circuit_path,
             soma_style=soma_style)
 
         # Reconstructing the mesh and return a reference to the astrocyte mesh
+        start_time = time.time()
         astrocyte_mesh = builder.reconstruct_mesh()
+        end_time = time.time()
 
-        print(end_feet_proxy_meshes)
+        # Translate the astrocyte mesh
+        if not center_mesh:
+            nmv.scene.set_object_location(scene_object=astrocyte_mesh, location=soma_centroid)
+
         # Delete all the end-feet data
         nmv.scene.delete_list_objects(end_feet_proxy_meshes)
 
         # Return a reference to the astrocyte mesh
-        return astrocyte_mesh
+        return astrocyte_mesh, (end_time - start_time)
 
 
 ####################################################################################################
@@ -283,9 +295,11 @@ if __name__ == "__main__":
         exit(0)
 
     # Generate the astrocyte
-    astrocyte_mesh = generate_astrocyte(circuit_path=args.circuit_path,
-                                        astrocyte_gid=int(args.gid),
-                                        soma_style=args.soma_style)
+    astrocyte_mesh, generation_time = generate_astrocyte(
+        circuit_path=args.circuit_path, astrocyte_gid=int(args.gid), soma_style=args.soma_style)
+
+    # Write the stats about the generation time
+    timing_file = '%s/%s.timing' % (args.output_directory, str(args.gid))
 
     # Export the meshes for simulation
     if 'simulation' in args.mesh_type or 'both' in args.mesh_type:

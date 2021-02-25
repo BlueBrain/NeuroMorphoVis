@@ -21,7 +21,7 @@ BLENDER='$PWD/../../../../../../blender'
 
 # Output directory 
 OUTPUT_DIRECTORY='/projects-data/2021.01.14-astrocytes-generation'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.15-synthetic-astrocytes-meshes'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.27-astrocytes-meshes-soma/meta'
 
 # Circuit
 CIRCUIT='/projects/astrocytes-circuit/20200930'
@@ -32,13 +32,13 @@ CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20201027_full_son
 SOMA_STYLE='metaball'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored, and if set to '0' the file is used
-GIDS_RANGE='1-100'
+GIDS_RANGE='1-15'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE=$PWD/gids
 
 # Meshes type, for simulation/visualization/both
-MESH_TYPE='both'
+MESH_TYPE='visualization'
 
 # Create optimized meshes
 CREATE_OPTIMIZED='yes'
@@ -55,13 +55,13 @@ NUMBER_CORES=15
 
 # Decimation factor (range: 0.5 - 0.01) to reduce the number of polygons in the mesh that is
 # generated for the visualization purposes.
-DECIMATION_FACTOR='0.05'
+DECIMATION_FACTOR='0.25'
 
 # Export the final mesh in a .OBJ file, 'yes' or 'no'
 EXPORT_OBJ='yes'
 
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
-EXPORT_BLEND='no'
+EXPORT_BLEND='yes'
 
 ####################################################################################################
 BOOL_ARGS=''

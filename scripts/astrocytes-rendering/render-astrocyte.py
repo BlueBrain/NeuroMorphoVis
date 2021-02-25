@@ -20,6 +20,7 @@ import sys
 import os
 import argparse
 import subprocess
+import shutil
 
 # Blender imports
 import bpy
@@ -226,9 +227,13 @@ def process_mesh(arguments,
     bpy.context.scene.world.color[1] = 10
     bpy.context.scene.world.color[2] = 10
 
+    panels_directory = '%s/%s-panels' % (intermediate_directory, mesh_name)
+    if not os.path.exists(panels_directory):
+        os.makedirs(panels_directory)
+
     # Render based on the bounding box
     nmv.rendering.render(bounding_box=astrocyte_bbox,
-                         image_directory=intermediate_directory,
+                         image_directory=panels_directory,
                          image_name=mesh_name,
                          image_resolution=arguments.resolution,
                          keep_camera_in_scene=True)
@@ -245,19 +250,27 @@ def process_mesh(arguments,
                         quality_checker_executable=arguments.quality_checker_executable,
                         output_directory=stats_output_directory)
 
-    # Plot the stats. of the mesh into a single image
+
     vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
         name=mesh_name,
         distributions_directory=stats_output_directory,
-        output_directory=intermediate_directory,
+        output_directory=panels_directory,
         color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
+
+    # Clean the stats data
+    if os.path.exists(stats_output_directory):
+        shutil.rmtree(stats_output_directory)
 
     # Combine the wire-frame rendering with the stats image side-by-side
     combined_vert, combined_horiz = plotting.combine_stats_with_rendering(
-        rendering_image='%s/%s.png' % (intermediate_directory, mesh_name),
+        rendering_image='%s/%s.png' % (panels_directory, mesh_name),
         vertical_stats_image=vertical_stats_image,
         horizontal_stats_image=horizontal_stats_image,
         output_image_path='%s/%s' % (images_directory, mesh_name))
+
+    # Clean the stats data
+    if os.path.exists(panels_directory):
+        shutil.rmtree(panels_directory)
     
     # Just a reference to the artistic image path 
     artistic_image = None

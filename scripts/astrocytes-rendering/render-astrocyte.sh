@@ -21,15 +21,15 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input directory
 #INPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/input/optimized'
-INPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes/simulation'
+INPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.15-synthetic-astrocytes-meshes/simulation'
 
 # Astrocyte mesh
 #ASTROCYTES_LIST='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/input/astrocytes'
-ASTROCYTES_LIST='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes/astrocyte-list'
+ASTROCYTES_LIST='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.15-synthetic-astrocytes-meshes/astrocyte-list'
 
 # The output directory where the scene and images will be generated
 #OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-astrocyte-meshes-samples-for-rendering/output'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.14-synthetic-astrocytes-meshes/analysis'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.15-synthetic-astrocytes-meshes/analysis'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='no'
