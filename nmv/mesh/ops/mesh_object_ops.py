@@ -630,10 +630,14 @@ def join_mesh_objects(mesh_list,
     # Select all the sections in the sections list
     for mesh_object in mesh_list:
 
-        if mesh_object.type == 'MESH':
+        # Ensure that this mesh object is not None
+        if mesh_object is not None:
 
-            # Select the mesh object
-            nmv.scene.select_object(mesh_object)
+            # Must be only mesh
+            if mesh_object.type == 'MESH':
+
+                # Select the mesh object
+                nmv.scene.select_object(mesh_object)
 
     # Set tha parenting order, the parent mesh is becoming an actual parent
     # bpy.ops.object.parent_set()

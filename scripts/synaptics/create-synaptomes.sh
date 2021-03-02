@@ -31,10 +31,10 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/mtypes'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/excitatory_inhibitory'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-2-26.05.2021'
-
+OUTPUT_DIRECTORY='/projects-data/2021.03.02-synaptomes/'
 
 # Show excitatory and inhibitory synapses, yes or no
-SHOW_EXC_INH='yes'
+SHOW_EXC_INH='no'
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
@@ -61,10 +61,10 @@ CLOSE_UP_RESOLUTION='1000'
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # Execution, serial or parallel
-EXECUTION='serial'
+EXECUTION='parallel'
 
 # Number of parallel cores
-NUMBER_PARALLEL_CORES='4'
+NUMBER_PARALLEL_CORES='8'
 
 #####################################################################################################
 BOOL_ARGS=''
