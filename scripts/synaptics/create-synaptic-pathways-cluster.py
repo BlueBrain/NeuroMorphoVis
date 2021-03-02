@@ -206,4 +206,3 @@ if __name__ == "__main__":
 
     # Submit the slurm jobs
     slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
-

@@ -110,3 +110,9 @@ if __name__ == "__main__":
         full_view_image, close_up_image, args.background_image,
         output_directory=composite_directory, edge_gap=100,
         bounding_box=synaptic_pair_bounding_box)
+
+    # Delete the meshes and scenes directories
+    nmv.file.delete_directory(meshes_directory)
+    nmv.file.delete_directory(scenes_directory)
+    nmv.file.delete_directory(images_directory)
+

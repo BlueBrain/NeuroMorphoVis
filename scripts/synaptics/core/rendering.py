@@ -34,7 +34,7 @@ import nmv.rendering
 import nmv.scene
 import nmv.file
 import nmv.utilities
-
+import math
 
 ####################################################################################################
 # @render_synaptic_path_way_full_view
@@ -411,7 +411,7 @@ def compose_frame(full_view_file,
                      fill=(255, 255, 255, 255))
 
         scale_bar_value = int(width_per_pixel * scale_bar_width)
-        scale_bar_value = round(scale_bar_value / 50) * 50
+        scale_bar_value = math.ceil(scale_bar_value / 50.0) * 50
         font = ImageFont.truetype('%s/font.ttf' % os.path.dirname(os.path.realpath(__file__)), 20)
         graphic.text((edge_gap, edge_gap + full_view_drawing_height + 5),
                      "%d µm" % scale_bar_value, font=font, fill=(255, 255, 255, 128))

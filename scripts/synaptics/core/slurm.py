@@ -36,7 +36,8 @@ def squeue():
 
     # Get the current processes running on the cluster
     result = str(subprocess.check_output(['squeue']))
-    return result.splitlines()  # Works only with python3.5
+    return result.split('\\n')
+    # return result.splitlines()  # Works only with python3.5
 
 
 ####################################################################################################
@@ -65,7 +66,8 @@ def get_current_number_jobs_for_user(user_name):
 # @submit_batch_jobs
 ####################################################################################################
 def submit_batch_jobs(user_name,
-                      slurm_jobs_directory):
+                      slurm_jobs_directory,
+                      maximum_number_jobs=4000):
     """Submits all the batch jobs found in the jobs directory.
 
     This function takes into account the maximum limit imposed by the cluster (500 jobs per user).
@@ -73,11 +75,15 @@ def submit_batch_jobs(user_name,
     :param user_name:
         The user name of the current user.
     :param slurm_jobs_directory:
-        The directory where the batch jobs are created. .
+        The directory where the batch jobs are created.
+    :param maximum_number_jobs:
+        Maximum number of jobs per user.
     """
 
     # Get all the scripts in the slurm jobs directory to submit them
     scripts = nmv.file.get_files_in_directory(slurm_jobs_directory, file_extension='.sh')
+
+    print(len(scripts))
 
     # Use an index to keep track on the number of jobs submitted to the cluster.
     script_index = 0
@@ -90,9 +96,9 @@ def submit_batch_jobs(user_name,
 
         # Get the number of jobs active for that user
         number_active_jobs = get_current_number_jobs_for_user(user_name=user_name)
-
+        print(number_active_jobs)
         # If the number of jobs is greater than 500, then wait a second and try again
-        if number_active_jobs >= 500:
+        if number_active_jobs >= maximum_number_jobs:
             print('Waiting for resources ...')
             continue
 
@@ -100,7 +106,7 @@ def submit_batch_jobs(user_name,
         else:
 
             # Get the number of jobs that are available to submit
-            number_available_jobs = 500 - number_active_jobs
+            number_available_jobs = maximum_number_jobs - number_active_jobs
 
             # Submit as many jobs as you can
             for i in range(number_available_jobs):

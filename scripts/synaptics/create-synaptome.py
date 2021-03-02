@@ -28,6 +28,9 @@ import color_map
 import synaptome
 import rendering
 
+# Blender imports
+import bpy
+
 # NeuroMorphoVis imports
 import nmv.scene
 import nmv.enums
@@ -82,6 +85,11 @@ if __name__ == "__main__":
     # Create the output directory if it does not exist
     if not nmv.file.ops.path_exists(output_directory):
         nmv.file.ops.clean_and_create_directory(output_directory)
+
+    # Use the denoiser with cycles
+    bpy.context.scene.render.engine = 'CYCLES'
+    bpy.context.scene.cycles.samples = 16
+    bpy.context.scene.view_layers[0].cycles.use_denoising = True
 
     # Render a 360 of the full view
     full_view_frames = rendering.render_synaptome_full_view_360(

@@ -43,6 +43,20 @@ def clean_and_create_directory(path):
 
 
 ####################################################################################################
+# @delete_directory
+####################################################################################################
+def delete_directory(path):
+    """Cleans a directory tree.
+
+    :param path:
+        A given directory to delete.
+    """
+    # if the path exists, remove it and create another one.
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+
+####################################################################################################
 # @create_directory
 ####################################################################################################
 def create_directory(path):
