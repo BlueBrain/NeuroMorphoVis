@@ -30,13 +30,13 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/Circuit
 
 # Synaptic file
 REGION='S1DZO_pairs'
-#REGION='S1DZ_pairs'
-#REGION='S1FL_Column_pairs'
-#REGION='S1HL_Column_pairs'
-#REGION='S1J_Column_pairs'
-#REGION='S1Sh_pairs'
-#REGION='S1Tr_pairs'
-#REGION='S1ULp_pairs'
+REGION='S1DZ_pairs'
+REGION='S1FL_Column_pairs'
+REGION='S1HL_Column_pairs'
+REGION='S1J_Column_pairs'
+REGION='S1Sh_pairs'
+REGION='S1Tr_pairs'
+REGION='S1ULp_pairs'
 
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/iteration_2/gid-files/'$REGION
 

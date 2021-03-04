@@ -296,6 +296,13 @@ if __name__ == "__main__":
     if not nmv.file.ops.path_exists(results_directory):
         nmv.file.ops.clean_and_create_directory(results_directory)
 
+    # Create the pre-and-post lists
+    pre_batch_list = list()
+    post_batch_list = list()
+
+    # Just an ID to keep track on the batches
+    batch_id = 0
+
     # Create a job for every pair
     jobs = list()
     for i, pair in enumerate(pairs):
@@ -312,17 +319,19 @@ if __name__ == "__main__":
 
         else:
 
-            # Create the pre-and-post lists
-            pre_batch_list = list()
-            post_batch_list = list()
-
+            # Add the GIDs
             pre_batch_list.append(str(pair[0]))
             post_batch_list.append(str(pair[1]))
 
             # Once the queue is filled, please go ahead
             if len(pre_batch_list) == args.number_jobs_per_core:
+
+                # New batch ID
+                batch_id += 1
+
+                # Create the job script
                 job = create_synaptic_pair_batch_script(
-                    blender_executable=blender_executable, script_id=i,
+                    blender_executable=blender_executable, script_id=batch_id,
                     pre_gids=pre_batch_list, post_gids=post_batch_list, arguments=args,
                     results_directory=results_directory, jobs_directory=jobs_directory,
                     logs_directory=logs_directory)
@@ -335,17 +344,21 @@ if __name__ == "__main__":
                 pre_batch_list.clear()
                 post_batch_list.clear()
 
-            # If the lists are not clear, simply submit the remaining jobs
-            if len(pre_batch_list) > 0:
-                job = create_synaptic_pair_batch_script(
-                    blender_executable=blender_executable, script_id=i,
-                    pre_gids=pre_batch_list, post_gids=post_batch_list, arguments=args,
-                    results_directory=results_directory, jobs_directory=jobs_directory,
-                    logs_directory=logs_directory)
+    # If the lists are not clear, simply submit the remaining jobs
+    if len(pre_batch_list) > 0:
+        # New batch ID
+        batch_id += 1
 
-                # Print jobs
-                print(job)
-                jobs.append(job)
+        # Create the job script
+        job = create_synaptic_pair_batch_script(
+            blender_executable=blender_executable, script_id=batch_id,
+            pre_gids=pre_batch_list, post_gids=post_batch_list, arguments=args,
+            results_directory=results_directory, jobs_directory=jobs_directory,
+            logs_directory=logs_directory)
+
+        # Print jobs
+        print(job)
+        jobs.append(job)
 
     # Submit the slurm jobs
-    # slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
+    slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
