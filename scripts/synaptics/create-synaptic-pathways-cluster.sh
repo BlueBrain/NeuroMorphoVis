@@ -30,18 +30,18 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/Circuit
 
 # Synaptic file
 REGION='S1DZO_pairs'
-REGION='S1DZ_pairs'
-REGION='S1FL_Column_pairs'
-REGION='S1HL_Column_pairs'
-REGION='S1J_Column_pairs'
-REGION='S1Sh_pairs'
-REGION='S1Tr_pairs'
-REGION='S1ULp_pairs'
+#REGION='S1DZ_pairs'
+#REGION='S1FL_Column_pairs'
+#REGION='S1HL_Column_pairs'
+#REGION='S1J_Column_pairs'
+#REGION='S1Sh_pairs'
+#REGION='S1Tr_pairs'
+#REGION='S1ULp_pairs'
 
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/iteration_2/gid-files/'$REGION
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-8-02.03.2021/'$REGION
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-9-04.03.2021/'$REGION
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
@@ -57,6 +57,9 @@ IMAGE_RESOLUTION='4000'
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
+# Number of jobs per core
+NUMBER_OF_JOBS_PER_CORE=20
+
 ####################################################################################################
 $BLENDER -b --verbose 0 --python create-synaptic-pathways-cluster.py --                             \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
@@ -69,5 +72,6 @@ $BLENDER -b --verbose 0 --python create-synaptic-pathways-cluster.py --         
     --image-resolution=$IMAGE_RESOLUTION                                                            \
     --synapse-size=$SYNAPSE_SIZE                                                                    \
     --background-image=$BACKGROUND_IMAGE                                                            \
+    --number-jobs-per-core=$NUMBER_OF_JOBS_PER_CORE                                                 \
     $BOOL_ARGS
 

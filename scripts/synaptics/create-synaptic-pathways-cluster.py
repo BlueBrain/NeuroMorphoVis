@@ -87,6 +87,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--synapse-size',
                         action='store', dest='synapse_size', type=float, help=arg_help)
 
+    arg_help = 'NUmber of jobs per core'
+    parser.add_argument('--number-jobs-per-core',
+                        action='store', dest='number_jobs_per_core', type=int, help=arg_help)
+
     arg_help = 'Base image resolution'
     parser.add_argument('--image-resolution',
                         action='store', default=2000, type=int, dest='image_resolution',
@@ -98,6 +102,46 @@ def parse_command_line_arguments(arguments=None):
 
     # Parse the arguments
     return parser.parse_args()
+
+
+####################################################################################################
+# @create_command_per_pair
+####################################################################################################
+def create_command_per_pair(blender_executable,
+                            pre_gid,
+                            post_gid,
+                            arguments,
+                            results_directory):
+    """Creates a blender running command for a pair.
+
+    :param blender_executable:
+        Blender executable for a single pair.
+    :param pre_gid:
+        Pre-neuron GID.
+    :param post_gid:
+        Post-neuron GID.
+    :param arguments:
+        CLIs.
+    :param results_directory:
+        The directory where the results will be written to.
+    :return:
+        The final command
+    """
+
+    command = ''
+    command += '%s -b --verbose 0 --python %s -- ' % (blender_executable, arguments.pair_script)
+    command += ' --circuit-config=%s ' % arguments.circuit_config
+    command += ' --pre-gid=%s ' % pre_gid
+    command += ' --post-gid=%s ' % post_gid
+    command += ' --output-directory=%s ' % results_directory
+    command += ' --pre-neuron-color=%s ' % arguments.pre_neuron_color
+    command += ' --post-neuron-color=%s ' % arguments.post_neuron_color
+    command += ' --synapse-color=%s ' % arguments.synapse_color
+    command += ' --synapse-size=%s ' % arguments.synapse_size
+    command += ' --background-image=%s ' % arguments.background_image
+    command += '\n'
+
+    return command
 
 
 ####################################################################################################
@@ -126,21 +170,79 @@ def create_synaptic_pair_script(blender_executable,
     script_string += '#SBATCH --error=%s/slurm-stderr_%s_%s.log \n\n' % (logs_directory,
                                                                          pre_gid, post_gid)
 
-    script_string += '%s -b --verbose 0 --python %s -- ' % (blender_executable,
-                                                            arguments.pair_script)
-    script_string += ' --circuit-config=%s ' % arguments.circuit_config
-    script_string += ' --pre-gid=%s ' % pre_gid
-    script_string += ' --post-gid=%s ' % post_gid
-    script_string += ' --output-directory=%s ' % results_directory
-    script_string += ' --pre-neuron-color=%s ' % arguments.pre_neuron_color
-    script_string += ' --post-neuron-color=%s ' % arguments.post_neuron_color
-    script_string += ' --synapse-color=%s ' % arguments.synapse_color
-    script_string += ' --synapse-size=%s ' % arguments.synapse_size
-    script_string += ' --background-image=%s ' % arguments.background_image
-    script_string += '\n'
+    script_string += create_command_per_pair(
+        blender_executable=blender_executable, pre_gid=pre_gid, post_gid=post_gid,
+        arguments=arguments, results_directory=results_directory)
 
     # Write the script to a file
     script_file_path = '%s/%s_%s.sh' % (jobs_directory, pre_gid, post_gid)
+    script_file = open(script_file_path, 'w')
+    script_file.write(script_string)
+    script_file.close()
+
+    # Change the script to +x
+    shell_command = 'chmod +x %s' % script_file_path
+    subprocess.call(shell_command, shell=True)
+
+    # Return the script file
+    return script_file_path
+
+
+####################################################################################################
+# @create_synaptic_pair_script
+####################################################################################################
+def create_synaptic_pair_batch_script(blender_executable,
+                                      script_id,
+                                      pre_gids,
+                                      post_gids,
+                                      arguments,
+                                      results_directory,
+                                      jobs_directory,
+                                      logs_directory):
+    """Create a batch script with a group of jobs to run on the same core to make it easy not to
+    break SLURM squeue.
+
+    :param blender_executable:
+        The script that will be given to get executed by blender.
+    :param script_id:
+        Just an ID to keep track in case of error.
+    :param pre_gids:
+        A list with all the pre-synaptic GIDs.
+    :param post_gids:
+        A list with all the post-synaptic GIDs.
+    :param arguments:
+        CLIs.
+    :param results_directory:
+        The directory where the results will be written.
+    :param jobs_directory:
+        The directory where the SLURM jobs will be written.
+    :param logs_directory:
+        The directory where the SLURM logs will be written.
+    :return:
+        The path to the creaed script.
+    """
+
+    script_string = ''
+    script_string += '#!/bin/bash \n'
+    script_string += '#SBATCH --job-name=\"%s\" \n' % '%d' % script_id
+    script_string += '#SBATCH --nodes=1 \n'
+    script_string += '#SBATCH --cpus-per-task=1 \n'
+    script_string += '#SBATCH --ntasks=1 \n'
+    script_string += '#SBATCH --mem=6000 \n'
+    script_string += '#SBATCH --time=1:00:00 \n'
+    script_string += '#SBATCH --partition=prod \n'
+    script_string += '#SBATCH --account=proj3 \n'
+    script_string += '#SBATCH --output=%s/slurm-stdout_%d.log \n' % (logs_directory, script_id)
+    script_string += '#SBATCH --error=%s/slurm-stderr_%d.log \n\n' % (logs_directory, script_id)
+
+    # Create the executables
+    for i in range(len(pre_gids)):
+        script_string += create_command_per_pair(
+            blender_executable=blender_executable, pre_gid=pre_gids[i], post_gid=post_gids[i],
+            arguments=arguments, results_directory=results_directory)
+
+    # Write the script to a file
+    script_file_path = '%s/%d.sh' % (jobs_directory, script_id)
     script_file = open(script_file_path, 'w')
     script_file.write(script_string)
     script_file.close()
@@ -196,13 +298,54 @@ if __name__ == "__main__":
 
     # Create a job for every pair
     jobs = list()
-    for pair in pairs:
-        job = create_synaptic_pair_script(
-            blender_executable=blender_executable, pre_gid=str(pair[0]), post_gid=str(pair[1]),
-            arguments=args, results_directory=results_directory, jobs_directory=jobs_directory,
-            logs_directory=logs_directory)
-        print(job)
-        jobs.append(job)
+    for i, pair in enumerate(pairs):
+
+        if args.number_jobs_per_core == 1:
+            job = create_synaptic_pair_script(
+                blender_executable=blender_executable, pre_gid=str(pair[0]), post_gid=str(pair[1]),
+                arguments=args, results_directory=results_directory, jobs_directory=jobs_directory,
+                logs_directory=logs_directory)
+
+            # Print jobs
+            print(job)
+            jobs.append(job)
+
+        else:
+
+            # Create the pre-and-post lists
+            pre_batch_list = list()
+            post_batch_list = list()
+
+            pre_batch_list.append(str(pair[0]))
+            post_batch_list.append(str(pair[1]))
+
+            # Once the queue is filled, please go ahead
+            if len(pre_batch_list) == args.number_jobs_per_core:
+                job = create_synaptic_pair_batch_script(
+                    blender_executable=blender_executable, script_id=i,
+                    pre_gids=pre_batch_list, post_gids=post_batch_list, arguments=args,
+                    results_directory=results_directory, jobs_directory=jobs_directory,
+                    logs_directory=logs_directory)
+
+                # Print jobs
+                print(job)
+                jobs.append(job)
+
+                # Clear the lists
+                pre_batch_list.clear()
+                post_batch_list.clear()
+
+            # If the lists are not clear, simply submit the remaining jobs
+            if len(pre_batch_list) > 0:
+                job = create_synaptic_pair_batch_script(
+                    blender_executable=blender_executable, script_id=i,
+                    pre_gids=pre_batch_list, post_gids=post_batch_list, arguments=args,
+                    results_directory=results_directory, jobs_directory=jobs_directory,
+                    logs_directory=logs_directory)
+
+                # Print jobs
+                print(job)
+                jobs.append(job)
 
     # Submit the slurm jobs
-    slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
+    # slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
