@@ -87,16 +87,17 @@ if __name__ == "__main__":
         nmv.file.ops.clean_and_create_directory(output_directory)
 
     # Use the denoiser with cycles
-    # bpy.context.scene.render.engine = 'CYCLES'
-    # bpy.context.scene.cycles.samples = 16
-    # bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    if False:
+        bpy.context.scene.render.engine = 'CYCLES'
+        bpy.context.scene.cycles.samples = 16
+        bpy.context.scene.view_layers[0].cycles.use_denoising = True
 
     # Render a 360 of the full view
-    full_view_frames = rendering.render_synaptome_full_view_360(
+    full_view_frames, full_view_frames_directory = rendering.render_synaptome_full_view_360(
         output_directory=output_directory, resolution=args.full_view_resolution)
 
     # Render a 360 of the soma close up
-    close_up_frames = rendering.render_synaptome_close_up_on_soma_360(
+    close_up_frames, close_up_frames_directory = rendering.render_synaptome_close_up_on_soma_360(
         output_directory=output_directory, close_up_size=args.close_up_size,
         resolution=args.close_up_resolution)
 
@@ -110,6 +111,11 @@ if __name__ == "__main__":
     rendering.create_movie(frames_directory=frames_directory, movie_name=synaptome_mesh.name,
                            output_directory=output_directory)
 
+    # Clear the initial frames that were used to create the composites
+    nmv.file.delete_directory(full_view_frames_directory)
+    nmv.file.delete_directory(close_up_frames_directory)
+
     # Export the scene into a blender file for reference
-    nmv.file.export_scene_to_blend_file(output_directory=output_directory,
-                                        output_file_name='%s' % synaptome_mesh.name)
+    if False:
+        nmv.file.export_scene_to_blend_file(output_directory=output_directory,
+                                            output_file_name='%s' % synaptome_mesh.name)

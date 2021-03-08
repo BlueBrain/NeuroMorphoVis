@@ -1,20 +1,16 @@
-#!/usr/bin/env bash
-####################################################################################################
-# Copyright (c) 2020, EPFL / Blue Brain Project
-#               Marwan Abdellah <marwan.abdellah@epfl.ch>
-#
-# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
-#
-# This program is free software: you can redistribute it and/or modify it under the terms of the
-# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
-#
-# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with this program.
-# If not, see <http://www.gnu.org/licenses/>.
-####################################################################################################
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=10
+#SBATCH --ntasks=1
+#SBATCH --mem=128000
+#SBATCH --time=16:00:00
+#SBATCH --partition=prod
+#SBATCH --job-name="synaptome"
+#SBATCH --constraint=volta
+#SBATCH --startx
+#SBATCH --account=proj3
+#SBATCH --output=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stdout
+#SBATCH --error=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stderr
 
 # Blender executable
 BLENDER=$PWD/../../../../../../blender
@@ -32,9 +28,7 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/mtypes'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/excitatory_inhibitory'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-2-26.02.2021'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-3-04.03.2021'
-
-#OUTPUT_DIRECTORY='/projects-data/2021.03.02-synaptomes/'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020'
 
 # Show excitatory and inhibitory synapses, yes or no
 SHOW_EXC_INH='no'
@@ -73,9 +67,15 @@ NUMBER_PARALLEL_CORES='10'
 BOOL_ARGS=''
 if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
+#####################################################################################################
+
+module load unstable
+module load virtualgl/2.5.2
+
 ####################################################################################################
+
 echo 'CREATING SYNAPTOMES ...';
-$PWD/../../../../../python/bin/python3.7m create-synaptomes.py                                      \
+vglrun $PWD/../../../../../python/bin/python3.7m create-synaptomes.py                               \
     --blender-executable=$BLENDER                                                                   \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gids-file=$GIDS_FILE                                                                          \
@@ -91,4 +91,3 @@ $PWD/../../../../../python/bin/python3.7m create-synaptomes.py                  
     --close-up-size=$CLOSE_UP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     $BOOL_ARGS;
-

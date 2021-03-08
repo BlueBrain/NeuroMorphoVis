@@ -41,7 +41,7 @@ REGION='S1ULp_pairs'
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/iteration_2/gid-files/'$REGION
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-9-04.03.2021/'$REGION
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-10-05.03.2021/'$REGION
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
@@ -58,7 +58,7 @@ IMAGE_RESOLUTION='4000'
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # Number of jobs per core
-NUMBER_OF_JOBS_PER_CORE=20
+NUMBER_OF_JOBS_PER_CORE=10
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python create-synaptic-pathways-cluster.py --                             \

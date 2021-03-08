@@ -201,7 +201,7 @@ def render_synaptome_full_view_360(output_directory,
         frames.append('%s.png' % frame_name)
 
     # Return a list of frames
-    return frames
+    return frames, frames_directory
 
 
 ####################################################################################################
@@ -282,7 +282,7 @@ def render_synaptome_close_up_on_soma_360(output_directory,
         frames.append('%s.png' % frame_name)
 
     # Return the list of frames
-    return frames
+    return frames, frames_directory
 
 
 ####################################################################################################
