@@ -55,6 +55,14 @@ def parse_synaptome_command_line_arguments(arguments=None):
     parser.add_argument('--show-exc-inh',
                         action='store_true', default=False, dest='show_exc_inh', help=arg_help)
 
+    arg_help = 'Render static frames'
+    parser.add_argument('--render-frames',
+                        action='store_true', default=False, dest='render_frames', help=arg_help)
+
+    arg_help = 'Render static frames'
+    parser.add_argument('--render-movies',
+                        action='store_true', default=False, dest='render_movies', help=arg_help)
+
     arg_help = 'Output directory, where the final image/movies and scene will be stored'
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)

@@ -69,10 +69,21 @@ EXECUTION='parallel'
 # Number of parallel cores
 NUMBER_PARALLEL_CORES='10'
 
+# Render 360 movies
+RENDER_MOVIES='no'
+
+# Render static frames
+RENDER_FRAMES='yes'
+
 #####################################################################################################
 BOOL_ARGS=''
 if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
+if [ "$SRENDER_MOVIES" == "yes" ];
+    then BOOL_ARGS+=' --render-movies '; fi
+if [ "$RENDER_FRAMES" == "yes" ];
+    then BOOL_ARGS+=' --render-frames '; fi
+
 ####################################################################################################
 echo 'CREATING SYNAPTOMES ...';
 $PWD/../../../../../python/bin/python3.7m create-synaptomes.py                                      \

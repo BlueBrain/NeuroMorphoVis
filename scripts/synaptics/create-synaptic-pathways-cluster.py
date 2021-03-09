@@ -157,7 +157,7 @@ def create_synaptic_pair_script(blender_executable,
 
     script_string = ''
     script_string += '#!/bin/bash \n'
-    script_string += '#SBATCH --job-name=\"%s\" \n' % '%s_%s' % (pre_gid, post_gid)
+    script_string += '#SBATCH --job-name=\"%s\" \n' % 'spw_%s_%s' % (pre_gid, post_gid)
     script_string += '#SBATCH --nodes=1 \n'
     script_string += '#SBATCH --cpus-per-task=1 \n'
     script_string += '#SBATCH --ntasks=1 \n'
@@ -219,7 +219,7 @@ def create_synaptic_pair_batch_script(blender_executable,
     :param logs_directory:
         The directory where the SLURM logs will be written.
     :return:
-        The path to the creaed script.
+        The path to the created script.
     """
 
     script_string = ''
@@ -278,8 +278,7 @@ if __name__ == "__main__":
 
     # Create the slurm directory
     slurm_directory = '%s/slurm' % args.output_directory
-    if not nmv.file.ops.path_exists(slurm_directory):
-        nmv.file.ops.clean_and_create_directory(slurm_directory)
+    nmv.file.ops.clean_and_create_directory(slurm_directory)
 
     # Jobs directory
     jobs_directory = '%s/jobs' % slurm_directory

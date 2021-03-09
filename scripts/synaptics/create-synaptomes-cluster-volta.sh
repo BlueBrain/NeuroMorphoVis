@@ -1,16 +1,17 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=10
+#SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
 #SBATCH --mem=128000
 #SBATCH --time=16:00:00
 #SBATCH --partition=prod
 #SBATCH --job-name="synaptome"
 #SBATCH --constraint=volta
-#SBATCH --startx
 #SBATCH --account=proj3
-#SBATCH --output=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stdout
-#SBATCH --error=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stderr
+#SBATCH --output=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stdout-vgl
+#SBATCH --error=/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-4-08.03.2020/stderr-vgl
+#sbatch --startx
+#sbatch --x11
 
 # Blender executable
 BLENDER=$PWD/../../../../../../blender
@@ -58,7 +59,7 @@ CLOSE_UP_RESOLUTION='1000'
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # Execution, serial or parallel
-EXECUTION='parallel'
+EXECUTION='serial'
 
 # Number of parallel cores
 NUMBER_PARALLEL_CORES='10'
@@ -69,13 +70,25 @@ if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
 #####################################################################################################
 
+
+nvidia-smi
 module load unstable
 module load virtualgl/2.5.2
 
+#DISPLAY=:5 glxspheres64
+
+
+#module load unstable
+#module load virtualgl/2.5.2
+
 ####################################################################################################
+#/usr/bin/X
+
+#xdpyinfo | grep version
+#DISPLAY=:5 glxgears
 
 echo 'CREATING SYNAPTOMES ...';
-vglrun $PWD/../../../../../python/bin/python3.7m create-synaptomes.py                               \
+DISPLAY=:5 $PWD/../../../../../python/bin/python3.7m create-synaptomes.py                 \
     --blender-executable=$BLENDER                                                                   \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gids-file=$GIDS_FILE                                                                          \

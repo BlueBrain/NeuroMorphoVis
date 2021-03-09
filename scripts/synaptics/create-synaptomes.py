@@ -75,11 +75,12 @@ def construct_generation_command(args,
     # A list of commands that will be executed either in serial or in parallel
     commands_list = list()
 
-    # Per astrocyte
+    # Per gid
     for gid in gids:
 
         # Make the command
-        shell_command = '%s' % args.blender_executable
+        display = os.getenv('VGL_DISPLAY')
+        shell_command = 'DISPLAY=:5 %s' % args.blender_executable
         shell_command += ' -b --verbose 0 --python create-synaptome.py --'
         shell_command += ' --circuit-config=%s' % args.circuit_config
         shell_command += ' --gid=%s' % gid
@@ -95,6 +96,10 @@ def construct_generation_command(args,
 
         if args.show_exc_inh:
             shell_command += ' --show-exc-inh'
+        if args.render_frames:
+            shell_command += ' --render-frames'
+        if args.render_movies:
+            shell_command += ' --render-movies'
 
         # Append to the commands list
         commands_list.append(shell_command)
@@ -138,6 +143,14 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Show the excitatory and inhibitory neurons'
     parser.add_argument('--show-exc-inh',
                         action='store_true', default=False, dest='show_exc_inh', help=arg_help)
+
+    arg_help = 'Render static frames'
+    parser.add_argument('--render-frames',
+                        action='store_true', default=False, dest='render_frames', help=arg_help)
+
+    arg_help = 'Render static frames'
+    parser.add_argument('--render-movies',
+                        action='store_true', default=False, dest='render_movies', help=arg_help)
 
     arg_help = 'Output directory, where the final image/movies and scene will be stored'
     parser.add_argument('--output-directory',
@@ -205,6 +218,13 @@ if __name__ == "__main__":
     if not os.path.exists(args.output_directory):
         os.makedirs(args.output_directory)
 
+    # Loading modules
+    shell_command = 'module load unstable'
+    subprocess.call(shell_command, shell=True)
+
+    shell_command = 'module load virtualgl/2.5.2'
+    subprocess.call(shell_command, shell=True)
+
     # Execute the commands
     if 'parallel' in args.execution:
         from joblib import Parallel, delayed
@@ -212,4 +232,5 @@ if __name__ == "__main__":
         Parallel(n_jobs=args.number_parallel_cores)(delayed(run_command)(i) for i in commands)
     else:
         for command in commands:
-            run_command(command)
+            print(command)
+            #run_command(command)

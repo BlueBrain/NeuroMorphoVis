@@ -86,34 +86,62 @@ if __name__ == "__main__":
     if not nmv.file.ops.path_exists(output_directory):
         nmv.file.ops.clean_and_create_directory(output_directory)
 
-    # Use the denoiser with cycles
-    if False:
-        bpy.context.scene.render.engine = 'CYCLES'
-        bpy.context.scene.cycles.samples = 16
-        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    if args.render_movies:
 
-    # Render a 360 of the full view
-    full_view_frames, full_view_frames_directory = rendering.render_synaptome_full_view_360(
-        output_directory=output_directory, resolution=args.full_view_resolution)
+        # Render a 360 of the full view
+        full_view_frames, full_view_frames_directory = rendering.render_synaptome_full_view_360(
+            output_directory=output_directory, resolution=args.full_view_resolution)
 
-    # Render a 360 of the soma close up
-    close_up_frames, close_up_frames_directory = rendering.render_synaptome_close_up_on_soma_360(
-        output_directory=output_directory, close_up_size=args.close_up_size,
-        resolution=args.close_up_resolution)
+        # Render a 360 of the soma close up
+        close_up_frames, close_up_frames_directory = rendering.render_synaptome_close_up_on_soma_360(
+            output_directory=output_directory, close_up_size=args.close_up_size,
+            resolution=args.close_up_resolution)
 
-    # Compose the 360 frames on the background
-    frames_directory, composed_frames = rendering.compose_360_frames(
-        full_view_frames=full_view_frames, close_up_frames=close_up_frames,
-        background_image_file=args.background_image, output_directory=output_directory,
-        bounding_box=synaptome_bounding_box)
+        # Compose the 360 frames on the background
+        frames_directory, composed_frames = rendering.compose_360_frames(
+            full_view_frames=full_view_frames, close_up_frames=close_up_frames,
+            background_image_file=args.background_image, output_directory=output_directory,
+            bounding_box=synaptome_bounding_box)
 
-    # Create a movie from the final frames
-    rendering.create_movie(frames_directory=frames_directory, movie_name=synaptome_mesh.name,
-                           output_directory=output_directory)
+        # Create a movie from the final frames
+        rendering.create_movie(frames_directory=frames_directory, movie_name=synaptome_mesh.name,
+                               output_directory=output_directory)
 
-    # Clear the initial frames that were used to create the composites
-    nmv.file.delete_directory(full_view_frames_directory)
-    nmv.file.delete_directory(close_up_frames_directory)
+        # Clear the initial frames that were used to create the composites
+        nmv.file.delete_directory(full_view_frames_directory)
+        nmv.file.delete_directory(close_up_frames_directory)
+
+    if args.render_frames:
+
+        # Create the images directory
+        images_directory = '%s/images' % output_directory
+        if not nmv.file.ops.path_exists(images_directory):
+            nmv.file.ops.clean_and_create_directory(images_directory)
+
+        # Create the compositing directory
+        composite_directory = '%s/composite' % output_directory
+        if not nmv.file.ops.path_exists(composite_directory):
+            nmv.file.ops.clean_and_create_directory(composite_directory)
+
+        # Render a a high quality frame of the full view
+        full_view_frame = rendering.render_synaptome_full_view_frame(
+            output_directory=images_directory, resolution=args.full_view_resolution,
+            image_name='%d_synaptome_full' % args.gid)
+
+        # Render a high resolution frame of the soma close up
+        close_up_frame = rendering.render_synaptome_close_up(
+            output_directory=images_directory, close_up_size=args.close_up_size,
+            resolution=args.close_up_resolution,
+            image_name='%d_synaptome_close_up' % args.gid)
+
+        # Compute the mesh bounding box
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+        # Composite the final image
+        composed_frames = rendering.compose_frame(
+            full_view_frame, close_up_frame, args.background_image,
+            output_directory=composite_directory, edge_gap=100,
+            bounding_box=synaptome_bounding_box)
 
     # Export the scene into a blender file for reference
     if False:

@@ -36,6 +36,7 @@ import nmv.file
 import nmv.utilities
 import math
 
+
 ####################################################################################################
 # @render_synaptic_path_way_full_view
 ####################################################################################################
@@ -205,6 +206,46 @@ def render_synaptome_full_view_360(output_directory,
 
 
 ####################################################################################################
+# @render_synaptome_full_view_frame
+####################################################################################################
+def render_synaptome_full_view_frame(output_directory,
+                                     image_name,
+                                     resolution):
+    """Renders a 360 of the synaptome full view.
+
+    :param output_directory:
+        The output directory where the frames and final movie will be generated.
+    :param image_name:
+        The name of the rendered image.
+    :param resolution:
+        The base resolution of the video frames.
+    :return
+        A list of all the raw frames that were rendered for the synaptomes.
+    """
+
+    # Use the denoiser with cycles
+    bpy.context.scene.render.engine = 'CYCLES'
+    bpy.context.scene.cycles.samples = 64
+    bpy.context.scene.view_layers[0].cycles.use_denoising = True
+
+    # Get the bounding box
+    bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+
+    # Render the image
+    view = nmv.enums.Camera.View.FRONT
+    image_name_with_view = image_name + '_%s' % view
+    nmv.rendering.render(
+        camera_view=view,
+        bounding_box=bounding_box,
+        image_resolution=resolution,
+        image_name=image_name_with_view,
+        image_directory=output_directory)
+
+    # Return the image name for compositing
+    return '%s/%s.png' % (output_directory, image_name_with_view)
+
+
+####################################################################################################
 # @render_synaptome_close_up_on_soma_360
 ####################################################################################################
 def render_synaptome_close_up_on_soma_360(output_directory,
@@ -283,6 +324,72 @@ def render_synaptome_close_up_on_soma_360(output_directory,
 
     # Return the list of frames
     return frames, frames_directory
+
+
+####################################################################################################
+# @render_synaptome_close_up
+####################################################################################################
+def render_synaptome_close_up(output_directory,
+                              image_name,
+                              close_up_size,
+                              resolution=2000):
+    """Render a close-up of the synaptic pathways.
+
+    :param close_up_size:
+        The size of the close-up image.
+    :param resolution:
+        The resolution of the close-up image.
+    :param image_name:
+        The name of the rendered image.
+    :return:
+        The full path of the rendered image.
+    """
+
+    # Use the denoiser with cycles
+    bpy.context.scene.render.engine = 'CYCLES'
+    bpy.context.scene.cycles.samples = 64
+    bpy.context.scene.view_layers[0].cycles.use_denoising = True
+
+    # Adjust the resolution
+    bpy.context.scene.render.resolution_x = int(0.5 * resolution)
+    bpy.context.scene.render.resolution_y = resolution
+
+    # Create the camera
+    camera_object = nmv.rendering.Camera('CloseupCamera')
+    camera = camera_object.create_base_camera()
+
+    # Set the camera to orthographic
+    camera.data.type = 'ORTHO'
+
+    # Activate the camera
+    bpy.context.scene.camera = bpy.data.objects["CloseupCamera"]
+
+    # Focus the view on the close-up mesh
+    bpy.ops.view3d.camera_to_view_selected()
+
+    # Avoid chopping
+    camera.location[2] = 500
+
+    # Adjust the ortho scale to get a bigger FOV
+    camera.data.ortho_scale = 4 * close_up_size
+
+    # Adjust the clipping plane
+    camera.data.clip_end = 100000
+
+    # Set the image file name
+    bpy.data.scenes['Scene'].render.filepath = '%s/%s.png' % (output_directory, image_name)
+
+    # Transparent
+    nmv.scene.set_transparent_background()
+
+    # Render the image
+    bpy.ops.render.render(write_still=True)
+
+    # Turn off the denoiser for the huge images to avoid crappy rendering times
+    bpy.context.scene.view_layers[0].cycles.use_denoising = False
+
+    # Return the image name for the compositing
+    return '%s/%s.png' % (output_directory, image_name)
 
 
 ####################################################################################################

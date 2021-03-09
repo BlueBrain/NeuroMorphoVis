@@ -57,13 +57,24 @@ CLOSE_UP_RESOLUTION='512'
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
+# Render 360 movies
+RENDER_MOVIES='no'
+
+# Render static frames
+RENDER_FRAMES='yes'
+
 #####################################################################################################
 BOOL_ARGS=''
 if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
+if [ "$SRENDER_MOVIES" == "yes" ];
+    then BOOL_ARGS+=' --render-movies '; fi
+if [ "$RENDER_FRAMES" == "yes" ];
+    then BOOL_ARGS+=' --render-frames '; fi
+
 ####################################################################################################
 echo 'CREATING SYNAPTOME ...'
-$BLENDER -b --verbose 0 --python create-synaptome.py --                                             \
+DISPLAY=:0 $BLENDER -b --verbose 0 --python create-synaptome.py --                                  \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
