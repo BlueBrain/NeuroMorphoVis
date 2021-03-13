@@ -116,7 +116,7 @@ def render_synaptic_pathway_close_up(close_up_mesh,
     camera.location[2] = 0
 
     # Adjust the ortho scale to get a bigger FOV
-    camera.data.ortho_scale = camera.data.ortho_scale * 4
+    camera.data.ortho_scale = camera.data.ortho_scale * 2
 
     # Adjust the clipping plane
     camera.data.clip_end = 100000
@@ -142,7 +142,8 @@ def render_synaptic_pathway_close_up(close_up_mesh,
 ####################################################################################################
 def render_synaptome_full_view_360(output_directory,
                                    resolution,
-                                   frames_per_angle=1):
+                                   frames_per_angle=1,
+                                   use_cycles=True):
     """Renders a 360 of the synaptome full view.
 
     :param output_directory:
@@ -151,18 +152,21 @@ def render_synaptome_full_view_360(output_directory,
         The base resolution of the video frames.
     :param frames_per_angle:
         The number of frames per step in the 360.
+    :param use_cycles:
+        Use cycles renderer.
     :return
         A list of all the raw frames that were rendered for the synaptomes.
     """
 
-    bpy.context.scene.display.shading.light = 'STUDIO'
-    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
-
-    # Switch the rendering engine to cycles to be able to create the material
-    # bpy.context.scene.render.engine = 'CYCLES'
-
-    # Use 64 samples per pixel to create a nice image.
-    # bpy.context.scene.cycles.samples = 4
+    # Adjust shading
+    if use_cycles:
+        # Switch the rendering engine to cycles to be able to create the material
+        bpy.context.scene.render.engine = 'CYCLES'
+        bpy.context.scene.cycles.samples = 64
+        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    else:
+        bpy.context.scene.display.shading.light = 'STUDIO'
+        bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
 
     # The directory where the original frames will be rendered
     frames_directory = output_directory + '/1_full_view_360'
@@ -251,7 +255,8 @@ def render_synaptome_full_view_frame(output_directory,
 def render_synaptome_close_up_on_soma_360(output_directory,
                                           close_up_size,
                                           resolution=2000,
-                                          frames_per_angle=1):
+                                          frames_per_angle=1,
+                                          use_cycles=True):
     """Render a close up on the synaptome around the soma.
 
     :param output_directory:
@@ -262,13 +267,21 @@ def render_synaptome_close_up_on_soma_360(output_directory,
         The resolution of the close-up image.
     :param frames_per_angle:
         The number of frames per step in the 360.
+    :param use_cycles:
+        Use cycles renderer.
     :return:
         A list of all the rendered frames.
     """
 
     # Adjust shading
-    bpy.context.scene.display.shading.light = 'STUDIO'
-    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
+    if use_cycles:
+        # Switch the rendering engine to cycles to be able to create the material
+        bpy.context.scene.render.engine = 'CYCLES'
+        bpy.context.scene.cycles.samples = 64
+        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    else:
+        bpy.context.scene.display.shading.light = 'STUDIO'
+        bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
 
     # The directory where the original frames will be rendered
     frames_directory = output_directory + '/2_close_up_360'
@@ -531,6 +544,104 @@ def compose_frame(full_view_file,
     background_image.close()
     full_view_image.close()
     close_up_image.close()
+
+    # Return a reference to the final composed image
+    return final_image_path
+
+
+####################################################################################################
+# @compose_full_view_frame
+####################################################################################################
+def compose_full_view_frame(full_view_file,
+                            background_image_file,
+                            output_directory,
+                            edge_gap=100,
+                            bounding_box=None):
+    """Composite the final frame with the full view image on the final background.
+
+    :param full_view_file:
+        The path to the full view file.
+    :param background_image_file:
+        The path to the background image
+    :param output_directory:
+        The output directory of the project.
+    :param edge_gap:
+        The edge gap for the sides of the frame.
+    :param bounding_box:
+        The bounding box of the scene we need to compute the scale bars.
+    """
+
+    # Open the background image
+    background_image = Image.open(background_image_file)
+
+    # Open the full view image
+    full_view_image = Image.open(full_view_file)
+
+    # Get the size of the background image
+    background_width, background_height = background_image.size
+
+    # The drawing areas, where the final images are drawn should consider the edge gap
+    full_view_drawing_width = int(background_width - (edge_gap * 2))
+    full_view_drawing_height = int(background_height - (edge_gap * 2))
+
+    # Scale the full view image to fit within the drawing area
+    full_view_image_width, full_view_image_height = full_view_image.size
+    full_view_aspect_ratio = (1.0 * full_view_image_width) / (1.0 * full_view_image_height)
+    if full_view_aspect_ratio > 1.0:
+        scale = (1.0 * full_view_drawing_width) / (1.0 * full_view_image_width)
+        resized_image_width = full_view_drawing_width
+        resized_image_height = int(full_view_image_height / scale)
+
+        # In case the height is greater than the width
+        if resized_image_height > full_view_drawing_height:
+            height_scale = (1.0 * resized_image_height) / (1.0 * full_view_drawing_height)
+            resized_image_height = full_view_drawing_height
+            resized_image_width = int((resized_image_width * 1.0)/ height_scale)
+    else:
+        scale = (1.0 * full_view_image_height) / (1.0 * full_view_drawing_height)
+        resized_image_height = full_view_drawing_height
+        resized_image_width = int(full_view_image_width / scale)
+
+    # The final full-view image is ready to be pasted to the background frame
+    full_view_resized_image = full_view_image.resize((
+            resized_image_width, resized_image_height), Image.BICUBIC)
+
+    # Calculate the starting x and y pixels where the pasting will happen
+    full_view_delta_x = int((full_view_drawing_width - full_view_resized_image.size[0]) * 0.5)
+    full_view_delta_y = int((full_view_drawing_height - full_view_resized_image.size[1]) * 0.5)
+    full_view_starting_x = edge_gap + full_view_delta_x
+    full_view_starting_y = edge_gap + full_view_delta_y
+
+    # Paste the full view image to the background image
+    background_image.paste(full_view_resized_image, (full_view_starting_x, full_view_starting_y),
+                           full_view_resized_image)
+
+    # Compute the scale bar
+    if bounding_box is not None:
+        full_view_image_width = full_view_resized_image.size[1]
+        synaptome_width = bounding_box.bounds[0]
+        width_per_pixel = (1.0 * full_view_image_width) / (1.0 * synaptome_width)
+
+        # The scale bar width is 55 for 2 digits and 56 for 3 digits at font size of 20
+        scale_bar_width = 65
+        graphic = ImageDraw.Draw(background_image)
+        graphic.line((edge_gap, edge_gap + full_view_drawing_height,
+                      edge_gap + scale_bar_width, edge_gap + full_view_drawing_height),
+                     fill=(255, 255, 255, 255))
+
+        scale_bar_value = int(width_per_pixel * scale_bar_width)
+        scale_bar_value = math.ceil(scale_bar_value / 50.0) * 50
+        font = ImageFont.truetype('%s/font.ttf' % os.path.dirname(os.path.realpath(__file__)), 20)
+        graphic.text((edge_gap, edge_gap + full_view_drawing_height + 5),
+                     "%d µm" % scale_bar_value, font=font, fill=(255, 255, 255, 128))
+
+    # Save the background image with the new data
+    final_image_path = '%s/full_view_%s' % (output_directory, ntpath.basename(full_view_file))
+    background_image.save(final_image_path)
+
+    # Close all the images
+    background_image.close()
+    full_view_image.close()
 
     # Return a reference to the final composed image
     return final_image_path

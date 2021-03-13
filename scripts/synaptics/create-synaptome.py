@@ -143,6 +143,9 @@ if __name__ == "__main__":
             output_directory=composite_directory, edge_gap=100,
             bounding_box=synaptome_bounding_box)
 
+        # Just delete the images directory to save some space
+        nmv.file.delete_directory(images_directory)
+
     # Export the scene into a blender file for reference
     if False:
         nmv.file.export_scene_to_blend_file(output_directory=output_directory,

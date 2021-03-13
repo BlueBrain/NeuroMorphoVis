@@ -439,6 +439,7 @@ class SkinningBuilder:
 
                     # Add a reference to the mesh object
                     self.morphology.apical_dendrites[i].mesh = arbor_mesh
+                    self.neuron_meshes.append(arbor_mesh)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -456,6 +457,7 @@ class SkinningBuilder:
 
                     # Add a reference to the mesh object
                     self.morphology.basal_dendrites[i].mesh = arbor_mesh
+                    self.neuron_meshes.append(arbor_mesh)
 
         # Axons
         if not self.options.morphology.ignore_axons:
@@ -473,6 +475,7 @@ class SkinningBuilder:
 
                     # Add a reference to the mesh object
                     self.morphology.axons[i].mesh = arbor_mesh
+                    self.neuron_meshes.append(arbor_mesh)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -563,7 +566,7 @@ class SkinningBuilder:
         self.profiling_statistics += stats
 
         # Join all the objects into a single object
-        result, stats = nmv.utilities.profile_function(
+        neuron_mesh, stats = nmv.utilities.profile_function(
             nmv.builders.join_mesh_object_into_single_object, self)
         self.profiling_statistics += stats
 
@@ -582,3 +585,6 @@ class SkinningBuilder:
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='skinning')
+
+        # Return a reference to the neuron mesh if joint
+        return neuron_mesh

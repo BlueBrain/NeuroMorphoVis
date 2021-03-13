@@ -120,6 +120,9 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--background-image',
                         action='store', dest='background_image', help=arg_help)
 
+    arg_help = 'User name for slurm'
+    parser.add_argument('--user-name', action='store', dest='user_name', help=arg_help)
+
     # Parse the arguments
     return parser.parse_args()
 
@@ -161,11 +164,11 @@ def create_command_per_gid(blender_executable,
     command += ' --background-image=%s ' % arguments.background_image
 
     if args.show_exc_inh:
-        command += ' --show-exc-inh'
+        command += ' --show-exc-inh '
     if args.render_frames:
-        command += ' --render-frames'
+        command += ' --render-frames '
     if args.render_movies:
-        command += ' --render-movies'
+        command += ' --render-movies '
 
     command += '\n'
 
@@ -184,12 +187,12 @@ def create_synaptome_script(blender_executable,
 
     script_string = ''
     script_string += '#!/bin/bash \n'
-    script_string += '#SBATCH --job-name=\"%s\" \n' % 'synaptome_%s' % synaptome_gid
+    script_string += '#SBATCH --job-name=\"synaptome_%s\" \n' % synaptome_gid
     script_string += '#SBATCH --nodes=1 \n'
     script_string += '#SBATCH --cpus-per-task=8 \n'
     script_string += '#SBATCH --ntasks=1 \n'
     script_string += '#SBATCH --mem=32000 \n'
-    script_string += '#SBATCH --time=1:00:00 \n'
+    script_string += '#SBATCH --time=8:00:00 \n'
     script_string += '#SBATCH --partition=prod \n'
     script_string += '#SBATCH --account=proj3 \n'
     script_string += '#SBATCH --output=%s/slurm-stdout_%s.log \n' % (logs_directory, synaptome_gid)
@@ -252,7 +255,7 @@ def create_synaptome_batch_script(blender_executable,
     script_string += '#SBATCH --cpus-per-task=8 \n'
     script_string += '#SBATCH --ntasks=1 \n'
     script_string += '#SBATCH --mem=32000 \n'
-    script_string += '#SBATCH --time=1:00:00 \n'
+    script_string += '#SBATCH --time=8:00:00 \n'
     script_string += '#SBATCH --partition=prod \n'
     script_string += '#SBATCH --account=proj3 \n'
     script_string += '#SBATCH --output=%s/slurm-stdout_%d.log \n' % (logs_directory, script_id)
@@ -360,6 +363,7 @@ if __name__ == "__main__":
 
     # If the lists are not clear, simply submit the remaining jobs
     if len(collected_gids_list) > 0:
+
         # New batch ID
         batch_id += 1
 
@@ -374,4 +378,4 @@ if __name__ == "__main__":
         jobs.append(job)
 
     # Submit the slurm jobs
-    slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
+    slurm.submit_batch_jobs(user_name=args.user_name, slurm_jobs_directory=jobs_directory)

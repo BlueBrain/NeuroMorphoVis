@@ -27,7 +27,16 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig.pre-fixL3'
 
 # Neuron GID
-GID_LIST='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/iteration_2/cvs-files/gids/S1DZ.gids'
+# Synaptic file
+REGION='S1DZO'
+#REGION='S1DZ'
+#REGION='S1FL_Column'
+#REGION='S1HL_Column'
+#REGION='S1J_Column'
+#REGION='S1Sh'
+#REGION='S1Tr'
+#REGION='S1ULp'
+GID_LIST='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/iteration_2/cvs-files/gids/'$REGION'.gids'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/hdd1/projects-data/11.25.2020-synaptomes-with-spines'
@@ -35,13 +44,17 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/mtypes'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/excitatory_inhibitory'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-2-26.02.2021'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-5-09.03.2020'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-7-09.03.2020'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-9-10.03.2021/'$REGION
 
 # Color-map file
 COLOR_MAP_FILE=$PWD'/data/ColorMap'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
+
+# Show excitatory and inhibitory synapses, yes or no
+SHOW_EXC_INH='no'
 
 # Neuron color
 NEURON_COLOR='255_255_255'
@@ -50,7 +63,7 @@ NEURON_COLOR='255_255_255'
 SYNAPSE_PERCENTAGE='50'
 
 # Synapse size
-SYNAPSE_SIZE='4.0'
+SYNAPSE_SIZE='2.0'
 
 # Close-up view size
 CLOSE_UP_SIZE='30'
@@ -59,22 +72,25 @@ CLOSE_UP_SIZE='30'
 FULL_VIEW_RESOLUTION='2000'
 
 # Base close-up resolution
-CLOSE_UP_RESOLUTION='3000'
+CLOSE_UP_RESOLUTION='2000'
 
 # Render 360 movies
-RENDER_MOVIES='no'
+RENDER_MOVIES='yes'
 
 # Render static frames
-RENDER_FRAMES='yes'
+RENDER_FRAMES='no'
 
 # Number of jobs per core
 NUMBER_OF_JOBS_PER_CORE=25
+
+# User name, must be given to query slurm
+USER_NAME='abdellah'
 
 #####################################################################################################
 BOOL_ARGS=''
 if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
-if [ "$SRENDER_MOVIES" == "yes" ];
+if [ "$RENDER_MOVIES" == "yes" ];
     then BOOL_ARGS+=' --render-movies '; fi
 if [ "$RENDER_FRAMES" == "yes" ];
     then BOOL_ARGS+=' --render-frames '; fi
@@ -94,4 +110,5 @@ $BLENDER -b --verbose 0 --python create-synaptomes-cluster.py --                
     --close-up-size=$CLOSE_UP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     --number-jobs-per-core=$NUMBER_OF_JOBS_PER_CORE                                                 \
+    --user-name=$USER_NAME                                                                          \
     $BOOL_ARGS

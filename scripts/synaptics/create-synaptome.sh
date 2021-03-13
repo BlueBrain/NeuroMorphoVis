@@ -67,7 +67,7 @@ RENDER_FRAMES='yes'
 BOOL_ARGS=''
 if [ "$SHOW_EXC_INH" == "yes" ];
     then BOOL_ARGS+=' --show-exc-inh '; fi
-if [ "$SRENDER_MOVIES" == "yes" ];
+if [ "$RENDER_MOVIES" == "yes" ];
     then BOOL_ARGS+=' --render-movies '; fi
 if [ "$RENDER_FRAMES" == "yes" ];
     then BOOL_ARGS+=' --render-frames '; fi

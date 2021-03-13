@@ -106,10 +106,18 @@ if __name__ == "__main__":
     synaptic_pair_bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
     # Composite the final image
+    full_view_composed_frames = rendering.compose_full_view_frame(
+        full_view_image, args.background_image,
+        output_directory=composite_directory, edge_gap=100,
+        bounding_box=synaptic_pair_bounding_box)
+
+    '''
+    # Composite the final image
     composed_frames = rendering.compose_frame(
         full_view_image, close_up_image, args.background_image,
         output_directory=composite_directory, edge_gap=100,
         bounding_box=synaptic_pair_bounding_box)
+    '''
 
     # Delete the meshes and scenes directories
     nmv.file.delete_directory(meshes_directory)

@@ -334,7 +334,7 @@ def create_neuron_mesh(circuit,
         BBP circuit.
     :param gid:
         Neuron GID.
-    :param neuron_color:
+    :param neuron_material:
         The color of the neuron in a RGB Vector((R, G, B)) format
     :return:
     """
@@ -362,6 +362,9 @@ def create_neuron_mesh(circuit,
 
     # Create the neuron mesh
     neuron_mesh = meta_builder.reconstruct_mesh()
+
+    # Smooth the mesh to make it look nice
+    nmv.mesh.smooth_object(mesh_object=neuron_mesh, level=1)
 
     # Add the material top the reconstructed mesh
     nmv.shading.set_material_to_object(mesh_object=neuron_mesh, material_reference=neuron_material)

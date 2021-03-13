@@ -100,6 +100,9 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--background-image',
                         action='store', dest='background_image', help=arg_help)
 
+    arg_help = 'User name for slurm'
+    parser.add_argument('--user-name', action='store', dest='user_name', help=arg_help)
+
     # Parse the arguments
     return parser.parse_args()
 
@@ -159,10 +162,10 @@ def create_synaptic_pair_script(blender_executable,
     script_string += '#!/bin/bash \n'
     script_string += '#SBATCH --job-name=\"%s\" \n' % 'spw_%s_%s' % (pre_gid, post_gid)
     script_string += '#SBATCH --nodes=1 \n'
-    script_string += '#SBATCH --cpus-per-task=1 \n'
+    script_string += '#SBATCH --cpus-per-task=8 \n'
     script_string += '#SBATCH --ntasks=1 \n'
-    script_string += '#SBATCH --mem=6000 \n'
-    script_string += '#SBATCH --time=1:00:00 \n'
+    script_string += '#SBATCH --mem=32000 \n'
+    script_string += '#SBATCH --time=8:00:00 \n'
     script_string += '#SBATCH --partition=prod \n'
     script_string += '#SBATCH --account=proj3 \n'
     script_string += '#SBATCH --output=%s/slurm-stdout_%s_%s.log \n' % (logs_directory,
@@ -226,10 +229,10 @@ def create_synaptic_pair_batch_script(blender_executable,
     script_string += '#!/bin/bash \n'
     script_string += '#SBATCH --job-name=\"%s\" \n' % '%d' % script_id
     script_string += '#SBATCH --nodes=1 \n'
-    script_string += '#SBATCH --cpus-per-task=1 \n'
+    script_string += '#SBATCH --cpus-per-task=8 \n'
     script_string += '#SBATCH --ntasks=1 \n'
-    script_string += '#SBATCH --mem=6000 \n'
-    script_string += '#SBATCH --time=1:00:00 \n'
+    script_string += '#SBATCH --mem=32000 \n'
+    script_string += '#SBATCH --time=8:00:00 \n'
     script_string += '#SBATCH --partition=prod \n'
     script_string += '#SBATCH --account=proj3 \n'
     script_string += '#SBATCH --output=%s/slurm-stdout_%d.log \n' % (logs_directory, script_id)
@@ -345,6 +348,7 @@ if __name__ == "__main__":
 
     # If the lists are not clear, simply submit the remaining jobs
     if len(pre_batch_list) > 0:
+
         # New batch ID
         batch_id += 1
 
@@ -360,4 +364,4 @@ if __name__ == "__main__":
         jobs.append(job)
 
     # Submit the slurm jobs
-    slurm.submit_batch_jobs(user_name='abdellah', slurm_jobs_directory=jobs_directory)
+    slurm.submit_batch_jobs(user_name=args.user_name, slurm_jobs_directory=jobs_directory)

@@ -37,11 +37,12 @@ REGION='S1J_Column_pairs'
 REGION='S1Sh_pairs'
 REGION='S1Tr_pairs'
 REGION='S1ULp_pairs'
+# REGION='SAMPLES_pairs'
 
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/iteration_2/gid-files/'$REGION
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-10-05.03.2021/'$REGION
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-11-12.03.2021/'$REGION
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
@@ -58,7 +59,10 @@ IMAGE_RESOLUTION='4000'
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # Number of jobs per core
-NUMBER_OF_JOBS_PER_CORE=10
+NUMBER_OF_JOBS_PER_CORE=25
+
+# User name, must be given to query slurm
+USER_NAME='abdellah'
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python create-synaptic-pathways-cluster.py --                             \
@@ -73,5 +77,7 @@ $BLENDER -b --verbose 0 --python create-synaptic-pathways-cluster.py --         
     --synapse-size=$SYNAPSE_SIZE                                                                    \
     --background-image=$BACKGROUND_IMAGE                                                            \
     --number-jobs-per-core=$NUMBER_OF_JOBS_PER_CORE                                                 \
+    --user-name=$USER_NAME                                                                          \
+
     $BOOL_ARGS
 
