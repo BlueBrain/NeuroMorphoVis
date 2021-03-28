@@ -19,3 +19,4 @@
 from .spine_builder import *
 from .random_spine_builder import *
 from .circuit_spine_builder import *
+from .meta_random_spine_builder import *

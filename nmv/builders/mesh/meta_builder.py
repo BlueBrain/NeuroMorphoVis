@@ -505,6 +505,22 @@ class MetaBuilder:
         return valid_arbors
 
     ################################################################################################
+    # @build_spines_from_morphologies
+    ################################################################################################
+    def build_spines_from_morphologies(self):
+        """Builds integrated spines into the neuron meta-object that will be meshed and will be
+        part of the neuron mesh.
+        """
+
+        # For the randomly generated spines, we will implement that on a per-segment basis.
+        # We will construct a segment with a tube, then we will get a face and then get its normal,
+        # and finally we will emanate the spine from this face.
+
+
+
+        return
+
+    ################################################################################################
     # @finalize_meta_object
     ################################################################################################
     def finalize_meta_object(self):

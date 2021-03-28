@@ -17,6 +17,7 @@
 
 # System import
 import copy
+import random
 
 # Blender imports
 from mathutils import Vector, Matrix, bvhtree
@@ -28,6 +29,7 @@ import nmv.consts
 import nmv.enums
 import nmv.scene
 import nmv.geometry
+import nmv.mesh
 
 import bpy
 import bmesh
@@ -791,3 +793,124 @@ def poly_line_intersect_mesh(poly_line,
 
     # Otherwise, the two poly-lines do intersect
     return True
+
+
+####################################################################################################
+# @get_random_spines_locations_and_normals_across_segments
+####################################################################################################
+def get_random_spines_locations_and_normals_across_segments(section,
+                                                            number_of_spines,
+                                                            result=[]):
+    """
+
+    :param section:
+    :param number_of_spines:
+    :return:
+    """
+
+    # A list of all the spines locations and normals
+    spines_locations_and_normals = list()
+
+    # Segment by segment
+    for i in range(len(section.samples) - 1):
+
+        # Construct a line tube geometry from these two samples
+        # NOTE: Make sure that you set the fill_caps to False to avoid having normal faces
+        segment_tube = nmv.geometry.draw_cone_line(
+            point1=section.samples[i].point, point2=section.samples[i + 1].point,
+            point1_radius=section.samples[i].radius, point2_radius=section.samples[i + 1].radius,
+            fill_caps=False)
+
+        # Convert the segment tube to a mesh object
+        segment_mesh = nmv.scene.ops.convert_object_to_mesh(segment_tube)
+
+        # Get all the faces along the segment mesh
+        segment_mesh_faces = list(segment_mesh.data.polygons)
+
+        # Randomly selected faces
+        randomly_selected_faces = random.sample(segment_mesh_faces, number_of_spines)
+
+        for face in randomly_selected_faces:
+            face_center = face.center
+            face_normal = face.normal
+            spines_locations_and_normals.append([copy.deepcopy(face_center), copy.deepcopy(face_normal)])
+
+        # Delete the segment mesh
+        nmv.scene.delete_object_in_scene(segment_mesh)
+
+    # Extend the results with the the constructed list
+    result.extend(spines_locations_and_normals)
+
+
+def find_section_radius_near_point(section,
+                                   point):
+
+    nearest_sample_distance = 1e10
+    radius = 0
+
+    for i_sample in section.samples:
+
+        distance = (i_sample.point - point).length
+        if distance < nearest_sample_distance:
+            nearest_sample_distance = distance
+            radius = i_sample.radius
+
+    return radius
+
+
+####################################################################################################
+# @get_random_spines_locations_and_normals_across_segments
+####################################################################################################
+def get_random_spines_locations_and_normals_across_section(section,
+                                                           number_of_spines_per_micron,
+                                                           result=[]):
+
+    # Compute the section length
+    section_length = nmv.skeleton.ops.compute_section_length(section=section)
+
+    # Compute the number spines required to satisfy the distribution
+    number_spines = int(section_length / number_of_spines_per_micron)
+
+    # Ensure that the number of spines > 1
+    if number_spines < 1:
+        number_spines = 1
+
+    # Reconstruct the polyline from the section points
+    section_polyline_data = get_section_poly_line(section=section)
+
+    # Construct the poly-line
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+    section_polyline = nmv.geometry.draw_poly_line(
+        poly_line_data=section_polyline_data, bevel_object=bevel_object, caps=False)
+
+    # Convert the section polyline into a mesh
+    section_mesh = nmv.scene.ops.convert_object_to_mesh(section_polyline)
+
+    # Get all the faces along the section mesh
+    segment_mesh_faces = list(section_mesh.data.polygons)
+
+    # Randomly selected faces
+    randomly_selected_faces = random.sample(segment_mesh_faces, number_spines)
+
+    # Get the radii
+    for face in randomly_selected_faces:
+
+        # Construct a RandomSpine object
+        spine = nmv.skeleton.RandomSpine()
+
+        # Copy the normal
+        spine.normal = copy.deepcopy(face.normal)
+
+        # Copy the segment radius
+        spine.segment_radius = find_section_radius_near_point(section=section,
+                                                              point=spine.location)
+
+        # Compute the location, from the center-line of the morphology instead of face center
+        spine.location = copy.deepcopy(face.center - (0.5 * spine.segment_radius * face.normal))
+
+        # Add the result to the collecting list
+        result.append(spine)
+
+    # Delete the segment mesh and the bevel object
+    nmv.scene.delete_list_objects([section_mesh, bevel_object])
+
