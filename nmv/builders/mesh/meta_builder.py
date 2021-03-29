@@ -18,7 +18,7 @@
 # System imports
 import copy
 
-# Blender importsget_n_nearest_vertices_to_point
+# Blender imports
 import bpy, mathutils
 from mathutils import Vector, Matrix
 

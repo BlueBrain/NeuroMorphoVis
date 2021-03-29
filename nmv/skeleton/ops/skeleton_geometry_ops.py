@@ -121,7 +121,17 @@ def compute_arbor_bounding_box(arbor):
     return bounding_box_object
 
 
+####################################################################################################
+# @compute_sections_list_bounding_box
+####################################################################################################
 def compute_sections_list_bounding_box(sections_list):
+    """Computes the bounding box of a list of sections.
+
+    :param sections_list:
+        A group of sections in a list to compute the bounding box for.
+    :return:
+        THe resulting bounding box.
+    """
 
     sections_bounding_boxes = list()
 
@@ -135,7 +145,6 @@ def compute_sections_list_bounding_box(sections_list):
             nmv.skeleton.ops.compute_section_bounding_box(section, p_min, p_max))
 
     return sections_bounding_boxes
-
 
 
 ####################################################################################################
@@ -667,6 +676,53 @@ def simplify_morphology(section):
 ####################################################################################################
 def center_morphology(section,
                       soma_centroid):
+    """Center a given section in the morphology.
+
+    :param section:
+        A given section to center.
+    :param soma_centroid:
+        The center of the soma.
+    """
 
     for sample in section.samples:
         sample.point -= soma_centroid
+
+
+####################################################################################################
+# @find_section_radius_near_point
+####################################################################################################
+def find_section_radius_near_point(section,
+                                   point):
+    """Finds the radius of the closest sample along the section to a given point in space.
+
+    :param section:
+        A given section.
+    :param point:
+        A point in space to perform the search.
+    :return:
+        The radius of the closest sample along the section to the given point in space.
+    """
+
+    # Initial, set to large number
+    nearest_sample_distance = 1e10
+
+    # Radius to be found
+    radius = 0
+
+    # For each sample along the section
+    for i_sample in section.samples:
+
+        # Compute the distance
+        distance = (i_sample.point - point).length
+
+        # Compare
+        if distance < nearest_sample_distance:
+
+            # Update the distance
+            nearest_sample_distance = distance
+
+            # Update the radius
+            radius = i_sample.radius
+
+    # Return the final radius
+    return radius
