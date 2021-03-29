@@ -707,7 +707,7 @@ def find_section_radius_near_point(section,
     nearest_sample_distance = 1e10
 
     # Radius to be found
-    radius = 0
+    radius = 0.0
 
     # For each sample along the section
     for i_sample in section.samples:
@@ -722,7 +722,7 @@ def find_section_radius_near_point(section,
             nearest_sample_distance = distance
 
             # Update the radius
-            radius = i_sample.radius
+            radius = float(i_sample.radius)
 
     # Return the final radius
     return radius

@@ -42,29 +42,66 @@ def load_spine_morphology_from_data_file(spines_directory,
     """
 
     # Spine section samples, as a list of samples
-    spine_samples = list()
+    all_spine_samples = list()
+
+    # Number of sections in the morphology
+    number_sections = 0
 
     # read spine
     file_handle = open('%s/%s' % (spines_directory, spine_file), 'r')
     for i, line in enumerate(file_handle):
 
+        # Ignore lines with comments that have '#'
+        # TODO: Possibly a bug
+        if '#' in line:
+            continue
+
+        # Ignore empty lines
+        if not line.strip():
+            continue
+
         # Extract the position and radius data
         data = line.split(' ')
-        x = float(data[0])
-        y = float(data[1])
-        z = float(data[2])
-        r = float(data[3]) * 0.5
+        section_index = int(data[0])
+        x = float(data[1])
+        y = float(data[2])
+        z = float(data[3])
+        r = float(data[4]) * 0.5
 
         # Construct the spine sample from the extracted data
-        spine_sample = nmv.skeleton.Sample(Vector((x, y, z)), radius=r, index=i)
+        spine_sample = [section_index, x, y, z, r, i]
 
-        spine_samples.append(spine_sample)
+        # Append the sample to the samples
+        all_spine_samples.append(spine_sample)
+
+        # Update the number of sections in the morphology
+        number_sections = section_index + 1
 
     # Close the file
     file_handle.close()
 
+    # Construct the sections list to build the morphology skeleton
+    sections_list = list()
+    for i in range(number_sections):
+        sections_list.append(nmv.skeleton.SpineSection(samples=list()))
+
+    # Process each sample in the list
+    for sample in all_spine_samples:
+
+        # Make it clear
+        section_index = sample[0]
+        x = sample[1]
+        y = sample[2]
+        z = sample[3]
+        r = sample[4]
+        sample_index = sample[5]
+
+        # Update the sections with the corresponding samples
+        sections_list[section_index].samples.append(
+            nmv.skeleton.Sample(point=Vector((x, y, z)), radius=r, index=sample_index))
+
     # Construct spine morphology
-    spine_morphology = nmv.skeleton.SpineMorphology(sections=[nmv.skeleton.SpineSection(samples=spine_samples)])
+    spine_morphology = nmv.skeleton.SpineMorphology(sections=sections_list)
 
     # Return a reference to the spine morphology
     return spine_morphology
@@ -83,7 +120,7 @@ def load_spine_morphologies_from_data_files(spines_directory):
     """
 
     # List all the data files in the directory
-    spines_files = nmv.file.ops.get_files_in_directory(spines_directory, file_extension='.data')
+    spines_files = nmv.file.ops.get_files_in_directory(spines_directory, file_extension='.spine')
 
     # Load the spines, one by one into a list
     spines_morphologies = list()

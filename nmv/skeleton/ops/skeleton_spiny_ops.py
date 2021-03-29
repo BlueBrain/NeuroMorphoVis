@@ -89,6 +89,7 @@ def get_random_spines_across_segments(section,
 def get_random_spines_across_section(section,
                                      template_spine_structures,
                                      number_of_spines_per_micron,
+                                     max_branching_order,
                                      result=[],
                                      use_skinning_to_build_proxy=False):
     """Gets a list of random spine morphologies that are correctly aligned along the surface of
@@ -100,6 +101,8 @@ def get_random_spines_across_section(section,
         A list of template spine structures that will be used to construct the final spines.
     :param number_of_spines_per_micron:
         The number of spines per micro meter.
+    :param max_branching_order:
+        The maximum branching order of the arbor.
     :param result:
         A given array to collect the results.
     :param use_skinning_to_build_proxy:
@@ -108,6 +111,10 @@ def get_random_spines_across_section(section,
     :return:
         The results are generated in the results collecting list.
     """
+
+    # Check the branching order
+    if section.branching_order > max_branching_order:
+        return
 
     # Compute the section length
     section_length = nmv.skeleton.ops.compute_section_length(section=section)
@@ -153,7 +160,7 @@ def get_random_spines_across_section(section,
     for face in randomly_selected_faces:
 
         # Get the face normal and center
-        face_normal = face.normal
+        face_normal = face.normal.normalized()
         face_center = face.center
 
         # Compute the spine target point - to be able to orient it correctly

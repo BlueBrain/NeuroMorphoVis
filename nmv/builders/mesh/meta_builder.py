@@ -512,25 +512,40 @@ class MetaBuilder:
         part of the neuron mesh.
         """
 
-        # For the randomly generated spines, we will implement that on a per-segment basis.
-        # We will construct a segment with a tube, then we will get a face and then get its normal,
-        # and finally we will emanate the spine from this face.
+        # Header
+        nmv.logger.info('Integrating spines')
 
+        # Create the spine builder
         spines_builder = nmv.builders.RandomSpineBuilderFromMorphology(
             morphology=self.morphology, options=self.options)
 
+        # Basal dendrites
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
                 for arbor in self.morphology.basal_dendrites:
                     nmv.logger.detail(arbor.label)
 
                     spine_sections = spines_builder.get_spine_morphologies_for_arbor(
-                        arbor=arbor, number_spines_per_micron=10)
+                        arbor=arbor, number_spines_per_micron=2,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
                     # Construct the samples from segments
                     for spine_section in spine_sections:
                         self.create_meta_section(spine_section)
 
+        # Apical dendrites
+        if self.morphology.has_basal_dendrites():
+            if not self.options.morphology.ignore_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+
+                    spine_sections = spines_builder.get_spine_morphologies_for_arbor(
+                        arbor=arbor, number_spines_per_micron=2,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+
+                    # Construct the samples from segments
+                    for spine_section in spine_sections:
+                        self.create_meta_section(spine_section)
 
         # Clean the unwanted data from the spines builder
         spines_builder.clean_unwanted_data()
@@ -549,7 +564,7 @@ class MetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = 2 * self.smallest_radius
+        self.meta_skeleton.resolution = self.smallest_radius
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh

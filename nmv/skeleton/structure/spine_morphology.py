@@ -28,7 +28,7 @@ import nmv.utilities
 # SpineSection
 ################################################################################################
 class SpineSection:
-    """A class to represent a section of a given spine
+    """A class to represent a section of a given spine.
     """
 
     ############################################################################################
@@ -60,35 +60,3 @@ class SpineMorphology:
         # Morphology soma
         self.sections = sections
 
-        # Morphology full bounding box
-        self.bounding_box = None
-
-        # Update the bounding boxes
-        self.compute_bounding_box()
-
-    ################################################################################################
-    # @compute_bounding_box
-    ################################################################################################
-    def compute_bounding_box(self):
-        """Computes the bounding box of the morphology
-        """
-
-        # Make sure that it has at least one section
-        if len(self.sections) == 0:
-            return
-
-        # Compute the bounding box for each section
-        spine_morphology_bounding_boxes = \
-            nmv.skeleton.ops.compute_sections_list_bounding_box(self.sections)
-
-        # Get the joint bounding box from the list if it has more then one section
-        if len(spine_morphology_bounding_boxes) > 1:
-            spine_morphology_bounding_box = nmv.bbox.extend_bounding_boxes(
-                spine_morphology_bounding_boxes)
-
-            # Save the morphology bounding box
-            self.bounding_box = copy.deepcopy(spine_morphology_bounding_box)
-
-        # Otherwise, just get the first one
-        else:
-            self.bounding_box = spine_morphology_bounding_boxes[0]
