@@ -379,12 +379,9 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Add the spines
-        #result, stats = nmv.utilities.profile_function(
-        #    nmv.builders.mesh.add_spines_to_surface, self)
-        #self.profiling_statistics += stats
-
-        spines_builder = nmv.builders.MetaRandomSpineBuilder(self.morphology, self.options)
-        spines_builder.do_it()
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.add_spines_to_surface, self)
+        self.profiling_statistics += stats
 
         # Join all the objects into a single object
         result, stats = nmv.utilities.profile_function(

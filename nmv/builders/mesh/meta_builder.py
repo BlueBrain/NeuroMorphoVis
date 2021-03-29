@@ -525,7 +525,7 @@ class MetaBuilder:
                     nmv.logger.detail(arbor.label)
 
                     spine_sections = spines_builder.get_spine_morphologies_for_arbor(
-                        arbor=arbor, number_spines_per_micron=5)
+                        arbor=arbor, number_spines_per_micron=25)
 
                     # Construct the samples from segments
                     for spine_section in spine_sections:
@@ -549,7 +549,7 @@ class MetaBuilder:
         nmv.scene.ops.deselect_all()
 
         # Update the resolution
-        self.meta_skeleton.resolution = self.smallest_radius
+        self.meta_skeleton.resolution = 2 * self.smallest_radius
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh

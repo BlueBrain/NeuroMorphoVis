@@ -30,6 +30,8 @@ import nmv.enums
 import nmv.scene
 import nmv.geometry
 import nmv.mesh
+import nmv.bmeshi
+import nmv.utilities
 
 import bpy
 import bmesh
@@ -856,6 +858,50 @@ def find_section_radius_near_point(section,
     return radius
 
 
+def skin_section_into_mesh(section):
+
+    copy.deepcopy(section)
+
+    # Create the initial vertex of the section skeleton at the section starting point
+    section_bmesh_object = nmv.bmeshi.create_vertex(location=section.samples[0].point)
+
+    # Extrude the section segment by segment
+    for i in range(len(section.samples) - 1):
+        nmv.bmeshi.ops.extrude_vertex_towards_point(
+            section_bmesh_object, section.samples[i].arbor_idx, section.samples[i + 1].point)
+
+    # Construct a mesh base, or a proxy mesh
+    section_mesh = nmv.bmeshi.convert_bmesh_to_mesh(section_bmesh_object, str(section.index))
+
+    section_mesh.modifiers.new(name="Skin", type='SKIN')
+
+    # Activate the arbor mesh
+    nmv.scene.set_active_object(section_mesh)
+
+    # Update the radii across the skeleton
+    for i in range(0, len(section.samples)):
+
+        # Get the sample radius
+        radius = section.samples[i].radius
+
+        # Get a reference to the vertex
+        vertex = section_mesh.data.skin_vertices[0].data[i]
+
+        # Update the radius of the vertex
+        vertex.radius = radius, radius
+
+    # Apply the operator
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Skin")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Skin")
+
+    nmv.mesh.smooth_object(mesh_object=section_mesh, level=1)
+
+    # Return a reference to the section mesh
+    return section_mesh
+
+
 ####################################################################################################
 # @get_random_spines_across_section
 ####################################################################################################
@@ -868,7 +914,7 @@ def get_random_spines_across_section(section,
     section_length = nmv.skeleton.ops.compute_section_length(section=section)
 
     # Compute the number spines required to satisfy the distribution
-    number_spines = int(section_length / number_of_spines_per_micron)
+    number_spines = int(section_length * number_of_spines_per_micron)
 
     # Ensure that the number of spines > 1
     if number_spines < 1:
@@ -877,6 +923,7 @@ def get_random_spines_across_section(section,
     # Reconstruct the polyline from the section points
     section_polyline_data = get_section_poly_line(section=section)
 
+    '''
     # Construct a proxy poly-line
     bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
     section_polyline = nmv.geometry.draw_poly_line(
@@ -884,9 +931,16 @@ def get_random_spines_across_section(section,
 
     # Convert the section polyline into a mesh
     section_mesh = nmv.scene.ops.convert_object_to_mesh(section_polyline)
+    '''
+
+    section_mesh = skin_section_into_mesh(section=section)
 
     # Get all the faces along the section mesh
     segment_mesh_faces = list(section_mesh.data.polygons)
+
+    # Ensure that the number of spines is less than the number of faces
+    if number_spines > len(segment_mesh_faces):
+        number_spines = int(len(segment_mesh_faces) * 0.5)
 
     # Randomly selected faces
     randomly_selected_faces = random.sample(segment_mesh_faces, number_spines)
@@ -954,4 +1008,5 @@ def get_random_spines_across_section(section,
         result.extend(reconstructed_spine_sections)
 
     # Delete the proxy objects of the section
-    nmv.scene.delete_list_objects([section_polyline, bevel_object])
+    nmv.scene.delete_object_in_scene(section_mesh)
+    # nmv.scene.delete_list_objects([section_polyline, bevel_object])
