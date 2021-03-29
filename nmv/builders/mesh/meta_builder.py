@@ -490,7 +490,7 @@ class MetaBuilder:
                 mesh_object=soft_body_soma, face_index=face.index)
 
             # Compute the radius of the meta-element by trial-and-error
-            meta_element.radius = radius * 2 * self.magic_scale_factor
+            meta_element.radius = radius * self.magic_scale_factor
 
             if meta_element.radius < self.smallest_radius:
                 self.smallest_radius = meta_element.radius
@@ -525,7 +525,7 @@ class MetaBuilder:
                     nmv.logger.detail(arbor.label)
 
                     spine_sections = spines_builder.get_spine_morphologies_for_arbor(
-                        arbor=arbor, number_spines_per_micron=25)
+                        arbor=arbor, number_spines_per_micron=10)
 
                     # Construct the samples from segments
                     for spine_section in spine_sections:

@@ -128,7 +128,7 @@ def get_random_spines_across_section(section,
     else:
 
         # Reconstruct the polyline from the section points
-        section_polyline_data = get_section_poly_line(section=section)
+        section_polyline_data = nmv.skeleton.ops.get_section_poly_line(section=section)
 
         # Construct a proxy poly-line
         bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16,

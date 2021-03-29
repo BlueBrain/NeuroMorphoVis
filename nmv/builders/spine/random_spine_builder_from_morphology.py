@@ -122,7 +122,8 @@ class RandomSpineBuilderFromMorphology:
               nmv.skeleton.ops.get_random_spines_across_section,
               self.spine_template_structures,
               number_spines_per_micron,
-              spine_morphologies])
+              spine_morphologies,
+              True])
 
         # Return a list of spine morphologies (samples and radii) that can be used to draw
         # the spine in the scene at the respective locations
