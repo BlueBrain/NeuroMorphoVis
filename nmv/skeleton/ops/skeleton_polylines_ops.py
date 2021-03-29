@@ -203,8 +203,6 @@ def get_connected_poly_line(section,
         else:
             pass
 
-
-
     # Construct the section
     for i in range(first_sample_index, last_sample_index):
 
@@ -859,11 +857,12 @@ def find_section_radius_near_point(section,
 
 
 ####################################################################################################
-# @get_random_spines_locations_and_normals_across_segments
+# @get_random_spines_across_section
 ####################################################################################################
-def get_random_spines_locations_and_normals_across_section(section,
-                                                           number_of_spines_per_micron,
-                                                           result=[]):
+def get_random_spines_across_section(section,
+                                     template_spine_structures,
+                                     number_of_spines_per_micron,
+                                     result=[]):
 
     # Compute the section length
     section_length = nmv.skeleton.ops.compute_section_length(section=section)
@@ -878,7 +877,7 @@ def get_random_spines_locations_and_normals_across_section(section,
     # Reconstruct the polyline from the section points
     section_polyline_data = get_section_poly_line(section=section)
 
-    # Construct the poly-line
+    # Construct a proxy poly-line
     bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
     section_polyline = nmv.geometry.draw_poly_line(
         poly_line_data=section_polyline_data, bevel_object=bevel_object, caps=False)
@@ -895,22 +894,64 @@ def get_random_spines_locations_and_normals_across_section(section,
     # Get the radii
     for face in randomly_selected_faces:
 
-        # Construct a RandomSpine object
-        spine = nmv.skeleton.RandomSpine()
+        # Get the face normal and center
+        face_normal = face.normal
+        face_center = face.center
 
-        # Copy the normal
-        spine.normal = copy.deepcopy(face.normal)
+        # Compute the spine target point - to be able to orient it correctly
+        spine_target = face_center + (face_normal * 1.0)
 
-        # Copy the segment radius
-        spine.segment_radius = find_section_radius_near_point(section=section,
-                                                              point=spine.location)
+        # Get the segment radius to determine the spine size
+        segment_radius = find_section_radius_near_point(section=section,
+                                                        point=face_center)
 
-        # Compute the location, from the center-line of the morphology instead of face center
-        spine.location = copy.deepcopy(face.center - (0.5 * spine.segment_radius * face.normal))
+        # Compute the spine location, from the center-line of the morphology instead of face center
+        spine_location = copy.deepcopy(face.center - (0.5 * segment_radius * face.normal))
+
+        # Select a random spine structure from the templates
+        template_spine_structure = random.choice(template_spine_structures)
+
+        # Scale the spine
+        nmv.scene.scale_object_uniformly(
+            scene_object=template_spine_structure, scale_factor=0.5 * segment_radius)
+
+        # Translate the template spine structure to the spine location
+        template_spine_structure.location = spine_location
+
+        # Rotate the spine towards the normal
+        nmv.scene.rotate_object_towards_target(
+            template_spine_structure, Vector((0, 1, 0)), spine_target)
+
+        # Update the scene
+        nmv.scene.update_scene()
+
+        # Get the transformation matrix of the current spine
+        transformation_matrix = copy.deepcopy(template_spine_structure.matrix_local)
+
+        # Construct the final spine morphology
+        reconstructed_spine_sections = list()
+        spine_sample_index = 0
+
+        for spline in template_spine_structure.data.splines:
+
+            spine_samples = list()
+            for point in spline.points:
+
+                # Compute the transformed point
+                transformed_point = transformation_matrix @ point.co
+
+                # Construct the sample, and append it to the list
+                spine_samples.append(nmv.skeleton.Sample(
+                    point=transformed_point, radius=point.radius, index=spine_sample_index))
+
+                # Next sample
+                spine_sample_index += 1
+
+            # Append it to the final list of the reconstructed spine
+            reconstructed_spine_sections.append(nmv.skeleton.SpineSection(samples=spine_samples))
 
         # Add the result to the collecting list
-        result.append(spine)
+        result.extend(reconstructed_spine_sections)
 
-    # Delete the segment mesh and the bevel object
-    nmv.scene.delete_list_objects([section_mesh, bevel_object])
-
+    # Delete the proxy objects of the section
+    nmv.scene.delete_list_objects([section_polyline, bevel_object])

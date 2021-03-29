@@ -121,6 +121,23 @@ def compute_arbor_bounding_box(arbor):
     return bounding_box_object
 
 
+def compute_sections_list_bounding_box(sections_list):
+
+    sections_bounding_boxes = list()
+
+    # Initialize the min and max points
+    p_min = Vector((1e10, 1e10, 1e10))
+    p_max = Vector((-1e10, -1e10, -1e10))
+
+    # Compute the bounding box for each section
+    for section in sections_list:
+        sections_bounding_boxes.append(
+            nmv.skeleton.ops.compute_section_bounding_box(section, p_min, p_max))
+
+    return sections_bounding_boxes
+
+
+
 ####################################################################################################
 # @compute_full_morphology_bounding_box
 ####################################################################################################

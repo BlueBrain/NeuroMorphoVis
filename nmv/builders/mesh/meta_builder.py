@@ -516,9 +516,24 @@ class MetaBuilder:
         # We will construct a segment with a tube, then we will get a face and then get its normal,
         # and finally we will emanate the spine from this face.
 
+        spines_builder = nmv.builders.RandomSpineBuilderFromMorphology(
+            morphology=self.morphology, options=self.options)
+
+        if self.morphology.has_basal_dendrites():
+            if not self.options.morphology.ignore_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+
+                    spine_sections = spines_builder.get_spine_morphologies_for_arbor(
+                        arbor=arbor, number_spines_per_micron=5)
+
+                    # Construct the samples from segments
+                    for spine_section in spine_sections:
+                        self.create_meta_section(spine_section)
 
 
-        return
+        # Clean the unwanted data from the spines builder
+        spines_builder.clean_unwanted_data()
 
     ################################################################################################
     # @finalize_meta_object
@@ -651,6 +666,9 @@ class MetaBuilder:
         # Build the arbors
         # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
+        self.profiling_statistics += stats
+
+        result, stats = nmv.utilities.profile_function(self.build_spines_from_morphologies)
         self.profiling_statistics += stats
 
         # Finalize the meta object and construct a solid object

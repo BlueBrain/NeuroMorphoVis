@@ -21,3 +21,4 @@ from .soma import *
 from .morphology import *
 from .spine import *
 from .random_spine import *
+from .spine_morphology import *

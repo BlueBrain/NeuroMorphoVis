@@ -65,6 +65,10 @@ class Paths:
     # Keep a reference to the current directory
     current_directory = os.path.dirname(os.path.realpath(__file__))
 
+    # Simple and non-branched spine morphologies
+    SIMPLE_SPINES_MORPHOLOGIES_DIRECTORY = '%s/../../data/simple-spines-morphologies' % \
+                                           current_directory
+
     # The directory where the spines morphologies are located
     SPINES_MORPHOLOGIES_DIRECTORY = '%s/../../data/spines-morphologies' % current_directory
 
