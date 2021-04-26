@@ -89,7 +89,7 @@ class PiecewiseBuilder:
         self.axons_meshes = list()
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'PiecewiseBuilder Mesh Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -399,7 +399,6 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.info('Mesh Reconstruction Done!')
         nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file

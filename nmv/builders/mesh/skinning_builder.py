@@ -87,7 +87,7 @@ class SkinningBuilder:
         self.neuron_meshes = list()
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'SkinningBuilder Mesh Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -580,7 +580,6 @@ class SkinningBuilder:
         self.profiling_statistics += stats
 
         # Done
-        nmv.logger.info('Mesh Reconstruction Done!')
         nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file

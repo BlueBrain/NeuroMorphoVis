@@ -631,18 +631,20 @@ def write_statistics_to_file(builder, tag):
     collect_morphology_stats(builder)
 
     # Write the stats to file
-    if builder.options.io.statistics_directory is None:
-        output_directory = os.getenv("HOME")
-    else:
-        output_directory = builder.options.io.statistics_directory
-    stats_file = open('%s/%s-%s.stats' % (output_directory, builder.morphology.label, tag), 'w')
+    if not nmv.file.ops.path_exists(builder.options.io.statistics_directory):
+        nmv.file.ops.clean_and_create_directory(builder.options.io.statistics_directory)
 
+    # Open the stats. file
+    stats_file = open('%s/%s-%s.stats' % (builder.options.io.statistics_directory, builder.morphology.label, tag), 'w')
+
+    # Write the data
     stats_file.write(builder.morphology_statistics)
     stats_file.write('\n')
     stats_file.write(builder.profiling_statistics)
     stats_file.write('\n')
     stats_file.write(builder.mesh_statistics)
 
+    # Close the file
     stats_file.close()
 
 

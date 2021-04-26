@@ -99,7 +99,7 @@ class MetaBuilder:
         self.smallest_radius = 1e5
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'MetaBuilder Mesh Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -722,7 +722,6 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.info('Mesh Reconstruction Done!')
         nmv.logger.statistics_overall(self.profiling_statistics)
 
         # Write the stats to file

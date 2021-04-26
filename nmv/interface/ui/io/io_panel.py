@@ -143,6 +143,10 @@ class IOPanel(bpy.types.Panel):
         analysis_path_row = layout.row()
         analysis_path_row.prop(scene, 'NMV_AnalysisPath')
 
+        # Stats. path
+        stats_path_row = layout.row()
+        stats_path_row.prop(scene, 'NMV_StatisticsPath')
+
         # Disable the default paths selection if the use default paths flag is set
         if scene.NMV_DefaultArtifactsRelativePath:
             images_path_row.enabled = False
@@ -150,6 +154,7 @@ class IOPanel(bpy.types.Panel):
             meshes_path_row.enabled = False
             morphologies_path_row.enabled = False
             analysis_path_row.enabled = False
+            stats_path_row.enabled = False
 
         # Pass options from UI to system
         if 'Select Directory' in scene.NMV_OutputDirectory:
@@ -167,6 +172,8 @@ class IOPanel(bpy.types.Panel):
                 '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_MeshesPath)
             nmv.interface.ui_options.io.analysis_directory = \
                 '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_AnalysisPath)
+            nmv.interface.ui_options.io.statistics_directory = \
+                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_StatisticsPath)
 
 
 ####################################################################################################
@@ -219,8 +226,7 @@ class LoadMorphology(bpy.types.Operator):
 
         nmv.logger.header('Loading Morphology')
         nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
-        nmv.logger.info('Morphology loaded in [%f] seconds' %
-                        context.scene.NMV_MorphologyLoadingTime)
+        nmv.logger.info('Morphology loaded in [%f] seconds' % context.scene.NMV_MorphologyLoadingTime)
 
         # Clear the scene
         import nmv.scene
@@ -246,8 +252,7 @@ class LoadMorphology(bpy.types.Operator):
         context.scene.NMV_MorphologyDrawingTime = drawing_time - loading_time
 
         nmv.logger.header('Stats.')
-        nmv.logger.info('Morphology drawn in [%f] seconds' %
-                        context.scene.NMV_MorphologyDrawingTime)
+        nmv.logger.info('Morphology drawn in [%f] seconds' % context.scene.NMV_MorphologyDrawingTime)
 
         # Switch to the top view
         nmv.scene.view_axis()

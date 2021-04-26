@@ -78,28 +78,22 @@ class NeuroMorphoVisOptions:
         self.io.output_directory = arguments.output_directory
 
         # Images directory
-        self.io.images_directory = '%s/%s' % (arguments.output_directory,
-                                              nmv.consts.Paths.IMAGES_FOLDER)
+        self.io.images_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.IMAGES_FOLDER)
 
         # Sequences directory
-        self.io.sequences_directory = '%s/%s' % (arguments.output_directory,
-                                                 nmv.consts.Paths.SEQUENCES_FOLDER)
+        self.io.sequences_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SEQUENCES_FOLDER)
 
         # Meshes directory
-        self.io.meshes_directory = '%s/%s' % (arguments.output_directory,
-                                              nmv.consts.Paths.MESHES_FOLDER)
+        self.io.meshes_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.MESHES_FOLDER)
 
         # Morphologies directory
-        self.io.morphologies_directory = '%s/%s' % (arguments.output_directory,
-                                                    nmv.consts.Paths.MORPHOLOGIES_FOLDER)
+        self.io.morphologies_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.MORPHOLOGIES_FOLDER)
 
         # Morphologies directory
-        self.io.analysis_directory = '%s/%s' % (arguments.output_directory,
-                                                nmv.consts.Paths.ANALYSIS_FOLDER)
+        self.io.analysis_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.ANALYSIS_FOLDER)
 
         # Statistics directory
-        self.io.statistics_directory = '%s/%s' % (arguments.output_directory,
-                                                  nmv.consts.Paths.STATS_FOLDER)
+        self.io.statistics_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.STATS_FOLDER)
 
         ############################################################################################
         # Morphology options
