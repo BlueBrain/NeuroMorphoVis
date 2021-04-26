@@ -20,7 +20,7 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_MESH='/ssd3/scratch/2021.04.26-mesh-analysis/L6_NGC-simple.obj'
+INPUT_MESH='/ssd2/data/eyewire-neurons-meshes/4.obj'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/ssd3/scratch/2021.04.26-mesh-analysis/output'

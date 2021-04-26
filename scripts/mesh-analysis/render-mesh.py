@@ -130,30 +130,54 @@ def run_quality_checker(mesh_path,
 
 
 ####################################################################################################
-# @parse_command_line_arguments
+# @create_mesh_fact_sheet_with_distribution
 ####################################################################################################
-def create_blender_statistics(mesh_object, mesh_name, image_output_path, vertical_stats_image):
+def create_mesh_fact_sheet_with_distribution(mesh_object,
+                                             mesh_name,
+                                             panels_directory,
+                                             image_output_path,
+                                             statistics_image):
+    """Creates a fact sheet for the mesh combined with the distributions.
+
+    :param mesh_object:
+        A mesh object.
+    :param mesh_name:
+        The name of the mesh.
+    :panels_directory:
+        The directory where the panels will be written.
+    :param image_output_path:
+        The output path of the resulting image.
+    :param statistics_image:
+        The stats. image.
+    :return:
+    """
 
     # Get image resolution
 
-    im = Image.open(vertical_stats_image)
-    im_height = im.size[1]
+    # Get the resolution from the height of the stats. image
+    stats_image = Image.open(statistics_image)
+    stats_image_height = stats_image.size[1]
 
-    blender_image = plotting.create_mesh_statistics_image(
-            mesh_object=mesh_object, mesh_name=mesh_name, output_image_path=image_output_path,
-            image_resolution=im_height)
+    # Create the fac-sheet image
+    fact_sheet_image_path = plotting.create_mesh_fact_sheet(
+            mesh_object=mesh_object, mesh_name=mesh_name, output_image_path=panels_directory,
+            image_resolution=stats_image_height)
 
-    bl_im = Image.open(blender_image)
+    fact_sheet_image = Image.open(fact_sheet_image_path)
 
-    dst = Image.new('RGB', (im.width + bl_im.width, im.height))
-    dst.paste(im, (0, 0))
-    dst.paste(bl_im, (im.width, 0))
-    dst.save(image_output_path + '/final.png')
+    resulting_image = Image.new('RGB', (stats_image.width + fact_sheet_image.width,
+                                        stats_image.height))
+    resulting_image.paste(stats_image, (0, 0))
+    resulting_image.paste(fact_sheet_image, (stats_image.width, 0))
+    final_image_path = image_output_path + '/%s.png' % mesh_name
+    resulting_image.save(final_image_path)
 
-    bl_im.close()
-    im.close()
-    dst.close()
+    # Close all the images.
+    fact_sheet_image.close()
+    stats_image.close()
+    resulting_image.close()
 
+    return resulting_image
 
 
 ####################################################################################################
@@ -213,6 +237,28 @@ def process_mesh(arguments,
                  images_directory,
                  scenes_directory, 
                  render_artistic=False):
+    """Process a given mesh and analyze it.
+
+    :param arguments:
+        System arguments.
+    :param mesh_object:
+        A reference to the loaded mesh object.
+    :param path_to_mesh:
+        A path to the mesh file.
+    :param mesh_name:
+        The name of the mesh.
+    :param mesh_color:
+        The color of the mesh.
+    :param intermediate_directory:
+        Intermediate directory to store the data.
+    :param images_directory:
+        Directory to keep the images.
+    :param scenes_directory:
+        Scenes directory.
+    :param render_artistic:
+        If True, an artistic image will be rendered.
+    :return:
+    """
 
     # Rotate the mesh object to adjust the orientation in front of the camera
     nmv.scene.rotate_object(mesh_object, 0, 0, 0)
@@ -279,24 +325,26 @@ def process_mesh(arguments,
         color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
 
     # Plot the statistics image
-    create_blender_statistics(
-        mesh_object=mesh_object, mesh_name=mesh_name, image_output_path=panels_directory,
-        vertical_stats_image=horizontal_stats_image)
+    fact_sheet_image = create_mesh_fact_sheet_with_distribution(
+        mesh_object=mesh_object, mesh_name=mesh_name, image_output_path=images_directory,
+        panels_directory=panels_directory, statistics_image=horizontal_stats_image)
 
     # Clean the stats data
     if os.path.exists(stats_output_directory):
         shutil.rmtree(stats_output_directory)
 
+    '''
     # Combine the wire-frame rendering with the stats image side-by-side
     combined_vert, combined_horiz = plotting.combine_stats_with_rendering(
         rendering_image='%s/%s.png' % (panels_directory, mesh_name),
         vertical_stats_image=vertical_stats_image,
         horizontal_stats_image=horizontal_stats_image,
         output_image_path='%s/%s' % (images_directory, mesh_name))
+    '''
 
     # Clean the stats data
-    # if os.path.exists(panels_directory):
-    #    shutil.rmtree(panels_directory)
+    if os.path.exists(panels_directory):
+        shutil.rmtree(panels_directory)
     
     # Just a reference to the artistic image path 
     artistic_image = None
@@ -353,9 +401,6 @@ def process_mesh(arguments,
             nmv.file.export_scene_to_blend_file(
                 output_directory=scenes_directory,
                 output_file_name='%s-artistic' % mesh_object.replace('.obj', ''))
-    
-    # Return all references 
-    return combined_vert, combined_horiz, artistic_image
 
 
 ################################################################################
@@ -390,7 +435,7 @@ if __name__ == "__main__":
     mesh_object = nmv.file.import_mesh(args.input_mesh)
 
     # Process the mesh
-    skinned_vert, skinned_horiz, skinned_artistic = process_mesh(
+    process_mesh(
         arguments=args, mesh_object=mesh_object,
         path_to_mesh=args.input_mesh,
         mesh_name=os.path.basename(args.input_mesh),

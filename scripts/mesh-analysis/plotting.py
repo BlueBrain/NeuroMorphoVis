@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2021, EPFL / Blue Brain Project
+# Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,7 +17,6 @@
 
 # Blender imports
 import bpy
-import bmesh
 
 # Internal imports
 import nmv.scene
@@ -26,18 +25,17 @@ import nmv.scene
 import os
 import numpy
 import seaborn
-import pandas
 import matplotlib
 import matplotlib.pyplot as pyplot
 import matplotlib.font_manager as font_manager
 import matplotlib.ticker
 import colorsys
 from matplotlib.ticker import PercentFormatter
-from matplotlib.ticker import FormatStrFormatter
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
+# Internal
 import core
 
 ####################################################################################################
@@ -47,8 +45,7 @@ seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
 pyplot.rcParams['grid.linestyle'] = '-'
 pyplot.rcParams['grid.linewidth'] = 2
-pyplot.rcParams['font.family'] = 'NimbusSanL'
-#pyplot.rcParams['font.family'] = 'Helvetica LT Std'
+pyplot.rcParams['font.family'] = 'Helvetica LT Std' # 'NimbusSanL'
 pyplot.rcParams['font.monospace'] = 'Bold'
 pyplot.rcParams['font.style'] = 'normal'
 pyplot.rcParams['axes.linewidth'] = 0.0
@@ -69,6 +66,15 @@ pyplot.rcParams['axes.edgecolor'] = '1'
 ####################################################################################################
 def get_image(images,
               measure):
+    """Gets an image with a specific measure in the file name.
+
+    :param images:
+        A list of images.
+    :param measure:
+        Search keyword.
+    :return:
+        The result.
+    """
     for file in images:
         if measure in file:
             if '.png' in file:
@@ -79,15 +85,30 @@ def get_image(images,
 ####################################################################################################
 # @get_largest_dimensions_of_all_images
 ####################################################################################################
-def get_largest_dimensions_of_all_images(directory, images_list):
+def get_largest_dimensions_of_all_images(directory,
+                                         images_list):
+    """Gets the largest dimension of a set of images.
 
+    :param directory:
+        The directory that contains the images.
+    :param images_list:
+        A list of all the images.
+    :return:
+        The largest dimension of all images.
+    """
+
+    # Lists
     widths = list()
     heights = list()
+
+    # Compute ...
     for image in images_list:
         im = Image.open('%s/%s' % (directory, image))
         width, height = im.size
         widths.append(width)
         heights.append(height)
+
+    # Return the largest
     return max(widths), max(heights)
 
 
@@ -101,26 +122,47 @@ def verify_plotting_packages():
     # Import the fonts
     font_dirs = [os.path.dirname(os.path.realpath(__file__)) + '/fonts/']
     font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-    font_list = font_manager.createFontList(font_files)
-    font_manager.fontManager.ttflist.extend(font_list)
+    for font_file in font_files:
+        font_manager.fontManager.addfont(font_file)
 
 
 ####################################################################################################
 # @create_adjusted_plot_image
 ####################################################################################################
-def create_adjusted_plot_image(image, input_directory, output_directory, new_width, new_height):
+def create_adjusted_plot_image(image,
+                               input_directory,
+                               output_directory,
+                               new_width,
+                               new_height):
+    """Creates a new image (corresponding to a graph) to match the sizes.
+
+    :param image:
+        An input image.
+    :param input_directory:
+        The directory that contains the image.
+    :param output_directory:
+        The results directory.
+    :param new_width:
+        The new width of the image.
+    :param new_height:
+        The new height of the image.
+    """
 
     # Get the width and height
     im = Image.open('%s/%s' % (input_directory, image))
     width, height = im.size
 
+    # New image
     new_size = (new_width, new_height)
     new_im = Image.new("RGB", new_size, (255, 255, 255))
     starting_y = new_height - height
     starting_x = new_width - width
     new_im.paste(im, (starting_x, starting_y))
 
+    # Save it
     new_im.save('%s/%s' % (output_directory, image))
+    new_im.close()
+    im.close()
 
 
 ####################################################################################################
@@ -133,7 +175,7 @@ def read_dist_file(file_path,
     :param file_path:
         The path to the input file.
     :param invert:
-        If set to True, invert the readed values.
+        If set to True, invert the read values.
     :return:
     """
 
@@ -157,7 +199,18 @@ def read_dist_file(file_path,
 ####################################################################################################
 # @create_adjusted_plot_images
 ####################################################################################################
-def create_adjusted_plot_images(input_directory, list_images, output_directory):
+def create_adjusted_plot_images(input_directory,
+                                list_images,
+                                output_directory):
+    """Create the images with adjusted dimensions.
+
+    :param input_directory:
+        The directory that contains all the images.
+    :param list_images:
+        A list of images to be adjusted.
+    :param output_directory:
+        The results directory.
+    """
 
     # Largest width
     largest_width, largest_height = get_largest_dimensions_of_all_images(input_directory,
@@ -175,6 +228,20 @@ def montage_important_distributions_into_one_image(name,
                                                    input_directory,
                                                    output_directory,
                                                    delta=100):
+    """Montages the important distributions into a single image.
+
+    :param name:
+        Final image name.
+    :param distribution_images:
+        A list of all the distribution images.
+    :param input_directory:
+        Directory containing images.
+    :param output_directory:
+        Results directory.
+    :param delta:
+        Delta between the images, default 100.
+    :return:
+    """
     # Split them in two groups
     group_1 = list()
     group_2 = list()
@@ -185,15 +252,9 @@ def montage_important_distributions_into_one_image(name,
     group_1.append(get_image(distribution_images, 'max-angle'))
     group_1.append(get_image(distribution_images, 'triangle-shape'))
 
+    group_2.append(get_image(distribution_images, 'edge-ratio'))
     group_2.append(get_image(distribution_images, 'radius-ratio'))
     group_2.append(get_image(distribution_images, 'radius-to-edge-ratio'))
-    group_2.append(get_image(distribution_images, 'edge-ratio'))
-
-    # group_2.append(get_image(distribution_images, 'relative-size'))
-    # group_2.append(get_image(distribution_images, 'scaled-jacobian'))
-
-    # group_1.append(get_image(distribution_images, 'condition-number'))
-    # group_2.append(get_image(distribution_images, 'triangle-size-shape'))
 
     # Get the dimensions from any image, all the images must have the same dimensions
     any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'min-angle')))
@@ -357,6 +418,8 @@ def plot_distribution(input_directory,
         If set to True, save the figure into a PDF file.
     :param save_svg:
         If set to True, save the figure into an SVG image.
+    :param dpi:
+        Dot per inch to define the resolution
     :return:
         Returns a reference to the resulting png image
     """
@@ -376,7 +439,7 @@ def plot_distribution(input_directory,
 
     # Set the title inside the figure to save some space
     if plot_titles:
-        pyplot.title(title, y=1.0)
+        pyplot.title(title, y=1.05)
 
     # Plot the histogram
     seaborn.distplot(np_data, color='r', hist=True, kde=kde, norm_hist=True, bins=40,
@@ -417,14 +480,22 @@ def plot_distribution(input_directory,
 ####################################################################################################
 # @plot_group
 ####################################################################################################
-def lighten_color(color, amount=1.0):
+def lighten_color(color,
+                  amount=1.0):
     """Lightens the given color by multiplying (1-luminosity) by the given amount.
     Input can be matplotlib color string, hex string, or RGB tuple.
+
+    :param color:
+        A given color.
+    :param amount:
+        The illuminating amount.
+    :return:
+        The new color.
     """
 
     try:
         actual_color = matplotlib.colors.cnames[color]
-    except:
+    except ArithmeticError:
         actual_color = color
     actual_color = colorsys.rgb_to_hls(*matplotlib.colors.to_rgb(actual_color))
     return colorsys.hls_to_rgb(actual_color[0], 1 - amount * (1 - actual_color[1]), actual_color[2])
@@ -440,9 +511,30 @@ def plot_distributions(keyword,
                        plot_titles=False,
                        use_kde=False,
                        color='tab:blue'):
+    """Plots the different distributions of the mesh.
+
+    :param keyword:
+        Searching keyword for locating the file.
+    :param distributions:
+        All the distributions found in a directory.
+    :param input_directory:
+        The directory that contains all the distributions.
+    :param output_directory:
+        The directory where the results will be written.
+    :param plot_titles:
+        If True, the title will be added.
+    :param use_kde:
+        Use KDE for the distributions/
+    :param color:
+        Distributions color.
+    :return:
+        A list of PNGs corresponding to the distributions colors.
+    """
 
     # Get the colormap
     colors = seaborn.color_palette("brg", 10)
+
+    print('  * Plotting Distributions')
 
     # A list of all the distributions in .png format
     distributions_pngs = list()
@@ -503,9 +595,66 @@ def plot_distributions(keyword,
 
 
 ####################################################################################################
-# @create_mesh_statistics_image
+# @get_super
 ####################################################################################################
-def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, image_resolution=1500):
+def get_super(x):
+
+    normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-=()"
+    super_s = "ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾQᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰᶦʲᵏˡᵐⁿᵒᵖ۹ʳˢᵗᵘᵛʷˣʸᶻ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"
+    res = x.maketrans(''.join(normal), ''.join(super_s))
+    return x.translate(res)
+
+
+####################################################################################################
+# @format_number_to_power_string
+####################################################################################################
+def format_number_to_power_string(number):
+    """Formats the string to make it readable.
+
+    :param number:
+        Input number.
+    :return:
+        Corresponding string.
+    """
+
+    if float(number) < 1e3:
+        return '%2.2f' % number
+    elif (float(number) > 1e3) and (float(number) < 1e6):
+        value = float(number) / float(1e3)
+        return '%2.2f x10%s' % (value, get_super('3'))
+    elif (float(number) > 1e6) and (float(number) < 1e9):
+        value = float(number) / float(1e6)
+        return '%2.2f x10%s' % (value, get_super('6'))
+    elif (float(number) > 1e9) and (float(number) < 1e12):
+        value = float(number) / float(1e9)
+        return "%2.2f x10%s" % (value, get_super('9'))
+    else:
+        value = float(number) / float(1e12)
+        return '%2.2f x10%s' % (value, get_super('12'))
+
+
+####################################################################################################
+# @create_mesh_fact_sheet
+####################################################################################################
+def create_mesh_fact_sheet(mesh_object,
+                           mesh_name,
+                           output_image_path,
+                           image_resolution=1500):
+    """Creates the fact sheet of the mesh into an image.
+
+    :param mesh_object:
+        A given mesh object in Blender.
+    :param mesh_name:
+        The name of the mesh.
+    :param output_image_path:
+        The output path.
+    :param image_resolution:
+        The resolution of the image.
+    :return:
+        The path to the image.
+    """
+
+    print('  * Computing Mesh Fact Sheet')
 
     # Set the current object to be the active object
     nmv.scene.set_active_object(mesh_object)
@@ -513,7 +662,7 @@ def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, imag
     # Compute the bounding box
     mesh_bbox = core.compute_bounding_box(mesh_object)
 
-    print('\tNumber Partitions')
+    print('\t* Number Partitions')
     number_partitions = core.compute_number_partitions(mesh_object)
 
     # Switch to geometry or edit mode from the object mode
@@ -523,23 +672,23 @@ def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, imag
     bm = core.convert_from_mesh_object(mesh_object)
 
     # Compute the surface area
-    print('\tSurface Area')
+    print('\t* Surface Area')
     surface_area = core.compute_surface_area(bm)
 
     # Compute the volume
-    print('\tVolume')
+    print('\t* Volume')
     volume = core.compute_volume(bm)
 
     # Compute the number of polygons
-    print('\tNumber Polygons')
+    print('\t* Number Polygons')
     polygons = core.compute_number_polygons(bm)
 
     # Compute the number of vertices
-    print('\tVertices')
+    print('\t* Number Vertices')
     vertices = core.compute_number_vertices(bm)
 
     # Is it watertight
-    print('\tWatertightness')
+    print('\t* Validating Watertightness')
     watertight_check = core.check_watertightness(bm)
 
     # Free the bmesh
@@ -549,106 +698,137 @@ def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, imag
     bpy.ops.object.editmode_toggle()
 
     # We have 12 entries in the image
-    number_entries = 13
+    number_entries = 17
 
     # Image dimensions
-    image_width = int(image_resolution / 0.6)
+    image_width = int(image_resolution * 0.9)
     image_height = image_resolution
 
     # Calculate the spacing between items
-    spacing = int(image_width / (number_entries * 1.0 * 2.0))
+    spacing = int(image_height / (number_entries * 1.2))
 
     # Create stats. image
-    statistics_image = Image.new("RGB", (image_width, image_height),
+    fact_sheet_image = Image.new("RGB", (image_width, image_height),
                                  (255, 255, 255))
 
     # Create a drawing area
-    drawing_area = ImageDraw.Draw(statistics_image)
+    drawing_area = ImageDraw.Draw(fact_sheet_image)
 
     # Select a font
-    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/NimbusSanL-Regu.ttf'
+    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/HelveticaLTStd-Cond.otf'
     font = ImageFont.truetype(font_path, int(spacing * 0.8))
+    footnote_font = ImageFont.truetype(font_path, int(spacing * 0.45))
 
     # Compute the offsets
     starting_x = int(0.04 * image_width)
-    delta_x = starting_x + int(image_width * 0.5)
+    delta_x = starting_x + int(image_width * 0.65)
 
     i = 0.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Polygons', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % polygons, font=font, fill=(0, 0, 0))
+    drawing_area.text((int(0.02 * image_width), delta_y), 'Fact Sheet', font=font, fill=(0, 0, 0))
+
+    i = 2.0
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Polygons', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), f'{polygons:,d}', font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Vertices', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % vertices, font=font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Number of Vertices', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), f'{vertices:,d}', font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Bounding Box', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y),
-                      '%2.2f x %2.2f x %2.2f' % (mesh_bbox.x, mesh_bbox.y, mesh_bbox.z),
+    drawing_area.text((starting_x, delta_y), 'Bounding Box Width', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.x),
+                      font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Bounding Box Height', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.y),
+                      font=font, fill=(0, 0, 0))
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Bounding Box Depth', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.z),
                       font=font, fill=(0, 0, 0))
 
     i += 1.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Diagonal', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%2.2f' % mesh_bbox.diagonal, font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.diagonal),
+                      font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Total Surface Area', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%f' % surface_area, font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s U²' % format_number_to_power_string(surface_area),
+                      font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Total Volume', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%f' % volume, font=font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Total Volume*', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s U³' % format_number_to_power_string(volume),
+                      font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Watertight', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), str(watertight_check.watertight),
+    drawing_area.text((delta_x, delta_y), 'Yes' if watertight_check.watertight else 'No',
                       font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Mesh Partitions',
+    drawing_area.text((starting_x, delta_y), 'Number of Mesh Partitions',
                       font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % number_partitions,
+    drawing_area.text((delta_x, delta_y), f'{number_partitions:,d}',
                       font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Non Manifold Edges',
+    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Edges',
                       font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_edges,
-                      font=font, fill=(0, 0, 0))
-
-    i += 1
-    delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Non Manifold Vertices',
-                      font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_vertices,
+    drawing_area.text((delta_x, delta_y), f'{watertight_check.non_manifold_edges:,d}',
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Non Continuous Edges',
+    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Vertices',
                       font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_contiguous_edge,
+    drawing_area.text((delta_x, delta_y), f'{watertight_check.non_manifold_vertices:,d}',
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number Self Intersections',
+    drawing_area.text((starting_x, delta_y), 'Number of Non Continuous Edges',
                       font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.self_intersections,
+    drawing_area.text((delta_x, delta_y), f'{watertight_check.non_contiguous_edge:,d}',
                       font=font, fill=(0, 0, 0))
 
-    stats_image_path = '%s/%s-blender-stats.png' % (output_image_path, mesh_name)
-    statistics_image.save(stats_image_path)
-    return stats_image_path
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Self Intersections**',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), f'{watertight_check.self_intersections:,d}',
+                      font=font, fill=(0, 0, 0))
+
+    i += 1.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y),
+                      '* The value of the total volume is correct if the mesh is watertight.',
+                      font=footnote_font, fill=(0, 0, 0))
+    i += 0.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y),
+                      '** If this value is similar to the Number Mesh Partitions, then it '
+                      'has no self intersections.',
+                      font=footnote_font, fill=(0, 0, 0))
+
+    fact_sheet_image_path = '%s/%s-fact-sheet.png' % (output_image_path, mesh_name)
+    fact_sheet_image.save(fact_sheet_image_path)
+    fact_sheet_image.close()
+    return fact_sheet_image_path
 
 
 ####################################################################################################
@@ -658,6 +838,19 @@ def plot_mesh_stats(name,
                     distributions_directory,
                     output_directory,
                     color):
+    """Plots the stats of the mesh.
+
+    :param name:
+        Image name.
+    :param distributions_directory:
+        The directory that contains all the distributions.
+    :param output_directory:
+        Results directory.
+    :param color:
+        Distributions color.
+    :return:
+        Resulting images
+    """
 
     # Verify the packages
     verify_plotting_packages()
@@ -754,75 +947,3 @@ def combine_stats_with_rendering(rendering_image,
 
     # Return a reference to the final images
     return combined_vertical_path, combined_horizontal_path
-
-
-####################################################################################################
-# @combine_skinned_with_optimized
-####################################################################################################
-def combine_skinned_with_optimized(skinned_horizontal_image_path,
-                                   optimized_horizontal_image_path,
-                                   output_path,
-                                   delta=100):
-
-    # Open the images
-    skinned_im = Image.open(skinned_horizontal_image_path)
-    optimized_im = Image.open(optimized_horizontal_image_path)
-    
-    # Resize to make them with the exact same size 
-    optimized_im = optimized_im.resize(skinned_im.size, resample=2)
-    
-    # Make a new image 
-    combined_im = Image.new('RGB', (optimized_im.size[0], (optimized_im.size[1] * 2) + delta),
-                            (255, 255, 255))
-    combined_im.paste(skinned_im, (0, 0))
-    combined_im.paste(optimized_im, (0, optimized_im.size[1] + delta))
-    combined_im.save(output_path)
-    combined_im.close()
-    
-    # Close all the images
-    skinned_im.close()
-    optimized_im.close()
-
-
-####################################################################################################
-# @combine_skinned_with_optimized_with_artistic
-####################################################################################################
-def combine_skinned_with_optimized_with_artistic(skinned_horizontal_image_path,
-                                                 optimized_horizontal_image_path,
-                                                 artistic_image,
-                                                 output_path,
-                                                 delta=200,
-                                                 scale_size=2000):
-
-    # Open the images
-    skinned_im = Image.open(skinned_horizontal_image_path)
-    optimized_im = Image.open(optimized_horizontal_image_path)
-    artistic_im = Image.open(artistic_image)
-    
-    # Add background color to the artistic
-    artistic_white_im = Image.new("RGB", artistic_im.size, "WHITE")
-    artistic_white_im.paste(artistic_im, (0, 0), artistic_im)
-    artistic_im.close() 
-        
-    # Resize to make them with the exact same size 
-    optimized_im = optimized_im.resize(skinned_im.size, resample=2)
-    
-    # Scale the artistic
-    artistic_white_im = artistic_white_im.resize(
-        (optimized_im.size[1] * 2, optimized_im.size[1] * 2), resample=2)
-    
-    # Make a new image 
-    combined_im = Image.new('RGB', 
-        (optimized_im.size[0] + delta + artistic_white_im.size[0], 
-        (optimized_im.size[1] * 2) + delta), (255, 255, 255))
-
-    combined_im.paste(artistic_white_im, (0, 0))
-    combined_im.paste(skinned_im, (artistic_white_im.size[0] + delta, 0))
-    combined_im.paste(optimized_im, (artistic_white_im.size[0] + delta, optimized_im.size[1] + delta))
-    combined_im.save(output_path)
-    combined_im.close()
-    
-    # Close all the images
-    artistic_white_im.close()
-    skinned_im.close()
-    optimized_im.close()
