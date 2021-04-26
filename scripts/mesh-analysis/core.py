@@ -1,7 +1,31 @@
+####################################################################################################
+# Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
 
-import subprocess, shutil, ntpath
-import bpy, bmesh, os, sys, array
+# System imports
+import ntpath
+import os
+import sys
 import argparse
+import math
+
+# Blender imports
+import bpy
+import bmesh
+import mathutils
 
 
 ####################################################################################################
@@ -36,7 +60,7 @@ def deselect_all():
 
     # Set the '.select' flag of all the objects in the scene to False.
     for scene_object in bpy.context.scene.objects:
-        scene_object.select = False
+        scene_object.select_set(False)
 
 
 ####################################################################################################
@@ -56,10 +80,10 @@ def set_active_object(scene_object):
     deselect_all()
 
     # Select the object
-    scene_object.select = True
+    scene_object.select_set(True)
 
     # Set it active
-    bpy.context.scene.objects.active = scene_object
+    bpy.context.view_layer.objects.active = scene_object
 
     # Return a reference to the mesh object again for convenience
     return scene_object
@@ -69,12 +93,10 @@ def set_active_object(scene_object):
 # @import_obj_file
 ####################################################################################################
 def import_obj_file(file_path):
-    """Import an .OBJ file into the scene, and return a reference to it.
+    """Imports an OBJ file.
 
-    :param input_directory:
-        The directory that is supposed to have the mesh.
-    :param input_file_name:
-        The name of the mesh file.
+    :param file_path:
+        The path to the mesh file
     :return:
         A reference to the loaded mesh in Blender.
     """
@@ -89,6 +111,7 @@ def import_obj_file(file_path):
     print('Loading [%s]' % file_path)
     bpy.ops.import_scene.obj(filepath=file_path)
 
+    # Get the file name to rename the object
     input_file_name = ntpath.basename(file_path)
     
     # Change the name of the loaded object
@@ -125,6 +148,7 @@ def import_ply_file(file_path):
     print('Loading [%s]' % file_path)
     bpy.ops.import_mesh.ply(filepath=file_path)
 
+    # Get the file name to rename the object
     input_file_name = ntpath.basename(file_path)
     
     # Change the name of the loaded object
@@ -167,38 +191,75 @@ def convert_to_mesh_object(bmesh_object,
 # @convert_from_mesh_object
 ####################################################################################################
 def convert_from_mesh_object(mesh_object):
-    """
-    Converts the mesh object to a bmesh object and returns a reference to it.
+    """Converts the mesh object to a bmesh object and returns a reference to it.
 
-    :param mesh_object: An input mesh object.
-    :return: A reference to the bmesh object.
+    :param mesh_object:
+        An input mesh object.
+    :return:
+        A reference to the bmesh object.
     """
 
     # Return a reference to the bmesh created from the object.
     return bmesh.from_edit_mesh(mesh_object.data)
 
 
+####################################################################################################
+# @compute_number_partitions
+####################################################################################################
+def compute_number_partitions(mesh_object):
+    """Detects the number of partitions (or islands) in the mesh object.
 
-     
+    :param mesh_object:
+        A given mesh object to process.
+    """
+
+    # Get the paths along the edges of the mesh
+    paths = {v.index: set() for v in mesh_object.data.vertices}
+    for e in mesh_object.data.edges:
+        paths[e.vertices[0]].add(e.vertices[1])
+        paths[e.vertices[1]].add(e.vertices[0])
+
+    # A list that will contain the different partitions in the mesh. Each partition will be
+    # represented by a list of indices of the vertices of that partition.
+    partitions_vertices_indices = list()
+
+    # Search
+    while True:
+
+        # Get the next path
+        try:
+            iterator = next(iter(paths.keys()))
+        except StopIteration:
+            break
+        partition = {iterator}
+        current = {iterator}
+        while True:
+            eligible = {sc for sc in current if sc in paths}
+            if not eligible:
+                break
+            current = {ve for sc in eligible for ve in paths[sc]}
+            partition.update(current)
+            for key in eligible:
+                paths.pop(key)
+
+        # Add
+        partitions_vertices_indices.append(partition)
+
+    # Convert the set to a list
+    return len(list(partitions_vertices_indices))
+
+
 ####################################################################################################
 # @check_watertightness
 ####################################################################################################
 def check_watertightness(bm):
-    """
-    Checks if the mesh is watertight or not.
+    """Checks if the mesh is watertight or not.
 
-    :param mesh_object: An input mesh object.
-    :return: True or False
+    :param bm:
+        An input bmesh object.
+    :return:
+        True or False
     """
-
-    # Set the current object to be the active object
-    # set_active_object(mesh_object)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh_object)
 
     # Watertightness checks
     non_manifold_edges = 0
@@ -218,18 +279,12 @@ def check_watertightness(bm):
     for i, vert in enumerate(bm.verts):
         if not vert.is_manifold:
             non_manifold_vertices += 1
-    
-    import mathutils
+
     tree = mathutils.bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
     overlap = tree.overlap(tree)
     faces_error = {i for i_pair in overlap for i in i_pair}
     if len(faces_error) > 0:
         check.self_intersections = len(faces_error)
-            
-    # bm.free()
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
     
     check.non_manifold_edges = non_manifold_edges
     check.non_manifold_vertices = non_manifold_vertices
@@ -248,26 +303,24 @@ def check_watertightness(bm):
 # @is_self_intersecting
 ####################################################################################################
 def is_self_intersecting(bm):
-    """
-    Checks if the mesh is self intersecting or not.
-    """
-    
-    #if not mesh.data.polygons:
-    #    return False
-        
-    # Set the current object to be the active object
-    # set_active_object(mesh)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh)
+    """Checks if the mesh is self intersecting or not.
 
-    import mathutils
+    :param bm:
+        Input bmesh.
+    :return:
+        True or False
+    """
+
+    # Construct the BVH
     tree = mathutils.bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
+
+    # Checks the overlap
     overlap = tree.overlap(tree)
+
+    # Get the errors
     faces_error = {i for i_pair in overlap for i in i_pair}
+
+    # Return the results
     if len(faces_error) > 0:
         return True
     return False     
@@ -277,29 +330,18 @@ def is_self_intersecting(bm):
 # @compute_surface_area
 ####################################################################################################
 def compute_surface_area(bm):
+    """Calculates the surface area of a given mesh.
+
+    :param bm:
+        Input bmesh.
+    :return:
+        Mesh surface area
     """
-    Calculates the surface area of a given mesh
-    """
-    
-    # Set the current object to be the active object
-    # set_active_object(mesh)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh)
     
     # Compute teh surface area 
     surface_area = 0.0
     for f in bm.faces:
-        surface_area += f.calc_area()    
-    
-    # Release the bm 
-    # bm.free()
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
+        surface_area += f.calc_area()
     
     # Return the surface area 
     return surface_area
@@ -309,79 +351,56 @@ def compute_surface_area(bm):
 # @compute_number_polygons
 ####################################################################################################
 def compute_number_polygons(bm):
+    """Calculates the number of polygons of a given mesh.
+
+    :param bm:
+        Input bmesh.
+    :return:
+        Number of polygons
     """
-    Calculates the number of polygons of a given mesh
-    """
-    
-    # Set the current object to be the active object
-    # set_active_object(mesh)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh)
-    
-    # Compute it 
-    polygons = len(bm.faces)    
-    
-    # Release the bm 
-    # bm.free()
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
+
     # Return the polygon count 
-    return polygons
+    return len(bm.faces)
 
 
 ####################################################################################################
 # @compute_number_vertices
 ####################################################################################################
 def compute_bounding_box(mesh_object):
+    """Calculates the bounding box.
+
+    :param mesh_object:
+        Input mesh.
+    :return:
+        Bounding box
     """
-    Calculates the bounding box
-    """
-    
-    import math 
-    
-    bbox = BoundingBox()
-    bbox.x = mesh_object.dimensions.x
-    bbox.y = mesh_object.dimensions.y
-    bbox.z = mesh_object.dimensions.z
-    bbox.diagonal = math.sqrt((bbox.x * bbox.x) + (bbox.y * bbox.y) + (bbox.z * bbox.z))  
-    
-    return bbox 
+
+    bounding_box = BoundingBox()
+    bounding_box.x = mesh_object.dimensions.x
+    bounding_box.y = mesh_object.dimensions.y
+    bounding_box.z = mesh_object.dimensions.z
+    bounding_box.diagonal = math.sqrt((bounding_box.x * bounding_box.x) +
+                                      (bounding_box.y * bounding_box.y) +
+                                      (bounding_box.z * bounding_box.z))
+
+    # Return the bounding box
+    return bounding_box
     
     
 ####################################################################################################
 # @compute_number_vertices
 ####################################################################################################
 def compute_number_vertices(bm):
+    """Calculates the number of polygons of a given mesh.
+
+    :param bm:
+        Input bmesh.
+    :return:
+        Number of vertices
     """
-    Calculates the number of polygons of a given mesh
-    """
-    
-    # Set the current object to be the active object
-    # set_active_object(mesh)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh)
-    
-    # Compute it 
-    vertices = len(bm.verts)    
-    
-    # Release the bm 
-    # bm.free()
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Return the polygon count 
-    return vertices
+
+    # Return the vertex count
+    return len(bm.verts)
     
     
 ####################################################################################################
@@ -389,34 +408,26 @@ def compute_number_vertices(bm):
 ####################################################################################################
 def compute_volume(bm):
     """Compute the volume of the mesh.
+
+    :param bm:
+        Input bmesh
+    :return:
+        Mesh volume
     """
-    
-    # Set the current object to be the active object
-    # set_active_object(mesh)
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
-    # Convert the mesh into a bmesh
-    # bm = convert_from_mesh_object(mesh)
-    
-    # Compute the volume 
-    volume = bm.calc_volume()
-    
-    # Free the bmesh 
-    # bm.free()
-    
-    # Switch to geometry or edit mode from the object mode
-    # bpy.ops.object.editmode_toggle()
-    
+
     # Return the volume 
-    return volume
+    return bm.calc_volume()
     
     
 ####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
 def parse_command_line_arguments():
+    """Parser
+
+    :return:
+        Parsed arguments.
+    """
 
     # Create an argument parser, and then add the options one by one
     parser = argparse.ArgumentParser(sys.argv)
@@ -453,19 +464,26 @@ if __name__ == "__main__":
         mesh_object = import_ply_file(args.mesh)
     elif '.obj' == file_extension:
         mesh_object = import_obj_file(args.mesh)
+    else:
+        print('Unsupported file format! Exiting')
+        mesh_object = None
+        exit(0)
         
     # Set the current object to be the active object
     set_active_object(mesh_object)
     
     # Compute the bounding box
     bbox = compute_bounding_box(mesh_object)
-    
+
+    print('\tNumber Partitions')
+    number_partitions = compute_number_partitions(mesh_object)
+
     # Switch to geometry or edit mode from the object mode
     bpy.ops.object.editmode_toggle()
-    
+
     # Convert the mesh into a bmesh
     bm = convert_from_mesh_object(mesh_object)
-    
+
     # Compute the surface area
     print('\tSurface Area')
     surface_area = compute_surface_area(bm)
@@ -496,19 +514,29 @@ if __name__ == "__main__":
     input_file_name = ntpath.basename(args.mesh)
     
     info_file = open('%s/%s.info' % (args.output_directory, input_file_name), 'w')
-    info_file = open('%s/%s.info' % (args.output_directory, input_file_name), 'w')
-    info_file.write('Bounding Box Size = %f %f %f \n' % (bbox.x, bbox.y, bbox.z))
-    info_file.write('Bounding Box Diagonal = %f \n' % bbox.diagonal)
-    info_file.write('Number Polygons = %d \n' % polygons)
-    info_file.write('Number Vertices = %d \n' % vertices)
-    info_file.write('Surface Area = %f \n' % surface_area)
-    info_file.write('Volume = %f \n' % volume)
-    info_file.write('Watertight: %s \n' % str(watertight_check.watertight))
-    info_file.write('Non Manifold Edges: %s \n' % str(watertight_check.non_manifold_edges))
-    info_file.write('Non Manifold Vertices: %s \n' % str(watertight_check.non_manifold_vertices))
-    info_file.write('Non Continious Edges: %s \n' % str(watertight_check.non_contiguous_edge))
-    info_file.write('Self-intersecting: %s \n' % str(watertight_check.self_intersections))
+    info_file.write('Stats. \n')
+    info_file.write('\t* Bounding Box:         | [%f %f %f] \n'
+                    % (bbox.x, bbox.y, bbox.z))
+    info_file.write('\t* BBox Diagonal:        | [%f] \n'
+                    % bbox.diagonal)
+    info_file.write('\t* Number Partitions:    | [%d] \n'
+                    % number_partitions)
+    info_file.write('\t* Number Triangles      | [%d] \n'
+                    % polygons)
+    info_file.write('\t* Number Vertices       | [%d] \n'
+                    % vertices)
+    info_file.write('\t* Surface Area          | [%f] \n'
+                    % surface_area)
+    info_file.write('\t* Volume                | [%f] \n'
+                    % volume)
+    info_file.write('\t* Watertight:           | [%s] \n'
+                    % str(watertight_check.watertight))
+    info_file.write('\t* Non Manifold Edges    | [%s] \n'
+                    % str(watertight_check.non_manifold_edges))
+    info_file.write('\t* Non Manifold Vertices | [%s] \n'
+                    % str(watertight_check.non_manifold_vertices))
+    info_file.write('\t* Non Continuous Edges  | [%s] \n'
+                    % str(watertight_check.non_contiguous_edge))
+    info_file.write('\t* Self-intersections    | [%s] \n'
+                    % str(watertight_check.self_intersections))
     info_file.close()
-
-
-

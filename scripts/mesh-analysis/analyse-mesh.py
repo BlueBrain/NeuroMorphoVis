@@ -1,7 +1,21 @@
-#!/usr/bin/python
+####################################################################################################
+# Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
 
-import sys, os
-import subprocess, shutil
+import subprocess
 import argparse
 
 
@@ -18,7 +32,7 @@ def parse_command_line_arguments():
     parser.add_argument('--mesh', action='store', help=arg_help)
     
     # Blender
-    arg_help = 'Blender'
+    arg_help = 'Blender executable, at least version 2.80!'
     parser.add_argument('--blender', action='store', default='blender', help=arg_help)
                         
     # Output directory
@@ -38,8 +52,8 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Output arguments 
-    args_string = '--mesh=%s ' % (args.mesh)
-    args_string += '--output-directory=%s ' % (args.output_directory)
+    args_string = '--mesh=%s ' % args.mesh
+    args_string += '--output-directory=%s ' % args.output_directory
 
     # Setup the shell command
     shell_command = '%s -b --verbose 0 --python %s -- %s' % (args.blender, 'core.py', args_string)

@@ -1,3 +1,19 @@
+####################################################################################################
+# Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
 
 import sys, os
 import subprocess, shutil, time
@@ -17,7 +33,7 @@ class SlurmConfiguration:
         """
 
         # Job name
-        self.job_name = 'NMV'
+        self.job_name = 'NMV-Analysis'
 
         # Job number
         self.job_number = 0
@@ -44,9 +60,6 @@ class SlurmConfiguration:
         self.profile = '. /etc/profile'
 
         # Modules
-        # self.modules = ['nix/python/3.6-full',
-        #                 'nix/blender/2.79-nantille',
-        #                 'nix/viz/brion-py3/3.0-dev2017.10']
         self.modules = ['gcc/6.2.0']
 
         # Execution directory where the scripts will run
