@@ -89,7 +89,7 @@ class PiecewiseBuilder:
         self.axons_meshes = list()
 
         # Statistics
-        self.profiling_statistics = 'PiecewiseBuilder Mesh Stats.: \n'
+        self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'

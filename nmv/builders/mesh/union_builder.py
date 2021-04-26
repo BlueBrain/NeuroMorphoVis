@@ -72,7 +72,7 @@ class UnionBuilder:
         self.soma_mesh = None
 
         # Statistics
-        self.profiling_statistics = 'UnionBuilder Mesh Stats.: \n'
+        self.profiling_statistics = 'UnionBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'

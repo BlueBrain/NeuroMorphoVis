@@ -87,7 +87,7 @@ class SkinningBuilder:
         self.neuron_meshes = list()
 
         # Statistics
-        self.profiling_statistics = 'SkinningBuilder Mesh Stats.: \n'
+        self.profiling_statistics = 'SkinningBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
