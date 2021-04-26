@@ -175,19 +175,21 @@ def montage_important_distributions_into_one_image(name,
                                                    input_directory,
                                                    output_directory,
                                                    delta=100):
-
     # Split them in two groups
     group_1 = list()
+    group_2 = list()
 
     # Get the images one by one
+
     group_1.append(get_image(distribution_images, 'min-angle'))
     group_1.append(get_image(distribution_images, 'max-angle'))
-    group_1.append(get_image(distribution_images, 'radius-ratio'))
-    group_1.append(get_image(distribution_images, 'edge-ratio'))
-    group_1.append(get_image(distribution_images, 'radius-to-edge-ratio'))
+    group_1.append(get_image(distribution_images, 'triangle-shape'))
 
-    # group_1.append(get_image(distribution_images, 'relative-size'))
-    # group_2.append(get_image(distribution_images, 'triangle-shape'))
+    group_2.append(get_image(distribution_images, 'radius-ratio'))
+    group_2.append(get_image(distribution_images, 'radius-to-edge-ratio'))
+    group_2.append(get_image(distribution_images, 'edge-ratio'))
+
+    # group_2.append(get_image(distribution_images, 'relative-size'))
     # group_2.append(get_image(distribution_images, 'scaled-jacobian'))
 
     # group_1.append(get_image(distribution_images, 'condition-number'))
@@ -200,7 +202,7 @@ def montage_important_distributions_into_one_image(name,
     # Vertical
     # Compute the dimensions of the new image
     total_width = (width * 2) + (delta * 1)
-    total_height = (height * 4) + (delta * 3)
+    total_height = (height * 3) + (delta * 2)
 
     new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
     for i, distribution_image in enumerate(group_1):
@@ -208,19 +210,29 @@ def montage_important_distributions_into_one_image(name,
         h = 0 if i == 0 else i * (height + delta)
         new_im.paste(im, (0, h))
 
+    for i, distribution_image in enumerate(group_2):
+        im = Image.open('%s/%s' % (output_directory, distribution_image))
+        h = 0 if i == 0 else i * (height + delta)
+        new_im.paste(im, (width + delta, h))
+
     vertical_image_path = '%s/%s-vertical.png' % (output_directory, name)
     new_im.save(vertical_image_path)
 
     # Horizontal
     # Compute the dimensions of the new image
-    total_width = (width * 5) + (delta * 4)
-    total_height = height
+    total_width = (width * 3) + (delta * 2)
+    total_height = height * 2 + (delta * 1)
 
     new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
     for i, distribution_image in enumerate(group_1):
         im = Image.open('%s/%s' % (output_directory, distribution_image))
         w = 0 if i == 0 else i * (width + delta)
         new_im.paste(im, (w, 0))
+
+    for i, distribution_image in enumerate(group_2):
+        im = Image.open('%s/%s' % (output_directory, distribution_image))
+        w = 0 if i == 0 else i * (width + delta)
+        new_im.paste(im, (w, height + delta))
 
     horizontal_image_path = '%s/%s-horizontal.png' % (output_directory, name)
     new_im.save(horizontal_image_path)
@@ -554,35 +566,34 @@ def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, imag
     drawing_area = ImageDraw.Draw(statistics_image)
 
     # Select a font
-    font = ImageFont.truetype(
-        '/ssd1/blender/bluebrain-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/mesh-analysis/fonts/NimbusSanL-Bold.ttf',
-        int(spacing * 0.8))
+    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/NimbusSanL-Regu.ttf'
+    font = ImageFont.truetype(font_path, int(spacing * 0.8))
 
     # Compute the offsets
-    starting_x = int(0.05 * image_width)
-    delta_x = starting_x + int(image_width * 0.54)
+    starting_x = int(0.04 * image_width)
+    delta_x = starting_x + int(image_width * 0.5)
 
-    i = 0.8
+    i = 0.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Polygons', font=font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Number Polygons', font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % polygons, font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Vertices', font=font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Number Vertices', font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % vertices, font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Bounding Box Dimensions', font=font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Bounding Box', font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y),
                       '%2.2f x %2.2f x %2.2f' % (mesh_bbox.x, mesh_bbox.y, mesh_bbox.z),
                       font=font, fill=(0, 0, 0))
 
-    i += 1
+    i += 1.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Diagonal', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%f' % mesh_bbox.diagonal, font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%2.2f' % mesh_bbox.diagonal, font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
@@ -602,35 +613,35 @@ def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, imag
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Mesh Partitions',
+    drawing_area.text((starting_x, delta_y), 'Number Mesh Partitions',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % number_partitions,
                       font=font, fill=(0, 0, 0))
 
-    i += 1.0
+    i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Edges',
+    drawing_area.text((starting_x, delta_y), 'Number Non Manifold Edges',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_edges,
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Vertices',
+    drawing_area.text((starting_x, delta_y), 'Number Non Manifold Vertices',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_vertices,
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Non Continuous Edges',
+    drawing_area.text((starting_x, delta_y), 'Number Non Continuous Edges',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_contiguous_edge,
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Self Intersections',
+    drawing_area.text((starting_x, delta_y), 'Number Self Intersections',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), '%d' % watertight_check.self_intersections,
                       font=font, fill=(0, 0, 0))
