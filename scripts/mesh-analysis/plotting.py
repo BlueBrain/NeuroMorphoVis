@@ -15,6 +15,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+import bpy
+import bmesh
+
+# Internal imports
+import nmv.scene
+
 # System imports
 import os
 import numpy
@@ -22,12 +29,16 @@ import seaborn
 import pandas
 import matplotlib
 import matplotlib.pyplot as pyplot
-import matplotlib.font_manager
+import matplotlib.font_manager as font_manager
 import matplotlib.ticker
+import colorsys
 from matplotlib.ticker import PercentFormatter
 from matplotlib.ticker import FormatStrFormatter
 from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
+import core
 
 ####################################################################################################
 # Per-adjust all the plotting configuration
@@ -37,6 +48,7 @@ pyplot.rcParams['axes.grid'] = 'True'
 pyplot.rcParams['grid.linestyle'] = '-'
 pyplot.rcParams['grid.linewidth'] = 2
 pyplot.rcParams['font.family'] = 'NimbusSanL'
+#pyplot.rcParams['font.family'] = 'Helvetica LT Std'
 pyplot.rcParams['font.monospace'] = 'Bold'
 pyplot.rcParams['font.style'] = 'normal'
 pyplot.rcParams['axes.linewidth'] = 0.0
@@ -85,9 +97,6 @@ def get_largest_dimensions_of_all_images(directory, images_list):
 def verify_plotting_packages():
     """Verifies that all the plotting packages are installed. Otherwise, install the missing one.
     """
-
-    import matplotlib
-    from matplotlib import font_manager
 
     # Import the fonts
     font_dirs = [os.path.dirname(os.path.realpath(__file__)) + '/fonts/']
@@ -161,6 +170,68 @@ def create_adjusted_plot_images(input_directory, list_images, output_directory):
 ####################################################################################################
 # @create_adjusted_plot_images
 ####################################################################################################
+def montage_important_distributions_into_one_image(name,
+                                                   distribution_images,
+                                                   input_directory,
+                                                   output_directory,
+                                                   delta=100):
+
+    # Split them in two groups
+    group_1 = list()
+
+    # Get the images one by one
+    group_1.append(get_image(distribution_images, 'min-angle'))
+    group_1.append(get_image(distribution_images, 'max-angle'))
+    group_1.append(get_image(distribution_images, 'radius-ratio'))
+    group_1.append(get_image(distribution_images, 'edge-ratio'))
+    group_1.append(get_image(distribution_images, 'radius-to-edge-ratio'))
+
+    # group_1.append(get_image(distribution_images, 'relative-size'))
+    # group_2.append(get_image(distribution_images, 'triangle-shape'))
+    # group_2.append(get_image(distribution_images, 'scaled-jacobian'))
+
+    # group_1.append(get_image(distribution_images, 'condition-number'))
+    # group_2.append(get_image(distribution_images, 'triangle-size-shape'))
+
+    # Get the dimensions from any image, all the images must have the same dimensions
+    any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'min-angle')))
+    width, height = any_image.size
+
+    # Vertical
+    # Compute the dimensions of the new image
+    total_width = (width * 2) + (delta * 1)
+    total_height = (height * 4) + (delta * 3)
+
+    new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+    for i, distribution_image in enumerate(group_1):
+        im = Image.open('%s/%s' % (output_directory, distribution_image))
+        h = 0 if i == 0 else i * (height + delta)
+        new_im.paste(im, (0, h))
+
+    vertical_image_path = '%s/%s-vertical.png' % (output_directory, name)
+    new_im.save(vertical_image_path)
+
+    # Horizontal
+    # Compute the dimensions of the new image
+    total_width = (width * 5) + (delta * 4)
+    total_height = height
+
+    new_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+    for i, distribution_image in enumerate(group_1):
+        im = Image.open('%s/%s' % (output_directory, distribution_image))
+        w = 0 if i == 0 else i * (width + delta)
+        new_im.paste(im, (w, 0))
+
+    horizontal_image_path = '%s/%s-horizontal.png' % (output_directory, name)
+    new_im.save(horizontal_image_path)
+
+    # Return reference to the vertical and horizontal images
+    return vertical_image_path, horizontal_image_path
+
+
+####################################################################################################
+# @create_adjusted_plot_images
+####################################################################################################
 def montage_distributions_into_one_image(name,
                                          distribution_images,
                                          input_directory,
@@ -187,7 +258,7 @@ def montage_distributions_into_one_image(name,
     # group_2.append(get_image(distribution_images, 'triangle-size-shape'))
 
     # Get the dimensions from any image, all the images must have the same dimensions
-    any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'edge-ratio')))
+    any_image = Image.open('%s/%s' % (input_directory, get_image(distribution_images, 'min-angle')))
     width, height = any_image.size
 
     # Vertical
@@ -339,14 +410,12 @@ def lighten_color(color, amount=1.0):
     Input can be matplotlib color string, hex string, or RGB tuple.
     """
 
-    import matplotlib.colors as mc
-    import colorsys
     try:
-        c = mc.cnames[color]
+        actual_color = matplotlib.colors.cnames[color]
     except:
-        c = color
-    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
-    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+        actual_color = color
+    actual_color = colorsys.rgb_to_hls(*matplotlib.colors.to_rgb(actual_color))
+    return colorsys.hls_to_rgb(actual_color[0], 1 - amount * (1 - actual_color[1]), actual_color[2])
 
 
 ####################################################################################################
@@ -422,6 +491,156 @@ def plot_distributions(keyword,
 
 
 ####################################################################################################
+# @create_mesh_statistics_image
+####################################################################################################
+def create_mesh_statistics_image(mesh_object, mesh_name, output_image_path, image_resolution=1500):
+
+    # Set the current object to be the active object
+    nmv.scene.set_active_object(mesh_object)
+
+    # Compute the bounding box
+    mesh_bbox = core.compute_bounding_box(mesh_object)
+
+    print('\tNumber Partitions')
+    number_partitions = core.compute_number_partitions(mesh_object)
+
+    # Switch to geometry or edit mode from the object mode
+    bpy.ops.object.editmode_toggle()
+
+    # Convert the mesh into a bmesh
+    bm = core.convert_from_mesh_object(mesh_object)
+
+    # Compute the surface area
+    print('\tSurface Area')
+    surface_area = core.compute_surface_area(bm)
+
+    # Compute the volume
+    print('\tVolume')
+    volume = core.compute_volume(bm)
+
+    # Compute the number of polygons
+    print('\tNumber Polygons')
+    polygons = core.compute_number_polygons(bm)
+
+    # Compute the number of vertices
+    print('\tVertices')
+    vertices = core.compute_number_vertices(bm)
+
+    # Is it watertight
+    print('\tWatertightness')
+    watertight_check = core.check_watertightness(bm)
+
+    # Free the bmesh
+    bm.free()
+
+    # Switch to geometry or edit mode from the object mode
+    bpy.ops.object.editmode_toggle()
+
+    # We have 12 entries in the image
+    number_entries = 13
+
+    # Image dimensions
+    image_width = int(image_resolution / 0.6)
+    image_height = image_resolution
+
+    # Calculate the spacing between items
+    spacing = int(image_width / (number_entries * 1.0 * 2.0))
+
+    # Create stats. image
+    statistics_image = Image.new("RGB", (image_width, image_height),
+                                 (255, 255, 255))
+
+    # Create a drawing area
+    drawing_area = ImageDraw.Draw(statistics_image)
+
+    # Select a font
+    font = ImageFont.truetype(
+        '/ssd1/blender/bluebrain-blender-2.82/blender-neuromorphovis/2.82/scripts/addons/neuromorphovis/scripts/mesh-analysis/fonts/NimbusSanL-Bold.ttf',
+        int(spacing * 0.8))
+
+    # Compute the offsets
+    starting_x = int(0.05 * image_width)
+    delta_x = starting_x + int(image_width * 0.54)
+
+    i = 0.8
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Polygons', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % polygons, font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Vertices', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % vertices, font=font, fill=(0, 0, 0))
+
+    i += 1.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Bounding Box Dimensions', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y),
+                      '%2.2f x %2.2f x %2.2f' % (mesh_bbox.x, mesh_bbox.y, mesh_bbox.z),
+                      font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Bounding Box Diagonal', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%f' % mesh_bbox.diagonal, font=font, fill=(0, 0, 0))
+
+    i += 1.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Total Surface Area', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%f' % surface_area, font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Total Volume', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%f' % volume, font=font, fill=(0, 0, 0))
+
+    i += 1.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Watertight', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), str(watertight_check.watertight),
+                      font=font, fill=(0, 0, 0))
+
+    i += 1.5
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Mesh Partitions',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % number_partitions,
+                      font=font, fill=(0, 0, 0))
+
+    i += 1.0
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Edges',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_edges,
+                      font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Non Manifold Vertices',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_manifold_vertices,
+                      font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Non Continuous Edges',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.non_contiguous_edge,
+                      font=font, fill=(0, 0, 0))
+
+    i += 1
+    delta_y = i * spacing
+    drawing_area.text((starting_x, delta_y), 'Number of Self Intersections',
+                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%d' % watertight_check.self_intersections,
+                      font=font, fill=(0, 0, 0))
+
+    stats_image_path = '%s/%s-blender-stats.png' % (output_image_path, mesh_name)
+    statistics_image.save(stats_image_path)
+    return stats_image_path
+
+
+####################################################################################################
 # @plot_mesh_stats
 ####################################################################################################
 def plot_mesh_stats(name,
@@ -451,7 +670,7 @@ def plot_mesh_stats(name,
                                 list_images=distributions_pngs,
                                 output_directory=output_directory)
 
-    vertical_image, horizontal_image = montage_distributions_into_one_image(
+    vertical_image, horizontal_image = montage_important_distributions_into_one_image(
         name=name, input_directory=output_directory, distribution_images=distributions_pngs,
         output_directory=output_directory)
 
@@ -585,6 +804,7 @@ def combine_skinned_with_optimized_with_artistic(skinned_horizontal_image_path,
     combined_im = Image.new('RGB', 
         (optimized_im.size[0] + delta + artistic_white_im.size[0], 
         (optimized_im.size[1] * 2) + delta), (255, 255, 255))
+
     combined_im.paste(artistic_white_im, (0, 0))
     combined_im.paste(skinned_im, (artistic_white_im.size[0] + delta, 0))
     combined_im.paste(optimized_im, (artistic_white_im.size[0] + delta, optimized_im.size[1] + delta))
