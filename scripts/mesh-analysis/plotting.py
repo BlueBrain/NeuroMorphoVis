@@ -715,7 +715,7 @@ def create_mesh_fact_sheet(mesh_object,
     drawing_area = ImageDraw.Draw(fact_sheet_image)
 
     # Select a font
-    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/HelveticaLTStd-Cond.otf'
+    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/1H.otf'
     font = ImageFont.truetype(font_path, int(spacing * 0.8))
     footnote_font = ImageFont.truetype(font_path, int(spacing * 0.45))
 
@@ -740,36 +740,36 @@ def create_mesh_fact_sheet(mesh_object,
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Width', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.x),
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.x),
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Height', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.y),
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.y),
                       font=font, fill=(0, 0, 0))
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Depth', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.z),
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.z),
                       font=font, fill=(0, 0, 0))
 
     i += 1.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Diagonal', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), format_number_to_power_string(mesh_bbox.diagonal),
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.diagonal),
                       font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Total Surface Area', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s U²' % format_number_to_power_string(surface_area),
+    drawing_area.text((delta_x, delta_y), '%s μm²' % format_number_to_power_string(surface_area),
                       font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Total Volume*', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s U³' % format_number_to_power_string(volume),
+    drawing_area.text((delta_x, delta_y), '%s μm³' % format_number_to_power_string(volume),
                       font=font, fill=(0, 0, 0))
 
     i += 1.5
