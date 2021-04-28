@@ -20,10 +20,10 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/input-meshes'
+INPUT_MESH='/ssd3/scratch/2021.04.26-mesh-analysis/L6_NGC-simple.obj'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/output'
+OUTPUT_DIRECTORY='/ssd3/scratch/2021.04.26-mesh-analysis/output'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='yes'
@@ -51,8 +51,8 @@ if [ "$ARTISTIC" == "yes" ];
     then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
 echo 'CREATING MESH RENDERING ...'
-$BLENDER -b --verbose 0 --python render-meshes.py --                                                  \
-    --input-directory=$INPUT_DIRECTORY                                                              \
+$BLENDER -b --verbose 0 --python create-analysis-plot.py --                                         \
+    --input-mesh=$INPUT_MESH                                                                        \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --mesh-color=$MESH_COLOR                                                                        \
     --resolution=$IMAGE_RESOLUTION                                                                  \

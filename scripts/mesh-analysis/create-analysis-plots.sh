@@ -20,13 +20,15 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_MESH='/ssd3/scratch/2021.04.26-mesh-analysis/L6_NGC-simple.obj'
+INPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/input-meshes'
+INPUT_DIRECTORY='/ssd2/papers-in-progress/microglia/astrocytes/meshes'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd3/scratch/2021.04.26-mesh-analysis/output'
+OUTPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/output'
+OUTPUT_DIRECTORY='/ssd2/papers-in-progress/microglia/astrocytes/meshes'
 
 # Render artistic image, yes or no
-RENDER_ARTISTIC='yes'
+RENDER_ARTISTIC='no'
 
 # Mesh color
 MESH_COLOR='0.9_0.125_0.150'
@@ -38,7 +40,7 @@ WIREFRAME_THICKNESS='0.075'
 IMAGE_RESOLUTION='5000'
 
 # Export Blender scenes
-EXPORT_BLENDER_SCENE='yes'
+EXPORT_BLENDER_SCENE='no'
 
 # ultraQualityChecker executable
 QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker '
@@ -51,8 +53,8 @@ if [ "$ARTISTIC" == "yes" ];
     then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
 echo 'CREATING MESH RENDERING ...'
-$BLENDER -b --verbose 0 --python render-mesh.py --                                                  \
-    --input-mesh=$INPUT_MESH                                                                        \
+$BLENDER -b --verbose 0 --python create-analysis-plot.py --                                         \
+    --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --mesh-color=$MESH_COLOR                                                                        \
     --resolution=$IMAGE_RESOLUTION                                                                  \

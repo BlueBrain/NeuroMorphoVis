@@ -31,6 +31,7 @@ import matplotlib.font_manager as font_manager
 import matplotlib.ticker
 import colorsys
 from matplotlib.ticker import PercentFormatter
+from matplotlib.ticker import FuncFormatter
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
@@ -41,23 +42,27 @@ import core
 ####################################################################################################
 # Per-adjust all the plotting configuration
 ####################################################################################################
+font_size = 42
 seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
-pyplot.rcParams['grid.linestyle'] = '-'
-pyplot.rcParams['grid.linewidth'] = 2
-pyplot.rcParams['font.family'] = 'Helvetica LT Std' # 'NimbusSanL'
-pyplot.rcParams['font.monospace'] = 'Bold'
+pyplot.rcParams['grid.linestyle'] = '--'
+pyplot.rcParams['grid.linewidth'] = 2.0
+pyplot.rcParams['grid.color'] = 'gray'
+pyplot.rcParams['grid.alpha'] = 0.5
+pyplot.rcParams['font.family'] = 'Helvetica LT Std'
+# pyplot.rcParams['font.family'] = 'NimbusSanL'
+pyplot.rcParams['font.monospace'] = 'Regular'
 pyplot.rcParams['font.style'] = 'normal'
-pyplot.rcParams['axes.linewidth'] = 0.0
-pyplot.rcParams['axes.labelsize'] = 50
+pyplot.rcParams['axes.linewidth'] = 1.0
+pyplot.rcParams['axes.labelsize'] = font_size
 pyplot.rcParams['axes.labelweight'] = 'bold'
-pyplot.rcParams['xtick.labelsize'] = 50
-pyplot.rcParams['ytick.labelsize'] = 50
-pyplot.rcParams['legend.fontsize'] = 50
-pyplot.rcParams['figure.titlesize'] = 50
-pyplot.rcParams['axes.titlesize'] = 50
-pyplot.rcParams['xtick.major.pad'] = '20'
-pyplot.rcParams['ytick.major.pad'] = '12'
+pyplot.rcParams['xtick.labelsize'] = font_size
+pyplot.rcParams['ytick.labelsize'] = font_size
+pyplot.rcParams['legend.fontsize'] = font_size
+pyplot.rcParams['figure.titlesize'] = font_size
+pyplot.rcParams['axes.titlesize'] = font_size
+pyplot.rcParams['xtick.major.pad'] = '10'
+pyplot.rcParams['ytick.major.pad'] = '0'
 pyplot.rcParams['axes.edgecolor'] = '1'
 
 
@@ -252,8 +257,8 @@ def montage_important_distributions_into_one_image(name,
     group_1.append(get_image(distribution_images, 'max-angle'))
     group_1.append(get_image(distribution_images, 'triangle-shape'))
 
-    group_2.append(get_image(distribution_images, 'edge-ratio'))
     group_2.append(get_image(distribution_images, 'radius-ratio'))
+    group_2.append(get_image(distribution_images, 'edge-ratio'))
     group_2.append(get_image(distribution_images, 'radius-to-edge-ratio'))
 
     # Get the dimensions from any image, all the images must have the same dimensions
@@ -385,7 +390,7 @@ def plot_distribution(input_directory,
                       title,
                       plot_titles=True,
                       xmax=100,
-                      decimals=1,
+                      decimals=2,
                       kde=False,
                       color='b',
                       invert=False,
@@ -428,30 +433,41 @@ def plot_distribution(input_directory,
 
     # Clear figure
     pyplot.clf()
+
     # Get the data list
     data = read_dist_file('%s/%s' % (input_directory, dist_file), invert=invert)
+
+    # Min and max values
+    min_value = min(data)
+    max_value = max(data)
+    major_ticks = numpy.linspace(min_value, max_value, 4)
 
     # Convert the data to numpy array
     np_data = numpy.array(data)
 
     # Adjusting the figure size
-    pyplot.figure(figsize=(10, 10))
+    pyplot.figure(figsize=(10, 5))
+    pyplot.tight_layout()
 
     # Set the title inside the figure to save some space
     if plot_titles:
         pyplot.title(title, y=1.05)
 
     # Plot the histogram
-    seaborn.distplot(np_data, color='r', hist=True, kde=kde, norm_hist=True, bins=40,
-                     hist_kws={"color": color, "lw": 0.5},
-                     kde_kws={"color": color, "lw": 0.5})
+    ax = seaborn.histplot(np_data, color=color, bins=40, alpha=0.95, stat="probability")
 
-    # Percent formatter
+    # Formatters
     pyplot.gca().yaxis.set_major_formatter(
         PercentFormatter(xmax=xmax, decimals=decimals, symbol='%'))
+    pyplot.gca().xaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:2.2f}'.format(y)))
+
+    # No label
+    pyplot.ylabel('')
 
     # Adjust the Y-axis format
-    pyplot.gca().xaxis.set_major_locator(pyplot.MaxNLocator(4))
+    ax.set_xticks(major_ticks)
+
+    # pyplot.gca().xaxis.set_major_locator(pyplot.MaxNLocator(5))
     pyplot.gca().yaxis.set_major_locator(pyplot.MaxNLocator(4))
 
     # Image prefix
@@ -532,7 +548,7 @@ def plot_distributions(keyword,
     """
 
     # Get the colormap
-    colors = seaborn.color_palette("brg", 10)
+    colors = seaborn.color_palette("deep", 8)
 
     print('  * Plotting Distributions')
 
@@ -543,51 +559,59 @@ def plot_distributions(keyword,
         if keyword in distribution:
 
             if 'min-angle' in distribution:
+                c = colors[0]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Min. Dihedral Angle$^\circ$', xmax=1, color=color,
+                    title='Min. Dihedral Angle$^\circ$', xmax=1, color=c,
                     kde=use_kde, plot_titles=plot_titles))
 
             if 'max-angle' in distribution:
+                c = colors[1]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Max. Dihedral Angle$^\circ$', xmax=1, color=color,
+                    title='Max. Dihedral Angle$^\circ$', xmax=1, color=c,
                     kde=use_kde, plot_titles=plot_titles))
 
             if 'radius-ratio' in distribution:
+                c = colors[2]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Radius Ratio', color=color, kde=use_kde,
+                    title='Radius Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
             if 'edge-ratio' in distribution:
+                c = colors[3]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Edge Ratio', color=color, kde=use_kde,
+                    title='Edge Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
             if 'radius-to-edge-ratio' in distribution:
+                c = colors[4]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Radius to Edge Ratio', color=color, kde=use_kde,
+                    title='Radius to Edge Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
             if 'triangle-shape' in distribution:
+                c = colors[5]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Shape', color=color, kde=use_kde,
+                    title='Shape', color=c, kde=use_kde,
                     plot_titles=plot_titles))
 
             if 'relative-size' in distribution:
+                c = colors[6]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Relative Size', color=color, kde=use_kde,
+                    title='Relative Size', color=c, kde=use_kde,
                     plot_titles=plot_titles))
 
             if 'scaled-jacobian' in distribution:
+                c = colors[7]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
-                    title='Scaled Jacobian', color=color, kde=use_kde,
+                    title='Scaled Jacobian', color=c, kde=use_kde,
                     plot_titles=plot_titles))
 
     # Return a reference to the images
@@ -689,7 +713,7 @@ def create_mesh_fact_sheet(mesh_object,
 
     # Is it watertight
     print('\t* Validating Watertightness')
-    watertight_check = core.check_watertightness(bm)
+    watertight_check = core.check_watertightness(bm, number_partitions)
 
     # Free the bmesh
     bm.free()
@@ -698,10 +722,10 @@ def create_mesh_fact_sheet(mesh_object,
     bpy.ops.object.editmode_toggle()
 
     # We have 12 entries in the image
-    number_entries = 17
+    number_entries = 15
 
     # Image dimensions
-    image_width = int(image_resolution * 0.9)
+    image_width = int(image_resolution * 1.05)
     image_height = image_resolution
 
     # Calculate the spacing between items
@@ -724,10 +748,6 @@ def create_mesh_fact_sheet(mesh_object,
     delta_x = starting_x + int(image_width * 0.65)
 
     i = 0.5
-    delta_y = i * spacing
-    drawing_area.text((int(0.02 * image_width), delta_y), 'Fact Sheet', font=font, fill=(0, 0, 0))
-
-    i = 2.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Number of Polygons', font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), f'{polygons:,d}', font=font, fill=(0, 0, 0))
@@ -808,7 +828,7 @@ def create_mesh_fact_sheet(mesh_object,
 
     i += 1
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Number of Self Intersections**',
+    drawing_area.text((starting_x, delta_y), 'Number of Self Intersections',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), f'{watertight_check.self_intersections:,d}',
                       font=font, fill=(0, 0, 0))
@@ -818,12 +838,12 @@ def create_mesh_fact_sheet(mesh_object,
     drawing_area.text((starting_x, delta_y),
                       '* The value of the total volume is correct if the mesh is watertight.',
                       font=footnote_font, fill=(0, 0, 0))
-    i += 0.5
-    delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y),
-                      '** If this value is similar to the Number Mesh Partitions, then it '
-                      'has no self intersections.',
-                      font=footnote_font, fill=(0, 0, 0))
+    # i += 0.5
+    # delta_y = i * spacing
+    # drawing_area.text((starting_x, delta_y),
+    #                 '** If this value is similar to the Number of Mesh Partitions, then it '
+    #                 'has no self intersections.',
+    #                 font=footnote_font, fill=(0, 0, 0))
 
     fact_sheet_image_path = '%s/%s-fact-sheet.png' % (output_image_path, mesh_name)
     fact_sheet_image.save(fact_sheet_image_path)

@@ -21,6 +21,7 @@ import os
 import argparse
 import subprocess
 import shutil
+import seaborn
 
 # Blender imports
 import bpy
@@ -272,6 +273,19 @@ def process_mesh(arguments,
 
     # Create a simple shader
     color = nmv.utilities.parse_color_from_argument(mesh_color)
+
+    # Palette colors
+    pcolors = seaborn.color_palette("deep", 8)
+
+    if 'dmc' in mesh_name:
+        color = Vector((pcolors[3][0], pcolors[3][1], pcolors[3][2]))
+    elif 'optimized' in mesh_name:
+        color = Vector((pcolors[2][0], pcolors[2][1], pcolors[2][2]))
+    elif 'watertight' in mesh_name:
+        color = Vector((pcolors[0][0], pcolors[0][1], pcolors[0][2]))
+    else:
+        color = Vector((pcolors[7][0], pcolors[7][1], pcolors[7][2]))
+
     mesh_material = nmv.shading.create_lambert_ward_material(
         name='mesh-color-%s' % mesh_name, color=color)
 
@@ -322,7 +336,7 @@ def process_mesh(arguments,
         name=mesh_name,
         distributions_directory=stats_output_directory,
         output_directory=panels_directory,
-        color=(color[0] * 0.75, color[1] * 0.75, color[2] * 0.75))
+        color=(color[0], color[1], color[2]))
 
     # Plot the statistics image
     fact_sheet_image = create_mesh_fact_sheet_with_distribution(
