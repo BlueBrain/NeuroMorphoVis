@@ -22,10 +22,12 @@ BLENDER=$PWD/../../../../../../blender
 # Input mesh
 INPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/input-meshes'
 INPUT_DIRECTORY='/ssd2/papers-in-progress/microglia/astrocytes/meshes'
+INPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/grouped-meshes/validated/meshes'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/output'
 OUTPUT_DIRECTORY='/ssd2/papers-in-progress/microglia/astrocytes/meshes'
+OUTPUT_DIRECTORY='/ssd2/papers-in-progress/kaust/grouped-meshes/validated/meshes/analysis'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='no'
@@ -53,7 +55,7 @@ if [ "$ARTISTIC" == "yes" ];
     then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
 echo 'CREATING MESH RENDERING ...'
-$BLENDER -b --verbose 0 --python create-analysis-plot.py --                                         \
+$BLENDER -b --verbose 0 --python create-analysis-plots.py --                                         \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --mesh-color=$MESH_COLOR                                                                        \

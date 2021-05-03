@@ -122,6 +122,7 @@ def get_random_spines_across_section(section,
     # Compute the number spines required to satisfy the distribution
     number_spines = int(section_length * number_of_spines_per_micron)
 
+    print(number_spines)
     # Ensure that the number of spines > 1
     if number_spines < 1:
         number_spines = 1

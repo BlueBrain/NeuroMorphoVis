@@ -38,8 +38,8 @@ class Meshing:
     # Default sides of a bevel object
     BEVEL_OBJECT_SIDES = 16
 
-    # The percentages of random spines added to the neuron
-    RANDOM_SPINES_PERCENTAGE = 50.0
+    # The number of spines per micron to be added to the neuron
+    NUMBER_SPINES_PER_MICRON = 10
 
     # PLY extension
     PLY_EXTENSION = '.ply'

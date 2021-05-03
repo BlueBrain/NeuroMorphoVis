@@ -69,8 +69,25 @@ class SimulationMeshRender:
         # A list of all the materials
         self.materials = list()
 
+        self.bounding_box = None
+
     ################################################################################################
-    # @__init__
+    # @get_bounding_box
+    ################################################################################################
+    def get_bounding_box(self):
+
+        # If the bounding box is computed before, return it and do not compute it again
+        if self.bounding_box is not None:
+            return self.bounding_box
+
+        # Compute the bounding box for the mesh
+        self.bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+        # Return the bounding box
+        return self.bounding_box
+
+    ################################################################################################
+    # @create_colormap_materials
     ################################################################################################
     def create_colormap_materials(self):
 
@@ -113,8 +130,7 @@ class SimulationMeshRender:
 
             # Material offset
             material_index = material_index + offset
-            if material_index > number_materials:
-                material_index = material_index - number_materials
+            material_index = material_index % number_materials
 
             # Assign the material index to the face
             face.material_index = material_index
@@ -129,7 +145,7 @@ class SimulationMeshRender:
                      camera_view=nmv.enums.Camera.View.FRONT):
 
         # Compute the bounding box for the mesh
-        bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+        bounding_box = self.get_bounding_box()
 
         # Render the image
         nmv.rendering.render(

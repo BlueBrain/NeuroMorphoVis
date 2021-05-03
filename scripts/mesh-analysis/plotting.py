@@ -548,7 +548,7 @@ def plot_distributions(keyword,
     """
 
     # Get the colormap
-    colors = seaborn.color_palette("deep", 8)
+    colors = seaborn.color_palette("flare", 6)
 
     print('  * Plotting Distributions')
 
@@ -572,43 +572,43 @@ def plot_distributions(keyword,
                     title='Max. Dihedral Angle$^\circ$', xmax=1, color=c,
                     kde=use_kde, plot_titles=plot_titles))
 
-            if 'radius-ratio' in distribution:
+            if 'triangle-shape' in distribution:
                 c = colors[2]
+                distributions_pngs.append(plot_distribution(
+                    input_directory, distribution, output_directory,
+                    title='Shape', color=c, kde=use_kde,
+                    plot_titles=plot_titles))
+
+            if 'radius-ratio' in distribution:
+                c = colors[3]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Radius Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
             if 'edge-ratio' in distribution:
-                c = colors[3]
+                c = colors[4]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Edge Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
             if 'radius-to-edge-ratio' in distribution:
-                c = colors[4]
+                c = colors[5]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Radius to Edge Ratio', color=c, kde=use_kde,
                     plot_titles=plot_titles, invert=True))
 
-            if 'triangle-shape' in distribution:
-                c = colors[5]
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Shape', color=c, kde=use_kde,
-                    plot_titles=plot_titles))
-
             if 'relative-size' in distribution:
-                c = colors[6]
+                c = colors[5]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Relative Size', color=c, kde=use_kde,
                     plot_titles=plot_titles))
 
             if 'scaled-jacobian' in distribution:
-                c = colors[7]
+                c = colors[5]
                 distributions_pngs.append(plot_distribution(
                     input_directory, distribution, output_directory,
                     title='Scaled Jacobian', color=c, kde=use_kde,
@@ -722,10 +722,10 @@ def create_mesh_fact_sheet(mesh_object,
     bpy.ops.object.editmode_toggle()
 
     # We have 12 entries in the image
-    number_entries = 15
+    number_entries = 14
 
     # Image dimensions
-    image_width = int(image_resolution * 1.05)
+    image_width = int(image_resolution * 1.15)
     image_height = image_resolution
 
     # Calculate the spacing between items
@@ -747,7 +747,7 @@ def create_mesh_fact_sheet(mesh_object,
     starting_x = int(0.04 * image_width)
     delta_x = starting_x + int(image_width * 0.65)
 
-    i = 0.5
+    i = 0.4
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Number of Polygons', font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), f'{polygons:,d}', font=font, fill=(0, 0, 0))
@@ -794,12 +794,6 @@ def create_mesh_fact_sheet(mesh_object,
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y), 'Watertight', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), 'Yes' if watertight_check.watertight else 'No',
-                      font=font, fill=(0, 0, 0))
-
-    i += 1.5
-    delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Number of Mesh Partitions',
                       font=font, fill=(0, 0, 0))
     drawing_area.text((delta_x, delta_y), f'{number_partitions:,d}',
@@ -835,9 +829,17 @@ def create_mesh_fact_sheet(mesh_object,
 
     i += 1.5
     delta_y = i * spacing
-    drawing_area.text((starting_x, delta_y),
-                      '* The value of the total volume is correct if the mesh is watertight.',
-                      font=footnote_font, fill=(0, 0, 0))
+    drawing_area.text((starting_x, delta_y), 'Watertight', font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), 'Yes' if watertight_check.watertight else 'No',
+                      font=font, fill=(0, 0, 0))
+
+    # i += 1.5
+    # delta_y = i * spacing
+    # drawing_area.text((starting_x, delta_y),
+    #                   '* The value of the total volume is exact if the mesh is watertight, '
+    #                   'otherwise approximation.',
+    #                   font=footnote_font, fill=(0, 0, 0))
+
     # i += 0.5
     # delta_y = i * spacing
     # drawing_area.text((starting_x, delta_y),

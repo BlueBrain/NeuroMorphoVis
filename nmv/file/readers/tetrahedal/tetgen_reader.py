@@ -15,6 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import os
 
 # Blender imports
 import bpy
@@ -167,6 +169,7 @@ class TetGenTetrahedralReader:
 
         # Add the vertices and faces
         for i, element in enumerate(self.elements):
+
             # Get the vertices
             v1 = self.nodes[element[0] - 1]
             v2 = self.nodes[element[1] - 1]
@@ -196,14 +199,17 @@ class TetGenTetrahedralReader:
             f3 = tetrahedral_bmesh.faces.new([v3, v4, v1])
             f4 = tetrahedral_bmesh.faces.new([v1, v4, v2])
 
+        # Get mesh base name
+        mesh_name = os.path.basename(self.node_file).split('.')[0]
+
         # Bmesh reconstructed
-        tetrahedral_mesh = bpy.data.meshes.new('Tetrahedron')
+        tetrahedral_mesh = bpy.data.meshes.new(mesh_name)
 
         # Convert to a mesh
         tetrahedral_bmesh.to_mesh(tetrahedral_mesh)
 
         # New object
-        tetrahedral_mesh_object = bpy.data.objects.new('Tetrahedron', tetrahedral_mesh)
+        tetrahedral_mesh_object = bpy.data.objects.new(mesh_name, tetrahedral_mesh)
 
         # Link it to the scene
         bpy.context.scene.collection.objects.link(tetrahedral_mesh_object)
@@ -256,10 +262,10 @@ class TetGenTetrahedralReader:
         return tetrahedral_mesh
 
     ################################################################################################
-    # @create_wire_frame_tetrahedral_mesh
+    # @create_wireframe_tetrahedral_mesh
     ################################################################################################
-    def create_wire_frame_tetrahedral_mesh(self,
-                                           wireframe_thickness=0.01):
+    def create_wireframe_tetrahedral_mesh(self,
+                                          wireframe_thickness=0.01):
         """Creates a wireframe mesh.
 
         :param wireframe_thickness:
@@ -274,3 +280,61 @@ class TetGenTetrahedralReader:
         # Apply the wireframe operator
         return nmv.mesh.create_wire_frame(
             mesh_object=simplified_tetrahedral_mesh, wireframe_thickness=wireframe_thickness)
+
+
+####################################################################################################
+# @import_tetgen_mesh
+####################################################################################################
+def import_tetgen_mesh(node_file,
+                       ele_file):
+    """Imports a tetgen mesh.
+
+    :param node_file:
+        Path to the node file.
+    :param ele_file:
+        Path to the element file.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.TetGenTetrahedralReader(node_file, ele_file)
+    return reader.create_tetrahedral_mesh()
+
+
+####################################################################################################
+# @import_tetgen_mesh_simplified
+####################################################################################################
+def import_tetgen_mesh_simplified(node_file,
+                                  ele_file):
+    """Imports a simplified tetrahedral mesh with no duplicate vertices. This will save a lot
+    of memory during the rendering process.
+
+    :param node_file:
+        Path to the node file.
+    :param ele_file:
+        Path to the element file.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.TetGenTetrahedralReader(node_file, ele_file)
+    return reader.create_simplified_tetrahedral_mesh()
+
+
+####################################################################################################
+# @import_tetgen_mesh_simplified
+####################################################################################################
+def import_tetgen_mesh_wireframe(node_file,
+                                 ele_file):
+    """Imports a tetgen file into a wireframe mesh.
+
+    :param node_file:
+        Path to the node file.
+    :param ele_file:
+        Path to the element file.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.TetGenTetrahedralReader(node_file, ele_file)
+    return reader.create_wireframe_tetrahedral_mesh()

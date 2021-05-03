@@ -505,9 +505,9 @@ class MetaBuilder:
         return valid_arbors
 
     ################################################################################################
-    # @build_spines_from_morphologies
+    # @build_spines
     ################################################################################################
-    def build_spines_from_morphologies(self):
+    def build_random_spines(self):
         """Builds integrated spines into the neuron meta-object that will be meshed and will be
         part of the neuron mesh.
         """
@@ -526,7 +526,8 @@ class MetaBuilder:
                     nmv.logger.detail(arbor.label)
 
                     spine_sections = spines_builder.get_spine_morphologies_for_arbor(
-                        arbor=arbor, number_spines_per_micron=2,
+                        arbor=arbor,
+                        number_spines_per_micron=self.options.mesh.number_spines_per_micron,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
                     # Construct the samples from segments
@@ -549,6 +550,18 @@ class MetaBuilder:
 
         # Clean the unwanted data from the spines builder
         spines_builder.clean_unwanted_data()
+
+    def build_circuit_spines(self):
+        return
+
+    def build_spines(self):
+        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+            nmv.logger.info('Adding Spines from a BBP Circuit')
+            self.build_circuit_spines()
+        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+            self.build_random_spines()
+        else:
+            return
 
     ################################################################################################
     # @finalize_meta_object
@@ -679,11 +692,11 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Build the arbors
-        # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
         self.profiling_statistics += stats
 
-        result, stats = nmv.utilities.profile_function(self.build_spines_from_morphologies)
+        # Building the spines from morphologies
+        result, stats = nmv.utilities.profile_function(self.build_spines)
         self.profiling_statistics += stats
 
         # Finalize the meta object and construct a solid object

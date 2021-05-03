@@ -257,8 +257,8 @@ class NeuroMorphoVisOptions:
         self.mesh.spines_mesh_quality = \
             nmv.enums.Meshing.Spines.Quality.get_enum(arguments.spines_quality)
 
-        # Random spines percentage
-        self.mesh.random_spines_percentage = arguments.random_spines_percentage
+        # Number of spines per micron
+        self.mesh.number_spines_per_micron = arguments.number_spines_per_micron
 
         # Edges of the meshes, either hard or smooth
         self.mesh.edges = nmv.enums.Meshing.Edges.get_enum(arguments.edges)

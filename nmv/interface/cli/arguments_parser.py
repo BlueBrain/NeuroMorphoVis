@@ -335,11 +335,11 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Random spines percentage
-    arg_help = 'The percentage of the spines that are added randomly (0-100). \n' \
-               'Default 50.'
+    arg_help = 'The number of spines to be added per micron. \n' \
+               'Default 10.'
     structures_args.add_argument(
-        Args.RANDOM_SPINES_PERCENTAGE,
-        action='store', type=float, default=50.0,
+        Args.NUMBER_SPINES_PER_MICRON,
+        action='store', type=int, default=10,
         help=arg_help)
 
     # Nucleus

@@ -15,6 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import os
 
 # Blender imports
 import bpy
@@ -209,10 +211,13 @@ class QuarTetTetrahedralReader:
             f3 = tetrahedral_bmesh.faces.new([v3, v4, v1])
             f4 = tetrahedral_bmesh.faces.new([v1, v4, v2])
 
-        tetrahedral_mesh = bpy.data.meshes.new('Tetrahedron')
+        # Get mesh base name
+        mesh_name = os.path.basename(self.tet_file).split('.')[0]
+
+        tetrahedral_mesh = bpy.data.meshes.new(mesh_name)
         tetrahedral_bmesh.to_mesh(tetrahedral_mesh)
 
-        tetrahedral_mesh_object = bpy.data.objects.new('Tetrahedron', tetrahedral_mesh)
+        tetrahedral_mesh_object = bpy.data.objects.new(mesh_name, tetrahedral_mesh)
         bpy.context.scene.collection.objects.link(tetrahedral_mesh_object)
 
         return tetrahedral_mesh_object
@@ -238,10 +243,10 @@ class QuarTetTetrahedralReader:
         return tetrahedral_mesh
 
     ################################################################################################
-    # @create_wire_frame_tetrahedral_mesh
+    # @create_wireframe_tetrahedral_mesh
     ################################################################################################
-    def create_wire_frame_tetrahedral_mesh(self,
-                                           wireframe_thickness=0.01):
+    def create_wireframe_tetrahedral_mesh(self,
+                                          wireframe_thickness=0.01):
         """Creates a wireframe mesh.
 
         :param wireframe_thickness:
@@ -256,3 +261,55 @@ class QuarTetTetrahedralReader:
         # Apply the wireframe operator
         return nmv.mesh.create_wire_frame(
             mesh_object=simplified_tetrahedral_mesh, wireframe_thickness=wireframe_thickness)
+
+
+####################################################################################################
+# @import_quartet_mesh
+####################################################################################################
+def import_quartet_mesh(tet_file):
+    """Imports a tetrahedral mesh and link it to the scene.
+
+    :param tet_file:
+        Quartet .tet file.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.QuarTetTetrahedralReader(tet_file=tet_file)
+    return reader.create_tetrahedral_mesh()
+
+
+####################################################################################################
+# @import_quartet_mesh
+####################################################################################################
+def import_quartet_mesh_simplified(tet_file):
+    """Imports a simplified tetrahedral mesh with no duplicate vertices. This will save a lot
+    of memory during the rendering process.
+
+    :param tet_file:
+        Quartet .tet file.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.QuarTetTetrahedralReader(tet_file=tet_file)
+    return reader.create_simplified_tetrahedral_mesh()
+
+
+####################################################################################################
+# @import_quartet_mesh
+####################################################################################################
+def import_quartet_mesh_wireframe(tet_file,
+                                  wireframe_thickness):
+    """Imports a quartet mesh into a wireframe.
+
+    :param tet_file:
+        Quartet .tet file.
+    :param wireframe_thickness:
+        The thickness of the wireframe.
+    :return:
+        A reference to the imported mesh.
+    """
+
+    reader = nmv.file.QuarTetTetrahedralReader(tet_file=tet_file)
+    return reader.create_wireframe_tetrahedral_mesh(wireframe_thickness=wireframe_thickness)
