@@ -72,7 +72,7 @@ class UnionBuilder:
         self.soma_mesh = None
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'UnionBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -422,7 +422,6 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.header('Mesh Reconstruction Done!')
         nmv.logger.log(self.profiling_statistics)
 
         # Write the stats to file

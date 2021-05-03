@@ -75,8 +75,8 @@ class MeshOptions:
         # Spines mesh quality, by default low quality
         self.spines_mesh_quality = nmv.enums.Meshing.Spines.Quality.LQ
 
-        # Percentage of random spines
-        self.random_spines_percentage = nmv.consts.Meshing.RANDOM_SPINES_PERCENTAGE
+        # Number of random spines per micron
+        self.number_spines_per_micron = nmv.consts.Meshing.NUMBER_SPINES_PER_MICRON
 
         # NUCLEI OPTIONS ###########################################################################
         # Nucleus, ignore by default

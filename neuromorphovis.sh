@@ -122,7 +122,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --surface=$SURFACE                                                                              \
     --spines=$SPINES                                                                                \
     --spines-quality=SPINES_QUALITY                                                                 \
-    --random-spines-percentage=$RANDOM_SPINES_PERCENTAGE                                            \
+    --number-spines-per-micron=$NUMBER_SPINES_PER_MICRON                                            \
     --soma-color=$SOMA_COLOR                                                                        \
     --axons-color=$AXON_COLOR                                                                       \
     --apical-dendrites-color=$APICAL_DENDRITE_COLOR                                                 \

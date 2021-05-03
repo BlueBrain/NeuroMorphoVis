@@ -213,9 +213,9 @@ bpy.types.Scene.NMV_MeshTessellationLevel = bpy.props.FloatProperty(
     default=1.0, min=0.1, max=1.0)
 
 # Random spines percentage
-bpy.types.Scene.NMV_RandomSpinesPercentage = bpy.props.FloatProperty(
-    name='Percentage',
-    description='The percentage of the random spines along the dendrites (1 - 100)',
+bpy.types.Scene.NMV_NumberSpinesPerMicron = bpy.props.FloatProperty(
+    name='Density',
+    description='The number of spines per micron',
     default=50, min=1.0, max=100.0)
 
 bpy.types.Scene.NMV_MeshMaterial = bpy.props.EnumProperty(

@@ -194,7 +194,7 @@ class RandomSpineBuilder:
               self.options.morphology.basal_dendrites_branch_order,
               self.options.morphology.apical_dendrite_branch_order,
               nmv.skeleton.ops.get_random_spines_on_section,
-              self.options.mesh.random_spines_percentage,
+              self.options.mesh.number_spines_per_micron,
               spines_list])
 
         # Keep a list of all the spines objects

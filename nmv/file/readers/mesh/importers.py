@@ -23,6 +23,7 @@ import bpy
 
 # Internal imports
 import nmv.scene
+import nmv.mesh
 
 
 ####################################################################################################
@@ -211,3 +212,44 @@ def import_mesh(mesh_file_path):
     return None
 
 
+####################################################################################################
+# @import_mesh_list
+####################################################################################################
+def import_mesh_list(files_paths):
+    """Imports a list of meshes into the scene all at once.
+
+    :param files_paths:
+        A list of all the file paths.
+    :return:
+        A list of all the loaded meshes.
+    """
+
+    # A list fo all the mesh objects loaded in the scene
+    mesh_objects_list = list()
+    for file_path in files_paths:
+        mesh_objects_list.append(import_mesh(mesh_file_path=file_path))
+
+    # Return the list
+    return mesh_objects_list
+
+
+####################################################################################################
+# @import_mesh_list_into_single_mesh
+####################################################################################################
+def import_mesh_list_into_single_mesh(files_paths,
+                                      mesh_name):
+    """Imports a list of meshes into a single mesh object with multiple partitions.
+
+    :param files_paths:
+        A list of all the file paths.
+    :param mesh_name:
+        The name of the final mesh.
+    :return:
+        A reference to the mesh object.
+    """
+
+    # Load the mesh objects
+    mesh_list = import_mesh_list(files_paths)
+
+    # Join them into a single mesh
+    return nmv.mesh.join_mesh_objects(mesh_list=mesh_list, name=mesh_name)

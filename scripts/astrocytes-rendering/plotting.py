@@ -525,6 +525,7 @@ def combine_stats_with_rendering(rendering_image,
     # Return a reference to the final images
     return combined_vertical_path, combined_horizontal_path
 
+
 ####################################################################################################
 # @combine_skinned_with_optimized
 ####################################################################################################
@@ -532,8 +533,7 @@ def combine_skinned_with_optimized(skinned_horizontal_image_path,
                                    optimized_horizontal_image_path,
                                    output_path,
                                    delta=100):
-    
-    
+
     # Open the images
     skinned_im = Image.open(skinned_horizontal_image_path)
     optimized_im = Image.open(optimized_horizontal_image_path)
@@ -542,7 +542,8 @@ def combine_skinned_with_optimized(skinned_horizontal_image_path,
     optimized_im = optimized_im.resize(skinned_im.size, resample=2)
     
     # Make a new image 
-    combined_im = Image.new('RGB', (optimized_im.size[0], (optimized_im.size[1] * 2) + delta), (255, 255, 255))
+    combined_im = Image.new('RGB', (optimized_im.size[0], (optimized_im.size[1] * 2) + delta),
+                            (255, 255, 255))
     combined_im.paste(skinned_im, (0, 0))
     combined_im.paste(optimized_im, (0, optimized_im.size[1] + delta))
     combined_im.save(output_path)
@@ -562,8 +563,7 @@ def combine_skinned_with_optimized_with_artistic(skinned_horizontal_image_path,
                                                  output_path,
                                                  delta=200,
                                                  scale_size=2000):
-    
-    
+
     # Open the images
     skinned_im = Image.open(skinned_horizontal_image_path)
     optimized_im = Image.open(optimized_horizontal_image_path)
@@ -595,4 +595,3 @@ def combine_skinned_with_optimized_with_artistic(skinned_horizontal_image_path,
     artistic_white_im.close()
     skinned_im.close()
     optimized_im.close()
-                                       

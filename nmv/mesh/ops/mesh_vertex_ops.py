@@ -338,7 +338,49 @@ def compute_centroid(mesh_object):
 
 
 ####################################################################################################
-# @smooth_selected_vertices
+# @remove_doubles
+####################################################################################################
+def remove_doubles(mesh_object,
+                   distance=0.0001):
+    """Removes doubles of a mesh.
+
+    :param mesh_object:
+        A given mesh object to be smoothed.
+    :param distance:
+        The distance within the doubles will be removed.
+    """
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+    nmv.scene.set_active_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Select all vertices
+    bpy.ops.mesh.select_mode(type="VERT")
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    # Remove the double around the selected distance
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles(threshold=distance)
+    nmv.utilities.enable_std_output()
+
+    # Deselect
+    bpy.ops.mesh.select_all(action='DESELECT')
+
+    # Make the normals consistent
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+
+    # Make beauty faces
+    bpy.ops.mesh.beautify_fill()
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
+# @remove_doubles_of_selected_vertices
 ####################################################################################################
 def remove_doubles_of_selected_vertices(mesh_object,
                                         distance):

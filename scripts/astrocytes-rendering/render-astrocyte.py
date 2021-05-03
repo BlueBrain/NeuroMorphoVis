@@ -162,7 +162,8 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--optimized-mesh-color', action='store', help=arg_help)
 
     arg_help = 'Wireframe thickness'
-    parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float, help=arg_help)
+    parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float,
+                        help=arg_help)
 
     arg_help = 'Base full-view resolution'
     parser.add_argument('--resolution', action='store', default=2000, type=int, help=arg_help)

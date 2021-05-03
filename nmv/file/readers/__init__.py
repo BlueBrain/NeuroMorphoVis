@@ -20,3 +20,4 @@ from .morphology import *
 from .nuclei import *
 from .spines import *
 from .configs import *
+from .tetrahedal import *

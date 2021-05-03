@@ -124,19 +124,19 @@ def draw_spines_options(panel,
     if not meshing_options.spines == nmv.enums.Meshing.Spines.Source.IGNORE:
 
         # Spines quality
-        spines_quality_row = panel.layout.row()
-        spines_quality_row.label(text='Quality:')
-        spines_quality_row.prop(scene, 'NMV_SpineMeshQuality', expand=True)
-        meshing_options.spines_mesh_quality = scene.NMV_SpineMeshQuality
+        # spines_quality_row = panel.layout.row()
+        # spines_quality_row.label(text='Quality:')
+        # spines_quality_row.prop(scene, 'NMV_SpineMeshQuality', expand=True)
+        # meshing_options.spines_mesh_quality = scene.NMV_SpineMeshQuality
 
         # In case of random spines, identify the percentage of randomness
         if meshing_options.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
 
             # Randomness percentage
             spines_percentage_row = panel.layout.row()
-            spines_percentage_row.label(text='Percentage:')
-            spines_percentage_row.prop(scene, 'NMV_RandomSpinesPercentage')
-            meshing_options.random_spines_percentage = scene.NMV_RandomSpinesPercentage
+            spines_percentage_row.label(text='Density:')
+            spines_percentage_row.prop(scene, 'NMV_NumberSpinesPerMicron')
+            meshing_options.number_spines_per_micron = scene.NMV_NumberSpinesPerMicron
 
 
 ####################################################################################################
@@ -287,6 +287,9 @@ def draw_meta_objects_meshing_options(panel,
 
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)
+
+    # Spine options
+    draw_spines_options(panel=panel, scene=scene)
 
 
 ####################################################################################################

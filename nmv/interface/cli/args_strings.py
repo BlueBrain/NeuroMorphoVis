@@ -183,8 +183,8 @@ class Args:
     # Export the meshes to the global coordinates
     MESH_GLOBAL_COORDINATES = '--global-coordinates'
 
-    # Random spines percentage
-    RANDOM_SPINES_PERCENTAGE = '--random-spines-percentage'
+    # Random spines per micron
+    NUMBER_SPINES_PER_MICRON = '--number-spines-per-micron'
 
     # Spines meshes quality (HQ, LQ)
     SPINES_QUALITY = '--spines-quality'

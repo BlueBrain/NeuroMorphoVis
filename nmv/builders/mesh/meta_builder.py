@@ -18,7 +18,7 @@
 # System imports
 import copy
 
-# Blender importsget_n_nearest_vertices_to_point
+# Blender imports
 import bpy, mathutils
 from mathutils import Vector, Matrix
 
@@ -99,7 +99,7 @@ class MetaBuilder:
         self.smallest_radius = 1e5
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'MetaBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -490,7 +490,7 @@ class MetaBuilder:
                 mesh_object=soft_body_soma, face_index=face.index)
 
             # Compute the radius of the meta-element by trial-and-error
-            meta_element.radius = radius * 2 * self.magic_scale_factor
+            meta_element.radius = radius * self.magic_scale_factor
 
             if meta_element.radius < self.smallest_radius:
                 self.smallest_radius = meta_element.radius
@@ -505,20 +505,63 @@ class MetaBuilder:
         return valid_arbors
 
     ################################################################################################
-    # @build_spines_from_morphologies
+    # @build_spines
     ################################################################################################
-    def build_spines_from_morphologies(self):
+    def build_random_spines(self):
         """Builds integrated spines into the neuron meta-object that will be meshed and will be
         part of the neuron mesh.
         """
 
-        # For the randomly generated spines, we will implement that on a per-segment basis.
-        # We will construct a segment with a tube, then we will get a face and then get its normal,
-        # and finally we will emanate the spine from this face.
+        # Header
+        nmv.logger.info('Integrating spines')
 
+        # Create the spine builder
+        spines_builder = nmv.builders.RandomSpineBuilderFromMorphology(
+            morphology=self.morphology, options=self.options)
 
+        # Basal dendrites
+        if self.morphology.has_basal_dendrites():
+            if not self.options.morphology.ignore_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
 
+                    spine_sections = spines_builder.get_spine_morphologies_for_arbor(
+                        arbor=arbor,
+                        number_spines_per_micron=self.options.mesh.number_spines_per_micron,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+
+                    # Construct the samples from segments
+                    for spine_section in spine_sections:
+                        self.create_meta_section(spine_section)
+
+        # Apical dendrites
+        if self.morphology.has_basal_dendrites():
+            if not self.options.morphology.ignore_basal_dendrites:
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+
+                    spine_sections = spines_builder.get_spine_morphologies_for_arbor(
+                        arbor=arbor, number_spines_per_micron=2,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order)
+
+                    # Construct the samples from segments
+                    for spine_section in spine_sections:
+                        self.create_meta_section(spine_section)
+
+        # Clean the unwanted data from the spines builder
+        spines_builder.clean_unwanted_data()
+
+    def build_circuit_spines(self):
         return
+
+    def build_spines(self):
+        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+            nmv.logger.info('Adding Spines from a BBP Circuit')
+            self.build_circuit_spines()
+        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+            self.build_random_spines()
+        else:
+            return
 
     ################################################################################################
     # @finalize_meta_object
@@ -649,8 +692,11 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Build the arbors
-        # TODO: Adding the spines should be part of the meshing using the spine morphologies
         result, stats = nmv.utilities.profile_function(self.build_arbors)
+        self.profiling_statistics += stats
+
+        # Building the spines from morphologies
+        result, stats = nmv.utilities.profile_function(self.build_spines)
         self.profiling_statistics += stats
 
         # Finalize the meta object and construct a solid object
@@ -689,7 +735,6 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.info('Mesh Reconstruction Done!')
         nmv.logger.statistics_overall(self.profiling_statistics)
 
         # Write the stats to file

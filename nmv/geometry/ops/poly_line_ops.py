@@ -145,6 +145,7 @@ def append_poly_line_to_base_object(base_object,
 
     # Add the points (or the samples) and their radii to the poly-line curve object
     for i, poly_line_sample in enumerate(poly_line.samples):
+
         # Sample coordinates
         poly_line_object.points[i].co = poly_line_sample[0]
 

@@ -249,8 +249,8 @@ SPINES=circuit
 # Use ['lq'] for loading low quality meshes
 SPINES_QUALITY=lq
 
-# Random spines percentage (1-100)
-RANDOM_SPINES_PERCENTAGE=20
+# Number spines per micron (1-100)
+NUMBER_SPINES_PER_MICRON=10
 
 # Add nucleus mesh, 'yes/no'
 ADD_NUCLEUS=no

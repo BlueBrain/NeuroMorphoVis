@@ -30,7 +30,7 @@ usage: neuromorphovis.py [-h] [--blender BLENDER] [--input INPUT]
                          [--fixed-section-radius FIXED_SECTION_RADIUS]
                          [--bevel-sides BEVEL_SIDES] [--spines SPINES]
                          [--spines-quality SPINES_QUALITY]
-                         [--random-spines-percentage RANDOM_SPINES_PERCENTAGE]
+                         [--number-spines-per-micron NUMBER_SPINES_PER_MICRON]
                          [--add-nucleus] [--soma-color SOMA_COLOR]
                          [--axon-color AXON_COLOR]
                          [--basal-dendrites-color BASAL_DENDRITES_COLOR]
@@ -166,9 +166,9 @@ Spines - Nucleus:
   --spines-quality SPINES_QUALITY
                         The quality of the spine meshes.
                         Options: ['(lq)', 'hq']
-  --random-spines-percentage RANDOM_SPINES_PERCENTAGE
-                        The percentage of the spines that are added randomly (0-100).
-                        Default 50.
+  --number-spines-per-micron NUMBER_SPINES_PER_MICRON
+                        The number of spines per microns that are added randomly (0-100).
+                        Default 10.
   --add-nucleus         Add nucleus mesh.
 
 Materials - Colors:

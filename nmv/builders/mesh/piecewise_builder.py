@@ -89,7 +89,7 @@ class PiecewiseBuilder:
         self.axons_meshes = list()
 
         # Statistics
-        self.profiling_statistics = ''
+        self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
 
         # Stats. about the morphology
         self.morphology_statistics = 'Morphology: \n'
@@ -379,12 +379,9 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Add the spines
-        #result, stats = nmv.utilities.profile_function(
-        #    nmv.builders.mesh.add_spines_to_surface, self)
-        #self.profiling_statistics += stats
-
-        spines_builder = nmv.builders.MetaRandomSpineBuilder(self.morphology, self.options)
-        spines_builder.do_it()
+        result, stats = nmv.utilities.profile_function(
+            nmv.builders.mesh.add_spines_to_surface, self)
+        self.profiling_statistics += stats
 
         # Join all the objects into a single object
         result, stats = nmv.utilities.profile_function(
@@ -402,7 +399,6 @@ class PiecewiseBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.info('Mesh Reconstruction Done!')
         nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file

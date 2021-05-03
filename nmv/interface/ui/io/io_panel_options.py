@@ -116,3 +116,9 @@ bpy.types.Scene.NMV_AnalysisPath = bpy.props.StringProperty(
     name="Analysis",
     description="Relative path where the analysis reports will be generated",
     default="analysis", maxlen=1000)
+
+# Stats. relative path
+bpy.types.Scene.NMV_StatisticsPath = bpy.props.StringProperty(
+    name="Statistics",
+    description="Relative path where the statistics files will be generated",
+    default="statistics", maxlen=1000)
