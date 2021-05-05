@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2020, EPFL / Blue Brain Project
+# Copyright (c) 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -43,7 +43,6 @@ import nmv.shading
 import nmv.utilities
 
 # BBP imports
-import bluepy
 from bluepy.v2 import Synapse, Circuit
 
 # Blender imports
@@ -170,23 +169,29 @@ def create_neuron_mesh(circuit,
 ####################################################################################################
 def create_projection_synapses_mesh(circuit,
                                     post_gid,
-                                    projection,
+                                    projection_target,
                                     synapse_percentage,
                                     synapse_size,
                                     synapse_color):
-    """
+    """Creates a synapse mesh for the specified projection.
 
     :param circuit:
+        A given BBP circuit.
     :param post_gid:
-    :param projection:
+        The GID of the post synaptic cell.
+    :param projection_target:
+        THe target name of the projection.
     :param synapse_percentage:
+        THe percentage of the synapses.
     :param synapse_size:
+        The size of the synapses.
     :param synapse_color:
+        The RGB color of the synapses in the string format, separated by underscores.
     :return:
     """
 
     # Note that projection has the same methods of circuit.connectome but applied to the projection
-    projection = circuit.projection(projection)
+    projection = circuit.projection(projection_target)
 
     # Get all the afferent synapses
     afferent_synapses = projection.afferent_synapses(
@@ -304,7 +309,7 @@ if __name__ == "__main__":
         # Create synapses meshes
         nmv.logger.info('Creating synapse mesh')
         synapse_mesh = create_projection_synapses_mesh(
-            circuit=circuit, post_gid=int(gid), projection=args.projection,
+            circuit=circuit, post_gid=int(gid), projection_target=args.projection,
             synapse_percentage=args.synapse_percentage, synapse_size=args.synapse_size,
             synapse_color=args.synapse_color)
 
