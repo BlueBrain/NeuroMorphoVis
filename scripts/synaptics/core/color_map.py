@@ -188,6 +188,32 @@ def create_neuron_material(neuron_color,
 
 
 ####################################################################################################
+# @create_material_from_color_string
+####################################################################################################
+def create_material_from_color_string(color_string,
+                                      material_name='material',
+                                      material_type=nmv.enums.Shader.FLAT):
+    """Creates the material from a given color string.
+
+    :param color_string:
+        The color.
+    :param material_name:
+        The name of the material
+    :param material_type:
+        The material type.
+    :return:
+        A reference to the material
+    """
+
+    # Get the color
+    color = color_string.split('_')
+    color = Vector((float(color[0]) / 255.0, float(color[1]) / 255.0, float(color[2]) / 255.0))
+
+    # Return a reference to the material
+    return nmv.shading.create_material(name=material_name, color=color, material_type=material_type)
+
+
+####################################################################################################
 # @create_neuron_material
 ####################################################################################################
 def create_dummy_material(shader=nmv.enums.Shader.FLAT):

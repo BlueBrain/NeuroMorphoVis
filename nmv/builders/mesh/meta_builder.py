@@ -51,7 +51,8 @@ class MetaBuilder:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 ignore_watertightness=False):
         """Constructor
 
         :param morphology:
@@ -65,6 +66,8 @@ class MetaBuilder:
 
         # Loaded options from NeuroMorphoVis
         self.options = options
+
+        self.ignore_watertightness = ignore_watertightness
 
         # A list of the colors/materials of the soma
         self.soma_materials = None
@@ -601,8 +604,9 @@ class MetaBuilder:
         nmv.scene.set_active_object(self.meta_mesh)
 
         # Clean the mesh object and remove the non-manifold edges
-        nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
-        nmv.mesh.clean_mesh_object(self.meta_mesh)
+        if not self.ignore_watertightness:
+            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+            nmv.mesh.clean_mesh_object(self.meta_mesh)
 
         # Remove the islands (or small partitions from the mesh) and smooth it to look nice
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
@@ -712,11 +716,10 @@ class MetaBuilder:
             nmv.builders.mesh.common.decimate_neuron_mesh, self)
 
         # Clean the mesh object and remove the non-manifold edges
-        if 0.01 < self.options.mesh.tessellation_level < 1.0:
+        if not self.ignore_watertightness:
             nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
             nmv.mesh.clean_mesh_object(self.meta_mesh)
-
-        self.profiling_statistics += stats
+            self.profiling_statistics += stats
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment

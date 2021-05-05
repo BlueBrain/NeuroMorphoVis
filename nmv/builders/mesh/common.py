@@ -635,7 +635,8 @@ def write_statistics_to_file(builder, tag):
         nmv.file.ops.clean_and_create_directory(builder.options.io.statistics_directory)
 
     # Open the stats. file
-    stats_file = open('%s/%s-%s.stats' % (builder.options.io.statistics_directory, builder.morphology.label, tag), 'w')
+    stats_file = open('%s/%s-%s.stats' % (builder.options.io.statistics_directory,
+                                          builder.morphology.label, tag), 'w')
 
     # Write the data
     stats_file.write(builder.morphology_statistics)

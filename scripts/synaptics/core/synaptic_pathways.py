@@ -550,7 +550,6 @@ def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
 
     # Create the post-synaptic mesh
     post_meshes_list = create_neuron_meshes_with_piecewise_builder(circuit=circuit, gid=post_gid)
-    print(post_meshes_list)
 
     # Adjust the neuron transformation
     post_transformation = circuit_data.get_cell_transformation(circuit, post_gid)
