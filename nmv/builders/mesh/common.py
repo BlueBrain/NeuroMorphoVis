@@ -546,7 +546,7 @@ def join_mesh_object_into_single_object(builder):
         mesh_objects = get_neuron_mesh_objects(builder=builder)
 
         # Join them into a single object
-        joint_mesh = nmv.mesh.join_mesh_objects(mesh_objects, builder.options.morphology.label)
+        joint_mesh = nmv.mesh.join_mesh_objects(mesh_objects, builder.morphology.label)
 
         # Return a reference to the joint mesh object
         return joint_mesh

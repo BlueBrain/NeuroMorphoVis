@@ -32,16 +32,16 @@ PROJECTION='SC'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.05.05-synapse-projections'
 
 # Neuron color
-NEURON_COLOR='0_0_0'
+NEURON_COLOR='255_0_0'
 
 # Neuron color
-SYNAPSE_COLOR='255_255_0'
+SYNAPSE_COLOR='25_0_255'
 
 # Synapse percentage
-SYNAPSE_PERCENTAGE='50'
+SYNAPSE_PERCENTAGE='5'
 
 # Synapse size
-SYNAPSE_SIZE='2.0'
+SYNAPSE_SIZE='1.5'
 
 # Base full view resolution
 IMAGE_RESOLUTION='4000'

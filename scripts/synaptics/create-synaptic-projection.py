@@ -50,7 +50,7 @@ from mathutils import Vector
 
 
 # Just set the shader beforehand and create a dummy material
-shader = nmv.enums.Shader.FLAT
+shader = nmv.enums.Shader.LAMBERT_WARD
 
 
 ####################################################################################################
@@ -142,18 +142,20 @@ def create_neuron_mesh(circuit,
     # Create default NMV options
     nmv_options = nmv.options.NeuroMorphoVisOptions()
     nmv_options.io.statistics_directory = output_directory
-    nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-    nmv_options.morphology.samples_unified_radii_value = 1.0
-    nmv_options.shading.mesh_material = nmv.enums.shading_enums.Shader.FLAT
+    # nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+    # nmv_options.morphology.samples_unified_radii_value = 1.0
+    nmv_options.mesh.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
+    nmv_options.shading.mesh_material = nmv.enums.shading_enums.Shader.FLAT # shader
     nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
-    nmv_options.mesh.tessellation_level = 1.0
 
     # Create a meta balls meshing builder, and ignore the watertight checks
-    meta_builder = nmv.builders.MetaBuilder(morphology=morphology, options=nmv_options,
-                                            ignore_watertightness=True)
+    # mesh_builder = nmv.builders.MetaBuilder(morphology=morphology, options=nmv_options,
+    #                                         ignore_watertightness=True)
+
+    mesh_builder = nmv.builders.SkinningBuilder(morphology=morphology, options=nmv_options)
 
     # Create the neuron mesh
-    neuron_mesh = meta_builder.reconstruct_mesh()
+    neuron_mesh = mesh_builder.reconstruct_mesh()
 
     # Add the material top the reconstructed mesh
     neuron_material = color_map.create_material_from_color_string(
@@ -182,7 +184,7 @@ def create_projection_synapses_mesh(circuit,
     :param projection_target:
         THe target name of the projection.
     :param synapse_percentage:
-        THe percentage of the synapses.
+        The percentage of the synapses.
     :param synapse_size:
         The size of the synapses.
     :param synapse_color:

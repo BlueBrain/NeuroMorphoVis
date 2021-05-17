@@ -48,3 +48,19 @@ def rgb_to_hex(rgb):
 
     # Return the HEX code of the color
     return '#%02x%02x%02x' % rgb
+
+
+####################################################################################################
+# @rgb_to_hex
+####################################################################################################
+def hex_to_rgb(hex_color):
+    """Converts a hex color to an RGB color
+
+    :param hex_color:
+        A given hex color to convert.
+    :return:
+        The color in RGB format.
+    """
+
+    h = hex_color.lstrip('#')
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
