@@ -81,6 +81,9 @@ def construct_generation_command(args,
             shell_command += ' --export-blend'
         if args.create_optimized:
             shell_command += ' --create-optimized'
+        if args.center_morphology:
+            shell_command += ' --center-morphology'
+
         # Append to the commands list
         commands_list.append(shell_command)
 
@@ -151,6 +154,10 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'A range of GIDs'
     parser.add_argument('--gids-range',
                         action='store', dest='gids_range', default='0', help=arg_help)
+
+    arg_help = 'Center the morphology at the origin'
+    parser.add_argument('--center-morphology',
+                        action='store_true', default=False, help=arg_help)
 
     arg_help = 'Export the result into an .OBJ file'
     parser.add_argument('--export-obj',

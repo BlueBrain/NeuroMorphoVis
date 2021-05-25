@@ -105,7 +105,8 @@ def create_end_feet_proxy_mesh(area,
 ####################################################################################################
 def generate_astrocyte(circuit_path,
                        astrocyte_gid,
-                       soma_style):
+                       soma_style,
+                       center_mesh=False):
     """Generate astrocyte mesh for a specific GID in the circuit.
 
     :param circuit_path:
@@ -114,6 +115,8 @@ def generate_astrocyte(circuit_path,
         The GID of the astrocyte.
     :param soma_style:
         The style of the soma, whether metaball or softbody.
+    :param center_mesh:
+        Center the mesh at the origin.
     :return:
         A reference to the astrocyte mesh
     """
@@ -138,12 +141,8 @@ def generate_astrocyte(circuit_path,
     # Center the morphology at the origin
     center_morphology = True
 
-    # Center the final mesh
-    center_mesh = False
-
     # Astrocyte data
     for astro_generator in astrocytes_data:
-
         soma_centroid = astro_generator.circuit_data['soma_position']
         soma_centroid = Vector((soma_centroid[0], soma_centroid[1], soma_centroid[2]))
         soma_radius = astro_generator.circuit_data['soma_radius']
@@ -152,9 +151,10 @@ def generate_astrocyte(circuit_path,
         reader = nmv.file.readers.H5Reader(h5_file=astro_generator.filepath,
                                            center_morphology=center_morphology)
         morphology_object = reader.read_file()
-
+        print(morphology_object.label)
         end_feet_proxy_meshes = list()
         end_feet_thicknesses = list()
+
         for j, process in enumerate(astro_generator.perivascular_processes):
 
             # Area
@@ -169,6 +169,7 @@ def generate_astrocyte(circuit_path,
             end_feet_thicknesses.append(area.thickness)
 
         # Create the builder
+
         builder = astro_meta_builder.AstroMetaBuilder(
             morphology=morphology_object,
             soma_radius=soma_radius,
@@ -245,6 +246,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--gid',
                         action='store', dest='gid', help=arg_help)
 
+    arg_help = 'Center the morphology at the origin'
+    parser.add_argument('--center-morphology',
+                        action='store_true', default=False, help=arg_help)
+
     arg_help = 'The style of the soma'
     parser.add_argument('--soma-style',
                         action='store', dest='soma_style', help=arg_help)
@@ -296,7 +301,8 @@ if __name__ == "__main__":
 
     # Generate the astrocyte
     astrocyte_mesh, generation_time = generate_astrocyte(
-        circuit_path=args.circuit_path, astrocyte_gid=int(args.gid), soma_style=args.soma_style)
+        circuit_path=args.circuit_path, astrocyte_gid=int(args.gid), soma_style=args.soma_style,
+        center_mesh=args.center_morphology)
 
     # Write the stats about the generation time
     timing_file = '%s/%s.timing' % (args.output_directory, str(args.gid))

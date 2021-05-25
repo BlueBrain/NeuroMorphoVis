@@ -272,9 +272,7 @@ class H5Reader:
 
         # Read the point list from the points directory
         try:
-            nmv.utilities.disable_std_output()
-            self.points_list = data[nmv.consts.Skeleton.H5_POINTS_DIRECTORY].value
-            nmv.utilities.enable_std_output()
+            self.points_list = data[nmv.consts.Skeleton.H5_POINTS_DIRECTORY]
 
         except ValueError:
             nmv.logger.log('ERROR: Cannot load the data points from [%s]' % self.morphology_file)
@@ -284,9 +282,7 @@ class H5Reader:
 
         # Get the structure list from the structures directory
         try:
-            nmv.utilities.disable_std_output()
-            self.structure_list = data[nmv.consts.Skeleton.H5_STRUCTURE_DIRECTORY].value
-            nmv.utilities.enable_std_output()
+            self.structure_list = data[nmv.consts.Skeleton.H5_STRUCTURE_DIRECTORY]
 
         except ImportError:
             nmv.logger.log('ERROR: Cannot load the data structure from [%s]' % self.morphology_file)

@@ -21,18 +21,19 @@ BLENDER='$PWD/../../../../../../blender'
 
 # Output directory 
 OUTPUT_DIRECTORY='/projects-data/2021.01.14-astrocytes-generation'
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2021.01.27-astrocytes-meshes-soma/meta'
+OUTPUT_DIRECTORY='/hdd1/projects-data/2021.05.25-astrocyte-rectangular-collage'
 
 # Circuit
 CIRCUIT='/projects/astrocytes-circuit/20200930'
 CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20200701'
+CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20201027_full_sonata_origin'
 CIRCUIT='/gpfs/bbp.cscs.ch/project/proj62/scratch/ngv_circuits/20201027_full_sonata_origin'
 
 # Soma style, 'metaball' or 'softbody'
 SOMA_STYLE='metaball'
 
 # A list of GIDs, if this is defined the GIDS_FILE is ignored, and if set to '0' the file is used
-GIDS_RANGE='1-15'
+GIDS_RANGE='0'
 
 # GIDs file (a file contains a list of GIDs of the astrocytes to be reconstructed separated by space)
 GIDS_FILE=$PWD/gids
@@ -40,15 +41,18 @@ GIDS_FILE=$PWD/gids
 # Meshes type, for simulation/visualization/both
 MESH_TYPE='visualization'
 
+# Center the morphology
+CENTER_MORPHOLOGY='yes'
+
 # Create optimized meshes
-CREATE_OPTIMIZED='yes'
+CREATE_OPTIMIZED='no'
 
 # ultraCleanMesh executable
-ULTRA_CLEAN_MESH_EXECUTABLE='/gpfs/bbp.cscs.ch/project/proj3/development/Ultraliser/build/bin/ultraCleanMesh'
-# ULTRA_CLEAN_MESH_EXECUTABLE='ultraCleanMesh'
+# ULTRA_CLEAN_MESH_EXECUTABLE='/gpfs/bbp.cscs.ch/project/proj3/development/Ultraliser/build/bin/ultraCleanMesh'
+ULTRA_CLEAN_MESH_EXECUTABLE='ultraCleanMesh'
 
 # Execution, serial or parallel
-EXECUTION='parallel'
+EXECUTION='serial'
 
 # Number of cores parallel processing 
 NUMBER_CORES=15
@@ -71,6 +75,8 @@ if [ "$EXPORT_BLEND" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
 if [ "$CREATE_OPTIMIZED" == "yes" ];
     then BOOL_ARGS+=' --create-optimized '; fi
+if [ "$CENTER_MORPHOLOGY" == "yes" ];
+  then BOOL_ARGS+=' --center-morphology '; fi
 
 ####################################################################################################
 $PWD/../../../../../python/bin/python3.7m run.py                                                    \
