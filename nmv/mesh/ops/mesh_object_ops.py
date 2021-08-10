@@ -16,6 +16,8 @@
 ####################################################################################################
 
 # Blender imports
+import random
+
 import bpy, bmesh
 
 # Internal imports
@@ -92,6 +94,32 @@ def smooth_object(mesh_object,
 
 
 ####################################################################################################
+# @randomize_surface
+####################################################################################################
+def randomize_surface(mesh_object,
+                      offset=0.1,
+                      iterations=1):
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Toggle from the object mode to edit mode
+    bpy.ops.object.editmode_toggle()
+
+    # Select all the vertices of the mesh
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    # Randomize the vertex
+    for i in range(iterations):
+        bpy.ops.transform.vertex_random(offset=offset)
+
+    # Toggle from the edit mode to the object mode
+    bpy.ops.object.editmode_toggle()
+
+
+####################################################################################################
 # @triangulate_mesh
 ####################################################################################################
 def triangulate_mesh(mesh_object):
@@ -107,17 +135,14 @@ def triangulate_mesh(mesh_object):
     # Activate the selected object
     nmv.scene.ops.set_active_object(mesh_object)
 
-    # Switch to geometry or edit mode from the object mode
-    bpy.ops.object.editmode_toggle()
+    # Add the modifier
+    bpy.ops.object.modifier_add(type='TRIANGULATE')
 
-    # Select all the vertices of the mesh object
-    bpy.ops.mesh.select_all(action='SELECT')
-
-    # Convert the face to triangles
-    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
-
-    # Switch back to the object mode from the edit mode
-    bpy.ops.object.editmode_toggle()
+    # Apply the modifier
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Triangulate")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Triangulate")
 
 
 ####################################################################################################
@@ -666,8 +691,9 @@ def subdivide_mesh(mesh_object,
     """Subdivide the mesh.
 
     :param mesh_object:
+        A given mesh object to subdivide.
     :param level:
-    :return:
+        Subdivision level.
     """
 
     # Deselect all the objects in the scene
@@ -709,14 +735,73 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
     displacement_modifier = mesh_object.modifiers.new(name="Displace", type='DISPLACE')
 
     # Add a new texture for the modifier
-    displacement_modifier.texture = bpy.data.textures.new(name='SurfaceNoise%s' % mesh_object.name,
-                                                          type='CLOUDS')
+    displacement_modifier.texture = bpy.data.textures.new(
+        name='SurfaceNoise%s' % mesh_object.name, type='CLOUDS')
 
     # Update the noise range
     displacement_modifier.strength = strength
 
     # Update the noise range
     displacement_modifier.texture.noise_scale = 1.5
+
+    # Apply the modifiers
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Displace")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
+
+
+####################################################################################################
+# @add_surface_noise_to_mesh_using_displacement_modifier
+####################################################################################################
+def enlarge_mesh_using_displacement_modifier(mesh_object,
+                                             enlargement_factor=0.1):
+    # Deselect everything in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Set the 0th mesh to be active
+    nmv.scene.set_active_object(mesh_object)
+
+    # Create a displacement modifier
+    displacement_modifier = mesh_object.modifiers.new(name="Displace", type='DISPLACE')
+
+    # Update the enlargement factor
+    displacement_modifier.mid_level = 0.9
+
+    # Apply the modifiers
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Displace")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Displace")
+
+
+####################################################################################################
+# @add_light_surface_noise
+####################################################################################################
+def add_light_surface_noise(mesh_object):
+
+    # Deselect everything in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Set the 0th mesh to be active
+    nmv.scene.set_active_object(mesh_object)
+
+    # Create a displacement modifier
+    displacement_modifier = mesh_object.modifiers.new(name="Displace", type='DISPLACE')
+
+    # Add a new texture for the modifier
+    displacement_modifier.texture = bpy.data.textures.new(
+        name='LightSurfaceNoise%s' % mesh_object.name, type='CLOUDS')
+
+    # Noise strength
+    displacement_modifier.strength = 1.0
+
+    # Texture details
+    displacement_modifier.texture.noise_scale = 1.5
+    displacement_modifier.texture.noise_scale = 2
+    displacement_modifier.texture.noise_depth = 30
+    displacement_modifier.texture.nabla = 0.1
+    displacement_modifier.texture.noise_basis = 'IMPROVED_PERLIN'
 
     # Apply the modifiers
     if nmv.utilities.is_blender_290():
@@ -733,18 +818,80 @@ def add_surface_noise_to_mesh(mesh_object,
                               subdivision_level=1):
 
     # Subdivide the surface
-    if subdivision_level > 0:
-        subdivide_mesh(mesh_object=mesh_object, level=subdivision_level)
+    #if subdivision_level > 0:
+    #    subdivide_mesh(mesh_object=mesh_object, level=subdivision_level)
 
     # Adding the noise
     add_surface_noise_to_mesh_using_displacement_modifier(mesh_object=mesh_object,
                                                           strength=noise_strength)
 
-    # Decimate
-    decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
 
-    # Smooth using Catmull-Clark subdivision
-    smooth_object(mesh_object=mesh_object, level=1)
+####################################################################################################
+# @apply_default_remesh_modifier
+####################################################################################################
+def apply_default_remesh_modifier(mesh_object,
+                                  octree_depth=4,
+                                  smooth=True):
+    """Applies the default mesh modifier in Blender to a given mesh.
+
+    :param mesh_object:
+        Input mesh to be remeshed.
+    :param octree_depth:
+        The depth of the octree, default 4.
+    :param smooth:
+        Do you want a smooth surface or not.
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Construct the modifier
+    bpy.ops.object.modifier_add(type='REMESH')
+
+    # Set the octree depth
+    bpy.context.object.modifiers["Remesh"].octree_depth = octree_depth
+
+    # Smooth the surface
+    if smooth:
+        bpy.context.object.modifiers["Remesh"].mode = 'SMOOTH'
+        bpy.context.object.modifiers["Remesh"].use_smooth_shade = True
+
+    # Apply the operator
+    if nmv.utilities.is_blender_290():
+        bpy.ops.object.modifier_apply(modifier="Remesh")
+    else:
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Remesh")
+
+
+####################################################################################################
+# @apply_quadriflow_remesh_modifier
+####################################################################################################
+def apply_quadriflow_remesh_modifier(mesh_object,
+                                     target_ratio=1.0):
+    """Applies the default mesh modifier in Blender to a given mesh.
+    NOTE: This function works only with Blender 2.8 onwards.
+
+    :param mesh_object:
+        Input mesh to be re-meshed.
+    :param target_ratio:
+        The ration of the number of triangles in the resulting mesh compared to the input one.
+    """
+
+    # Verify the Blender version
+    if nmv.utilities.is_blender_280() or nmv.utilities.is_blender_290():
+
+        # Deselect all the objects in the scene
+        nmv.scene.ops.deselect_all()
+
+        # Activate the selected object
+        nmv.scene.ops.set_active_object(mesh_object)
+
+        bpy.ops.object.quadriflow_remesh(
+            use_paint_symmetry=False, mode='RATIO', target_ratio=target_ratio,
+            seed=random.randint(1, 100))
 
 
 ####################################################################################################
@@ -846,7 +993,3 @@ def create_wire_frame(mesh_object,
 
     # Return a reference to the wireframe object
     return duplicated_mesh
-
-
-
-

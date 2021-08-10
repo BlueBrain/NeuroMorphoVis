@@ -234,6 +234,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    color=(1, 1, 1, 1),
                    name='line',
                    fill_caps=True,
+                   sides=8,
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
     the line.
@@ -273,7 +274,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     # For a thick line, the caps are always filled in contrast to the thin line
     line_data.use_fill_caps = fill_caps
 
-    line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name=name)
+    line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name=name)
 
     # Create a new material (color) and assign it to the line
     line_material = bpy.data.materials.new('color.%s' % name)

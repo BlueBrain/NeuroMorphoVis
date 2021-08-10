@@ -22,7 +22,7 @@ import sys
 
 # BBP imports
 import bluepy
-from bluepy.v2 import Circuit
+from bluepy import Circuit
 
 # Blender imports
 import bpy
@@ -283,7 +283,7 @@ def create_shared_synapses_mesh(circuit,
 
     # Get the GIDs of the pre-synaptic cells
     pre_gids = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
     pre_gids = [gid[0] for gid in pre_gids]
 
     # A list that will contain all the synapse meshes

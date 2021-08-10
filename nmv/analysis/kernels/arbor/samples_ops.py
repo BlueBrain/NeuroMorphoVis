@@ -173,8 +173,6 @@ def compute_first_sample_distance_to_soma(arbor):
         return 0
 
 
-
-
 ####################################################################################################
 # @compute_maximum_samples_count_of_arbor
 ####################################################################################################
@@ -397,6 +395,13 @@ def compute_minimum_sample_radius_of_arbor(arbor):
 # @compute_minimum_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_minimum_daughter_ratio_of_arbor(arbor):
+    """Computes the minimum daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()
@@ -418,6 +423,13 @@ def compute_minimum_daughter_ratio_of_arbor(arbor):
 # @compute_maximum_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_maximum_daughter_ratio_of_arbor(arbor):
+    """Computes the maximum daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()
@@ -439,6 +451,13 @@ def compute_maximum_daughter_ratio_of_arbor(arbor):
 # @compute_average_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_average_daughter_ratio_of_arbor(arbor):
+    """Computes the average daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()
@@ -460,6 +479,13 @@ def compute_average_daughter_ratio_of_arbor(arbor):
 # @compute_minimum_parent_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_minimum_parent_daughter_ratio_of_arbor(arbor):
+    """Computes the minimum parent daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The minimum parent daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()
@@ -481,6 +507,13 @@ def compute_minimum_parent_daughter_ratio_of_arbor(arbor):
 # @compute_maximum_parent_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_maximum_parent_daughter_ratio_of_arbor(arbor):
+    """Computes the maximum parent daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The maximum parent daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()
@@ -502,6 +535,13 @@ def compute_maximum_parent_daughter_ratio_of_arbor(arbor):
 # @compute_average_parent_daughter_ratio_of_arbor
 ####################################################################################################
 def compute_average_parent_daughter_ratio_of_arbor(arbor):
+    """Computes the average parent daughter ratio of a given arbor.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return:
+        The average parent daughter ratio of a given arbor.
+    """
 
     # A list that will contain the radii of all the samples along a given section
     data_list = list()

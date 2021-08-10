@@ -619,7 +619,7 @@ def compute_daughter_ratio(section,
                            analysis_data):
     """Computes the daughter ratio of a given section.
 
-     :param section:
+    :param section:
         A given section to get analyzed.
     :param analysis_data:
         A list to collect the analysis data.
@@ -695,11 +695,12 @@ def compute_parent_daughter_ratios(section,
 ####################################################################################################
 def get_samples_radii_data_of_section(section,
                                       analysis_data):
-    """
+    """Gets a list of all the radii of the samples in the section.
 
     :param section:
+        A given section to collect data from.
     :param analysis_data:
-    :return:
+        A list to collect the data.
     """
 
     # For every sample along the section
@@ -715,8 +716,19 @@ def get_samples_radii_data_of_section(section,
         analysis_data.append(data)
 
 
+####################################################################################################
+# @get_number_of_samples_per_section_data_of_section
+####################################################################################################
 def get_number_of_samples_per_section_data_of_section(section,
                                                       analysis_data):
+    """Gets number of samples per section.
+
+    :param section:
+            A given section to collect data from.
+    :param analysis_data:
+            A list to collect the data.
+    """
+
     # Analysis data
     data = nmv.analysis.AnalysisData(
         value=len(section.samples),

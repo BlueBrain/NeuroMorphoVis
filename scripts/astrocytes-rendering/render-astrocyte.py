@@ -251,7 +251,6 @@ def process_mesh(arguments,
                         quality_checker_executable=arguments.quality_checker_executable,
                         output_directory=stats_output_directory)
 
-
     vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
         name=mesh_name,
         distributions_directory=stats_output_directory,

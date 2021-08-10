@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,6 +17,7 @@
 
 # System imports
 import copy
+import bpy
 
 # Internal imports
 import nmv.builders
@@ -34,7 +35,7 @@ import nmv.geometry
 # @UnionBuilder
 ####################################################################################################
 class UnionBuilder:
-    """Mesh builder that creates watertight meshes using Blender union operators"""
+    """This mesh builder creates low-tessellated meshes using the union operators."""
 
     ################################################################################################
     # @__init__
@@ -68,7 +69,10 @@ class UnionBuilder:
         # A list of the materials of the apical dendrite
         self.apical_dendrites_materials = None
 
-        # A reference to the reconstructed soma mesh
+        # A list of the materials of the spines
+        self.spines_materials = None
+
+        # A reference to the reconstructed soma mesh, and potentially the neuron mesh after welding
         self.soma_mesh = None
 
         # Statistics
@@ -110,6 +114,9 @@ class UnionBuilder:
             # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
+        else:
+            nmv.skeleton.ops.apply_operation_to_morphology(
+                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
@@ -245,8 +252,6 @@ class UnionBuilder:
         if self.morphology.has_axons():
             if not self.options.morphology.ignore_axons:
                 for arbor in self.morphology.axons:
-
-                    # Build the mesh
                     nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
@@ -258,8 +263,6 @@ class UnionBuilder:
         if self.morphology.has_apical_dendrites():
             if not self.options.morphology.ignore_apical_dendrites:
                 for arbor in self.morphology.apical_dendrites:
-
-                    # Build the mesh
                     nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
@@ -272,8 +275,6 @@ class UnionBuilder:
         if self.morphology.has_basal_dendrites():
             if not self.options.morphology.ignore_basal_dendrites:
                 for arbor in self.morphology.basal_dendrites:
-
-                    # Build the mesh
                     nmv.logger.detail(arbor.label)
                     self.build_arbor(
                         arbor=arbor, caps=caps, bevel_object=bevel_object,
@@ -345,6 +346,8 @@ class UnionBuilder:
         """
 
         nmv.logger.header('Reconstructing arbors')
+        self.build_hard_edges_arbors()
+        return
 
         # Hard edges (less samples per branch)
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
@@ -356,6 +359,121 @@ class UnionBuilder:
 
         else:
             nmv.logger.log('ERROR')
+
+    ################################################################################################
+    # @weld_arbors_to_soma
+    ################################################################################################
+    def weld_arbors_to_soma(self):
+        """Welds the arbors to the soma.
+        """
+
+        nmv.logger.header('Welding arbors to soma')
+
+        # Gather all the arbors in a list to be joint later into a single mesh object
+        arbors_meshes = list()
+
+        # Connecting axons
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    arbors_meshes.append(arbor.mesh)
+
+        # Connecting apical dendrites
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    arbors_meshes.append(arbor.mesh)
+
+        # Connecting basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    arbors_meshes.append(arbor.mesh)
+
+        # Joint all the meshes into a single mesh
+        # arbors_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=arbors_meshes, name='arbors')
+
+        for arbor_mesh in arbors_meshes:
+            self.soma_mesh = nmv.skeleton.ops.connect_arbors_to_meta_ball_soma(
+                soma_mesh=self.soma_mesh, arbors_mesh=arbor_mesh)
+
+        # Rename the resulting mesh with the neuron name
+        self.soma_mesh.name = self.morphology.label
+
+    ################################################################################################
+    # @add_spines_to_surface
+    ################################################################################################
+    def add_spines_to_surface(self):
+        """Adds spines to the surface of the mesh.
+        """
+
+        # Build spines from a BBP circuit
+        if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
+            nmv.logger.info('Adding Spines from a BBP Circuit')
+            spines_objects = nmv.builders.build_circuit_spines(
+                morphology=self.morphology, blue_config=self.options.morphology.blue_config,
+                gid=self.options.morphology.gid, material=self.spines_materials[0])
+
+        # Just add some random spines for the look only
+        elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+            nmv.logger.info('Adding Random Spines')
+
+            spines_builder = nmv.builders.RandomSpineBuilder(
+                morphology=self.morphology, options=self.options)
+            spines_objects = spines_builder.add_spines_to_morphology()
+
+            spine_mesh_name = '%s_spines' % self.options.morphology.label
+            spines_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+
+            # Simply apply a union operation between the soma and the arbor
+            self.soma_mesh = nmv.mesh.union_mesh_objects(self.soma_mesh, spines_mesh)
+
+            # Remove the doubles
+            bpy.ops.object.editmode_toggle()
+            bpy.ops.mesh.select_all(action='SELECT')
+
+            nmv.utilities.disable_std_output()
+            bpy.ops.mesh.remove_doubles()
+            nmv.utilities.enable_std_output()
+
+            bpy.ops.mesh.normals_make_consistent(inside=False)
+            bpy.ops.object.editmode_toggle()
+
+            # Delete the other mesh
+            nmv.scene.ops.delete_list_objects([spines_mesh])
+
+    ################################################################################################
+    # @smooth_edges
+    ################################################################################################
+    def smooth_edges(self):
+        """The function cleans the surface and smooths the edges of the mesh.
+        """
+
+        if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+
+            nmv.logger.header('Smooth edges')
+            nmv.mesh.remove_doubles(mesh_object=self.soma_mesh, distance=0.01)
+
+            # Triangulate
+            nmv.mesh.ops.triangulate_mesh(mesh_object=self.soma_mesh)
+
+            # Smooth the vertices
+            nmv.mesh.smooth_object_vertices(mesh_object=self.soma_mesh, level=1)
+            nmv.mesh.remove_doubles(mesh_object=self.soma_mesh, distance=0.01)
+
+            # Subdivide the mesh
+            nmv.mesh.subdivide_mesh(mesh_object=self.soma_mesh, level=1)
+
+            # Enlarge the mesh
+            nmv.mesh.enlarge_mesh_using_displacement_modifier(
+                mesh_object=self.soma_mesh, enlargement_factor=0.05)
+
+            # Further smooth object vertices
+            nmv.mesh.remove_doubles(mesh_object=self.soma_mesh, distance=0.01)
+            nmv.mesh.smooth_object_vertices(mesh_object=self.soma_mesh, level=5)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -383,6 +501,7 @@ class UnionBuilder:
         nmv.builders.morphology.resample_skeleton_sections(builder=self)
 
         # Build the soma, with the default parameters
+        self.options.soma.meta_ball_resolution = 0.25
         result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
         self.profiling_statistics += stats
 
@@ -391,15 +510,15 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Connect to the soma
-        result, stats = nmv.utilities.profile_function(nmv.builders.connect_arbors_to_soma, self)
-        self.profiling_statistics += stats
-
-        # Tessellation
-        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.weld_arbors_to_soma)
         self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
+        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
+        self.profiling_statistics += stats
+
+        # Cleaning mesh
+        result, stats = nmv.utilities.profile_function(self.smooth_edges)
         self.profiling_statistics += stats
 
         # Surface roughness
@@ -407,9 +526,8 @@ class UnionBuilder:
             nmv.builders.add_surface_noise_to_arbor, self)
         self.profiling_statistics += stats
 
-        # Join all the objects into a single object
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.join_mesh_object_into_single_object, self)
+        # Decimation
+        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
         self.profiling_statistics += stats
 
         # Transform to the global coordinates, if required
@@ -422,7 +540,7 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Report
-        nmv.logger.log(self.profiling_statistics)
+        nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
         nmv.builders.write_statistics_to_file(builder=self, tag='union')

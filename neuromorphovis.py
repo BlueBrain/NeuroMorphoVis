@@ -127,6 +127,33 @@ def create_shell_commands_for_local_execution(arguments,
 
 
 ####################################################################################################
+# @execute_command
+####################################################################################################
+def execute_command(shell_command):
+    subprocess.call(shell_command, shell=True)
+
+
+####################################################################################################
+# @execute_commands
+####################################################################################################
+def execute_commands(shell_commands):
+    for shell_command in shell_commands:
+        print('RUNNING: **********************************************************************')
+        print(shell_command)
+        print('*******************************************************************************')
+        execute_command(shell_command)
+
+
+####################################################################################################
+# @execute_commands_parallel
+####################################################################################################
+def execute_commands_parallel(shell_commands):
+
+    from joblib import Parallel, delayed
+    Parallel(n_jobs=10)(delayed(execute_command)(i) for i in shell_commands)
+
+
+####################################################################################################
 # @run_local_neuromorphovis
 ####################################################################################################
 def run_local_neuromorphovis(arguments):
@@ -149,12 +176,12 @@ def run_local_neuromorphovis(arguments):
 
         # Import BluePy
         try:
-            import bluepy.v2
+            import bluepy
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             exit(0)
 
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
 
         # Loading a circuit
         circuit = Circuit(arguments.blue_config)
@@ -176,7 +203,6 @@ def run_local_neuromorphovis(arguments):
         # Run NeuroMorphoVis from Blender in the background mode
         for shell_command in shell_commands:
             subprocess.call(shell_command, shell=True)
-
 
     # Use a single GID
     elif arguments.input == 'gid':
@@ -246,13 +272,8 @@ def run_local_neuromorphovis(arguments):
             shell_commands.extend(
                 create_shell_commands_for_local_execution(arguments, arguments_string))
 
-        # Run NeuroMorphoVis from Blender in the background mode
-        for shell_command in shell_commands:
-
-            print('RUNNING: **********************************************************************')
-            print(shell_command)
-            print('*******************************************************************************')
-            subprocess.call(shell_command, shell=True)
+        # execute_commands(shell_commands=shell_commands)
+        execute_commands_parallel(shell_commands=shell_commands)
 
     else:
         print('ERROR: Input data source, use \'file, gid, target or directory\'')
@@ -282,12 +303,12 @@ def run_cluster_neuromorphovis(arguments):
 
         # Import BluePy
         try:
-            import bluepy.v2
+            import bluepy
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             exit(0)
 
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
 
         # Loading a circuit
         circuit = Circuit(arguments.blue_config)

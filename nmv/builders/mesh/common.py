@@ -44,41 +44,45 @@ def create_skeleton_materials(builder):
 
     # Delete the old materials
     for material in bpy.data.materials:
-        if 'soma_skeleton' in material.name or              \
-           'axon_skeleton' in material.name or              \
-           'basal_dendrites_skeleton' in material.name or   \
-           'apical_dendrite_skeleton' in material.name or   \
-           'spines' in material.name:
+        if 'soma_skeleton_material' in material.name or              \
+           'axon_skeleton_material' in material.name or              \
+           'basal_dendrites_skeleton_material' in material.name or   \
+           'apical_dendrite_skeleton_material' in material.name or   \
+           'spines_material' in material.name:
 
-            # Remove
+            # Remove the materials
             nmv.utilities.disable_std_output()
             bpy.data.materials.remove(material, do_unlink=True)
             nmv.utilities.enable_std_output()
 
     # Soma
     builder.soma_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.mesh_material, name='soma_skeleton',
+        material_type=builder.options.shading.mesh_material,
+        name='soma_skeleton_material',
         color=builder.options.shading.mesh_soma_color)
 
     # Axon
     builder.axons_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.mesh_material, name='axon_skeleton',
+        material_type=builder.options.shading.mesh_material,
+        name='axon_skeleton_material',
         color=builder.options.shading.mesh_axons_color)
 
     # Basal dendrites
     builder.basal_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.mesh_material, name='basal_dendrites_skeleton',
+        material_type=builder.options.shading.mesh_material,
+        name='basal_dendrites_skeleton_material',
         color=builder.options.shading.mesh_basal_dendrites_color)
 
     # Apical dendrite
     builder.apical_dendrites_materials = nmv.shading.create_materials(
-        material_type=builder.options.shading.mesh_material, name='apical_dendrite_skeleton',
+        material_type=builder.options.shading.mesh_material,
+        name='apical_dendrite_skeleton_material',
         color=builder.options.shading.mesh_apical_dendrites_color)
 
     # Spines
     builder.spines_materials = nmv.shading.create_materials(
         material_type=builder.options.shading.mesh_material,
-        name='spines', color=builder.options.shading.mesh_spines_color)
+        name='spines_material', color=builder.options.shading.mesh_spines_color)
 
     # Create an illumination specific for the given material
     nmv.shading.create_material_specific_illumination(builder.options.shading.mesh_material)
@@ -451,6 +455,8 @@ def add_surface_noise_to_arbor(builder):
         An object of the builder that is used to reconstruct the neuron mesh.
     """
 
+    meshing_technique = builder.options.mesh.meshing_technique
+
     if builder.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
         nmv.logger.info('Adding surface roughness to arbors')
 
@@ -465,7 +471,7 @@ def add_surface_noise_to_arbor(builder):
             nmv.skeleton.ops.get_stable_soma_extent_for_morphology(builder.morphology)
 
         # The subdivision parameters are based on the mesh builder
-        meshing_technique = builder.options.mesh.meshing_technique
+
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             for mesh_object in mesh_objects:
                 nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
@@ -479,11 +485,44 @@ def add_surface_noise_to_arbor(builder):
 
         elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
             for mesh_object in mesh_objects:
-                nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
                 nmv.mesh.add_surface_noise_to_mesh(
                     mesh_object=mesh_object, subdivision_level=0, noise_strength=1.0)
+                nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.25)
+                nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.25)
+                nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.5)
+                # Smooth using Catmull-Clark subdivision
+                nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
         else:
             return
+    else:
+
+        # Get a list of all the meshes of the reconstructed arbors
+        mesh_objects = get_neuron_mesh_objects(builder=builder)
+
+        #if meshing_technique == nmv.enums.Meshing.Technique.UNION:
+        #    for mesh_object in mesh_objects:
+        #        clean_union_operator_reconstructed_surface(mesh_object=mesh_object)
+
+
+def clean_union_operator_reconstructed_surface(mesh_object):
+
+    # Subdivide mesh with level 1
+    nmv.mesh.subdivide_mesh(mesh_object=mesh_object, level=1)
+
+    # Remove doubles
+    nmv.mesh.remove_doubles(mesh_object=mesh_object, distance=0.01)
+
+    # Add light surface noise
+    nmv.mesh.add_light_surface_noise(mesh_object=mesh_object)
+
+    # Decimate the mesh
+    nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
+
+    # Remove doubles
+    nmv.mesh.remove_doubles(mesh_object=mesh_object, distance=0.01)
+
+    # Smooth the surface vertices
+    nmv.mesh.smooth_object_vertices(mesh_object=mesh_object, level=5)
 
 
 ####################################################################################################

@@ -195,7 +195,7 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
         views = [cli_options.rendering.camera_view]
 
     # Get the image suffix
-    suffixes = nmv.interface.get_morphology_image_suffixes_from_view(
+    suffixes = nmv.interface.get_mesh_image_suffixes_from_view(
         cli_options.rendering.camera_view)
 
     for view, suffix in zip(views, suffixes):
@@ -208,7 +208,7 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
                 bounding_box=bounding_box,
                 camera_view=cli_options.rendering.camera_view,
                 image_resolution=cli_options.rendering.full_view_resolution,
-                image_name='%s%s' % (cli_options.morphology.label, suffix),
+                image_name='%s-%s' % (cli_options.morphology.label, suffix),
                 image_directory=cli_options.io.images_directory)
 
         # Render at a specific scale factor
@@ -219,7 +219,7 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
                 bounding_box=bounding_box,
                 camera_view=cli_options.rendering.camera_view,
                 image_scale_factor=cli_options.rendering.resolution_scale_factor,
-                image_name='MESH_%s_%s' % (cli_options.morphology.label, suffix),
+                image_name='%s-%s' % (cli_options.morphology.label, suffix),
                 image_directory=cli_options.io.images_directory)
 
 

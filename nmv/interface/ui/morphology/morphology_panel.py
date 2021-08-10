@@ -170,7 +170,6 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         start_time = time.time()
 
         global morphology_builder
-
         # Create a skeleton builder object to build the morphology skeleton
         method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:

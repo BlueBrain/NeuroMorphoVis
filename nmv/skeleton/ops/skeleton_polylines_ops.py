@@ -127,6 +127,42 @@ def get_section_poly_line(section,
 
 
 ####################################################################################################
+# @get_section_polyline_without_terminal_samples
+####################################################################################################
+def get_section_polyline_without_terminal_samples(section):
+    """Get the polyline list or a series of points that reflects the skeleton of a single section
+    without its terminal samples.
+
+    :param section:
+        The geometry of a section.
+    :return:
+        Section data in poly-line format that is suitable for drawing by Blender.
+    """
+
+    # An array containing the data of the section arranged in blender poly-line format
+    polyline = list()
+
+    # Resample the section (ADAPTIVE-RELAXED)
+    nmv.skeleton.ops.resample_section_adaptively_relaxed(section=section)
+
+    # If the section has only three samples or less, we cannot construct a polyline here
+    if len(section.samples) < 10:
+        return None
+
+    # Construct the section from the remaining samples
+    for i in range(3, len(section.samples) - 3):
+
+        # Get a reference to the point
+        point = section.samples[i].point
+
+        # Use the actual radius of the samples reported in the morphology file
+        polyline.append([(point[0], point[1], point[2], 1), section.samples[i].radius])
+
+    # Return the polyline 'list'
+    return polyline
+
+
+####################################################################################################
 # @connect_root_to_origin
 ####################################################################################################
 def connect_root_to_origin(section,

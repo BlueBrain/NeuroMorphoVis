@@ -321,8 +321,8 @@ def compute_unified_bounding_box(non_unified_bounding_box):
         largest_dimension = z
 
     largest_bounds = Vector((largest_dimension, largest_dimension, largest_dimension))
-    unified_bounding_box = nmv.bbox.BoundingBox(center=non_unified_bounding_box.center,
-                                       bounds=largest_bounds)
+    unified_bounding_box = nmv.bbox.BoundingBox(
+        center=non_unified_bounding_box.center, bounds=largest_bounds)
 
     return unified_bounding_box
 

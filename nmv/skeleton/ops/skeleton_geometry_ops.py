@@ -204,13 +204,13 @@ def get_transformation_matrix(blue_config,
 
     # Import BluePy
     try:
-        import bluepy.v2
+        import bluepy
     except ImportError:
         print('ERROR: Cannot import [BluePy], please install it')
         return None
 
     # Loading a circuit
-    from bluepy.v2 import Circuit
+    from bluepy import Circuit
     circuit = Circuit(blue_config)
 
     # Get the neuron

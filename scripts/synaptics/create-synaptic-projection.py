@@ -43,7 +43,7 @@ import nmv.shading
 import nmv.utilities
 
 # BBP imports
-from bluepy.v2 import Synapse, Circuit
+from bluepy import Synapse, Circuit
 
 # Blender imports
 from mathutils import Vector
