@@ -109,10 +109,7 @@ bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
 
 ######################
 # Color arbor by part
-bpy.types.Scene.NMV_ColorArborByPart = bpy.props.BoolProperty(
-    name='Color Arbor By Part',
-    description='Each component of the arbor will be assigned a different color',
-    default=False)
+
 
 # Color arbor using black and white alternatives
 bpy.types.Scene.NMV_ColorArborBlackAndWhite = bpy.props.BoolProperty(

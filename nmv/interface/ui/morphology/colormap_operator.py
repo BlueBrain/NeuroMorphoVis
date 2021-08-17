@@ -81,7 +81,7 @@ class ColorMapOperator(bpy.types.Operator):
     bpy.types.Scene.NMV_ColorMap = bpy.props.EnumProperty(
         items=nmv.enums.ColorMaps.COLOR_MAPS,
         name="ColorMap",
-        default=nmv.enums.ColorMaps.GRAY_SCALE,
+        default=nmv.enums.ColorMaps.GNU_PLOT,
         update=update_ui_colors)
 
     # Create a list of colors from the selected colormap

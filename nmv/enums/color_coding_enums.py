@@ -64,18 +64,18 @@ class ColorCoding:
     ################################################################################################
     SEGMENTS_COLOR_CODING_ITEMS = [
 
-        # Single color for all the components in the morphology including the soma
-        (HOMOGENEOUS_COLOR,
-         'Homogeneous Color',
-         'Use a homogeneous color for all the components in the morphology including the soma'),
-
-        # Single color for all the segments in the morphology
+        # Default coloring scheme
         (DEFAULT_SCHEME,
          'Default Colors',
          'Use a single color for all the segments in the entire morphology, and assign a different '
          'color to the soma or the articulations at the branching points'),
 
-        # Alternating colors
+        # Single color for all the components in the morphology including the soma
+        (HOMOGENEOUS_COLOR,
+         'Homogeneous Color',
+         'Use a homogeneous color for all the components in the morphology including the soma'),
+
+        # Alternating colors for every two segments in the morphology
         (ALTERNATING_COLORS,
          'Alternating Colors',
          'Use alternating segments colors to visualize certain patterns in the morphology'),
@@ -120,16 +120,16 @@ class ColorCoding:
     ################################################################################################
     SECTIONS_COLOR_CODING_ITEMS = [
 
-        # Single color for all the components in the morphology including the soma
-        (HOMOGENEOUS_COLOR,
-         'Homogeneous Color',
-         'Use a homogeneous color for all the components in the morphology including the soma'),
-
-        # Single color for all the sections in the morphology
+        # Default coloring scheme
         (DEFAULT_SCHEME,
          'Default Colors',
          'Use a single color for all the sections of the same type in the entire morphology and '
          'assign a different color to the soma or the articulations at the branching points'),
+
+        # Single color for all the components in the morphology including the soma
+        (HOMOGENEOUS_COLOR,
+         'Homogeneous Color',
+         'Use a homogeneous color for all the components in the morphology including the soma'),
 
         # Alternating colors for every two sections in the morphology
         (ALTERNATING_COLORS,
@@ -172,9 +172,13 @@ class ColorCoding:
     @staticmethod
     def get_enum(argument):
 
-        # Single color
-        if argument == 'single':
+        # Default scheme
+        if argument == 'default':
             return ColorCoding.DEFAULT_SCHEME
+
+        # Homogeneous
+        elif argument == 'homogeneous':
+            return ColorCoding.HOMOGENEOUS_COLOR
 
         # Alternating colors
         if argument == 'alternating':
@@ -200,10 +204,6 @@ class ColorCoding:
         elif argument == 'number-samples':
             return ColorCoding.BY_NUMBER_SAMPLES
 
-        # Color the short sections
-        elif argument == 'short sections':
-            return ColorCoding.SHORT_SECTIONS
-
-        # By default use by length
+        # By default use the default scheme
         else:
             return ColorCoding.DEFAULT_SCHEME
