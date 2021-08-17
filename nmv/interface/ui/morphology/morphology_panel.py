@@ -32,9 +32,10 @@ import nmv.interface
 import nmv.shading
 import nmv.scene
 import nmv.skeleton
-import nmv.rendering
 import nmv.utilities
+import nmv.rendering
 from .morphology_panel_options import *
+from .colormap_operator import *
 
 # Is the morphology reconstructed or not
 is_morphology_reconstructed = False
@@ -61,6 +62,38 @@ class MorphologyPanel(bpy.types.Panel):
     bl_label = 'Morphology Toolbox'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
+
+    ################################################################################################
+    # @update_ui_colors
+    ################################################################################################
+    def update_ui_colors(self,
+                         context):
+
+        # Get a list of initial colors from the selected colormap
+        colors = nmv.utilities.create_colormap_from_hex_list(
+            nmv.enums.ColorMaps.get_hex_color_list(context.scene.NMV_ColorMap),
+            nmv.consts.Color.COLORMAP_RESOLUTION)
+
+        for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+            setattr(context.scene, 'NMV_Color%d' % i, colors[i])
+
+    # A list of all the color maps available in NeuroMorphoVis
+    # Note that once a new colormap is selected, the corresponding colors will be set in the UI
+    bpy.types.Scene.NMV_ColorMap = bpy.props.EnumProperty(
+        items=nmv.enums.ColorMaps.COLOR_MAPS,
+        name='',
+        default=nmv.enums.ColorMaps.GRAY_SCALE,
+        update=update_ui_colors)
+
+    # Create a list of colors from the selected colormap
+    colors = nmv.utilities.create_colormap_from_hex_list(
+        nmv.enums.ColorMaps.get_hex_color_list(bpy.types.Scene.NMV_ColorMap),
+        nmv.consts.Color.COLORMAP_RESOLUTION)
+
+    # UI color elements for the color map
+    for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+        setattr(bpy.types.Scene, 'NMV_Color%d' % i, bpy.props.FloatVectorProperty(
+            name='', subtype='COLOR', default=colors[i], min=0.0, max=1.0, description=''))
 
     ################################################################################################
     # @draw
@@ -205,7 +238,20 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
-        nmv.interface.ui_reconstructed_skeleton = morphology_builder.draw_morphology_skeleton()
+        nmv.interface.ui_reconstructed_skeleton = morphology_builder.draw_morphology_skeleton(
+            context=context)
+
+        # Interpolations
+        color_map_range = \
+            float(context.scene.MaximumValue) - float(context.scene.MinimumValue)
+        delta = color_map_range / float(nmv.consts.Color.COLORMAP_RESOLUTION)
+
+        # Fill the list of colors
+        for color_index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+            r0_value = float(context.scene.MinimumValue) + (color_index * delta)
+            r1_value = float(context.scene.MinimumValue) + ((color_index + 1) * delta)
+            setattr(context.scene, 'NMV_R0_Value%d' % color_index, r0_value)
+            setattr(context.scene, 'NMV_R1_Value%d' % color_index, r1_value)
 
         # Morphology reconstructed
         reconstruction_time = time.time()
@@ -875,6 +921,9 @@ class MorphologyReconstructionDocumentation(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
+    # ColorMap
+    # bpy.utils.register_class(ColorMapOperator)
+
     # Soma reconstruction panel
     bpy.utils.register_class(MorphologyPanel)
 
@@ -896,6 +945,9 @@ def register_panel():
 ####################################################################################################
 def unregister_panel():
     """Un-registers all the classes in this panel"""
+
+    # ColorMap
+    # bpy.utils.unregister_class(ColorMapOperator)
 
     # Morphology reconstruction panel
     bpy.utils.unregister_class(MorphologyPanel)

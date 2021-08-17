@@ -23,6 +23,7 @@ import bpy
 from mathutils import Vector, Matrix
 
 # Internal imports
+from .base import MorphologyBuilderBase
 import nmv.mesh
 import nmv.enums
 import nmv.skeleton
@@ -37,7 +38,7 @@ import nmv.analysis
 ####################################################################################################
 # @ProgressiveBuilder
 ####################################################################################################
-class ProgressiveBuilder:
+class ProgressiveBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of disconnected sections like the
     DisconnectedSectionsBuilder, but PROGRESSIVELY.
     """
@@ -54,32 +55,8 @@ class ProgressiveBuilder:
             A given morphology.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
-
-        # System options
-        self.options = copy.deepcopy(options)
-
-        # All the reconstructed objects of the morphology, for example, poly-lines, spheres etc...
-        self.morphology_objects = []
-
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
-
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the colors/materials of the articulation spheres
-        self.articulations_materials = None
-
-        # An aggregate list of all the materials of the skeleton
-        self.skeleton_materials = list()
+        # Initialize the parent with the common parameters
+        MorphologyBuilderBase.__init__(self, morphology, options)
 
         # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
         self.articulations_spheres = list()
@@ -97,7 +74,7 @@ class ProgressiveBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
+        self.create_skeleton_materials_and_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -374,12 +351,16 @@ class ProgressiveBuilder:
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
-    def draw_morphology_skeleton(self):
+    def draw_morphology_skeleton(self,
+                                 context=None):
         """Reconstruct and draw the morphological skeleton.
 
         :return
             A list of all the drawn morphology objects including the soma and arbors.
         """
+
+        # Update the context
+        self.context = context
 
         nmv.logger.header('Building Skeleton: ProgressiveBuilder')
 
@@ -399,7 +380,7 @@ class ProgressiveBuilder:
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # The maximum branching order of the morphology
         morphology_maximum_branching_order = \
@@ -441,10 +422,10 @@ class ProgressiveBuilder:
             self.draw_articulations()
 
         # Draw the soma
-        nmv.builders.morphology.draw_soma(builder=self)
+        self.draw_soma()
 
         # Transforming to global coordinates
-        nmv.builders.morphology.transform_to_global_coordinates(builder=self)
+        self.transform_to_global_coordinates()
 
         # Return the list of the drawn morphology objects
         return self.morphology_objects

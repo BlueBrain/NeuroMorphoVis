@@ -52,7 +52,14 @@ def compute_number_of_samples_per_section(section,
         A list to collect the analysis data.
     """
 
-    analysis_data.append(len(section.samples))
+    # Number of samples
+    number_samples = len(section.samples)
+
+    # Append the results to the analysis data
+    analysis_data.append(number_samples)
+
+    # Add the result to the morphology skeleton to be able to use the results during the building
+    section.stats.number_samples = number_samples
 
 
 ####################################################################################################

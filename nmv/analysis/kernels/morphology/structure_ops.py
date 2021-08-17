@@ -117,9 +117,57 @@ def kernel_maximum_path_distance(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_path_distance_of_arbor,
-                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_path_distance_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_path_distance = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
+
+
+####################################################################################################
+# @kernel_maximum_euclidean_distance
+####################################################################################################
+def kernel_maximum_euclidean_distance(morphology):
+    """Computes the maximum Euclidean distance from the soma along all the arbors till their last
+    sample.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_euclidean_distance_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_euclidean_distance = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################

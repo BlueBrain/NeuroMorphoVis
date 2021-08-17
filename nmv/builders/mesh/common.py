@@ -106,7 +106,7 @@ def update_morphology_skeleton(builder):
         *[builder.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
     # Resample the sections of the morphology skeleton
-    nmv.builders.morphology.resample_skeleton_sections(builder=builder)
+    self.resample_skeleton_sections()
 
     # Radii
     nmv.skeleton.update_arbors_radii(

@@ -18,10 +18,12 @@
 # Blender imports
 import bpy
 
+import mathutils
+
 # Internal imports
 import nmv.consts
 import nmv.enums
-
+import nmv.utilities
 
 ####################################################################################################
 # Panel options
@@ -57,7 +59,7 @@ bpy.types.Scene.NMV_BuildAxon = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_AxonBranchingLevel = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the axon',
-    default=nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=1000)
 
 # Build basal dendrites
 bpy.types.Scene.NMV_BuildBasalDendrites = bpy.props.BoolProperty(
@@ -69,7 +71,7 @@ bpy.types.Scene.NMV_BuildBasalDendrites = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_BasalDendritesBranchingLevel = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the basal dendrites',
-    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=1000)
 
 # Build apical dendrite
 bpy.types.Scene.NMV_BuildApicalDendrite = bpy.props.BoolProperty(
@@ -81,14 +83,31 @@ bpy.types.Scene.NMV_BuildApicalDendrite = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the apical dendrite',
-    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=100)
+    default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=1000)
 
-# Morphology material
+# Morphology material or shading
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shader.MATERIAL_ITEMS,
-    name='Shading',
+    name='',
     default=nmv.enums.Shader.LAMBERT_WARD)
 
+# Per segment color-coding
+bpy.types.Scene.NMV_PerSegmentColorCodingBasis = bpy.props.EnumProperty(
+    items=nmv.enums.ColorCoding.SEGMENTS_COLOR_CODING_ITEMS,
+    name='',
+    default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
+
+# Per-section color-coding
+bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
+    items=nmv.enums.ColorCoding.SECTIONS_COLOR_CODING_ITEMS,
+    name='',
+    default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
+
+
+
+
+
+######################
 # Color arbor by part
 bpy.types.Scene.NMV_ColorArborByPart = bpy.props.BoolProperty(
     name='Color Arbor By Part',
@@ -112,6 +131,23 @@ bpy.types.Scene.NMV_NeuronMorphologyColor = bpy.props.FloatVectorProperty(
     name='Membrane Color',
     subtype='COLOR', default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
     description='The homogeneous color of the reconstructed morphology membrane')
+#############3
+
+
+
+# The alternative color used to color every second object in the morphology
+bpy.types.Scene.NMV_MorphologyColor1 = bpy.props.FloatVectorProperty(
+    name="Color 1",
+    subtype='COLOR', default=nmv.consts.Color.VERY_WHITE, min=0.0, max=1.0,
+    description="The first alternating color of the morphology")
+
+# The alternative color used to color every second object in the morphology
+bpy.types.Scene.NMV_MorphologyColor2 = bpy.props.FloatVectorProperty(
+    name="Color 2",
+    subtype='COLOR', default=nmv.consts.Color.MATT_BLACK, min=0.0, max=1.0,
+    description="The second alternating color of the morphology")
+
+
 
 # Soma color
 bpy.types.Scene.NMV_SomaColor = bpy.props.FloatVectorProperty(
@@ -410,6 +446,28 @@ bpy.types.Scene.NMV_MorphologyRenderingTime = bpy.props.FloatProperty(
     description='The time it takes to render the morphology into an image',
     default=0, min=0, max=1000000)
 
+# Frame scale factor 'for rendering to scale option '
+bpy.types.Scene.NMV_ColorMapResolution = bpy.props.IntProperty(
+    name="Resolution", default=nmv.consts.Color.COLORMAP_RESOLUTION, min=4, max=128,
+    description="The resolution of the color-map. Range [4 - 128] samples.")
+
+# The minimum value associated with the color map
+bpy.types.Scene.NMV_MinimumValue = bpy.props.StringProperty(
+    name='', description='', default='0', maxlen=10)
+
+# The maximum value associated with the color map
+bpy.types.Scene.NMV_MaximumValue = bpy.props.StringProperty(
+    name='', description='', default='100', maxlen=10)
+
+# UI color elements for the color map
+for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+    delta = 100.0 / float(nmv.consts.Color.COLORMAP_RESOLUTION)
+    setattr(bpy.types.Scene, 'NMV_R0_Value%d' % i, bpy.props.FloatProperty(
+        name='', default=i * delta,
+        min=0.0, max=1e10, description=''))
+    setattr(bpy.types.Scene, 'NMV_R1_Value%d' % i, bpy.props.FloatProperty(
+        name='', default=(i + 1) * delta,
+        min=0.0, max=1e10, description=''))
 
 # By default, it is 'Reconstruct Morphology' unless otherwise specified
 bpy.types.Scene.NMV_MorphologyButtonLabel = 'Reconstruct Morphology'

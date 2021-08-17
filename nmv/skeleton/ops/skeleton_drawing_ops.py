@@ -800,3 +800,30 @@ def visualize_extrusion_connection(point,
 
     # Return a reference to the connection sphere
     return connection_sphere
+
+
+####################################################################################################
+# @draw_section_samples_as_spheres
+####################################################################################################
+def draw_section_samples_as_spheres(section):
+    """Draw the section samples as a set of spheres.
+
+    :param section:
+        A given section to draw.
+    :return:
+        List of spheres of the section.
+    """
+
+    # Resulting list
+    output = list()
+
+    # For every sample in the section
+    for sample in section.samples:
+
+        # Construct a sphere and append it to the list
+        sphere = nmv.bmeshi.create_ico_sphere(
+            radius=sample.radius, location=sample.point, subdivisions=3)
+        output.append(sphere)
+
+        # Return the resulting list that contains all the spheres
+    return output

@@ -60,6 +60,9 @@ def compute_section_surface_area_from_segments(section):
         # Compute the segment surface area and append it to the total section surface area
         section_surface_area += segment_lateral_area + math.pi * ((r0 * r0) + (r1 * r1))
 
+    # Add the stats. to the morphology skeleton to be used later in any operation
+    section.stats.surface_area = section_surface_area
+
     # Return the section surface area
     return section_surface_area
 

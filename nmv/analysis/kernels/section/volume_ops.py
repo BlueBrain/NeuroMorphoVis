@@ -54,6 +54,9 @@ def compute_section_volume_from_segments(section):
         # Compute the segment volume and append to the total section volume
         section_volume += (1.0 / 3.0) * math.pi * (p0 - p1).length * (r0 * r0 + r0 * r1 + r1 * r1)
 
+    # Add the stats. to the morphology skeleton to be used later in any operation
+    section.stats.volume = section_volume
+
     # Return the section volume
     return section_volume
 

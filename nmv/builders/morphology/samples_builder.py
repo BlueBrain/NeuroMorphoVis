@@ -19,6 +19,7 @@
 import copy
 
 # Internal imports
+from .base import MorphologyBuilderBase
 import nmv.mesh
 import nmv.enums
 import nmv.skeleton
@@ -33,7 +34,7 @@ import nmv.utilities
 ####################################################################################################
 # @SamplesBuilder
 ####################################################################################################
-class SamplesBuilder:
+class SamplesBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of samples where each sample is represented by
     a sphere.
 
@@ -52,32 +53,8 @@ class SamplesBuilder:
             A given morphology.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
-
-        # System options
-        self.options = copy.deepcopy(options)
-
-        # All the reconstructed objects of the morphology, for example, poly-lines, spheres etc...
-        self.morphology_objects = []
-
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
-
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the colors/materials of the articulation spheres
-        self.articulations_materials = None
-
-        # An aggregate list of all the materials of the skeleton
-        self.skeleton_materials = list()
+        # Initialize the parent with the common parameters
+        MorphologyBuilderBase.__init__(self, morphology, options)
 
     ################################################################################################
     # @create_single_skeleton_materials_list
@@ -92,7 +69,7 @@ class SamplesBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
+        self.create_skeleton_materials_and_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -105,26 +82,6 @@ class SamplesBuilder:
 
         # Index: 6 - 7
         self.skeleton_materials.extend(self.axons_materials)
-
-    ################################################################################################
-    # @draw_section_samples_as_spheres
-    ################################################################################################
-    def draw_section_samples_as_spheres(self,
-                                        section):
-        """Draw the section samples as a set of spheres.
-
-        :param section:
-            A given section to draw.
-        :return:
-            List of spheres of the section.
-        """
-
-        output = list()
-        for sample in section.samples:
-            sphere = nmv.bmeshi.create_ico_sphere(
-                radius=sample.radius, location=sample.point, subdivisions=3)
-            output.append(sphere)
-        return output
 
     ################################################################################################
     # @draw_sections_as_spheres
@@ -164,11 +121,9 @@ class SamplesBuilder:
         if branching_order > max_branching_order:
             return
 
-        # Make sure that the arbor exist
+        # Make sure that the arbor exist and then draw the spheres, append them to the objects list
         if root is not None:
-
-            section_name = '%s_%d' % (name, root.index)
-            drawn_spheres = self.draw_section_samples_as_spheres(root)
+            drawn_spheres = nmv.skeleton.draw_section_samples_as_spheres(section=root)
 
             # Add the drawn segments to the 'segments_objects'
             sphere_objects.extend(drawn_spheres)
@@ -290,14 +245,19 @@ class SamplesBuilder:
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
-    def draw_morphology_skeleton(self):
+    def draw_morphology_skeleton(self,
+                                 context=None):
         """Reconstruct and draw the morphological skeleton.
 
+        :param context:
+            Blender context to access the UI
         :return
             A list of all the drawn morphology objects including the soma and arbors.
         """
-
         nmv.logger.header('Building Skeleton: SamplesBuilder')
+
+        # Update the context
+        self.context = context
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -306,7 +266,7 @@ class SamplesBuilder:
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # Apical dendrite
         nmv.logger.info('Constructing spheres')
@@ -359,10 +319,10 @@ class SamplesBuilder:
                                                 materials_list=self.basal_dendrites_materials,
                                                 prefix=arbor.label)
         # Draw the soma
-        nmv.builders.morphology.draw_soma(builder=self)
+        self.draw_soma()
 
         # Transforming to global coordinates
-        nmv.builders.morphology.transform_to_global_coordinates(builder=self)
+        self.transform_to_global_coordinates()
 
         # Return the list of the drawn morphology objects
         return self.morphology_objects

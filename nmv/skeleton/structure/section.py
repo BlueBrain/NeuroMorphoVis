@@ -20,6 +20,7 @@ from mathutils import Vector
 
 # Internal imports
 import nmv.enums
+import nmv.analysis
 
 
 ####################################################################################################
@@ -145,6 +146,9 @@ class Section:
 
         # Arbor color
         self.color = Vector((1.0, 1.0, 1.0))
+
+        # Statistical analysis data of the section
+        self.stats = nmv.analysis.SectionStats()
 
     ################################################################################################
     # @get_type_string

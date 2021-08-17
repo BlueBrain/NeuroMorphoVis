@@ -54,26 +54,24 @@ def kernel_minimum_number_samples_per_section(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_minimum_samples_count_of_arbor,
-                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_samples_count_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
 
-####################################################################################################
-# @kernel_distance_from_initial_sample_to_origin
-####################################################################################################
-def kernel_distance_from_initial_sample_to_origin(morphology):
-    """Computes the distance between the first sample along the arbor and the soma.
+    # Store the result in the morphology
+    morphology.stats.minimum_number_samples_in_section = min(combined_results)
 
-    :param morphology:
-        A given morphology skeleton to analyse.
-    :return:
-        The result of the analysis operation.
-    """
-
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_first_sample_distance_to_soma,
-                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -88,9 +86,24 @@ def kernel_maximum_number_samples_per_section(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_samples_count_of_arbor,
-                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_samples_count_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_number_samples_in_section = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -109,6 +122,23 @@ def kernel_average_number_samples_per_section(morphology):
         morphology,
         nmv.analysis.compute_average_number_samples_per_section_of_arbor,
         nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_distance_from_initial_sample_to_origin
+####################################################################################################
+def kernel_distance_from_initial_sample_to_origin(morphology):
+    """Computes the distance between the first sample along the arbor and the soma.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(morphology,
+                                      nmv.analysis.compute_first_sample_distance_to_soma,
+                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
 
 
 ####################################################################################################
@@ -141,10 +171,24 @@ def kernel_minimum_sample_radius(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_minimum_sample_radius_of_arbor,
         nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.minimum_sample_radius = min(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -159,10 +203,24 @@ def kernel_maximum_sample_radius(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
         morphology,
         nmv.analysis.compute_maximum_sample_radius_of_arbor,
         nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_sample_radius = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################

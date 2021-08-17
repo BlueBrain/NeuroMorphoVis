@@ -17,11 +17,100 @@
 
 # System imports
 import random
-from mathutils import Vector
 
 # Internal imports
 import nmv.consts
 import nmv.shading
+
+
+####################################################################################################
+# @create_single_material
+####################################################################################################
+def create_single_material(name,
+                           material_type,
+                           color):
+    """Creates a single slot material for a specific material type and a given color.
+
+    :param name:
+        The name of the material/color.
+    :param material_type:
+        The material type.
+    :param color:
+        The RGB color code of the material in a Vector((R, G, B)) format.
+    :return:
+        A reference to the created material.
+    """
+
+    return nmv.shading.create_material(name=name, color=color, material_type=material_type)
+
+
+####################################################################################################
+# @create_multiple_materials_with_same_color
+####################################################################################################
+def create_multiple_materials_with_same_color(name,
+                                              material_type,
+                                              color,
+                                              number_elements):
+    """Creates a multiple slot material list with multiple elements for a given material type and
+    a given color.
+
+    NOTE: The created list will have the exact same material. It is only a convenient way to address
+    the automated material and color update from the GUI on-the-fly.
+
+    :param name:
+        The name of the material/color.
+    :param material_type:
+        The material type.
+    :param color:
+        The RGB color code of the material in a Vector((R, G, B)) format.
+    :param number_elements:
+        Number of elements in the list.
+    :return:
+        A reference to the created material.
+    """
+
+    # A list that will contain the material
+    material_list = list()
+
+    # Iterate and append
+    for i in range(number_elements):
+        material_list.append(
+            create_single_material(name='%s_%d' % (name, i), color=color,
+                                   material_type=material_type))
+
+    # Return a reference to the material list
+    return material_list
+
+
+####################################################################################################
+# @create_multiple_materials
+####################################################################################################
+def create_multiple_materials(name,
+                              material_type,
+                              color_list):
+    """Creates a list of materials (or a single material with multiple slots) with the given
+    material type corresponding to the given color list.
+
+    :param name:
+        The name of the material.
+    :param material_type:
+        The material type.
+    :param color_list:
+        A list of RGB colors in a Vector((R, G, B)) format.
+    :return:
+        The list of created materials.
+    """
+
+    # A list that will contain all the created materials
+    materials_list = list()
+
+    # For every given color, create the corresponding material and append it to the list
+    for i, color in enumerate(color_list):
+        materials_list.append(create_single_material(
+            name='%s_color_%d' % (name, i), color=color, material_type=material_type))
+
+    # Return the created material list
+    return materials_list
 
 
 ####################################################################################################
@@ -45,7 +134,7 @@ def create_skeleton_materials(name,
     """
 
     # A list of the created materials
-    materials_list = []
+    materials_list = list()
 
     # Random colors
     if color.x == -1 and color.y == 0 and color.z == 0:

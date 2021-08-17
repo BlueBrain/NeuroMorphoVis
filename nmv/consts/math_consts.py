@@ -55,3 +55,6 @@ class Math:
 
     # Z-axis
     Z_AXIS = Vector((.0, 0.0, 1.0))
+
+    # Index out of range (-1)
+    INDEX_OUT_OF_RANGE = -1

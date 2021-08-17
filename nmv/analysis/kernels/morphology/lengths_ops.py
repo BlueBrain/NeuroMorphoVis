@@ -48,9 +48,24 @@ def kernel_minimum_section_length(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_minimum_section_length_of_arbor,
-                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_section_length_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.minimum_section_length = min(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -65,9 +80,24 @@ def kernel_maximum_section_length(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_section_length_of_arbor,
-                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_section_length_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_section_length = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -99,9 +129,24 @@ def kernel_minimum_segment_length(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_minimum_segment_length_of_arbor,
-                                      nmv.analysis.compute_minimum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_minimum_segment_length_of_arbor,
+        nmv.analysis.compute_minimum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.minimum_segment_length = min(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################
@@ -116,9 +161,24 @@ def kernel_maximum_segment_length(morphology):
         The result of the analysis operation.
     """
 
-    return nmv.analysis.invoke_kernel(morphology,
-                                      nmv.analysis.compute_maximum_segment_length_of_arbor,
-                                      nmv.analysis.compute_maximum_analysis_result_of_morphology)
+    # Run the analysis kernel
+    analysis_results = nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_maximum_segment_length_of_arbor,
+        nmv.analysis.compute_maximum_analysis_result_of_morphology)
+
+    # Compile all the results into a single list to store the resulting values and annotate
+    # the morphology skeleton
+    combined_results = nmv.analysis.combine_results_into_single_list(
+        basal_dendrites_list=analysis_results.basal_dendrites_result,
+        apical_dendrites_list=analysis_results.apical_dendrites_result,
+        axons_list=analysis_results.axons_result)
+
+    # Store the result in the morphology
+    morphology.stats.maximum_segment_length = max(combined_results)
+
+    # Return the analysis results
+    return analysis_results
 
 
 ####################################################################################################

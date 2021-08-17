@@ -340,8 +340,7 @@ def draw_poly_lines_in_single_object(poly_lines,
             base_object=poly_lines_object, poly_line=poly_line, poly_line_type=poly_line_type)
 
     # Create the aggregate object to be linked to the scene later
-    aggregate_poly_lines_object = bpy.data.objects.new(
-        object_name, poly_lines_object)
+    aggregate_poly_lines_object = bpy.data.objects.new(object_name, poly_lines_object)
 
     if poly_line_type == 'NURBS':
         aggregate_poly_lines_object.data.splines[0].order_u = 6

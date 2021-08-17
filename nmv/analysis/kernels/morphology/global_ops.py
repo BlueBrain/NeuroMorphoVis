@@ -95,3 +95,39 @@ def kernel_global_total_number_stems(morphology):
 
     return morphology.number_stems
 
+
+####################################################################################################
+# @combine_results_into_single_list
+####################################################################################################
+def combine_results_into_single_list(basal_dendrites_list,
+                                     apical_dendrites_list,
+                                     axons_list):
+    """Combines the results of a the entire morphology into a single list.
+
+    :param basal_dendrites_list:
+        A list of numbers corresponding to the analysis results of the basal dendrites.
+    :param apical_dendrites_list:
+        A list of numbers corresponding to the analysis results of the apical dendrites.
+    :param axons_list:
+        A list of numbers corresponding to the analysis results of the axons.
+    :return:
+        A list combining all the results.
+    """
+
+    # A list that will combine all the lists to get a specific number depending on the operation
+    resulting_list = list()
+
+    # Basals
+    if basal_dendrites_list is not None:
+        resulting_list.extend(basal_dendrites_list)
+
+    # Apicals
+    if apical_dendrites_list is not None:
+        resulting_list.extend(apical_dendrites_list)
+
+    # Axons
+    if axons_list is not None:
+        resulting_list.extend(axons_list)
+
+    # Return the resulting list
+    return resulting_list

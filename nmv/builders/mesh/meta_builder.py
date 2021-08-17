@@ -134,7 +134,7 @@ class MetaBuilder:
         nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # Radii
         nmv.skeleton.update_arbors_radii(

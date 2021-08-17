@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .dendrogram_builder import *
-from .disconnected_sections_builder import *
-from .disconnected_segments_builder import *
-from .samples_builder import *
-from .connected_sections_builder import *
-from .progressive_builder import *
+from .section import *
+from .arbor import *
+from .morphology import *

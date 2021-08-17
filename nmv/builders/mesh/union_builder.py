@@ -498,7 +498,7 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # Build the soma, with the default parameters
         self.options.soma.meta_ball_resolution = 0.25

@@ -56,7 +56,7 @@ def create_colormap_from_color_list(color_list,
     :param color_list:
         A given color list.
     :param number_colors:
-        The number of colors in the color-map, by default 32.
+        The number of colors in the color-map, by default 16.
     :return:
         The created color-map.
     """
@@ -88,24 +88,3 @@ def create_colormap_from_color_list(color_list,
                                            interpolated_b_list[i])))
 
     return interpolated_colors
-
-
-####################################################################################################
-# @ create_colormap_materials
-####################################################################################################
-def create_colormap_materials(colormap):
-
-    color_0 = Vector((1, 1, 0))
-    color_1 = Vector((1, 0, 0))
-    colors = [color_0, color_1]
-
-    # Create the colormap
-    colormap = create_colormap_from_color_list(colors, number_materials)
-
-    # A list that will contain all the materials
-    materials = list()
-    for i in range(number_materials):
-        materials.append(nmv.shading.create_lambert_ward_material('color_%d' % i, colormap[i]))
-
-    # Return the materials list
-    return materials

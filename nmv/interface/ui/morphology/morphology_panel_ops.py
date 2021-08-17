@@ -22,6 +22,7 @@ from mathutils import Vector
 # Internal imports
 import nmv.consts
 import nmv.enums
+from .colormap_operator import *
 
 
 ####################################################################################################
@@ -318,6 +319,361 @@ def set_reconstruction_options(layout,
 
 
 ####################################################################################################
+# @add_soma_coloring_option
+####################################################################################################
+def add_soma_coloring_option(layout,
+                             scene,
+                             options):
+    # Soma color option
+    soma_color_row = layout.row()
+    soma_color_row.prop(scene, 'NMV_SomaColor')
+
+    if not scene.NMV_BuildSoma:
+        soma_color_row.enabled = False
+
+    # Pass options from UI to system
+    soma_color_value = Vector((scene.NMV_SomaColor.r,
+                               scene.NMV_SomaColor.g,
+                               scene.NMV_SomaColor.b))
+    options.shading.morphology_soma_color = soma_color_value
+
+
+####################################################################################################
+# @add_single_arbor_color_option
+####################################################################################################
+def add_single_arbor_color_option(layout,
+                                  scene,
+                                  options):
+    """Adds to the UI the single arbor color elements.
+
+    :param layout:
+        Panel layout.
+    :param scene:
+        Context scene.
+    :param options:
+        System options.
+    """
+
+    # Soma color option
+    soma_color_row = layout.row()
+    soma_color_row.prop(scene, 'NMV_SomaColor')
+    if not scene.NMV_BuildSoma:
+        soma_color_row.enabled = False
+
+    # Pass options from UI to system
+    soma_color_value = Vector((scene.NMV_SomaColor.r, scene.NMV_SomaColor.g, scene.NMV_SomaColor.b))
+    options.shading.morphology_soma_color = soma_color_value
+
+    # The morphology must be loaded to be able to draw these options
+    if nmv.interface.ui_morphology is not None:
+
+        # Axon color option
+        if nmv.interface.ui_morphology.has_axons():
+            axons_color_row = layout.row()
+            axons_color_row.prop(scene, 'NMV_AxonColor')
+            if not scene.NMV_BuildAxon or scene.NMV_ColorArborByPart:
+                axons_color_row.enabled = False
+
+            # Pass options from UI to system
+            axons_color_value = Vector((scene.NMV_AxonColor.r,
+                                        scene.NMV_AxonColor.g,
+                                        scene.NMV_AxonColor.b))
+            options.shading.morphology_axons_color = axons_color_value
+
+        # Basal dendrites color option
+        if nmv.interface.ui_morphology.has_basal_dendrites():
+            basal_dendrites_color_row = layout.row()
+            basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+            if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:
+                basal_dendrites_color_row.enabled = False
+
+            # Pass options from UI to system
+            color = scene.NMV_BasalDendritesColor
+            basal_dendrites_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_basal_dendrites_color = basal_dendrites_color_value
+
+        # Apical dendrite color option
+        if nmv.interface.ui_morphology.has_apical_dendrites():
+            apical_dendrites_color_row = layout.row()
+            apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+            if not scene.NMV_BuildApicalDendrite or scene.NMV_ColorArborByPart:
+                apical_dendrites_color_row.enabled = False
+
+            # Pass options from UI to system
+            color = scene.NMV_ApicalDendriteColor
+            apical_dendrites_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_apical_dendrites_color = apical_dendrites_color_value
+
+        # Articulation color option
+        technique = scene.NMV_MorphologyReconstructionTechnique
+        if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
+            articulation_color_row = layout.row()
+            articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+
+            # Pass options from UI to system
+            color = scene.NMV_ArticulationColor
+            articulation_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_articulation_color = articulation_color_value
+
+    # Only a simple UI
+    else:
+
+        # Axons
+        axons_color_row = layout.row()
+        axons_color_row.prop(scene, 'NMV_AxonColor')
+
+        # Apical dendrites
+        basal_dendrites_color_row = layout.row()
+        basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+
+        # Apical dendrites
+        apical_dendrites_color_row = layout.row()
+        apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+
+        # Articulation color option
+        articulation_color_row = layout.row()
+        articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+
+
+####################################################################################################
+# @add_homogeneous_color_option
+####################################################################################################
+def add_homogeneous_color_option(layout,
+                                 scene,
+                                 options):
+    """Adds to the UI the homogeneous color elements.
+
+    :param layout:
+        Panel layout.
+    :param scene:
+        Context scene.
+    :param options:
+        System options.
+    """
+
+    color_row = layout.row()
+    color_row.prop(scene, 'NMV_NeuronMorphologyColor')
+    color = scene.NMV_NeuronMorphologyColor
+    options.shading.morphology_soma_color = Vector((color.r, color.g, color.b))
+    options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
+    options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
+    options.shading.morphology_apical_dendrites_color = Vector((color.r, color.g, color.b))
+    options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
+
+
+####################################################################################################
+# @add_alternating_colors_option
+####################################################################################################
+def add_alternating_colors_option(layout,
+                                  scene,
+                                  options):
+    """
+
+    :param layout:
+    :param scene:
+    :param options:
+    :return:
+    """
+
+    # Soma options
+    add_soma_coloring_option(layout=layout, scene=scene, options=options)
+
+    # Color 1
+    color_1_row = layout.row()
+    color_1_row.prop(scene, 'NMV_MorphologyColor1')
+    options.shading.morphology_alternating_color_1 = scene.NMV_MorphologyColor1
+
+    # Color 2
+    color_2_row = layout.row()
+    color_2_row.prop(scene, 'NMV_MorphologyColor2')
+    options.shading.morphology_alternating_color_2 = scene.NMV_MorphologyColor2
+
+
+####################################################################################################
+# @add_colormap_options
+####################################################################################################
+def add_colormap_options(layout,
+                         scene,
+                         options):
+
+    # Color-mapping
+    #layout.operator(ColorMapOperator.bl_idname, icon='COLOR')
+
+    # Color map
+    color_map_row = layout.row()
+    color_map_row.label(text='Color Map:')
+    color_map_row.prop(scene, 'NMV_ColorMap')
+
+    # Clear the color map passed to VMV if it is full
+    if len(nmv.interface.ui_options.shading.morphology_colormap_list) > 0:
+        nmv.interface.ui_options.shading.morphology_colormap_list.clear()
+
+    # Fill the list of colors
+    for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+
+        # Add the colormap element to the UI
+        colors = layout.row()
+        colormap_element = colors.column()
+        colormap_element.prop(scene, 'NMV_Color%d' % i)
+
+        values = colors.row()
+        values.prop(scene, 'NMV_R0_Value%d' % i)
+        values.prop(scene, 'NMV_R1_Value%d' % i)
+        values.enabled = False
+
+        # Get the color value
+        color = getattr(scene, 'NMV_Color%d' % i)
+        nmv.interface.ui_options.shading.morphology_colormap_list.append(color)
+
+
+####################################################################################################
+# @add_per_section_color_coding_options
+####################################################################################################
+def add_per_section_color_coding_options(layout,
+                                         scene,
+                                         options):
+
+    # Color coding scheme
+    nmv.interface.ui_options.shading.morphology_coloring_scheme = \
+        scene.NMV_PerSectionColorCodingBasis
+
+    # Single arbor color
+    if scene.NMV_PerSectionColorCodingBasis == nmv.enums.ColorCoding.DEFAULT_SCHEME:
+        add_single_arbor_color_option(layout=layout, scene=scene, options=options)
+
+    # Homogeneous color
+    elif scene.NMV_PerSectionColorCodingBasis == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
+        add_homogeneous_color_option(layout=layout, scene=scene, options=options)
+
+    # Alternating colors
+    elif scene.NMV_PerSectionColorCodingBasis == nmv.enums.ColorCoding.ALTERNATING_COLORS:
+        add_alternating_colors_option(layout=layout, scene=scene, options=options)
+
+    # Using a colormap
+    else:
+        add_colormap_options(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
+# @add_per_segment_color_coding_options
+####################################################################################################
+def add_per_segment_color_coding_options(layout,
+                                         scene,
+                                         options):
+
+    # Color coding scheme
+    nmv.interface.ui_options.shading.morphology_coloring_scheme = \
+        scene.NMV_PerSegmentColorCodingBasis
+
+    # Single arbor color
+    if scene.NMV_PerSegmentColorCodingBasis == nmv.enums.ColorCoding.DEFAULT_SCHEME:
+        add_single_arbor_color_option(layout=layout, scene=scene, options=options)
+
+    # Homogeneous color
+    elif scene.NMV_PerSegmentColorCodingBasis == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
+        add_homogeneous_color_option(layout=layout, scene=scene, options=options)
+
+    # Alternating colors
+    elif scene.NMV_PerSegmentColorCodingBasis == nmv.enums.ColorCoding.ALTERNATING_COLORS:
+        add_alternating_colors_option(layout=layout, scene=scene, options=options)
+
+    # Using a colormap
+    else:
+        add_colormap_options(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
+# set_color_options
+####################################################################################################
+def add_default_color_coding_options(layout,
+                                     scene,
+                                     options):
+    # Soma color option
+    soma_color_row = layout.row()
+    soma_color_row.prop(scene, 'NMV_SomaColor')
+
+    if not scene.NMV_BuildSoma:
+        soma_color_row.enabled = False
+
+    # Pass options from UI to system
+    soma_color_value = Vector((scene.NMV_SomaColor.r,
+                               scene.NMV_SomaColor.g,
+                               scene.NMV_SomaColor.b))
+    options.shading.morphology_soma_color = soma_color_value
+
+    # The morphology must be loaded to be able to draw these options
+    if nmv.interface.ui_morphology is not None:
+
+        # Axon color option
+        if nmv.interface.ui_morphology.has_axons():
+            axons_color_row = layout.row()
+            axons_color_row.prop(scene, 'NMV_AxonColor')
+            if not scene.NMV_BuildAxon or scene.NMV_ColorArborByPart:
+                axons_color_row.enabled = False
+
+            # Pass options from UI to system
+            axons_color_value = Vector((scene.NMV_AxonColor.r,
+                                        scene.NMV_AxonColor.g,
+                                        scene.NMV_AxonColor.b))
+            options.shading.morphology_axons_color = axons_color_value
+
+        # Basal dendrites color option
+        if nmv.interface.ui_morphology.has_basal_dendrites():
+            basal_dendrites_color_row = layout.row()
+            basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+            if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:
+                basal_dendrites_color_row.enabled = False
+
+            # Pass options from UI to system
+            color = scene.NMV_BasalDendritesColor
+            basal_dendrites_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_basal_dendrites_color = basal_dendrites_color_value
+
+        # Apical dendrite color option
+        if nmv.interface.ui_morphology.has_apical_dendrites():
+            apical_dendrites_color_row = layout.row()
+            apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+            if not scene.NMV_BuildApicalDendrite or scene.NMV_ColorArborByPart:
+                apical_dendrites_color_row.enabled = False
+
+            # Pass options from UI to system
+            color = scene.NMV_ApicalDendriteColor
+            apical_dendrites_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_apical_dendrites_color = apical_dendrites_color_value
+
+        # Articulation color option
+        technique = scene.NMV_MorphologyReconstructionTechnique
+        if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
+            articulation_color_row = layout.row()
+            articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+
+            # Pass options from UI to system
+            color = scene.NMV_ArticulationColor
+            articulation_color_value = Vector((color.r, color.g, color.b))
+            options.shading.morphology_articulation_color = articulation_color_value
+
+    # Only a simple UI
+    else:
+
+        # Axons
+        axons_color_row = layout.row()
+        axons_color_row.prop(scene, 'NMV_AxonColor')
+
+        # Apical dendrites
+        basal_dendrites_color_row = layout.row()
+        basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
+
+        # Apical dendrites
+        apical_dendrites_color_row = layout.row()
+        apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
+
+        # Articulation color option
+        articulation_color_row = layout.row()
+        articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+
+
+
+####################################################################################################
 # set_color_options
 ####################################################################################################
 def set_color_options(layout,
@@ -339,8 +695,55 @@ def set_color_options(layout,
 
     # Morphology material
     morphology_material_row = layout.row()
+    morphology_material_row.label(text='Shading:')
     morphology_material_row.prop(scene, 'NMV_MorphologyMaterial')
     options.shading.morphology_material = scene.NMV_MorphologyMaterial
+
+    # Per-section color coding
+    color_coding_row = layout.row()
+
+    method = options.morphology.reconstruction_method
+
+    # Each section is rendered independently
+    if method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS or \
+       method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS or  \
+       method == nmv.enums.Skeleton.Method.PROGRESSIVE:
+        color_coding_row.label(text='Color Coding:')
+        color_coding_row.prop(scene, 'NMV_PerSectionColorCodingBasis')
+        add_per_section_color_coding_options(layout, scene, options)
+
+    # Each segment is rendered independently
+    elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
+        color_coding_row.label(text='Color Coding:')
+        color_coding_row.prop(scene, 'NMV_PerSegmentColorCodingBasis')
+        add_per_segment_color_coding_options(layout, scene, options)
+
+    # The arbor is rendered in one piece as a set of connected sections in whatever format
+    elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS or  \
+         method == nmv.enums.Skeleton.Method.SAMPLES or             \
+         method == nmv.enums.Skeleton.Method.DENDROGRAM:
+        add_default_color_coding_options(layout, scene, options)
+
+
+
+    return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #morphology_options.color_coding = scene.PerSectionColorCodingBasis
 
     color_by_part_row = layout.row()
     color_by_part_row.prop(scene, 'NMV_ColorArborByPart')
@@ -381,87 +784,7 @@ def set_color_options(layout,
             options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
         else:
 
-            # Soma color option
-            soma_color_row = layout.row()
-            soma_color_row.prop(scene, 'NMV_SomaColor')
-            if not scene.NMV_BuildSoma:
-                soma_color_row.enabled = False
-
-            # Pass options from UI to system
-            soma_color_value = Vector((scene.NMV_SomaColor.r,
-                                       scene.NMV_SomaColor.g,
-                                       scene.NMV_SomaColor.b))
-            options.shading.morphology_soma_color = soma_color_value
-
-            # The morphology must be loaded to be able to draw these options
-            if nmv.interface.ui_morphology is not None:
-
-                # Axon color option
-                if nmv.interface.ui_morphology.has_axons():
-                    axons_color_row = layout.row()
-                    axons_color_row.prop(scene, 'NMV_AxonColor')
-                    if not scene.NMV_BuildAxon or scene.NMV_ColorArborByPart:
-                        axons_color_row.enabled = False
-
-                    # Pass options from UI to system
-                    axons_color_value = Vector((scene.NMV_AxonColor.r,
-                                               scene.NMV_AxonColor.g,
-                                               scene.NMV_AxonColor.b))
-                    options.shading.morphology_axons_color = axons_color_value
-
-                # Basal dendrites color option
-                if nmv.interface.ui_morphology.has_basal_dendrites():
-                    basal_dendrites_color_row = layout.row()
-                    basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
-                    if not scene.NMV_BuildBasalDendrites or scene.NMV_ColorArborByPart:
-                        basal_dendrites_color_row.enabled = False
-
-                    # Pass options from UI to system
-                    color = scene.NMV_BasalDendritesColor
-                    basal_dendrites_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_basal_dendrites_color = basal_dendrites_color_value
-
-                # Apical dendrite color option
-                if nmv.interface.ui_morphology.has_apical_dendrites():
-                    apical_dendrites_color_row = layout.row()
-                    apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
-                    if not scene.NMV_BuildApicalDendrite or scene.NMV_ColorArborByPart:
-                        apical_dendrites_color_row.enabled = False
-
-                    # Pass options from UI to system
-                    color = scene.NMV_ApicalDendriteColor
-                    apical_dendrites_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_apical_dendrites_color = apical_dendrites_color_value
-
-                # Articulation color option
-                technique = scene.NMV_MorphologyReconstructionTechnique
-                if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-                    articulation_color_row = layout.row()
-                    articulation_color_row.prop(scene, 'NMV_ArticulationColor')
-
-                    # Pass options from UI to system
-                    color = scene.NMV_ArticulationColor
-                    articulation_color_value = Vector((color.r, color.g, color.b))
-                    options.shading.morphology_articulation_color = articulation_color_value
-
-            # Only a simple UI
-            else:
-
-                # Axons
-                axons_color_row = layout.row()
-                axons_color_row.prop(scene, 'NMV_AxonColor')
-
-                # Apical dendrites
-                basal_dendrites_color_row = layout.row()
-                basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesColor')
-
-                # Apical dendrites
-                apical_dendrites_color_row = layout.row()
-                apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteColor')
-
-                # Articulation color option
-                articulation_color_row = layout.row()
-                articulation_color_row.prop(scene, 'NMV_ArticulationColor')
+            pass
 
 
 ####################################################################################################

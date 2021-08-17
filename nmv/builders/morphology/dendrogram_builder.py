@@ -22,6 +22,7 @@ import bpy
 import copy
 
 # Internal imports
+from .base import MorphologyBuilderBase
 import nmv.analysis
 import nmv.bbox
 import nmv.mesh
@@ -39,7 +40,7 @@ import nmv.rendering
 ####################################################################################################
 # @DendrogramBuilder
 ####################################################################################################
-class DendrogramBuilder:
+class DendrogramBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of samples where each sample is represented by
     a sphere.
     """
@@ -56,32 +57,8 @@ class DendrogramBuilder:
             A given morphology.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
-
-        # System options
-        self.options = copy.deepcopy(options)
-
-        # All the reconstructed objects of the morphology, for example, poly-lines, spheres etc...
-        self.morphology_objects = []
-
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
-
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the colors/materials of the articulation spheres
-        self.articulations_materials = None
-
-        # An aggregate list of all the materials of the skeleton
-        self.skeleton_materials = list()
+        # Initialize the parent with the common parameters
+        MorphologyBuilderBase.__init__(self, morphology, options)
 
     ################################################################################################
     # @create_single_skeleton_materials_list
@@ -96,7 +73,7 @@ class DendrogramBuilder:
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        nmv.builders.morphology.create_skeleton_materials_and_illumination(builder=self)
+        self.create_skeleton_materials_and_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -167,12 +144,16 @@ class DendrogramBuilder:
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
-    def draw_morphology_skeleton(self):
+    def draw_morphology_skeleton(self,
+                                 context=None):
         """Reconstruct and draw the morphological skeleton.
 
         :return
             A list of all the drawn morphology objects including the soma and arbors.
         """
+
+        # Update the context
+        self.context = context
 
         nmv.logger.header('Building Dendrogram')
 
@@ -180,7 +161,7 @@ class DendrogramBuilder:
         self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(
@@ -272,7 +253,7 @@ class DendrogramBuilder:
         self.morphology.create_morphology_color_palette()
 
         # Resample the sections of the morphology skeleton
-        nmv.builders.morphology.resample_skeleton_sections(builder=self)
+        self.resample_skeleton_sections()
 
         # Get the maximum radius to make it easy to compute the deltas
         maximum_radius = nmv.analysis.kernel_maximum_sample_radius(

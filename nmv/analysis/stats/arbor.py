@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,27 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .dendrogram_builder import *
-from .disconnected_sections_builder import *
-from .disconnected_segments_builder import *
-from .samples_builder import *
-from .connected_sections_builder import *
-from .progressive_builder import *
+
+####################################################################################################
+# @ArborStats
+####################################################################################################
+class ArborStats:
+
+    def __init__(self):
+
+        # The total number of samples in the arbor
+        self.number_samples = None
+
+        # The total number of sections in the arbor
+        self.number_sections = None
+
+        # The total length of the arbor
+        self.length = None
+
+        # The total surface are of the arbor
+        self.surface_area = None
+
+        # The total volume of the arbor
+        self.volume = None
+
+

@@ -83,6 +83,9 @@ def compute_section_length(section):
         # Update the section length
         section_length += (point_1 - point_0).length
 
+    # Add the stats. to the morphology skeleton to be used later in any operation
+    section.stats.length = section_length
+
     # Return the section length
     return section_length
 
