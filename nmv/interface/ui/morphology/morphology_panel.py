@@ -34,6 +34,7 @@ import nmv.scene
 import nmv.skeleton
 import nmv.utilities
 import nmv.rendering
+import nmv.geometry
 from .morphology_panel_options import *
 from .colormap_operator import *
 
@@ -253,14 +254,13 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             context=context)
 
         # Interpolations
-        color_map_range = \
-            float(context.scene.MaximumValue) - float(context.scene.MinimumValue)
-        delta = color_map_range / float(nmv.consts.Color.COLORMAP_RESOLUTION)
+        scale = float(context.scene.NMV_MaximumValue) - float(context.scene.NMV_MinimumValue)
+        delta = scale / float(nmv.consts.Color.COLORMAP_RESOLUTION)
 
         # Fill the list of colors
         for color_index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
-            r0_value = float(context.scene.MinimumValue) + (color_index * delta)
-            r1_value = float(context.scene.MinimumValue) + ((color_index + 1) * delta)
+            r0_value = float(context.scene.NMV_MinimumValue) + (color_index * delta)
+            r1_value = float(context.scene.NMV_MinimumValue) + ((color_index + 1) * delta)
             setattr(context.scene, 'NMV_R0_Value%d' % color_index, r0_value)
             setattr(context.scene, 'NMV_R1_Value%d' % color_index, r1_value)
 
@@ -302,6 +302,12 @@ class RenderMorphologyFront(bpy.types.Operator):
         # Timer
         start_time = time.time()
 
+
+        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
+                                               options=nmv.interface.ui_options,
+                                               view=nmv.enums.Camera.View.FRONT)
+
+
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
@@ -341,6 +347,9 @@ class RenderMorphologySide(bpy.types.Operator):
             'FINISHED'.
         """
 
+        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
+                                               options=nmv.interface.ui_options,
+                                               view=nmv.enums.Camera.View.SIDE)
         # Timer
         start_time = time.time()
 
@@ -383,6 +392,9 @@ class RenderMorphologyTop(bpy.types.Operator):
             'FINISHED'.
         """
 
+        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
+                                               options=nmv.interface.ui_options,
+                                               view=nmv.enums.Camera.View.TOP)
         # Timer
         start_time = time.time()
 

@@ -314,8 +314,8 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
 
         # Update the interface with the minimum and maximum values for the color-mapping
         if self.context is not None:
-            self.context.scene.MinimumValue = str(minimum_value)
-            self.context.scene.MaximumValue = str(maximum_value)
+            self.context.scene.NMV_MinimumValue = str('%.2f' % minimum_value)
+            self.context.scene.NMV_MaximumValue = str('%.2f' % maximum_value)
 
         # Process the children, section by section
         for child in root.children:

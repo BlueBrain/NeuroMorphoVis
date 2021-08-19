@@ -48,7 +48,7 @@ class Image:
     GAP_DELTA = 5.0
 
     # Default image resolution
-    DEFAULT_RESOLUTION = 512
+    DEFAULT_RESOLUTION = 1024
 
     # Default value for the image scale factor
     DEFAULT_IMAGE_SCALE_FACTOR = 1.0

@@ -208,8 +208,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Update the interface with the minimum and maximum values for the color-mapping
         if self.context is not None:
-            self.context.scene.MinimumValue = str(minimum_value)
-            self.context.scene.MaximumValue = str(maximum_value)
+            self.context.scene.NMV_MinimumValue = str(minimum_value)
+            self.context.scene.NMV_MaximumValue = str(maximum_value)
 
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(

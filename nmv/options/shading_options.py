@@ -103,6 +103,7 @@ class ShadingOptions:
         """Sets the default options for duplicated objects.
         """
 
+        # Morphology Shading Options ###############################################################
         # Soma color for the soma toolbox
         self.soma_color = nmv.enums.Color.SOMA
 
@@ -127,6 +128,16 @@ class ShadingOptions:
         # The second alternating color that will be used in the alternating pattern
         self.morphology_alternating_color_2 = nmv.consts.Color.VERY_WHITE
 
+        # Morphology color coding scheme
+        self.morphology_coloring_scheme = nmv.enums.ColorCoding.DEFAULT_SCHEME
+
+        # The resolution of the color map of the morphology (number of elements)
+        self.morphology_colormap_resolution = nmv.consts.Color.COLORMAP_RESOLUTION
+
+        # Morphology color-map colors (this is set from the GUI)
+        self.morphology_colormap_list = list()
+
+        # Mesh Shading Options #####################################################################
         # Soma color for the mesh toolbox
         self.mesh_soma_color = nmv.enums.Color.SOMA
 
