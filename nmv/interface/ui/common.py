@@ -31,6 +31,7 @@ import nmv.skeleton
 import nmv.bbox
 import nmv.rendering
 import nmv.scene
+import nmv.geometry
 
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
@@ -404,6 +405,10 @@ def render_morphology_image(panel_object,
             suffix = nmv.consts.Suffix.MORPHOLOGY_TOP
         else:
             suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
+
+
+        nmv.geometry.draw_morphology_scale_bar(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options, view=view)
 
         # Render at a specific resolution
         if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:

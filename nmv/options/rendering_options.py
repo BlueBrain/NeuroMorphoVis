@@ -82,4 +82,7 @@ class RenderingOptions:
         # Image extension
         self.image_format = nmv.enums.Image.Extension.PNG
 
+        # Scale bar
+        self.render_scale_bar = False
+
 

@@ -302,12 +302,6 @@ class RenderMorphologyFront(bpy.types.Operator):
         # Timer
         start_time = time.time()
 
-
-        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
-                                               options=nmv.interface.ui_options,
-                                               view=nmv.enums.Camera.View.FRONT)
-
-
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
@@ -347,9 +341,6 @@ class RenderMorphologySide(bpy.types.Operator):
             'FINISHED'.
         """
 
-        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
-                                               options=nmv.interface.ui_options,
-                                               view=nmv.enums.Camera.View.SIDE)
         # Timer
         start_time = time.time()
 
@@ -391,10 +382,7 @@ class RenderMorphologyTop(bpy.types.Operator):
         :return:
             'FINISHED'.
         """
-
-        nmv.geometry.draw_morphology_scale_bar(morphology=nmv.interface.ui_morphology,
-                                               options=nmv.interface.ui_options,
-                                               view=nmv.enums.Camera.View.TOP)
+        
         # Timer
         start_time = time.time()
 

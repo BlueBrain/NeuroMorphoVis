@@ -39,7 +39,7 @@ class Image:
     FULL_VIEW_RESOLUTION = 1024
 
     # Default close up view resolution
-    CLOSE_UP_RESOLUTION = 512
+    CLOSE_UP_RESOLUTION = 1024
 
     # Default close up dimensions (in microns)
     CLOSE_UP_DIMENSIONS = 20

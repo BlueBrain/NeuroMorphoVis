@@ -106,16 +106,18 @@ bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
 
 
 
+# Render the corresponding scale bar on the resulting image
+bpy.types.Scene.NMV_RenderScaleBar = bpy.props.BoolProperty(
+    name='Render Scale Bar',
+    description='Render the scale bar on the resulting image automatically',
+    default=False)
+
+
 
 ######################
 # Color arbor by part
 
 
-# Color arbor using black and white alternatives
-bpy.types.Scene.NMV_ColorArborBlackAndWhite = bpy.props.BoolProperty(
-    name='Black / White',
-    description='Each component of the arbor will be assigned a either black or white',
-    default=False)
 
 # Use single color for the all the objects in the morphology
 bpy.types.Scene.NMV_MorphologyHomogeneousColor = bpy.props.BoolProperty(
@@ -410,8 +412,8 @@ bpy.types.Scene.NMV_MorphologyImageFormat = bpy.props.EnumProperty(
 
 # Frame resolution
 bpy.types.Scene.NMV_MorphologyFrameResolution = bpy.props.IntProperty(
-    name='Resolution',
-    default=512, min=128, max=1024 * 10,
+    name='',
+    default=nmv.consts.Image.DEFAULT_RESOLUTION, min=128, max=1024 * 10,
     description='The resolution of the image generated from rendering the morphology')
 
 # Frame scale factor 'for rendering to scale option '

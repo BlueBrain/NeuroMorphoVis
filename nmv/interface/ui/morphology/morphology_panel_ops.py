@@ -386,6 +386,11 @@ def set_rendering_options(layout,
     image_extension_row.prop(scene, 'NMV_MorphologyImageFormat')
     nmv.interface.ui_options.morphology.image_format = scene.NMV_MorphologyImageFormat
 
+    # Scale bar 
+    scale_bar_row = layout.row()
+    image_extension_row.prop(scene, 'NMV_RenderScaleBar')
+    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderScaleBar
+
     # Render view buttons
     render_view_row = layout.row()
     render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')

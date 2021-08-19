@@ -106,7 +106,7 @@ class Camera:
 
         # Adjust the orientation
         self.camera.rotation_euler[0] = 0
-        self.camera.rotation_euler[1] = 1.5708
+        self.camera.rotation_euler[1] = -1.5708
         self.camera.rotation_euler[2] = 0
 
     ################################################################################################
@@ -117,8 +117,8 @@ class Camera:
         """
 
         # Adjust the orientation
-        self.camera.rotation_euler[0] = -1.5708
-        self.camera.rotation_euler[1] = 3.14
+        self.camera.rotation_euler[0] = 1.5708
+        self.camera.rotation_euler[1] = 0
         self.camera.rotation_euler[2] = 0
 
     ################################################################################################
@@ -195,8 +195,8 @@ class Camera:
         camera_z = bounding_box.p_max[2] + bounding_box.bounds[2]
 
         # Camera location
-        camera_location_x = Vector((camera_x, center.y, center.z))
-        camera_location_y = Vector((center.x, camera_y, center.z))
+        camera_location_x = Vector((-camera_x, center.y, center.z))
+        camera_location_y = Vector((center.x, -camera_y, center.z))
         camera_location_z = Vector((center.x, center.y, camera_z))
 
         # Return a vector for the camera position for XYZ locations
@@ -220,16 +220,20 @@ class Camera:
         # Set camera location and target based on the selected view to render the image
         center = bounding_box.center
         bounds = bounding_box.bounds
+
+        # Compute the diagnoal of the bounding box 
         r = math.sqrt((0.5 * bounds[0] * 0.5 * bounds[0]) +
                       (0.5 * bounds[1] * 0.5 * bounds[1]) +
                       (0.5 * bounds[2] * 0.5 * bounds[2]))
+
+        # Adjust the camera 
         camera_x = r / math.tan(math.radians(0.5 * fov)) * 1.25
         camera_y = r / math.tan(math.radians(0.5 * fov)) * 1.25
         camera_z = r / math.tan(math.radians(0.5 * fov)) * 1.25
 
         # Camera location
-        camera_location_x = Vector((camera_x, center.y, center.z))
-        camera_location_y = Vector((center.x, camera_y, center.z))
+        camera_location_x = Vector((-camera_x, center.y, center.z))
+        camera_location_y = Vector((center.x, -camera_y, center.z))
         camera_location_z = Vector((center.x, center.y, camera_z))
 
         # Return a vector for the camera position for XYZ locations
@@ -321,13 +325,10 @@ class Camera:
         self.camera.data.ortho_scale = orthographic_scale
 
         # Set the image resolution
-        if nmv.utilities.is_blender_280():
-            bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale)
-            bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale)
-        else:
-            bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale) * 2
-            bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale) * 2
-
+        bpy.context.scene.render.resolution_percentage = 100
+        bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale)
+        bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale)
+    
     ################################################################################################
     # @update_camera_resolution_to_scale
     ################################################################################################
@@ -480,7 +481,7 @@ class Camera:
                      image_name='IMAGE',
                      image_format=nmv.enums.Image.Extension.PNG,
                      camera_projection=nmv.enums.Camera.Projection.ORTHOGRAPHIC,
-                     keep_camera_in_scene=True):
+                     keep_camera_in_scene=False):
         """Render scene using an orthographic camera.
 
         :param bounding_box:
