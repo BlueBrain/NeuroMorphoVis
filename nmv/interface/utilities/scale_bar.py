@@ -264,17 +264,18 @@ def adjust_scale_bar_legend(legend,
 # @draw_scale_bar
 ####################################################################################################
 def draw_scale_bar(bounding_box,
-                   options,
-                   view):
+                   view,
+                   material_type):
     """Draws a scale bar in the rendered image.
 
     :param bounding_box:
         The frustum that will be rendered.
-    :param options:
-        System options
     :param view:
         The camera view [nmv.enums.Camera.View:FRONT, SIDE or TOP]
+    :param material_type:
+        The material type used to shade the scale bar.
     :return:
+        A reference to the created scale bar
     """
 
     # Get the scale bar length based on the bounding box of the scene to be rendered
@@ -282,7 +283,7 @@ def draw_scale_bar(bounding_box,
 
     # Create the default scale bar legend at the XY plane 
     scale_bar_legend = create_default_scale_bar_legend(
-        scale_bar_length=scale_bar_length, material_type=options.shading.morphology_material)
+        scale_bar_length=scale_bar_length, material_type=material_type)
     
     # Scale the size of the scale bar 
     scale_factor = scale_bar_length / scale_bar_legend.dimensions.y

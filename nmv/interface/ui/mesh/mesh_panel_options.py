@@ -295,10 +295,10 @@ bpy.types.Scene.NMV_MeshRenderingView = bpy.props.EnumProperty(
             'Renders a close up image the focuses on the soma')],
     name='View', default=nmv.enums.Rendering.View.MID_SHOT)
 
-# Keep cameras
-bpy.types.Scene.NMV_KeepMeshCameras = bpy.props.BoolProperty(
-    name="Keep Cameras & Lights in Scene",
-    description="Keep the cameras in the scene to be used later if this file is saved",
+# Render the corresponding scale bar on the resulting image
+bpy.types.Scene.NMV_RenderMeshScaleBar = bpy.props.BoolProperty(
+    name='Add Scale Bar',
+    description='Render the scale bar on the resulting image',
     default=False)
 
 # Image format
@@ -311,7 +311,7 @@ bpy.types.Scene.NMV_MeshImageFormat = bpy.props.EnumProperty(
 bpy.types.Scene.NMV_MeshFrameResolution = bpy.props.IntProperty(
     name='Resolution',
     description='The resolution of the image generated from rendering the mesh',
-    default=512, min=128, max=1024 * 10)
+    default=nmv.consts.Image.DEFAULT_RESOLUTION, min=128, max=1024 * 10)
 
 # Frame scale factor 'for rendering to scale option '
 bpy.types.Scene.NMV_MeshFrameScaleFactor = bpy.props.FloatProperty(

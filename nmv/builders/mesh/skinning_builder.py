@@ -23,6 +23,7 @@ import time
 import bpy
 
 # Internal modules
+from .base import MeshBuilderBase
 import nmv.builders
 import nmv.bmeshi
 import nmv.consts
@@ -38,7 +39,7 @@ import nmv.utilities
 ####################################################################################################
 # @ExtrusionBuilder
 ####################################################################################################
-class SkinningBuilder:
+class SkinningBuilder(MeshBuilderBase):
     """Mesh builder that creates accurate and nice meshes using skinning. The reconstructed meshes
     are not guaranteed to be watertight, but they look very nice if you need to use transparency."""
 
@@ -56,26 +57,8 @@ class SkinningBuilder:
             Loaded options from NeuroMorphoVis.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
-
-        # Loaded options from NeuroMorphoVis
-        self.options = options
-
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
-
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the colors/materials of the spines
-        self.spines_materials = None
+        # Initialize the parent with the common parameters
+        MeshBuilderBase.__init__(self, morphology, options)
 
         # A reference to the reconstructed soma mesh
         self.soma_mesh = None
@@ -121,20 +104,6 @@ class SkinningBuilder:
 
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
-
-    ################################################################################################
-    # @update_morphology_skeleton
-    ################################################################################################
-    def update_morphology_skeleton(self):
-        """Verifies and repairs the morphology if the contain any artifacts that would potentially
-        affect the reconstruction quality of the mesh.
-
-        NOTE: The filters or operations performed in this builder are only specific to it. Other
-        builders might apply a different set of filters.
-        """
-
-        # Verify and repair the morphology, if required
-        nmv.builders.mesh.update_morphology_skeleton(builder=self)
 
     ################################################################################################
     # @update_section_samples_radii
@@ -279,7 +248,7 @@ class SkinningBuilder:
             # the auxiliary sample that is added at the soma, and the first sample to the point that
             # is added right before the arbor starts
             samples_global_arbor_index = [1]
-            nmv.builders.update_samples_indices_per_arbor(
+            self.update_samples_indices_per_arbor(
                 arbor, samples_global_arbor_index, max_branching_order)
 
             # Add an auxiliary sample just before the arbor starts
@@ -300,7 +269,7 @@ class SkinningBuilder:
             # is added right before the arbor starts
             reindexing_time = time.time()
             samples_global_arbor_index = [2]
-            nmv.builders.update_samples_indices_per_arbor(
+            self.update_samples_indices_per_arbor(
                 arbor, samples_global_arbor_index, max_branching_order)
             self.reindexing_time += time.time() - reindexing_time
 
@@ -478,6 +447,57 @@ class SkinningBuilder:
                     self.neuron_meshes.append(arbor_mesh)
 
     ################################################################################################
+    # @update_samples_indices_per_arbor
+    ################################################################################################
+    def update_samples_indices_per_arbor(self,
+                                         section,
+                                         index,
+                                         max_branching_order):
+        """Updates the global indices of all the samples along the given section.
+
+        Note: This global index of the sample w.r.t to the arbor it belongs to.
+
+        :param section:
+            A given section to update the indices of its samples.
+        :param index:
+            A list that contains a single value that account for the index of the arbor.
+            Note that we use this list as a trick to update the index value.
+        :param max_branching_order:
+            The maximum branching order of the arbor requested by the user.
+        """
+
+        # If the order goes beyond the maximum requested by the user, ignore the remaining samples
+        if section.branching_order > max_branching_order:
+            return
+
+        # If the given section is root
+        if section.is_root():
+
+            # Update the arbor index of the first sample
+            section.samples[0].arbor_idx = index[0]
+
+            # Increment the index value
+            index[0] += 1
+
+        else:
+
+            # The index of the root is basically the same as the index of the last sample of the
+            # parent arbor
+            section.samples[0].arbor_idx = section.parent.samples[-1].arbor_idx
+
+        # Update the indices of the rest of the samples along the section
+        for i in range(1, len(section.samples)):
+            # Set the arbor index of the current sample
+            section.samples[i].arbor_idx = index[0]
+
+            # Increment the index
+            index[0] += 1
+
+        # Update the children sections recursively
+        for child in section.children:
+            self.update_samples_indices_per_arbor(child, index, max_branching_order)
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -488,11 +508,10 @@ class SkinningBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.create_skeleton_materials(builder=self)
+        self.create_skeleton_materials()
 
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.mesh.update_morphology_skeleton, self)
+        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
@@ -500,7 +519,7 @@ class SkinningBuilder:
         nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
 
         # Build the soma, with the default parameters
-        result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors and connect them to the soma
@@ -511,8 +530,7 @@ class SkinningBuilder:
             self.profiling_statistics += stats
 
             # Connect to the soma
-            result, stats = nmv.utilities.profile_function(
-                nmv.builders.connect_arbors_to_soma, self)
+            result, stats = nmv.utilities.profile_function(self.connect_arbors_to_soma)
             self.profiling_statistics += stats
 
         # Build the arbors only without any connection to the soma
@@ -553,37 +571,35 @@ class SkinningBuilder:
                                                                    self.creating_modifier_time)
 
         # Tessellation
-        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.add_surface_noise_to_arbor, self)
+        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
         self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(nmv.builders.add_spines_to_surface, self)
+        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
         # Join all the objects into a single object
         neuron_mesh, stats = nmv.utilities.profile_function(
-            nmv.builders.join_mesh_object_into_single_object, self)
+            self.join_mesh_object_into_single_object)
         self.profiling_statistics += stats
 
         # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.transform_to_global_coordinates, self)
+        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
         self.profiling_statistics += stats
 
         # Done
         nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
-        nmv.builders.write_statistics_to_file(builder=self, tag='skinning')
+        self.write_statistics_to_file(tag='skinning')
 
         # Return a reference to the neuron mesh if joint
         return neuron_mesh

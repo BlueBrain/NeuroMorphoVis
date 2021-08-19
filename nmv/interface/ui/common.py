@@ -424,9 +424,11 @@ def render_morphology_image(panel_object,
             suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
 
         # Draw the morphology scale bar 
-        if context_scene.NMV_RenderScaleBar:
-            morphology_scale_bar = nmv.interface.draw_scale_bar(
-                bounding_box=bounding_box, options=nmv.interface.ui_options, view=view)
+        if context_scene.NMV_RenderMorphologyScaleBar:
+            scale_bar = nmv.interface.draw_scale_bar(
+                bounding_box=bounding_box,
+                material_type=nmv.interface.ui_options.shading.morphology_material,
+                view=view)
 
         # Render at a specific resolution
         if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
@@ -455,8 +457,8 @@ def render_morphology_image(panel_object,
                 keep_camera_in_scene=False)
 
         # Delete the morphology scale bar, if rendered 
-        if context_scene.NMV_RenderScaleBar:
-            nmv.scene.delete_object_in_scene(scene_object=morphology_scale_bar)
+        if context_scene.NMV_RenderMorphologyScaleBar:
+            nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 
@@ -533,9 +535,15 @@ def render_mesh_image(panel_object,
     else:
         suffix = nmv.consts.Suffix.MESH_FRONT
 
+    # Draw the morphology scale bar
+    if context_scene.NMV_RenderMeshScaleBar:
+        scale_bar = nmv.interface.draw_scale_bar(
+            bounding_box=bounding_box,
+            material_type=nmv.interface.ui_options.shading.mesh_material,
+            view=view)
+
     # Render at a specific resolution
-    if context_scene.NMV_MeshRenderingResolution == \
-            nmv.enums.Rendering.Resolution.FIXED:
+    if context_scene.NMV_MeshRenderingResolution == nmv.enums.Rendering.Resolution.FIXED:
 
         # Render the image
         nmv.rendering.render(
@@ -544,8 +552,7 @@ def render_mesh_image(panel_object,
             image_resolution=context_scene.NMV_MeshFrameResolution,
             image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
     # Render at a specific scale factor
     else:
@@ -557,8 +564,11 @@ def render_mesh_image(panel_object,
             image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
             image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory,
-            keep_camera_in_scene=context_scene.NMV_KeepMeshCameras)
+            image_directory=nmv.interface.ui_options.io.images_directory)
+
+    # Delete the morphology scale bar, if rendered
+    if context_scene.NMV_RenderMeshScaleBar:
+        nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 

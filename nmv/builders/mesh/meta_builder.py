@@ -23,6 +23,7 @@ import bpy, mathutils
 from mathutils import Vector, Matrix
 
 # Internal modules
+from .base import MeshBuilderBase
 import nmv.builders
 import nmv.enums
 import nmv.mesh
@@ -37,7 +38,7 @@ import nmv.physics
 ####################################################################################################
 # @MetaBuilder
 ####################################################################################################
-class MetaBuilder:
+class MetaBuilder(MeshBuilderBase):
     """Mesh builder that creates high quality meshes with nice bifurcations based on meta objects.
 
     This builder is inspired by the SWC Mesher written by Bob Kuczewski, Oliver Ernst from the
@@ -61,28 +62,11 @@ class MetaBuilder:
             Loaded options from NeuroMorphoVis.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
+        # Initialize the parent with the common parameters
+        MeshBuilderBase.__init__(self, morphology, options)
 
-        # Loaded options from NeuroMorphoVis
-        self.options = options
-
+        # Ignore watertightness
         self.ignore_watertightness = ignore_watertightness
-
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
-
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the colors/materials of the spines
-        self.spines_materials = None
 
         # Meta object skeleton, used to build the skeleton of the morphology
         self.meta_skeleton = None
@@ -143,6 +127,8 @@ class MetaBuilder:
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+
+
 
     ################################################################################################
     # @create_meta_segment
@@ -712,8 +698,7 @@ class MetaBuilder:
         self.profiling_statistics += stats
 
         # Tessellation
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.mesh.common.decimate_neuron_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
 
         # Clean the mesh object and remove the non-manifold edges
         if not self.ignore_watertightness:
@@ -723,25 +708,24 @@ class MetaBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.mesh.common.create_skeleton_materials(builder=self)
+        self.create_skeleton_materials()
 
         # Assign the material to the mesh
         self.assign_material_to_mesh()
 
         # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.mesh.common.transform_to_global_coordinates, self)
+        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
         self.profiling_statistics += stats
 
         # Report
         nmv.logger.statistics_overall(self.profiling_statistics)
 
         # Write the stats to file
-        nmv.builders.write_statistics_to_file(builder=self, tag='meta')
+        self.write_statistics_to_file(tag='meta')
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh

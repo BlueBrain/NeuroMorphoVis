@@ -20,6 +20,7 @@ import copy
 import bpy
 
 # Internal imports
+from .base import MeshBuilderBase
 import nmv.builders
 import nmv.consts
 import nmv.enums
@@ -34,7 +35,7 @@ import nmv.geometry
 ####################################################################################################
 # @UnionBuilder
 ####################################################################################################
-class UnionBuilder:
+class UnionBuilder(MeshBuilderBase):
     """This mesh builder creates low-tessellated meshes using the union operators."""
 
     ################################################################################################
@@ -51,26 +52,8 @@ class UnionBuilder:
             Loaded options from NeuroMorphoVis.
         """
 
-        # Morphology
-        self.morphology = copy.deepcopy(morphology)
-
-        # Loaded options from NeuroMorphoVis
-        self.options = options
-
-        # A list of the materials of the soma
-        self.soma_materials = None
-
-        # A list of the materials of the axon
-        self.axons_materials = None
-
-        # A list of the materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of the materials of the spines
-        self.spines_materials = None
+        # Initialize the parent with the common parameters
+        MeshBuilderBase.__init__(self, morphology, options)
 
         # A reference to the reconstructed soma mesh, and potentially the neuron mesh after welding
         self.soma_mesh = None
@@ -133,6 +116,30 @@ class UnionBuilder:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology,
                   nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
+
+    ################################################################################################
+    # @build_arbor
+    ################################################################################################
+    @staticmethod
+    def clean_union_operator_reconstructed_surface(mesh_object):
+
+        # Subdivide mesh with level 1
+        nmv.mesh.subdivide_mesh(mesh_object=mesh_object, level=1)
+
+        # Remove doubles
+        nmv.mesh.remove_doubles(mesh_object=mesh_object, distance=0.01)
+
+        # Add light surface noise
+        nmv.mesh.add_light_surface_noise(mesh_object=mesh_object)
+
+        # Decimate the mesh
+        nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.2)
+
+        # Remove doubles
+        nmv.mesh.remove_doubles(mesh_object=mesh_object, distance=0.01)
+
+        # Smooth the surface vertices
+        nmv.mesh.smooth_object_vertices(mesh_object=mesh_object, level=5)
 
     ################################################################################################
     # @build_arbor
@@ -486,15 +493,14 @@ class UnionBuilder:
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment
-        nmv.builders.create_skeleton_materials(builder=self)
+        self.create_skeleton_materials()
 
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Apply skeleton - based operation, if required, to slightly modify the skeleton
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.modify_morphology_skeleton, self)
+        result, stats = nmv.utilities.profile_function(self.modify_morphology_skeleton)
         self.profiling_statistics += stats
 
         # Resample the sections of the morphology skeleton
@@ -502,7 +508,7 @@ class UnionBuilder:
 
         # Build the soma, with the default parameters
         self.options.soma.meta_ball_resolution = 0.25
-        result, stats = nmv.utilities.profile_function(nmv.builders.reconstruct_soma_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors
@@ -522,26 +528,24 @@ class UnionBuilder:
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.add_surface_noise_to_arbor, self)
+        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
         self.profiling_statistics += stats
 
         # Decimation
-        result, stats = nmv.utilities.profile_function(nmv.builders.decimate_neuron_mesh, self)
+        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
         # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(
-            nmv.builders.transform_to_global_coordinates, self)
+        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(nmv.builders.collect_mesh_stats, self)
+        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
         self.profiling_statistics += stats
 
         # Report
         nmv.logger.statistics(self.profiling_statistics)
 
         # Write the stats to file
-        nmv.builders.write_statistics_to_file(builder=self, tag='union')
+        self.write_statistics_to_file(tag='union')
 

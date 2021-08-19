@@ -168,6 +168,8 @@ def resample_section_at_fixed_step(section,
         A given section to resample.
     :param sampling_step:
         User-defined sampling step, by default 1.0 micron.
+    :param resample_shorter_sections:
+        If this flag is set to True, the short sections will be resampled.
     """
 
     # If the section has no samples, report this as an error and ignore this filter
@@ -900,9 +902,3 @@ def resample_section_stem(section):
 
     # After resampling the section, update the logical indexes of the samples
     section.reorder_samples()
-
-
-
-
-
-

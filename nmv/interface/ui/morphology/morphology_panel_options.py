@@ -103,37 +103,6 @@ bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
     name='',
     default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
 
-
-
-
-# Render the corresponding scale bar on the resulting image
-bpy.types.Scene.NMV_RenderScaleBar = bpy.props.BoolProperty(
-    name='Render Scale Bar',
-    description='Render the scale bar on the resulting image automatically',
-    default=False)
-
-
-
-######################
-# Color arbor by part
-
-
-
-# Use single color for the all the objects in the morphology
-bpy.types.Scene.NMV_MorphologyHomogeneousColor = bpy.props.BoolProperty(
-    name='Homogeneous Color',
-    description='Use a single color for rendering all the objects of the morphology',
-    default=False)
-
-# A homogeneous color for all the objects of the morphology
-bpy.types.Scene.NMV_NeuronMorphologyColor = bpy.props.FloatVectorProperty(
-    name='Membrane Color',
-    subtype='COLOR', default=nmv.enums.Color.SOMA, min=0.0, max=1.0,
-    description='The homogeneous color of the reconstructed morphology membrane')
-#############3
-
-
-
 # The alternative color used to color every second object in the morphology
 bpy.types.Scene.NMV_MorphologyColor1 = bpy.props.FloatVectorProperty(
     name="Color 1",
@@ -145,8 +114,6 @@ bpy.types.Scene.NMV_MorphologyColor2 = bpy.props.FloatVectorProperty(
     name="Color 2",
     subtype='COLOR', default=nmv.consts.Color.MATT_BLACK, min=0.0, max=1.0,
     description="The second alternating color of the morphology")
-
-
 
 # Soma color
 bpy.types.Scene.NMV_SomaColor = bpy.props.FloatVectorProperty(
@@ -432,6 +399,12 @@ bpy.types.Scene.NMV_MorphologyCloseUpDimensions = bpy.props.FloatProperty(
 bpy.types.Scene.NMV_MorphologyRenderingProgress = bpy.props.IntProperty(
     name='Rendering Progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
+
+# Render the corresponding scale bar on the resulting image
+bpy.types.Scene.NMV_RenderMorphologyScaleBar = bpy.props.BoolProperty(
+    name='Add Scale Bar',
+    description='Render the scale bar on the resulting image automatically',
+    default=False)
 
 # Reconstruction time
 bpy.types.Scene.NMV_MorphologyReconstructionTime = bpy.props.FloatProperty(

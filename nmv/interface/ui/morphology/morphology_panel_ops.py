@@ -388,8 +388,8 @@ def set_rendering_options(layout,
 
     # Scale bar 
     scale_bar_row = layout.row()
-    scale_bar_row.prop(scene, 'NMV_RenderScaleBar')
-    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderScaleBar
+    scale_bar_row.prop(scene, 'NMV_RenderMorphologyScaleBar')
+    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderMorphologyScaleBar
 
     # Render view buttons
     render_view_row = layout.row()
