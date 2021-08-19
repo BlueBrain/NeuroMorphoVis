@@ -1,17 +1,15 @@
 
 # import stand alone modules
-from nmv.bbox import bounding_box
-import blf
+
 import bpy
 
-# Internal imports
-import nmv.bbox
 from .line_ops import *
 from mathutils import Vector
 
+# Internal imports
 import nmv.skeleton
+import nmv.bbox
 import nmv.consts
-import os
 import nmv.shading
 import nmv.scene
 import nmv.enums
@@ -155,6 +153,9 @@ def get_user_friendly_scale_bar_length(view_length):
         return 150
 
 
+####################################################################################################
+# @get_scale_bar_length
+####################################################################################################
 def get_scale_bar_length(scene_bounding_box, 
                          view=nmv.enums.Camera.View.FRONT):
 
@@ -366,6 +367,9 @@ def adjust_scale_bar_legend(default_legend,
     # Translate the legend 
     nmv.scene.set_object_location(default_legend, legend_position)
 
+    # Return a reference to the adjusted legend 
+    return default_legend
+
 
 def draw_morphology_scale_bar(morphology,
                               options,
@@ -387,85 +391,11 @@ def draw_morphology_scale_bar(morphology,
     nmv.scene.scale_object_uniformly(scene_object=scale_bar_legend, scale_factor=scale_factor)
 
     # Adjust the scale bar legend depending on the view 
-    adjust_scale_bar_legend(
+    return adjust_scale_bar_legend(
         default_legend=scale_bar_legend, bounding_box=scene_bounding_box, view=view)
 
     
 
-    # Rotate the scale bar depending on the projection 
-
-    return 
-    # # The vertical scale bar will be drawn on the left side of the image 5% of its width
-    # x1 = scene_bounding_box.p_min[0] + 0.05 * scene_bounding_box.bounds[0]
-    # y1 = scene_bounding_box.p_min[1] + 0.20 * scene_bounding_box.bounds[0]
-    # z1 = scene_bounding_box.center[2]
-    # p1 = Vector((x1, y1, z1))
-    # p2 = p1 + Vector((0, scale_bar_height, 0))
-    # center = 0.5 * (p1 + p2)
-
-    # # The radius of the line depends on the width of the morphology
-    # line_radius = 0.0015 * scene_bounding_box.bounds[0]
-
-    # bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='color_bevel')
-
-    # # Draw the scale bar as a line
-    # scale_bar_object = list()
-    # scale_bar_object.append(nmv.scene.convert_object_to_mesh(
-    #     scene_object=draw_cone_line(
-    #         point1=p1, point2=p2, point1_radius=line_radius, point2_radius=line_radius,
-    #         bevel_object=bevel_object)))
-    # scale_bar_object.append(nmv.scene.convert_object_to_mesh(
-    #     scene_object=draw_cone_line(
-    #         point1=p1 - Vector((0.2, 0, 0)), point2=p1 + Vector((2, 0, 0)),
-    #         point1_radius=line_radius, point2_radius=line_radius, bevel_object=bevel_object)))
-    # scale_bar_object.append(nmv.scene.convert_object_to_mesh(
-    #     scene_object=draw_cone_line(
-    #         point1=p2 - Vector((0.2, 0, 0)), point2=p2 + Vector((2, 0, 0)),
-    #         point1_radius=line_radius, point2_radius=line_radius, bevel_object=bevel_object)))
-    # scale_bar_object.append(nmv.scene.convert_object_to_mesh(
-    #     scene_object=draw_cone_line(
-    #         point1=center - Vector((0.2, 0, 0)), point2=center + Vector((1, 0, 0)),
-    #         point1_radius=line_radius, point2_radius=line_radius, bevel_object=bevel_object)))
-
-    # # Delete the bevel
-    # nmv.scene.delete_object_in_scene(bevel_object)
-
-    # Convert into a mesh
-    # scale_bar_object = nmv.mesh.join_mesh_objects(mesh_list=scale_bar_object, name='Scale Bar')
-
-
-
-    # The vertical scale bar will be drawn on the left side of the image 5% of its width
-    x1 = scene_bounding_box.p_min[0] + 0.05 * scene_bounding_box.bounds[0]
-    y1 = scene_bounding_box.p_min[1] + 0.20 * scene_bounding_box.bounds[0]
-    z1 = scene_bounding_box.center[2]
-    p1 = Vector((x1, y1, z1))
-    p2 = p1 + Vector((0, scale_bar_height, 0))
-    center = 0.5 * (p1 + p2)
-
-    nmv.scene.set_object_location(scale_bar_segment, center)
-    
-    # Assign the materials to the scale bar and the font object
-    material = nmv.skeleton.create_single_material(
-        name='scale_bar', material_type=options.shading.morphology_material,
-        color=nmv.consts.Color.BLACK)
-    nmv.shading.set_material_to_object(mesh_object=scale_bar_segment, material_reference=material)
-
-    scale_bar_text = draw_scale_bar_text(scale_bar_height, center)
-
-    scale_bar_text.rotation_euler[2] = 1.56381
-    scale_bar_text.location[0] += 1
-    nmv.shading.set_material_to_object(mesh_object=scale_bar_text, material_reference=material)
-
-    x1 = scene_bounding_box.p_max[0] - 0.1 * scene_bounding_box.bounds[0]
-    y1 = scene_bounding_box.p_max[1] - 0.05 * scene_bounding_box.bounds[0]
-    z1 = scene_bounding_box.p_max[2]
-    p1 = Vector((x1, y1, z1))
-    p2 = p1 - Vector((0, scale_bar_height, 0))
-    center = 0.5 * (p1 + p2)
-
-    colormap_width = scene_bounding_box.bounds[0] * 0.01
-    colormap_height = scene_bounding_box.bounds[1] * 0.2
 
     # TODO: Draw the colormap
     # draw_colormap(position=p1, color_list=options.shading.morphology_colormap_list,

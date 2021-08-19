@@ -406,9 +406,10 @@ def render_morphology_image(panel_object,
         else:
             suffix = nmv.consts.Suffix.MORPHOLOGY_FRONT
 
-
-        nmv.geometry.draw_morphology_scale_bar(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options, view=view)
+        # Draw the morphology scale bar 
+        if context_scene.NMV_RenderScaleBar:
+            morphology_scale_bar = nmv.geometry.draw_morphology_scale_bar(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options, view=view)
 
         # Render at a specific resolution
         if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:
@@ -435,6 +436,10 @@ def render_morphology_image(panel_object,
                 image_format=image_format,
                 image_directory=nmv.interface.ui_options.io.images_directory,
                 keep_camera_in_scene=False)
+
+        # Delete the morphology scale bar, if rendered 
+        if context_scene.NMV_RenderScaleBar:
+            nmv.scene.delete_object_in_scene(scene_object=morphology_scale_bar)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 
