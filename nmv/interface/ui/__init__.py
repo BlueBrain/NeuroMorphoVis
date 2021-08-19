@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .ui_globals import *
 from .common import *
 from .data import *
 from .about import *

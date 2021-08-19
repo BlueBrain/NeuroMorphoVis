@@ -23,11 +23,11 @@ import time
 import bpy
 
 # Internal imports
+import nmv.consts
 import nmv.enums
 import nmv.interface
 import nmv.scene
 import nmv.utilities
-import nmv.consts
 from .io_panel_options import *
 
 
@@ -209,9 +209,14 @@ class LoadMorphology(bpy.types.Operator):
 
         # Load the images
         logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
-        logo_tex.image = bpy.data.images.load("%s/%s" % (nmv.consts.Paths.IMAGES_PATH,
-                                                         'nmv-logo.png'))
+        logo_tex.image = bpy.data.images.load(
+            "%s/%s" % (nmv.consts.Paths.IMAGES_PATH, 'nmv-logo.png'))
         logo_tex.extension = 'CLIP'
+
+        # Initialize all the operations that needs to run once and for all
+        import nmv.interface
+        if not nmv.interface.ui.Globals.nmv_initialized:
+            nmv.interface.load_fonts()
 
         # Load the morphology file
         start_time = time.time()
@@ -252,13 +257,15 @@ class LoadMorphology(bpy.types.Operator):
         context.scene.NMV_MorphologyDrawingTime = drawing_time - loading_time
 
         nmv.logger.header('Stats.')
-        nmv.logger.info('Morphology drawn in [%f] seconds' % context.scene.NMV_MorphologyDrawingTime)
+        nmv.logger.info('Morphology drawn in [%f] seconds' %
+                        context.scene.NMV_MorphologyDrawingTime)
 
         # Switch to the top view
         nmv.scene.view_axis()
 
         # View all the objects in the scene
-        # nmv.scene.ops.view_all_scene()
+        if not nmv.interface.ui.Globals.nmv_initialized:
+            nmv.scene.ops.view_all_scene()
 
         # Configure the output directory
         nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
@@ -267,6 +274,10 @@ class LoadMorphology(bpy.types.Operator):
         wm = context.window_manager
         # self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
         wm.modal_handler_add(self)
+
+        #
+        if not nmv.interface.ui.Globals.nmv_initialized:
+            nmv.interface.ui.Globals.nmv_initialized = True
 
         # Modal
         return {'RUNNING_MODAL'}

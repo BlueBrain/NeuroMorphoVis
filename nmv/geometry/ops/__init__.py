@@ -20,4 +20,3 @@ from .intersection import *
 from .line_ops import *
 from .sphere_ops import *
 from .poly_line_ops import *
-from .scalebar_ops import *

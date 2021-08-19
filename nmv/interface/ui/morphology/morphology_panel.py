@@ -36,7 +36,6 @@ import nmv.utilities
 import nmv.rendering
 import nmv.geometry
 from .morphology_panel_options import *
-from .colormap_operator import *
 
 # Is the morphology reconstructed or not
 is_morphology_reconstructed = False

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,31 +15,41 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+import bpy
+
 
 ####################################################################################################
-# @Color
+# @create_text_object
 ####################################################################################################
-class Drawing:
-    """Drawing constants, to draw the particle simulations
+def create_text_object(text_string,
+                       name='Text'):
+    """Create a text object and add it to the scene
+
+    :param text_string:
+        The string that will be created.
+    :param name:
+        The name of text object as appears in the editor.
+    :return:
+        A reference to the created text object.
     """
 
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self):
-        pass
+    # Create the font curve
+    text_curve = bpy.data.curves.new(type="FONT", name=name)
 
-    # Blend only
-    BLEND = 0
+    # Set the body of the font curve to the scale bar value
+    text_curve.body = text_string
 
-    # Multiply blend
-    MULTIPLY_BLEND = 1
+    # Update the font, for the moment use Arial
+    text_curve.font = bpy.data.fonts['ArialMT']
 
-    # Add and blend
-    ADDITIVE_BLEND = 2
+    # Align the font in the center to allow adjusting the position of the handle easily
+    text_curve.align_x = 'CENTER'
+    text_curve.align_y = 'CENTER'
 
-    # The width of the edge in a particle system
-    LINE_WIDTH = 1
+    # Create the font object and link it to the scene at the origin
+    text_object = bpy.data.objects.new(name=name, object_data=text_curve)
+    bpy.context.scene.collection.objects.link(text_object)
 
-    # The radius of a particle
-    PARTICLE_SIZE = 3
+    # Return a reference to the text object
+    return text_object

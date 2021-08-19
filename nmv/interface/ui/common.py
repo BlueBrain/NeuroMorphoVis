@@ -21,7 +21,6 @@ import time
 
 # Blender imports
 import bpy
-from mathutils import Vector
 
 # Internal imports
 import nmv.consts
@@ -32,6 +31,7 @@ import nmv.bbox
 import nmv.rendering
 import nmv.scene
 import nmv.geometry
+import nmv.interface
 
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
@@ -61,6 +61,23 @@ def unload_icons():
 
     # Remove the icons
     bpy.utils.previews.remove(nmv.interface.ui_icons)
+
+
+####################################################################################################
+# @load_morphology
+####################################################################################################
+def load_fonts():
+    """Loads all the fonts to the add-on.
+    """
+
+    # Get all the font files in the fonts directory
+    font_files = nmv.file.get_files_in_directory(
+        directory=nmv.consts.Paths.FONTS_DIRECTORY, file_extension='ttf')
+
+    # Load fonts
+    for font_file in font_files:
+        font = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, font_file)
+        bpy.data.fonts.load(font)
 
 
 ####################################################################################################
@@ -408,8 +425,8 @@ def render_morphology_image(panel_object,
 
         # Draw the morphology scale bar 
         if context_scene.NMV_RenderScaleBar:
-            morphology_scale_bar = nmv.geometry.draw_morphology_scale_bar(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options, view=view)
+            morphology_scale_bar = nmv.interface.draw_scale_bar(
+                bounding_box=bounding_box, options=nmv.interface.ui_options, view=view)
 
         # Render at a specific resolution
         if context_scene.NMV_RenderingType == nmv.enums.Rendering.Resolution.FIXED:

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,10 +17,10 @@
 
 
 ####################################################################################################
-# @Color
+# @Geometry
 ####################################################################################################
-class Drawing:
-    """Drawing constants, to draw the particle simulations
+class Geometry:
+    """Geometry constants.
     """
 
     ################################################################################################
@@ -29,17 +29,14 @@ class Drawing:
     def __init__(self):
         pass
 
-    # Blend only
-    BLEND = 0
+    # Scale bar main edge size (in blender units)
+    SCALE_BAR_MAIN_EDGE_SIZE = 0.15
 
-    # Multiply blend
-    MULTIPLY_BLEND = 1
+    # Scale bar center edge size (in blender units)
+    SCALE_BAR_CENTER_EDGE_SIZE = 0.075
 
-    # Add and blend
-    ADDITIVE_BLEND = 2
+    # Scale bar negative shift for alignment
+    SCALE_BAR_NEGATIVE_SHIFT = 0.05
 
-    # The width of the edge in a particle system
-    LINE_WIDTH = 1
-
-    # The radius of a particle
-    PARTICLE_SIZE = 3
+    # Scale bar thickness (in blender units)
+    SCALE_BAR_THICKNESS = 0.025

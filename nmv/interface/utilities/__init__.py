@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,31 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .scale_bar import *
+from .text import *
 
-####################################################################################################
-# @Color
-####################################################################################################
-class Drawing:
-    """Drawing constants, to draw the particle simulations
-    """
-
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self):
-        pass
-
-    # Blend only
-    BLEND = 0
-
-    # Multiply blend
-    MULTIPLY_BLEND = 1
-
-    # Add and blend
-    ADDITIVE_BLEND = 2
-
-    # The width of the edge in a particle system
-    LINE_WIDTH = 1
-
-    # The radius of a particle
-    PARTICLE_SIZE = 3
