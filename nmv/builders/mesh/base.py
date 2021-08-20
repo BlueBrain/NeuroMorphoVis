@@ -100,16 +100,14 @@ class MeshBuilderBase:
 
         # The adaptive resampling is quite important to prevent breaking the structure
         if method == nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
-            nmv.logger.detail('Relaxed Adaptive Resampling')
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
+
         elif method == nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
-            nmv.logger.detail('Packed (or Overlapping) Adaptive Resampling')
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
+
         elif method == nmv.enums.Skeleton.Resampling.FIXED_STEP:
-            nmv.logger.detail('Fixed Step Resampling with step of [%f] um' %
-                              self.options.morphology.resampling_step)
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
                   self.options.morphology.resampling_step])
@@ -136,7 +134,7 @@ class MeshBuilderBase:
             *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
 
         # Resample the sections of the morphology skeleton
-        # builder.resample_skeleton_sections()
+        self.resample_skeleton_sections()
 
         # Radii
         nmv.skeleton.update_arbors_radii(

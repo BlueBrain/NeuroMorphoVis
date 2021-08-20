@@ -80,6 +80,36 @@ class Meshing:
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
+        # All the items that will appear in the UI
+        MESHING_TECHNIQUE_ITEMS = [
+
+            (PIECEWISE_WATERTIGHT,
+             'Piecewise Watertight',
+             'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
+             'composed of multiple mesh objects, where each object is a watertight component. '
+             'This method is used to reconstruct high fidelity volumes from the generated meshes'),
+
+            (SKINNING,
+             'Skinning',
+             'Skinning (Abdellah et al., 2019) uses the skin modifier to reconstruct the branches. '
+             'This approach is guaranteed to reconstruct a nice looking branching compared to the '
+             'other methods and also guarantees the fidelity of the mesh, but it does not '
+             'guarantee watertightness. This technique is used when you need meshes for '
+             'visualization with transparency'),
+
+            (UNION,
+             'Union',
+             'This method uses the union boolean operator to join the different branches together '
+             'in a single mesh. It is not guaranteed to generate a watertight or even a valid '
+             'mesh, although it works in 90% of the cases'),
+
+            (META_OBJECTS,
+             'MetaBalls',
+             'Creates watertight mesh models using MetaBalls. This approach is extremely slow if '
+             'the axons are included in the meshing process, so it is always recommended to use '
+             'first order branching for the axons when using this technique')
+        ]
+
     ################################################################################################
     # @PiecewiseFilling
     ################################################################################################
@@ -449,3 +479,19 @@ class Meshing:
         ############################################################################################
         def __init__(self):
             pass
+
+        # Mesh export formats
+        FORMATS_ITEMS = [
+
+            # PLY format
+            (PLY, 'Stanford (.ply)', 'Export the mesh to a .ply file'),
+
+            # OBJ format
+            (OBJ, 'Wavefront (.obj)', 'Export the mesh to a .obj file'),
+
+            # STL format
+            (STL, 'Stereolithography CAD (.stl)', 'Export the mesh to an .stl file'),
+
+            # BLEND format
+            (BLEND, 'Blender File (.blend)', 'Export the mesh as a .blend file')
+        ]

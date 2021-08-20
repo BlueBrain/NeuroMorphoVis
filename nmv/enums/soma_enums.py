@@ -95,6 +95,21 @@ class Soma:
             else:
                 return Soma.Representation.META_BALLS
 
+        # Soma types for meshing, only metaballs and softbody
+        SOME_TYPES_FOR_MESHING = [
+
+            (META_BALLS,
+             'MetaBalls',
+             'Reconstruct a rough shape of the soma using MetaBalls. '
+             'This approach is real-time and can reconstruct good shapes for the somata, but '
+             'more accurate profiles could be reconstructed with the Soft Body option'),
+
+            (SOFT_BODY,
+             'SoftBody',
+             'Reconstruct a 3D profile of the soma using Soft Body physics.'
+             'This method takes few seconds to reconstruct a soma mesh')
+        ]
+
     ################################################################################################
     # @Profile
     ################################################################################################

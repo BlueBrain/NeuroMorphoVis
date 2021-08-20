@@ -25,47 +25,17 @@ import nmv.utilities
 
 # Meshing technique
 bpy.types.Scene.NMV_MeshingTechnique = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT,
-            'Piecewise Watertight',
-            'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
-            'composed of multiple mesh objects, where each object is a watertight component. '
-            'This method is used to reconstruct high fidelity volumes from the generated meshes'),
-           (nmv.enums.Meshing.Technique.SKINNING,
-            'Skinning',
-            'Skinning (Abdellah et al., 2019) uses the skin modifier to reconstruct the branches. '
-            'This approach is guaranteed to reconstruct a nice looking branching compared to the '
-            'other methods and also guarantees the fidelity of the mesh, but it does not '
-            'guarantee watertightness. This technique is used when you need meshes for '
-            'visualization with transparency'),
-           (nmv.enums.Meshing.Technique.UNION,
-            'Union',
-            'This method uses the union boolean operator to join the different branches together '
-            'in a single mesh. It is not guaranteed to generate a watertight or even a valid '
-            'mesh, although it works in 90% of the cases'),
-           (nmv.enums.Meshing.Technique.META_OBJECTS,
-            'MetaBalls',
-            'Creates watertight mesh models using MetaBalls. This approach is extremely slow if '
-            'the axons are included in the meshing process, so it is always recommended to use '
-            'first order branching for the axons when using this technique')],
+    items=nmv.enums.Meshing.Technique.MESHING_TECHNIQUE_ITEMS,
     name='Method',
     description='The technique that will be used to create the mesh, by default the '
                 'Piecewise Watertight one since it is the fastest one.',
     default=nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT)
 
-# Build soma
+# Soma types
 bpy.types.Scene.NMV_MeshingSomaType = bpy.props.EnumProperty(
-    items=[(nmv.enums.Soma.Representation.META_BALLS,
-            'MetaBalls',
-            'Reconstruct a rough shape of the soma using MetaBalls. '
-            'This approach is real-time and can reconstruct good shapes for the somata, but '
-            'more accurate profiles could be reconstructed with the Soft Body option'),
-           (nmv.enums.Soma.Representation.SOFT_BODY,
-            'SoftBody',
-            'Reconstruct a 3D profile of the soma using Soft Body physics.'
-            'This method takes few seconds to reconstruct a soma mesh')],
+    items=nmv.enums.Soma.Representation.SOME_TYPES_FOR_MESHING,
     name='Soma',
     default=nmv.enums.Soma.Representation.META_BALLS)
-
 
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
@@ -81,17 +51,6 @@ bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
     name='Soma Connection',
     default=nmv.enums.Meshing.SomaConnection.DISCONNECTED)
 
-# The skeleton of the union-based meshing algorithm
-bpy.types.Scene.NMV_UnionMethodSkeleton = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON,
-            'Quad',
-            'Use a quad skeleton for the union meshing algorithm'),
-           (nmv.enums.Meshing.UnionMeshing.CIRCULAR_SKELETON,
-            'Circle',
-            'Use a circular skeleton for the union meshing algorithm')],
-    name='Skeleton',
-    default=nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON)
-
 # Edges, hard or smooth
 bpy.types.Scene.NMV_MeshSmoothing = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.Edges.HARD,
@@ -103,17 +62,6 @@ bpy.types.Scene.NMV_MeshSmoothing = bpy.props.EnumProperty(
     name='Edges',
     default=nmv.enums.Meshing.Edges.HARD)
 
-# Branching, is it based on angles or radii
-bpy.types.Scene.NMV_MeshBranching = bpy.props.EnumProperty(
-    items=[(nmv.enums.Skeleton.Branching.ANGLES,
-            'Angles',
-            'Make the branching based on the angles at branching points'),
-           (nmv.enums.Skeleton.Branching.RADII,
-            'Radii',
-            'Make the branching based on the radii of the children at the branching points')],
-    name='Branching Method',
-    default=nmv.enums.Skeleton.Branching.ANGLES)
-
 # Are the mesh objects connected or disconnected.
 bpy.types.Scene.NMV_MeshObjectsConnection = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.ObjectsConnection.CONNECTED,
@@ -123,7 +71,7 @@ bpy.types.Scene.NMV_MeshObjectsConnection = bpy.props.EnumProperty(
             'Disconnected',
             'Keep the different mesh objects of the neuron into separate pieces')],
     name='Mesh Objects',
-    default=nmv.enums.Meshing.ObjectsConnection.DISCONNECTED)
+    default=nmv.enums.Meshing.ObjectsConnection.CONNECTED)
 
 # Is the output model for reality or beauty
 bpy.types.Scene.NMV_SurfaceRoughness = bpy.props.EnumProperty(
@@ -182,23 +130,6 @@ bpy.types.Scene.NMV_Nucleus = bpy.props.EnumProperty(
             'The nucleus is integrated')],
     name='Nucleus',
     default=nmv.enums.Meshing.Nucleus.IGNORE)
-
-# Nucleus mesh quality
-bpy.types.Scene.NMV_NucleusMeshQuality = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.Nucleus.Quality.LQ,
-            'Low',
-            'Low quality nucleus mesh'),
-           (nmv.enums.Meshing.Nucleus.Quality.HQ,
-            'High',
-            'High quality nucleus mesh')],
-    name='Nucleus Mesh Quality',
-    default=nmv.enums.Meshing.Nucleus.Quality.LQ)
-
-# Fix artifacts flag
-bpy.types.Scene.NMV_FixMorphologyArtifacts = bpy.props.BoolProperty(
-    name='Fix Morphology Artifacts',
-    description='Fixes the morphology artifacts during the mesh reconstruction process',
-    default=True)
 
 # Mesh tessellation flag
 bpy.types.Scene.NMV_TessellateMesh = bpy.props.BoolProperty(
@@ -338,18 +269,7 @@ bpy.types.Scene.NMV_ExportIndividuals = bpy.props.BoolProperty(
 
 # Exported mesh file formats
 bpy.types.Scene.NMV_ExportedMeshFormat = bpy.props.EnumProperty(
-    items=[(nmv.enums.Meshing.ExportFormat.PLY,
-            'Stanford (.ply)',
-            'Export the mesh to a .ply file'),
-           (nmv.enums.Meshing.ExportFormat.OBJ,
-            'Wavefront (.obj)',
-            'Export the mesh to a .obj file'),
-           (nmv.enums.Meshing.ExportFormat.STL,
-            'Stereolithography CAD (.stl)',
-            'Export the mesh to an .stl file'),
-           (nmv.enums.Meshing.ExportFormat.BLEND,
-            'Blender File (.blend)',
-            'Export the mesh as a .blend file')],
+    items=nmv.enums.Meshing.ExportFormat.FORMATS_ITEMS,
     name='Format', default=nmv.enums.Meshing.ExportFormat.PLY)
 
 # Reconstruction time
