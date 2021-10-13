@@ -165,7 +165,8 @@ def create_mtype_based_synapses_mesh(circuit,
 # @create_excitatory_inhibitory_synapses_mesh
 ####################################################################################################
 def create_excitatory_inhibitory_synapses_mesh(circuit,
-                                               gid,synapse_size,
+                                               gid,
+                                               synapse_size,
                                                synapse_percentage,
                                                inverted_transformation,
                                                color_map_materials):

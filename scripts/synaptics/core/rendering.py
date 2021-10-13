@@ -19,6 +19,7 @@
 import os
 import ntpath
 import copy
+import math
 import subprocess
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 
@@ -33,8 +34,8 @@ import nmv.enums
 import nmv.rendering
 import nmv.scene
 import nmv.file
+import nmv.mesh
 import nmv.utilities
-import math
 
 
 ####################################################################################################
@@ -113,7 +114,7 @@ def render_synaptic_pathway_close_up(close_up_mesh,
     bpy.ops.view3d.camera_to_view_selected()
 
     # Avoid chopping
-    camera.location[2] = 0
+    camera.location[2] = 1500
 
     # Adjust the ortho scale to get a bigger FOV
     camera.data.ortho_scale = camera.data.ortho_scale * 2

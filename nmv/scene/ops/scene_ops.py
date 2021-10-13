@@ -431,6 +431,21 @@ def clear_lights():
 
 
 ####################################################################################################
+# @reset_scene
+####################################################################################################
+def reset_scene():
+    """Resets the scene and does several operations that are needed to avoid any errors.
+    """
+
+    # Switch to the object mode to avoid any errors if by default the editing mode was active
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    # Set all the objects in the scene to visible
+    for scene_object in bpy.context.scene.objects:
+        unhide_object(scene_object=scene_object)
+
+
+####################################################################################################
 # @select_all
 ####################################################################################################
 def select_all():

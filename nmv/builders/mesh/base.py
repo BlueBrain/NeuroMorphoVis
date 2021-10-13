@@ -323,6 +323,8 @@ class MeshBuilderBase:
         self.collect_morphology_stats()
 
         # Write the stats to file
+        if self.options.io.statistics_directory is None:
+            return
         if not nmv.file.ops.path_exists(self.options.io.statistics_directory):
             nmv.file.ops.clean_and_create_directory(self.options.io.statistics_directory)
 

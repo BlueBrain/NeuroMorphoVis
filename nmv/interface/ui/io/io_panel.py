@@ -202,7 +202,8 @@ class LoadMorphology(bpy.types.Operator):
 
         # Clear the scene
         import nmv.scene
-        nmv.scene.ops.clear_scene()
+        nmv.scene.reset_scene()
+        nmv.scene.clear_scene()
 
         # By default set the background to transparent
         nmv.scene.set_transparent_background()

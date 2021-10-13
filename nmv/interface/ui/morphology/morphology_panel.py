@@ -199,8 +199,11 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Reset the scene
+        nmv.scene.reset_scene()
+
         # Clear the scene
-        nmv.scene.ops.clear_scene()
+        nmv.scene.clear_scene()
 
         # Load the morphology file
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)
