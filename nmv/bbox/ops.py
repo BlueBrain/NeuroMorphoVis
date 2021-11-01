@@ -158,13 +158,6 @@ def confirm_object_bounding_box(scene_object):
         if verts[point][2] > p_max[2]:
             p_max[2] = verts[point][2]
 
-    # Get object location
-    # location = scene_object.location
-
-    # Adjust the bounding box transform
-    # p_min += location
-    # p_max += location
-
     # Build bounding box object
     bounding_box = nmv.bbox.BoundingBox(p_min=p_min, p_max=p_max)
 

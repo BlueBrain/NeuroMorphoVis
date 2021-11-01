@@ -120,7 +120,7 @@ def render_synaptic_pathway_close_up(close_up_mesh,
     camera.data.ortho_scale = camera.data.ortho_scale * 2
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Set the image file name
     bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
@@ -306,7 +306,7 @@ def render_synaptome_close_up_on_soma_360(output_directory,
     camera.data.ortho_scale = close_up_size
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Avoid chopping
     camera.location[2] = 500
@@ -388,7 +388,7 @@ def render_synaptome_close_up(output_directory,
     camera.data.ortho_scale = 4 * close_up_size
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Set the image file name
     bpy.data.scenes['Scene'].render.filepath = '%s/%s.png' % (output_directory, image_name)

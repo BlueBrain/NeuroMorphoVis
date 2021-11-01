@@ -663,7 +663,8 @@ def format_number_to_power_string(number):
 def create_mesh_fact_sheet(mesh_object,
                            mesh_name,
                            output_image_path,
-                           image_resolution=1500):
+                           image_resolution=1500,
+                           mesh_scale=1):
     """Creates the fact sheet of the mesh into an image.
 
     :param mesh_object:
@@ -760,37 +761,37 @@ def create_mesh_fact_sheet(mesh_object,
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Width', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.x),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(
+        mesh_bbox.x * mesh_scale), font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Height', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.y),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(
+        mesh_bbox.y * mesh_scale), font=font, fill=(0, 0, 0))
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Depth', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.z),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(
+        mesh_bbox.z * mesh_scale), font=font, fill=(0, 0, 0))
 
     i += 1.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Bounding Box Diagonal', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(mesh_bbox.diagonal),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm' % format_number_to_power_string(
+        mesh_bbox.diagonal * mesh_scale), font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Total Surface Area', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm²' % format_number_to_power_string(surface_area),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm²' % format_number_to_power_string(
+        surface_area * mesh_scale * mesh_scale), font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Total Volume*', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm³' % format_number_to_power_string(volume),
-                      font=font, fill=(0, 0, 0))
+    drawing_area.text((delta_x, delta_y), '%s μm³' % format_number_to_power_string(
+        volume * mesh_scale * mesh_scale * mesh_scale), font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing

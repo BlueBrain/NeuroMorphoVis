@@ -221,7 +221,7 @@ class Camera:
         center = bounding_box.center
         bounds = bounding_box.bounds
 
-        # Compute the diagnoal of the bounding box 
+        # Compute the diagonal of the bounding box
         r = math.sqrt((0.5 * bounds[0] * 0.5 * bounds[0]) +
                       (0.5 * bounds[1] * 0.5 * bounds[1]) +
                       (0.5 * bounds[2] * 0.5 * bounds[2]))
@@ -320,7 +320,7 @@ class Camera:
 
         # Adjust the camera parameters
         self.camera.data.clip_start = 0.0
-        self.camera.data.clip_end = 100000
+        self.camera.data.clip_end = 1000000
         self.camera.data.type = 'ORTHO'
         self.camera.data.ortho_scale = orthographic_scale
 

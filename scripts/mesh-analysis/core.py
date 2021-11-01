@@ -45,10 +45,10 @@ class WatertightCheck:
 ####################################################################################################
 class BoundingBox:
     def __init__(self):
-        x = 0.0
-        y = 0.0
-        z = 0.0
-        diagnoal = 0.0
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+        self.diagnoal = 0.0
         
         
 ####################################################################################################
@@ -295,9 +295,9 @@ def check_watertightness(bm, number_partitions):
     else:
         if check.self_intersections > 0:
             if number_partitions == 1:
-                check.watertight = True
-            else:
                 check.watertight = False
+            else:
+                check.watertight = True
         else:
             check.watertight = True
     # Return the result
