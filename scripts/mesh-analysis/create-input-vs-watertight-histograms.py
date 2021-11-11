@@ -202,6 +202,7 @@ def create_watertight_mesh(arguments,
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron 1 '
     shell_command += '--solid '
+    shell_command += '--optimize-mesh --adaptive-optimization '
     shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
     shell_command += '--export-obj-mesh '
     shell_command += '--stats --dists '
@@ -223,6 +224,16 @@ if __name__ == "__main__":
     # Parse the command line arguments
     args = parse_command_line_arguments()
 
+    # Create the output hierarchy
+    if not os.path.exists(args.output_directory):
+        os.makedirs(args.output_directory)
+    intermediate_directory = '%s/intermediate-images' % args.output_directory
+    if not os.path.exists(intermediate_directory):
+        os.makedirs(intermediate_directory)
+    images_directory = '%s/images' % args.output_directory
+    if not os.path.exists(images_directory):
+        os.makedirs(images_directory)
+
     # Get all the meshes in the path, either obj or ply
     list_meshes = nmv.file.get_files_in_directory(args.input_directory, file_extension='.obj')
     list_meshes.extend(nmv.file.get_files_in_directory(args.input_directory, file_extension='.ply'))
@@ -238,7 +249,8 @@ if __name__ == "__main__":
             arguments=args, input_mesh_path=mesh_path, output_directory=args.output_directory)
 
         # Plot the distributions
-        histograms.plot_distributions(arguments=args)
+        histograms.plot_distributions(dists_directory='%s/distributions' % args.output_directory,
+                                      intermediate_directory=intermediate_directory)
 
 
 
