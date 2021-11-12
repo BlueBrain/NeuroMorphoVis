@@ -40,11 +40,10 @@ import nmv.utilities
 import nmv.interface
 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
-sys.path.append(('%s/../../' % (os.path.dirname(os.path.realpath(__file__)))))
-sys.path.append(('%s/core' % (os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append(('%s/../' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Blender imports
-import histograms
+import comparative
 
 
 ####################################################################################################
@@ -191,33 +190,6 @@ def parse_command_line_arguments(arguments=None):
 
 
 ####################################################################################################
-# @run_quality_checker_on_input_mesh
-####################################################################################################
-def create_watertight_mesh(arguments,
-                           input_mesh,
-                           output_directory):
-    # Create the shell command
-    shell_command = '%s ' % arguments.ultraMesh2Mesh
-    shell_command += '--mesh %s ' % input_mesh
-    shell_command += '--output-directory %s ' % output_directory
-    shell_command += '--auto-resolution --voxels-per-micron 1 '
-    shell_command += '--solid '
-    shell_command += '--optimize-mesh --adaptive-optimization '
-    shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
-    shell_command += '--export-obj-mesh '
-    shell_command += '--stats --dists '
-
-    # Execute the shell command
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
-
-    # Return a reference to the watertight mesh
-    return '%s/meshes/%s-watertight.obj' % (output_directory,
-                                            os.path.splitext(os.path.basename(input_mesh))[0])
-
-
-
-####################################################################################################
 # @ Main
 ####################################################################################################
 if __name__ == "__main__":
@@ -243,52 +215,14 @@ if __name__ == "__main__":
     list_meshes = nmv.file.get_files_in_directory(args.input_directory, file_extension='.obj')
     list_meshes.extend(nmv.file.get_files_in_directory(args.input_directory, file_extension='.ply'))
 
+    # The color palette
+    palette = seaborn.color_palette("flare", n_colors=10)
+
     # For every mesh in the list
     for mesh_file in list_meshes:
+        comparative.create_comparative_mesh_analysis(args, mesh_file, intermediate_directory)
 
-        # Full path
-        input_mesh_path = '%s/%s' % (args.input_directory, mesh_file)
 
-        # Create the watertight mesh, and the stats.
-        watertight_mesh_path = create_watertight_mesh(
-            arguments=args, input_mesh=input_mesh_path, output_directory=args.output_directory)
-        print(watertight_mesh_path)
-
-        # Plot the distributions
-        stats_image = histograms.plot_distributions(dists_directory='%s/distributions' % args.output_directory,
-                                      intermediate_directory=intermediate_directory)
-
-        # Clear the scene
-        nmv.scene.clear_scene()
-
-        # Load the input mesh
-        input_mesh_object = nmv.file.import_mesh(input_mesh_path)
-
-        import utilities
-        input_mesh_stats, input_mesh_aabb, input_mesh_watertight_check = \
-            utilities.compute_mesh_stats(input_mesh_object)
-
-        print('haoaoao')
-        # If render do it
-
-        # Clear the scene, again
-        # nmv.scene.clear_scene()
-
-        # Load the watertight mesh
-        watertight_mesh_object = nmv.file.import_mesh(watertight_mesh_path)
-
-        watertight_mesh_stats, watertight_mesh_aabb, watertight_mesh_watertight_check = \
-            utilities.compute_mesh_stats(watertight_mesh_object)
-
-        print('xxxx')
-        # If render do it
-
-        # Create the fact sheets
-
-        fact_sheet_image = utilities.create_input_vs_watertight_fact_sheet(
-            input_mesh_stats, input_mesh_aabb, input_mesh_watertight_check,
-            watertight_mesh_stats, watertight_mesh_aabb, watertight_mesh_watertight_check,
-            args.output_directory)
 
 
 

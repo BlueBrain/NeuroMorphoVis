@@ -28,9 +28,9 @@ OUTPUT_DIRECTORY=''
 ####################################################################################################
 echo 'ANALYZING MESH ...'
 
-./analyze-mesh.py                                                                                   \
+$BLENDER -b --verbose 0 --python analyze-mesh.py                                                                                   \
     --blender=$BLENDER                                                                              \
-    --mesh=$CIRCUIT_CONFIG                                                                          \
+    --mesh=$MESH                                                                          \
     --output-directory=$OUTPUT_DIRECTORY
 
 echo 'ANALYSIS DONE ...'

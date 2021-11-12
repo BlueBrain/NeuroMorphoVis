@@ -15,25 +15,35 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import subprocess
+# System imports
+import ntpath
+import os
+import sys
 import argparse
+import math
 
+# Blender imports
+import bpy
+import bmesh
+import mathutils
 
+    
 ####################################################################################################
 # @parse_command_line_arguments
 ####################################################################################################
 def parse_command_line_arguments():
+    """Parser
+
+    :return:
+        Parsed arguments.
+    """
 
     # Create an argument parser, and then add the options one by one
-    parser = argparse.ArgumentParser()
-    
+    parser = argparse.ArgumentParser(sys.argv)
+
     # Morphology directory
     arg_help = 'Input mesh'
     parser.add_argument('--mesh', action='store', help=arg_help)
-    
-    # Blender
-    arg_help = 'Blender executable, at least version 2.80!'
-    parser.add_argument('--blender', action='store', default='blender', help=arg_help)
                         
     # Output directory
     arg_help = 'Output directory'
@@ -42,27 +52,31 @@ def parse_command_line_arguments():
     # Parse the arguments, and return a list of them
     return parser.parse_args()
 
-
+        
 ####################################################################################################
 # @ Run the main function if invoked from the command line.
 ####################################################################################################
 if __name__ == "__main__":
 
-    # Parse arguments 
+    # Ignore blender extra arguments required to launch blender given to the command line interface
+    args = sys.argv
+    args = args[args.index("--") + 0:]
+    sys.argv = args
+    
+    # Main
     args = parse_command_line_arguments()
 
-    # Output arguments 
-    args_string = '--mesh=%s ' % args.mesh
-    args_string += '--output-directory=%s ' % args.output_directory
+    # Get the file name
+    file_name, file_extension = os.path.splitext(args.mesh)
 
-    # Setup the shell command
-    shell_command = '%s -b --verbose 0 --python %s -- %s' % (args.blender, 'core.py', args_string)
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
-
-
-
-
-
-
+    # Import the file
+    if '.ply' == file_extension:
+        mesh_object = import_ply_file(args.mesh)
+    elif '.obj' == file_extension:
+        mesh_object = import_obj_file(args.mesh)
+    else:
+        print('Unsupported file format! Exiting')
+        mesh_object = None
+        exit(0)
+        
 

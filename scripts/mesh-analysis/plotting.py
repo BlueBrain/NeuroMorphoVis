@@ -956,3 +956,8 @@ def combine_stats_with_rendering(rendering_image,
 
     # Return a reference to the final images
     return combined_vertical_path, combined_horizontal_path
+
+
+
+
+
