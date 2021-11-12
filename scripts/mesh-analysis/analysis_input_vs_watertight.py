@@ -18,6 +18,8 @@
 # Internal imports
 import nmv.scene
 import nmv.interface
+import nmv.bbox
+import nmv.enums
 
 # System imports
 import os
@@ -38,6 +40,7 @@ from PIL import ImageFont
 import data_utilities as dutils
 import file_utilities as futils
 import image_utilities as imutils
+import rendering_utilities as rutils
 import mesh_analysis
 import fact_sheet
 
@@ -164,7 +167,7 @@ def plot_back2back_histograms(dists_directory,
 
 
 ####################################################################################################
-# @plot_back2back_histograms
+# @plot_back2back_histograms_normalized
 ####################################################################################################
 def plot_back2back_histograms_normalized(dists_directory,
                                          output_directory,
@@ -316,8 +319,9 @@ def create_distributions_image(mesh_name,
 def create_fact_sheet_image(input_mesh_path,
                             watertight_mesh_path,
                             output_directory,
-                            fact_sheet_name='fact-sheet',
-                            render_meshes=False,
+                            scenes_directory,
+                            reference_name,
+                            render_meshes=True,
                             mesh_resolution=1500,
                             fact_sheet_resolution=1500,
                             palette=seaborn.color_palette("flare", n_colors=10)):
@@ -328,49 +332,99 @@ def create_fact_sheet_image(input_mesh_path,
     # Load the input mesh
     input_mesh_object = nmv.file.import_mesh(input_mesh_path)
 
+    # Rotate the mesh object to adjust the orientation in front of the camera
+    nmv.scene.rotate_object(input_mesh_object, 0, 0, 0)
+
     # Compute the mesh stats
     i_stats, i_aabb, i_wtc = mesh_analysis.compute_mesh_stats(input_mesh_object)
 
-    # Render the meshes
-    if render_meshes:
-        pass
+    # Draws the scale bar
+    nmv.interface.draw_scale_bar(
+        bounding_box=nmv.bbox.compute_scene_bounding_box_for_meshes(),
+        view=nmv.enums.Camera.View.FRONT, material_type=nmv.enums.Shader.LAMBERT_WARD)
 
-    # Delete the input mesh
-    # nmv.scene.delete_object_in_scene(input_mesh_object)
+    # Export it to a blender file
+    nmv.file.export_scene_to_blend_file(
+        output_directory=scenes_directory, output_file_name='%s-input' % reference_name)
+
+    # Render the meshes
+    input_mesh_image = None
+    if render_meshes:
+        input_mesh_image = '%s/%s.png' % (output_directory, reference_name)
+        rutils.render_mesh_object(
+            mesh_object=input_mesh_object, mesh_name='%s' % reference_name,
+            output_directory=output_directory, mesh_color=palette[5])
+
+    # Clear the scene
+    nmv.scene.clear_scene()
 
     # Load the watertight mesh
     watertight_mesh_object = nmv.file.import_mesh(watertight_mesh_path)
 
+    # Rotate the mesh object to adjust the orientation in front of the camera
+    nmv.scene.rotate_object(watertight_mesh_object, 0, 0, 0)
+
     # Compute the mesh stats
     wt_stats, wt_aabb, wt_wtc = mesh_analysis.compute_mesh_stats(watertight_mesh_object)
 
+    # Draws the scale bar
+    nmv.interface.draw_scale_bar(
+        bounding_box=nmv.bbox.compute_scene_bounding_box_for_meshes(),
+        view=nmv.enums.Camera.View.FRONT, material_type=nmv.enums.Shader.LAMBERT_WARD)
+
     # Render the meshes
+    watertight_mesh_image = None
     if render_meshes:
-        pass
+        watertight_mesh_image = '%s/%s-watertight.png' % (output_directory, reference_name)
+        rutils.render_mesh_object(
+            mesh_object=watertight_mesh_object, mesh_name='%s-watertight' % reference_name,
+            output_directory=output_directory, mesh_color=palette[0])
+
+    # Export it to a blender file
+    nmv.file.export_scene_to_blend_file(
+        output_directory=scenes_directory, output_file_name='%s-watertight' % reference_name)
+
+    # Combine the mesh images if they are not None
+    combined_renderings_image = None
+    if input_mesh_image is not None and watertight_mesh_image is not None:
+
+        # Switch direction based on resolution s
+        width, height = imutils.get_image_dimensions(input_mesh_image)
+        if width > 1.5 * height:
+            combined_renderings_image = imutils.montage_list_images_with_same_dimensions_vertically(
+                list_images=[input_mesh_image, watertight_mesh_image],
+                output_directory=output_directory, montage_name='%s-renderings' % reference_name)
+        else:
+            combined_renderings_image = \
+                imutils.montage_list_images_with_same_dimensions_horizontally(
+                    list_images=[input_mesh_image, watertight_mesh_image],
+                    output_directory=output_directory,
+                    montage_name='%s-renderings' % reference_name)
 
     # Create the fact sheets
     fact_sheet_image = fact_sheet.create_input_vs_watertight_fact_sheet(
         i_stats=i_stats, i_aabb=i_aabb, i_wtc=i_wtc,
         wt_stats=wt_stats, wt_aabb=wt_aabb, wt_wtc=wt_wtc,
         i_color=dutils.convert_color(palette[5]), wt_color=dutils.convert_color(palette[0]),
-        output_image_path=output_directory, fact_sheet_name=fact_sheet_name,
+        output_image_path=output_directory, fact_sheet_name=reference_name,
         resolution=fact_sheet_resolution)
 
     # Return a reference to the image
-    return fact_sheet_image
+    return fact_sheet_image, combined_renderings_image
 
 
 ####################################################################################################
-# @run_quality_checker_on_input_mesh
+# @create_watertight_mesh
 ####################################################################################################
 def create_watertight_mesh(arguments,
                            input_mesh,
                            output_directory):
+
     # Create the shell command
     shell_command = '%s ' % arguments.ultraMesh2Mesh
     shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
-    shell_command += '--auto-resolution --voxels-per-micron 1 '
+    shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
     shell_command += '--solid '
     shell_command += '--optimize-mesh --adaptive-optimization '
     shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
@@ -387,11 +441,13 @@ def create_watertight_mesh(arguments,
 
 
 ####################################################################################################
-# @create_fact_sheet_image
+# @create_comparative_mesh_analysis
 ####################################################################################################
 def create_comparative_mesh_analysis(arguments,
                                      mesh_file,
-                                     intermediate_directory):
+                                     intermediate_directory,
+                                     images_directory,
+                                     scenes_directory):
 
     # Full path
     input_mesh_path = '%s/%s' % (arguments.input_directory, mesh_file)
@@ -412,14 +468,15 @@ def create_comparative_mesh_analysis(arguments,
         mesh_name=mesh_name, dists_directory='%s/distributions' % arguments.output_directory,
         intermediate_directory=intermediate_directory, palette=palette)
 
-    # Create the fact sheet image
-    fact_sheet_image = create_fact_sheet_image(
+    # Create the fact sheet image and the combined rendering image
+    fact_sheet_image, combined_renderings_image = create_fact_sheet_image(
         input_mesh_path=input_mesh_path, watertight_mesh_path=watertight_mesh_path,
-        output_directory='%s/images' % arguments.output_directory, fact_sheet_name=mesh_name,
-        fact_sheet_resolution=1500, render_meshes=False)
+        output_directory=intermediate_directory, scenes_directory=scenes_directory,
+        reference_name=mesh_name, fact_sheet_resolution=1500, render_meshes=False)
 
     # Combines the stats. image with the fact sheet image to create the final image
-    imutils.combine_distributions_with_fact_sheet(
+    distribution_with_fact_sheet_image = imutils.combine_distributions_with_fact_sheet(
         distributions_image=distributions_image, fact_sheet_image=fact_sheet_image,
-        output_directory='%s/images' % arguments.output_directory, image_name=mesh_name)
+        output_directory=images_directory, image_name=mesh_name)
+
 

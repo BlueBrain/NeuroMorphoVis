@@ -16,8 +16,31 @@
 ####################################################################################################
 
 # System imports
-import os
+import copy
 from PIL import Image
+
+
+####################################################################################################
+# @get_image_dimensions
+####################################################################################################
+def get_image_dimensions(image_path):
+    """Gets the image dimensions from the path
+
+    :param image_path:
+    :return:
+    """
+
+    # Open the image
+    im = Image.open(image_path)
+
+    # Get the size
+    width, height = copy.deepcopy(im.size)
+
+    # Close
+    im.close()
+
+    # Return size
+    return width, height
 
 
 ####################################################################################################
@@ -135,6 +158,62 @@ def create_adjusted_plot_images(input_directory,
 
 
 ####################################################################################################
+# @montage_list_images_with_same_dimensions_horizontally
+####################################################################################################
+def montage_list_images_with_same_dimensions_horizontally(list_images,
+                                                          output_directory,
+                                                          montage_name,
+                                                          delta=50):
+
+    # Get the dimensions from any image, all the images must have the same dimensions
+    any_image = Image.open(list_images[0])
+    width, height = any_image.size
+
+    # Compute the dimensions of the new image
+    total_width = (width * len(list_images)) + (delta * len(list_images) - 1)
+    total_height = height
+
+    montage_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+    for i, image in enumerate(list_images):
+        im = Image.open(image)
+        w = 0 if i == 0 else i * (width + delta)
+        montage_im.paste(im, (w, 0))
+
+    # Save the path to the montage image
+    montage_path = '%s/%s-horizontal.png' % (output_directory, montage_name)
+    montage_im.save(montage_path)
+    return montage_path
+
+
+####################################################################################################
+# @montage_list_images_with_same_dimensions_vertically
+####################################################################################################
+def montage_list_images_with_same_dimensions_vertically(list_images,
+                                                        output_directory,
+                                                        montage_name,
+                                                        delta=50):
+
+    # Get the dimensions from any image, all the images must have the same dimensions
+    any_image = Image.open(list_images[0])
+    width, height = any_image.size
+
+    # Compute the dimensions of the new image
+    total_width = width
+    total_height = (height * len(list_images)) + (delta * len(list_images) - 1)
+
+    montage_im = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+    for i, image in enumerate(list_images):
+        im = Image.open(image)
+        h = 0 if i == 0 else i * (height + delta)
+        montage_im.paste(im, (0, h))
+
+    # Save the path to the montage image
+    montage_path = '%s/%s-vertical.png' % (output_directory, montage_name)
+    montage_im.save(montage_path)
+    return montage_path
+
+
+####################################################################################################
 # @montage_distributions_horizontally
 ####################################################################################################
 def montage_distributions_horizontally(distribution_images,
@@ -220,6 +299,47 @@ def combine_distributions_with_fact_sheet(distributions_image,
     combined_image.close()
     dist_im.close()
     fact_sheet_im.close()
+
+    # Return a reference to the combined image path
+    return combined_image_path
+
+
+####################################################################################################
+# @create_comparative_combined_analysis_image
+####################################################################################################
+def create_comparative_combined_analysis_image(distribution_with_fact_sheet_image,
+                                               combined_renderings_image,
+                                               output_directory,
+                                               reference_name,
+                                               delta=0):
+    # Open the input images
+    dist_and_fs_image = Image.open(distribution_with_fact_sheet_image)
+    combined_im = Image.open(combined_renderings_image)
+
+    # Compute the ratio
+    ratio = dist_and_fs_image.size[1] / (1.0 * combined_im.size[1])
+    combined_im = combined_im.resize((int(dist_and_fs_image.size[0]),
+                                          int(combined_im.size[1] / ratio)), resample=2)
+
+    # Create the combined image
+    final_image = Image.new('RGB', (combined_im.size[0],
+                                    dist_and_fs_image.size[1] + combined_im.size[1] + delta),
+                               (255, 255, 255))
+
+    # Paste the images
+    final_image.paste(dist_and_fs_image, (0, 0))
+    final_image.paste(combined_im, (0, dist_and_fs_image.size[1] + delta))
+
+    # Save
+    final_image_path = '%s/%s-combined.png' % (output_directory, reference_name)
+    final_image.save(final_image_path)
+
+    dist_and_fs_image.close()
+    combined_im.close()
+    final_image.close()
+
+    # Return the final image
+    return final_image_path
 
 
 ####################################################################################################

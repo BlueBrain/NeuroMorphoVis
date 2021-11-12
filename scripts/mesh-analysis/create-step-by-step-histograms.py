@@ -27,8 +27,8 @@ import nmv.interface
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/../' % (os.path.dirname(os.path.realpath(__file__)))))
 
-# Blender imports
-import analysis_input_vs_watertight
+# Internal imports
+import analysis_step_by_step
 
 
 ####################################################################################################
@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     # For every mesh in the list
     for mesh_file in list_meshes:
-        analysis_input_vs_watertight.create_comparative_mesh_analysis(
+        analysis_step_by_step.create_comparative_mesh_analysis(
             arguments=args, mesh_file=mesh_file, intermediate_directory=intermediate_directory,
             images_directory=images_directory, scenes_directory=scenes_directory)
 

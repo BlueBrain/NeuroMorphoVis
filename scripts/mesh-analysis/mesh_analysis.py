@@ -335,6 +335,9 @@ def compute_mesh_stats(mesh_object):
     print('\t* Validating Watertightness')
     watertight_check = check_watertightness(bm, mesh_stats.partitions)
 
+    # Switch to geometry or edit mode from the object mode
+    bpy.ops.object.editmode_toggle()
+
     # Results
     return mesh_stats, mesh_bbox, watertight_check
 

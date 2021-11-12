@@ -23,7 +23,7 @@ BLENDER=$PWD/../../../../../../blender
 INPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/input'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/output'
+OUTPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/output-step-by-step'
 
 # ultraMes2Mesh executable
 ULTRA_MESH2MESH='ultraMesh2Mesh'
@@ -39,7 +39,7 @@ BOOL_ARGS=''
 
 ####################################################################################################
 echo 'RUNNING ...'
-$BLENDER -b --verbose 0 --python create-input-vs-watertight-histograms.py --                        \
+$BLENDER -b --verbose 0 --python create-step-by-step-histograms.py --                               \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --ultraMesh2Mesh=$ULTRA_MESH2MESH                                                               \
