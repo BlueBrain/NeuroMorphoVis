@@ -194,11 +194,11 @@ def parse_command_line_arguments(arguments=None):
 # @run_quality_checker_on_input_mesh
 ####################################################################################################
 def create_watertight_mesh(arguments,
-                           input_mesh_path,
+                           input_mesh,
                            output_directory):
     # Create the shell command
     shell_command = '%s ' % arguments.ultraMesh2Mesh
-    shell_command += '--mesh %s ' % input_mesh_path
+    shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron 1 '
     shell_command += '--solid '
@@ -210,6 +210,11 @@ def create_watertight_mesh(arguments,
     # Execute the shell command
     print(shell_command)
     subprocess.call(shell_command, shell=True)
+
+    # Return a reference to the watertight mesh
+    return '%s/meshes/%s-watertight.obj' % (output_directory,
+                                            os.path.splitext(os.path.basename(input_mesh))[0])
+
 
 
 ####################################################################################################
@@ -242,17 +247,48 @@ if __name__ == "__main__":
     for mesh_file in list_meshes:
 
         # Full path
-        mesh_path = '%s/%s' % (args.input_directory, mesh_file)
+        input_mesh_path = '%s/%s' % (args.input_directory, mesh_file)
 
         # Create the watertight mesh, and the stats.
-        create_watertight_mesh(
-            arguments=args, input_mesh_path=mesh_path, output_directory=args.output_directory)
+        watertight_mesh_path = create_watertight_mesh(
+            arguments=args, input_mesh=input_mesh_path, output_directory=args.output_directory)
+        print(watertight_mesh_path)
 
         # Plot the distributions
-        histograms.plot_distributions(dists_directory='%s/distributions' % args.output_directory,
+        stats_image = histograms.plot_distributions(dists_directory='%s/distributions' % args.output_directory,
                                       intermediate_directory=intermediate_directory)
 
+        # Clear the scene
+        nmv.scene.clear_scene()
 
+        # Load the input mesh
+        input_mesh_object = nmv.file.import_mesh(input_mesh_path)
+
+        import utilities
+        input_mesh_stats, input_mesh_aabb, input_mesh_watertight_check = \
+            utilities.compute_mesh_stats(input_mesh_object)
+
+        print('haoaoao')
+        # If render do it
+
+        # Clear the scene, again
+        # nmv.scene.clear_scene()
+
+        # Load the watertight mesh
+        watertight_mesh_object = nmv.file.import_mesh(watertight_mesh_path)
+
+        watertight_mesh_stats, watertight_mesh_aabb, watertight_mesh_watertight_check = \
+            utilities.compute_mesh_stats(watertight_mesh_object)
+
+        print('xxxx')
+        # If render do it
+
+        # Create the fact sheets
+
+        fact_sheet_image = utilities.create_input_vs_watertight_fact_sheet(
+            input_mesh_stats, input_mesh_aabb, input_mesh_watertight_check,
+            watertight_mesh_stats, watertight_mesh_aabb, watertight_mesh_watertight_check,
+            args.output_directory)
 
 
 

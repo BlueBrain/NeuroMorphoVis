@@ -834,20 +834,6 @@ def create_mesh_fact_sheet(mesh_object,
     drawing_area.text((delta_x, delta_y), 'Yes' if watertight_check.watertight else 'No',
                       font=font, fill=(0, 0, 0))
 
-    # i += 1.5
-    # delta_y = i * spacing
-    # drawing_area.text((starting_x, delta_y),
-    #                   '* The value of the total volume is exact if the mesh is watertight, '
-    #                   'otherwise approximation.',
-    #                   font=footnote_font, fill=(0, 0, 0))
-
-    # i += 0.5
-    # delta_y = i * spacing
-    # drawing_area.text((starting_x, delta_y),
-    #                 '** If this value is similar to the Number of Mesh Partitions, then it '
-    #                 'has no self intersections.',
-    #                 font=footnote_font, fill=(0, 0, 0))
-
     fact_sheet_image_path = '%s/%s-fact-sheet.png' % (output_image_path, mesh_name)
     fact_sheet_image.save(fact_sheet_image_path)
     fact_sheet_image.close()

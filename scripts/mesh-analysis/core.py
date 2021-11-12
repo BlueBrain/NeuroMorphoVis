@@ -38,7 +38,7 @@ class WatertightCheck:
         self.non_manifold_edges = 0
         self.non_manifold_vertices = 0 
         self.self_intersections = 0
-        
+
 
 ####################################################################################################
 # @BoundingBox
@@ -48,7 +48,19 @@ class BoundingBox:
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
-        self.diagnoal = 0.0
+        self.diagonal = 0.0
+
+
+####################################################################################################
+# @MeshStats
+####################################################################################################
+class MeshStats:
+    def __init__(self):
+        self.polygons = 0
+        self.vertices = 0
+        self.surface_area = 0
+        self.volume = 0
+        self.partitions = 0
         
         
 ####################################################################################################

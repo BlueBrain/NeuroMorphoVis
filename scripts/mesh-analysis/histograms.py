@@ -20,6 +20,7 @@ import bpy
 
 # Internal imports
 import nmv.scene
+import nmv.interface
 
 # System imports
 import os
@@ -49,9 +50,10 @@ pyplot.rcParams['grid.linewidth'] = 1.0
 pyplot.rcParams['grid.color'] = 'gray'
 pyplot.rcParams['grid.alpha'] = 0.25
 pyplot.rcParams['font.family'] = 'Helvetica LT Std'
-pyplot.rcParams['font.family'] = 'NimbusSanL'
+# pyplot.rcParams['font.family'] = 'NimbusSanL'
 pyplot.rcParams['font.monospace'] = 'Regular'
 pyplot.rcParams['font.style'] = 'normal'
+pyplot.rcParams['axes.labelweight'] = 'bold'
 pyplot.rcParams['axes.linewidth'] = 1.0
 pyplot.rcParams['axes.labelsize'] = font_size
 pyplot.rcParams['xtick.labelsize'] = font_size
@@ -258,11 +260,15 @@ def plot_back2back_histograms_normalized(dists_directory,
 ####################################################################################################
 # @plot_back2back_histograms
 ####################################################################################################
-def plot_distributions(dists_directory,
+def plot_distributions(mesh_name,
+                       dists_directory,
                        intermediate_directory):
 
     # Verify the packages
     utilities.verify_plotting_packages()
+
+    # Loading the fonts
+    nmv.interface.load_fonts()
 
     # The color palette
     palette = seaborn.color_palette("flare", n_colors=10)
@@ -301,9 +307,11 @@ def plot_distributions(dists_directory,
         input_directory=intermediate_directory, list_images=dists_pngs,
         output_directory=intermediate_directory)
 
-    utilities.montage_distributions_horizontally(
-        name='s', input_directory=intermediate_directory, distribution_images=dists_pngs,
+    stats_image = utilities.montage_distributions_horizontally(
+        name=mesh_name, input_directory=intermediate_directory, distribution_images=dists_pngs,
         output_directory=intermediate_directory)
+
+    return stats_image
 
 
 
