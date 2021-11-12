@@ -29,7 +29,7 @@ OUTPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/output-step-by-step'
 ULTRA_MESH2MESH='ultraMesh2Mesh'
 
 # Voxel resolution
-VOXELS_PER_MICRON=1
+VOXELS_PER_MICRON=5
 
 # Mesh scale
 MESH_SCALE=0.001

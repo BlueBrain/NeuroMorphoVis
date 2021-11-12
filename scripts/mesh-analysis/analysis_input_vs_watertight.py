@@ -23,20 +23,15 @@ import nmv.enums
 
 # System imports
 import os
+import sys
 import subprocess
 import numpy
 import seaborn
-import matplotlib
 import matplotlib.pyplot as pyplot
-import matplotlib.font_manager as font_manager
-import matplotlib.ticker
-import colorsys
-from matplotlib.ticker import PercentFormatter
-from matplotlib.ticker import FuncFormatter
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 
+# Internal
+sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append(('%s/utilities/' % (os.path.dirname(os.path.realpath(__file__)))))
 import data_utilities as dutils
 import file_utilities as futils
 import image_utilities as imutils
@@ -48,7 +43,7 @@ import fact_sheet
 ####################################################################################################
 # Per-adjust all the plotting configuration
 ####################################################################################################
-font_size = 40
+font_size = 30
 seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
 pyplot.rcParams['grid.linestyle'] = '--'
@@ -272,7 +267,6 @@ def create_distributions_image(mesh_name,
 
     # Verify packages
     dutils.verify_plotting_packages()
-
     # Loading the fonts
     nmv.interface.load_fonts()
 
@@ -280,7 +274,7 @@ def create_distributions_image(mesh_name,
     files = os.listdir(dists_directory)
     dists = list()
     for f in files:
-        if '.dist' in f:
+        if '.dist' in f and mesh_name in f:
             dists.append(f)
 
     # Search strings
@@ -425,7 +419,7 @@ def create_watertight_mesh(arguments,
     shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += '--solid '
+    shell_command += '--solid --preserve-partitions '
     shell_command += '--optimize-mesh --adaptive-optimization '
     shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
     shell_command += '--export-obj-mesh '
@@ -448,6 +442,9 @@ def create_comparative_mesh_analysis(arguments,
                                      intermediate_directory,
                                      images_directory,
                                      scenes_directory):
+
+    # Verify the packages
+    dutils.verify_plotting_packages()
 
     # Full path
     input_mesh_path = '%s/%s' % (arguments.input_directory, mesh_file)
