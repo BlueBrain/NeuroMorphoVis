@@ -296,7 +296,7 @@ def create_distributions_image(mesh_name,
             output_prefix='%s-%s' % (mesh_name, string[0]),
             invert=string[2],
             title=string[1],
-            color_1=palette[0], color_2=palette[5], axvline_color=palette[9]))
+            color_1=palette[5], color_2=palette[0], axvline_color=palette[9]))
 
     # Statistic image with all the distributions
     distributions_image = imutils.montage_distributions_horizontally(
@@ -399,7 +399,7 @@ def create_fact_sheet_image(input_mesh_path,
     fact_sheet_image = fact_sheet.create_input_vs_watertight_fact_sheet(
         i_stats=i_stats, i_aabb=i_aabb, i_wtc=i_wtc,
         wt_stats=wt_stats, wt_aabb=wt_aabb, wt_wtc=wt_wtc,
-        i_color=dutils.convert_color(palette[5]), wt_color=dutils.convert_color(palette[0]),
+        i_color=dutils.convert_color(palette[0]), wt_color=dutils.convert_color(palette[5]),
         output_image_path=output_directory, fact_sheet_name=reference_name,
         resolution=fact_sheet_resolution)
 
@@ -420,7 +420,7 @@ def create_watertight_mesh(arguments,
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
     shell_command += '--solid --preserve-partitions '
-    shell_command += '--optimize-mesh --adaptive-optimization '
+    shell_command += '--optimize-mesh --adaptive-optimization --optimization-iterations 10'
     shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
     shell_command += '--export-obj-mesh '
     shell_command += '--stats --dists '

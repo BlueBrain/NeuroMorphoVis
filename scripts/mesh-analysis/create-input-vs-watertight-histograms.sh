@@ -20,10 +20,10 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input directory
-INPUT_DIRECTORY='/ssd2/ultraliser-stats-figures/vessels'
+INPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/vessels'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/ultraliser-stats-figures/vessels/output'
+OUTPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/vessels/output'
 
 # ultraMes2Mesh executable
 ULTRA_MESH2MESH='ultraMesh2Mesh'

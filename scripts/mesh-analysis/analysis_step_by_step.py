@@ -353,9 +353,9 @@ def create_watertight_mesh(arguments,
     shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += '--solid --preserve-partitions '
-    shell_command += '--optimize-mesh --adaptive-optimization '
-    shell_command += '--export-obj-mesh '
+    shell_command += '--solid --preserve-partitions --laplacian-iterations 0 '
+    shell_command += '--optimize-mesh --adaptive-optimization --optimization-iterations 10'
+    shell_command += '-.-export-obj-mesh '
     shell_command += '--stats --dists '
 
     # Execute the shell command
