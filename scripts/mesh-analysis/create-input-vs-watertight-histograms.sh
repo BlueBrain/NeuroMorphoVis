@@ -20,16 +20,16 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input directory
-INPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/vessels'
+INPUT_DIRECTORY='/ssd2/ultraliser/2021.10.29-eyewire-h5-meshes/sample'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/vessels/output'
+OUTPUT_DIRECTORY='//ssd2/ultraliser/2021.10.29-eyewire-h5-meshes/sample/output'
 
 # ultraMes2Mesh executable
 ULTRA_MESH2MESH='ultraMesh2Mesh'
 
 # Voxel resolution
-VOXELS_PER_MICRON=3
+VOXELS_PER_MICRON=1
 
 # Mesh scale
 MESH_SCALE=0.001

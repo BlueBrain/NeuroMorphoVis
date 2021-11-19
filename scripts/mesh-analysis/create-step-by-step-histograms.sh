@@ -20,16 +20,16 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input directory
-INPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/input'
+INPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/step-by-step-analysis'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/2021.11.11-back2back-histograms/output-step-by-step'
+OUTPUT_DIRECTORY='/ssd2/ultraliser/ultraliser-stats-figures/step-by-step-analysis/output'
 
 # ultraMes2Mesh executable
 ULTRA_MESH2MESH='ultraMesh2Mesh'
 
 # Voxel resolution
-VOXELS_PER_MICRON=5
+VOXELS_PER_MICRON=3
 
 # Mesh scale
 MESH_SCALE=0.001

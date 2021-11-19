@@ -29,6 +29,7 @@ import mathutils
 
 # Internal imports
 import nmv.scene
+import nmv.mesh
 import geometry_utils as gutils
 
 
@@ -303,6 +304,9 @@ def compute_mesh_stats(mesh_object):
 
     # Compute the bounding box
     mesh_bbox = compute_bounding_box(mesh_object)
+
+    # Triangulate the mesh
+    nmv.mesh.triangulate_mesh(mesh_object=mesh_object)
 
     print('\t* Number Partitions')
     mesh_stats.partitions = compute_number_partitions(mesh_object)

@@ -353,9 +353,9 @@ def create_watertight_mesh(arguments,
     shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += '--solid --preserve-partitions --laplacian-iterations 0 '
-    shell_command += '--optimize-mesh --adaptive-optimization --optimization-iterations 10'
-    shell_command += '-.-export-obj-mesh '
+    shell_command += '--solid '
+    shell_command += '--optimize-mesh --adaptive-optimization '
+    shell_command += '--export-obj-mesh '
     shell_command += '--stats --dists '
 
     # Execute the shell command
@@ -392,7 +392,8 @@ def create_comparative_mesh_analysis(arguments,
 
     # Create the distribution image
     distributions_image = create_distributions_image(
-        mesh_name=mesh_name, suffix='input', dists_directory='%s/distributions' % arguments.output_directory,
+        mesh_name=mesh_name, suffix='input',
+        dists_directory='%s/distributions' % arguments.output_directory,
         intermediate_directory=intermediate_directory, palette=palette)
 
     # Create the fact sheet image and the combined rendering image

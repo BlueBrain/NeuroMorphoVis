@@ -68,6 +68,75 @@ pyplot.rcParams['axes.edgecolor'] = '1'
 
 
 ####################################################################################################
+# @plot_distribution
+####################################################################################################
+def plot_distribution(input_directory,
+                      dist_file,
+                      output_directory,
+                      title,
+                      plot_titles=True,
+                      color='b',
+                      invert=False,
+                      save_pdf=False,
+                      save_svg=False,
+                      dpi=150):
+
+    # Clear figure
+    pyplot.clf()
+
+    # Get the data list
+    data = futils.read_dist_file('%s/%s' % (input_directory, dist_file), invert=invert)
+
+    # Convert the data to numpy array
+    np_data = numpy.array(data)
+
+    # Create a new frame for the plot to combine both
+    frame = pyplot.gca()
+
+    # Adjusting the figure size
+    pyplot.figure(figsize=(10, 5))
+    pyplot.tight_layout()
+
+    # Set the title inside the figure to save some space
+    if plot_titles:
+        pyplot.title(title, y=1.05)
+
+    # Plot the histogram
+    ax = seaborn.histplot(np_data, color=color, bins=50, alpha=0.95)
+
+    # No label
+    pyplot.ylabel('')
+
+    # Only plot the Y-axis
+    ax.axes.get_xaxis().set_visible(True)
+    ax.axes.get_yaxis().set_visible(True)
+    ax.spines['bottom'].set_color('black')
+    ax.grid(zorder=0)
+
+    # Image prefix
+    image_prefix = '%s/%s' % (output_directory, dist_file.replace('.dist', ''))
+
+    # By default, save the figure into a PNG image
+    pyplot.savefig(image_prefix + '-p.png', dpi=dpi, bbox_inches='tight')
+
+    # Save PDF
+    if save_pdf:
+        pyplot.savefig(image_prefix + '-p.pdf', dpi=dpi, bbox_inches='tight')
+
+    # Save SVG
+    if save_svg:
+        pyplot.savefig(image_prefix + '-p.svg', dpi=dpi, bbox_inches='tight')
+
+    # Close figure to reset
+    pyplot.clf()
+    pyplot.cla()
+    pyplot.close()
+
+    # Return a reference to the png image
+    return dist_file.replace('.dist', '-p.png')
+
+
+####################################################################################################
 # @plot_back2back_histograms
 ####################################################################################################
 def plot_back2back_histograms(dists_directory,
@@ -79,7 +148,7 @@ def plot_back2back_histograms(dists_directory,
                               invert=False,
                               figure_width=5,
                               figure_height=10,
-                              bins=40,
+                              bins=50,
                               color_1='red',
                               color_2='blue',
                               axvline_color='black',
@@ -96,6 +165,18 @@ def plot_back2back_histograms(dists_directory,
     data_left = futils.read_dist_file('%s/%s' % (dists_directory, hist_left), invert=invert)
     data_right = futils.read_dist_file('%s/%s' % (dists_directory, hist_right), invert=invert)
 
+    plot_distribution(input_directory=dists_directory,
+                      dist_file=hist_left, output_directory=output_directory,
+                      title=title, plot_titles=True, color=color_2, invert=invert)
+
+    plot_distribution(input_directory=dists_directory,
+                      dist_file=hist_right, output_directory=output_directory,
+                      title=title, plot_titles=True, color=color_1, invert=invert)
+
+    # Compute the ranges
+    min_value = min(min(data_left), min(data_right))
+    max_value = max(max(data_left), max(data_right))
+
     # Clear figure, getting ready for a new figure
     pyplot.clf()
 
@@ -107,9 +188,9 @@ def plot_back2back_histograms(dists_directory,
     frame = pyplot.gca()
 
     # Draw the histograms
-    h1 = pyplot.hist(data_right, density=True,
+    h1 = pyplot.hist(data_right, density=True, range=(min_value, max_value),
                      bins=bins, orientation='horizontal', color=color_1, rwidth=bin_width)
-    h2 = pyplot.hist(data_left, density=True,
+    h2 = pyplot.hist(data_left, density=True, range=(min_value, max_value),
                      bins=bins, orientation='horizontal', color=color_2, rwidth=bin_width)
 
     # Only plot the Y-axis
@@ -190,6 +271,18 @@ def plot_back2back_histograms_normalized(dists_directory,
     data_left = futils.read_dist_file('%s/%s' % (dists_directory, hist_left), invert=invert)
     data_right = futils.read_dist_file('%s/%s' % (dists_directory, hist_right), invert=invert)
 
+    plot_distribution(input_directory=dists_directory,
+                      dist_file=hist_left, output_directory=output_directory,
+                      title=title, plot_titles=True, color=color_2, invert=invert)
+
+    plot_distribution(input_directory=dists_directory,
+                      dist_file=hist_right, output_directory=output_directory,
+                      title=title, plot_titles=True, color=color_1, invert=invert)
+
+    # Compute the ranges
+    min_value = min(min(data_left), min(data_right))
+    max_value = max(max(data_left), max(data_right))
+
     # Clear figure, getting ready for a new figure
     pyplot.clf()
 
@@ -200,8 +293,8 @@ def plot_back2back_histograms_normalized(dists_directory,
     # Create a new frame for the plot to combine both
     frame = pyplot.gca()
 
-    ry, rx = numpy.histogram(data_right, bins=bins)
-    ly, lx = numpy.histogram(data_left, bins=bins)
+    ry, rx = numpy.histogram(data_right, bins=bins, range=(min_value, max_value))
+    ly, lx = numpy.histogram(data_left, bins=bins, range=(min_value, max_value))
 
     ry = ry / max(ry)
     ly = ly / max(ly)
@@ -278,12 +371,12 @@ def create_distributions_image(mesh_name,
             dists.append(f)
 
     # Search strings
-    strings = [['min-angle', 'Min. Dihedral Angle$^\circ$', False],
-               ['max-angle', 'Max. Dihedral Angle$^\circ$', False],
-               ['triangle-shape', 'Shape', False],
+    strings = [['triangle-shape', 'Shape', False],
                ['radius-ratio', 'Radius Ratio', True],
                ['edge-ratio', 'Edge Ratio', True],
-               ['radius-to-edge-ratio', 'Radius to Edge Ratio', True]]
+               ['radius-to-edge-ratio', 'Radius to Edge Ratio', True],
+               ['min-angle', 'Min. Dihedral Angle$^\circ$', False],
+               ['max-angle', 'Max. Dihedral Angle$^\circ$', False]]
 
     # Plot the distributions and store the images
     dists_pngs = list()
@@ -419,10 +512,11 @@ def create_watertight_mesh(arguments,
     shell_command += '--mesh %s ' % input_mesh
     shell_command += '--output-directory %s ' % output_directory
     shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += '--solid --preserve-partitions '
-    shell_command += '--optimize-mesh --adaptive-optimization --optimization-iterations 10'
+    shell_command += '--solid '
+    shell_command += '--adaptive-optimization --optimization-iterations 1'
+    shell_command += '--optimize-mesh --preserve-partitions '
     shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
-    shell_command += '--export-obj-mesh '
+    shell_command += '--export-obj-mesh --export-stl-mesh '
     shell_command += '--stats --dists '
 
     # Execute the shell command
@@ -459,6 +553,7 @@ def create_comparative_mesh_analysis(arguments,
 
     # Create the color palette
     palette = seaborn.color_palette("flare", n_colors=10)
+    print(palette)
 
     # Create the distribution image
     distributions_image = create_distributions_image(
