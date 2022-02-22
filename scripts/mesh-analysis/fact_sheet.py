@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ####################################################################################################
 # Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
@@ -15,16 +17,20 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from __future__ import unicode_literals
+
 # Blender imports
 import bpy
 import nmv.scene
 
 # System imports
+
 import os
 import matplotlib.font_manager as font_manager
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from textwrap import TextWrapper
 
 # Internal
 import data_utilities as dutils
@@ -61,9 +67,11 @@ def create_input_vs_watertight_fact_sheet(i_stats, i_aabb, i_wtc,
     drawing_area = ImageDraw.Draw(fact_sheet_image)
 
     # Select a font
-    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/1H.otf'
-    font = ImageFont.truetype(font_path, int(spacing * 0.8))
-    fact_sheet_font = ImageFont.truetype(font_path, int(spacing * 1.1))
+    font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/NimbusSanL-Regu.otf'
+    symbol_font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/1H.otf'
+
+    font = ImageFont.truetype(font_path, int(spacing * 0.8), encoding="utf-32")
+    fact_sheet_font = ImageFont.truetype(font_path, int(spacing * 1.1), encoding="utf-32")
 
     # Compute the offsets
     starting_x = int(0.04 * image_width)
@@ -97,39 +105,39 @@ def create_input_vs_watertight_fact_sheet(i_stats, i_aabb, i_wtc,
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'AABB Width', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         i_aabb.x), font=font, fill=(0, 0, 0))
-    drawing_area.text((epsilon_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((epsilon_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         wt_aabb.x), font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'AABB Height', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         i_aabb.y), font=font, fill=(0, 0, 0))
-    drawing_area.text((epsilon_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((epsilon_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         wt_aabb.y), font=font, fill=(0, 0, 0))
 
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'AABB Depth', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         i_aabb.z), font=font, fill=(0, 0, 0))
-    drawing_area.text((epsilon_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((epsilon_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         wt_aabb.z), font=font, fill=(0, 0, 0))
 
     i += 1.0
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'AABB Diagonal', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         i_aabb.diagonal), font=font, fill=(0, 0, 0))
-    drawing_area.text((epsilon_x, delta_y), '%s μm' % dutils.format_number_to_power_string(
+    drawing_area.text((epsilon_x, delta_y), '%s µm' % dutils.format_number_to_power_string(
         wt_aabb.diagonal), font=font, fill=(0, 0, 0))
 
     i += 1.5
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Surface Area', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm²' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm²' % dutils.format_number_to_power_string(
         i_stats.surface_area), font=font, fill=(0, 0, 0))
     drawing_area.text((epsilon_x, delta_y), '%s μm²' % dutils.format_number_to_power_string(
         wt_stats.surface_area), font=font, fill=(0, 0, 0))
@@ -137,9 +145,9 @@ def create_input_vs_watertight_fact_sheet(i_stats, i_aabb, i_wtc,
     i += 1
     delta_y = i * spacing
     drawing_area.text((starting_x, delta_y), 'Volume*', font=font, fill=(0, 0, 0))
-    drawing_area.text((delta_x, delta_y), '%s μm³' % dutils.format_number_to_power_string(
+    drawing_area.text((delta_x, delta_y), '%s µm³' % dutils.format_number_to_power_string(
         i_stats.volume), font=font, fill=(0, 0, 0))
-    drawing_area.text((epsilon_x, delta_y), '%s μm³' % dutils.format_number_to_power_string(
+    drawing_area.text((epsilon_x, delta_y), '%s µm³' % dutils.format_number_to_power_string(
         wt_stats.volume), font=font, fill=(0, 0, 0))
 
     i += 1.5

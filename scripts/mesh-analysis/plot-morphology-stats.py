@@ -31,19 +31,24 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
+font_dirs = [os.path.dirname(os.path.realpath(__file__)) + '/fonts/']
+font_dirs.extend([os.path.dirname(os.path.realpath(__file__)) + '/../fonts/'])
 
-font_size = 40
-#seaborn.set_style("whitegrid")
+font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/' + 'HelveticaLtObl.ttf'
+font_manager.fontManager.addfont(font_path)
+prop = font_manager.FontProperties(fname=font_path)
+
+font_size = 30
+seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
-pyplot.rcParams['grid.linestyle'] = '--'
+pyplot.rcParams['grid.linestyle'] = '-'
 pyplot.rcParams['grid.linewidth'] = 1.0
 pyplot.rcParams['grid.color'] = 'black'
-pyplot.rcParams['grid.alpha'] = 0.5
-pyplot.rcParams['font.family'] = 'Helvetica LT Std'
+pyplot.rcParams['grid.alpha'] = 0.1
+pyplot.rcParams['font.family'] = prop.get_family()
 # pyplot.rcParams['font.family'] = 'NimbusSanL'
-pyplot.rcParams['font.monospace'] = 'Regular'
 pyplot.rcParams['font.style'] = 'normal'
-pyplot.rcParams['axes.labelweight'] = 'bold'
+pyplot.rcParams['axes.labelweight'] = 'light'
 pyplot.rcParams['axes.linewidth'] = 1.0
 pyplot.rcParams['axes.labelsize'] = font_size
 pyplot.rcParams['xtick.labelsize'] = font_size * 1
@@ -63,7 +68,7 @@ def verify_plotting_packages():
 
     # Import the fonts
     font_dirs = [os.path.dirname(os.path.realpath(__file__)) + '/fonts/']
-    font_dirs .extend([os.path.dirname(os.path.realpath(__file__)) + '/../fonts/'])
+    font_dirs.extend([os.path.dirname(os.path.realpath(__file__)) + '/../fonts/'])
     font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
     for font_file in font_files:
         font_manager.fontManager.addfont(font_file)
@@ -101,6 +106,113 @@ def read_dist_file(file_path,
     # Return a list of the data read from the file
     return data
 
+
+####################################################################################################
+# @plot_back2back_histograms_normalized
+####################################################################################################
+def plot_histograms_normalized(dists_directory,
+                               hist,
+                               output_directory,
+                               output_prefix,
+                               title=None,
+                               invert=False,
+                               figure_width=2,
+                               figure_height=10,
+                               bins=50,
+                               color_1='red',
+                               color_2='blue',
+                               axvline_color='black',
+                               bin_width=0.95,
+                               save_pdf=False,
+                               save_svg=False,
+                               dpi=150,
+                               edge_gap=0.05):
+    # Title
+    if title is not None:
+        print('\t* Plotting [%s]' % title)
+
+    # Read the distributions
+    data = read_dist_file('%s/%s' % (dists_directory, hist), invert=invert)
+
+    # Compute the ranges
+    min_value = min(data)
+    max_value = max(data)
+
+    print(min_value, max_value)
+
+    # Clear figure, getting ready for a new figure
+    pyplot.clf()
+
+    # A new figure with the given dimensions size
+    pyplot.figure(figsize=(figure_width, figure_height))
+    pyplot.tight_layout()
+
+    # Create a new frame for the plot to combine both
+    frame = pyplot.gca()
+
+    ry, rx = numpy.histogram(data, bins=bins, range=(min_value, max_value))
+
+    ry = ry / max(ry)
+
+    x_min = min(rx)
+    x_max = max(rx)
+    delta = x_max - x_min
+    step = delta / bins
+    bins = numpy.arange(x_min, x_max, step)
+
+    # Right histogram
+    pyplot.barh(bins, ry, color=color_1, height=step * bin_width)
+
+    # Right box plot
+    rvalue = 1.25
+    bpr = pyplot.boxplot(data, positions=[rvalue], showfliers=True,
+                         flierprops=dict(marker='o', markersize=5, alpha=0.5,
+                                         markerfacecolor=color_1, markeredgecolor=color_1))
+
+    for box in bpr['boxes']:
+        box.set(color=color_1, linewidth=1)
+    for whisker in bpr['whiskers']:
+        whisker.set(color=color_1, linewidth=1)
+    for cap in bpr['caps']:
+        cap.set(color=color_1, linewidth=1, xdata=cap.get_xdata() + (-0.025, 0.025))
+    for median in bpr['medians']:
+        median.set(color=axvline_color, linewidth=1)
+
+    # Only plot the Y-axis
+    frame.axes.get_xaxis().set_visible(False)
+    frame.axes.get_yaxis().set_visible(True)
+
+    # Remove any labels
+    pyplot.xlabel('')
+    if title is not None:
+        pyplot.ylabel(title, labelpad=20)
+    else:
+        pyplot.ylabel('')
+    pyplot.gca().yaxis.set_major_locator(pyplot.MaxNLocator(10))
+
+    # The central line
+    pyplot.axvline(0.0)
+    pyplot.axvline(linewidth=2, color=axvline_color)
+
+    # Save PNG by default
+    pyplot.savefig('%s/%s.png' % (output_directory, output_prefix),
+                   dpi=dpi, bbox_inches='tight')
+
+    # Save PDF
+    pyplot.savefig('%s/%s.pdf' % (output_directory, output_prefix),
+                   dpi=dpi, bbox_inches='tight') if save_pdf else None
+
+    # Save SVG
+    pyplot.savefig('%s/%s.svg' % (output_directory, output_prefix),
+                   dpi=dpi, bbox_inches='tight') if save_svg else None
+
+    # Close figure to reset
+    pyplot.clf()
+    pyplot.cla()
+    pyplot.close()
+
+    # Return a reference to the PNG image
+    return output_prefix + '.png'
 
 ####################################################################################################
 # @plot_distribution
@@ -178,9 +290,8 @@ def plot_distribution(input_directory,
         pyplot.title(title, y=1.05)
 
     # Plot the histogram
-    ax = seaborn.histplot(np_data, color=color, bins=50, alpha=0.95, stat="count", log_scale=True, zorder=3)
-    #pyplot.xscale('log')
-    ax.set_xticks([1.0, 10, 100, 1000])
+    ax = seaborn.histplot(np_data, color=color, bins=50, alpha=0.95, stat="count", log_scale=False, zorder=3)
+    #ax.set_xticks([1.0, 10, 100, 1000])
     # Formatters
     # pyplot.gca().xaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:2.2f}'.format(y)))
 
@@ -272,7 +383,7 @@ def plot_distributions(keyword,
     """
 
     # Get the colormap
-    colors = seaborn.color_palette("flare", 10)
+    colors = seaborn.color_palette("flare", 6)
 
     print('  * Plotting Distributions')
 
@@ -284,66 +395,66 @@ def plot_distributions(keyword,
 
             if 'number-samples-per-section' in distribution:
                 c = colors[0]
-                distributions_pngs.append(plot_distribution(
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Number of Samples per Section', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='number-samples-per-section',
+                    title='Number of Samples per Section', color_1=c))
 
             if 'samples-radii' in distribution:
                 c = colors[1]
-                distributions_pngs.append(plot_distribution(
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Sample Radius', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='samples-radii',
+                    title='Samples Radii (μm)', color_1=c))
 
             if 'section-average-radius' in distribution:
                 c = colors[2]
-                distributions_pngs.append(plot_distribution(
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Section Average Radius', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='section-average-radius',
+                    title='Sections Average Radii (μm)', color_1=c))
 
             if 'sections-length' in distribution:
                 c = colors[3]
-                distributions_pngs.append(plot_distribution(
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Section Length', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='sections-length',
+                    title='Sections Lengths (μm)', color_1=c))
+
+            if 'segments-length' in distribution:
+                c = colors[4]
+                distributions_pngs.append(plot_histograms_normalized(
+                    input_directory, distribution, output_directory,
+                    output_prefix='segments-length',
+                    title='Segments Length (μm)', color_1=c))
 
             if 'sections-surface-area' in distribution:
                 c = colors[4]
-                distributions_pngs.append(plot_distribution(
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Section Surface Area', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='sections-surface-area',
+                    title='Sections Surface Area', color_1=c))
 
             if 'sections-volume' in distribution:
-                c = colors[5]
-                distributions_pngs.append(plot_distribution(
+                c = colors[4]
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Section Volume', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
-
-            if 'segments-length' in distribution:
-                c = colors[6]
-                distributions_pngs.append(plot_distribution(
-                    input_directory, distribution, output_directory,
-                    title='Segments Length', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='sections-volume',
+                    title='Section Volume', color_1=c))
 
             if 'segments-surface-area' in distribution:
-                c = colors[7]
-                distributions_pngs.append(plot_distribution(
+                c = colors[4]
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Segments Surface Area', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='segments-surface-area',
+                    title='Segments Surface Area', color_1=c))
 
             if 'segments-volume' in distribution:
-                c = colors[8]
-                distributions_pngs.append(plot_distribution(
+                c = colors[4]
+                distributions_pngs.append(plot_histograms_normalized(
                     input_directory, distribution, output_directory,
-                    title='Segments Volume', color=c,
-                    kde=use_kde, plot_titles=plot_titles))
+                    output_prefix='segments-volume',
+                    title='Segments Volume', color_1=c))
 
     # Return a reference to the images
     return distributions_pngs

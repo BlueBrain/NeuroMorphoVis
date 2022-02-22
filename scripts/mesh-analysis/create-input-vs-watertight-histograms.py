@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ####################################################################################################
 # Copyright (c) 2020, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
@@ -64,6 +65,9 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Voxelization resolution'
     parser.add_argument('--voxels-per-micron', action='store', default=1, type=float, help=arg_help)
 
+    arg_help = 'The stats. are ready, and there is no need to recreate the meshes'
+    parser.add_argument('--stats-ready', action='store_true', default=False, help=arg_help)
+
     # Parse the arguments
     return parser.parse_args()
 
@@ -96,9 +100,6 @@ if __name__ == "__main__":
     # Get all the meshes in the path, either obj or ply
     list_meshes = nmv.file.get_files_in_directory(args.input_directory, file_extension='.obj')
     list_meshes.extend(nmv.file.get_files_in_directory(args.input_directory, file_extension='.ply'))
-
-    # The color palette
-    palette = seaborn.color_palette("flare", n_colors=10)
 
     # For every mesh in the list
     for mesh_file in list_meshes:

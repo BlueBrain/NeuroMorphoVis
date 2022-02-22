@@ -28,6 +28,7 @@ import subprocess
 import numpy
 import seaborn
 import matplotlib.pyplot as pyplot
+import matplotlib.font_manager as font_manager
 
 # Internal
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
@@ -39,22 +40,27 @@ import rendering_utilities as rutils
 import mesh_analysis
 import fact_sheet
 
+font_path = os.path.dirname(os.path.realpath(__file__)) + '/fonts/' + 'HelveticaLtObl.ttf'
+font_manager.fontManager.addfont(font_path)
+prop = font_manager.FontProperties(fname=font_path)
+
 
 ####################################################################################################
 # Per-adjust all the plotting configuration
 ####################################################################################################
-font_size = 30
+font_size = 40
 seaborn.set_style("whitegrid")
 pyplot.rcParams['axes.grid'] = 'True'
 pyplot.rcParams['grid.linestyle'] = '--'
 pyplot.rcParams['grid.linewidth'] = 1.0
 pyplot.rcParams['grid.color'] = 'gray'
 pyplot.rcParams['grid.alpha'] = 0.25
-pyplot.rcParams['font.family'] = 'Helvetica LT Std'
-# pyplot.rcParams['font.family'] = 'NimbusSanL'
+# pyplot.rcParams['font.family'] = 'Helvetica LT Std'
+pyplot.rcParams['font.family'] = 'NimbusSanL'
+# pyplot.rcParams['font.family'] = prop.get_family()
 pyplot.rcParams['font.monospace'] = 'Regular'
 pyplot.rcParams['font.style'] = 'normal'
-pyplot.rcParams['axes.labelweight'] = 'bold'
+pyplot.rcParams['axes.labelweight'] = 'light'
 pyplot.rcParams['axes.linewidth'] = 1.0
 pyplot.rcParams['axes.labelsize'] = font_size
 pyplot.rcParams['xtick.labelsize'] = font_size
@@ -262,7 +268,9 @@ def plot_back2back_histograms_normalized(dists_directory,
                                          save_pdf=False,
                                          save_svg=False,
                                          dpi=150,
-                                         edge_gap=0.05):
+                                         edge_gap=0.05,
+                                         plot_individual=False,
+                                         plot_lines=False):
     # Title
     if title is not None:
         print('\t* Plotting [%s]' % title)
@@ -271,13 +279,15 @@ def plot_back2back_histograms_normalized(dists_directory,
     data_left = futils.read_dist_file('%s/%s' % (dists_directory, hist_left), invert=invert)
     data_right = futils.read_dist_file('%s/%s' % (dists_directory, hist_right), invert=invert)
 
-    plot_distribution(input_directory=dists_directory,
-                      dist_file=hist_left, output_directory=output_directory,
-                      title=title, plot_titles=True, color=color_2, invert=invert)
+    # Plot individuals
+    if plot_individual:
+        plot_distribution(input_directory=dists_directory,
+                          dist_file=hist_left, output_directory=output_directory,
+                          title=title, plot_titles=True, color=color_2, invert=invert)
 
-    plot_distribution(input_directory=dists_directory,
-                      dist_file=hist_right, output_directory=output_directory,
-                      title=title, plot_titles=True, color=color_1, invert=invert)
+        plot_distribution(input_directory=dists_directory,
+                          dist_file=hist_right, output_directory=output_directory,
+                          title=title, plot_titles=True, color=color_1, invert=invert)
 
     # Compute the ranges
     min_value = min(min(data_left), min(data_right))
@@ -310,6 +320,49 @@ def plot_back2back_histograms_normalized(dists_directory,
 
     # Left histogram
     pyplot.barh(bins, -ly, color=color_2, height=step * bin_width)
+
+    # Plotting lines
+    if plot_lines:
+
+        # Line relative distance
+        rvalue = 0.75
+
+        # Right line
+        x_values = [rvalue, rvalue]
+        y_values = [min(data_right), max(data_right)]
+        pyplot.plot(x_values, y_values, color=color_1, alpha=0.25)
+
+        # Left line
+        x_values = [-rvalue, -rvalue]
+        y_values = [min(data_left), max(data_left)]
+        pyplot.plot(x_values, y_values, color=color_2, alpha=0.25)
+
+    # Right box plot
+    rvalue = 1.25
+    bpr = pyplot.boxplot(data_right, positions=[rvalue], showfliers=True,
+                         flierprops=dict(marker='o', markersize=5, alpha=0.5,
+                                         markerfacecolor=color_1, markeredgecolor=color_1))
+    for box in bpr['boxes']:
+        box.set(color=color_1, linewidth=1)
+    for whisker in bpr['whiskers']:
+        whisker.set(color=color_1, linewidth=1)
+    for cap in bpr['caps']:
+        cap.set(color=color_1, linewidth=1, xdata=cap.get_xdata() + (-0.025, 0.025))
+    for median in bpr['medians']:
+        median.set(color=axvline_color, linewidth=1)
+
+    # Left box plot
+    bpl = pyplot.boxplot(data_left, positions=[-rvalue], showfliers=True,
+                         flierprops=dict(marker='o', markersize=5, alpha=0.5,
+                                         markerfacecolor=color_2, markeredgecolor=color_2))
+    for box in bpl['boxes']:
+        box.set(color=color_2, linewidth=1)
+    for whisker in bpl['whiskers']:
+        whisker.set(color=color_2, linewidth=1)
+    for cap in bpl['caps']:
+        cap.set(color=color_2, linewidth=1, xdata=cap.get_xdata() + (-0.025, 0.025))
+    for median in bpl['medians']:
+        median.set(color=axvline_color, linewidth=1)
 
     # Only plot the Y-axis
     frame.axes.get_xaxis().set_visible(False)
@@ -371,8 +424,7 @@ def create_distributions_image(mesh_name,
             dists.append(f)
 
     # Search strings
-    strings = [['triangle-shape', 'Shape', False],
-               ['radius-ratio', 'Radius Ratio', True],
+    strings = [['radius-ratio', 'Radius Ratio', True],
                ['edge-ratio', 'Edge Ratio', True],
                ['radius-to-edge-ratio', 'Radius to Edge Ratio', True],
                ['min-angle', 'Min. Dihedral Angle$^\circ$', False],
@@ -509,15 +561,19 @@ def create_watertight_mesh(arguments,
 
     # Create the shell command
     shell_command = '%s ' % arguments.ultraMesh2Mesh
-    shell_command += '--mesh %s ' % input_mesh
-    shell_command += '--output-directory %s ' % output_directory
-    shell_command += '--auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += '--solid '
-    shell_command += '--adaptive-optimization --optimization-iterations 1'
-    shell_command += '--optimize-mesh --preserve-partitions '
-    shell_command += '--ignore-marching-cubes-mesh --ignore-laplacian-mesh --ignore-optimized-mesh '
-    shell_command += '--export-obj-mesh --export-stl-mesh '
-    shell_command += '--stats --dists '
+    shell_command += ' --mesh %s ' % input_mesh
+    shell_command += ' --output-directory %s ' % output_directory
+    shell_command += ' --auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
+    shell_command += ' --solid '
+    shell_command += ' --adaptive-optimization '
+    shell_command += ' --optimization-iterations 5'
+    shell_command += ' --optimize-mesh '
+    shell_command += ' --preserve-partitions '
+    shell_command += ' --ignore-marching-cubes-mesh '
+    shell_command += ' --ignore-laplacian-mesh --ignore-optimized-mesh '
+    #shell_command += ' --voxelization-axis xyz '
+    shell_command += ' --export-obj-mesh '
+    shell_command += ' --stats --dists '
 
     # Execute the shell command
     print(shell_command)
@@ -546,14 +602,17 @@ def create_comparative_mesh_analysis(arguments,
     # Mesh name
     mesh_name = os.path.splitext(os.path.basename(input_mesh_path))[0]
 
-    # Create the watertight mesh, and the stats.
-    watertight_mesh_path = create_watertight_mesh(
-        arguments=arguments, input_mesh=input_mesh_path,
-        output_directory=arguments.output_directory)
+    # Create the watertight mesh, and the stats if the stats are not created
+    if not arguments.stats_ready:
+        watertight_mesh_path = create_watertight_mesh(
+            arguments=arguments, input_mesh=input_mesh_path,
+            output_directory=arguments.output_directory)
+    else:
+        watertight_mesh_path = '%s/meshes/%s-watertight.obj' % (arguments.output_directory,
+                                                                mesh_name)
 
     # Create the color palette
     palette = seaborn.color_palette("flare", n_colors=10)
-    print(palette)
 
     # Create the distribution image
     distributions_image = create_distributions_image(
@@ -564,11 +623,9 @@ def create_comparative_mesh_analysis(arguments,
     fact_sheet_image, combined_renderings_image = create_fact_sheet_image(
         input_mesh_path=input_mesh_path, watertight_mesh_path=watertight_mesh_path,
         output_directory=intermediate_directory, scenes_directory=scenes_directory,
-        reference_name=mesh_name, fact_sheet_resolution=1500, render_meshes=False)
+        reference_name=mesh_name, fact_sheet_resolution=1500, render_meshes=True)
 
     # Combines the stats. image with the fact sheet image to create the final image
     distribution_with_fact_sheet_image = imutils.combine_distributions_with_fact_sheet(
         distributions_image=distributions_image, fact_sheet_image=fact_sheet_image,
         output_directory=images_directory, image_name=mesh_name)
-
-

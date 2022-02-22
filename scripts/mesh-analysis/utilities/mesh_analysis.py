@@ -117,13 +117,16 @@ def compute_number_partitions(mesh_object):
 ####################################################################################################
 # @check_watertightness
 ####################################################################################################
-def check_watertightness(bm, number_partitions):
+def check_watertightness(bm,
+                         number_partitions):
     """Checks if the mesh is watertight or not.
 
     :param bm:
         An input bmesh object.
+    :param number_partitions:
+        Number of partitions in th mesh.
     :return:
-        True or False
+        WatertightCheck()
     """
 
     # Watertightness checks
@@ -145,7 +148,7 @@ def check_watertightness(bm, number_partitions):
         if not vert.is_manifold:
             non_manifold_vertices += 1
 
-    tree = mathutils.bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
+    tree = mathutils.bvhtree.BVHTree.FromBMesh(bm, epsilon=0.001)
     overlap = tree.overlap(tree)
     faces_error = {i for i_pair in overlap for i in i_pair}
     if len(faces_error) > 0:
@@ -165,6 +168,7 @@ def check_watertightness(bm, number_partitions):
                 check.watertight = True
         else:
             check.watertight = True
+
     # Return the result
     return check
 

@@ -23,6 +23,7 @@ import pandas
 import seaborn
 import matplotlib.pyplot as pyplot
 import matplotlib.font_manager as font_manager
+from matplotlib.ticker import FuncFormatter
 
 
 font_size = 25
@@ -63,9 +64,9 @@ def verify_plotting_packages():
 
 
 ####################################################################################################
-# @ get_hausdorff_distance_value
+# @get_vertices
 ####################################################################################################
-def get_hausdorff_distance_value(log_file):
+def get_vertices(log_file):
 
     # Initial value
     value = -1
@@ -77,9 +78,72 @@ def get_hausdorff_distance_value(log_file):
     for line in f:
 
         # If the value is found, return it
-        if 'RMS' in line:
-            line = line.split('RMS :')
-            value = float(line[1])
+        if 'Number Vertices' in line:
+            line = line.split('Number Vertices       |')
+            value = line[1].strip(' \n')
+            if 'k' in value:
+                value = float(value.replace(' k', '')) * 1000
+            elif 'M' in value:
+                value = float(value.replace(' M', '')) * 1000000
+            elif 'G' in value:
+                value = float(value.replace(' G', '')) * 1000000
+            else:
+                value = float(value)
+
+    # Close the file
+    f.close()
+
+    # Return the value
+    return value
+
+
+####################################################################################################
+# @get_area
+####################################################################################################
+def get_area(log_file):
+
+    # Initial value
+    value = -1
+
+    # Open the log file
+    f = open(log_file)
+
+    # Search for the RMS value
+    for line in f:
+
+        # If the value is found, return it
+        if 'Surface Area' in line:
+            line = line.split('Surface Area          |')
+            value = line[1].strip(' \n')
+            value = float(value.strip('²'))
+            break
+
+    # Close the file
+    f.close()
+
+    # Return the value
+    return value
+
+
+####################################################################################################
+# @get_volume
+####################################################################################################
+def get_volume(log_file):
+
+    # Initial value
+    value = -1
+
+    # Open the log file
+    f = open(log_file)
+
+    # Search for the RMS value
+    for line in f:
+
+        # If the value is found, return it
+        if 'Volume' in line:
+            line = line.split('Volume                |')
+            value = line[1].strip(' \n')
+            value = float(value.strip('³'))
             break
 
     # Close the file
@@ -95,7 +159,7 @@ def get_hausdorff_distance_value(log_file):
 def parse_command_line_arguments():
 
     # Add all the options
-    description = 'Plots the Hausdorff distance'
+    description = 'Plots the Data distance'
     parser = argparse.ArgumentParser(description=description)
 
     arg_help = 'Input directory that contains all the log files'
@@ -123,61 +187,78 @@ if __name__ == "__main__":
     # Plotting
     verify_plotting_packages()
 
-    # Collection
-    array = numpy.zeros((10, 10))
+    # Collection 
+    vertices = numpy.zeros((10, 10))
+    areas = numpy.zeros((10, 10))
+    volumes = numpy.zeros((10, 10))
 
     # Iterations
     for itr in range(1, 10 + 1):
 
         # Iterations directory
-        directory_name = 'hausdorff-%d-itr' % itr
-        directory_path = '%s/%s' % (args.input_directory, directory_name)
+        directory_name = 'output-%d-itr' % itr
+        directory_path = '%s/%s/statistics' % (args.input_directory, directory_name)
 
         # Voxels per micron
         for vpm in range(1, 10 + 1):
 
             # Files
-            file_name = '%d-vpm-watertight.hausdorff' % vpm
+            file_name = '%d-vpm-watertight.mesh-info' % vpm
             file_path = '%s/%s' % (directory_path, file_name)
 
             # Fill the array
-            array[itr - 1][vpm - 1] = get_hausdorff_distance_value(log_file=file_path)
+            vertices[itr - 1][vpm - 1] = get_vertices(log_file=file_path)
+            areas[itr - 1][vpm - 1] = get_area(log_file=file_path)
+            volumes[itr - 1][vpm - 1] = get_volume(log_file=file_path)
 
     # Axes
     iterations = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     vpms = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
     # Construct the dataframe
-    df = pandas.DataFrame(array, index=iterations, columns=vpms)
+    df_vertices = pandas.DataFrame(vertices, index=iterations, columns=vpms)
+    df_areas = pandas.DataFrame(areas, index=iterations, columns=vpms)
+    df_volumes = pandas.DataFrame(volumes, index=iterations, columns=vpms)
 
-    # Clear figure, getting ready for a new figure
-    pyplot.clf()
+    names = ['vertices', 'areas', 'volumes']
+    labels = ['Number of Vertices', 'Surface Area (µm²)', 'Volume (µm³)']
+    cmaps = ['Spectral', 'Spectral', 'Spectral']
+    for i, item in enumerate([df_vertices, df_areas, df_volumes]):
 
-    # A new figure with the given dimensions size
-    pyplot.figure(figsize=(10, 10))
-    pyplot.tight_layout()
+        # Clear figure, getting ready for a new figure
+        pyplot.clf()
 
-    # Create a new frame for the plot to combine both
-    frame = pyplot.gca()
+        # A new figure with the given dimensions size
+        pyplot.figure(figsize=(10, 10))
+        pyplot.tight_layout()
 
-    # Compute the ticks
-    major_ticks = numpy.linspace(array.min(), array.max(), 3)
+        # Create a new frame for the plot to combine both
+        frame = pyplot.gca()
 
-    # Plot the dataframe
-    ax = seaborn.heatmap(df, cmap='Spectral', annot=False, square=True,
-                         linewidths=0.01, linecolor='white',
-                         cbar_kws={"orientation": "horizontal",
-                                   'pad': 0.2, "shrink": .65,
-                                   'ticks': major_ticks,
-                                   'label': 'Hausdorff Distance'})
+        # Compute the ticks
+        major_ticks = numpy.linspace(min(item.min()), max(item.max()), 3)
 
-    # Axis
-    pyplot.yticks(rotation=0)
+        # Plot the dataframe
+        ax = seaborn.heatmap(item,
+                             cmap=cmaps[i], annot=False, square=True,
+                             linewidths=0.01, linecolor='white',
+                             cbar_kws={"orientation": "horizontal",
+                                       'pad': 0.2, "shrink": .65,
+                                       'ticks': major_ticks,
+                                       'label': '%s' % labels[i]})
 
-    ax.set_ylabel("Optimization Iterations")
-    ax.set_xlabel("Voxels per Micron")
+        # Axis
+        pyplot.yticks(rotation=0)
 
-    # Save SVG
-    pyplot.savefig('%s/%s.png' % (args.output_directory, 'hausdorff'),
-                   dpi=300, bbox_inches='tight')
+        ax.set_ylabel("Optimization Iterations")
+        ax.set_xlabel("Voxels per Micron")
+
+        # Save SVG
+        pyplot.savefig('%s/%s.png' % (args.output_directory, names[i]),
+                       dpi=300, bbox_inches='tight')
+
+        # Close figure to reset
+        pyplot.clf()
+        pyplot.cla()
+        pyplot.close()
 

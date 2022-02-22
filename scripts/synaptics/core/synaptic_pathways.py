@@ -322,12 +322,11 @@ def create_shared_synapses_mesh(circuit,
             # Add the sphere to the group
             synapse_objects.append(synapse_sphere)
 
-            # Material
-            nmv.shading.set_material_to_object(mesh_object=synapse_sphere,
-                                               material_reference=material)
-
     # Join the meshes into a group
     synapse_group = nmv.mesh.join_mesh_objects(mesh_list=synapse_objects, name='synapses')
+
+    # Material
+    nmv.shading.set_material_to_object(mesh_object=synapse_group, material_reference=material)
 
     return synapse_group
 
