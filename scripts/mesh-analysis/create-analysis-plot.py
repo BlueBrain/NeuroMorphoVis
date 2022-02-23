@@ -38,10 +38,10 @@ import nmv.utilities
 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/../../' % (os.path.dirname(os.path.realpath(__file__)))))
-sys.path.append(('%s/core' % (os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append(('%s/utilities' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Blender imports
-import plotting
+import plotting_utils as putils
 
 from PIL import Image
 
@@ -265,7 +265,7 @@ def process_mesh(arguments,
 
     # Get the bounding box and compute the unified one, to render the astrocyte in the middle
     mesh_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
-    mesh_bbox = nmv.bbox.compute_unified_bounding_box(mesh_bbox)
+    # mesh_bbox = nmv.bbox.compute_unified_bounding_box(mesh_bbox)
 
     # Create the illumination
     nmv.shading.create_lambert_ward_illumination()
@@ -318,7 +318,7 @@ def process_mesh(arguments,
                         quality_checker_executable=arguments.quality_checker_executable,
                         output_directory=stats_output_directory)
 
-    vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
+    vertical_stats_image, horizontal_stats_image = putils.plot_mesh_stats(
         name=mesh_name,
         distributions_directory=stats_output_directory,
         output_directory=panels_directory,

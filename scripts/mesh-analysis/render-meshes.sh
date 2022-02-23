@@ -20,16 +20,23 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_MESH='/ssd2/ultraliser-figures/microns-pyramidal/2.obj'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/x/microglia/output/meshes'
+#INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/output/meshes'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/output'
-
-# Render artistic image, yes or no
-RENDER_ARTISTIC='yes'
-
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/output-rendering'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/x/microglia/output/renderings'
+#OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/output/rendering-output'
 # Mesh color
 MESH_COLOR='0.9_0.125_0.150'
+
+MESH_COLOR_IN='0.92118373_0.60184659_0.45048789'
+MESH_COLOR_OUT='0.71837612_0.24102046_0.41863486'
+MESH_COLOR=$MESH_COLOR_OUT
+
+# Camera view: front, side, top
+CAMERA_VIEW='front'
 
 # Wireframe thickness
 WIREFRAME_THICKNESS='0.075'
@@ -40,8 +47,8 @@ IMAGE_RESOLUTION='5000'
 # Export Blender scenes
 EXPORT_BLENDER_SCENE='yes'
 
-# ultraQualityChecker executable
-QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker '
+# Render artistic image, yes or no
+RENDER_ARTISTIC='no'
 
 #####################################################################################################
 BOOL_ARGS=''
@@ -50,15 +57,13 @@ if [ "$EXPORT_BLENDER_SCENE" == "yes" ];
 if [ "$ARTISTIC" == "yes" ];
     then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
-echo 'CREATING MESH RENDERING ...'
-$BLENDER -b --verbose 0 --python create-analysis-plot.py --                                         \
-    --input-mesh=$INPUT_MESH                                                                        \
+echo 'RENDER MESH ...'
+$BLENDER -b --verbose 0 --python render-meshes.py --                                                \
+    --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --mesh-color=$MESH_COLOR                                                                        \
     --resolution=$IMAGE_RESOLUTION                                                                  \
     --wireframe-thickness=$WIREFRAME_THICKNESS                                                      \
-    --quality-checker-executable=$QUALITY_CHECKER_EXECUTABLE                                        \
+    --camera-view=$CAMERA_VIEW                                                                      \
     $BOOL_ARGS
-
 echo 'DONE ...'
-

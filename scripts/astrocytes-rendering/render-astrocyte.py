@@ -332,6 +332,7 @@ def process_mesh(arguments,
     # Return all references 
     return combined_vert, combined_horiz, artistic_image
 
+
 ################################################################################
 # @ Main
 ################################################################################

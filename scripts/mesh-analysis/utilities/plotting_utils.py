@@ -37,7 +37,8 @@ from PIL import ImageDraw
 from PIL import ImageFont
 
 # Internal
-import core
+import mesh_analysis
+import geometry_utils
 
 ####################################################################################################
 # Per-adjust all the plotting configuration
@@ -685,36 +686,36 @@ def create_mesh_fact_sheet(mesh_object,
     nmv.scene.set_active_object(mesh_object)
 
     # Compute the bounding box
-    mesh_bbox = core.compute_bounding_box(mesh_object)
+    mesh_bbox = mesh_analysis.compute_bounding_box(mesh_object)
 
     print('\t* Number Partitions')
-    number_partitions = core.compute_number_partitions(mesh_object)
+    number_partitions = mesh_analysis.compute_number_partitions(mesh_object)
 
     # Switch to geometry or edit mode from the object mode
     bpy.ops.object.editmode_toggle()
 
     # Convert the mesh into a bmesh
-    bm = core.convert_from_mesh_object(mesh_object)
+    bm = geometry_utils.convert_from_mesh_object(mesh_object)
 
     # Compute the surface area
     print('\t* Surface Area')
-    surface_area = core.compute_surface_area(bm)
+    surface_area = mesh_analysis.compute_surface_area(bm)
 
     # Compute the volume
     print('\t* Volume')
-    volume = core.compute_volume(bm)
+    volume = mesh_analysis.compute_volume(bm)
 
     # Compute the number of polygons
     print('\t* Number Polygons')
-    polygons = core.compute_number_polygons(bm)
+    polygons = mesh_analysis.compute_number_polygons(bm)
 
     # Compute the number of vertices
     print('\t* Number Vertices')
-    vertices = core.compute_number_vertices(bm)
+    vertices = mesh_analysis.compute_number_vertices(bm)
 
     # Is it watertight
     print('\t* Validating Watertightness')
-    watertight_check = core.check_watertightness(bm, number_partitions)
+    watertight_check = mesh_analysis.check_watertightness(bm, number_partitions)
 
     # Free the bmesh
     bm.free()

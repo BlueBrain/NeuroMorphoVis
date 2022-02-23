@@ -19,6 +19,29 @@
 import os
 import matplotlib.font_manager as font_manager
 
+# Internal imports
+import nmv.enums
+
+
+####################################################################################################
+# @get_view
+####################################################################################################
+def get_view(arg):
+    """Gets the correct camera from the input arguments.
+
+    :param arg:
+        Input arguments.
+    :return:
+        Camera view.
+    """
+
+    if 'side' in arg:
+        return nmv.enums.Camera.View.SIDE
+    elif 'top' in arg:
+        return nmv.enums.Camera.View.TOP
+    else:
+        return nmv.enums.Camera.View.FRONT
+
 
 ####################################################################################################
 # @verify_plotting_packages
@@ -96,5 +119,10 @@ def format_number_to_power_string(number):
 # @convert_color
 ####################################################################################################
 def convert_color(palette_color):
+    """Converts a given paletter color from Matplotlib into an RGB tuple color used by Blender.
+
+    :param palette_color:
+    :return:
+    """
 
     return (int(palette_color[0] * 255), int(palette_color[1] * 255), int(palette_color[2] * 255))

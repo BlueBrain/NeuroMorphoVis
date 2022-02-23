@@ -278,6 +278,9 @@ def draw_scale_bar(bounding_box,
         A reference to the created scale bar
     """
 
+    # Make sure that the fonts are loaded to be able to draw the text correctly
+    nmv.interface.load_fonts()
+
     # Get the scale bar length based on the bounding box of the scene to be rendered
     scale_bar_length = get_scale_bar_length(bounding_box=bounding_box, view=view)
 
