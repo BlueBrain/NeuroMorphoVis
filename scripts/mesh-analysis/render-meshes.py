@@ -210,22 +210,7 @@ if __name__ == "__main__":
                                                  mesh_color=mesh_color,
                                                  resolution=args.resolution,
                                                  camera_view=camera_view)
-
         # Save the scene into a Blender file
         if args.export_blend:
             nmv.file.export_scene_to_blend_file(
                 output_directory=scenes_directory, output_file_name=mesh_object.name)
-
-
-
-
-    #
-
-
-
-
-    #camera_view = nmv.enums.Camera.View.SIDE
-
-    # nmv.shading.create_lambert_ward_illumination()
-    #add_light(bbox=mesh_bbox, camera_view=camera_view)
-
