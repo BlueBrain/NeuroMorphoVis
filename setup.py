@@ -45,7 +45,7 @@ def parse_command_line_arguments(arguments=None):
                   'NOTE: git, wget or curl must be installed to run this script.'
     parser = argparse.ArgumentParser(description=description)
 
-    arg_help = 'Blender version. 2.79, 2.80, or 2.81, 2.82, and 2.90. ' \
+    arg_help = 'Blender version. 2.79, 2.80, or 2.81, 2.82, 2.90 and 3.1. ' \
                'By default it is 2.80. It is recommended to avoid 2.79.'
     parser.add_argument('--blender-version',
                         action='store', dest='blender_version', default='2.80', help=arg_help)
@@ -157,6 +157,10 @@ def install_for_linux(directory, blender_version, verbose=False):
     elif blender_version == '2.90':
         python_version = '3.7'
         package_name = 'blender-2.90.1-linux64'
+        extension = 'tar.xz'
+    elif blender_version == '3.1':
+        python_version = '3.10'
+        package_name = 'blender-3.1.0-linux-x64'
         extension = 'tar.xz'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
@@ -287,6 +291,9 @@ def install_for_mac(directory, blender_version, verbose=False):
     elif blender_version == '2.90':
         python_version = '3.7'
         package_name = 'blender-2.90.1-macOS.dmg'
+    elif blender_version == '3.1':
+        python_version = '3.10'
+        package_name = 'blender-3.1.0-macos-x64.dmg'
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
