@@ -29,16 +29,20 @@ GIDS='1681_408231'
 PROJECTION='SC'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/hdd1/projects-data/2021.05.05-synapse-projections'
+OUTPUT_DIRECTORY='/hdd1/projects-data/2021.05.05-synapse-projections/trial-4'
 
 # Neuron color
-NEURON_COLOR='255_0_0'
+NEURON_COLOR='0.05_0.2_1'
+NEURON_COLOR='0.0_1.0_0.0'
+
 
 # Neuron color
-SYNAPSE_COLOR='25_0_255'
+SYNAPSE_COLOR='1.0_0.8_0.06'
+SYNAPSE_COLOR='1.0_0.0_0.0'
+
 
 # Synapse percentage
-SYNAPSE_PERCENTAGE='5'
+SYNAPSE_PERCENTAGE='10'
 
 # Synapse size
 SYNAPSE_SIZE='1.5'

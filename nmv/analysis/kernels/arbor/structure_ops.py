@@ -277,8 +277,8 @@ def compute_total_number_of_terminal_segments_of_arbor(arbor):
     terminal_segments = list()
 
     # Apply the operation per section
-    nmv.skeleton.ops.apply_operation_to_arbor(*[arbor, nmv.analysis.compute_terminal_segments,
-                                                terminal_segments])
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor, nmv.analysis.compute_terminal_segments, terminal_segments])
 
     # Calculate the total
     total_terminal_segments = 0

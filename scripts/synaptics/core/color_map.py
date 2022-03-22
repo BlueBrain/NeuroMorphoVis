@@ -181,7 +181,14 @@ def create_neuron_material(neuron_color,
 
     # Get the color
     color = neuron_color.split('_')
-    color = Vector((float(color[0]) / 255.0, float(color[1]) / 255.0, float(color[2]) / 255.0))
+    r = float(color[0])
+    g = float(color[1])
+    b = float(color[2])
+
+    if r > 1 or g > 1 or b > 1:
+        color = Vector((r / 255.0, g / 255.0, b / 255.0))
+    else:
+        color = Vector((r, g, b))
 
     # Return a reference to the material
     return nmv.shading.create_material(name='neuron_material', color=color, material_type=shader)
@@ -207,7 +214,14 @@ def create_material_from_color_string(color_string,
 
     # Get the color
     color = color_string.split('_')
-    color = Vector((float(color[0]) / 255.0, float(color[1]) / 255.0, float(color[2]) / 255.0))
+    r = float(color[0])
+    g = float(color[1])
+    b = float(color[2])
+
+    if r > 1 or g > 1 or b > 1:
+        color = Vector((r / 255.0, g / 255.0, b / 255.0))
+    else:
+        color = Vector((r, g, b))
 
     # Return a reference to the material
     return nmv.shading.create_material(name=material_name, color=color, material_type=material_type)

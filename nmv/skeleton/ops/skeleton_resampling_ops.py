@@ -158,7 +158,8 @@ def update_samples_indices_per_morphology(morphology_object,
 # @resample_section_at_fixed_step
 ####################################################################################################
 def resample_section_at_fixed_step(section,
-                                   sampling_step = 1.0):
+                                   sampling_step=1.0,
+                                   resample_shorter_sections=True):
     """Resamples the section at a given sampling step. If the section has only two sample,
     it will never get resampled. If the section length is smaller than the sampling step, a
     convenient sampling step will be computed and used.
@@ -167,6 +168,8 @@ def resample_section_at_fixed_step(section,
         A given section to resample.
     :param sampling_step:
         User-defined sampling step, by default 1.0 micron.
+    :param resample_shorter_sections:
+        If this flag is set to True, the short sections will be resampled.
     """
 
     # If the section has no samples, report this as an error and ignore this filter
@@ -183,14 +186,15 @@ def resample_section_at_fixed_step(section,
 
     # If the section length is less than the sampling step, then adaptively resample it
     if nmv.skeleton.compute_section_length(section=section) < sampling_step:
+        if resample_shorter_sections:
 
-        # Get a good sampling step that would match this small section
-        section_length = nmv.skeleton.compute_section_length(section=section)
-        section_number_samples = len(section.samples)
-        section_step = section_length / section_number_samples
+            # Get a good sampling step that would match this small section
+            section_length = nmv.skeleton.compute_section_length(section=section)
+            section_number_samples = len(section.samples)
+            section_step = section_length / section_number_samples
 
-        # Resample the section at this sampling step
-        resample_section_at_fixed_step(section=section, sampling_step=section_step)
+            # Resample the section at this sampling step
+            resample_section_at_fixed_step(section=section, sampling_step=section_step)
         return
 
     # Sample index
@@ -898,9 +902,3 @@ def resample_section_stem(section):
 
     # After resampling the section, update the logical indexes of the samples
     section.reorder_samples()
-
-
-
-
-
-

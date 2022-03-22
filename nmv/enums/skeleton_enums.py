@@ -176,24 +176,31 @@ class Skeleton:
         # A list of all the available styles in NeuroMorphoVis for morphology reconstruction
         ############################################################################################
         MORPHOLOGY_STYLE_ITEMS = [
+
             (ORIGINAL,
              'Original',
              'Draw the arbors as described in the morphology file'),
+
             (TAPERED,
              'Tapered',
              'Draw the sections as tapered cylinders (artistic)'),
+
             (ZIGZAG,
              'Zigzag',
              'Draw the sections as wiggled zigzag lines (artistic)'),
+
             (PLANAR,
              'Planar',
              'The morphology samples will be projected along the XY plane (artistic)'),
+
             (TAPERED_ZIGZAG,
              'Tapered-Zigzag',
              'Draw the sections as tapered and wiggled zigzag tubes (artistic)'),
+
             (PLANAR_ZIGZAG,
              'Planar Zigzag',
              'The samples will be projected along the XY plane wiggled zigzag tubes (artistic)'),
+
             (STRAIGHT,
              'Straight',
              'Represent each section by a single segment that connects its terminals (artistic)')

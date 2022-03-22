@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .geometry_conts import *
 from .analysis_consts import *
 from .skeleton_consts import *
 from .paths_consts import *

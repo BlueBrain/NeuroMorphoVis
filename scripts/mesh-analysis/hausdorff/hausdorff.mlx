@@ -1,0 +1,14 @@
+<!DOCTYPE FilterScript>
+<FilterScript>
+ <filter name="Hausdorff Distance">
+  <Param type="RichMesh" value="1" name="SampledMesh"/>
+  <Param type="RichMesh" value="0" name="TargetMesh"/>
+  <Param type="RichBool" value="false" name="SaveSample"/>
+  <Param type="RichBool" value="true" name="SampleVert"/>
+  <Param type="RichBool" value="true" name="SampleEdge"/>
+  <Param type="RichBool" value="false" name="SampleFauxEdge"/>
+  <Param type="RichBool" value="true" name="SampleFace"/>
+  <Param type="RichInt" value="481922" name="SampleNum"/>
+  <Param type="RichAbsPerc" value="5.1208" min="0" name="MaxDist" max="102.417"/>
+ </filter>
+</FilterScript>

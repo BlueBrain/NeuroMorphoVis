@@ -297,8 +297,8 @@ class H5Reader:
     # @build_sections_from_points_and_structures
     ################################################################################################
     def build_sections_from_points_and_structures(self):
-        """Builds a list of sections from the data obtained from the .H5 files
-        NOTE: https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/h5v1.html
+        """Builds a list of sections from the data obtained from the H5 files
+        https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/h5v1.html
 
         :return:
             A linear list of sections of the entire morphology.
@@ -311,7 +311,7 @@ class H5Reader:
 
             # For all the sections, except the last one, the points go until the next start offset
             # defined by the next row in the structure dataset. For the last one, then it runs until
-            # the end of the points dataset.
+            # the end of the points' dataset.
             if i_section < len(self.structure_list) - 1:
 
                 # Get the index of the starting point of the section (offset)

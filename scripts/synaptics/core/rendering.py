@@ -19,6 +19,7 @@
 import os
 import ntpath
 import copy
+import math
 import subprocess
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 
@@ -33,8 +34,8 @@ import nmv.enums
 import nmv.rendering
 import nmv.scene
 import nmv.file
+import nmv.mesh
 import nmv.utilities
-import math
 
 
 ####################################################################################################
@@ -113,13 +114,13 @@ def render_synaptic_pathway_close_up(close_up_mesh,
     bpy.ops.view3d.camera_to_view_selected()
 
     # Avoid chopping
-    camera.location[2] = 0
+    camera.location[2] = 1500
 
     # Adjust the ortho scale to get a bigger FOV
     camera.data.ortho_scale = camera.data.ortho_scale * 2
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Set the image file name
     bpy.data.scenes['Scene'].render.filepath = '%s.png' % image_name
@@ -305,7 +306,7 @@ def render_synaptome_close_up_on_soma_360(output_directory,
     camera.data.ortho_scale = close_up_size
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Avoid chopping
     camera.location[2] = 500
@@ -387,7 +388,7 @@ def render_synaptome_close_up(output_directory,
     camera.data.ortho_scale = 4 * close_up_size
 
     # Adjust the clipping plane
-    camera.data.clip_end = 100000
+    camera.data.clip_end = 1000000
 
     # Set the image file name
     bpy.data.scenes['Scene'].render.filepath = '%s/%s.png' % (output_directory, image_name)

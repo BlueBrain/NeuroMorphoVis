@@ -39,7 +39,7 @@ class Image:
     FULL_VIEW_RESOLUTION = 1024
 
     # Default close up view resolution
-    CLOSE_UP_RESOLUTION = 512
+    CLOSE_UP_RESOLUTION = 1024
 
     # Default close up dimensions (in microns)
     CLOSE_UP_DIMENSIONS = 20
@@ -48,7 +48,7 @@ class Image:
     GAP_DELTA = 5.0
 
     # Default image resolution
-    DEFAULT_RESOLUTION = 512
+    DEFAULT_RESOLUTION = 1024
 
     # Default value for the image scale factor
     DEFAULT_IMAGE_SCALE_FACTOR = 1.0

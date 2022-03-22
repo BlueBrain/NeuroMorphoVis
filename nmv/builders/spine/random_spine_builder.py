@@ -74,12 +74,12 @@ class RandomSpineBuilder:
         spine.pre_synaptic_position = dendrite_mesh.data.polygons[face_index].center + \
                                       1.0 * dendrite_mesh.data.polygons[face_index].normal
 
-        lenght = 1e5
-        for i_sample in dendrite_samples:
-            distance = (i_sample.point - spine.post_synaptic_position).length
+        #lenght = 1e5
+        #for i_sample in dendrite_samples:
+        #    distance = (i_sample.point - spine.post_synaptic_position).length
 
-            if distance < lenght:
-                spine.size = i_sample.radius * 3
+        #     if distance < lenght:
+        #        spine.size = i_sample.radius * 3
 
 
         # Select a random spine from the spines list
@@ -156,16 +156,19 @@ class RandomSpineBuilder:
         spine_object.name = '%s_spine_%d' % (self.options.morphology.label, index)
 
         # Scale the spine
-        spine_scale = spine.size * random.uniform(1.25, 1.5)
-        nmv.scene.ops.scale_object_uniformly(spine_object, spine_scale)
+        random_number = random.uniform(0.75, 1.5)
+        nmv.scene.ops.scale_object_uniformly(spine_object, spine.size * random_number)
+
+        # Random rotation
+        random_angle = random.uniform(0, 90)
+        nmv.scene.rotate_object(spine_object, 0, random_angle, 0)
 
         # Translate the spine to the post synaptic position
         nmv.scene.ops.set_object_location(spine_object, spine.post_synaptic_position)
 
         # Rotate the spine towards the pre-synaptic point
         nmv.scene.ops.rotate_object_towards_target(
-            spine_object, Vector((0, 0, -1)),
-            spine.pre_synaptic_position * (1 if random.random() < 0.5 else -1))
+            spine_object, Vector((0, 1, 0)), spine.pre_synaptic_position)
 
         # Adjust the shading
         nmv.shading.adjust_material_uv(spine_object, 5)
@@ -193,10 +196,9 @@ class RandomSpineBuilder:
               self.options.morphology.axon_branch_order,
               self.options.morphology.basal_dendrites_branch_order,
               self.options.morphology.apical_dendrite_branch_order,
-              nmv.skeleton.ops.get_random_spines_on_section,
+              nmv.skeleton.ops.get_random_spines_on_section_recursively,
               self.options.mesh.number_spines_per_micron,
               spines_list])
-
         # Keep a list of all the spines objects
         spines_objects = []
 

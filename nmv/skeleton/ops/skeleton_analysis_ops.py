@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,6 +20,142 @@ import math
 
 # Internal imports
 import nmv.skeleton
+
+
+####################################################################################################
+# @compute_segment_radius
+####################################################################################################
+def compute_segment_radius(sample_1,
+                           sample_2):
+    """Computes the average radius of the segment.
+
+    :param sample_1:
+        The first sample of the segment.
+    :param sample_2:
+        The second sample of the segment.
+    :return:
+        The average radius of the segment.
+    """
+
+    return (sample_1.radius + sample_2.radius) * 0.5
+
+
+####################################################################################################
+# @compute_segment_length
+####################################################################################################
+def compute_segment_length(sample_1,
+                           sample_2):
+    """Computes the segment length.
+
+    :param sample_1:
+        First sample of the segment.
+    :param sample_2:
+        Second sample of the segment.
+    :return:
+        The length of the segment.
+    """
+
+    return (sample_2.point - sample_1.point).length
+
+
+####################################################################################################
+# @compute_segment_surface_area
+####################################################################################################
+def compute_segment_surface_area(sample_1,
+                                 sample_2):
+    """Computes the segment surface area.
+
+    :param sample_1:
+       First sample of the segment.
+    :param sample_2:
+       Second sample of the segment.
+    :return:
+       The length of the segment.
+    """
+
+    # Retrieve the data of the samples along each segment on the section
+    p0 = sample_1.point
+    p1 = sample_2.point
+    r0 = sample_1.radius
+    r1 = sample_2.radius
+
+    # Compute the segment lateral area
+    segment_length = (p0 - p1).length
+    r_sum = r0 + r1
+    r_diff = r0 - r1
+    segment_lateral_area = math.pi * r_sum * math.sqrt((r_diff * r_diff) + segment_length)
+
+    # Compute the segment surface area
+    return segment_lateral_area + math.pi * ((r0 * r0) + (r1 * r1))
+
+
+####################################################################################################
+# @compute_segment_volume
+####################################################################################################
+def compute_segment_volume(sample_1,
+                           sample_2):
+    """Computes the segment volume.
+
+    :param sample_1:
+       First sample of the segment.
+    :param sample_2:
+       Second sample of the segment.
+    :return:
+       The length of the segment.
+    """
+
+    # Retrieve the data of the samples along each segment on the section
+    p0 = sample_1.point
+    p1 = sample_2.point
+    r0 = sample_1.radius
+    r1 = sample_2.radius
+
+    # Compute the segment volume
+    return (1.0 / 3.0) * math.pi * (p1 - p0).length * (r0 * r0 + r0 * r1 + r1 * r1)
+
+
+####################################################################################################
+# @compute_path_distance_to_segment
+####################################################################################################
+def compute_path_distance_to_segment(segment_index,
+                                     section):
+    """Computes the path distance to a given segment.
+
+    :param segment_index:
+        The starting index of the segment.
+    :param section:
+        The section with which the segment belongs to.
+    :return:
+        The path distance to the segment.
+    """
+
+    # Initially, add the distance to the first sample along the section
+    distance_to_segment = section.compute_path_length()
+
+    # Add the segments distance
+    for i in range(0, segment_index):
+        distance_to_segment += (section.samples[i + 1].point - section.samples[i + 1].point).length
+
+    # Return the distance to the segment
+    return distance_to_segment
+
+
+####################################################################################################
+# @compute_euclidean_distance_to_segment
+####################################################################################################
+def compute_euclidean_distance_to_segment(sample_1,
+                                          sample_2):
+    """Computes the Euclidean distance to the center of the segment.
+
+     :param sample_1:
+       First sample of the segment.
+    :param sample_2:
+       Second sample of the segment.
+    :return:
+       The Euclidean distance to the center of the segment.
+    """
+
+    return 0.5 * (sample_1.point + sample_2.point).length
 
 
 ####################################################################################################
@@ -100,7 +236,7 @@ def compute_section_surface_area_from_segments(section):
         segment_lateral_area = math.pi * r_sum * math.sqrt((r_diff * r_diff) + segment_length)
 
         # Compute the segment surface area and append it to the total section surface area
-        section_surface_area += segment_lateral_area + math.pi * ((r0 * r0 ) + (r1 * r1))
+        section_surface_area += segment_lateral_area + math.pi * ((r0 * r0) + (r1 * r1))
 
     # Return the section surface area
     return section_surface_area

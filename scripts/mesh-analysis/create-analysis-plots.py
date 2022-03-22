@@ -20,8 +20,9 @@ import sys
 import os
 import argparse
 import subprocess
-import shutil
+from PIL import Image
 import seaborn
+import shutil
 
 # Blender imports
 import bpy
@@ -36,6 +37,7 @@ import nmv.bbox
 import nmv.rendering
 import nmv.mesh
 import nmv.utilities
+import nmv.interface
 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/../../' % (os.path.dirname(os.path.realpath(__file__)))))
@@ -43,8 +45,6 @@ sys.path.append(('%s/core' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Blender imports
 import plotting
-
-from PIL import Image
 
 
 ####################################################################################################
@@ -137,7 +137,8 @@ def create_mesh_fact_sheet_with_distribution(mesh_object,
                                              mesh_name,
                                              panels_directory,
                                              image_output_path,
-                                             statistics_image):
+                                             statistics_image,
+                                             mesh_scale=1):
     """Creates a fact sheet for the mesh combined with the distributions.
 
     :param mesh_object:
@@ -162,7 +163,7 @@ def create_mesh_fact_sheet_with_distribution(mesh_object,
     # Create the fac-sheet image
     fact_sheet_image_path = plotting.create_mesh_fact_sheet(
             mesh_object=mesh_object, mesh_name=mesh_name, output_image_path=panels_directory,
-            image_resolution=stats_image_height)
+            image_resolution=stats_image_height, mesh_scale=mesh_scale)
 
     fact_sheet_image = Image.open(fact_sheet_image_path)
 
@@ -213,11 +214,18 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float,
                         help=arg_help)
 
+    arg_help = 'Mesh scale'
+    parser.add_argument('--mesh-scale', action='store', default=1, type=float,
+                        help=arg_help)
+
     arg_help = 'Base full-view resolution'
     parser.add_argument('--resolution', action='store', default=2000, type=int, help=arg_help)
 
     arg_help = 'Export blender scene'
     parser.add_argument('--export-blend', action='store_true', default=False, help=arg_help)
+
+    arg_help = 'Render artistic image'
+    parser.add_argument('--render-artistic', action='store_true', default=False, help=arg_help)
 
     arg_help = 'Quality checker executable from Ultraliser'
     parser.add_argument('--quality-checker-executable', action='store', help=arg_help)
@@ -261,12 +269,19 @@ def process_mesh(arguments,
     :return:
     """
 
+    # Loading the fonts
+    nmv.interface.load_fonts()
+
     # Rotate the mesh object to adjust the orientation in front of the camera
-    nmv.scene.rotate_object(mesh_object, 0, 0, 0)
+    # nmv.scene.rotate_object(mesh_object, 0, 0, 0)
 
     # Get the bounding box and compute the unified one, to render the astrocyte in the middle
     mesh_bbox = nmv.bbox.compute_scene_bounding_box_for_meshes()
-    mesh_bbox = nmv.bbox.compute_unified_bounding_box(mesh_bbox)
+    mesh_bbox.extend_bbox(mesh_bbox.bounds[0] * 0.025,
+                          mesh_bbox.bounds[1] * 0.025,
+                          mesh_bbox.bounds[1] * 0.025)
+
+    # Extend the bounding box
 
     # Create the illumination
     nmv.shading.create_lambert_ward_illumination()
@@ -284,25 +299,29 @@ def process_mesh(arguments,
     elif 'watertight' in mesh_name:
         color = Vector((pcolors[0][0], pcolors[0][1], pcolors[0][2]))
     else:
-        color = Vector((pcolors[7][0], pcolors[7][1], pcolors[7][2]))
+        color = nmv.utilities.parse_color_from_argument(mesh_color)
 
     mesh_material = nmv.shading.create_lambert_ward_material(
         name='mesh-color-%s' % mesh_name, color=color)
 
     # Assign the wire-frame shader, using an input color
     nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=mesh_material)
+    bpy.context.scene.display.shading.light = 'STUDIO'
+    bpy.context.scene.display.shading.studio_light = 'outdoor.sl'
 
-    # Create a wireframe
-    wireframe_mesh = nmv.mesh.create_wire_frame(
-        mesh_object=mesh_object, wireframe_thickness=arguments.wireframe_thickness)
+    # TBD: Ignore the wireframe mesh for the moment
+    if False:
+        # Create a wireframe
+        wireframe_mesh = nmv.mesh.create_wire_frame(
+            mesh_object=mesh_object, wireframe_thickness=arguments.wireframe_thickness)
 
-    # Create a wireframe shader
-    wireframe_material = nmv.shading.create_lambert_ward_material(
-        name='wireframe-%s' % mesh_name, color=nmv.consts.Color.BLACK)
+        # Create a wireframe shader
+        wireframe_material = nmv.shading.create_lambert_ward_material(
+            name='wireframe-%s' % mesh_name, color=nmv.consts.Color.BLACK)
 
-    # Assign the wire-frame shader, using an input color
-    nmv.shading.set_material_to_object(
-        mesh_object=wireframe_mesh, material_reference=wireframe_material)
+        # Assign the wire-frame shader, using an input color
+        nmv.shading.set_material_to_object(
+            mesh_object=wireframe_mesh, material_reference=wireframe_material)
 
     # Set the background to WHITE for the compositing
     bpy.context.scene.render.film_transparent = False
@@ -341,7 +360,8 @@ def process_mesh(arguments,
     # Plot the statistics image
     fact_sheet_image = create_mesh_fact_sheet_with_distribution(
         mesh_object=mesh_object, mesh_name=mesh_name, image_output_path=images_directory,
-        panels_directory=panels_directory, statistics_image=horizontal_stats_image)
+        panels_directory=panels_directory, statistics_image=horizontal_stats_image,
+        mesh_scale=args.mesh_scale)
 
     # Clean the stats data
     if os.path.exists(stats_output_directory):
@@ -359,62 +379,53 @@ def process_mesh(arguments,
     # Clean the stats data
     if os.path.exists(panels_directory):
         shutil.rmtree(panels_directory)
-    
-    # Just a reference to the artistic image path 
-    artistic_image = None
-    
-    # Artistic rendering
-    if render_artistic:
-        
-        # Smooth the faces of the mesh 
-        nmv.mesh.shade_smooth_object(mesh_object=mesh_object)
-        
-        # Subdivide 
-        nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
 
-        # Set back to transparent
-        bpy.context.scene.render.film_transparent = True
+    # Smooth the faces of the mesh
+    nmv.mesh.shade_smooth_object(mesh_object=mesh_object)
 
-        # Delete the wireframe mesh
-        nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
+    # Subdivide
+    # nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
 
-        # Remove all the lights in the scene
-        nmv.scene.clear_lights()
+    # Set back to transparent
+    bpy.context.scene.render.film_transparent = True
 
-        # Create a wax shader
-        wax_shader = nmv.shading.create_glossy_material(name='mesh-glossy')
+    # Delete the wireframe mesh
+    # nmv.scene.delete_object_in_scene(scene_object=wireframe_mesh)
 
-        # Assign the subsurface scattering shader
-        nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=wax_shader)
+    # Remove all the lights in the scene
+    nmv.scene.clear_lights()
 
-        # Get the light location from the camera
-        camera = nmv.scene.get_object_by_name('nmvCamera_FRONT')
-        light_location = Vector((0, 0, 0))
-        light_location[0] = camera.location[0]
-        light_location[1] = mesh_object.center[1] + mesh_object.bounds[1]
-        light_location[2] = camera.location[2]
+    # Create a wax shader
+    # wax_shader = nmv.shading.create_glossy_material(name='mesh-glossy')
 
-        # From the bounding box, clear an area light
-        area_light = create_area_light_from_bounding_box(location=light_location)
+    # Assign the subsurface scattering shader
+    # nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=wax_shader)
 
-        # Use the denoiser
-        bpy.context.scene.view_layers[0].cycles.use_denoising = True
+    # Get the bounding box
+    # bounds = nmv.bbox.confirm_object_bounding_box(mesh_object)
 
-        # Render based on the bounding box
-        nmv.rendering.render(bounding_box=mesh_object,
-                             image_directory=images_directory,
-                             image_name='%s-artistic' % mesh_object.name,
-                             image_resolution=arguments.resolution,
-                             keep_camera_in_scene=True)
-                             
-        # Path to the artistic image 
-        artistic_image = '%s/%s-artistic.png' % (images_directory, mesh_object.name)
+    # Create SUN light
+    # bpy.ops.object.light_add(type='SUN', radius=1, location=(0, 0, 0))
+    # bpy.context.object.data.energy = 1
 
-        # Save the final scene into a blender file
-        if arguments.export_blend:
-            nmv.file.export_scene_to_blend_file(
-                output_directory=scenes_directory,
-                output_file_name='%s-artistic' % mesh_object.replace('.obj', ''))
+    # Use the denoiser
+    # bpy.context.scene.view_layers[0].cycles.use_denoising = True
+
+    # Render based on the bounding box
+    nmv.rendering.render(bounding_box=mesh_bbox,
+                         image_directory=images_directory,
+                         image_name='%s-rendering' % mesh_object.name,
+                         image_resolution=arguments.resolution,
+                         keep_camera_in_scene=True)
+
+    # Path to the artistic image
+    artistic_image = '%s/%s-artistic.png' % (images_directory, mesh_object.name)
+
+    # Save the final scene into a blender file
+    if arguments.export_blend:
+        nmv.file.export_scene_to_blend_file(
+            output_directory=scenes_directory,
+            output_file_name='%s-artistic' % mesh_name)
 
 
 ################################################################################
@@ -463,4 +474,5 @@ if __name__ == "__main__":
             mesh_color=args.mesh_color,
             intermediate_directory=intermediate_directory,
             images_directory=images_directory,
-            scenes_directory=scenes_directory)
+            scenes_directory=scenes_directory,
+            render_artistic=args.render_artistic)

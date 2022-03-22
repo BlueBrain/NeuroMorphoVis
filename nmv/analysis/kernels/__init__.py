@@ -16,7 +16,7 @@
 ####################################################################################################
 
 from .arbor import *
-from .morphology import *
 from .section import *
+from .morphology import *
 from .functional import *
 from .distributions import *

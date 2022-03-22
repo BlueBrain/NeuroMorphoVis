@@ -23,6 +23,7 @@ from mathutils import Vector, Matrix
 # Internal modules
 import nmv.scene
 import nmv.geometry
+import nmv.mesh
 
 
 ####################################################################################################
@@ -223,7 +224,7 @@ def draw_line(point1=Vector((0, 0, 0)),
     # Return a reference to the line object
     return line_object
 
-import nmv.mesh
+
 ####################################################################################################
 # @draw_cone_line
 ####################################################################################################
@@ -234,6 +235,8 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    color=(1, 1, 1, 1),
                    name='line',
                    fill_caps=True,
+                   sides=8,
+                   bevel_object=None,
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
     the line.
@@ -273,7 +276,10 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     # For a thick line, the caps are always filled in contrast to the thin line
     line_data.use_fill_caps = fill_caps
 
-    line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name=name)
+    if bevel_object is None:
+        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name=name)
+    else:
+        line_data.bevel_object = bevel_object
 
     # Create a new material (color) and assign it to the line
     line_material = bpy.data.materials.new('color.%s' % name)
@@ -292,9 +298,6 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     line_strip.points[0].radius = point1_radius
     line_strip.points[1].radius = point2_radius
     line_strip.order_u = 1
-
-    # Convert the cone to a mesh object and smooth it using a given smoothness factor
-    # line_object = nmv.scene.ops.convert_object_to_mesh(line_object)
 
     # Return a reference to the line object
     return line_object

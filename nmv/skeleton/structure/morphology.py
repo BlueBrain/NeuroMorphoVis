@@ -22,6 +22,7 @@ import copy
 from mathutils import Vector
 
 # Internal imports
+import nmv.analysis
 import nmv.bbox
 import nmv.skeleton
 import nmv.utilities
@@ -133,6 +134,12 @@ class Morphology:
 
         # The color of the soma, see @create_morphology_color_palette
         self.soma_color = None
+
+        # Statistical analysis data of the morphology
+        self.stats = nmv.analysis.MorphologyStats()
+
+        # Statistical analysis data of each arbor in the morphology
+        self.arbors_stats = [nmv.analysis.ArborStats()] * self.get_total_number_of_arbors()
 
     ################################################################################################
     # @build_samples_lists_recursively

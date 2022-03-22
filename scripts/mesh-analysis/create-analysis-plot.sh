@@ -20,10 +20,10 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_MESH='/ssd3/scratch/2021.04.26-mesh-analysis/L6_NGC-simple.obj'
+INPUT_MESH='/ssd2/ultraliser-figures/microns-pyramidal/2.obj'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd3/scratch/2021.04.26-mesh-analysis/output'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/output'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='yes'

@@ -21,6 +21,7 @@ import random
 
 # Blender imports
 from mathutils import Vector, Matrix
+import bpy
 
 # Internal modules
 import nmv.builders
@@ -122,7 +123,6 @@ def get_random_spines_across_section(section,
     # Compute the number spines required to satisfy the distribution
     number_spines = int(section_length * number_of_spines_per_micron)
 
-    print(number_spines)
     # Ensure that the number of spines > 1
     if number_spines < 1:
         number_spines = 1
@@ -225,3 +225,131 @@ def get_random_spines_across_section(section,
     else:
         nmv.scene.delete_list_objects(
             [proxy_section_mesh, proxy_section_polyline, bevel_object])
+
+
+####################################################################################################
+# @construct_polyline_mesh
+####################################################################################################
+def construct_polyline_mesh(polyline_data,
+                            sides=8,
+                            mesh_name='polyline_mesh'):
+    """Construct a mesh from polyline data (a list of samples formatted according to Blender).
+
+    :param polyline_data:
+        Polyline data as a list of samples formatted according to Blender style.
+    :param sides:
+        The number of sides in the bevel object to interpolate the polyline.
+    :param mesh_name:
+        A name given to the reconstructed mesh, by default: 'polyline_mesh'.
+    :return:
+        A mesh reconstructed from the polyline data.
+    """
+
+    # Proxy bevel object
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name='proxy_arbor')
+
+    # Polyline from polyline data
+    proxy_polyline = nmv.geometry.draw_poly_line(
+        poly_line_data=polyline_data, bevel_object=bevel_object, caps=False)
+
+    # Convert the polyline into a mesh
+    polyline_mesh = nmv.scene.ops.convert_object_to_mesh(proxy_polyline)
+    polyline_mesh.name = mesh_name
+
+    # Delete the bevel object
+    nmv.scene.delete_object_in_scene(bevel_object)
+
+    # Return the polyline mesh
+    return polyline_mesh
+
+
+def get_nearest_sample_on_section_to_point(section,
+                                           point):
+
+    minimum_distance = 100000
+    nearest_sample = None
+
+    for sample in section.samples:
+        distance = (point - sample.point).length
+        if distance < minimum_distance:
+            minimum_distance = distance
+            nearest_sample = sample
+
+    return nearest_sample
+
+
+
+def get_random_spines_on_section_recursively(current_branching_level,
+                                 max_branching_order,
+                                 section,
+                                 factor=1,
+                                 spines_list=[]):
+    """This function takes an input section and computes random attributes for the spines for a
+    given morphology that is not in a circuit. These attributes include locations of the spines,
+    their direction that is represented by a random normal on the surface of the section and a scale
+    value that is proportional to the size of the section (based on its average diameter).
+
+    :param section:
+    :return:
+    """
+
+    # If this section is axon, the return and don't add any spines
+    if section.is_axon():
+        return
+
+    # If the current branching level is greater than the maximum one, exit
+    if current_branching_level[0] > max_branching_order:
+        return
+
+    # Increment the branching level
+    current_branching_level[0] += 1
+
+    # Construct a polyline that represents the section, if valid
+    polyline_data = nmv.skeleton.ops.get_section_polyline_without_terminal_samples(section=section)
+    if polyline_data is None:
+        return
+
+    # Reconstruct the polyline from the section points
+    section_polyline_data = nmv.skeleton.ops.get_section_poly_line(section=section)
+
+    # Reconstruct a mesh from the polyline data
+    section_mesh = construct_polyline_mesh(
+        polyline_data=section_polyline_data, mesh_name=section.label)
+
+    nmv.mesh.ops.randomize_surface(mesh_object=section_mesh, offset=0.1, iterations=3)
+
+    # Remesh it for better face distribution
+    # nmv.mesh.ops.apply_remesh_modifier(mesh_object=section_mesh)
+    # nmv.mesh.ops.apply_quadriflow_remesh_modifier(mesh_object=section_mesh)
+
+    # Section average radius
+    section_average_radius = nmv.skeleton.ops.compute_average_section_radius(section=section)
+
+    if section_average_radius > 1.0:
+        probability = 0.2
+    elif 1.0 > section_average_radius > 0.5:
+        probability = 0.1
+    elif 0.5 > section_average_radius > 0.25:
+        probability = 0.05
+    else:
+        probability = 0.01
+
+    faces = list()
+    for face in section_mesh.data.polygons:
+        faces.append(face)
+
+    # Randomly selected faces
+    sampling_size = int(factor * probability * len(faces))
+    if sampling_size > len(faces):
+        sampling_size = int(probability * len(faces) * 0.5)
+
+    sampled = random.sample(faces, sampling_size)
+
+    for face in sampled:
+        spine = nmv.skeleton.Spine()
+        sample = get_nearest_sample_on_section_to_point(section, face.center)
+        spine.post_synaptic_position = face.center - face.normal * sample.radius
+        spine.pre_synaptic_position = face.center + 0.5 * face.normal
+        spine.size = random.uniform(0.9, 1.1) * sample.radius
+        spines_list.append(spine)
+    nmv.scene.delete_object_in_scene(section_mesh)

@@ -148,6 +148,9 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
         import time
 
+        # Reset the scene
+        nmv.scene.reset_scene()
+
         # Clear the scene
         nmv.scene.ops.clear_scene()
 

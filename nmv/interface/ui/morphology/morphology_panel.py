@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -32,8 +32,9 @@ import nmv.interface
 import nmv.shading
 import nmv.scene
 import nmv.skeleton
-import nmv.rendering
 import nmv.utilities
+import nmv.rendering
+import nmv.geometry
 from .morphology_panel_options import *
 
 # Is the morphology reconstructed or not
@@ -63,9 +64,52 @@ class MorphologyPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     ################################################################################################
+    # @update_ui_colors
+    ################################################################################################
+    def update_ui_colors(self, context):
+
+        # Get a list of initial colors from the selected colormap
+        colors = nmv.utilities.create_colormap_from_hex_list(
+            nmv.enums.ColorMaps.get_hex_color_list(context.scene.NMV_ColorMap),
+            nmv.consts.Color.COLORMAP_RESOLUTION)
+
+        # Invert the colormap
+        if context.scene.NMV_InvertColorMap:
+            colors.reverse()
+
+        # Update the colormap in the UI
+        for color_index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+            setattr(context.scene, 'NMV_Color%d' % color_index, colors[color_index])
+
+    # A list of all the color maps available in NeuroMorphoVis
+    # Note that once a new colormap is selected, the corresponding colors will be set in the UI
+    bpy.types.Scene.NMV_ColorMap = bpy.props.EnumProperty(
+        items=nmv.enums.ColorMaps.COLOR_MAPS,
+        name='',
+        default=nmv.enums.ColorMaps.GNU_PLOT,
+        update=update_ui_colors)
+
+    bpy.types.Scene.NMV_InvertColorMap = bpy.props.BoolProperty(
+        name='Invert',
+        description='Invert the selected colormap',
+        default=False,
+        update=update_ui_colors)
+
+    # Create a list of colors from the selected colormap
+    colors = nmv.utilities.create_colormap_from_hex_list(
+        nmv.enums.ColorMaps.get_hex_color_list(bpy.types.Scene.NMV_ColorMap),
+        nmv.consts.Color.COLORMAP_RESOLUTION)
+
+    # Update the UI color elements from the color map list
+    for index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+        setattr(bpy.types.Scene, 'NMV_Color%d' % index, bpy.props.FloatVectorProperty(
+            name='', subtype='COLOR', default=colors[index], min=0.0, max=1.0, description=''))
+
+    ################################################################################################
     # @draw
     ################################################################################################
-    def draw(self, context):
+    def draw(self,
+             context):
         """Draw the panel.
 
         :param context:
@@ -92,7 +136,7 @@ class MorphologyPanel(bpy.types.Panel):
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Set the color options
-        nmv.interface.ui.morphology_panel_ops.set_color_options(
+        nmv.interface.ui.morphology_panel_ops.add_color_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
         # Reconstruction button
@@ -155,8 +199,11 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
             'FINISHED'
         """
 
+        # Reset the scene
+        nmv.scene.reset_scene()
+
         # Clear the scene
-        nmv.scene.ops.clear_scene()
+        nmv.scene.clear_scene()
 
         # Load the morphology file
         loading_result = nmv.interface.ui.load_morphology(self, context.scene)
@@ -170,7 +217,6 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
         start_time = time.time()
 
         global morphology_builder
-
         # Create a skeleton builder object to build the morphology skeleton
         method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
@@ -206,7 +252,19 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
-        nmv.interface.ui_reconstructed_skeleton = morphology_builder.draw_morphology_skeleton()
+        nmv.interface.ui_reconstructed_skeleton = morphology_builder.draw_morphology_skeleton(
+            context=context)
+
+        # Interpolations
+        scale = float(context.scene.NMV_MaximumValue) - float(context.scene.NMV_MinimumValue)
+        delta = scale / float(nmv.consts.Color.COLORMAP_RESOLUTION)
+
+        # Fill the list of colors
+        for color_index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+            r0_value = float(context.scene.NMV_MinimumValue) + (color_index * delta)
+            r1_value = float(context.scene.NMV_MinimumValue) + ((color_index + 1) * delta)
+            setattr(context.scene, 'NMV_R0_Value%d' % color_index, r0_value)
+            setattr(context.scene, 'NMV_R1_Value%d' % color_index, r1_value)
 
         # Morphology reconstructed
         reconstruction_time = time.time()
@@ -326,7 +384,7 @@ class RenderMorphologyTop(bpy.types.Operator):
         :return:
             'FINISHED'.
         """
-
+        
         # Timer
         start_time = time.time()
 
@@ -876,6 +934,9 @@ class MorphologyReconstructionDocumentation(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
+    # ColorMap
+    # bpy.utils.register_class(ColorMapOperator)
+
     # Soma reconstruction panel
     bpy.utils.register_class(MorphologyPanel)
 
@@ -897,6 +958,9 @@ def register_panel():
 ####################################################################################################
 def unregister_panel():
     """Un-registers all the classes in this panel"""
+
+    # ColorMap
+    # bpy.utils.unregister_class(ColorMapOperator)
 
     # Morphology reconstruction panel
     bpy.utils.unregister_class(MorphologyPanel)

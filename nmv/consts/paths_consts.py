@@ -87,5 +87,8 @@ class Paths:
     # The directory where all the fonts will be loaded from
     FONTS_DIRECTORY = '%s/../../data/fonts' % current_directory
 
+    # Arial font
+    ARIAL_FONT = '%s/arial.ttf' % FONTS_DIRECTORY
+
     # Images path
     IMAGES_PATH = '%s/../../data/images' % current_directory

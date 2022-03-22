@@ -121,6 +121,7 @@ class MeshCleaner:
         :param context:
             Blender context.
         :return:
+            Number of vertices, number of edges, number of faces.
         """
         bm = bmesh.from_edit_mesh(context.edit_object.data)
         return len(bm.verts), len(bm.edges), len(bm.faces)

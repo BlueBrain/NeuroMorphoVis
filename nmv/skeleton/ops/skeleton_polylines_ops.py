@@ -43,6 +43,65 @@ from random import randint
 
 
 ####################################################################################################
+# @get_indexed_segments_polylines
+####################################################################################################
+def get_indexed_segments_polylines(section,
+                                   value,
+                                   minimum_value,
+                                   maximum_value,
+                                   colormap_resolution,
+                                   prefix,
+                                   branching_order):
+
+    # A list that will contain all the constructed polylines
+    polylines = list()
+
+    # Construct the segments polylines
+    for i in range(len(section.samples) - 1):
+
+        # Reference to the original segment samples
+        sample_1 = section.samples[i]
+        sample_2 = section.samples[i + 1]
+
+        # Segment polyline samples
+        samples = list()
+        samples.append([(sample_1.point[0], sample_1.point[1], sample_1.point[2], 1),
+                        sample_1.radius])
+        samples.append([(sample_2.point[0], sample_2.point[1], sample_2.point[2], 1),
+                        sample_2.radius])
+
+        # Get the material index
+        material_index = nmv.utilities.get_index(
+            value=value, minimum_value=minimum_value, maximum_value=maximum_value,
+            number_steps=colormap_resolution)
+
+        # Construct the polyline
+        polyline = nmv.geometry.PolyLine(
+            name='%s_%d_%d' % (prefix, branching_order, i), samples=samples,
+            material_index=material_index)
+
+        # Append the polyline to the polylines list
+        polylines.append(polyline)
+
+    # Return the resulting list
+    return polylines
+
+
+####################################################################################################
+# @get_polyline_samples_from_segment
+####################################################################################################
+def get_polyline_samples_from_segment(sample_1,
+                                      sample_2):
+    # Construct the samples list
+    samples = list()
+    samples.append([(sample_1.point[0], sample_1.point[1], sample_1.point[2], 1), sample_1.radius])
+    samples.append([(sample_2.point[0], sample_2.point[1], sample_2.point[2], 1), sample_2.radius])
+
+    # Return the reconstructed list
+    return samples
+
+
+####################################################################################################
 # @get_segments_poly_lines
 ####################################################################################################
 def get_segments_poly_lines(section,
@@ -58,12 +117,12 @@ def get_segments_poly_lines(section,
     """
 
     # A list of all the poly-lines of all the segments that are found in the given section
-    segments_poly_lines = list()
+    segments_polylines = list()
 
     for i in range(len(section.samples) - 1):
 
         # An array containing the data of the segment arranged in blender poly-line format
-        segment_poly_line = list()
+        segment_polyline = list()
 
         # Global coordinates transformation, use I if no transform is given
         if transform is None:
@@ -77,16 +136,16 @@ def get_segments_poly_lines(section,
         point_1 = section.samples[i + 1].point
 
         # Use the actual radius of the samples reported in the morphology file
-        segment_poly_line.append([(point_0[0], point_0[1], point_0[2], 1),
-                                  section.samples[i].radius])
-        segment_poly_line.append([(point_1[0], point_1[1], point_1[2], 1),
-                                  section.samples[i + 1].radius])
+        segment_polyline.append([(point_0[0], point_0[1], point_0[2], 1),
+                                 section.samples[i].radius])
+        segment_polyline.append([(point_1[0], point_1[1], point_1[2], 1),
+                                 section.samples[i + 1].radius])
 
         # Append the segment poly-line data to this final list
-        segments_poly_lines.append(segment_poly_line)
+        segments_polylines.append(segment_polyline)
 
     # Return the segments poly-lines list
-    return segments_poly_lines
+    return segments_polylines
 
 
 ####################################################################################################
@@ -124,6 +183,42 @@ def get_section_poly_line(section,
 
     # Return the poly-line list
     return poly_line
+
+
+####################################################################################################
+# @get_section_polyline_without_terminal_samples
+####################################################################################################
+def get_section_polyline_without_terminal_samples(section):
+    """Get the polyline list or a series of points that reflects the skeleton of a single section
+    without its terminal samples.
+
+    :param section:
+        The geometry of a section.
+    :return:
+        Section data in poly-line format that is suitable for drawing by Blender.
+    """
+
+    # An array containing the data of the section arranged in blender poly-line format
+    polyline = list()
+
+    # Resample the section (ADAPTIVE-RELAXED)
+    nmv.skeleton.ops.resample_section_adaptively_relaxed(section=section)
+
+    # If the section has only three samples or less, we cannot construct a polyline here
+    if len(section.samples) < 10:
+        return None
+
+    # Construct the section from the remaining samples
+    for i in range(3, len(section.samples) - 3):
+
+        # Get a reference to the point
+        point = section.samples[i].point
+
+        # Use the actual radius of the samples reported in the morphology file
+        polyline.append([(point[0], point[1], point[2], 1), section.samples[i].radius])
+
+    # Return the polyline 'list'
+    return polyline
 
 
 ####################################################################################################

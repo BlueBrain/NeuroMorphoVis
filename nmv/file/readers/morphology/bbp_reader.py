@@ -64,7 +64,7 @@ class BBPReader:
             return None
 
         # Loading a circuit
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
         circuit = Circuit(blue_config)
 
         # Loading the GIDs of the sample target within the circuit
@@ -91,13 +91,13 @@ class BBPReader:
 
         # Import BluePy
         try:
-            import bluepy.v2
+            import bluepy
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             return None
 
         # Loading a circuit
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
         circuit = Circuit(blue_config)
 
         # Get the morphology from its GID
@@ -124,13 +124,13 @@ class BBPReader:
 
         # Import BluePy
         try:
-            import bluepy.v2
+            import bluepy
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             return None
 
         # Loading a circuit
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
         circuit = Circuit(blue_config)
 
         # Get the morphology file path from its GID
@@ -166,13 +166,13 @@ class BBPReader:
 
         # Import BluePy
         try:
-            import bluepy.v2
+            import bluepy
         except ImportError:
             print('ERROR: Cannot import [BluePy], please install it')
             return None
 
         # Loading a circuit
-        from bluepy.v2 import Circuit
+        from bluepy import Circuit
         circuit = Circuit(blue_config)
 
         # Get a reference to the neuron where you can access its data later

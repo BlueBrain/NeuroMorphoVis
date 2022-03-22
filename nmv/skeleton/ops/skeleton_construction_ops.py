@@ -213,3 +213,19 @@ def build_arbor_as_single_object(section, name,
             poly_lines_data=poly_lines_data, secondary_sections=secondary_sections,
             branching_order=branching_order, max_branching_order=max_branching_order,
             repair_morphology=repair_morphology, roots_connection=roots_connection)
+
+
+####################################################################################################
+# @get_color_coded_section_poly_line_based_on_length
+####################################################################################################
+def get_section_polyline_color_index_based_on_length(
+        section, morphology, colormap_resolution=nmv.consts.Color.COLORMAP_RESOLUTION):
+
+    # The minimum value is the minimum section length in the morphology
+    minimum = morphology.stats.minimum_section_length
+
+    # The maximum value is the maximum section length in the morphology
+    maximum = morphology.stats.maximum_section_length
+
+    import math
+    return math.ceil(colormap_resolution * section.stats.length / (maximum - minimum)) - 1

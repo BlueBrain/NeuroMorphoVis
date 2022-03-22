@@ -50,7 +50,7 @@ class Color:
     # Gray
     GRAY = Vector((0.5, 0.5, 0.5))
 
-    # Greysh
+    # Greysh (a lighter gradient from gray)
     GREYSH = Vector((0.9, 0.9, 0.9))
 
     # Matt black
@@ -59,3 +59,5 @@ class Color:
     # Black
     BLACK = Vector((0.0, 0.0, 0.0))
 
+    # The number of color elements in the color map
+    COLORMAP_RESOLUTION = 16

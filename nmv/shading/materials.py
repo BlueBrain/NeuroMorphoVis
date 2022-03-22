@@ -993,6 +993,25 @@ def adjust_material_uv(mesh_object,
     mesh_object.data.texspace_size[2] = size
 
 
+################################################################################################
+# @adjust_materials_uv
+################################################################################################
+def adjust_materials_uv(mesh_objects,
+                        texspace_size=5.0):
+    """Adjusts the UV mapping of a list of meshes.
+    This operation is recommended to be called after any mesh operation.
+
+    :param mesh_objects:
+        A list of meshes.
+    :param texspace_size:
+        Texture space size, by default 5.0.
+    """
+
+    # Adjust the UVs
+    for i, mesh_object in enumerate(mesh_objects):
+        nmv.shading.adjust_material_uv(mesh_object, size=texspace_size)
+
+
 ####################################################################################################
 # @create_materials
 ####################################################################################################

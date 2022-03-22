@@ -122,7 +122,7 @@ def apply_analysis_operation_to_morphology(*args):
             # Apply the operation/filter to the arbor
             analysis_result.basal_dendrites_result.append(analysis_function(*arbor_args))
 
-    # Axon
+    # Axons
     if morphology.has_axons():
 
         # Create an empty list to collect the resulting data

@@ -595,6 +595,11 @@ def draw_rendering_options(panel,
     image_extension_row.prop(scene, 'NMV_MeshImageFormat')
     nmv.interface.ui_options.mesh.image_format = scene.NMV_MeshImageFormat
 
+    # Scale bar
+    scale_bar_row = layout.row()
+    scale_bar_row.prop(scene, 'NMV_RenderMeshScaleBar')
+    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderMeshScaleBar
+
     # Rendering view
     render_view_row = layout.row()
     render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')

@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .common import *
 from .dendrogram_builder import *
 from .disconnected_sections_builder import *
 from .disconnected_segments_builder import *

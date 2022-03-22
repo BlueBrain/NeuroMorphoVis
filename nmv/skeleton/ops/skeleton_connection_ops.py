@@ -586,11 +586,54 @@ def connect_arbor_to_meta_ball_soma(soma_mesh,
     bpy.ops.object.editmode_toggle()
 
     # Delete the other mesh
-    nmv.scene.ops.delete_list_objects([arbor.mesh])
+    nmv.scene.ops.delete_object_in_scene(arbor.mesh)
 
     # Return a reference to the soma mesh to be used later to do it for the rest of the arbors
     return soma_mesh
 
+
+####################################################################################################
+# @connect_arbor_to_meta_ball_soma
+####################################################################################################
+def connect_arbors_to_meta_ball_soma(soma_mesh,
+                                     arbors_mesh):
+    """This function is supposed to handle connecting a soma mesh to an arbor.
+
+    :param soma_mesh:
+        A given soma mesh.
+    :param arbors_mesh:
+        A given joint mesh for all the arbor to be connected to the mesh.
+    :return:
+        Reference to the soma after connection.
+    """
+
+    # If the soma mesh is not valid, then return
+    if soma_mesh is None:
+        return
+
+        # If the arbor is not valid, then return
+    if arbors_mesh is None:
+        return
+
+    # Simply apply a union operation between the soma and the arbor
+    soma_mesh = nmv.mesh.union_mesh_objects(soma_mesh, arbors_mesh)
+
+    # Remove the doubles
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    nmv.utilities.disable_std_output()
+    bpy.ops.mesh.remove_doubles()
+    nmv.utilities.enable_std_output()
+
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.editmode_toggle()
+
+    # Delete the other mesh
+    nmv.scene.ops.delete_object_in_scene(arbors_mesh)
+
+    # Return a reference to the soma mesh to be used later to do it for the rest of the arbors
+    return soma_mesh
 
 ####################################################################################################
 # @connect_arbor_to_soft_body_soma

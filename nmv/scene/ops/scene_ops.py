@@ -431,6 +431,23 @@ def clear_lights():
 
 
 ####################################################################################################
+# @reset_scene
+####################################################################################################
+def reset_scene():
+    """Resets the scene and does several operations that are needed to avoid any errors.
+    """
+
+    # Set all the objects in the scene to visible
+    for scene_object in bpy.context.scene.objects:
+        return
+        # Switch to the object mode to avoid any errors if by default the editing mode was active
+        #bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Un-hide any object in the scene to be able to delete all the objects
+        #unhide_object(scene_object=scene_object)
+
+
+####################################################################################################
 # @select_all
 ####################################################################################################
 def select_all():
@@ -1208,7 +1225,7 @@ def view_all_scene():
     bpy.ops.view3d.view_all()
 
     # Update the end
-    bpy.context.space_data.clip_end = 1e4
+    bpy.context.space_data.clip_end = 1e5
 
 
 ####################################################################################################
@@ -1227,7 +1244,7 @@ def view_region(x=0, y=0, delta=1):
     bpy.ops.view3d.zoom(mx=x, my=y, delta=delta)
 
     # Update the end
-    bpy.context.space_data.clip_end = 1e4
+    bpy.context.space_data.clip_end = 1e5
 
 
 ####################################################################################################

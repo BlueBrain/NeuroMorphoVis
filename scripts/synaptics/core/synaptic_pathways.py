@@ -22,7 +22,7 @@ import sys
 
 # BBP imports
 import bluepy
-from bluepy.v2 import Circuit
+from bluepy import Circuit
 
 # Blender imports
 import bpy
@@ -272,9 +272,8 @@ def create_synapses_material():
 def create_shared_synapses_mesh(circuit,
                                 pre_gid,
                                 post_gid,
-                                synapse_color,
                                 synapse_size=4.0,
-                                shader=nmv.enums.Shader.FLAT):
+                                inverted_transformation=None):
 
     material = create_synapses_material()
 
@@ -283,7 +282,7 @@ def create_shared_synapses_mesh(circuit,
 
     # Get the GIDs of the pre-synaptic cells
     pre_gids = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
     pre_gids = [gid[0] for gid in pre_gids]
 
     # A list that will contain all the synapse meshes
@@ -312,6 +311,10 @@ def create_shared_synapses_mesh(circuit,
 
             position = 0.5 * (post_synaptic_position + pre_synaptic_position)
 
+            # Adjust the position of the synapse
+            if inverted_transformation is not None:
+                position = inverted_transformation @ position
+
             # A synapse sphere object
             synapse_sphere = nmv.geometry.create_ico_sphere(
                 radius=synapse_size, location=position, subdivisions=3, name='synapse_%d' % i)
@@ -319,12 +322,11 @@ def create_shared_synapses_mesh(circuit,
             # Add the sphere to the group
             synapse_objects.append(synapse_sphere)
 
-            # Material
-            nmv.shading.set_material_to_object(mesh_object=synapse_sphere,
-                                               material_reference=material)
-
     # Join the meshes into a group
     synapse_group = nmv.mesh.join_mesh_objects(mesh_list=synapse_objects, name='synapses')
+
+    # Material
+    nmv.shading.set_material_to_object(mesh_object=synapse_group, material_reference=material)
 
     return synapse_group
 
@@ -483,8 +485,8 @@ def create_synaptic_pathway_scene(circuit_config,
     nmv.file.import_object_from_blend_file(output_directory, str(post_gid) + '.blend')
 
     # Create the synapse material
-    synapses_mesh = create_shared_synapses_mesh(circuit, pre_gid, post_gid,
-                                                synapses_color, synapse_size, shader)
+    synapses_mesh = create_shared_synapses_mesh(
+        circuit, pre_gid, post_gid, synapse_size, pre_transformation)
 
     # Select the pre-synaptic mesh to assign the material
     pre_synaptic_mesh = nmv.scene.get_object_by_name(str(pre_gid))
@@ -507,7 +509,7 @@ def create_synaptic_pathway_scene(circuit_config,
 
 
 ####################################################################################################
-# @create_synaptic_pathway_scene
+# @create_synaptic_pathway_scene_with_mesh_components
 ####################################################################################################
 def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
                                                        pre_gid,
@@ -581,8 +583,8 @@ def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
     # nmv.file.import_object_from_blend_file(output_directory, str(post_gid) + '.blend')
 
     # Create the synapse material
-    synapses_mesh = create_shared_synapses_mesh(circuit, pre_gid, post_gid,
-                                                synapses_color, synapse_size, shader)
+    synapses_mesh = create_shared_synapses_mesh(
+        circuit, pre_gid, post_gid, synapse_size, pre_transformation.inverted())
 
     # Import the pre-synaptic meshes
     pre_synaptic_neuron_meshes_directory = '%s/%s' % (output_directory, str(pre_gid))
@@ -627,6 +629,16 @@ def create_synaptic_pathway_scene_with_mesh_components(circuit_config,
 
     # Create sun light
     bpy.ops.object.light_add(type='SUN', radius=1.0, location=(0, 0, 0))
+
+    # Merge all the objects into a single mesh
+    pair_mesh_list = list()
+    pair_mesh_list.extend(pre_meshes_list)
+    pair_mesh_list.extend(post_meshes_list)
+    pair_mesh_object = nmv.mesh.join_mesh_objects(
+        pair_mesh_list, name='Pair_%s_%s' % (str(pre_gid), str(post_gid)))
+
+    # Adjust the transformation
+    pair_mesh_object.matrix_world = pre_transformation.inverted()
 
     # For consistency, export the pair into a pre-pair blend file
     nmv.file.export_scene_to_blend_file(output_directory, '%d_%d' % (pre_gid, post_gid))

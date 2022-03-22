@@ -103,23 +103,46 @@ def confirm_object_bounding_box(scene_object):
         The bounding box of the given object.
     """
 
+    # Initialize the min and max points
+    p_min = Vector((10000000, 10000000, 10000000))
+    p_max = Vector((-10000000, -10000000, -10000000))
+
     # Compute the bounding box of the object from the vertices
     box = scene_object.bound_box
 
     # Compute the bounding box from the vertices of the object
     verts = list()
-    verts.append((box[0][0], box[0][1], box[0][2]))
-    verts.append((box[1][0], box[1][1], box[1][2]))
-    verts.append((box[2][0], box[2][1], box[2][2]))
-    verts.append((box[3][0], box[3][1], box[3][2]))
-    verts.append((box[4][0], box[4][1], box[4][2]))
-    verts.append((box[5][0], box[5][1], box[5][2]))
-    verts.append((box[6][0], box[6][1], box[6][2]))
-    verts.append((box[7][0], box[7][1], box[7][2]))
+    v0 = Vector((box[0][0], box[0][1], box[0][2]))
+    #v0 = scene_object.matrix_world @ v0
+    verts.append(v0)
 
-    # Initialize the min and max points
-    p_min = Vector((10000000, 10000000, 10000000))
-    p_max = Vector((-10000000, -10000000, -10000000))
+    v1 = Vector((box[1][0], box[1][1], box[1][2]))
+    #v1 = scene_object.matrix_world @ v1
+    verts.append(v1)
+
+    v2 = Vector((box[2][0], box[2][1], box[2][2]))
+    #v2 = scene_object.matrix_world @ v2
+    verts.append(v2)
+
+    v3 = Vector((box[3][0], box[3][1], box[3][2]))
+    #v3 = scene_object.matrix_world @ v3
+    verts.append(v3)
+
+    v4 = Vector((box[4][0], box[4][1], box[4][2]))
+    #v4 = scene_object.matrix_world @ v4
+    verts.append(v4)
+
+    v5 = Vector((box[5][0], box[5][1], box[5][2]))
+    #v5 = scene_object.matrix_world @ v5
+    verts.append(v5)
+
+    v6 = Vector((box[6][0], box[6][1], box[6][2]))
+    #v6 = scene_object.matrix_world @ v6
+    verts.append(v6)
+
+    v7 = Vector((box[7][0], box[7][1], box[7][2]))
+    #v7 = scene_object.matrix_world @ v7
+    verts.append(v7)
 
     for point in range(0, len(verts)):
         if verts[point][0] < p_min[0]:
@@ -134,13 +157,6 @@ def confirm_object_bounding_box(scene_object):
             p_max[1] = verts[point][1]
         if verts[point][2] > p_max[2]:
             p_max[2] = verts[point][2]
-
-    # Get object location
-    location = scene_object.location
-
-    # Adjust the bounding box transform
-    p_min += location
-    p_max += location
 
     # Build bounding box object
     bounding_box = nmv.bbox.BoundingBox(p_min=p_min, p_max=p_max)
@@ -321,8 +337,8 @@ def compute_unified_bounding_box(non_unified_bounding_box):
         largest_dimension = z
 
     largest_bounds = Vector((largest_dimension, largest_dimension, largest_dimension))
-    unified_bounding_box = nmv.bbox.BoundingBox(center=non_unified_bounding_box.center,
-                                       bounds=largest_bounds)
+    unified_bounding_box = nmv.bbox.BoundingBox(
+        center=non_unified_bounding_box.center, bounds=largest_bounds)
 
     return unified_bounding_box
 

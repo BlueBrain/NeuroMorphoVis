@@ -356,6 +356,9 @@ class ReconstructSomaOperator(bpy.types.Operator):
         # Get a reference to the scene
         scene = context.scene
 
+        # Reset the scene
+        nmv.scene.reset_scene()
+
         # Clear the scene
         nmv.scene.ops.clear_scene()
 

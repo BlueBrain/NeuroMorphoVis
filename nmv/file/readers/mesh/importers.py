@@ -62,6 +62,10 @@ def import_obj_file(input_directory,
     mesh_object = bpy.context.selected_objects[0]
     mesh_object.name = object_name
 
+    # NOTE: Blender always loads the OBJ meshes with a 90 degrees rotation, so we must rotate the
+    # mesh object to adjust the orientation in front of the camera
+    nmv.scene.rotate_object(mesh_object, 0, 0, 0)
+
     # Return a reference to the object
     return mesh_object
 

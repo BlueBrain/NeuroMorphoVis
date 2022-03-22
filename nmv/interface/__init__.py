@@ -15,5 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .ui import *
+from .utilities import *
 from .cli import *
+from .ui import *

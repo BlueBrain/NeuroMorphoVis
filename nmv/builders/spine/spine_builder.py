@@ -156,7 +156,7 @@ def build_circuit_spines(morphology,
     spines_objects = []
 
     # Loading a circuit
-    from bluepy.v2 import Circuit
+    from bluepy import Circuit
     circuit = Circuit(blue_config)
 
     # Get the IDs of the afferent (or incoming) synapses

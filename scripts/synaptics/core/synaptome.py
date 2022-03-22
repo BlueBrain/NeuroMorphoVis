@@ -29,7 +29,7 @@ import circuit_data
 
 # BBP imports
 import bluepy
-from bluepy.v2 import Circuit
+from bluepy import Circuit
 
 # Blender
 from mathutils import Vector, Matrix
@@ -79,7 +79,7 @@ def create_mtype_based_synapses_mesh(circuit,
 
     # Get the synapse type
     synapse_types = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.TYPE]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.TYPE]).values
 
     # Get the positions of the incoming synapses at the post synaptic side
     post_synaptic_positions = circuit.connectome.synapse_positions(
@@ -89,7 +89,7 @@ def create_mtype_based_synapses_mesh(circuit,
 
     # Get the GIDs of the pre-synaptic cells
     pre_gids = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
     pre_synaptic_gids = [gid[0] for gid in pre_gids]
 
     # Get the pre-synaptic mtypes
@@ -165,7 +165,8 @@ def create_mtype_based_synapses_mesh(circuit,
 # @create_excitatory_inhibitory_synapses_mesh
 ####################################################################################################
 def create_excitatory_inhibitory_synapses_mesh(circuit,
-                                               gid,synapse_size,
+                                               gid,
+                                               synapse_size,
                                                synapse_percentage,
                                                inverted_transformation,
                                                color_map_materials):
@@ -194,7 +195,7 @@ def create_excitatory_inhibitory_synapses_mesh(circuit,
 
     # Get the synapse type
     synapse_types = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.TYPE]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.TYPE]).values
 
     # Get the positions of the incoming synapses at the post synaptic side
     post_synaptic_positions = circuit.connectome.synapse_positions(
@@ -204,7 +205,7 @@ def create_excitatory_inhibitory_synapses_mesh(circuit,
 
     # Get the GIDs of the pre-synaptic cells
     pre_gids = circuit.connectome.synapse_properties(
-        afferent_synapses_ids, [bluepy.v2.enums.Synapse.PRE_GID]).values
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
     pre_synaptic_gids = [gid[0] for gid in pre_gids]
 
     # Get the pre-synaptic mtypes

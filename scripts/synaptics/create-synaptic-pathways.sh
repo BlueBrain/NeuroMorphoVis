@@ -24,18 +24,31 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/Circuit
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig_base'
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig.pre-fixL3'
+CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig_h5'
+CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj55/iavarone/releases/simulations/2019-11-21_GJs_newCT/CT_flickmulti_multiseed_1550fbr/ct_flick0/seed121877/BlueConfig'
 
 # A file
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/L5_TTPC-pairs.txt'
 SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/iteration_2/S1DZO_pairs.gids'
+SYNAPTIC_PAIRS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways-data/sample-pairs.txt'
+SYNAPTIC_PAIRS_FILE='/ssd2/projects-data/2022.01.07-neuron-pairs/pairs.gids'
+SYNAPTIC_PAIRS_FILE='/ssd2/projects-data/2022.02.10-neuron-pairs/pairs.gids'
+
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-6-25.02.2021'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptic-pathways/trial-7-11.10.2021'
+OUTPUT_DIRECTORY='/ssd2/projects-data/2022.01.07-neuron-pairs/output'
+OUTPUT_DIRECTORY='/ssd2/projects-data/2022.02.10-neuron-pairs/output'
+
 
 # Color
 PRE_NEURON_COLOR='255_204_203'
 POST_NEURON_COLOR='173_216_230'
 SYNAPSE_COLOR='255_255_0'
+
+PRE_NEURON_COLOR=''
+POST_NEURON_COLOR=''
 
 # Synapse size
 SYNAPSE_SIZE='8.0'

@@ -81,13 +81,13 @@ def load_morphologies(meshes_directory):
 
     # List all the files in the directory (.blend)
     mesh_files = nmv.file.ops.get_files_in_directory(directory=meshes_directory,
-        file_extension='blend')
+                                                     file_extension='blend')
 
     # Sort
     mesh_files.sort()
 
     # A list of all the meshes
-    meshes = []
+    meshes = list()
 
     for mesh_file in mesh_files:
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
         nmv.scene.ops.set_object_location(mesh, mesh_location)
 
     # Export the scene to keep a reference for it later
-    nmv.file.export_object_to_blend_file(None, args.output_directory, args.frame_name)
+    nmv.file.export_scene_to_blend_file(args.output_directory, args.frame_name)
 
     # Render the scene
     rendering_path = '%s/%s' % (args.output_directory, args.frame_name)
