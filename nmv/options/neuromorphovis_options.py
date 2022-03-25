@@ -387,3 +387,6 @@ class NeuroMorphoVisOptions:
         # The file format of the image
         self.rendering.image_format = nmv.enums.Image.Extension.get_enum(
             arguments.image_file_format)
+
+        # Render scale bar
+        self.rendering.render_scale_bar = arguments.render_scale_bar

@@ -153,6 +153,7 @@ class ShadingOptions:
         # Nucleus color (only for mesh) for the mesh toolbox
         self.mesh_nucleus_color = nmv.enums.Color.NUCLEI
 
+        # Material Shading Options #################################################################
         # Material for the soma toolbox
         self.soma_material = nmv.enums.Shader.LAMBERT_WARD
 
