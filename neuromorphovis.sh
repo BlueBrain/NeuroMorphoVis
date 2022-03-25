@@ -59,7 +59,6 @@ if [ "$RENDER_IMAGES_TO_SCALE" == "yes" ];
     then BOOL_ARGS+=' --render-to-scale '; fi
 if [ "$RENDER_SCALE_BAR" == "yes" ];
     then BOOL_ARGS+=' --render-scale-bar '; fi
-
 ####################################################################################################
 # Morphology positioning parameters
 if [ "$GLOBAL_COORDINATES" == "yes" ];
