@@ -204,6 +204,18 @@ class ColorCoding:
         elif argument == 'number-samples':
             return ColorCoding.BY_NUMBER_SAMPLES
 
+        # By path distance
+        elif argument == 'path-distance':
+            return ColorCoding.DISTANCE_FROM_SOMA
+
+        # By Euclidean distance
+        elif argument == 'euclidean-distance':
+            return ColorCoding.EUCLIDEAN_DISTANCE
+
+        # Reveal short sections
+        elif argument == 'euclidean-distance':
+            return ColorCoding.SHORT_SECTIONS
+
         # By default use the default scheme
         else:
             return ColorCoding.DEFAULT_SCHEME

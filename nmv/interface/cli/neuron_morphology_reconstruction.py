@@ -54,7 +54,11 @@ def reconstruct_neuron_morphology(cli_morphology,
     # Clear the scene
     nmv.scene.ops.clear_scene()
 
+    # The soma must be connected to the soma
     cli_options.morphology.connect_to_soma = True
+
+    # Analyse the morphology on-the-go
+    nmv.interface.analyze_morphology(morphology=cli_morphology)
 
     # Create a skeleton builder object to build the morphology skeleton
     method = cli_options.morphology.reconstruction_method

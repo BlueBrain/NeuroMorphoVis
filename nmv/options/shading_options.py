@@ -18,6 +18,7 @@
 # Internal imports
 import nmv.consts
 import nmv.enums
+import nmv.utilities
 
 
 ####################################################################################################
@@ -62,11 +63,13 @@ class ShadingOptions:
         # Morphology color coding scheme
         self.morphology_coloring_scheme = nmv.enums.ColorCoding.DEFAULT_SCHEME
 
-        # The resolution of the color map of the morphology (number of elements)
+        # The resolution of the color map of the morphology (number of elements, typically 64)
         self.morphology_colormap_resolution = nmv.consts.Color.COLORMAP_RESOLUTION
 
-        # Morphology color-map colors (this is set from the GUI)
-        self.morphology_colormap_list = list()
+        # Get a list of initial colors from the selected colormap
+        self.morphology_colormap_list = nmv.utilities.create_colormap_from_hex_list(
+            nmv.enums.ColorMaps.get_hex_color_list(nmv.enums.ColorMaps.GNU_PLOT),
+            nmv.consts.Color.COLORMAP_RESOLUTION)
 
         # Mesh Shading Options #####################################################################
         # Soma color for the mesh toolbox

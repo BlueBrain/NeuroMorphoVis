@@ -328,7 +328,7 @@ def add_colormap_options(layout,
     # Soma options
     add_soma_coloring_option(layout=layout, scene=scene, options=options)
 
-    # Fill the list of colors
+    # Fill list of colors
     for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
 
         # Add the colormap element to the UI

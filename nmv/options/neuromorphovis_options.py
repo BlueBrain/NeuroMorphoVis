@@ -105,7 +105,6 @@ class NeuroMorphoVisOptions:
         ############################################################################################
         # Morphology options
         ############################################################################################
-
         # Morphology skeleton style
         self.morphology.arbor_style = nmv.enums.Skeleton.Style.get_enum(
             arguments.morphology_skeleton_style)
@@ -292,11 +291,20 @@ class NeuroMorphoVisOptions:
         ############################################################################################
         # Shading options
         ############################################################################################
-
         # Soma color
         self.shading.soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
         self.shading.morphology_soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
         self.shading.mesh_soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
+
+        # Morphology color coding
+        self.shading.morphology_coloring_scheme = \
+            nmv.enums.ColorCoding.get_enum(arguments.morphology_color_coding)
+
+        # Get the morphology colormap
+        colormap = nmv.enums.ColorMaps.get_enum(arguments.morphology_colormap)
+        self.shading.morphology_colormap_list = nmv.utilities.create_colormap_from_hex_list(
+            nmv.enums.ColorMaps.get_hex_color_list(colormap),
+            nmv.consts.Color.COLORMAP_RESOLUTION)
 
         # Axon color
         self.shading.morphology_axons_color = nmvu.parse_color_from_argument(arguments.axons_color)
@@ -333,7 +341,6 @@ class NeuroMorphoVisOptions:
         ############################################################################################
         # Rendering options
         ############################################################################################
-
         # Render a close up view of the morphology
         self.rendering.render_morphology_static_frame = arguments.render_neuron_morphology
 

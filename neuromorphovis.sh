@@ -100,7 +100,6 @@ if [ "$EXPORT_INDIVIDUALS" == "yes" ];
 if [ "$ANALYZE_MORPHOLOGY_SKELETON" == "yes" ];
     then BOOL_ARGS+=' --analyze-morphology '; fi
 
-
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... NeuroMorphoVis \n"
@@ -114,7 +113,9 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --morphology-directory=$MORPHOLOGY_DIRECTORY                                                    \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --morphology-reconstruction-algorithm=$MORPHOLOGY_RECONSTRUCTION_ALGORITHM                      \
-    --morphology-skeleton-style=SKELETON_STYLE                                                      \
+    --morphology-skeleton-style=$SKELETON_STYLE                                                     \
+    --morphology-color-coding=$MORPHOLOGY_COLOR_CODING_SCHEME                                       \
+    --morphology-colormap=$MORPHOLOGY_COLORMAP                                                      \
     --meshing-algorithm=$MESHING_TECHNIQUE                                                          \
     --axon-branching-order=$MAX_AXON_BRANCHING_ORDER                                                \
     --basal-dendrites-branching-order=$MAX_BASAL_DENDRITES_BRANCHING_ORDER                          \
