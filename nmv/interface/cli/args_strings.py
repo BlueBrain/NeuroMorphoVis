@@ -147,7 +147,7 @@ class Args:
     # Basal dendrites color
     BASAL_DENDRITES_COLOR = '--basal-dendrites-color'
 
-    # Spines colors
+    # Spine colors
     SPINES_COLOR = '--spines-color'
 
     # Nucleus colors
@@ -165,7 +165,7 @@ class Args:
     # Reconstruct neuron mesh
     RECONSTRUCT_NEURON_MESH = '--reconstruct-neuron-mesh'
 
-    # Spines meshes (ignore, circuit or random)
+    # Spine meshes (ignore, circuit or random)
     SPINES = '--spines'
 
     # Neuron meshing algorithm

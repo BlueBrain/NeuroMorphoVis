@@ -27,6 +27,8 @@ source $1
 
 #####################################################################################################
 BOOL_ARGS=''
+#####################################################################################################
+# Ignoring Branches
 if [ "$IGNORE_AXON" == "yes" ];
     then BOOL_ARGS+=' --ignore-axons '; fi
 if [ "$IGNORE_BASAL_DENDRITES" == "yes" ];
@@ -56,7 +58,7 @@ if [ "$RENDER_NEURON_MESH_360_SEQUENCE" == "yes" ];
 if [ "$RENDER_IMAGES_TO_SCALE" == "yes" ];
     then BOOL_ARGS+=' --render-to-scale '; fi
 ####################################################################################################
-# Mesh parameters
+# Morphology positioning parameters
 if [ "$GLOBAL_COORDINATES" == "yes" ];
     then BOOL_ARGS+=' --global-coordinates '; fi
 if [ "$ADD_NUCLEUS" == "yes" ];
