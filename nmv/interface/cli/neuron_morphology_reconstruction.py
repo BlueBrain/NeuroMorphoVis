@@ -165,8 +165,7 @@ def reconstruct_neuron_morphology(cli_morphology,
                     bounding_box=bounding_box,
                     camera_view=view,
                     image_scale_factor=cli_options.rendering.resolution_scale_factor,
-                    image_name='%s%s' % (cli_morp
-                                         hology.label, suffix),
+                    image_name='%s%s' % (cli_morphology.label, suffix),
                     image_format=cli_options.rendering.image_format,
                     image_directory=cli_options.io.images_directory)
 
