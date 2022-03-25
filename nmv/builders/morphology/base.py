@@ -132,7 +132,7 @@ class MorphologyBuilderBase:
         # Articulations, ONLY, for the articulated reconstruction method
         self.articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='articulations', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color,
+            color=self.options.shading.morphology_articulation_color,
             number_elements=1)
 
     ################################################################################################

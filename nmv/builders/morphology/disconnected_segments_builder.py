@@ -286,7 +286,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                 poly_lines_list.append(nmv.geometry.PolyLine(
                     name='%s_%d_%d' % (prefix, branching_order, i),
                     samples=nmv.skeleton.get_polyline_samples_from_segment(sample_1, sample_2),
-                    material_index=i))
+                    material_index=i % 2))
 
         # Single color
         else:

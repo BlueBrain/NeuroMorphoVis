@@ -252,9 +252,10 @@ def add_homogeneous_color_option(layout,
         System options.
     """
 
+    # The homogeneous color of the morphology
     color_row = layout.row()
-    color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-    color = scene.NMV_NeuronMorphologyColor
+    color_row.prop(scene, 'NMV_MorphologyColor')
+    color = scene.NMV_MorphologyColor
     options.shading.morphology_soma_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
