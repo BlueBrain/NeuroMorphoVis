@@ -21,25 +21,40 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
 INPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal'
-INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/x/microglia/output/meshes'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/input/meshes/pericytes/output/meshes'
 #INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/output/meshes'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er/output/meshes'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/input'
+
+
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/'
+
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/output-rendering'
-OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/x/microglia/output/renderings'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/input/meshes/pericytes/output/renderings'
 #OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/neurons-astrocytes-pericytes-microglia-blood-vessels/output/rendering-output'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er/output/renderings'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/input/renderings'
+
+
+OUTPUT_DIRECTORY=$INPUT_DIRECTORY'/renderings'
+
 # Mesh color
 MESH_COLOR='0.9_0.125_0.150'
 
 MESH_COLOR_IN='0.92118373_0.60184659_0.45048789'
 MESH_COLOR_OUT='0.71837612_0.24102046_0.41863486'
-MESH_COLOR=$MESH_COLOR_OUT
+MESH_COLOR=$MESH_COLOR_IN
 
 # Camera view: front, side, top
 CAMERA_VIEW='front'
 
-# Wireframe thickness
-WIREFRAME_THICKNESS='0.075'
+# Render wireframe
+RENDER_WIREFRAME='yes'
+
+# Wireframe thickness (w.r.t pixel size)
+WIREFRAME_THICKNESS='1.25'
 
 # Base image resolution
 IMAGE_RESOLUTION='5000'
@@ -54,6 +69,8 @@ RENDER_ARTISTIC='no'
 BOOL_ARGS=''
 if [ "$EXPORT_BLENDER_SCENE" == "yes" ];
     then BOOL_ARGS+=' --export-blend '; fi
+if [ "$RENDER_WIREFRAME" == "yes" ];
+    then BOOL_ARGS+=' --wireframe '; fi
 if [ "$ARTISTIC" == "yes" ];
     then BOOL_ARGS+=' --artistic '; fi
 ####################################################################################################
