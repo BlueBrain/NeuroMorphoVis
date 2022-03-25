@@ -707,6 +707,13 @@ def parse_command_line_arguments():
         action='store', default='png',
         help=arg_help)
 
+    # Render scale bar
+    arg_help = 'Render a scale bar on the images.'
+    rendering_args.add_argument(
+        Args.RENDER_SCALE_BAR,
+        action='store_true', default=False,
+        help=arg_help)
+
     ################################################################################################
     # Execution arguments
     ################################################################################################

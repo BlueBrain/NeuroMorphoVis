@@ -286,6 +286,9 @@ class Args:
     # Image file format or extensions
     IMAGE_FILE_FORMAT = '--image-file-format'
 
+    # Rendering scale bar
+    RENDER_SCALE_BAR = '--render-scale-bar'
+
     ################################################################################################
     # Execution arguments
     ################################################################################################

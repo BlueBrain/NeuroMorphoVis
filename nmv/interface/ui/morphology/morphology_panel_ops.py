@@ -318,7 +318,6 @@ def set_reconstruction_options(layout,
     options.morphology.bevel_object_sides = scene.NMV_ArborQuality
 
 
-
 ####################################################################################################
 # set_rendering_options
 ####################################################################################################
