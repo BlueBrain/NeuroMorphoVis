@@ -566,12 +566,12 @@ def create_watertight_mesh(arguments,
     shell_command += ' --auto-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
     shell_command += ' --solid '
     shell_command += ' --adaptive-optimization '
-    shell_command += ' --optimization-iterations 5'
+    shell_command += ' --optimization-iterations 1'
     shell_command += ' --optimize-mesh '
-    # shell_command += ' --preserve-partitions '
+    shell_command += ' --preserve-partitions '
     shell_command += ' --ignore-marching-cubes-mesh '
     shell_command += ' --ignore-laplacian-mesh --ignore-optimized-mesh '
-    # shell_command += ' --voxelization-axis xyz '
+    shell_command += ' --voxelization-axis xyz '
     shell_command += ' --export-obj-mesh '
     shell_command += ' --stats --dists '
 

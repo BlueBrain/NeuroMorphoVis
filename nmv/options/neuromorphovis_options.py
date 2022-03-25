@@ -20,6 +20,7 @@ import sys
 
 # Internal imports
 import nmv.options
+import nmv.utilities as nmvu
 
 
 ####################################################################################################
@@ -78,22 +79,28 @@ class NeuroMorphoVisOptions:
         self.io.output_directory = arguments.output_directory
 
         # Images directory
-        self.io.images_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.IMAGES_FOLDER)
+        self.io.images_directory = '%s/%s' % (arguments.output_directory,
+                                              nmv.consts.Paths.IMAGES_FOLDER)
 
         # Sequences directory
-        self.io.sequences_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.SEQUENCES_FOLDER)
+        self.io.sequences_directory = '%s/%s' % (arguments.output_directory,
+                                                 nmv.consts.Paths.SEQUENCES_FOLDER)
 
         # Meshes directory
-        self.io.meshes_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.MESHES_FOLDER)
+        self.io.meshes_directory = '%s/%s' % (arguments.output_directory,
+                                              nmv.consts.Paths.MESHES_FOLDER)
 
         # Morphologies directory
-        self.io.morphologies_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.MORPHOLOGIES_FOLDER)
+        self.io.morphologies_directory = '%s/%s' % (arguments.output_directory,
+                                                    nmv.consts.Paths.MORPHOLOGIES_FOLDER)
 
         # Morphologies directory
-        self.io.analysis_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.ANALYSIS_FOLDER)
+        self.io.analysis_directory = '%s/%s' % (arguments.output_directory,
+                                                nmv.consts.Paths.ANALYSIS_FOLDER)
 
         # Statistics directory
-        self.io.statistics_directory = '%s/%s' % (arguments.output_directory, nmv.consts.Paths.STATS_FOLDER)
+        self.io.statistics_directory = '%s/%s' % (arguments.output_directory,
+                                                  nmv.consts.Paths.STATS_FOLDER)
 
         ############################################################################################
         # Morphology options
@@ -206,12 +213,6 @@ class NeuroMorphoVisOptions:
         # Subdivision level of the sphere
         self.soma.subdivision_level = arguments.soma_subdivision_level
 
-        # Soma color
-        self.soma.soma_color = nmv.utilities.parse_color_from_argument(arguments.soma_color)
-
-        # Soma material
-        self.soma.soma_material = nmv.enums.Shader.get_enum(arguments.shader)
-
         # Camera view [FRONT, SIDE or TOP]
         self.soma.camera_view = nmv.enums.Camera.View.get_enum(arguments.camera_view)
 
@@ -293,31 +294,41 @@ class NeuroMorphoVisOptions:
         ############################################################################################
 
         # Soma color
-        self.shading.soma_color = nmv.utilities.parse_color_from_argument(arguments.soma_color)
+        self.shading.soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
+        self.shading.morphology_soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
+        self.shading.mesh_soma_color = nmvu.parse_color_from_argument(arguments.soma_color)
 
         # Axon color
-        self.shading.axons_color = nmv.utilities.parse_color_from_argument(arguments.axons_color)
+        self.shading.morphology_axons_color = nmvu.parse_color_from_argument(arguments.axons_color)
+        self.shading.mesh_axons_color = nmvu.parse_color_from_argument(arguments.axons_color)
 
         # Basal dendrites color
-        self.shading.basal_dendrites_color = nmv.utilities.parse_color_from_argument(
-            arguments.basal_dendrites_color)
+        self.shading.morphology_basal_dendrites_color = \
+            nmvu.parse_color_from_argument(arguments.basal_dendrites_color)
+        self.shading.mesh_basal_dendrites_color = \
+            nmvu.parse_color_from_argument(arguments.basal_dendrites_color)
 
         # Apical dendrite color
-        self.shading.apical_dendrites_color = nmv.utilities.parse_color_from_argument(
-            arguments.apical_dendrites_color)
+        self.shading.morphology_apical_dendrites_color = \
+            nmvu.parse_color_from_argument(arguments.apical_dendrites_color)
+        self.shading.mesh_apical_dendrites_color = \
+            nmvu.parse_color_from_argument(arguments.apical_dendrites_color)
 
         # Spines color
-        self.shading.spines_color = nmv.utilities.parse_color_from_argument(arguments.spines_color)
+        self.shading.mesh_spines_color = \
+            nmv.utilities.parse_color_from_argument(arguments.spines_color)
 
         # Nucleus color
-        self.shading.nucleus_color = nmv.utilities.parse_color_from_argument(
-            arguments.nucleus_color)
+        self.shading.nucleus_color = \
+            nmv.utilities.parse_color_from_argument(arguments.nucleus_color)
 
         # Articulations color
-        self.shading.articulation_color = nmv.enums.Color.ARTICULATION
+        self.shading.morphology_articulation_color = nmv.enums.Color.ARTICULATION
 
         # Shading material
-        self.shading.material = nmv.enums.Shader.get_enum(arguments.shader)
+        self.shading.soma_material = nmv.enums.Shader.get_enum(arguments.shader)
+        self.shading.morphology_material = nmv.enums.Shader.get_enum(arguments.shader)
+        self.shading.mesh_material = nmv.enums.Shader.get_enum(arguments.shader)
 
         ############################################################################################
         # Rendering options
@@ -376,3 +387,6 @@ class NeuroMorphoVisOptions:
         # The file format of the image
         self.rendering.image_format = nmv.enums.Image.Extension.get_enum(
             arguments.image_file_format)
+
+        # Render scale bar
+        self.rendering.render_scale_bar = arguments.render_scale_bar

@@ -150,7 +150,7 @@ def execute_commands(shell_commands):
 def execute_commands_parallel(shell_commands):
 
     from joblib import Parallel, delayed
-    Parallel(n_jobs=10)(delayed(execute_command)(i) for i in shell_commands)
+    Parallel(n_jobs=1)(delayed(execute_command)(i) for i in shell_commands)
 
 
 ####################################################################################################

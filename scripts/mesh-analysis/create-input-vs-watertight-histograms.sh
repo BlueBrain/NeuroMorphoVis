@@ -25,16 +25,18 @@ INPUT_DIRECTORY='/ssd2/microns/janelia-flyem-hemibrain/large'
 INPUT_DIRECTORY='/ssd2/microns/h01-data/l3_neuron_spiny_stellate/scaled'
 INPUT_DIRECTORY='/ssd2/ultraliser/kaust/astrocyte-4'
 INPUT_DIRECTORY='/ssd2/ultraliser/kaust/selected-meshes-for-analysis/astrocytes-er'
-INPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/input/meshes'
+INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er'
+#INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/input'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/microns-pyramidal/input/analysis'
+OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er/output-10'
+#OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/output-10'
 
 # ultraMes2Mesh executable
 ULTRA_MESH2MESH='ultraMesh2Mesh'
 
 # Voxel resolution
-VOXELS_PER_MICRON=5
+VOXELS_PER_MICRON=7
 
 # Mesh scale
 MESH_SCALE=1

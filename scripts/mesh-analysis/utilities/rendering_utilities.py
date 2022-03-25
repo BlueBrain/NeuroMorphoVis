@@ -57,7 +57,7 @@ def create_point_light_from_bounding_box(location):
     light_reference.rotation_euler[0] = 0
 
     # Adjust the power
-    light_reference.data.energy = 0.51e5
+    light_reference.data.energy = 1e4
 
     # Return the light source
     return light_reference
@@ -92,7 +92,8 @@ def load_sss_material(material_name='material',
 # @load_wireframe_material
 ####################################################################################################
 def load_wireframe_material(material_name='material',
-                            material_color=(1, 1, 1)):
+                            material_color=(1, 1, 1),
+                            thickness=0.025):
 
     # Import the material from the library
     material_reference = nmv.shading.import_shader(shader_name='wireframe')
@@ -105,6 +106,9 @@ def load_wireframe_material(material_name='material',
     bsdf.inputs[0].default_value[0] = material_color[0]
     bsdf.inputs[0].default_value[1] = material_color[1]
     bsdf.inputs[0].default_value[2] = material_color[2]
+
+    # Wireframe
+    material_reference.node_tree.nodes["Wireframe"].inputs[0].default_value = thickness
 
     # Return a reference to the material
     return material_reference
@@ -193,10 +197,12 @@ def render_mesh_with_wireframe_shader(mesh_object,
                                       mesh_color,
                                       resolution=4000,
                                       camera_view=nmv.enums.Camera.View.FRONT,
-                                      add_scale_bar=True):
+                                      wireframe_thickness=0.025,
+                                      add_scale_bar=False):
+
     # Load the material
     mesh_material = load_wireframe_material(
-        material_name='mesh_material', material_color=mesh_color)
+        material_name='mesh_material', material_color=mesh_color, thickness=wireframe_thickness)
 
     # Assign the material
     nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=mesh_material)

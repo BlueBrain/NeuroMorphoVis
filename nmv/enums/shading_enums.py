@@ -107,7 +107,7 @@ class Shader:
         elif shader_type == 'lambert':
             return Shader.LAMBERT_WARD
         elif shader_type == 'toon':
-            return Shader.LAMBERT_WARD
+            return Shader.TOON
         elif shader_type == 'wireframe':
             return Shader.WIRE_FRAME
         else:

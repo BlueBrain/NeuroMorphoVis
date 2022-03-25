@@ -132,19 +132,22 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Camera view: top, front or side'
     parser.add_argument('--camera-view', action='store', default='front', help=arg_help)
 
-    arg_help = 'Wireframe thickness'
-    parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float,
-                        help=arg_help)
-
     arg_help = 'Base full-view resolution'
     parser.add_argument('--resolution', action='store', default=2000, type=int, help=arg_help)
 
     arg_help = 'Export blender scene'
     parser.add_argument('--export-blend', action='store_true', default=False, help=arg_help)
 
+    arg_help = 'Add scale bar to the rendering'
+    parser.add_argument('--add-scale-bar', action='store_true', default=False, help=arg_help)
+
     # Wireframe or not
     arg_help = 'If this option is set, the wireframe of the mesh will be rendered'
     parser.add_argument('--wireframe', action='store_true', default=False, help=arg_help)
+
+    arg_help = 'Wireframe thickness'
+    parser.add_argument('--wireframe-thickness', action='store', default=0.02, type=float,
+                        help=arg_help)
 
     arg_help = 'If this option is set, a 360 of the mesh will be rendered'
     parser.add_argument('--render-360', action='store_true', default=False, help=arg_help)
@@ -209,7 +212,9 @@ if __name__ == "__main__":
                                                  output_directory=images_directory,
                                                  mesh_color=mesh_color,
                                                  resolution=args.resolution,
-                                                 camera_view=camera_view)
+                                                 camera_view=camera_view,
+                                                 wireframe_thickness=args.wireframe_thickness,
+                                                 add_scale_bar=True)#args.add_scale_bar)
         # Save the scene into a Blender file
         if args.export_blend:
             nmv.file.export_scene_to_blend_file(

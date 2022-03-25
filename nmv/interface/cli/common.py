@@ -52,7 +52,7 @@ def get_morphology_image_suffixes_from_view(camera_view):
                 nmv.consts.Suffix.MORPHOLOGY_SIDE,
                 nmv.consts.Suffix.MORPHOLOGY_TOP]
 
-    # By default render the front view
+    # By default, render the front view
     else:
         return [nmv.consts.Suffix.MORPHOLOGY_FRONT]
 
@@ -89,7 +89,7 @@ def get_mesh_image_suffixes_from_view(camera_view):
                 nmv.consts.Suffix.MESH_SIDE,
                 nmv.consts.Suffix.MESH_TOP]
 
-    # By default render the front view
+    # By default, render the front view
     else:
         return [nmv.consts.Suffix.MESH_FRONT]
 
@@ -126,6 +126,6 @@ def get_soma_image_suffixes_from_view(camera_view):
                 nmv.consts.Suffix.SOMA_SIDE,
                 nmv.consts.Suffix.SOMA_TOP]
 
-    # By default render the front view
+    # By default, render the front view
     else:
         return [nmv.consts.Suffix.SOMA_FRONT]
