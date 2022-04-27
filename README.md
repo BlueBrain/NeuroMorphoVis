@@ -167,7 +167,7 @@ _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Proje
 # License 
 _NeuroMorphoVis_ is available to download and use under the GNU General Public License ([GPL](https://www.gnu.org/licenses/gpl.html), or “free software”). The code is open sourced with approval from the open sourcing committee and principal coordinators of the Blue Brain Project in December 2019. 
 
-Copyright (c) 2016 - 2021 Blue Brain Project/EPFL
+Copyright (c) 2016 - 2021-2022 Blue Brain Project/EPFL
 
 # Attributions 
 
