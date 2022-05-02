@@ -206,7 +206,11 @@ def install_for_linux(directory, blender_version, verbose=False):
 
     # Blender python
     blender_python_prefix = '%s/%s/python/bin/' % (blender_directory, blender_version)
-    blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
+
+    if blender_version == '3.1':
+        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
+    else:
+        blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
 
     # Pip installation
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
@@ -462,9 +466,11 @@ if __name__ == "__main__":
         log_header('Blender 2.83')
     elif args.blender_version == '2.90':
         log_header('Blender 2.90')
+    elif args.blender_version == '3.1':
+        log_header('Blender 3.1')
     else:
         log_header('NeuroMorphoVis is ONLY available for Blender versions '
-                   '2.79, 2.80, 2.81, 2.82, 2.83, 2.90. Recommended version: 2.83')
+                   '2.79, 2.80, 2.81, 2.82, 2.83, 2.90, 3.1. Recommended version: 3.1')
         exit(0)
 
     # Installation directory
