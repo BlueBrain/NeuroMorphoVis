@@ -27,6 +27,8 @@ source $1
 
 #####################################################################################################
 BOOL_ARGS=''
+#####################################################################################################
+# Ignoring Branches
 if [ "$IGNORE_AXON" == "yes" ];
     then BOOL_ARGS+=' --ignore-axons '; fi
 if [ "$IGNORE_BASAL_DENDRITES" == "yes" ];
@@ -55,8 +57,10 @@ if [ "$RENDER_NEURON_MESH_360_SEQUENCE" == "yes" ];
     then BOOL_ARGS+=' --render-neuron-mesh-360 '; fi
 if [ "$RENDER_IMAGES_TO_SCALE" == "yes" ];
     then BOOL_ARGS+=' --render-to-scale '; fi
+if [ "$RENDER_SCALE_BAR" == "yes" ];
+    then BOOL_ARGS+=' --render-scale-bar '; fi
 ####################################################################################################
-# Mesh parameters
+# Morphology positioning parameters
 if [ "$GLOBAL_COORDINATES" == "yes" ];
     then BOOL_ARGS+=' --global-coordinates '; fi
 if [ "$ADD_NUCLEUS" == "yes" ];
@@ -96,7 +100,6 @@ if [ "$EXPORT_INDIVIDUALS" == "yes" ];
 if [ "$ANALYZE_MORPHOLOGY_SKELETON" == "yes" ];
     then BOOL_ARGS+=' --analyze-morphology '; fi
 
-
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... NeuroMorphoVis \n"
@@ -110,7 +113,9 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --morphology-directory=$MORPHOLOGY_DIRECTORY                                                    \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --morphology-reconstruction-algorithm=$MORPHOLOGY_RECONSTRUCTION_ALGORITHM                      \
-    --morphology-skeleton-style=SKELETON_STYLE                                                      \
+    --morphology-skeleton-style=$SKELETON_STYLE                                                     \
+    --morphology-color-coding=$MORPHOLOGY_COLOR_CODING_SCHEME                                       \
+    --morphology-colormap=$MORPHOLOGY_COLORMAP                                                      \
     --meshing-algorithm=$MESHING_TECHNIQUE                                                          \
     --axon-branching-order=$MAX_AXON_BRANCHING_ORDER                                                \
     --basal-dendrites-branching-order=$MAX_BASAL_DENDRITES_BRANCHING_ORDER                          \

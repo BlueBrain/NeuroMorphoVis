@@ -252,9 +252,10 @@ def add_homogeneous_color_option(layout,
         System options.
     """
 
+    # The homogeneous color of the morphology
     color_row = layout.row()
-    color_row.prop(scene, 'NMV_NeuronMorphologyColor')
-    color = scene.NMV_NeuronMorphologyColor
+    color_row.prop(scene, 'NMV_MorphologyColor')
+    color = scene.NMV_MorphologyColor
     options.shading.morphology_soma_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_axons_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
@@ -327,7 +328,7 @@ def add_colormap_options(layout,
     # Soma options
     add_soma_coloring_option(layout=layout, scene=scene, options=options)
 
-    # Fill the list of colors
+    # Fill list of colors
     for i in range(nmv.consts.Color.COLORMAP_RESOLUTION):
 
         # Add the colormap element to the UI

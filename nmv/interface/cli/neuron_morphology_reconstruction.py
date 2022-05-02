@@ -54,7 +54,11 @@ def reconstruct_neuron_morphology(cli_morphology,
     # Clear the scene
     nmv.scene.ops.clear_scene()
 
+    # The soma must be connected to the soma
     cli_options.morphology.connect_to_soma = True
+
+    # Analyse the morphology on-the-go
+    nmv.interface.analyze_morphology(morphology=cli_morphology)
 
     # Create a skeleton builder object to build the morphology skeleton
     method = cli_options.morphology.reconstruction_method
@@ -138,6 +142,13 @@ def reconstruct_neuron_morphology(cli_morphology,
 
         for view, suffix in zip(views, suffixes):
 
+            # Draw the morphology scale bar
+            if cli_options.rendering.render_scale_bar:
+                scale_bar = nmv.interface.draw_scale_bar(
+                    bounding_box=bounding_box,
+                    material_type=cli_options.shading.morphology_material,
+                    view=view)
+
             # Render at a specific resolution
             if cli_options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
 
@@ -159,8 +170,12 @@ def reconstruct_neuron_morphology(cli_morphology,
                     camera_view=view,
                     image_scale_factor=cli_options.rendering.resolution_scale_factor,
                     image_name='%s%s' % (cli_morphology.label, suffix),
-                    image_format=cli_options.morphology.image_format,
+                    image_format=cli_options.rendering.image_format,
                     image_directory=cli_options.io.images_directory)
+
+            # Delete the morphology scale bar, if rendered
+            if cli_options.rendering.render_scale_bar:
+                nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
     # Render a 360 sequence of the reconstructed morphology skeleton
     if cli_options.rendering.render_mesh_360:

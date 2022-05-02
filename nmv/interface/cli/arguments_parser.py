@@ -311,6 +311,28 @@ def parse_command_line_arguments():
         action='store', type=int, default=16,
         help=arg_help)
 
+    # Morphology color-coding scheme
+    arg_options = ['(default)', 'homogeneous', 'alternating', 'radius', 'length', 'area', 'volume',
+                   'number-samples', 'path-distance', 'euclidean-distance', 'short-sections']
+    arg_help = 'Color code the morphology based on a selected scheme. \n' \
+               'Options : %s' % arg_options
+    skeletonization_args.add_argument(
+        Args.MORPHOLOGY_COLOR_CODING_SCHEME,
+        action='store', default='default',
+        help=arg_help)
+
+    # Morphology color map if a specific color-coding scheme is used
+    arg_options = ['(gnuplot)', 'gnuplot2', 'rainbow', 'jet', 'turbo', 'rainbow', 'reds', 'blues',
+                   'greens', 'spectral', 'magma', 'viridis', 'plasma', 'terrain', 'dark2', 'tab10',
+                   'gray']
+    arg_help = 'THe colormap used in the color-coding scheme to tag the different components ' \
+               'of the morphology. \n ' \
+               'Options : %s' % arg_options
+    skeletonization_args.add_argument(
+        Args.MORPHOLOGY_COLORMAP,
+        action='store', default='gnuplot',
+        help=arg_help)
+
     ################################################################################################
     # Structures (like spines and nucleus) arguments
     ################################################################################################
@@ -705,6 +727,13 @@ def parse_command_line_arguments():
     rendering_args.add_argument(
         Args.IMAGE_FILE_FORMAT,
         action='store', default='png',
+        help=arg_help)
+
+    # Render scale bar
+    arg_help = 'Render a scale bar on the images.'
+    rendering_args.add_argument(
+        Args.RENDER_SCALE_BAR,
+        action='store_true', default=False,
         help=arg_help)
 
     ################################################################################################

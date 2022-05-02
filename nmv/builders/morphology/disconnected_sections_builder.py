@@ -198,7 +198,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             else:
                 material_index = 1
 
-        # Else, just add 0 and 100 for a place holder in the color map
+        # Else, just add 0 and 100 for a placeholder in the color map
         else:
             minimum_value = 0
             maximum_value = 100
@@ -509,10 +509,9 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
 
-
-
-
-
+    ################################################################################################
+    # @draw_arbors
+    ################################################################################################
     def draw_arbors(self,
                     bevel_object):
 
@@ -693,7 +692,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.create_base_skeleton_materials()
 
         # Draw each arbor as a single object
-        #self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
+        # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
 
         self.draw_arbors(bevel_object=bevel_object)
 

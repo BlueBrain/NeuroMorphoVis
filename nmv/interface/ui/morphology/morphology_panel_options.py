@@ -104,6 +104,12 @@ bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
     default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
 
 # The alternative color used to color every second object in the morphology
+bpy.types.Scene.NMV_MorphologyColor = bpy.props.FloatVectorProperty(
+    name="Color",
+    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
+    description="The color of the entire morphology surface")
+
+# The alternative color used to color every second object in the morphology
 bpy.types.Scene.NMV_MorphologyColor1 = bpy.props.FloatVectorProperty(
     name="Color 1",
     subtype='COLOR', default=nmv.consts.Color.VERY_WHITE, min=0.0, max=1.0,

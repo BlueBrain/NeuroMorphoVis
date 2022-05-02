@@ -80,7 +80,6 @@ class Args:
     ################################################################################################
     # Morphology arguments
     ################################################################################################
-
     # Morphology reconstruction algorithm
     MORPHOLOGY_RECONSTRUCTION_ALGORITHM = '--morphology-reconstruction-algorithm'
 
@@ -132,6 +131,12 @@ class Args:
     # Branching method
     BRANCHING_METHOD = '--branching'
 
+    # Morphology color coding scheme
+    MORPHOLOGY_COLOR_CODING_SCHEME = '--morphology-color-coding'
+
+    # Morphology color map used for the color coding
+    MORPHOLOGY_COLORMAP = '--morphology-colormap'
+
     ################################################################################################
     # Materials and colors arguments
     ################################################################################################
@@ -147,7 +152,7 @@ class Args:
     # Basal dendrites color
     BASAL_DENDRITES_COLOR = '--basal-dendrites-color'
 
-    # Spines colors
+    # Spine colors
     SPINES_COLOR = '--spines-color'
 
     # Nucleus colors
@@ -165,7 +170,7 @@ class Args:
     # Reconstruct neuron mesh
     RECONSTRUCT_NEURON_MESH = '--reconstruct-neuron-mesh'
 
-    # Spines meshes (ignore, circuit or random)
+    # Spine meshes (ignore, circuit or random)
     SPINES = '--spines'
 
     # Neuron meshing algorithm
@@ -240,7 +245,6 @@ class Args:
     ################################################################################################
     # Rendering arguments
     ################################################################################################
-
     # Render a static image of the soma mesh
     RENDER_SOMA_MESH = '--render-soma-mesh'
 
@@ -285,6 +289,9 @@ class Args:
 
     # Image file format or extensions
     IMAGE_FILE_FORMAT = '--image-file-format'
+
+    # Rendering scale bar
+    RENDER_SCALE_BAR = '--render-scale-bar'
 
     ################################################################################################
     # Execution arguments
