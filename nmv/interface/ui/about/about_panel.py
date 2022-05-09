@@ -80,6 +80,8 @@ class AboutPanel(bpy.types.Panel):
         credits_column.label(text='Juan Hernando', icon='OUTLINER_DATA_ARMATURE')
         credits_column.label(text='Caitlin Monney', icon='OUTLINER_DATA_ARMATURE')
         credits_column.label(text='Nadir Roman', icon='OUTLINER_DATA_ARMATURE')
+        credits_column.label(text='Alessandro Foni', icon='OUTLINER_DATA_ARMATURE')
+
         credits_column.separator()
         credits_column.label(text='Advisors')
         credits_column.label(text='Ahmet Bilgili', icon='OUTLINER_DATA_ARMATURE')

@@ -27,7 +27,7 @@ import os
 import imp
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2019, Blue Brain Project / EPFL"
+__copyright__   = "Copyright (c) 2016 - 2022, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
@@ -42,7 +42,7 @@ bl_info = {
     # The author of this add-on
     "author": "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version": (1, 4, 5),
+    "version": (1, 6, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.

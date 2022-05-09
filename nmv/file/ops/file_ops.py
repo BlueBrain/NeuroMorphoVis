@@ -226,3 +226,24 @@ def get_file_name_from_path(path):
 
     # Otherwise, return the file name
     return file_name
+
+
+####################################################################################################
+# @get_file_format_from_path
+####################################################################################################
+def get_file_format_from_path(path):
+    """Gets the file format from a given path.
+
+    :param path:
+        A given path to a certain file.
+    :return:
+        The file format.
+    """
+
+    # Get the file name
+    file_name = os.path.basename(path)
+
+    # If the file contains '.', then get the first part only
+    if '.' in file_name:
+        return os.path.splitext(file_name)[1]
+

@@ -75,6 +75,9 @@ class AnalysisPanel(bpy.types.Panel):
             morphology_name_row = layout.row()
             morphology_name_row.label(text='Name: %s' % nmv.interface.ui_morphology.label)
 
+            morphology_format_row = layout.row()
+            morphology_format_row.label(text='Format: %s' % nmv.interface.ui_morphology.file_format)
+
             # If the morphology is analyzed, then add the results to the analysis panel
             nmv.interface.add_analysis_groups_to_panel(
                 morphology=nmv.interface.ui_morphology, layout=layout, context=context)

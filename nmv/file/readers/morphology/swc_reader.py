@@ -675,12 +675,16 @@ class SWCReader:
         # Update the morphology label
         label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
 
+        # Get the morphology file format
+        file_format = nmv.file.ops.get_file_format_from_path(self.morphology_file)
+
         # Construct the morphology skeleton
         nmv_morphology = nmv.skeleton.Morphology(soma=soma,
                                                  axons=axons,
                                                  basal_dendrites=basal_dendrites,
                                                  apical_dendrites=apical_dendrites,
-                                                 label=label)
+                                                 label=label,
+                                                 file_format=file_format)
 
         # Add the number of stems to the morphology
         nmv_morphology.number_stems = self.get_number_stems_from_samples_list()

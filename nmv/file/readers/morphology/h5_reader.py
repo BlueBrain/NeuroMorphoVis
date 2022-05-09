@@ -554,6 +554,9 @@ class H5Reader:
         # Get the morphology label from the file name, to used for annotation
         label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
 
+        # Get the morphology file format
+        file_format = nmv.file.ops.get_file_format_from_path(self.morphology_file)
+
         # Check if the morphology is an astrocyte
         is_astrocyte = False
         if self.is_astrocyte_morphology_with_endfeet():
@@ -587,12 +590,15 @@ class H5Reader:
         # Build the soma
         soma = self.build_soma()
 
+
+
         # Construct the morphology skeleton in NMV format
         nmv_morphology = nmv.skeleton.Morphology(soma=soma,
                                                  axons=axons,
                                                  basal_dendrites=basal_dendrites,
                                                  apical_dendrites=apical_dendrites,
-                                                 label=label)
+                                                 label=label,
+                                                 file_format=file_format)
 
         # Update the centroid
         nmv_morphology.original_center = self.original_centroid

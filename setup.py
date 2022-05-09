@@ -46,9 +46,9 @@ def parse_command_line_arguments(arguments=None):
     parser = argparse.ArgumentParser(description=description)
 
     arg_help = 'Blender version. 2.79, 2.80, or 2.81, 2.82, 2.90 and 3.1. ' \
-               'By default it is 2.80. It is recommended to avoid 2.79.'
+               'By default it is 3.1. It is recommended to avoid 2.79.'
     parser.add_argument('--blender-version',
-                        action='store', dest='blender_version', default='2.80', help=arg_help)
+                        action='store', dest='blender_version', default='3.1', help=arg_help)
 
     arg_help = 'Installation directory.'
     parser.add_argument('--prefix',

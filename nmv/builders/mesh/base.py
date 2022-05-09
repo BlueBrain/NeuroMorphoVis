@@ -506,8 +506,6 @@ class MeshBuilderBase:
     def join_mesh_object_into_single_object(self):
         """Join all the mesh objects in the scene into a single mesh.
 
-        :param builder:
-            An object of the builder that is used to reconstruct the neuron mesh.
         :return:
             A reference to the joint mesh.
         """
@@ -524,7 +522,6 @@ class MeshBuilderBase:
 
             # Return a reference to the joint mesh object
             return joint_mesh
-
 
     ################################################################################################
     # @add_spines_to_surface
@@ -780,7 +777,6 @@ class MeshBuilderBase:
         for endfoot in self.morphology.endfeet:
 
             # Append the resulting mesh to the resulting meshes
-            nmv.logger.detail(endfoot.name)
             endfeet_meshes.append(endfoot.create_geometry_with_metaballs(self.endfeet_materials[0]))
 
         # Return the resulting list

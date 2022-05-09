@@ -145,6 +145,9 @@ class BBPReader:
         # Adjust the label to be set according to the GID not the morphology label
         morphology_file.label = str(gid)
 
+        # Adjust the file format
+        morphology_file.file_format = '.h5'
+
         # Return a reference to the morphology
         return morphology_file
 

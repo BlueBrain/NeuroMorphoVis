@@ -46,7 +46,8 @@ class Morphology:
                  apical_dendrites=None,
                  gid=None, 
                  mtype=None,
-                 label=None):
+                 label=None,
+                 file_format=None):
         """Constructor
 
         :param soma:
@@ -104,6 +105,11 @@ class Morphology:
         self.label = label
         if gid is not None:
             self.label = str(gid)
+
+        # Morphology file format
+        self.file_format = file_format
+        if self.file_format is None:
+            self.file_format = 'Unknown'
 
         # Morphology full bounding box
         self.bounding_box = None

@@ -15,11 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import random
-
-# Blender imports 
-import bpy
 
 # Internal modules
 from .base import MeshBuilderBase
@@ -40,7 +35,13 @@ import nmv.rendering
 # @PiecewiseBuilder
 ####################################################################################################
 class PiecewiseBuilder(MeshBuilderBase):
-    """Mesh builder that creates piecewise watertight meshes"""
+    """Mesh builder that creates piecewise meshes.
+    NOTES:
+        - The meshes produced by this builder are not guaranteed to be watertight.
+        - This is the fastest mesh builder amongst all the other builders in the Meshing Toolbox.
+        - You can still color-code each arbor type in the morphology, unlike the MetaBuilder.
+        - The resulting mehes can be used with Ultraliser to create optimized and watertight ones.
+    """
 
     ################################################################################################
     # @__init__
@@ -70,6 +71,9 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # A list of the reconstructed meshes of the axon
         self.axons_meshes = list()
+
+        # A list of the endfeet meshes, if exist
+        self.endfeet_meshes = list()
 
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
@@ -322,7 +326,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Builds the endfeet in case of loading astrocytic morphologies.
         """
 
-        self.reconstruct_endfeet()
+        self.endfeet_meshes.extend(self.reconstruct_endfeet())
 
     ################################################################################################
     # @reconstruct_mesh
