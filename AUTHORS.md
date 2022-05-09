@@ -13,6 +13,10 @@ The following people have contributed to NeuroMorphoVis:
     Caitlin Monney (EPFL)
     Nadir Roman (EPFL)
 
+##### Version 1.6
+
+    Alessandro Foni (EPFL)
+
 ##### Advisors
 
     Ahmet Bilgili (EPFL)
@@ -30,5 +34,5 @@ The following people have contributed to NeuroMorphoVis:
     Alan Garner (EPFL)
 
 <p align="center">
-	<img src="docs/artifacts/logo/epfl-logo.jpg" width=200>
+	<img src="docs/artifacts/logo/epfl-logo.png" width=200>
 </p>
