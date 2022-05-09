@@ -89,8 +89,8 @@ ui_per_arbor_analysis_items = [
     AnalysisItem(variable='MaximumEuclideanDistance',
                  name='Max. Euclidean Distance',
                  kernel=kernel_maximum_euclidean_distance,
-                 description='The maximum Euclidean distance along an arbor from its root sample to '
-                             'its most far leaf',
+                 description='The maximum Euclidean distance along an arbor from its root sample '
+                             'to its most far leaf',
                  data_format='FLOAT'),
 
     AnalysisItem(variable='MinNumberSamplePerSection',

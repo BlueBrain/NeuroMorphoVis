@@ -208,7 +208,7 @@ def create_bezier_circle(radius=1,
     bpy.ops.curve.primitive_bezier_circle_add(location=location)
 
     # Get a reference to it
-    bpy.context.object.data.resolution_u = vertices / 4
+    bpy.context.object.data.resolution_u = vertices
     circle_mesh = nmv.scene.get_active_object()
 
     # Set the radius
