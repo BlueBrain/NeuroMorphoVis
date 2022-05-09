@@ -233,5 +233,5 @@ Blue Brain Project
   + [Configuration File](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Configuration-File) 
 
 <p align="center">
-	<img src="https://github.com/BlueBrain/NeuroMorphoVis/docs/artifacts/logo/epfl-logo.png" width=200>
+	<img src="https://github.com/BlueBrain/NeuroMorphoVis/tree/master/docs/artifacts/logo/epfl-logo.png" width=200>
 </p>
