@@ -18,6 +18,9 @@
 # System imports
 import random
 
+# Blender imports 
+import bpy
+
 # Internal modules
 from .base import MeshBuilderBase
 import nmv.bbox
@@ -127,15 +130,17 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Ensure that apical dendrite objects were reconstructed
                     if len(arbor_objects) > 0:
 
+                        # Join the objects into a single object
+                        arbor_object = nmv.scene.join_objects(scene_objects=arbor_objects)
+
                         # Add a reference to the mesh object
-                        self.morphology.apical_dendrites[i].mesh = arbor_objects[0]
+                        self.morphology.apical_dendrites[i].mesh = arbor_object
 
                         # Add the sections (tubes) of the apical dendrite to the list
-                        self.apical_dendrites_meshes.extend(arbor_objects)
+                        self.apical_dendrites_meshes.append(arbor_object)
 
                         # Convert the section object (tubes) into meshes
-                        for arbor_object in arbor_objects:
-                            nmv.scene.ops.convert_object_to_mesh(arbor_object)
+                        nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -161,15 +166,17 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Ensure that objects were reconstructed
                     if len(arbor_objects) > 0:
 
+                        # Join the objects into a single object
+                        arbor_object = nmv.scene.join_objects(scene_objects=arbor_objects)
+
                         # Add a reference to the mesh object
-                        self.morphology.basal_dendrites[i].mesh = arbor_objects[0]
+                        self.morphology.basal_dendrites[i].mesh = arbor_object
 
                         # Add the sections (tubes) of the basal dendrite to the list
-                        self.basal_dendrites_meshes.extend(arbor_objects)
+                        self.basal_dendrites_meshes.append(arbor_object)
 
                         # Convert the section object (tubes) into meshes
-                        for arbor_object in arbor_objects:
-                            nmv.scene.ops.convert_object_to_mesh(arbor_object)
+                        nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
         # Axons
         if not self.options.morphology.ignore_axons:
@@ -195,15 +202,17 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Ensure that axon objects were reconstructed
                     if len(arbor_objects) > 0:
 
+                        # Join the objects into a single object
+                        arbor_object = nmv.scene.join_objects(scene_objects=arbor_objects)
+
                         # Add a reference to the mesh object
-                        self.morphology.axons[i].mesh = arbor_objects[0]
+                        self.morphology.axons[i].mesh = arbor_object
 
                         # Add the sections (tubes) of the basal dendrite to the list
-                        self.axons_meshes.extend(arbor_objects)
+                        self.axons_meshes.append(arbor_object)
 
                         # Convert the section object (tubes) into meshes
-                        for arbor_object in arbor_objects:
-                            nmv.scene.ops.convert_object_to_mesh(arbor_object)
+                        nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
     ################################################################################################
     # @build_hard_edges_arbors
@@ -213,7 +222,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -227,6 +236,9 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
+
+        # Close caps
+        nmv.logger.detail('Closing caps')
 
         # Close the caps of the apical dendrites meshes
         for arbor_object in self.apical_dendrites_meshes:
@@ -250,7 +262,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin

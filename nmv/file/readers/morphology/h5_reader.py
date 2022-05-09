@@ -242,9 +242,9 @@ class H5Reader:
             triangle_last_index = triangle_indices[i][1]
 
             # Triangles
-            endfoot_triangles = [Vector((int(triangle_data[j][0] - vertex_index_shift),
-                                         int(triangle_data[j][1] - vertex_index_shift),
-                                         int(triangle_data[j][2] - vertex_index_shift)))
+            endfoot_triangles = [(int(triangle_data[j][0] - vertex_index_shift),
+                                  int(triangle_data[j][1] - vertex_index_shift),
+                                  int(triangle_data[j][2] - vertex_index_shift))
                                  for j in range(triangle_start_index, triangle_last_index + 1)]
 
             # Create the endfeet

@@ -37,9 +37,18 @@ class Endfoot:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 name='Endfoot Patch',
+                 name='Endfoot',
                  points=None,
                  triangles=None):
+        """Constructor
+
+        :param name:
+            The name of the endfoot.
+        :param points:
+            A list of all the points of the endfoot in the format of <XYZ,R> per item.
+        :param triangles:
+            A list of all the triangles of the endfoot in the format of <XYZ> per item.
+        """
 
         # The name of the endfoot
         self.name = name
@@ -50,13 +59,12 @@ class Endfoot:
         # A list of triangles <V0, V1, V2>
         self.triangles = triangles
 
-        # A list of the vertices of the endfoot <X, Y, Z>
+        # A list of the vertices of the endfoot <X, Y, Z> from the points list
         self.vertices = list()
         if self.points is not None:
-            for p in self.points:
-                self.vertices.append(Vector((p[0], p[1], p[2])))
+            self.vertices = [(p[0], p[1], p[2]) for p in self.points]
 
-        # A list of constructed edges from the from_pydata function
+        # A list of constructed edges from the from_pydata function, EMPTY
         self.edges = list()
 
     ################################################################################################
@@ -65,6 +73,15 @@ class Endfoot:
     def create_surface_patch(self,
                              material=None,
                              collection_name="Collection"):
+        """Creates a surface patch of the endfoot.
+
+        :param material:
+            The material that will be applied to the endfoot.
+        :param collection_name:
+            The name of the Blender collection.
+        :return:
+            A reference to the created patch mesh.
+        """
 
         # Create a new mesh object
         mesh = bpy.data.meshes.new(self.name)
@@ -92,7 +109,17 @@ class Endfoot:
     # @create_resampled_surface_patch
     ################################################################################################
     def create_resampled_surface_patch(self,
-                                       material=None):
+                                       material=None,
+                                       subdivision_level=3):
+        """Creates a re-sampled patch of the endfoot surface.
+
+        :param material:
+            The material that will be applied to the resulting patch.
+        :param subdivision_level:
+            The subdivision level that will be used to resample the surface.
+        :return:
+            A reference to the created mesh.
+        """
 
         # Create a basic surface patch
         surface_patch = self.create_surface_patch(material=material)
@@ -100,7 +127,7 @@ class Endfoot:
         # Resample the patch
         bpy.ops.object.modifier_add(type='SUBSURF')
         bpy.context.object.modifiers["Subdivision"].subdivision_type = 'SIMPLE'
-        bpy.context.object.modifiers["Subdivision"].levels = 4
+        bpy.context.object.modifiers["Subdivision"].levels = subdivision_level
         bpy.context.object.modifiers["Subdivision"].show_only_control_edges = True
         bpy.context.object.modifiers["Subdivision"].uv_smooth = 'PRESERVE_CORNERS'
 
@@ -116,6 +143,12 @@ class Endfoot:
     # @compute_average_thickness
     ################################################################################################
     def compute_average_thickness(self):
+        """Computes the average thickness of the endfoot.
+
+        :return:
+            The average thickness of the endfoot from all the samples.
+        """
+
         thickness = 0.0
         if len(self.points) > 0:
             for p in self.points:
@@ -127,6 +160,12 @@ class Endfoot:
     # @compute_centroid
     ################################################################################################
     def compute_centroid(self):
+        """Computes the centroid of the endfoot.
+
+        :return:
+            The centroid of the endfoot.
+        """
+
         centroid = Vector((0.0, 0.0, 0.0))
         if len(self.points) > 0:
             for p in self.points:
@@ -140,12 +179,19 @@ class Endfoot:
     ################################################################################################
     def create_geometry_with_metaballs(self,
                                        material=None):
+        """Creates the endfoot geometry with meta-balls.
+
+        :param material:
+            A reference to the material that will be applied to the endfoot mesh.
+        :return:
+            A reference to the resulting endfoot mesh.
+        """
 
         # Create the resampled surface patch of the endfeet
         patch = self.create_resampled_surface_patch(material)
 
         # Create a meta-skeleton
-        endfoot_geometry_name = 'surface_patch_' + self.name
+        endfoot_geometry_name = 'Patch_' + self.name
         meta_skeleton = bpy.data.metaballs.new(endfoot_geometry_name)
 
         # Create a new meta-object that reflects the reconstructed mesh at the end of the operation

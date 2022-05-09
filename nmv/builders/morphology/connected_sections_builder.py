@@ -607,7 +607,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
-        bevel_object = bevel_object = self.create_bevel_object()
+        bevel_object = self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors

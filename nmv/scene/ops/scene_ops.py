@@ -788,6 +788,46 @@ def set_active_object(scene_object):
 
 
 ####################################################################################################
+# @join_objects
+####################################################################################################
+def join_objects(scene_objects):
+    """Joins a list of goven scene objects and return a reference to the resulting object.
+
+    :param scene_objects:
+        A list of the objects that need to be joined into a single element.
+    :return:
+        A reference to the resulting object.
+    """
+
+    # Make sure that the scene objects is not None
+    if scene_objects is not None:
+
+        # Make sure that it has at least a single element
+        if len(scene_objects) == 0:
+            return None
+
+        elif len(scene_objects) == 0:
+            return scene_objects[0]
+
+        else:
+
+            # Deselect all the objects in the scene
+            deselect_all()
+
+            # Set the first object to be the active object
+            nmv.scene.set_active_object(scene_objects[0])
+
+            # Select all the objects
+            nmv.scene.select_objects(scene_objects)
+
+            # Join all the objects in a single object
+            bpy.ops.object.join()
+
+            # Return a reference to the active object
+            return scene_objects[0]
+
+
+####################################################################################################
 # @rotate_object
 ####################################################################################################
 def rotate_object(scene_object,

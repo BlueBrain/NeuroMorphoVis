@@ -771,7 +771,7 @@ class MeshBuilderBase:
         """
 
         # Header
-        nmv.logger.info('Reconstructing endfeet')
+        nmv.logger.header('Reconstructing endfeet')
 
         # A list of the reconstructed endfeet meshes
         endfeet_meshes = list()
