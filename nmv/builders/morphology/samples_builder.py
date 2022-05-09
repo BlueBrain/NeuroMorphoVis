@@ -321,6 +321,10 @@ class SamplesBuilder(MorphologyBuilderBase):
         # Draw the soma
         self.draw_soma()
 
+        # Draw every endfoot in the list and append the resulting mesh to the collector
+        for endfoot in self.morphology.endfeet:
+            self.morphology_objects.append(endfoot.create_surface_patch(material=self.endfeet_materials[0]))
+
         # Transforming to global coordinates
         self.transform_to_global_coordinates()
 

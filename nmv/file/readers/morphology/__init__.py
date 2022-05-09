@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,7 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .common import *
 from .h5_reader import *
 from .swc_reader import *
 from .bbp_reader import *
+from .morphio_reader import *
 from .morphology_reader import *

@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .endfoot import *
 from .sample import *
 from .section import *
 from .soma import *

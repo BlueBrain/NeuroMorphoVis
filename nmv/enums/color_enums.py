@@ -47,6 +47,9 @@ class Color:
     # Articulations (connections between sections) color
     ARTICULATION = Vector((1.0, 1.0, 0.0))
 
+    # Endfeet colors
+    ENDFEET = Vector((0.5, 1.0, 0.1))
+
     # Spines color
     SPINES = Vector((0.1, 0.75, 0.45))
 

@@ -36,6 +36,7 @@ import nmv.interface
 # Global variables to notify us if a new morphology has been loaded to the system or not
 current_morphology_label = None
 current_morphology_path = None
+current_coordinate = None
 
 
 ####################################################################################################
@@ -111,6 +112,10 @@ def load_morphology(panel_object,
 
     global current_morphology_label
     global current_morphology_path
+    global current_coordinate
+
+    # Alias, to make lines shorter than 100 characters
+    options = nmv.interface.ui_options
 
     # Read the data from a given morphology file either in .h5 or .swc formats
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
@@ -118,7 +123,7 @@ def load_morphology(panel_object,
         #try:
         if True:
             # Pass options from UI to system
-            nmv.interface.ui_options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
+            options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
 
             # Ensure that a file has been selected
             if 'Select File' in context_scene.NMV_MorphologyFile:
@@ -128,13 +133,13 @@ def load_morphology(panel_object,
             if current_morphology_path is None:
 
                 # Update the morphology label
-                nmv.interface.ui_options.morphology.label = nmv.file.ops.get_file_name_from_path(
+                options.morphology.label = nmv.file.ops.get_file_name_from_path(
                     context_scene.NMV_MorphologyFile)
 
                 # Load the morphology file
                 # Load the morphology from the file
                 loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                    options=nmv.interface.ui_options)
+                    options=options)
 
                 # Verify the loading operation
                 if loading_flag:
@@ -144,6 +149,9 @@ def load_morphology(panel_object,
 
                     # Update the current morphology path
                     current_morphology_path = context_scene.NMV_MorphologyFile
+
+                    # Update the coordinate
+                    current_coordinate = context_scene.NMV_CenterMorphologyAtOrigin
 
                     # New morphology loaded
                     return 'NEW_MORPHOLOGY_LOADED'
@@ -160,9 +168,8 @@ def load_morphology(panel_object,
             # If there is file that is loaded
             else:
 
-                # If the same path, then return
-                if current_morphology_path == \
-                   nmv.interface.ui_options.morphology.morphology_file_path:
+                # If the same path, and same coordinates, then return ALREADY_LOADED
+                if current_morphology_path == options.morphology.morphology_file_path:
                     return 'ALREADY_LOADED'
 
                 # Load the new morphology file
@@ -172,8 +179,7 @@ def load_morphology(panel_object,
                     nmv.interface.ui_options.morphology.label = \
                         nmv.file.ops.get_file_name_from_path(context_scene.NMV_MorphologyFile)
 
-                    # Load the morphology file
-                    # Load the morphology from the file
+                    # Load the morphology from file
                     loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
                         options=nmv.interface.ui_options)
 

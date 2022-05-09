@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -156,6 +156,33 @@ def add_apical_dendrites_coloring_options(layout,
 ####################################################################################################
 # @add_articulation_coloring_options
 ####################################################################################################
+def add_endfeet_coloring_options(layout,
+                                 scene,
+                                 options):
+    """Adds the coloring options of the endfeet in case of loaded astrocytes.
+
+    :param layout:
+        Panel layout.
+    :param scene:
+        Context scene.
+    :param options:
+        System options.
+    """
+
+    # Endfeet color option
+    endfeet_color_row = layout.row()
+    endfeet_color_row.prop(scene, 'NMV_EndfeetColor')
+
+    # Pass options from UI to system
+    options.shading.morphology_endfeet_color = Vector((
+        scene.NMV_EndfeetColor.r,
+        scene.NMV_EndfeetColor.g,
+        scene.NMV_EndfeetColor.b))
+
+
+####################################################################################################
+# @add_articulation_coloring_options
+####################################################################################################
 def add_articulation_coloring_options(layout,
                                       scene,
                                       options):
@@ -216,6 +243,10 @@ def add_default_coloring_option(layout,
         if technique == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
             add_articulation_coloring_options(layout=layout, scene=scene, options=options)
 
+        # Endfeet color option
+        if nmv.interface.ui_morphology.has_endfeet():
+            add_endfeet_coloring_options(layout=layout, scene=scene, options=options)
+
     # Only a simple UI
     else:
 
@@ -261,6 +292,7 @@ def add_homogeneous_color_option(layout,
     options.shading.morphology_basal_dendrites_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_apical_dendrites_color = Vector((color.r, color.g, color.b))
     options.shading.morphology_articulation_color = Vector((color.r, color.g, color.b))
+    options.shading.morphology_endfeet_color = Vector((color.r, color.g, color.b))
 
 
 ####################################################################################################

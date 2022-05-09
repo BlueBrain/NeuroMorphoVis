@@ -19,7 +19,38 @@
 import os
 
 # Internal imports
+import morphio
+
 import nmv.file
+
+
+####################################################################################################
+# @read_morphology_with_morphio
+####################################################################################################
+def read_morphology_with_morphio(morphology_file_path,
+                                 center_at_origin=True):
+
+    # If the path is valid
+    if os.path.isfile(morphology_file_path):
+
+        # Load the .h5 morphology
+        try:
+            reader = nmv.file.readers.MorphIOLoader(morphology_file_path)
+            morphology_object = reader.read_data_from_file(center_at_origin=center_at_origin)
+
+            # Return a reference to this morphology object
+            return morphology_object
+
+        # Throw exception
+        except morphio.RawDataError as e:
+            nmv.logger.log('ERROR: The morphology [%s] could NOT be loaded with MorphIO: %s' %
+                           (morphology_file_path, e))
+
+    # Issue an error
+    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % morphology_file_path)
+
+    # Otherwise, return None
+    return None
 
 
 ####################################################################################################
@@ -54,7 +85,8 @@ def read_h5_morphology(h5_file):
 ####################################################################################################
 # @read_swc_morphology
 ####################################################################################################
-def read_swc_morphology(swc_file):
+def read_swc_morphology(swc_file,
+                        center_at_origin=True):
     """Verifies if the given path is valid or not and then loads a .swc morphology file.
 
     If the path is not valid, this function returns None.
@@ -70,7 +102,8 @@ def read_swc_morphology(swc_file):
     if os.path.isfile(swc_file):
 
         # Load the .h5 morphology
-        reader = nmv.file.readers.SWCReader(swc_file=swc_file)
+        reader = nmv.file.readers.SWCReader(swc_file=swc_file,
+                                            center_at_origin=center_at_origin)
         morphology_object = reader.read_file()
 
         # Return a reference to this morphology object
@@ -103,19 +136,19 @@ def read_morphology_from_file(options):
     morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
 
     # If it is a .h5 file, use the h5 loader
-    if '.h5' in morphology_extension:
+    if '.h5' in morphology_extension.lower():
+        morphology_object = read_h5_morphology(
+            morphology_file_path)
 
-        # Load the .h5 file
-        morphology_object = read_h5_morphology(morphology_file_path)
+    elif '.swc' in morphology_extension.lower():
+        morphology_object = read_swc_morphology(
+            morphology_file_path, options.morphology.center_at_origin)
 
-    elif '.swc' in morphology_extension:
-
-        # Load the .swc file
-        morphology_object = read_swc_morphology(morphology_file_path)
+    elif '.asc' in morphology_extension.lower():
+        morphology_object = read_morphology_with_morphio(
+            morphology_file_path, options.morphology.center_at_origin)
 
     else:
-
-        # Issue an error
         nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' %
                        morphology_extension)
         return False, None

@@ -151,6 +151,13 @@ bpy.types.Scene.NMV_ArticulationColor = bpy.props.FloatVectorProperty(
     subtype='COLOR', default=nmv.enums.Color.ARTICULATION, min=0.0, max=1.0,
     description='The color of the articulations in the Articulated Section mode')
 
+# Endfeet color
+bpy.types.Scene.NMV_EndfeetColor = bpy.props.FloatVectorProperty(
+    name='Endfeet Color',
+    subtype='COLOR', default=nmv.enums.Color.ENDFEET, min=0.0, max=1.0,
+    description='The color of the endfeet if the loaded morphology is an astrocyte')
+
+
 # Use single color for the all the objects in the morphology
 bpy.types.Scene.NMV_MorphologyHomogeneousColor = bpy.props.BoolProperty(
     name='Homogeneous Color',

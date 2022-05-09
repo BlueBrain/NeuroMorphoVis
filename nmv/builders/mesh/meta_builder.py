@@ -128,8 +128,6 @@ class MetaBuilder(MeshBuilderBase):
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
-
-
     ################################################################################################
     # @create_meta_segment
     ################################################################################################
@@ -314,6 +312,44 @@ class MetaBuilder(MeshBuilderBase):
                         max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
+    # @build_endfeet
+    ################################################################################################
+    def build_endfeet(self):
+
+        # Construct the meta-object from the endfeet
+        for endfoot in self.morphology.endfeet:
+
+            # Create the resampled surface patch
+            patch = endfoot.create_resampled_surface_patch()
+
+            # Prepare the vertex list
+            vertex_list = list()
+            for v in patch.data.vertices:
+                vertex_list.append(v.co)
+
+            # NOTE: For the moment, get the average thickness
+            thickness = endfoot.compute_average_thickness()
+
+            # Construct the elements
+            for v in vertex_list:
+
+                # Add the meta element
+                meta_element = self.meta_skeleton.elements.new()
+
+                # Set its radius
+                meta_element.radius = thickness
+
+                # Verify the thickness
+                if thickness < self.smallest_radius:
+                    self.smallest_radius = thickness
+
+                # Update its coordinates
+                meta_element.co = v
+
+            # Delete the patch
+            nmv.scene.delete_object_in_scene(patch)
+
+    ################################################################################################
     # @initialize_meta_object
     ################################################################################################
     def initialize_meta_object(self,
@@ -330,10 +366,10 @@ class MetaBuilder(MeshBuilderBase):
         # Create a new meta skeleton that will be used to reconstruct the skeleton frame
         self.meta_skeleton = bpy.data.metaballs.new(name)
 
-        # Create a new meta object that reflects the reconstructed mesh at the end of the operation
+        # Create a new meta-object that reflects the reconstructed mesh at the end of the operation
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
 
-        # Link the meta object to the scene
+        # Link the meta-object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
 
         # Initial resolution of the meta skeleton, this will get updated later in the finalization
@@ -446,7 +482,7 @@ class MetaBuilder(MeshBuilderBase):
         soft_body_soma = soft_body_soma_builder.reconstruct_soma_mesh(
             apply_shader=False, add_noise_to_surface=False)
 
-        # Run the particles simulation remesher
+        # Run the particle simulation re-mesher
         mesher = nmv.physics.ParticleRemesher()
         stepper = mesher.run(mesh_object=soft_body_soma, context=bpy.context, interactive=True)
 
@@ -683,6 +719,10 @@ class MetaBuilder(MeshBuilderBase):
 
         # Build the arbors
         result, stats = nmv.utilities.profile_function(self.build_arbors)
+        self.profiling_statistics += stats
+        
+        # Building the endfeet 
+        result, stats = nmv.utilities.profile_function(self.build_endfeet)
         self.profiling_statistics += stats
 
         # Building the spines from morphologies

@@ -418,10 +418,10 @@ def draw_color_options(panel,
             homogeneous_color_row.prop(scene, 'NMV_MeshHomogeneousColor')
 
             # If the homogeneous color flag is set
-            if scene.NMV_MeshHomogeneousColor or  nmv.interface.ui_options.mesh.soma_connection == \
-                    nmv.enums.Meshing.SomaConnection.CONNECTED and  \
-                nmv.interface.ui_options.mesh.soma_type == \
-                    nmv.enums.Soma.Representation.META_BALLS:
+            if scene.NMV_MeshHomogeneousColor or \
+               nmv.interface.ui_options.mesh.soma_connection == \
+               nmv.enums.Meshing.SomaConnection.CONNECTED and  \
+               nmv.interface.ui_options.mesh.soma_type == nmv.enums.Soma.Representation.META_BALLS:
                 neuron_color_row = layout.row()
                 neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
 
@@ -434,6 +434,8 @@ def draw_color_options(panel,
                 nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
                     scene.NMV_NeuronMeshColor
                 nmv.interface.ui_options.shading.mesh_spines_color = \
+                    scene.NMV_NeuronMeshColor
+                nmv.interface.ui_options.shading.mesh_endfeet_color = \
                     scene.NMV_NeuronMeshColor
 
             # Different colors
@@ -464,6 +466,11 @@ def draw_color_options(panel,
                     spines_color_row = layout.row()
                     spines_color_row.prop(scene, 'NMV_SpinesMeshColor')
                     nmv.interface.ui_options.shading.mesh_spines_color = scene.NMV_SpinesMeshColor
+
+                if nmv.interface.ui_morphology.has_endfeet():
+                    endfeet_color_row = layout.row()
+                    endfeet_color_row.prop(scene, 'NMV_EndfeetMeshColor')
+                    nmv.interface.ui_options.shading.mesh_endfeet_color = scene.NMV_EndfeetMeshColor
 
         elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
 
@@ -502,11 +509,11 @@ def draw_color_options(panel,
         axons_color_row = layout.row()
         axons_color_row.prop(scene, 'NMV_AxonMeshColor')
 
-        # Basals
+        # Basal dendrites
         basal_dendrites_color_row = layout.row()
         basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
 
-        # Apicals
+        # Apical dendrites
         apical_dendrites_color_row = layout.row()
         apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteMeshColor')
 

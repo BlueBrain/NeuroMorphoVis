@@ -483,6 +483,15 @@ class UnionBuilder(MeshBuilderBase):
             nmv.mesh.smooth_object_vertices(mesh_object=self.soma_mesh, level=5)
 
     ################################################################################################
+    # @build_endfeet
+    ################################################################################################
+    def build_endfeet(self):
+        """Builds the endfeet in case of loading astrocytic morphologies.
+        """
+
+        self.reconstruct_endfeet()
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -525,6 +534,10 @@ class UnionBuilder(MeshBuilderBase):
 
         # Cleaning mesh
         result, stats = nmv.utilities.profile_function(self.smooth_edges)
+        self.profiling_statistics += stats
+
+        # Build the endfeet
+        result, stats = nmv.utilities.profile_function(self.build_endfeet)
         self.profiling_statistics += stats
 
         # Surface roughness

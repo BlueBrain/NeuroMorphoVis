@@ -36,7 +36,8 @@ class SWCReader:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 swc_file):
+                 swc_file,
+                 center_at_origin=True):
         """Constructor
 
         :param swc_file:
@@ -45,6 +46,9 @@ class SWCReader:
 
         # Set the path to the given h5 file
         self.morphology_file = swc_file
+
+        # Center the morphology at the origin
+        self.center_at_origin = center_at_origin
 
         # The samples list parsed from the morphology file
         self.parsed_samples_list = list()

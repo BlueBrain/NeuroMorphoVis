@@ -498,6 +498,15 @@ class SkinningBuilder(MeshBuilderBase):
             self.update_samples_indices_per_arbor(child, index, max_branching_order)
 
     ################################################################################################
+    # @build_endfeet
+    ################################################################################################
+    def build_endfeet(self):
+        """Builds the endfeet in case of loading astrocytic morphologies.
+        """
+
+        self.neuron_meshes.append(self.reconstruct_endfeet())
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -538,6 +547,10 @@ class SkinningBuilder(MeshBuilderBase):
             # Build the arbors
             result, stats = nmv.utilities.profile_function(self.build_arbors, False)
             self.profiling_statistics += stats
+
+        # Build the endfeet
+        result, stats = nmv.utilities.profile_function(self.build_endfeet)
+        self.profiling_statistics += stats
 
         # Details about the arbors building
         self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('extrusion',

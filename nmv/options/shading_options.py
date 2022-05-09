@@ -54,6 +54,9 @@ class ShadingOptions:
         # Articulations color for the morphology toolbox
         self.morphology_articulation_color = nmv.enums.Color.ARTICULATION
 
+        # Endfeet color for the morphology toolbox
+        self.morphology_endfeet_color = nmv.enums.Color.ENDFEET
+
         # The first alternating color that will be used in the alternating pattern
         self.morphology_alternating_color_1 = nmv.consts.Color.MATT_BLACK
 
@@ -83,6 +86,9 @@ class ShadingOptions:
 
         # Basal dendrites color for the mesh toolbox
         self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Endfeet color for the mesh toolbox
+        self.mesh_endfeet_color = nmv.enums.Color.ENDFEET
 
         # Spines color (only for mesh) for the mesh toolbox
         self.mesh_spines_color = nmv.enums.Color.SPINES
@@ -125,6 +131,9 @@ class ShadingOptions:
         # Articulations color for the morphology toolbox
         self.morphology_articulation_color = nmv.enums.Color.ARTICULATION
 
+        # Endfeet color for the morphology toolbox
+        self.morphology_endfeet_color = nmv.enums.Color.ENDFEET
+
         # The first alternating color that will be used in the alternating pattern
         self.morphology_alternating_color_1 = nmv.consts.Color.MATT_BLACK
 
@@ -149,6 +158,9 @@ class ShadingOptions:
 
         # Basal dendrites color for the mesh toolbox
         self.mesh_basal_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+
+        # Endfeet color for the mesh toolbox
+        self.mesh_endfeet_color = nmv.enums.Color.ENDFEET
 
         # Spines color (only for mesh) for the mesh toolbox
         self.mesh_spines_color = nmv.enums.Color.SPINES

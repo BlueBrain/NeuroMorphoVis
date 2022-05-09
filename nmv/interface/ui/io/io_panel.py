@@ -94,6 +94,11 @@ class IOPanel(bpy.types.Panel):
             # Report an invalid input source
             self.report({'ERROR'}, 'Invalid Input Source')
 
+        # Center the morphology at the origin
+        centering_check_box = layout.row()
+        centering_check_box.prop(scene, 'NMV_CenterMorphologyAtOrigin')
+        nmv.interface.ui_options.morphology.center_at_origin = scene.NMV_CenterMorphologyAtOrigin
+
         import_button = layout.column()
         import_button.operator('nmv.load_morphology', icon='ANIM_DATA')
         import_button.separator()
@@ -205,7 +210,7 @@ class LoadMorphology(bpy.types.Operator):
         nmv.scene.reset_scene()
         nmv.scene.clear_scene()
 
-        # By default set the background to transparent
+        # By default, set the background to transparent
         nmv.scene.set_transparent_background()
 
         # Load the images
@@ -232,7 +237,8 @@ class LoadMorphology(bpy.types.Operator):
 
         nmv.logger.header('Loading Morphology')
         nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
-        nmv.logger.info('Morphology loaded in [%f] seconds' % context.scene.NMV_MorphologyLoadingTime)
+        nmv.logger.info('Morphology loaded in [%f] seconds' %
+                        context.scene.NMV_MorphologyLoadingTime)
 
         # Clear the scene
         import nmv.scene
@@ -246,8 +252,12 @@ class LoadMorphology(bpy.types.Operator):
         options.morphology.set_default()
         options.shading.set_default()
 
-        # Use branching order of 2 for the axons to ensure that we can see the whole morphology
-        options.morphology.axon_branch_order = 2
+        # Use branching order of 2 for the axons to ensure that we can see the whole morphology,
+        # while use the entire branching order for the astrocytes to ensure that it is connected
+        if nmv.interface.ui_morphology.is_astrocyte:
+            options.morphology.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+        else:
+            options.morphology.axon_branch_order = 2
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
@@ -265,8 +275,8 @@ class LoadMorphology(bpy.types.Operator):
         nmv.scene.view_axis()
 
         # View all the objects in the scene
-        if not nmv.interface.ui.Globals.nmv_initialized:
-            nmv.scene.ops.view_all_scene()
+        # if not nmv.interface.ui.Globals.nmv_initialized:
+        nmv.scene.ops.view_all_scene()
 
         # Configure the output directory
         nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)

@@ -25,18 +25,24 @@ import nmv.scene
 # Input options (what is the input source)
 bpy.types.Scene.NMV_InputSource = bpy.props.EnumProperty(
     items=[(nmv.enums.Input.H5_SWC_FILE,
-            'H5 or SWC File',
-            'Load individual h5 or swc file without a circuit'),
+            'H5, SWC or ASC File',
+            'Load individual .h5, .swc or .asc file without a circuit'),
            (nmv.enums.Input.CIRCUIT_GID,
             'BBP Circuit (GID)',
             'Load a specific GID from the circuit config')],
     name="Input Source",
     default=nmv.enums.Input.H5_SWC_FILE)
 
+# Center the loaded morphology at the origin
+bpy.types.Scene.NMV_CenterMorphologyAtOrigin = bpy.props.BoolProperty(
+    name='Center At Origin',
+    description='Center the loaded morphology at the origin irrespective to its actual center',
+    default=True)
+
 # Morphology file
 bpy.types.Scene.NMV_MorphologyFile = bpy.props.StringProperty(
     name="Morphology File",
-    description="Select a specific morphology to mesh",
+    description="Select a specific morphology to load, visualize or to mesh",
     default='Select File', maxlen=2048, subtype='FILE_PATH')
 
 # Morphology directory

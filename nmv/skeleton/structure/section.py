@@ -70,7 +70,7 @@ class Section:
         else:
             self.children_ids = list()
 
-        # Segments samples (points along the section)
+        # Segment samples (points along the section)
         self.samples = samples
 
         # Add a reference to the section as a member variable of the sample, for accessibility !

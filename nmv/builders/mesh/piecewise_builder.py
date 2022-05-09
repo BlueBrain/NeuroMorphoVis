@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -304,6 +304,15 @@ class PiecewiseBuilder(MeshBuilderBase):
             nmv.logger.log('ERROR')
 
     ################################################################################################
+    # @build_endfeet
+    ################################################################################################
+    def build_endfeet(self):
+        """Builds the endfeet in case of loading astrocytic morphologies.
+        """
+
+        self.reconstruct_endfeet()
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -339,6 +348,10 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # Connect to the soma
         result, stats = nmv.utilities.profile_function(self.connect_arbors_to_soma)
+        self.profiling_statistics += stats
+
+        # Build the endfeet
+        result, stats = nmv.utilities.profile_function(self.build_endfeet)
         self.profiling_statistics += stats
 
         # Tessellation

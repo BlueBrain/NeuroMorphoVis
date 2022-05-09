@@ -196,6 +196,12 @@ bpy.types.Scene.NMV_SpinesMeshColor = bpy.props.FloatVectorProperty(
     default=nmv.enums.Color.SPINES, min=0.0, max=1.0,
     description="The color of the spines")
 
+# Endfeet color
+bpy.types.Scene.NMV_EndfeetMeshColor = bpy.props.FloatVectorProperty(
+    name='Endfeet Color',
+    subtype='COLOR', default=nmv.enums.Color.ENDFEET, min=0.0, max=1.0,
+    description='The color of the endfeet mesh if the loaded morphology is an astrocyte')
+
 # The color of the nucleus mesh
 bpy.types.Scene.NMV_NucleusMeshColor = bpy.props.FloatVectorProperty(
     name="Nucleus Color", subtype='COLOR',

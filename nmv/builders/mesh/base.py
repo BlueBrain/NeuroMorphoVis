@@ -71,6 +71,9 @@ class MeshBuilderBase:
         # A list of the colors/materials of the apical dendrite
         self.apical_dendrites_materials = None
 
+        # A list of all the materials of the endfeet
+        self.endfeet_materials = None
+
         # A list of the colors/materials of the spines
         self.spines_materials = None
 
@@ -195,6 +198,11 @@ class MeshBuilderBase:
             material_type=self.options.shading.mesh_material,
             name='spines_material', color=self.options.shading.mesh_spines_color)
 
+        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='endfeet', material_type=self.options.shading.mesh_material,
+            color=self.options.shading.mesh_endfeet_color,
+            number_elements=1)
+
         # Create an illumination specific for the given material
         nmv.shading.create_material_specific_illumination(self.options.shading.mesh_material)
 
@@ -227,9 +235,10 @@ class MeshBuilderBase:
                         neuron_mesh_objects.append(scene_object)
 
                 if 'Apical' in scene_object.name or \
-                        'Basal' in scene_object.name or \
-                        'Axon' in scene_object.name or \
-                        'Soma' in scene_object.name or \
+                    'Basal' in scene_object.name or \
+                    'Axon' in scene_object.name or \
+                    'Soma' in scene_object.name or \
+                    'Endfoot' in scene_object.name or \
                         self.morphology.label in scene_object.name:
                     neuron_mesh_objects.append(scene_object)
 
@@ -352,8 +361,8 @@ class MeshBuilderBase:
         this function applies only to the arbors and the soma.
         """
 
-        # Transform the neuron object to the global coordinates
-        if self.options.mesh.global_coordinates:
+        # Transform the arbors to the global coordinates if required for a circuit
+        if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
 
             # Ignore if no information is given
             if self.options.morphology.gid is None and self.morphology.original_center is None:
@@ -361,7 +370,6 @@ class MeshBuilderBase:
 
             # Make sure that a GID is selected
             if self.options.morphology.gid is not None:
-
                 nmv.logger.info('Transforming to global coordinates')
 
                 # Get neuron objects
@@ -507,6 +515,7 @@ class MeshBuilderBase:
         # Build spines from a BBP circuit
         if self.options.mesh.neuron_objects_connection == \
                 nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+
             # Get a list of all the neuron mesh objects
             mesh_objects = self.get_neuron_mesh_objects()
 
@@ -754,3 +763,25 @@ class MeshBuilderBase:
         # Adjust the texture mapping after connecting the meshes together
         self.adjust_texture_mapping_of_all_meshes()
 
+    ################################################################################################
+    # @reconstruct_endfeet
+    ################################################################################################
+    def reconstruct_endfeet(self):
+        """Reconstructs the endfeet geometry
+        """
+
+        # Header
+        nmv.logger.info('Reconstructing endfeet')
+
+        # A list of the reconstructed endfeet meshes
+        endfeet_meshes = list()
+
+        # Build the endfoot mesh
+        for endfoot in self.morphology.endfeet:
+
+            # Append the resulting mesh to the resulting meshes
+            nmv.logger.detail(endfoot.name)
+            endfeet_meshes.append(endfoot.create_geometry_with_metaballs(self.endfeet_materials[0]))
+
+        # Return the resulting list
+        return endfeet_meshes

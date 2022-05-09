@@ -77,6 +77,9 @@ class MorphologyBuilderBase:
         # A list of the colors/materials of the articulation spheres
         self.articulations_materials = None
 
+        # A list of the color/materials of the endfeet patches
+        self.endfeet_materials = None
+
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
 
@@ -99,15 +102,29 @@ class MorphologyBuilderBase:
         # Clear all the materials that are already present in the scene
         for material in bpy.data.materials:
             if 'soma_skeleton' in material.name or              \
-               'axons_skeleton' in material.name or              \
+               'axons_skeleton' in material.name or             \
                'basal_dendrites_skeleton' in material.name or   \
                'apical_dendrite_skeleton' in material.name or   \
-               'articulations' in material.name or               \
+               'articulations' in material.name or              \
+               'endfeet' in material.name or                    \
                'gray' in material.name:
 
                 nmv.utilities.disable_std_output()
                 bpy.data.materials.remove(material, do_unlink=True)
                 nmv.utilities.enable_std_output()
+
+    ################################################################################################
+    # @create_bevel_object
+    ################################################################################################
+    def create_bevel_object(self):
+        """Creates a bevel object that is used to interpolate the polylines.
+
+        :return:
+        """
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='Cross Section')
+
+        return bevel_object
 
     ################################################################################################
     # @create_soma_material
@@ -133,6 +150,15 @@ class MorphologyBuilderBase:
         self.articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='articulations', material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_articulation_color,
+            number_elements=1)
+
+    ################################################################################################
+    # @endfeet_materials
+    ################################################################################################
+    def create_endfeet_material(self):
+        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='endfeet', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_endfeet_color,
             number_elements=1)
 
     ################################################################################################
@@ -172,6 +198,9 @@ class MorphologyBuilderBase:
         # Articulations, ONLY, for the articulated reconstruction method
         self.create_articulations_material()
 
+        # Endfeet, ONLY, for the astrocyte morphologies
+        self.create_endfeet_material()
+
     ################################################################################################
     # @create_arbors_materials
     ################################################################################################
@@ -207,6 +236,9 @@ class MorphologyBuilderBase:
 
         # Articulations, ONLY, for the articulated reconstruction method
         self.create_articulations_material()
+
+        # Endfeet, ONLY, for the astrocyte morphologies
+        self.create_endfeet_material()
 
     ################################################################################################
     # @create_alternating_materials
@@ -256,6 +288,9 @@ class MorphologyBuilderBase:
         # Articulations, ONLY, for the articulated reconstruction method
         self.create_articulations_material()
 
+        # Endfeet, ONLY, for the astrocyte morphologies
+        self.create_endfeet_material()
+
     ################################################################################################
     # @create_colormap_materials
     ################################################################################################
@@ -290,6 +325,9 @@ class MorphologyBuilderBase:
 
         # Articulations, ONLY, for the articulated reconstruction method
         self.create_articulations_material()
+
+        # Endfeet, ONLY, for the astrocyte morphologies
+        self.create_endfeet_material()
 
     ################################################################################################
     # @update_sections_branching
@@ -477,6 +515,7 @@ class MorphologyBuilderBase:
                'basal_dendrites_skeleton' in material.name or \
                'apical_dendrite_skeleton' in material.name or \
                'articulation' in material.name or \
+               'endfeet' in material.name or \
                'gray' in material.name:
 
                 nmv.utilities.disable_std_output()
@@ -510,6 +549,10 @@ class MorphologyBuilderBase:
                 name='articulation', material_type=self.options.shading.morphology_material,
                 color=self.options.shading.morphology_articulation_color)
 
+        self.endfeet_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='endfeet', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_endfeet_color)
+
         # Create an illumination specific for the given material
         nmv.shading.create_material_specific_illumination(self.options.shading.morphology_material)
 
@@ -521,7 +564,7 @@ class MorphologyBuilderBase:
         """
 
         # Transform the arbors to the global coordinates if required for a circuit
-        if self.options.morphology.global_coordinates:
+        if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
 
             # Ignore if no information is given
             if self.options.morphology.gid is None and self.morphology.original_center is None:

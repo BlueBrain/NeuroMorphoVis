@@ -141,6 +141,12 @@ class Morphology:
         # Statistical analysis data of each arbor in the morphology
         self.arbors_stats = [nmv.analysis.ArborStats()] * self.get_total_number_of_arbors()
 
+        # If this is an astrocyte morphologies, this should be a list of endfeet, otherwise None
+        self.endfeet = list()
+
+        # If the loaded morphology is an astrocyte, update this flag to True
+        self.is_astrocyte = False
+
     ################################################################################################
     # @build_samples_lists_recursively
     ################################################################################################
@@ -202,6 +208,27 @@ class Morphology:
 
         if self.apical_dendrites is None:
             return False
+        return True
+
+    ################################################################################################
+    # @has_endfeet
+    ################################################################################################
+    def has_endfeet(self):
+        """Checks if the morphology has endfeet or not.
+
+        :return:
+            True or False.
+        """
+
+        # None by default returns no endfeet
+        if self.endfeet is None:
+            return False
+
+        # Assuming an empty list, then has no endfeet
+        if len(self.endfeet) == 0:
+            return False
+
+        # Otherwise, yes it has endfeet
         return True
 
     ################################################################################################

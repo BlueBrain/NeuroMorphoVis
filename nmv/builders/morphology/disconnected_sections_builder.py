@@ -671,13 +671,12 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
 
-        nmv.logger.info('Updating radii')
+        # Updating radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
-        bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+        bevel_object = self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
@@ -708,6 +707,11 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             self.draw_meta_balls_soma()
         else:
             self.draw_soma()
+
+        # Draw every endfoot in the list and append the resulting mesh to the collector
+        for endfoot in self.morphology.endfeet:
+            self.morphology_objects.append(endfoot.create_surface_patch(
+                material=self.endfeet_materials[0]))
 
         # Transforming to global coordinates
         self.transform_to_global_coordinates()
@@ -1008,6 +1012,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                                  nmv.enums.Camera.View.SIDE,
                                  nmv.enums.Camera.View.TOP],
                                 ['front', 'side', 'top']):
+
             nmv.rendering.render(
                 bounding_box=bounding_box,
                 camera_view=view,

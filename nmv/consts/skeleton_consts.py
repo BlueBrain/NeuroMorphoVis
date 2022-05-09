@@ -117,6 +117,27 @@ class Skeleton:
     # This is only used for glia, but not used for neurons
     H5_PERIMETERS_DIRECTORY = '/perimeters'
 
+    # Structure directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_STRUCTURE_DIRECTORY = '/structure'
+
+    # Points directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_POINTS_DIRECTORY = '/points'
+
+    # Coordinates directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_COORDINATES_DIRECTORY = '/coordinates'
+
+    # Endfeet vertex index directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_ENDFEET_VERTEX_INDEX_DIRECTORY = '/endfeet_vertex_indices'
+
+    # Endfeet vertex data directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_ENDFEET_VERTEX_DATA_DIRECTORY = '/endfeet_vertex_data'
+
+    # Endfeet triangle index directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_ENDFEET_TRIANGLES_INDEX_DIRECTORY = '/endfeet_triangle_indices'
+
+    # Endfeet triangle data directory of astrocytes encoded in h5 files with endfeet data included
+    H5_ASTROCYTE_ENDFEET_TRIANGLES_DATA_DIRECTORY = '/endfeet_triangle_data'
+
     # The index of the x-coordinates of a sample in an H5 file
     H5_SAMPLE_X_COORDINATES_IDX = 0
 

@@ -50,6 +50,9 @@ class MorphologyOptions:
         # Morphology label (based on the GID or the morphology file name)
         self.label = None
 
+        # Center at the origin, by default it is True
+        self.center_at_origin = True
+
         # RECONSTRUCTION OPTIONS ###################################################################
         # Arbor style, ORIGINAL by default
         self.arbor_style = nmv.enums.Skeleton.Style.ORIGINAL
