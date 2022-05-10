@@ -33,7 +33,7 @@ def add_distributions(analysis_distributions,
         here.
     :param maximum_branching_order:
         The maximum branching order of the morphology. If not given or equal to None, it is
-        automatically computed from the the input distributions.
+        automatically computed from the input distributions.
     """
 
     # Make sure that the distributions are not empty

@@ -39,14 +39,14 @@ from .text import *
 # @get_user_friendly_scale_bar_length
 ####################################################################################################
 def get_user_friendly_scale_bar_length(view_length):
-    """Scale bars must be in a human readable format. To obtain a human readable or user friendly
+    """Scale bars must be in a human-readable format. To obtain a human-readable or user-friendly
     value, we limit the options to numbers like 5, 10, 20, 25, 50, 100, 150, 200 um, etc...
 
     :param view_length:
         The current view size as calculated from the bounding box of the objects located in
         the scene.
     :return:
-        The scale bar length in a human readable form.
+        The scale bar length in a human-readable form.
     """
 
     if view_length < 50:
@@ -179,7 +179,7 @@ def create_default_scale_bar_legend(scale_bar_length,
     value_text_object = nmv.scene.convert_object_to_mesh(
         create_text_object(text_string='%d \u03BCm' % int(scale_bar_length), name='Value'))
 
-    # Scale the text value a little bit (0.7 of the size to fall within the segment)
+    # Scale the text value a little (0.7 of the size to fall within the segment)
     nmv.scene.scale_object_uniformly(scene_object=value_text_object, scale_factor=0.7)
 
     # Rotate the text object 

@@ -41,7 +41,7 @@ def create_text_object(text_string,
     text_curve.body = text_string
 
     # Update the font, for the moment use Arial
-    text_curve.font = bpy.data.fonts['ArialMT']
+    text_curve.font = bpy.data.fonts['Arial Regular']
 
     # Align the font in the center to allow adjusting the position of the handle easily
     text_curve.align_x = 'CENTER'
