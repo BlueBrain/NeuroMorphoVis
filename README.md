@@ -29,6 +29,11 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 + [Blender 2.80](http://download.blender.org/release/Blender2.80/)
 + [Blender 2.81](http://download.blender.org/release/Blender2.81/)
 + [Blender 2.82](http://download.blender.org/release/Blender2.82/)
++ [Blender 2.82](http://download.blender.org/release/Blender2.82/)
++ [Blender 2.91](http://download.blender.org/release/Blender2.91/)
++ [Blender 3.1](http://download.blender.org/release/Blender2.1/)
+
+Nevertheless, it is recommended to avoid version 2.79 and use version 3.1. 
 
 _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender__ that can be easily extracted and used [out-of-the-box](https://en.wikipedia.org/wiki/Out_of_the_box_(feature)). The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective platform. This package (released every minor version update of the software) is recommended for __Windows users__ or those who cannot use the [__Terminal__](https://en.wikipedia.org/wiki/Unix_shell). Otherwise, users can just download an installation script that will automatically install the entire package to a user-specified directory. This script __does not__ require __sudo__ permissions. 
 
