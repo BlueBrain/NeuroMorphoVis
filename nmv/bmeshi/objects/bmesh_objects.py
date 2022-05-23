@@ -102,7 +102,9 @@ def create_ico_sphere(radius=1,
     bmesh_ico_sphere = bmesh.new()
 
     # Create an ico-sphere
-    if nmv.utilities.is_blender_280():
+    if nmv.utilities.is_blender_300():
+        bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, radius=radius)
+    elif nmv.utilities.is_blender_280():
         bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, diameter=radius)
     else:
         bmesh.ops.create_icosphere(bmesh_ico_sphere, subdivisions=subdivisions, diameter=radius)

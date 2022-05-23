@@ -823,6 +823,47 @@ def create_glossy_material(name,
 
 
 ####################################################################################################
+# @create_glossy_blending_material
+####################################################################################################
+def create_glossy_blending_material(name,
+                                    color=nmv.consts.Color.WHITE):
+    """Creates a glossy shader.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    current_scene.render.engine = 'BLENDER_EEVEE'
+
+    # Use 64 samples per pixel to create a nice image.
+    bpy.context.scene.cycles.samples = 64
+
+    # Import the material from the library
+    material_reference = import_shader(shader_name='glossy-blending')
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[0] = color[0]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[1] = color[1]
+    material_reference.node_tree.nodes["RGB"].outputs[0].default_value[2] = color[2]
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
 # @create_glossy_material
 ####################################################################################################
 def create_glossy_bumpy_material(name,
@@ -917,6 +958,10 @@ def create_material(name,
     # Glossy
     elif material_type == nmv.enums.Shader.GLOSSY:
         return create_glossy_material(name='%s_color' % name, color=color)
+
+    # Glossy blending
+    elif material_type == nmv.enums.Shader.GLOSSY_BLENDING:
+        return create_glossy_blending_material(name='%s_color' % name, color=color)
 
     # Glossy
     elif material_type == nmv.enums.Shader.WAX:

@@ -590,8 +590,6 @@ class H5Reader:
         # Build the soma
         soma = self.build_soma()
 
-
-
         # Construct the morphology skeleton in NMV format
         nmv_morphology = nmv.skeleton.Morphology(soma=soma,
                                                  axons=axons,

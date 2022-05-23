@@ -113,6 +113,21 @@ def get_blender_version_string():
 
 
 ####################################################################################################
+# @is_blender_300
+####################################################################################################
+def is_blender_300():
+    """Checks if the used version of Blender is greater than 3.0 or not.
+
+    :return:
+        True if this version of Blender is 3.1 or greater to work with the new API, otherwise False.
+    """
+
+    if get_blender_version() >= (3, 0, 0):
+        return True
+    return False
+
+
+####################################################################################################
 # @is_blender_280
 ####################################################################################################
 def is_blender_280():
@@ -140,4 +155,5 @@ def is_blender_290():
     if get_blender_version() >= (2, 90, 0):
         return True
     return False
+
 

@@ -47,6 +47,9 @@ class Shader:
     # Glossy shader
     GLOSSY = 'GLOSSY_SHADER'
 
+    # Glossy blending shader
+    GLOSSY_BLENDING = 'GLOSSY_BLENDING_SHADER'
+
     # Wax shader
     WAX = 'WAX_SHADER'
 
@@ -102,6 +105,8 @@ class Shader:
             return Shader.TRANSPARENT
         elif shader_type == 'glossy':
             return Shader.GLOSSY
+        elif shader_type == 'glossy-blending':
+            return Shader.GLOSSY_BLENDING
         elif shader_type == 'glossy-bumpy':
             return Shader.GLOSSY_BUMPY
         elif shader_type == 'lambert':
@@ -165,6 +170,11 @@ class Shader:
 
         (GLOSSY,
          'Plastic',
+         "Creates high quality images. This shader might take up to few hours to create a single "
+         "image depending on the complexity of the neuron"),
+
+        (GLOSSY_BLENDING,
+         'Glossy Blending',
          "Creates high quality images. This shader might take up to few hours to create a single "
          "image depending on the complexity of the neuron"),
 
