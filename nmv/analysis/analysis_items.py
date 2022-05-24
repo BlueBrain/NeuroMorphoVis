@@ -109,7 +109,19 @@ ui_per_arbor_analysis_items = [
                  name='Avg. # Samples / Section',
                  kernel=kernel_average_number_samples_per_section,
                  description='The average number of samples per section',
-                 data_format='INT'),
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='AvgNumberSamplePerMicron',
+                 name='Avg. # Samples / Micron',
+                 kernel=kernel_average_number_samples_per_micron_per_section,
+                 description='The average number of samples per micron',
+                 data_format='FLOAT'),
+
+    AnalysisItem(variable='AvgSamplingDistance',
+                 name='Avg. Sampling Distance',
+                 kernel=kernel_average_sampling_distance_per_section,
+                 description='The average sampling step (or distance)',
+                 data_format='FLOAT'),
 
     AnalysisItem(variable='MinSampleRadius',
                  name='Min. Sample Radius',

@@ -21,25 +21,6 @@ import nmv.analysis
 
 
 ####################################################################################################
-# @compute_number_of_samples_per_section_distributions
-####################################################################################################
-def compute_number_of_samples_per_section_distributions(section,
-                                                        analysis_data):
-    """Computes the number of samples of a given section and its branching order.
-    The analysis result will be appended as a list of only pair of items, where the first item is
-    the branching order and the second one is the number of samples. This list will be appended
-    to the given analysis data list.
-
-    :param section:
-        A given section to get analyzed.
-    :param analysis_data:
-        A list to collect the analysis data.
-    """
-
-    analysis_data.append([section.branching_order, len(section.samples)])
-
-
-####################################################################################################
 # @compute_number_of_samples_per_section
 ####################################################################################################
 def compute_number_of_samples_per_section(section,
@@ -63,6 +44,99 @@ def compute_number_of_samples_per_section(section,
 
 
 ####################################################################################################
+# @compute_number_of_samples_per_section_distributions
+####################################################################################################
+def compute_number_of_samples_per_section_distributions(section,
+                                                        analysis_data):
+    """Computes the number of samples of a given section and its branching order.
+    The analysis result will be appended as a list of only a pair of items, where the first item is
+    the branching order and the second one is the number of samples. This list will be appended
+    to the given analysis data list.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    analysis_data.append([section.branching_order, len(section.samples)])
+
+
+####################################################################################################
+# @compute_number_of_samples_per_micron_per_section
+####################################################################################################
+def compute_number_of_samples_per_micron_per_section(section,
+                                                     analysis_data):
+    """Computes the number of samples per micron for a given section.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Number of samples
+    number_samples = len(section.samples)
+
+    # Section length
+    section_length = nmv.analysis.compute_section_length(section)
+
+    # Ration
+    number_samples_per_micron = (1.0 * number_samples / section_length)
+
+    # Append the results to the analysis data
+    analysis_data.append(number_samples_per_micron)
+
+
+####################################################################################################
+# @compute_average_sampling_distance_per_section
+####################################################################################################
+def compute_average_sampling_distance_per_section(section,
+                                                  analysis_data):
+    """Computes the average sampling distance for a given section.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # A list to contain the sampling steps along the section
+    sampling_steps = list()
+
+    # Compute the sampling steps and append them to the list
+    for i in range(len(section.samples) - 1):
+        sampling_step = (section.samples[i + 1] - section.samples[i]).length
+        sampling_steps.append(sampling_step)
+
+    # Compute the average sampling step
+    average_sampling_step = 1.0 * sum(sampling_steps) / len(sampling_steps)
+
+    # Append the results to the analysis data
+    analysis_data.append(average_sampling_step)
+
+
+####################################################################################################
+# @compute_number_of_samples_per_section_distributions
+####################################################################################################
+def compute_number_of_samples_per_micron_per_section_distributions(section,
+                                                                   analysis_data):
+    """Computes the number of samples per micron of a given section and its branching order.
+    The analysis result will be appended as a list of only a pair of items, where the first item is
+    the branching order and the second one is the number of samples. This list will be appended
+    to the given analysis data list.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    analysis_data.append([section.branching_order,
+                          len(section.samples) / nmv.analysis.compute_section_length(section)])
+
+
+####################################################################################################
 # @analyze_number_of_samples_per_section
 ####################################################################################################
 def analyze_number_of_samples_per_section(section,
@@ -83,6 +157,27 @@ def analyze_number_of_samples_per_section(section,
     # Add to the collecting list
     analysis_data.append(data)
 
+
+####################################################################################################
+# @analyze_number_of_samples_per_section
+####################################################################################################
+def analyze_number_of_samples_per_micron_per_section(section,
+                                                     analysis_data):
+    """Computes the number of samples per micron of a given section w.r.t the branching order.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData
+    data.value = (1.0 * len(section.samples)) / nmv.analysis.compute_section_length(section)
+    data.branching_order = section.branching_order
+
+    # Add to the collecting list
+    analysis_data.append(data)
 
 ####################################################################################################
 # @compute_number_of_segments_per_section

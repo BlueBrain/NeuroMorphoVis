@@ -125,6 +125,42 @@ def kernel_average_number_samples_per_section(morphology):
 
 
 ####################################################################################################
+# @kernel_average_number_samples_per_micron_per_section
+####################################################################################################
+def kernel_average_number_samples_per_micron_per_section(morphology):
+    """Analyses the average number of samples per micron per section of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_number_samples_per_micron_of_arbor_distributions,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @kernel_average_sampling_distance_per_section
+####################################################################################################
+def kernel_average_sampling_distance_per_section(morphology):
+    """Analyses the average sampling distance section of the given morphology.
+
+    :param morphology:
+        A given morphology skeleton to analyse.
+    :return:
+        The result of the analysis operation.
+    """
+
+    return nmv.analysis.invoke_kernel(
+        morphology,
+        nmv.analysis.compute_average_sampling_distance_arbor_distributions,
+        nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
 # @kernel_distance_from_initial_sample_to_origin
 ####################################################################################################
 def kernel_distance_from_initial_sample_to_origin(morphology):

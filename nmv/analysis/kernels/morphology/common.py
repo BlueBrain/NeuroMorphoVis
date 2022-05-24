@@ -271,7 +271,7 @@ def compute_average_analysis_result_of_morphology(analysis_result):
     for result in all_arbors_results:
         analysis_result.morphology_result += result
     analysis_result.morphology_result /= len(all_arbors_results)
-    analysis_result.morphology_result = int(analysis_result.morphology_result)
+    analysis_result.morphology_result = analysis_result.morphology_result
 
 
 ####################################################################################################

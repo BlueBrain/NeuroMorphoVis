@@ -240,6 +240,83 @@ def compute_average_number_samples_per_section_of_arbor(arbor):
 
 
 ####################################################################################################
+# @compute_average_number_samples_per_micron_of_arbor_distributions
+####################################################################################################
+def compute_average_number_samples_per_micron_of_arbor_distributions(arbor):
+    """Computes the number of samples per micron along the given arbor with respect to different
+    branching orders.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Total number of samples of the arbor w.r.t the branching order.
+    """
+
+    # A list that will be filled with the results recursively
+    analysis_data = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_number_of_samples_per_micron_per_section,
+          analysis_data])
+
+    # The total
+    total = 0.0
+
+    # At least one element
+    if len(analysis_data) == 0:
+        return 0
+
+    # Iterate and sum up
+    for i in analysis_data:
+
+        # Add to the total number of samples
+        total += i
+
+    # Return the average number of samples per section
+    return total / len(analysis_data)
+
+
+####################################################################################################
+# @compute_average_sampling_distance_arbor_distributions
+####################################################################################################
+def compute_average_sampling_distance_arbor_distributions(arbor):
+    """Computes the number of samples per micron along the given arbor with respect to different
+    branching orders.
+
+    :param arbor:
+        A given arbor to analyze.
+    :return
+        Total number of samples of the arbor w.r.t the branching order.
+    """
+
+    # A list that will be filled with the results recursively
+    analysis_data = list()
+
+    # Compute the number of segments of each section individually
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_average_sampling_distance_per_section,
+          analysis_data])
+
+    # The total
+    total = 0.0
+
+    # At least one element
+    if len(analysis_data) == 0:
+        return 0
+
+    # Iterate and sum up
+    for i in analysis_data:
+        # Add to the total number of samples
+        total += i
+
+    # Return the average number of samples per section
+    return total / len(analysis_data)
+
+
+####################################################################################################
 # @compute_number_of_zero_radius_samples_per_section_of_arbor
 ####################################################################################################
 def compute_number_of_zero_radius_samples_per_section_of_arbor(arbor):
