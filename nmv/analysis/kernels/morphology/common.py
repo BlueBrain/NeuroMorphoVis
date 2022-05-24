@@ -126,6 +126,28 @@ def compute_total_analysis_result_of_morphology(analysis_result):
 
 
 ####################################################################################################
+# @compile_analysis_result_for_morphology
+####################################################################################################
+def compile_analysis_result_for_morphology(analysis_result):
+
+    analysis_result.morphology_result = list()
+
+    if analysis_result.apical_dendrites_result is not None:
+        for result in analysis_result.apical_dendrites_result:
+            analysis_result.morphology_result.append(result)
+
+    # Basal dendrites
+    if analysis_result.basal_dendrites_result is not None:
+        for result in analysis_result.basal_dendrites_result:
+            analysis_result.morphology_result.append(result)
+
+        # Axon
+    if analysis_result.axons_result is not None:
+        for result in analysis_result.axons_result:
+            analysis_result.morphology_result.append(result)
+
+
+####################################################################################################
 # @compute_minimum_analysis_result_of_morphology
 ####################################################################################################
 def compute_minimum_analysis_result_of_morphology(analysis_result):
@@ -343,6 +365,7 @@ def invoke_kernel(morphology,
 
     # Return the analysis result of the entire morphology
     return analysis_result
+
 
 
 ####################################################################################################

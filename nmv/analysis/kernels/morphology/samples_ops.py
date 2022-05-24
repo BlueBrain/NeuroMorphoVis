@@ -437,3 +437,39 @@ def kernel_average_partition_asymmetry(morphology):
         morphology,
         nmv.analysis.compute_average_partition_asymmetry_of_arbor,
         nmv.analysis.compute_average_analysis_result_of_morphology)
+
+
+####################################################################################################
+# @compute_distribution_number_of_samples_of_morphology
+####################################################################################################
+def compute_distribution_number_of_samples_of_morphology(morphology):
+
+    # Apply the kernel
+    analysis_result = nmv.analysis.apply_kernel_to_morphology_to_collect_distributions(
+        *[morphology,
+          nmv.analysis.compute_distribution_number_of_samples_per_arbor])
+
+    # Compile the list for the entire morphology
+    nmv.analysis.compile_analysis_result_for_morphology(analysis_result)
+
+    # Return the results
+    return analysis_result
+
+
+####################################################################################################
+# @compute_distribution_segments_length_of_morphology
+####################################################################################################
+def compute_distribution_samples_radii_of_morphology(morphology):
+
+    # Apply the kernel
+    analysis_result = nmv.analysis.apply_kernel_to_morphology_to_collect_distributions(
+        *[morphology,
+          nmv.analysis.compute_distribution_samples_radii_per_arbor])
+
+    # Compile the list for the entire morphology
+    nmv.analysis.compile_analysis_result_for_morphology(analysis_result)
+
+    # Return the results
+    return analysis_result
+
+

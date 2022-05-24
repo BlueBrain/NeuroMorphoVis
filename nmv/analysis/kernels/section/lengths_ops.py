@@ -16,6 +16,10 @@
 ####################################################################################################
 
 
+# Internal imports
+import nmv.analysis
+
+
 ####################################################################################################
 # @compute_segments_lengths
 ####################################################################################################
@@ -188,3 +192,47 @@ def identify_short_sections(section,
             analysis_string = 'Section[%s : %d] : Length[Current : %f, Minimal : %f]' % (
                 section.get_type_string(), section.index, section_length, diameters_sum)
             short_sections.append(analysis_string)
+
+
+####################################################################################################
+# @compute_distribution_segments_length_per_section
+####################################################################################################
+def compute_distribution_segments_length_per_section(section,
+                                                     analysis_data):
+    """Computes the distribution of segments' lengths  along a given arbor.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # The section must have at least two samples to form one segment
+    if len(section.samples) < 2:
+        return
+
+    # A list to collect the results
+    segments_lengths = list()
+
+    # Iterate over each segment in the section, and calculate the length
+    for i in range(len(section.samples) - 1):
+        segments_lengths.append((section.samples[i + 1].point - section.samples[i].point).length)
+
+    # Compute the average segment length
+    average_segment_length = (1.0 * sum(segments_lengths)) / len(segments_lengths)
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData()
+
+    # Use the value to store the average
+    data.value = average_segment_length
+
+    # Use the distribution field to store the distribution of the lengths
+    data.distribution = segments_lengths
+
+    # Other section-related parameters
+    data.branching_order = section.branching_order
+    data.section_index = section.index
+
+    # Add to the collecting list
+    analysis_data.append(data)

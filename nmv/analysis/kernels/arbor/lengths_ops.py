@@ -573,3 +573,21 @@ def compute_average_hillman_taper_of_arbor(arbor):
 
     # Return the average by normalizing the total one
     return total / len(_hillman_taper_values)
+
+
+####################################################################################################
+# @compute_distribution_segments_length_per_arbor
+####################################################################################################
+def compute_distribution_segments_length_per_arbor(arbor):
+
+    # A list that will be filled with the results recursively
+    analysis_data = list()
+
+    # Apply the operation to the arbor
+    nmv.skeleton.ops.apply_operation_to_arbor(
+        *[arbor,
+          nmv.analysis.compute_distribution_segments_length_per_section,
+          analysis_data])
+
+    # Return a reference to the analysis data list
+    return analysis_data

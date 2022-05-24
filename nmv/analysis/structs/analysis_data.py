@@ -29,22 +29,33 @@ class AnalysisData:
     ################################################################################################
     def __init__(self,
                  value=None,
+                 distribution=None,
                  branching_order=None,
+                 section_index=None,
                  radial_distance=None):
         """Constructor
 
         :param value:
             The value obtained from the analysis kernel on every section in the morphology.
+        :param distribution:
+            The distribution obtained from the analysis kernel on every section in the morphology.
         :param branching_order:
             The branching order at a specific sample.
         :param radial_distance:
              The radial distance from a given sample to the origin
         """
-        # The value obtained from the analysis kernel on every section in the morphology.
+
+        # The value obtained from the analysis kernel on every section in the morphology
         self.value = value
 
-        # The branching order at a specific sample.
+        # The distribution obtained from the analysis kernel on every section in the morphology
+        self.distribution = distribution
+
+        # The branching order at a specific section
         self.branching_order = branching_order
+
+        # The index of the section
+        self.section_index = section_index
 
         # The radial distance from a given sample to the origin
         self.radial_distance = radial_distance

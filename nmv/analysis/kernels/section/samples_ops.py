@@ -106,7 +106,7 @@ def compute_average_sampling_distance_per_section(section,
 
     # Compute the sampling steps and append them to the list
     for i in range(len(section.samples) - 1):
-        sampling_step = (section.samples[i + 1] - section.samples[i]).length
+        sampling_step = (section.samples[i + 1].point - section.samples[i].point).length
         sampling_steps.append(sampling_step)
 
     # Compute the average sampling step
@@ -134,28 +134,6 @@ def compute_number_of_samples_per_micron_per_section_distributions(section,
 
     analysis_data.append([section.branching_order,
                           len(section.samples) / nmv.analysis.compute_section_length(section)])
-
-
-####################################################################################################
-# @analyze_number_of_samples_per_section
-####################################################################################################
-def analyze_number_of_samples_per_section(section,
-                                          analysis_data):
-    """Computes the number of samples of a given section.
-
-    :param section:
-        A given section to get analyzed.
-    :param analysis_data:
-        A list to collect the analysis data.
-    """
-
-    # Analysis data
-    data = nmv.analysis.AnalysisData
-    data.value = len(section.samples)
-    data.branching_order = section.branching_order
-
-    # Add to the collecting list
-    analysis_data.append(data)
 
 
 ####################################################################################################
@@ -838,3 +816,73 @@ def get_number_of_samples_per_section_data_of_section(section,
 
     # Add to the collecting list
     analysis_data.append(data)
+
+
+####################################################################################################
+# @compute_distribution_number_of_samples_per_section
+####################################################################################################
+def compute_distribution_number_of_samples_per_section(section,
+                                                       analysis_data):
+    """Computes the number of samples of a given section with respect to the branching order of
+    the section. Store the result in the @analysis_data.value parameter.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData()
+    data.value = len(section.samples)
+    data.branching_order = section.branching_order
+    data.section_index = section.index
+
+    # Add to the collecting list
+    analysis_data.append(data)
+
+
+####################################################################################################
+# @compute_distribution_samples_radii_per_section
+####################################################################################################
+def compute_distribution_samples_radii_per_section(section,
+                                                   analysis_data):
+    """Computes the distribution of samples' radii  along a given section.
+
+    :param section:
+        A given section to get analyzed.
+    :param analysis_data:
+        A list to collect the analysis data.
+    """
+
+    # The section must have at least two samples to form one segment
+    if len(section.samples) < 2:
+        return
+
+    # A list to collect the results
+    samples_radii = list()
+
+    # Per sample
+    for i_sample in section.samples:
+        samples_radii.append(i_sample.radius)
+
+    # Compute the average segment length
+    average_sample_radius = (1.0 * sum(samples_radii)) / len(samples_radii)
+
+    # Analysis data
+    data = nmv.analysis.AnalysisData()
+
+    # Use the value to store the average
+    data.value = average_sample_radius
+
+    # Use the distribution field to store the distribution of the lengths
+    data.distribution = samples_radii
+
+    # Other section-related parameters
+    data.branching_order = section.branching_order
+    data.section_index = section.index
+
+    # Add to the collecting list
+    analysis_data.append(data)
+
+

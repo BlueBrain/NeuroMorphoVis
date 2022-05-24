@@ -69,6 +69,75 @@ def apply_analysis_operation_to_arbor(*args):
 ####################################################################################################
 # @apply_analysis_operation_to_morphology
 ####################################################################################################
+def apply_kernel_to_morphology_to_collect_distributions(*args):
+
+    # A structure to contain the analysis results of the entire morphology
+    analysis_result = nmv.analysis.MorphologyAnalysisResult()
+
+    # The morphology is the first argument
+    morphology = args[0]
+
+    # The kernel (or analysis function) is the second argument
+    kernel = args[1]
+
+    # Apical dendrite, if any
+    if morphology.has_apical_dendrites():
+
+        # Create an empty list to collect the analysis data
+        analysis_result.apical_dendrites_result = list()
+
+        # Dendrite by dendrite
+        for arbor in morphology.apical_dendrites:
+
+            # Construct arbor arguments list, not that the arbor is the first argument in the list
+            arbor_args = [arbor]
+            for i in range(2, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the kernel to the arbor and append the result
+            analysis_result.apical_dendrites_result.extend(kernel(*arbor_args))
+
+    # Basal dendrites
+    if morphology.has_basal_dendrites():
+
+        # Create an empty list to collect the resulting data
+        analysis_result.basal_dendrites_result = list()
+
+        # Dendrite by dendrite
+        for arbor in morphology.basal_dendrites:
+
+            # Construct arbor arguments list, not that the arbor is the first argument in the list
+            arbor_args = [arbor]
+            for i in range(2, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the operation/filter to the arbor
+            analysis_result.basal_dendrites_result.extend(kernel(*arbor_args))
+
+    # Axons
+    if morphology.has_axons():
+
+        # Create an empty list to collect the resulting data
+        analysis_result.axons_result = list()
+
+        # Axon by axon, if any
+        for arbor in morphology.axons:
+
+            # Construct arbor arguments list, not that the arbor is the first argument in the list
+            arbor_args = [arbor]
+            for i in range(2, len(args)):
+                arbor_args.append(args[i])
+
+            # Apply the kernel to the arbor
+            analysis_result.axons_result.extend(kernel(*arbor_args))
+
+    # Return the structure that contains the analysis result
+    return analysis_result
+
+
+####################################################################################################
+# @apply_analysis_operation_to_morphology
+####################################################################################################
 def apply_analysis_operation_to_morphology(*args):
     """Apply a given function/filter/operation to a given morphology object including all of its
     arbors recursively.
