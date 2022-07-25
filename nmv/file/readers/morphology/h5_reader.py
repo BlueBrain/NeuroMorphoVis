@@ -225,17 +225,16 @@ class H5Reader:
 
             # Vertices
             endfoot_points = [
-                Vector((vertex_data[j][0], vertex_data[j][1], vertex_data[j][2], vertex_data[j][3]))
+                Vector((vertex_data[j][0] - self.original_centroid[0],
+                        vertex_data[j][1] - self.original_centroid[1],
+                        vertex_data[j][2] - self.original_centroid[2], vertex_data[j][3]))
                 for j in range(vertex_start_index, vertex_last_index + 1)]
             endfeet_points.append(endfoot_points)
 
         # For every endfoot, collect the triangles and points in endfeet
         for i in range(number_endfeet):
 
-            if i == 0:
-                vertex_index_shift = 0
-            else:
-                vertex_index_shift = int(vertex_indices[i][0])
+            vertex_index_shift = int(vertex_indices[i][0])
 
             # Triangles indices
             triangle_start_index = triangle_indices[i][0]
