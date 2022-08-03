@@ -81,7 +81,11 @@ def compute_number_of_samples_per_micron_per_section(section,
     # Section length
     section_length = nmv.analysis.compute_section_length(section)
 
-    # Ration
+    if section_length < 0.000001:
+        nmv.logger.warning('Zero-length section [%d]' % section.index)
+        return
+
+    # Ratio
     number_samples_per_micron = (1.0 * number_samples / section_length)
 
     # Append the results to the analysis data
@@ -109,11 +113,14 @@ def compute_average_sampling_distance_per_section(section,
         sampling_step = (section.samples[i + 1].point - section.samples[i].point).length
         sampling_steps.append(sampling_step)
 
-    # Compute the average sampling step
-    average_sampling_step = 1.0 * sum(sampling_steps) / len(sampling_steps)
+    # If we have at least a single step
+    if len(sampling_steps) > 0:
 
-    # Append the results to the analysis data
-    analysis_data.append(average_sampling_step)
+        # Compute the average sampling step
+        average_sampling_step = 1.0 * sum(sampling_steps) / len(sampling_steps)
+
+        # Append the results to the analysis data
+        analysis_data.append(average_sampling_step)
 
 
 ####################################################################################################
@@ -156,6 +163,7 @@ def analyze_number_of_samples_per_micron_per_section(section,
 
     # Add to the collecting list
     analysis_data.append(data)
+
 
 ####################################################################################################
 # @compute_number_of_segments_per_section
