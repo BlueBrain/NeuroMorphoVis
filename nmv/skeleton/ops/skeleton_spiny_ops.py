@@ -36,7 +36,7 @@ import nmv.physics
 
 
 ####################################################################################################
-# @get_random_spines_locations_and_normals_across_segments
+# @get_random_spines_across_segments
 ####################################################################################################
 def get_random_spines_across_segments(section,
                                       number_of_spines,
@@ -80,7 +80,7 @@ def get_random_spines_across_segments(section,
         # Delete the segment mesh
         nmv.scene.delete_object_in_scene(segment_mesh)
 
-    # Extend the results with the the constructed list
+    # Extend the results with the constructed list
     result.extend(spines_locations_and_normals)
 
 
@@ -263,34 +263,62 @@ def construct_polyline_mesh(polyline_data,
     return polyline_mesh
 
 
+####################################################################################################
+# @get_nearest_sample_on_section_to_point
+####################################################################################################
 def get_nearest_sample_on_section_to_point(section,
                                            point):
+    """Gets the nearest morphological sample along a give section from a given point.
 
-    minimum_distance = 100000
+    :param section:
+        The input section.
+    :param point:
+        The input point.
+    :return:
+        Nearest sample to the given point.
+    """
+
+    # Comparison parameter
+    minimum_distance = 100000000
+
+    # Initially, it has to be set to None in case we did not find any sample
     nearest_sample = None
 
+    # Iterate to find the nearest sample
     for sample in section.samples:
+
+        # Compute the distance between the point and the sample
         distance = (point - sample.point).length
+
+        # Compare and update
         if distance < minimum_distance:
             minimum_distance = distance
             nearest_sample = sample
 
+    # Return a reference to the nearest sample
     return nearest_sample
 
 
-
-def get_random_spines_on_section_recursively(current_branching_level,
-                                 max_branching_order,
-                                 section,
-                                 factor=1,
-                                 spines_list=[]):
+####################################################################################################
+# @get_random_spines_on_section_recursively
+####################################################################################################
+def get_random_spines_on_section_recursively(max_branching_order,
+                                             section,
+                                             number_spines_per_micron=1,
+                                             spines_list=[]):
     """This function takes an input section and computes random attributes for the spines for a
     given morphology that is not in a circuit. These attributes include locations of the spines,
     their direction that is represented by a random normal on the surface of the section and a scale
     value that is proportional to the size of the section (based on its average diameter).
 
+    :param max_branching_order:
+        The maximum branching order.
     :param section:
-    :return:
+        A given section.
+    :param number_spines_per_micron:
+        The spine density factor, ideally 1 per micron.
+    :param spines_list:
+        A list of all the reconstructed spines.
     """
 
     # If this section is axon, the return and don't add any spines
@@ -298,11 +326,8 @@ def get_random_spines_on_section_recursively(current_branching_level,
         return
 
     # If the current branching level is greater than the maximum one, exit
-    if current_branching_level[0] > max_branching_order:
+    if section.branching_order > max_branching_order:
         return
-
-    # Increment the branching level
-    current_branching_level[0] += 1
 
     # Construct a polyline that represents the section, if valid
     polyline_data = nmv.skeleton.ops.get_section_polyline_without_terminal_samples(section=section)
@@ -322,34 +347,41 @@ def get_random_spines_on_section_recursively(current_branching_level,
     # nmv.mesh.ops.apply_remesh_modifier(mesh_object=section_mesh)
     # nmv.mesh.ops.apply_quadriflow_remesh_modifier(mesh_object=section_mesh)
 
-    # Section average radius
-    section_average_radius = nmv.skeleton.ops.compute_average_section_radius(section=section)
+    # Compute section length
+    section_length = nmv.skeleton.compute_section_length(section=section)
 
-    if section_average_radius > 1.0:
-        probability = 0.2
-    elif 1.0 > section_average_radius > 0.5:
-        probability = 0.1
-    elif 0.5 > section_average_radius > 0.25:
-        probability = 0.05
-    else:
-        probability = 0.01
+    # Get the total number of spines along the section
+    total_number_of_spines = section_length * number_spines_per_micron
 
+    if 0.0 < total_number_of_spines < 1.0:
+        total_number_of_spines = 1.0
+
+    # Get a list of all the faces in the section mesh
     faces = list()
     for face in section_mesh.data.polygons:
         faces.append(face)
 
-    # Randomly selected faces
-    sampling_size = int(factor * probability * len(faces))
-    if sampling_size > len(faces):
-        sampling_size = int(probability * len(faces) * 0.5)
+    # Sample the faces list to select the faces where the spines are going to be emanated
+    sampled = random.sample(faces, int(total_number_of_spines))
 
-    sampled = random.sample(faces, sampling_size)
-
+    # Construct the spines
     for face in sampled:
+
+        # Make a spine object
         spine = nmv.skeleton.Spine()
+
+        # Get the nearest sample along the section to the face center
         sample = get_nearest_sample_on_section_to_point(section, face.center)
+
+        # Get the synaptic positions
         spine.post_synaptic_position = face.center - face.normal * sample.radius
         spine.pre_synaptic_position = face.center + 0.5 * face.normal
+
+        # Scale the spine size based on the radius of the sample
         spine.size = random.uniform(0.9, 1.1) * sample.radius
+
+        # Append the spine to the spine list
         spines_list.append(spine)
+
+    # Delete the section mesh object
     nmv.scene.delete_object_in_scene(section_mesh)

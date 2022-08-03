@@ -146,8 +146,8 @@ bpy.types.Scene.NMV_MeshTessellationLevel = bpy.props.FloatProperty(
 # Random spines percentage
 bpy.types.Scene.NMV_NumberSpinesPerMicron = bpy.props.FloatProperty(
     name='Density',
-    description='The number of spines per micron',
-    default=50, min=1.0, max=100.0)
+    description='The number of spines per micron (default 2 and maximum 7)',
+    default=2.0, min=1.0, max=7)
 
 bpy.types.Scene.NMV_MeshMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shader.MATERIAL_ITEMS,
@@ -289,4 +289,3 @@ bpy.types.Scene.NMV_MeshRenderingTime = bpy.props.FloatProperty(
     name='Rendering (Sec)',
     description='The time it takes to render the mesh into an image',
     default=0, min=0, max=1000000)
-

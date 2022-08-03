@@ -341,7 +341,10 @@ def install_for_mac(directory, blender_version, verbose=False):
     # Blender python
     blender_python_prefix = '%s/Contents/Resources/%s/python/bin/' % (blender_app_directory,
                                                                       blender_version)
-    blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
+    if blender_version == '3.1':
+        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
+    else:
+        blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
 
     # Pip installation
     log_process('Installing Dependencies')

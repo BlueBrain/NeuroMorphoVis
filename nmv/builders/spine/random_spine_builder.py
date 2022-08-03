@@ -34,7 +34,7 @@ import nmv.utilities
 # @RandomSpineBuilder
 ####################################################################################################
 class RandomSpineBuilder:
-    """Building and integrating random spine on individual morphology without a BBP circuit.
+    """Building and integrating random spine on individual morphology without a digital circuit.
     """
 
     ################################################################################################
@@ -59,6 +59,25 @@ class RandomSpineBuilder:
 
         # A list containing all the spines meshes
         self.spine_meshes = None
+
+
+
+
+
+    def get_spine_positions(self):
+
+        # Resample the section into a 1 um segments
+
+        # Divide the segment into partitions based on the spine density factor (with a factor)
+
+        # Construct a 1 um segment mesh with a bevel of 8 sides (using the number of partitions)
+
+        #
+
+
+
+        pass
+
 
     ################################################################################################
     # @load_spine_meshes
@@ -189,9 +208,8 @@ class RandomSpineBuilder:
         # A list of the data of all the spines that will be added to the neuron morphology
         spines_list = list()
 
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.skeleton.ops.apply_operation_to_morphology_partially(
+        # Apply the operation to sections with lower branching orders.
+        nmv.skeleton.ops.apply_operation_to_trimmed_morphology(
             *[self.morphology,
               self.options.morphology.axon_branch_order,
               self.options.morphology.basal_dendrites_branch_order,

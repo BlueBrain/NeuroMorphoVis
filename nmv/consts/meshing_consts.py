@@ -39,7 +39,7 @@ class Meshing:
     BEVEL_OBJECT_SIDES = 16
 
     # The number of spines per micron to be added to the neuron
-    NUMBER_SPINES_PER_MICRON = 10
+    NUMBER_SPINES_PER_MICRON = 2
 
     # PLY extension
     PLY_EXTENSION = '.ply'

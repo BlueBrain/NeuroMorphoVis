@@ -635,6 +635,7 @@ def connect_arbors_to_meta_ball_soma(soma_mesh,
     # Return a reference to the soma mesh to be used later to do it for the rest of the arbors
     return soma_mesh
 
+
 ####################################################################################################
 # @connect_arbor_to_soft_body_soma
 ####################################################################################################
@@ -725,8 +726,7 @@ def connect_arbor_to_soft_body_soma(soma_mesh,
 
 
 ####################################################################################################
-# @connect_arbor_to_meta_ball_soma
-# TODO: Remove this function.
+# @connect_arbor_to_meta_ball_soma_update
 ####################################################################################################
 def connect_arbor_to_meta_ball_soma_update(soma_mesh,
                                            arbor):
@@ -736,6 +736,8 @@ def connect_arbor_to_meta_ball_soma_update(soma_mesh,
     the soma or not.
     If the arbor is 'logically' connected to the soma, this function returns immediately.
     The arbor is a Section object, see Section() @ section.py.
+
+    # TODO: Remove this function.
 
     :param soma_mesh:
         The mesh object of the soma.
@@ -760,7 +762,6 @@ def connect_arbor_to_meta_ball_soma_update(soma_mesh,
     soma_mesh = nmv.mesh.ops.union_mesh_objects(soma_mesh, arbor.mesh)
 
     # Switch to edit mode to REMOVE THE DOUBLES
-    # TODO: Use the remove doubles function
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()

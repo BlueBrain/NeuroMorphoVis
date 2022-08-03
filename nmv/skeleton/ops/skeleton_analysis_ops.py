@@ -750,7 +750,7 @@ def get_resampling_distance_of_secondary_section(secondary_section):
     i = 1.0
     while True:
 
-        # The re-smapling distance where the secondary section will be re-sampled
+        # The re-sampling distance where the secondary section will be re-sampled
         secondary_section_resampling_distance = i * resampling_distance_step
 
         # Compute the secondary re-sampling point
@@ -768,7 +768,8 @@ def get_resampling_distance_of_secondary_section(secondary_section):
             return secondary_section_resampling_distance
 
         # Otherwise, search for more suitable sampling distance
-        else: i += 1.0
+        else:
+            i += 1.0
 
 
 ####################################################################################################

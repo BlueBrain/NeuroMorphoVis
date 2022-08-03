@@ -76,30 +76,26 @@ def apply_operation_to_arbor_conditionally(*args):
         and the rest of the arguments are those that will be passed to the function itself.
     """
 
-    # The current branching level is the first argument
-    current_branching_level = args[0]
-
     # The max branching level is the second argument
-    max_branching_order = args[1]
+    max_branching_order = args[0]
 
     # The section is the third argument
-    section = args[2]
+    section = args[1]
 
     # The operation is the fourth argument
-    operation = args[3]
+    operation = args[2]
 
     # Construct the root section arguments list, add the section and ignore the operation
     section_args = list()
 
     # Add the branching levels
-    section_args.append(current_branching_level)
     section_args.append(max_branching_order)
 
     # Add the section root
     section_args.append(section)
 
     # Add the rest of the arguments
-    for i in range(4, len(args)):
+    for i in range(3, len(args)):
         section_args.append(args[i])
 
     # Apply the operation/filter to the first section of the arbor
@@ -115,7 +111,6 @@ def apply_operation_to_arbor_conditionally(*args):
             section_args = list()
 
             # Add the branching levels
-            section_args.append(current_branching_level)
             section_args.append(max_branching_order)
 
             # Add the child
@@ -124,7 +119,7 @@ def apply_operation_to_arbor_conditionally(*args):
             # Add the operation
             section_args.append(operation)
 
-            for i in range(4, len(args)):
+            for i in range(3, len(args)):
                 section_args.append(args[i])
 
             # Validate the rest of the skeleton of the arbor
@@ -191,9 +186,9 @@ def apply_operation_to_morphology(*args):
 
 
 ####################################################################################################
-# @apply_operation_to_morphology_partially
+# @apply_operation_to_trimmed_morphology
 ####################################################################################################
-def apply_operation_to_morphology_partially(*args):
+def apply_operation_to_trimmed_morphology(*args):
     """Apply a given function/filter/operation to a given morphology object including ONLY the
     arbors that are below certain branching level recursively.
 
@@ -223,8 +218,6 @@ def apply_operation_to_morphology_partially(*args):
             arbor_args = list()
 
             # Add the branching levels to the arguments
-            current_branching_level = [0]
-            arbor_args.append(current_branching_level)
             arbor_args.append(apical_dendrites_branching_order)
 
             # Add the section root
@@ -245,8 +238,6 @@ def apply_operation_to_morphology_partially(*args):
             arbor_args = list()
 
             # Add the branching levels to the arguments
-            current_branching_level = [0]
-            arbor_args.append(current_branching_level)
             arbor_args.append(basal_dendrites_branching_order)
 
             # Add the section root
@@ -267,8 +258,6 @@ def apply_operation_to_morphology_partially(*args):
             arbor_args = list()
 
             # Add the branching levels to the arguments
-            current_branching_level = [0]
-            arbor_args.append(current_branching_level)
             arbor_args.append(axons_branching_order)
 
             # Add the section root
