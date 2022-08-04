@@ -324,8 +324,6 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                                                  branching_order=branching_order,
                                                  max_branching_order=max_branching_order)
 
-
-
     ################################################################################################
     # @construct_tree_poly_lines
     ################################################################################################
@@ -444,6 +442,9 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Append it to the morphology objects
         self.morphology_objects.append(morphology_object)
 
+    ################################################################################################
+    # @draw_arbors
+    ################################################################################################
     def draw_arbors(self,
                     bevel_object):
 
@@ -614,7 +615,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         self.morphology_objects.append(bevel_object)
 
         # Create the skeleton materials
-        # self.create_single_skeleton_materials_list()
+        self.create_single_skeleton_materials_list()
 
         # Updating radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)

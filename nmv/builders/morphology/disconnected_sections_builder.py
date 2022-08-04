@@ -683,7 +683,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.morphology_objects.append(bevel_object)
 
         # Create the skeleton materials
-        # self.create_single_skeleton_materials_list()
+        self.create_single_skeleton_materials_list()
 
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
