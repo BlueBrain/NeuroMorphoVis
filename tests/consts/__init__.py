@@ -15,5 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .test_color_consts import * 
-from .test_math_consts import * 
+from .test_consts import * 

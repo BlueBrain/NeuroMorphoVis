@@ -26,7 +26,7 @@ from mathutils import Vector
 
 # Internal imports 
 import nmv.bmeshi
-import input_data
+
 
 ####################################################################################################
 # @BmeshVertexOpsTesting
