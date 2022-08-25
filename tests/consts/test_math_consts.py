@@ -15,25 +15,31 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import sys 
-import os 
+# System imports 
 import unittest
-
+import os
+import sys 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 
-# Import all the tests here 
-from tests.bmeshi import * 
-from tests.consts import * 
+# Blender imports 
+from mathutils import Vector 
+
+# Internal imports 
+import nmv.consts
 
 
 ####################################################################################################
-# @__main__
+# @MathConstsTesting
 ####################################################################################################
-if __name__ == '__main__':
+class MathConstsTesting(unittest.TestCase):
 
-    # Verify the args
-    sys.argv = [__file__] + (sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-    
-    # Run all the unit tests 
-    print('\n\n* Running All NeuroMorphoVis Tests')
-    unittest.main(verbosity=2)
+    def test_math_consts(self):
+        self.assertEqual(nmv.consts.Math.INFINITY, 1e30)
+        self.assertEqual(nmv.consts.Math.MINUS_INFINITY, -1e30)
+        self.assertEqual(nmv.consts.Math.EPSILON, 0.99)
+        self.assertEqual(nmv.consts.Math.LITTLE_EPSILON, 1e-5)
+        self.assertEqual(nmv.consts.Math.ORIGIN, Vector((0.0, 0.0, 0.0)))
+        self.assertEqual(nmv.consts.Math.X_AXIS, Vector((1.0, 0.0, 0.0)))
+        self.assertEqual(nmv.consts.Math.Y_AXIS, Vector((0.0, 1.0, 0.0)))
+        self.assertEqual(nmv.consts.Math.Z_AXIS, Vector((0.0, 0.0, 1.0)))
+        self.assertEqual(nmv.consts.Math.INDEX_OUT_OF_RANGE, -1)

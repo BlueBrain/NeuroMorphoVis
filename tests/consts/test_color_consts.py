@@ -15,25 +15,33 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import sys 
-import os 
+# System imports 
 import unittest
-
+import os
+import sys 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 
-# Import all the tests here 
-from tests.bmeshi import * 
-from tests.consts import * 
+# Blender imports 
+from mathutils import Vector 
+
+# Internal imports 
+import nmv.consts
 
 
 ####################################################################################################
-# @__main__
+# @ColorConstsTesting
 ####################################################################################################
-if __name__ == '__main__':
+class ColorConstsTesting(unittest.TestCase):
 
-    # Verify the args
-    sys.argv = [__file__] + (sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-    
-    # Run all the unit tests 
-    print('\n\n* Running All NeuroMorphoVis Tests')
-    unittest.main(verbosity=2)
+    def test_color_consts(self):
+        self.assertEqual(nmv.consts.Color.RED, Vector((1.0, 0.0, 0.0)))
+        self.assertEqual(nmv.consts.Color.GREEN, Vector((0.0, 1.0, 0.0)))
+        self.assertEqual(nmv.consts.Color.BLUE,  Vector((0.0, 0.0, 1.0)))
+        self.assertEqual(nmv.consts.Color.WHITE, Vector((1.0, 1.0, 1.0)))
+        self.assertEqual(nmv.consts.Color.VERY_WHITE, Vector((10.0, 10.0, 10.0)))
+        self.assertEqual(nmv.consts.Color.GRAY, Vector((0.5, 0.5, 0.5)))
+        self.assertEqual(nmv.consts.Color.GREYSH, Vector((0.9, 0.9, 0.9)))
+        self.assertEqual(nmv.consts.Color.MATT_BLACK, Vector((0.1, 0.1, 0.1)))
+        self.assertEqual(nmv.consts.Color.BLACK, Vector((0.0, 0.0, 0.0)))
+        self.assertEqual(nmv.consts.Color.COLORMAP_RESOLUTION, 16)
+        

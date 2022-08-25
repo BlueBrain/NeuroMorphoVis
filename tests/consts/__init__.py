@@ -15,25 +15,5 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import sys 
-import os 
-import unittest
-
-sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
-
-# Import all the tests here 
-from tests.bmeshi import * 
-from tests.consts import * 
-
-
-####################################################################################################
-# @__main__
-####################################################################################################
-if __name__ == '__main__':
-
-    # Verify the args
-    sys.argv = [__file__] + (sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-    
-    # Run all the unit tests 
-    print('\n\n* Running All NeuroMorphoVis Tests')
-    unittest.main(verbosity=2)
+from .test_color_consts import * 
+from .test_math_consts import * 
