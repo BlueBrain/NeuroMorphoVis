@@ -123,6 +123,8 @@ def unregister():
     nmv.interface.ui.mesh_panel.unregister_panel()
     nmv.interface.ui.about_panel.unregister_panel()
 
+    nmv.logger.info_done('NeuroMorphoVis Unloaded!')
+
 
 ####################################################################################################
 # __main__

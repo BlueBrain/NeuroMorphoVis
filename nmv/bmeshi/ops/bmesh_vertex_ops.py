@@ -17,6 +17,7 @@
 
 # Blender imports
 import bmesh
+from mathutils import Vector
 
 
 ####################################################################################################
@@ -93,7 +94,7 @@ def relax_topology(bmesh_object):
             continue
 
         # Construct an average vector
-        avg = Vector()
+        avg = Vector((0.0, 0.0, 0.0))
 
         # Get the number of edges connected to this vertex
         number_edges_connected_to_vertex = len(vertex.link_edges)
