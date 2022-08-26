@@ -26,13 +26,13 @@ import nmv.utilities
 ####################################################################################################
 # @create_plane
 ####################################################################################################
-def create_plane(radius=1,
+def create_plane(size=1,
                  location=(0, 0, 0),
                  name='plane'):
     """Create a plane mesh object that is linked to the scene and returns a reference to it.
 
-    :param radius:
-        The radius of the plane.
+    :param size:
+        The size of the plane.
     :param location:
         The location of the plane.
     :param name:
@@ -45,7 +45,7 @@ def create_plane(radius=1,
     nmv.scene.ops.deselect_all()
 
     # Add new plane mesh object
-    bpy.ops.mesh.primitive_plane_add(radius=radius, location=location)
+    bpy.ops.mesh.primitive_plane_add(size=size, location=location)
 
     # Get a reference to it, from the current active objects
     plane_mesh = nmv.scene.get_active_object()
@@ -82,7 +82,7 @@ def create_ico_sphere(radius=1,
     nmv.scene.ops.deselect_all()
 
     # Add new ico-sphere mesh object
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, size=radius, location=location)
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, radius=radius, location=location)
 
     # Get a reference to it, from the current active objects
     ico_sphere_mesh = nmv.scene.get_active_object()
