@@ -88,7 +88,7 @@ def create_neuron_meshes_with_piecewise_builder(circuit,
 
     # Use the H5 morphology loader to load this file
     # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
-    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_morphology=False)
+    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path)
     morphology = h5_reader.read_file()
 
     # Adjust the label to be set according to the GID not the morphology label
