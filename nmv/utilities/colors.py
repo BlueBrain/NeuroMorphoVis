@@ -111,6 +111,34 @@ def hex_to_rgb(hex_color):
 
 
 ####################################################################################################
+# @confirm_rgb_color
+####################################################################################################
+def confirm_rgb_color(color_string):
+    """Ensures that the given color string is an RGB float vector.
+
+    :param color_string:
+        A given color string in any format.
+    :return:
+        An RGB color vector with a float precision.
+    """
+
+    # This is a hex color
+    if '#' in color_string:
+        return hex_to_rgb(hex_color=color_string.replace('#', ''))
+
+    if '_' in color_string:
+        rgb_list = color_string.split('_')
+        r = int(rgb_list[0])
+        g = int(rgb_list[1])
+        b = int(rgb_list[2])
+
+        if r > 1.0 and g > 1.0 and b > 1.0:
+            return Vector((r / 256.0, g / 256.0, b / 256.0))
+        else:
+            return Vector((r, g, b))
+
+
+####################################################################################################
 # @ create_colormap_from_color_list
 ####################################################################################################
 def create_colormap_from_color_list(color_list,

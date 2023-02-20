@@ -113,9 +113,6 @@ class MorphIOLoader:
         #     soma_mean_radius += (point - self.soma_centroid).length
         # soma_mean_radius = soma_mean_radius / len(self.soma_profile_points)
 
-
-
-
         nmv_soma = nmv.skeleton.Soma(
             centroid=self.soma_centroid, mean_radius=self.soma_mean_radius,
             profile_points=self.soma_profile_points, arbors_profile_points=arbors_profile_points)
@@ -155,9 +152,6 @@ class MorphIOLoader:
         self.soma_centroid[0] = morphology_data.soma.center[0]
         self.soma_centroid[1] = morphology_data.soma.center[1]
         self.soma_centroid[2] = morphology_data.soma.center[2]
-
-        print(self.soma_mean_radius)
-        print(self.soma_centroid)
 
         # Get a list of points in the morphology
         for s in morphology_data.sections:

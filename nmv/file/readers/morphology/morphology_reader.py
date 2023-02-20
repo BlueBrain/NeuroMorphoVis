@@ -20,7 +20,6 @@ import os
 
 # Internal imports
 import morphio
-
 import nmv.file
 
 

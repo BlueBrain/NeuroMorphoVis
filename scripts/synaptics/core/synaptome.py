@@ -47,6 +47,60 @@ import nmv.scene
 import nmv.shading
 import nmv.utilities
 
+import numpy
+from tqdm import tqdm
+
+
+
+
+
+####################################################################################################
+# @create_color_coded_synapses_mesh
+####################################################################################################
+def create_color_coded_synapses_mesh(circuit,
+                                     gid,
+                                     color_coded_synapses_list,
+                                     synapse_size,
+                                     inverted_transformation):
+
+    for group in color_coded_synapses_list:
+
+        # The key is the color code in HEX
+        key = group[0]
+
+        # The list of IDs
+        synapse_ids = group[1]
+
+        # The post-synaptic position
+        positions = circuit.connectome.synapse_positions(
+            numpy.array(synapse_ids), 'post', 'center').values.tolist()
+
+        # Update the positions taking into consideration the transformation
+        for i in range(len(positions)):
+            position = Vector((positions[i][0], positions[i][1], positions[i][2]))
+            position = inverted_transformation @ position
+            positions[i] = position
+
+        return create_synapse_group_mesh_using_spheres(positions=positions, synapse_size=4, group_name=key)
+
+    exit(0)
+
+
+
+    # Get all the IDs of the afferent, i.e. post-synaptic, synapses
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(gid)
+    print(type(afferent_synapses_ids))
+    # Get their positions
+    post_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+
+
+
+
+
+    print(afferent_synapses_ids)
+    exit(0)
+
 
 ####################################################################################################
 # @create_mtype_based_synapses_mesh

@@ -248,8 +248,6 @@ def install_for_linux(directory, blender_version, verbose=False):
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
 
-        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
-        run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
 
@@ -391,12 +389,10 @@ def install_for_mac(directory, blender_version, verbose=False):
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
 
-        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
-        run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
 
-    # Copying the perf file to loade NMV directly
+    # Copying the perf file to load NMV directly
 
     # Remove the .dmg file
     log_process('Cleaning')

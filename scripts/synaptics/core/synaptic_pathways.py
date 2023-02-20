@@ -88,7 +88,6 @@ def create_neuron_meshes_with_piecewise_builder(circuit,
 
     # Use the H5 morphology loader to load this file
     # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
-    print(morphology_path)
     morphology = nmv.file.read_morphology_with_morphio(
         morphology_file_path=morphology_path, center_at_origin=True)
 
