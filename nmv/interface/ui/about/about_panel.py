@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -35,7 +35,7 @@ nmv_icons = None
 ####################################################################################################
 # @IOPanel
 ####################################################################################################
-class AboutPanel(bpy.types.Panel):
+class NMV_AboutPanel(bpy.types.Panel):
     """NMV About Us panel"""
 
     ################################################################################################
@@ -66,11 +66,11 @@ class AboutPanel(bpy.types.Panel):
         credits_column = layout.column()
         credits_column.label(text='Copyrights (c)')
         credits_column.label(text='Blue Brain Project (BBP)', icon='PMARKER')
-        credits_column.label(text='Ecole Polytechnique Federale de Lausanne (EPFL)', icon='PMARKER')
+        credits_column.label(text='École Polytechnique Fédérale de Lausanne (EPFL)', icon='PMARKER')
         credits_column.separator()
 
         credits_column.label(text='License')
-        credits_column.label(text='GPL', icon='UNLOCKED')
+        credits_column.label(text='GPL 3.0', icon='UNLOCKED')
         credits_column.separator()
 
         credits_column.label(text='Main Author')
@@ -101,19 +101,19 @@ class AboutPanel(bpy.types.Panel):
         version_column.label(text='Version: %d.%d.%d' % (version[0], version[1], version[2]))
 
         update_button = layout.column()
-        update_button.operator('update.nmv', emboss=True, icon='NODETREE')
-        update_button.operator('open.github', emboss=True, icon='SCRIPT')
-        update_button.operator('open.wiki', emboss=True, icon='URL')
+        update_button.operator('nmv.update', emboss=True, icon='NODETREE')
+        update_button.operator('nmv.open_github', emboss=True, icon='SCRIPT')
+        update_button.operator('nmv.open_wiki', emboss=True, icon='URL')
 
 
 ####################################################################################################
 # @OpenDocumentation
 ####################################################################################################
-class OpenDocumentation(bpy.types.Operator):
-    """Open the Github repository page"""
+class NMV_OpenDocumentation(bpy.types.Operator):
+    """Open the GitHub repository page"""
 
     # Operator parameters
-    bl_idname = "open.wiki"
+    bl_idname = "nmv.open_wiki"
     bl_label = "Documentation"
 
     ################################################################################################
@@ -137,11 +137,11 @@ class OpenDocumentation(bpy.types.Operator):
 ####################################################################################################
 # @OpenRepository
 ####################################################################################################
-class OpenRepository(bpy.types.Operator):
-    """Open the Github repository page"""
+class NMV_OpenRepository(bpy.types.Operator):
+    """Open the GitHub repository page"""
 
     # Operator parameters
-    bl_idname = "open.github"
+    bl_idname = "nmv.open_github"
     bl_label = "Code"
 
     ################################################################################################
@@ -165,11 +165,11 @@ class OpenRepository(bpy.types.Operator):
 ####################################################################################################
 # @UpdateNeuroMorphoVis
 ####################################################################################################
-class UpdateNeuroMorphoVis(bpy.types.Operator):
+class NMV_Update(bpy.types.Operator):
     """Update NeuroMorphoVis"""
 
     # Operator parameters
-    bl_idname = "update.nmv"
+    bl_idname = "nmv.update"
     bl_label = "Update"
 
     ################################################################################################
@@ -210,8 +210,6 @@ class UpdateNeuroMorphoVis(bpy.types.Operator):
         # Exiting blender
         exit(0)
 
-        return {'FINISHED'}
-
 
 ####################################################################################################
 # @register_panel
@@ -220,12 +218,12 @@ def register_panel():
     """Registers all the classes in this panel"""
 
     # Panel
-    bpy.utils.register_class(AboutPanel)
+    bpy.utils.register_class(NMV_AboutPanel)
 
     # Buttons
-    bpy.utils.register_class(UpdateNeuroMorphoVis)
-    bpy.utils.register_class(OpenRepository)
-    bpy.utils.register_class(OpenDocumentation)
+    bpy.utils.register_class(NMV_Update)
+    bpy.utils.register_class(NMV_OpenRepository)
+    bpy.utils.register_class(NMV_OpenDocumentation)
 
 
 ####################################################################################################
@@ -235,9 +233,9 @@ def unregister_panel():
     """Un-registers all the classes in this panel"""
 
     # Panel
-    bpy.utils.unregister_class(AboutPanel)
+    bpy.utils.unregister_class(NMV_AboutPanel)
 
     # Buttons
-    bpy.utils.unregister_class(UpdateNeuroMorphoVis)
-    bpy.utils.unregister_class(OpenRepository)
-    bpy.utils.unregister_class(OpenDocumentation)
+    bpy.utils.unregister_class(NMV_Update)
+    bpy.utils.unregister_class(NMV_OpenRepository)
+    bpy.utils.unregister_class(NMV_OpenDocumentation)
