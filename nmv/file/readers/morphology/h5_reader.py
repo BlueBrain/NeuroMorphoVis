@@ -451,6 +451,7 @@ class H5Reader:
                 # If the parent ID of another section is equivalent to the ID of this section, then
                 # it is a child
                 if section_id == j_section[1]:
+
                     # Append it
                     section_children_ids.append(j_section[0])
 

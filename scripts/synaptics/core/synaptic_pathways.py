@@ -84,12 +84,16 @@ def create_neuron_meshes_with_piecewise_builder(circuit,
 
     # Get the morphology file path from its GID
     # We must ensure that the GID is integer, that's why the cast is there
-    h5_morphology_path = circuit.morph.get_filepath(gid)
+    morphology_path = circuit.morph.get_filepath(gid)
 
     # Use the H5 morphology loader to load this file
     # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
-    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path)
-    morphology = h5_reader.read_file()
+    print(morphology_path)
+    morphology = nmv.file.read_morphology_with_morphio(
+        morphology_file_path=morphology_path, center_at_origin=True)
+
+    # h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path)
+    # morphology = h5_reader.read_file()
 
     # Adjust the label to be set according to the GID not the morphology label
     morphology.label = str(gid)

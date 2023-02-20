@@ -86,7 +86,7 @@ class SomaMetaBuilder:
     ################################################################################################
     def initialize_meta_object(self,
                                name):
-        """Constructs and initialize a new meta object that will be the basis of the mesh.
+        """Constructs and initialize a new meta-object that will be the basis of the mesh.
 
         :param name:
             Meta-object name.
@@ -115,7 +115,7 @@ class SomaMetaBuilder:
     ################################################################################################
     def finalize_meta_object(self,
                              name):
-        """Converts the meta object to a mesh and get it ready for export or visualization.
+        """Converts the meta-object to a mesh and get it ready for export or visualization.
         """
 
         # Header
@@ -141,7 +141,7 @@ class SomaMetaBuilder:
         nmv.scene.deselect_all()
 
         # Select the soma object
-        # Note the conversion from the meta object to the mesh object adds automatically '.001'
+        # Note the conversion from the meta-object to the mesh object adds automatically '.001'
         # to the object name, therefore we must rename it
         self.meta_mesh = bpy.context.scene.objects['%s.001' % name]
         self.meta_mesh.name = name

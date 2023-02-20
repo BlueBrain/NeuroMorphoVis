@@ -294,9 +294,10 @@ class SWCReader:
                 translation[2] = z
 
             # Update the coordinates if the morphology is transformed
-            x = x - translation[0]
-            y = y - translation[1]
-            z = z - translation[2]
+            if self.center_at_origin:
+                x = x - translation[0]
+                y = y - translation[1]
+                z = z - translation[2]
 
             if sample_type == 0 and parent_index > -1:
                 sample_type = nmv.consts.Skeleton.SWC_BASAL_DENDRITE_SAMPLE_TYPE
@@ -417,7 +418,7 @@ class SWCReader:
         return selected_samples_list
 
     ################################################################################################
-    # @build_connected_paths
+    # @build_soma
     ################################################################################################
     def build_soma(self,
                    axons_arbors,

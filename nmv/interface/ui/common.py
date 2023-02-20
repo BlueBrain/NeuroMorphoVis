@@ -120,8 +120,7 @@ def load_morphology(panel_object,
     # Read the data from a given morphology file either in .h5 or .swc formats
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
 
-        #try:
-        if True:
+        try:
             # Pass options from UI to system
             options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
 
@@ -205,8 +204,7 @@ def load_morphology(panel_object,
                         return None
 
         # Invalid morphology file
-        #except ValueError:
-        else:
+        except ValueError:
             # Report the issue
             panel_object.report({'ERROR'}, 'CANNOT load. Invalid Morphology File')
 
