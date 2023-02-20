@@ -22,9 +22,11 @@ BLENDER=$PWD/../../../../../../blender
 # Circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200731/CircuitConfig'
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig.pre-fixL3'
+CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj112/circuits/CA1/20211110-BioM/BlueConfig'
 
 # Neuron GID
 GIDS_FILE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/iteration_2/cvs-files/gids/S1DZ.gids'
+GIDS_FILE='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2022.10.03-hippocampul-synaptics/synaptomes/pcs.gids'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome'
@@ -33,8 +35,7 @@ OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/mtypes'
 OUTPUT_DIRECTORY='/hdd1/projects-data/2021.01.13-synaptomes-final/excitatory_inhibitory'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-2-26.02.2021'
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptome/trial-3-04.03.2021'
-
-#OUTPUT_DIRECTORY='/projects-data/2021.03.02-synaptomes/'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/2022.10.03-hippocampul-synaptics/synaptomes'
 
 # Show excitatory and inhibitory synapses, yes or no
 SHOW_EXC_INH='no'
@@ -64,7 +65,7 @@ CLOSE_UP_RESOLUTION='1000'
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
 
 # Execution, serial or parallel
-EXECUTION='parallel'
+EXECUTION='serial'
 
 # Number of parallel cores
 NUMBER_PARALLEL_CORES='10'
@@ -86,7 +87,7 @@ if [ "$RENDER_FRAMES" == "yes" ];
 
 ####################################################################################################
 echo 'CREATING SYNAPTOMES ...';
-$PWD/../../../../../python/bin/python3.7m create-synaptomes.py                                      \
+$PWD/../../../../../python/bin/python3.10 create-synaptomes.py                                      \
     --blender-executable=$BLENDER                                                                   \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gids-file=$GIDS_FILE                                                                          \

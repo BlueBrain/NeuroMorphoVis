@@ -93,6 +93,8 @@ def read_swc_morphology(swc_file,
 
     :param swc_file:
         Path to the SWC morphology file.
+    :param center_at_origin:
+        Center the morphology file at the origin.
     :return:
         Morphology object and True (if the morphology is loaded) or False (if the something is
         wrong).
