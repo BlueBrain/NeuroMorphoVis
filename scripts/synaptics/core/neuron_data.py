@@ -85,13 +85,13 @@ def create_neuron_mesh(circuit,
     nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
 
     # Create a meta balls meshing builder
-    meta_builder = nmv.builders.MetaBuilder(morphology=morphology, options=nmv_options)
+    mesh_builder = nmv.builders.PiecewiseBuilder(morphology=morphology, options=nmv_options)
 
     # Create the neuron mesh
-    neuron_mesh = meta_builder.reconstruct_mesh()
+    neuron_mesh = mesh_builder.reconstruct_mesh_in_single_object()
 
     # Smooth the mesh to make it look nice
-    nmv.mesh.smooth_object(mesh_object=neuron_mesh, level=1)
+    # nmv.mesh.smooth_object(mesh_object=neuron_mesh, level=1)
 
     # Add the material top the reconstructed mesh
     neuron_material = nmv.shading.create_material(

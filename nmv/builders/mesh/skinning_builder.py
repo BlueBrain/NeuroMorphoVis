@@ -616,3 +616,16 @@ class SkinningBuilder(MeshBuilderBase):
 
         # Return a reference to the neuron mesh if joint
         return neuron_mesh
+
+    ################################################################################################
+    # @reconstruct_mesh_in_single_object
+    ################################################################################################
+    def reconstruct_mesh_in_single_object(self):
+        """Returns a single mesh object for all the neuron components.
+
+        :return:
+            A single mesh object of the neuron.
+        """
+
+        return self.reconstruct_mesh()
+

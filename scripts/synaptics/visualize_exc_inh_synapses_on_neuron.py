@@ -128,9 +128,9 @@ def parse_arguments():
 
 
 ####################################################################################################
-# @get_color_coded_synapse_dict
+# @get_color_coded_synapse_list
 ####################################################################################################
-def get_color_coded_synapse_dict(synapse_json_file):
+def get_color_coded_synapse_list(synapse_json_file):
 
     # The returning synapse list
     synapse_list = list()
@@ -144,11 +144,23 @@ def get_color_coded_synapse_dict(synapse_json_file):
 
     # Load all the data from the file
     import json
-    data_dict = json.load(f)
+    data = json.load(f)
+
+    # Get all the keys and the corresponding arrays
+    keys = data.keys()
+
+    # Create the synapses list
+    for key in keys:
+        group = list()
+        for i in data[key]:
+            group.append(int(i))
+        synapse_list.append([key, group])
+
+    # Close the file
     f.close()
 
-    # Return the loaded dictionary
-    return data_dict
+    # Return the synapse list
+    return synapse_list
 
 
 ####################################################################################################
@@ -179,10 +191,12 @@ if __name__ == "__main__":
 
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
-    color_coded_synapses_dict = get_color_coded_synapse_dict(args.synapses_file)
+    color_coded_synapses_list = nmv.bbp.get_excitatory_and_inhibitory_synapses_color_coded_list(
+        circuit=circuit, gid=int(args.gid))
+
     transformation = nmv.bbp.get_neuron_transformation_matrix(circuit=circuit, gid=int(args.gid))
     synapses_mesh = nmv.bbp.create_color_coded_synapses_mesh(
-        circuit=circuit, color_coded_synapses_dict=color_coded_synapses_dict,
+        circuit=circuit, color_coded_synapses_list=color_coded_synapses_list,
         synapse_size=args.synapse_size,
         inverted_transformation=transformation.inverted(),
         material_type=material_type)

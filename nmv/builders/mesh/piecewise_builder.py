@@ -403,3 +403,16 @@ class PiecewiseBuilder(MeshBuilderBase):
         # Return a list of all the mesh objects in the scene
         mesh_objects = self.get_neuron_mesh_objects()
         return mesh_objects
+
+    ################################################################################################
+    # @reconstruct_mesh_in_single_object
+    ################################################################################################
+    def reconstruct_mesh_in_single_object(self):
+        """Returns a single mesh object for all the neuron components.
+
+        :return:
+            A single mesh object of the neuron.
+        """
+
+        return nmv.mesh.join_mesh_objects(mesh_list=self.reconstruct_mesh(),
+                                          name='Mesh_%s' % self.morphology.label)

@@ -39,9 +39,6 @@ def is_inhibitory_synapse(synapse_type):
     :param synapse_type:
         An integer representing the synapse type. It is agreed in BluePy that all the synapse types
         above 100 are excitatory, otherwise inhibitory.
-
-    :type synapse_type:
-        An integer representing the type of the synapse.
     :return:
         True if the synapse is inhibitory, and False otherwise.
     """
@@ -227,6 +224,37 @@ def get_post_synaptic_mtypes(circuit,
 
 
 ####################################################################################################
+# @get_excitatory_and_inhibitory_synapses
+####################################################################################################
+def get_excitatory_and_inhibitory_synapses_color_coded_dict(circuit,
+                                                            gid,
+                                                            exc_color=Vector((1.0, 0.0, 0.0)),
+                                                            inh_color=Vector((0.1, 0.0, 1.0))):
+
+    # Get the IDs of all the synapses on the neuron
+    synapse_ids = get_all_synapses_ids(circuit=circuit, gid=gid)
+
+    # Get the IDs of the types of the synapses
+    synapse_mtypes_ids = get_synapse_mtypes_ids(circuit=circuit, synapse_ids_list=synapse_ids)
+
+    # A list that will collect the synapses
+    excitatory_synapses = list()
+    inhibitory_synapses = list()
+
+    for i, synapse in enumerate(synapse_mtypes_ids):
+        if is_inhibitory_synapse(synapse):
+            inhibitory_synapses.append(synapse_ids[i])
+        else:
+            excitatory_synapses.append(synapse_ids[i])
+
+    # Construct and return the dict
+    color_coded_dict = {nmv.utilities.rgb_vector_to_hex(exc_color): excitatory_synapses,
+                        nmv.utilities.rgb_vector_to_hex(inh_color): inhibitory_synapses}
+
+    return color_coded_dict
+
+
+####################################################################################################
 # @create_synapse_group_mesh_using_spheres
 ####################################################################################################
 def create_synapse_group_mesh_using_spheres(positions,
@@ -240,12 +268,12 @@ def create_synapse_group_mesh_using_spheres(positions,
 
         # Create a sphere representing the synapse and append it to the list
         synapse_symbolic_sphere = nmv.geometry.create_ico_sphere(
-            radius=synapse_size, location=positions[i], subdivisions=3, name='synapse_%d' % i)
+            radius=synapse_size, location=positions[i], subdivisions=2, name='synapse_%d' % i)
         per_iteration_synapse_objects.append(synapse_symbolic_sphere)
 
         # NOTE: To reduce to overhead of the number of objects in the scene, we group every few
         # objects into a single object
-        if i % 50 == 0:
+        if i % 100 == 0:
             all_synapse_objects.append(nmv.mesh.join_mesh_objects(
                 mesh_list=per_iteration_synapse_objects, name='group_%d' % (i % 100)))
 
@@ -262,7 +290,8 @@ def create_synapse_group_mesh_using_spheres(positions,
             mesh_list=per_iteration_synapse_objects, name='group_n'))
 
     # Join all the synapse objects into a single mesh
-    all_synapse_objects = nmv.mesh.join_mesh_objects(mesh_list=all_synapse_objects, name=group_name)
+    all_synapse_objects = nmv.mesh.join_mesh_objects(mesh_list=all_synapse_objects,
+                                                     name='synapses_%s' % group_name)
 
     # Return a reference to the collected synapses
     return all_synapse_objects
@@ -272,30 +301,27 @@ def create_synapse_group_mesh_using_spheres(positions,
 # @create_color_coded_synapses_mesh
 ####################################################################################################
 def create_color_coded_synapses_mesh(circuit,
-                                     color_coded_synapses_list,
+                                     color_coded_synapses_dict,
                                      synapse_size=4,
                                      inverted_transformation=None,
                                      material_type=nmv.enums.Shader.LAMBERT_WARD):
 
     # For every group in the synapse list, create a mesh and color code it.
-    for group in color_coded_synapses_list:
-
-        # The key is the color code in HEX
-        key = group[0]
+    for key in color_coded_synapses_dict:
 
         # The list of IDs
-        synapse_ids = group[1]
+        synapse_ids = color_coded_synapses_dict[key]
 
         # The post-synaptic position
         positions = circuit.connectome.synapse_positions(
             numpy.array(synapse_ids), 'post', 'center').values.tolist()
 
         # Update the positions taking into consideration the transformation
-        for i in range(len(positions)):
-            position = Vector((positions[i][0], positions[i][1], positions[i][2]))
+        for j in range(len(positions)):
+            position = Vector((positions[j][0], positions[j][1], positions[j][2]))
             if inverted_transformation is not None:
                 position = inverted_transformation @ position
-            positions[i] = position
+            positions[j] = position
 
         # Create the corresponding synapse mesh
         synapse_group_mesh = create_synapse_group_mesh_using_spheres(positions=positions,

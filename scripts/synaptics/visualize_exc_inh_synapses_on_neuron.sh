@@ -51,7 +51,7 @@ if [ "$RENDER_FRAMES" == "yes" ];
     then BOOL_ARGS+=' --render-frames '; fi
 
 ####################################################################################################
-$BLENDER -b --verbose 0 --python visualize_synapses_on_post_synaptic_neuron.py --                   \
+$BLENDER -b --verbose 0 --python visualize_exc_inh_synapses_on_neuron.py --                         \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \

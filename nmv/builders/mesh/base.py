@@ -312,7 +312,7 @@ class MeshBuilderBase:
             total_polygons += polygons
 
             self.mesh_statistics += '\t' + neuron_mesh_object.name + \
-                                       ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
+                                   ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
 
         self.mesh_statistics += \
             '\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
