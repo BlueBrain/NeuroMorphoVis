@@ -16,5 +16,7 @@
 ####################################################################################################
 
 from .synapses import *
+from .synapse_visualization import *
 from .transformations import *
+from .neurons import *
 

@@ -17,7 +17,6 @@
 
 # System imports
 import numpy
-from tqdm import tqdm
 
 # Blender imports
 from mathutils import Vector
@@ -224,12 +223,25 @@ def get_post_synaptic_mtypes(circuit,
 
 
 ####################################################################################################
-# @get_excitatory_and_inhibitory_synapses
+# @get_excitatory_and_inhibitory_synapses_color_coded_dict
 ####################################################################################################
 def get_excitatory_and_inhibitory_synapses_color_coded_dict(circuit,
                                                             gid,
                                                             exc_color=Vector((1.0, 0.0, 0.0)),
                                                             inh_color=Vector((0.1, 0.0, 1.0))):
+    """Returns a color-coded dictionary containing the inhibitory and excitatory synapses.
+
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID for which the synapses will be returned. Note that the synapse IDs are unique.
+    :param exc_color:
+        A Vector containing the RGB color of the excitatory synapses.
+    :param inh_color:
+        A vector containing the RGB color of the inhibitory synapses.
+    :return:
+        A color-coded dictionary containing the inhibitory and excitatory synapses.
+    """
 
     # Get the IDs of all the synapses on the neuron
     synapse_ids = get_all_synapses_ids(circuit=circuit, gid=gid)
@@ -255,12 +267,60 @@ def get_excitatory_and_inhibitory_synapses_color_coded_dict(circuit,
 
 
 ####################################################################################################
-# @create_synapse_group_mesh_using_spheres
+# @get_color_coded_synapse_dict
 ####################################################################################################
-def create_synapse_group_mesh_using_spheres(positions,
-                                            synapse_size,
-                                            group_name='synapses'):
+def get_color_coded_synapse_dict(synapse_json_file):
+    """Returns a dictionary containing color-coded lists of synapses. The keys represent the
+    colors in hex format and the values are lists of synapse IDs.
 
+    :param synapse_json_file:
+        The absolute path to json files containing synapses IDs and their group colors.
+    :return:
+        A dictionary containing color-coded lists of synapses. The keys represent the
+    colors in hex format and the values are lists of synapse IDs.
+    """
+
+    # Load the data from the JSON file
+    try:
+        f = open(synapse_json_file)
+    except FileNotFoundError:
+        print("The synapse json file [%s] is NOT found!" % synapse_json_file)
+        return None
+
+    # Load all the data from the file
+    import json
+    data_dict = json.load(f)
+    f.close()
+
+    # Return the loaded dictionary
+    return data_dict
+
+
+####################################################################################################
+# @create_synapses_mesh_using_spheres
+####################################################################################################
+def create_synapses_mesh_using_spheres(positions,
+                                       synapse_radius,
+                                       mesh_name='synapses',
+                                       sphere_subdivisions=2):
+    """Creates an aggregate mesh for all the synapses given in the positions array.
+    Note that this function might take quite some time to create all the synapses due to the
+    limitations of Python and Blender.
+
+    :param positions:
+        A list of Vectors containing the XYZ coordinates of the synapses.
+    :param synapse_radius:
+        The unified radius of all the synapses in microns.
+    :param mesh_name:
+        The name of the resulting mesh.
+    :param sphere_subdivisions:
+        The number of subdivisions of the spheres. By default, it is 2.
+    :return:
+        A reference to the created synapse mesh.
+    """
+
+    # NOTE: We create two lists, one to collect objects per iteration and another to collect the
+    # aggregated objects to end up with a single mesh object that can be shaded later in an easy way
     all_synapse_objects = list()
     per_iteration_synapse_objects = list()
 
@@ -268,7 +328,8 @@ def create_synapse_group_mesh_using_spheres(positions,
 
         # Create a sphere representing the synapse and append it to the list
         synapse_symbolic_sphere = nmv.geometry.create_ico_sphere(
-            radius=synapse_size, location=positions[i], subdivisions=2, name='synapse_%d' % i)
+            radius=synapse_radius, location=positions[i], subdivisions=sphere_subdivisions,
+            name='synapse_%d' % i)
         per_iteration_synapse_objects.append(synapse_symbolic_sphere)
 
         # NOTE: To reduce to overhead of the number of objects in the scene, we group every few
@@ -291,8 +352,7 @@ def create_synapse_group_mesh_using_spheres(positions,
 
     # Join all the synapse objects into a single mesh
     all_synapse_objects = nmv.mesh.join_mesh_objects(mesh_list=all_synapse_objects,
-                                                     name='synapses_%s' % group_name)
-
+                                                     name=mesh_name)
     # Return a reference to the collected synapses
     return all_synapse_objects
 
@@ -302,9 +362,25 @@ def create_synapse_group_mesh_using_spheres(positions,
 ####################################################################################################
 def create_color_coded_synapses_mesh(circuit,
                                      color_coded_synapses_dict,
-                                     synapse_size=4,
+                                     synapse_radius=4,
                                      inverted_transformation=None,
                                      material_type=nmv.enums.Shader.LAMBERT_WARD):
+    """Creates a color-coded mesh for a given list of synapses.
+
+    :param circuit:
+        BBP circuit.
+    :param color_coded_synapses_dict:
+        A dictionary containing the synapse lists color-coded. The key is a hex color.
+    :param synapse_radius:
+        The radius of the synapse in microns. By default, this value if 4.
+    :param inverted_transformation:
+        The inverse transformation to transform the synapses to the origin. If this is None, the
+        synapses where will be located in the circuit global coordinates.
+    :param material_type:
+        The type of the material used to shade the resulting mesh.
+    :return:
+        A reference to the created mesh.
+    """
 
     # For every group in the synapse list, create a mesh and color code it.
     for key in color_coded_synapses_dict:
@@ -323,16 +399,17 @@ def create_color_coded_synapses_mesh(circuit,
                 position = inverted_transformation @ position
             positions[j] = position
 
-        # Create the corresponding synapse mesh
-        synapse_group_mesh = create_synapse_group_mesh_using_spheres(positions=positions,
-                                                                     synapse_size=synapse_size,
-                                                                     group_name='synapses_%s' % key)
+        # Create the corresponding synapses mesh
+        synapse_group_mesh = create_synapses_mesh_using_spheres(
+            positions=positions, synapse_radius=synapse_radius, mesh_name='synapses_%s' % key)
+
         # Create the corresponding shader
         material_rgb_color = nmv.utilities.confirm_rgb_color(key)
         material = nmv.shading.create_material(
             name='synapses_%s' % key, color=material_rgb_color, material_type=material_type)
         nmv.shading.set_material_to_object(
             mesh_object=synapse_group_mesh, material_reference=material)
+
 
 
 
