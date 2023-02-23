@@ -123,10 +123,18 @@ if __name__ == "__main__":
 
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
-    color_coded_synapses_dict = nmv.bbp.get_color_coded_synapse_dict(args.synapses_file)
+
+    #synapse_groups = nmv.bbp.create_color_coded_synapse_groups_by_pre_mtype(circuit, args.gid)
+    #synapse_groups = nmv.bbp.create_color_coded_synapse_groups_by_post_mtype(circuit, args.gid)
+
+    synapse_groups = nmv.bbp.create_color_coded_synapse_groups_by_pre_etype(circuit, args.gid)
+
+    print(len(synapse_groups))
+
+    #color_coded_synapses_dict = nmv.bbp.get_color_coded_synapse_dict(args.synapses_file)
     transformation = nmv.bbp.get_neuron_transformation_matrix(circuit=circuit, gid=int(args.gid))
-    synapses_mesh = nmv.bbp.create_color_coded_synapses_mesh(
-        circuit=circuit, color_coded_synapses_dict=color_coded_synapses_dict,
+    synapses_mesh = nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
         inverted_transformation=transformation.inverted(),
         material_type=material_type)

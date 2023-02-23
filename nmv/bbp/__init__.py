@@ -15,8 +15,11 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .synapses import *
-from .synapse_visualization import *
-from .transformations import *
+from .circuits import *
 from .neurons import *
+from .synapses import *
+from .synapse_group import *
+from .synapses_meshing import *
+from .synapses_visualization import *
+from .transformations import *
 

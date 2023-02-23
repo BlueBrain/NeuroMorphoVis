@@ -20,3 +20,4 @@ from .line import *
 from .sphere import *
 from .vertex import *
 from .poly_line import *
+from .particle_system import *

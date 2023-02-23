@@ -87,7 +87,7 @@ def create_uv_sphere(radius=1,
 ####################################################################################################
 def create_ico_sphere(radius=1, 
                       location=(0, 0, 0), 
-                      subdivisions=3, 
+                      subdivisions=1,
                       name='ico_sphere'):
     """Create a default ico-sphere and returns a reference to it.
 

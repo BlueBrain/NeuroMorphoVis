@@ -148,3 +148,20 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
         color_coded_synapses_dict=color_coded_synapses_dict, synapse_radius=synapse_radius,
         neuron_color=neuron_color, material_type=material_type,
         unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius)
+
+
+
+def visualize_synapses_on_post_synaptic_neuron_based_on_pre_mtypes():
+    pass
+
+
+def visualize_synapses_on_pre_synaptic_neuron_based_on_post_mtypes():
+    pass
+
+
+def visualize_synapses_on_post_synaptic_neuron_based_on_pre_etypes():
+    pass
+
+
+def visualize_synapses_on_pre_synaptic_neuron_based_on_post_etypes():
+    pass

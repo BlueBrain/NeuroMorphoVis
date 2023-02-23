@@ -57,7 +57,7 @@ $BLENDER -b --verbose 0 --python visualize_synapses_on_post_synaptic_neuron.py -
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --synapses-file=$SYNAPSES_JSON_FILE                                                             \
     --neuron-color=$NEURON_COLOR                                                                    \
-    --synapse-size=$SYNAPSE_SIZE                                                                    \
+    --synapse-radius=$SYNAPSE_SIZE                                                                    \
     --image-resolution=$IMAGE_RESOLUTION                                                            \
     $BOOL_ARGS
 
