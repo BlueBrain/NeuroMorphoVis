@@ -654,3 +654,21 @@ def create_color_coded_synapse_groups_by_pre_etype(circuit,
                                                       mtype_color_dict=mtype_color_dict)
 
 
+####################################################################################################
+# @create_color_coded_synapse_groups_by_post_etype
+####################################################################################################
+def create_color_coded_synapse_groups_by_post_etype(circuit,
+                                                    pre_gid,
+                                                    mtype_color_dict=None):
+    # Get the afferent synapses of the post_gid
+    efferent_synapses_ids = get_efferent_synapses_ids(circuit=circuit, gid=pre_gid)
+
+    # Get the mtypes of the pre-synaptic cells
+    efferent_synapses_etypes = get_post_synaptic_etypes(
+        circuit=circuit, efferent_synapses_ids_list=efferent_synapses_ids)
+
+    return create_color_coded_synapse_groups_by_etype(circuit=circuit,
+                                                      synapses_ids=efferent_synapses_ids,
+                                                      synapses_mtypes=efferent_synapses_etypes,
+                                                      mtype_color_dict=mtype_color_dict)
+
