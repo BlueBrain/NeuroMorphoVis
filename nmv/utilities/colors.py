@@ -111,9 +111,9 @@ def hex_to_rgb(hex_color):
 
 
 ####################################################################################################
-# @confirm_rgb_color
+# @confirm_rgb_color_from_color_string
 ####################################################################################################
-def confirm_rgb_color(color_string):
+def confirm_rgb_color_from_color_string(color_string):
     """Ensures that the given color string is an RGB float vector.
 
     :param color_string:

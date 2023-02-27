@@ -466,9 +466,10 @@ def get_synapse_groups_from_color_coded_json_file(synapse_json_file):
         group_color = list(group_value.keys())[0]
         group_synapses_list = group_value[group_color]
 
-        synapse_group = nmv.bbp.SynapseGroup(name=group_name,
-                                             color=nmv.utilities.confirm_rgb_color(group_color),
-                                             synapses_ids_list=group_synapses_list)
+        synapse_group = nmv.bbp.SynapseGroup(
+            name=group_name,
+            color=nmv.utilities.confirm_rgb_color_from_color_string(group_color),
+            synapses_ids_list=group_synapses_list)
         synapse_groups.append(synapse_group)
 
     # Return a reference to the synapse group
@@ -496,9 +497,10 @@ def get_exc_and_inhibitory_synapse_groups_from_circuit(circuit,
         group_color = list(group_value.keys())[0]
         group_synapses_list = group_value[group_color]
 
-        synapse_group = nmv.bbp.SynapseGroup(name=group_name,
-                                             color=nmv.utilities.confirm_rgb_color(group_color),
-                                             synapses_ids_list=group_synapses_list)
+        synapse_group = nmv.bbp.SynapseGroup(
+            name=group_name,
+            color=nmv.utilities.confirm_rgb_color_from_color_string(group_color),
+            synapses_ids_list=group_synapses_list)
         synapse_groups.append(synapse_group)
 
     # Return a reference to the synapse group
@@ -539,7 +541,8 @@ def create_color_coded_synapse_groups_by_mtype(circuit,
                                 random.uniform(0.0, 1.0),
                                 random.uniform(0.0, 1.0)))
             else:
-                color = nmv.utilities.confirm_rgb_color(color_string=mtype_color_dict[mtype])
+                color = nmv.utilities.confirm_rgb_color_from_color_string(
+                    color_string=mtype_color_dict[mtype])
 
             # Create the group and add it to the list
             synapse_groups.append(
@@ -621,7 +624,8 @@ def create_color_coded_synapse_groups_by_etype(circuit,
                                 random.uniform(0.0, 1.0),
                                 random.uniform(0.0, 1.0)))
             else:
-                color = nmv.utilities.confirm_rgb_color(color_string=mtype_color_dict[etype])
+                color = nmv.utilities.confirm_rgb_color_from_color_string(
+                    color_string=mtype_color_dict[etype])
 
             # Create the group and add it to the list
             synapse_groups.append(

@@ -118,7 +118,8 @@ if __name__ == "__main__":
     # Create the neuron mesh
     nmv.logger.info('Creating the neuron mesh')
     neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
-        circuit=circuit, gid=args.gid, color=nmv.utilities.confirm_rgb_color(args.neuron_color),
+        circuit=circuit, gid=args.gid,
+        color=nmv.utilities.confirm_rgb_color_from_color_string(args.neuron_color),
         material_type=material_type)
 
     # Create the synapses mesh

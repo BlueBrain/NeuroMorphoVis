@@ -37,6 +37,13 @@ EXC_SYNAPSES_COLOR='#ff0000	'
 # The color of the inhibitory synapses
 INH_SYNAPSES_COLOR='#0000ff'
 
+# If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
+UNIFY_BRANCHES_RADII='yes'
+
+# A constant value for the radius of the neuron branches. This value will be ignore if
+# UNIFY_BRANCHES_RADII is set to yes
+UNIFIED_NEURON_RADIUS='1.0'
+
 # Synapse size
 SYNAPSE_RADIUS='2.0'
 
@@ -53,6 +60,8 @@ SAVE_TO_BLEND_FILE='yes'
 BOOL_ARGS=''
 if [ "$SAVE_TO_BLEND_FILE" == "yes" ];
     then BOOL_ARGS+=' --save-blend-file '; fi
+if [ "$UNIFY_BRANCHES_RADII" == "yes" ];
+    then BOOL_ARGS+=' --unify-branches-radii '; fi
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python visualize_exc_inh_synapses_on_neuron.py --                         \
@@ -60,6 +69,7 @@ $BLENDER -b --verbose 0 --python visualize_exc_inh_synapses_on_neuron.py --     
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --neuron-color=$NEURON_COLOR                                                                    \
+    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                  \
     --exc-synapses-color=$EXC_SYNAPSES_COLOR                                                        \
     --inh-synapses-color=$INH_SYNAPSES_COLOR                                                        \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \

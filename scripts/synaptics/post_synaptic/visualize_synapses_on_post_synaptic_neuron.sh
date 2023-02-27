@@ -31,6 +31,13 @@ OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-1'
 # Color-coded synapses file
 SYNAPSES_JSON_FILE='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-1/3774248.synapses'
 
+# If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
+UNIFY_BRANCHES_RADII='yes'
+
+# A constant value for the radius of the neuron branches. This value will be ignore if
+# UNIFY_BRANCHES_RADII is set to yes
+UNIFIED_NEURON_RADIUS='1.0'
+
 # The color of the neuron
 NEURON_COLOR='#ff2e48'
 
@@ -53,6 +60,8 @@ SAVE_TO_BLEND_FILE='yes'
 BOOL_ARGS=''
 if [ "$SAVE_TO_BLEND_FILE" == "yes" ];
     then BOOL_ARGS+=' --save-blend-file '; fi
+if [ "$UNIFY_BRANCHES_RADII" == "yes" ];
+    then BOOL_ARGS+=' --unify-branches-radii '; fi
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python visualize_synapses_on_post_synaptic_neuron.py --                   \
@@ -60,6 +69,7 @@ $BLENDER -b --verbose 0 --python visualize_synapses_on_post_synaptic_neuron.py -
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --neuron-color=$NEURON_COLOR                                                                    \
+    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                  \
     --axon-branching-order=$AXON_BRANCHING_ORDER                                                    \
     --synapses-file=$SYNAPSES_JSON_FILE                                                             \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \

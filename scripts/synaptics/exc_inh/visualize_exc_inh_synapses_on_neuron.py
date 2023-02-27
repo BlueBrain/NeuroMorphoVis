@@ -65,6 +65,16 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--neuron-color',
                         action='store', dest='neuron_color', help=arg_help)
 
+    arg_help = 'If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for ' \
+               'all the branches'
+    parser.add_argument('--unify-branches-radii',
+                        dest='unify_branches_radii', action='store_true', default=False,
+                        help=arg_help)
+
+    arg_help = 'The value of the branches unified radius (in um)'
+    parser.add_argument('--unified-branches-radius',
+                        action='store', dest='unified_branches_radius', type=float, help=arg_help)
+
     arg_help = 'Excitatory synapses color, either in RGB (R_G_B) or in hex (#RRGGBB) formats'
     parser.add_argument('--exc-synapses-color',
                         action='store', dest='exc_synapses_color', help=arg_help)
@@ -123,7 +133,10 @@ if __name__ == "__main__":
     # Create the neuron mesh
     nmv.logger.info('Creating the neuron mesh')
     neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
-        circuit=circuit, gid=args.gid, color=nmv.utilities.confirm_rgb_color(args.neuron_color),
+        circuit=circuit, gid=args.gid,
+        color=nmv.utilities.confirm_rgb_color_from_color_string(args.neuron_color),
+        unified_radius=args.unify_branches_radii,
+        branch_radius=args.unified_branches_radius,
         material_type=material_type)
 
     # Create the synapses mesh

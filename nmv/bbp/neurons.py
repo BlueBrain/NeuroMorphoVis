@@ -109,6 +109,7 @@ def create_neuron_mesh_in_circuit(
 def create_symbolic_neuron_mesh_in_circuit(
         circuit, gid,
         color, material_type=nmv.enums.Shader.LAMBERT_WARD,
+        unified_radius=True,
         branch_radius=1.0,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
@@ -123,6 +124,8 @@ def create_symbolic_neuron_mesh_in_circuit(
         Neuron RGB color in a Vector.
     :param material_type:
         The type of the material to be applied to the mesh.
+    :param unified_radius:
+        A flag to indicate if we will set the radii of all the branches in the neuron or not.
     :param branch_radius:
         The unified radius of all the branches in the neuron.
     :param basal_branching_order:
@@ -137,7 +140,7 @@ def create_symbolic_neuron_mesh_in_circuit(
 
     return create_neuron_mesh_in_circuit(
         circuit=circuit, gid=gid, color=color, material_type=material_type,
-        unified_radius=True, branch_radius=branch_radius,
+        unified_radius=unified_radius, branch_radius=branch_radius,
         basal_branching_order=basal_branching_order,
         apical_branching_order=apical_branching_order,
         axon_branching_order=axon_branching_order)
