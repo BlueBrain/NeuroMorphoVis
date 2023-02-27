@@ -17,6 +17,7 @@
 
 # System imports
 import numpy
+import random
 from tqdm import tqdm
 
 # Blender imports
@@ -150,6 +151,7 @@ def create_color_coded_synapses_mesh(circuit,
 def create_color_coded_synapses_particle_system(circuit,
                                                 synapse_groups,
                                                 synapse_radius=2,
+                                                synapses_percentage=100,
                                                 inverted_transformation=None,
                                                 material_type=nmv.enums.Shader.LAMBERT_WARD):
     """Creates a color-coded mesh for a given list of synapses.
@@ -160,7 +162,9 @@ def create_color_coded_synapses_particle_system(circuit,
         An object of the SynapseGroup class containing the name of the group, its synapses IDs list
         and the color of the group in a Vector((R, G, B)) format.
     :param synapse_radius:
-        The radius of the synapse in microns. By default, this value if 4.
+        The radius of the synapse in microns. By default, this value if 2.
+    :param synapses_percentage:
+        The percentage of the shown synapses.
     :param inverted_transformation:
         The inverse transformation to transform the synapses to the origin. If this is None, the
         synapses where will be located in the circuit global coordinates.
@@ -187,6 +191,10 @@ def create_color_coded_synapses_particle_system(circuit,
         # Create the material
         material = nmv.shading.create_material(
             name=synapse_group.name, color=synapse_group.color, material_type=material_type)
+
+        # Sample the list
+        number_synapses = int(len(positions) * synapses_percentage / 100.0)
+        positions = random.sample(positions, number_synapses)
 
         # Create the vertices mesh
         vertices_mesh = nmv.bmeshi.convert_bmesh_to_mesh(

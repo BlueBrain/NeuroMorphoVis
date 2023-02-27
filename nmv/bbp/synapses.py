@@ -463,11 +463,18 @@ def get_synapse_groups_from_color_coded_json_file(synapse_json_file):
     synapse_groups = list()
     for key in color_coded_synapses_dict:
 
-        synapse_group = nmv.bbp.SynapseGroup(name=key,
-                                             color=nmv.utilities.confirm_rgb_color(key),
-                                             synapses_ids_list=color_coded_synapses_dict[key])
+        group_name = key
+        group_value = color_coded_synapses_dict[key]
+        group_color = list(group_value.keys())[0]
+        group_synapses_list = group_value[group_color]
+
+        synapse_group = nmv.bbp.SynapseGroup(name=group_name,
+                                             color=nmv.utilities.confirm_rgb_color(group_color),
+                                             synapses_ids_list=group_synapses_list)
         synapse_groups.append(synapse_group)
 
+    # Return a reference to the synapse group
+    return synapse_groups
 
 
 ####################################################################################################
