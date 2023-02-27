@@ -19,23 +19,17 @@
 # Blender executable, adjust it to match the executable located on macOS or Linux
 BLENDER=$PWD/../../../../../../../blender
 
-# Circuit config
+# BBP circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 
-# The GID of the neuron
+# The GID of the post synaptic neuron
 NEURON_GID='3774248'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-1'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-2'
 
-# The color of the neuron
-NEURON_COLOR='#fffff0'
-
-# The color of the excitatory synapses
-EXC_SYNAPSES_COLOR='#ff0000	'
-
-# The color of the inhibitory synapses
-INH_SYNAPSES_COLOR='#0000ff'
+# Color-map of the synapses based on their mtype
+SYNAPSES_COLOR_MAP='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-2/pre-mtypes.colors'
 
 # If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
 UNIFY_BRANCHES_RADII='yes'
@@ -44,13 +38,19 @@ UNIFY_BRANCHES_RADII='yes'
 # UNIFY_BRANCHES_RADII is set to yes
 UNIFIED_NEURON_RADIUS='1.0'
 
-# Synapse size
+# The color of the neuron
+NEURON_COLOR='#fffff0'
+
+# Axon branching order, in certain cases, it is nice to hide the axon to focus on the synapses
+AXON_BRANCHING_ORDER=1
+
+# The fixed radius of the synapses
 SYNAPSE_RADIUS='2.0'
 
 # The percentage of the displayed synapses (from 0.1% - 100%)
 SYNAPSE_PERCENTAGE='100'
 
-# Base image resolution
+# Base resolution of the rendered image
 IMAGE_RESOLUTION='5000'
 
 # Save the rendering into a Blender file such that we can visualize the scene later interactively
@@ -64,16 +64,16 @@ if [ "$UNIFY_BRANCHES_RADII" == "yes" ];
     then BOOL_ARGS+=' --unify-branches-radii '; fi
 
 ####################################################################################################
-$BLENDER -b --verbose 0 --python visualize_exc_inh_synapses_on_neuron.py --                         \
+$BLENDER -b --verbose 0 --python visualize_synapses_color_coded_by_x_synaptic_mtypes.py --          \
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --neuron-color=$NEURON_COLOR                                                                    \
+    --pre-or-post='post'                                                                             \
     --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                \
-    --exc-synapses-color=$EXC_SYNAPSES_COLOR                                                        \
-    --inh-synapses-color=$INH_SYNAPSES_COLOR                                                        \
+    --axon-branching-order=$AXON_BRANCHING_ORDER                                                    \
+    --synapses-color-map=$SYNAPSES_COLOR_MAP                                                        \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \
     --synapse-percentage=$SYNAPSE_PERCENTAGE                                                        \
     --image-resolution=$IMAGE_RESOLUTION                                                            \
     $BOOL_ARGS
-

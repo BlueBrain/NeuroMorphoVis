@@ -48,7 +48,7 @@ AXON_BRANCHING_ORDER=1
 SYNAPSE_RADIUS='2.0'
 
 # The percentage of the displayed synapses (from 0.1% - 100%)
-SYNAPSE_PERCENTAGE='50'
+SYNAPSE_PERCENTAGE='100'
 
 # Base resolution of the rendered image
 IMAGE_RESOLUTION='5000'
