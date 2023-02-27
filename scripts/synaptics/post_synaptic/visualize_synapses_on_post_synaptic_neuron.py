@@ -88,7 +88,7 @@ def parse_command_line_arguments():
 
     arg_help = 'Save the scene into a 3D Blender file for interactive visualization later'
     parser.add_argument('--save-blend-file',
-                        dest='save_blend_file', action='store_true', default=False)
+                        dest='save_blend_file', action='store_true', default=False, help=arg_help)
 
     # Parse the arguments
     return parser.parse_args()
