@@ -30,8 +30,12 @@ def create_particle_system_for_vertices(mesh_object,
                                         particle_quality=2,
                                         material=None):
 
+    base_object = nmv.mesh.create_ico_sphere(name='%s Base' % name, subdivisions=particle_quality)
+    nmv.mesh.shade_smooth_object(base_object)
+    nmv.shading.set_material_to_object(mesh_object=base_object, material_reference=material)
+
     # Construct a particle system modifier
-    particle_system_modifier = mesh_object.modifiers.new("part", 'PARTICLE_SYSTEM')
+    particle_system_modifier = mesh_object.modifiers.new('%s PS' % name, 'PARTICLE_SYSTEM')
 
     # Create the particle system
     particle_system = mesh_object.particle_systems[particle_system_modifier.name]
@@ -61,8 +65,7 @@ def create_particle_system_for_vertices(mesh_object,
     particle_system.settings.render_type = 'OBJECT'
 
     # Create a base object
-    base_object = nmv.mesh.create_ico_sphere(name=name, subdivisions=particle_quality)
-    nmv.shading.set_material_to_object(mesh_object=base_object, material_reference=material)
+
     particle_system.settings.instance_object = base_object
 
     # Return a reference to the particle system

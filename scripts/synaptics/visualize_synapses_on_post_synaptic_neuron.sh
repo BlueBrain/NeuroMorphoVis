@@ -35,7 +35,7 @@ SYNAPSES_JSON_FILE='/home/abdellah/Desktop/clean-scripts/output/3774248.synapses
 NEURON_COLOR='255_255_255'
 
 # Synapse size
-SYNAPSE_SIZE='2.0'
+SYNAPSE_SIZE='1.0'
 
 # Base image resolution
 IMAGE_RESOLUTION='5000'

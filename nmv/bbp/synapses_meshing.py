@@ -149,7 +149,7 @@ def create_color_coded_synapses_mesh(circuit,
 ####################################################################################################
 def create_color_coded_synapses_particle_system(circuit,
                                                 synapse_groups,
-                                                synapse_radius=4,
+                                                synapse_radius=2,
                                                 inverted_transformation=None,
                                                 material_type=nmv.enums.Shader.LAMBERT_WARD):
     """Creates a color-coded mesh for a given list of synapses.
@@ -184,18 +184,21 @@ def create_color_coded_synapses_particle_system(circuit,
                 position = inverted_transformation @ position
             positions[j] = position
 
+        # Create the material
+        material = nmv.shading.create_material(
+            name=synapse_group.name, color=synapse_group.color, material_type=material_type)
+
         # Create the vertices mesh
         vertices_mesh = nmv.bmeshi.convert_bmesh_to_mesh(
             bmesh_object=nmv.bmeshi.create_vertices(locations=positions), name=synapse_group.name)
 
-        # Create the material
-        material = nmv.shading.create_material(
-            name=synapse_group.name, color=synapse_group.color, material_type=material_type)
+        nmv.shading.set_material_to_object(mesh_object=vertices_mesh, material_reference=material)
 
         # Create the particle system
         synapse_group_particle_system = nmv.geometry.create_particle_system_for_vertices(
             mesh_object=vertices_mesh, name=synapse_group.name, vertex_radius=synapse_radius,
             material=material)
+
 
 
 
