@@ -69,7 +69,7 @@ $BLENDER -b --verbose 0 --python visualize_exc_inh_synapses_on_neuron.py --     
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --neuron-color=$NEURON_COLOR                                                                    \
-    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                  \
+    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                \
     --exc-synapses-color=$EXC_SYNAPSES_COLOR                                                        \
     --inh-synapses-color=$INH_SYNAPSES_COLOR                                                        \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \

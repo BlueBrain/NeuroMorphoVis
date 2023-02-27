@@ -69,7 +69,7 @@ $BLENDER -b --verbose 0 --python visualize_synapses_on_post_synaptic_neuron.py -
     --gid=$NEURON_GID                                                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --neuron-color=$NEURON_COLOR                                                                    \
-    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                  \
+    --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                \
     --axon-branching-order=$AXON_BRANCHING_ORDER                                                    \
     --synapses-file=$SYNAPSES_JSON_FILE                                                             \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \
