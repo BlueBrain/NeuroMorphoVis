@@ -218,14 +218,14 @@ def create_symbolic_neuron_mesh_in_circuit(
 ####################################################################################################
 def create_to_scale_neuron_mesh_in_circuit(
         circuit, gid,
-        material_type=nmv.enums.Shader.LAMBERT_WARD,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         soma_color=nmv.enums.Color.SOMA,
         basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
         apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
-        axons_color=nmv.enums.Color.AXONS):
+        axons_color=nmv.enums.Color.AXONS,
+        material_type=nmv.enums.Shader.LAMBERT_WARD,):
     """Creates a to-scale mesh of a neuron, specified by a GID in a given circuit.
     The branches preserve the actual diameters as specified in the morphology.
 
@@ -257,3 +257,23 @@ def create_to_scale_neuron_mesh_in_circuit(
         apical_dendrites_color=apical_dendrites_color,
         axons_color=axons_color,
         material_type=material_type)
+
+
+####################################################################################################
+# @transform_neuron_mesh_to_global_coordinates
+####################################################################################################
+def transform_neuron_mesh_to_global_coordinates(circuit,
+                                                gid,
+                                                neuron_mesh):
+    """Transforms the mesh of a specific neuron to its global coordinates in the circuit.
+
+    :param circuit:
+        BBP circuit.
+    :param gid:
+        Neuron GID in the circuit.
+    :param neuron_mesh:
+        A reference to the neuron mesh.
+    """
+
+    # Get the neuron transformation matrix and update that of the mesh accordingly
+    neuron_mesh.matrix_world = nmv.bbp.get_neuron_transformation_matrix(circuit=circuit, gid=gid)

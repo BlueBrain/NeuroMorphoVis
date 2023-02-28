@@ -672,3 +672,58 @@ def create_color_coded_synapse_groups_by_post_etype(circuit,
                                                       synapses_mtypes=efferent_synapses_etypes,
                                                       mtype_color_dict=mtype_color_dict)
 
+
+
+
+
+
+def create_shared_synapse_group(circuit,
+                                pre_gid,
+                                post_gid):
+
+    import bluepy
+
+    # Get the IDs of the afferent synapses of a given GID
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(post_gid)
+
+    # Get the GIDs of all the pre-synaptic cells
+    pre_gids = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
+    pre_gids = [gid[0] for gid in pre_gids]
+
+    # A list that will contain all the synapse meshes
+    synapse_objects = list()
+
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+    pre_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'contour').values.tolist()
+
+    # Do it for all the synapses
+    synapses_ids_list = list()
+    for i in range(len(pre_gids)):
+
+        # Get only the shared synapses with the pre-synaptic gid
+        if pre_gid == int(pre_gids[i]):
+            synapses_ids_list.append(afferent_synapses_ids[i])
+
+            continue
+            # Synapse position is the mid-way between the pre- and post-synaptic centers
+            post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                             post_synaptic_positions[i][1],
+                                             post_synaptic_positions[i][2]))
+
+            pre_synaptic_position = Vector((pre_synaptic_positions[i][0],
+                                            pre_synaptic_positions[i][1],
+                                            pre_synaptic_positions[i][2]))
+
+            position = 0.5 * (post_synaptic_position + pre_synaptic_position)
+
+    return [nmv.bbp.SynapseGroup(name='Shared',
+                                 synapses_ids_list=synapses_ids_list, color=(1.0, 0.0, 0.0))]
+
+
+
+
+
