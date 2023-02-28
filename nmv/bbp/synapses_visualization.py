@@ -32,7 +32,10 @@ def visualize_synapses_on_neuron(circuit_config,
                                  gid,
                                  color_coded_synapses_dict,
                                  synapse_radius,
-                                 neuron_color=nmv.consts.Color.VERY_WHITE,
+                                 soma_color=nmv.enums.Color.SOMA,
+                                 basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+                                 apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+                                 axons_color=nmv.enums.Color.AXONS,
                                  material_type=nmv.enums.Shader.LAMBERT_WARD,
                                  unify_branch_radii=False,
                                  unified_branch_radius=1.0,
@@ -49,17 +52,27 @@ def visualize_synapses_on_neuron(circuit_config,
     # Create the neuron mesh
     if unify_branch_radii:
         neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
-            circuit=circuit, gid=gid, color=neuron_color, material_type=material_type,
+            circuit=circuit, gid=gid,
             branch_radius=unified_branch_radius,
             basal_branching_order=basal_branching_order,
             apical_branching_order=apical_branching_order,
-            axon_branching_order=axon_branching_order)
+            axon_branching_order=axon_branching_order,
+            soma_color=soma_color,
+            basal_dendrites_color=basal_dendrites_color,
+            apical_dendrites_color=apical_dendrites_color,
+            axons_color=axons_color,
+            material_type=material_type)
     else:
         neuron_mesh = nmv.bbp.create_to_scale_neuron_mesh_in_circuit(
-            circuit=circuit, gid=gid, color=neuron_color, material_type=material_type,
+            circuit=circuit, gid=gid,
             basal_branching_order=basal_branching_order,
             apical_branching_order=apical_branching_order,
-            axon_branching_order=axon_branching_order)
+            axon_branching_order=axon_branching_order,
+            soma_color=soma_color,
+            basal_dendrites_color=basal_dendrites_color,
+            apical_dendrites_color=apical_dendrites_color,
+            axons_color=axons_color,
+            material_type=material_type)
     neuron_mesh.name = 'Neuron %s' % str(gid)
 
     # Create the synapses mesh
@@ -83,7 +96,10 @@ def visualize_efferent_synapses_on_pre_synaptic_neuron(
         gid,
         color_coded_synapses_dict,
         synapse_radius,
-        neuron_color=nmv.consts.Color.VERY_WHITE,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS,
         material_type=nmv.enums.Shader.LAMBERT_WARD,
         unify_branch_radii=False,
         unified_branch_radius=1.0,
@@ -92,10 +108,15 @@ def visualize_efferent_synapses_on_pre_synaptic_neuron(
     return visualize_synapses_on_neuron(
         circuit_config=circuit_config, gid=gid,
         color_coded_synapses_dict=color_coded_synapses_dict, synapse_radius=synapse_radius,
-        neuron_color=neuron_color, material_type=material_type,
         unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius,
         basal_branching_order=dendrites_branching_order,
-        apical_branching_order=dendrites_branching_order)
+        apical_branching_order=dendrites_branching_order,
+        soma_color=soma_color,
+        basal_dendrites_color=basal_dendrites_color,
+        apical_dendrites_color=apical_dendrites_color,
+        axons_color=axons_color,
+        material_type=material_type
+    )
 
 
 ####################################################################################################
@@ -106,7 +127,10 @@ def visualize_afferent_synapses_on_post_synaptic_neuron(
         gid,
         color_coded_synapses_dict,
         synapse_radius,
-        neuron_color=nmv.consts.Color.VERY_WHITE,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS,
         material_type=nmv.enums.Shader.LAMBERT_WARD,
         unify_branch_radii=False,
         unified_branch_radius=1.0,
@@ -115,9 +139,13 @@ def visualize_afferent_synapses_on_post_synaptic_neuron(
     return visualize_synapses_on_neuron(
         circuit_config=circuit_config, gid=gid,
         color_coded_synapses_dict=color_coded_synapses_dict, synapse_radius=synapse_radius,
-        neuron_color=neuron_color, material_type=material_type,
         unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius,
-        axon_branching_order=axon_branching_order)
+        axon_branching_order=axon_branching_order,
+        soma_color=soma_color,
+        basal_dendrites_color=basal_dendrites_color,
+        apical_dendrites_color=apical_dendrites_color,
+        axons_color=axons_color,
+        material_type=material_type)
 
 
 ####################################################################################################
@@ -127,7 +155,10 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
         circuit_config,
         gid,
         synapse_radius,
-        neuron_color=nmv.consts.Color.VERY_WHITE,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS,
         excitatory_synapses_color=nmv.consts.Color.RED,
         inhibitory_synapses_color=nmv.consts.Color.BLUE,
         material_type=nmv.enums.Shader.LAMBERT_WARD,
@@ -146,8 +177,13 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
     return visualize_synapses_on_neuron(
         circuit_config=circuit_config, gid=gid,
         color_coded_synapses_dict=color_coded_synapses_dict, synapse_radius=synapse_radius,
-        neuron_color=neuron_color, material_type=material_type,
-        unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius)
+        unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius,
+        soma_color=soma_color,
+        basal_dendrites_color=basal_dendrites_color,
+        apical_dendrites_color=apical_dendrites_color,
+        axons_color=axons_color,
+        material_type=material_type
+    )
 
 
 

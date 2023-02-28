@@ -29,11 +29,15 @@ import nmv.shading
 ####################################################################################################
 def create_neuron_mesh_in_circuit(
         circuit, gid,
-        color, material_type=nmv.enums.Shader.LAMBERT_WARD,
         unified_radius=True, branch_radius=1.0,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
-        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER):
+        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS,
+        material_type=nmv.enums.Shader.LAMBERT_WARD):
     """Creates a neuron mesh, specified by a GID in a given circuit.
     NOTE: The soma is located at the origin.
 
@@ -88,16 +92,70 @@ def create_neuron_mesh_in_circuit(
     # Soma
     nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
 
-    # Create a meta balls meshing builder
     mesh_builder = nmv.builders.PiecewiseBuilder(morphology=morphology, options=nmv_options)
+    all_neuron_meshes = mesh_builder.reconstruct_mesh()
 
-    # Create the neuron mesh
-    neuron_mesh = mesh_builder.reconstruct_mesh_in_single_object()
+    # Create four-lists to group the meshes
+    apical_meshes = list()
+    basal_meshes = list()
+    axon_meshes = list()
+    soma_meshes = list()
+
+    # Filter
+    for mesh in all_neuron_meshes:
+        if 'Apical' in mesh.name:
+            apical_meshes.append(mesh)
+        elif 'Basal' in mesh.name:
+            basal_meshes.append(mesh)
+        elif 'Axon' in mesh.name:
+            axon_meshes.append(mesh)
+        else:
+            soma_meshes.append(mesh)
+
+    # Join
+    apical_mesh = nmv.mesh.join_mesh_objects(mesh_list=apical_meshes, name='Apical Dendrite')
+    basal_mesh = nmv.mesh.join_mesh_objects(mesh_list=basal_meshes, name='Basal Dendrite')
+    axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axon')
+    soma_mesh = nmv.mesh.join_mesh_objects(mesh_list=soma_meshes, name='Soma')
 
     # Add the material top the reconstructed mesh
-    neuron_material = nmv.shading.create_material(
-        name='neuron_%s' % morphology.label, color=color, material_type=material_type)
-    nmv.shading.set_material_to_object(mesh_object=neuron_mesh, material_reference=neuron_material)
+    if soma_mesh is not None:
+        soma_material = nmv.shading.create_material(
+            name='Apical Dendrites [%s]' % morphology.label,
+            color=soma_color, material_type=material_type)
+        nmv.shading.set_material_to_object(mesh_object=soma_mesh, material_reference=soma_material)
+
+    if basal_mesh is not None:
+        basal_material = nmv.shading.create_material(
+            name='Basal Dendrites [%s]' % morphology.label,
+            color=basal_dendrites_color, material_type=material_type)
+        nmv.shading.set_material_to_object(mesh_object=basal_mesh, material_reference=basal_material)
+
+    if apical_mesh is not None:
+        apical_material = nmv.shading.create_material(
+            name='Apical Dendrites [%s]' % morphology.label,
+            color=apical_dendrites_color, material_type=material_type)
+        nmv.shading.set_material_to_object(mesh_object=apical_mesh, material_reference=apical_material)
+
+    if axon_mesh is not None:
+        axon_material = nmv.shading.create_material(
+            name='Axon [%s]' % morphology.label,
+            color=axons_color, material_type=material_type)
+        nmv.shading.set_material_to_object(mesh_object=axon_mesh, material_reference=axon_material)
+
+    # Ensure that you only add the meshes of the available components
+    mesh_list = list()
+    if apical_mesh is not None:
+        mesh_list.append(apical_mesh)
+    if basal_mesh is not None:
+        mesh_list.append(basal_mesh)
+    if axon_mesh is not None:
+        mesh_list.append(axon_mesh)
+    if soma_mesh is not None:
+        mesh_list.append(soma_mesh)
+
+    # Join all the mesh objects into a single mesh object to represent the neuron
+    neuron_mesh = nmv.mesh.join_mesh_objects(mesh_list=mesh_list, name='Neuron')
 
     # Return a reference to the neuron mesh
     return neuron_mesh
@@ -108,12 +166,16 @@ def create_neuron_mesh_in_circuit(
 ####################################################################################################
 def create_symbolic_neuron_mesh_in_circuit(
         circuit, gid,
-        color, material_type=nmv.enums.Shader.LAMBERT_WARD,
         unified_radius=True,
         branch_radius=1.0,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
-        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER):
+        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS,
+        material_type=nmv.enums.Shader.LAMBERT_WARD):
     """Creates a symbolic mesh of a neuron, specified by a GID in a given circuit.
 
     :param circuit:
@@ -139,11 +201,16 @@ def create_symbolic_neuron_mesh_in_circuit(
     """
 
     return create_neuron_mesh_in_circuit(
-        circuit=circuit, gid=gid, color=color, material_type=material_type,
+        circuit=circuit, gid=gid,
         unified_radius=unified_radius, branch_radius=branch_radius,
         basal_branching_order=basal_branching_order,
         apical_branching_order=apical_branching_order,
-        axon_branching_order=axon_branching_order)
+        axon_branching_order=axon_branching_order,
+        soma_color=soma_color,
+        basal_dendrites_color=basal_dendrites_color,
+        apical_dendrites_color=apical_dendrites_color,
+        axons_color=axons_color,
+        material_type=material_type)
 
 
 ####################################################################################################
@@ -151,10 +218,14 @@ def create_symbolic_neuron_mesh_in_circuit(
 ####################################################################################################
 def create_to_scale_neuron_mesh_in_circuit(
         circuit, gid,
-        color, material_type=nmv.enums.Shader.LAMBERT_WARD,
+        material_type=nmv.enums.Shader.LAMBERT_WARD,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
-        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER):
+        axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
+        soma_color=nmv.enums.Color.SOMA,
+        basal_dendrites_color=nmv.enums.Color.BASAL_DENDRITES,
+        apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
+        axons_color=nmv.enums.Color.AXONS):
     """Creates a to-scale mesh of a neuron, specified by a GID in a given circuit.
     The branches preserve the actual diameters as specified in the morphology.
 
@@ -177,7 +248,12 @@ def create_to_scale_neuron_mesh_in_circuit(
     """
 
     return create_neuron_mesh_in_circuit(
-        circuit=circuit, gid=gid, color=color, material_type=material_type, unified_radius=False,
+        circuit=circuit, gid=gid, unified_radius=False,
         basal_branching_order=basal_branching_order,
         apical_branching_order=apical_branching_order,
-        axon_branching_order=axon_branching_order)
+        axon_branching_order=axon_branching_order,
+        soma_color=soma_color,
+        basal_dendrites_color=basal_dendrites_color,
+        apical_dendrites_color=apical_dendrites_color,
+        axons_color=axons_color,
+        material_type=material_type)

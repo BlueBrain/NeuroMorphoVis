@@ -258,7 +258,7 @@ def create_flat_material(name,
         color = mathutils.Vector((color[0], color[1], color[2], 1.0))
 
         # Create a new material (color) and assign it to the line
-        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference = bpy.data.materials.new('%s' % name)
         material_reference.diffuse_color = color
 
         # Zero-metallic and roughness
@@ -328,7 +328,7 @@ def create_transparent_material(name,
         color = mathutils.Vector((color[0], color[1], color[2], 1.0))
 
         # Create a new material (color) and assign it to the line
-        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference = bpy.data.materials.new('%s' % name)
         material_reference.diffuse_color = color
 
         # Zero-metallic and roughness
@@ -402,7 +402,7 @@ def create_toon_material(name,
         color = mathutils.Vector((color[0], color[1], color[2], 1.0))
 
         # Create a new material (color) and assign it to the line
-        material_reference = bpy.data.materials.new('color.%s' % name)
+        material_reference = bpy.data.materials.new('%s' % name)
         material_reference.diffuse_color = color
 
         # Zero-metallic and roughness
@@ -655,7 +655,7 @@ def create_lambert_ward_material(name,
         color = mathutils.Vector((color[0], color[1], color[2], 1.0))
 
         # Create a new material (color) and assign it to the line
-        line_material = bpy.data.materials.new('color.%s' % name)
+        line_material = bpy.data.materials.new('%s' % name)
         line_material.diffuse_color = color
 
         # Zero-metallic and roughness
@@ -735,7 +735,7 @@ def create_free_style_material(name,
         color = mathutils.Vector((color[0], color[1], color[2], 1.0))
 
         # Create a new material (color) and assign it to the line
-        line_material = bpy.data.materials.new('color.%s' % name)
+        line_material = bpy.data.materials.new('%s' % name)
         line_material.diffuse_color = color
 
         # Zero-metallic and roughness
@@ -933,65 +933,65 @@ def create_material(name,
 
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
-        return create_lambert_ward_material(name='%s_color' % name, color=color)
+        return create_lambert_ward_material(name='%s' % name, color=color)
 
     # Free-style material
     elif material_type == nmv.enums.Shader.FREE_STYLE:
-        return create_free_style_material(name='%s_color' % name, color=color)
+        return create_free_style_material(name='%s' % name, color=color)
 
     # Super electron light
     elif material_type == nmv.enums.Shader.SUPER_ELECTRON_LIGHT:
-        return create_super_electron_light_material(name='%s_color' % name, color=color)
+        return create_super_electron_light_material(name='%s' % name, color=color)
 
     # Super electron dark
     elif material_type == nmv.enums.Shader.SUPER_ELECTRON_DARK:
-        return create_super_electron_dark_material(name='%s_color' % name, color=color)
+        return create_super_electron_dark_material(name='%s' % name, color=color)
 
     # Electron light
     elif material_type == nmv.enums.Shader.ELECTRON_LIGHT:
-        return create_electron_light_material(name='%s_color' % name, color=color)
+        return create_electron_light_material(name='%s' % name, color=color)
 
     # Electron dark
     elif material_type == nmv.enums.Shader.ELECTRON_DARK:
-        return create_electron_dark_material(name='%s_color' % name, color=color)
+        return create_electron_dark_material(name='%s' % name, color=color)
 
     # Glossy
     elif material_type == nmv.enums.Shader.GLOSSY:
-        return create_glossy_material(name='%s_color' % name, color=color)
+        return create_glossy_material(name='%s' % name, color=color)
 
     # Glossy blending
     elif material_type == nmv.enums.Shader.GLOSSY_BLENDING:
-        return create_glossy_blending_material(name='%s_color' % name, color=color)
+        return create_glossy_blending_material(name='%s' % name, color=color)
 
     # Glossy
     elif material_type == nmv.enums.Shader.WAX:
-        return create_glossy_material(name='%s_color' % name, color=color)
+        return create_glossy_material(name='%s' % name, color=color)
 
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
-        return create_glossy_bumpy_material(name='%s_color' % name, color=color)
+        return create_glossy_bumpy_material(name='%s' % name, color=color)
 
     # Wire frame
     elif material_type == nmv.enums.Shader.WIRE_FRAME:
-        return create_wire_frame_material(name='%s_color' % name, color=color)
+        return create_wire_frame_material(name='%s' % name, color=color)
 
     # Flat
     elif material_type == nmv.enums.Shader.FLAT:
         # Always set the colors to raw when using the flat material
         nmv.scene.set_colors_to_raw()
-        return create_flat_material(name='%s_color' % name, color=color)
+        return create_flat_material(name='%s' % name, color=color)
 
     # Toon
     elif material_type == nmv.enums.Shader.TOON:
-        return create_toon_material(name='%s_color' % name, color=color)
+        return create_toon_material(name='%s' % name, color=color)
 
     # Transparent
     elif material_type == nmv.enums.Shader.TRANSPARENT:
-        return create_transparent_material(name='%s_color' % name, color=color)
+        return create_transparent_material(name='%s' % name, color=color)
 
     # Default
     else:
-        return create_lambert_ward_material(name='%s_color' % name, color=color)
+        return create_lambert_ward_material(name='%s' % name, color=color)
 
 
 ####################################################################################################
@@ -1079,19 +1079,14 @@ def create_materials(material_type,
     # By default, no transparency
     nmv.scene.set_scene_transparency(transparent=False)
 
-    # Turn off the free style mode
+    # Turn off the free-style mode
     switch_freestyle(use_freestyle=False)
 
-    # A list of the created materials
+    # Create a list of two materials such that you can switch between them in the scene
     materials_list = list()
-    for i in range(2):
+    for i in range(nmv.consts.Color.NUMBER_MATERIALS):
+        materials_list.append(nmv.shading.create_material(
+            name='%s %d' % (name, i + 1), color=color, material_type=material_type))
 
-        # Create the material
-        material = nmv.shading.create_material(name='%s_color_%d' % (name, i), color=color,
-                                               material_type=material_type)
-
-        # Append the material to the materials list
-        materials_list.append(material)
-
-    # Return the list
+    # Return the materials list
     return materials_list

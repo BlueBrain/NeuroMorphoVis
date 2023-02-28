@@ -132,11 +132,15 @@ if __name__ == "__main__":
 
     # Create the neuron mesh
     nmv.logger.info('Creating the neuron mesh')
+    neuron_color = nmv.utilities.confirm_rgb_color_from_color_string(args.neuron_color)
     neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.gid,
-        color=nmv.utilities.confirm_rgb_color_from_color_string(args.neuron_color),
         unified_radius=args.unify_branches_radii,
         branch_radius=args.unified_branches_radius,
+        soma_color=neuron_color,
+        basal_dendrites_color=neuron_color,
+        apical_dendrites_color=neuron_color,
+        axons_color=neuron_color,
         material_type=material_type)
 
     # Create the synapses mesh

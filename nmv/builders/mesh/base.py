@@ -159,11 +159,8 @@ class MeshBuilderBase:
 
         # Delete the old materials
         for material in bpy.data.materials:
-            if 'soma_skeleton_material' in material.name or \
-                    'axon_skeleton_material' in material.name or \
-                    'basal_dendrites_skeleton_material' in material.name or \
-                    'apical_dendrite_skeleton_material' in material.name or \
-                    'spines_material' in material.name:
+            if self.morphology.label in material.name:
+
                 # Remove the materials
                 nmv.utilities.disable_std_output()
                 bpy.data.materials.remove(material, do_unlink=True)
@@ -172,34 +169,36 @@ class MeshBuilderBase:
         # Soma
         self.soma_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='soma_skeleton_material',
+            name='Soma Mesh Material [%s]' % self.morphology.label,
             color=self.options.shading.mesh_soma_color)
 
         # Axon
         self.axons_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='axon_skeleton_material',
+            name='Axons Mesh Material [%s]' % self.morphology.label,
             color=self.options.shading.mesh_axons_color)
 
         # Basal dendrites
         self.basal_dendrites_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='basal_dendrites_skeleton_material',
+            name='Basal Dendrites Mesh Material [%s]' % self.morphology.label,
             color=self.options.shading.mesh_basal_dendrites_color)
 
         # Apical dendrite
         self.apical_dendrites_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='apical_dendrite_skeleton_material',
+            name='Apical Dendrite Mesh Material [%s]' % self.morphology.label,
             color=self.options.shading.mesh_apical_dendrites_color)
 
         # Spines
         self.spines_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='spines_material', color=self.options.shading.mesh_spines_color)
+            name='Spines Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_spines_color)
 
         self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='endfeet', material_type=self.options.shading.mesh_material,
+            name='Endfeet Material [%s]' % self.morphology.label,
+            material_type=self.options.shading.mesh_material,
             color=self.options.shading.mesh_endfeet_color,
             number_elements=1)
 
@@ -318,7 +317,7 @@ class MeshBuilderBase:
             '\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
 
     ################################################################################################
-    # @create_skeleton_materials
+    # @write_statistics_to_file
     ################################################################################################
     def write_statistics_to_file(self,
                                  tag):
@@ -352,7 +351,7 @@ class MeshBuilderBase:
         stats_file.close()
 
     ################################################################################################
-    # @create_skeleton_materials
+    # @transform_to_global_coordinates
     ################################################################################################
     def transform_to_global_coordinates(self):
         """Transforms the neuron mesh to the global coordinates.

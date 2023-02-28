@@ -59,5 +59,8 @@ class Color:
     # Black
     BLACK = Vector((0.0, 0.0, 0.0))
 
+    # Default number of materials
+    NUMBER_MATERIALS = 2
+
     # The number of color elements in the color map
     COLORMAP_RESOLUTION = 16
