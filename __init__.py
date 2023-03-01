@@ -27,7 +27,7 @@ import os
 import imp
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2022, Blue Brain Project / EPFL"
+__copyright__   = "Copyright (c) 2016 - 2023, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
@@ -51,7 +51,7 @@ bl_info = {
     # "location": "View 3D > Edit Mode > Tool Shelf",
     # Description
     "description": "Morphology reconstruction, analysis and visualization to mesh reconstruction. "
-                   "The Add-on was developed by the Blue Brain Project (BBP) at Ecole "
+                   "The Add-on was developed by the Blue Brain Project (BBP) at the Ecole "
                    "Polytechnique Federale de Lausanne (EPFL).",
     # Add-on category; shown on the left side of Blender's add-on list to make filtering simpler.
     # This must be one of the categories as listed in Blender's add-on tab; if it's not, it will
@@ -96,6 +96,7 @@ def register():
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma_panel.register_panel()
     nmv.interface.ui.morphology_panel.register_panel()
+    nmv.interface.ui.synaptics_panel.register_panel()
     nmv.interface.ui.mesh_panel.register_panel()
     nmv.interface.ui.about_panel.register_panel()
 
@@ -120,6 +121,7 @@ def unregister():
     nmv.interface.ui.edit_panel.unregister_panel()
     nmv.interface.ui.soma_panel.unregister_panel()
     nmv.interface.ui.morphology_panel.unregister_panel()
+    nmv.interface.ui.synaptics_panel.unregister_panel()
     nmv.interface.ui.mesh_panel.unregister_panel()
     nmv.interface.ui.about_panel.unregister_panel()
     nmv.logger.info_done('NeuroMorphoVis Unloaded!')

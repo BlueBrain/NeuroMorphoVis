@@ -57,7 +57,7 @@ class MeshPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
     bl_idname = "OBJECT_PT_NMV_MeshingToolBox"
-    bl_label = 'Mesh Toolbox'
+    bl_label = 'Meshing Toolbox'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 

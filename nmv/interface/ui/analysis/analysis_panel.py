@@ -50,7 +50,7 @@ class AnalysisPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
     bl_idname = "OBJECT_PT_NMV_Analysis"
-    bl_label = 'Morphology Analysis'
+    bl_label = 'Morphology Analysis Tools'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 

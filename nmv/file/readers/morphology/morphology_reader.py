@@ -227,3 +227,28 @@ def load_from_circuit(options):
 
     # The morphology file was loaded successfully
     return True, morphology_object
+
+
+####################################################################################################
+# @import_morphology_from_circuit
+####################################################################################################
+def import_morphology_from_circuit(circuit_config,
+                                   gid,
+                                   center_at_origin=True):
+
+    # TODO: Handle sonata circuits
+    # Load the circuit from the circuit config, and get the path to the morphology
+    import bluepy
+    circuit = bluepy.Circuit(circuit_config)
+    morphology_file_path = circuit.morph.get_filepath(gid)
+
+    # Load the morphology file into a NMV morphology object using MorphIO
+    nmv_morphology_object = nmv.file.read_morphology_with_morphio(
+        morphology_file_path=morphology_file_path, center_at_origin=center_at_origin)
+
+    # To identify the neuron in the scene, label the morphology object with the GID of the neuron
+    nmv_morphology_object.label = str(gid)
+
+    # Return the morphology object
+    return nmv_morphology_object
+

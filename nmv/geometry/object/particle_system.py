@@ -28,6 +28,7 @@ def create_particle_system_for_vertices(mesh_object,
                                         name='Particle System',
                                         vertex_radius=1,
                                         particle_quality=4,
+                                        display_method='RENDER',
                                         material=None):
 
     base_object = nmv.mesh.create_ico_sphere(name='%s Base' % name, subdivisions=particle_quality)
@@ -59,7 +60,7 @@ def create_particle_system_for_vertices(mesh_object,
     particle_system.settings.display_size = vertex_radius
 
     # Display dots for the performance
-    particle_system.settings.display_method = 'DOT'
+    particle_system.settings.display_method = display_method # 'DOT'
 
     # Render objects since we cannot render Halos in the current version of Blender
     particle_system.settings.render_type = 'OBJECT'

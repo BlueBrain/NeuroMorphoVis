@@ -55,6 +55,9 @@ class NeuroMorphoVisOptions:
         # Shading options
         self.shading = nmv.options.ShadingOptions()
 
+        # Synaptics options
+        self.synaptics = nmv.options.SynapticsOptions()
+
     ################################################################################################
     # @consume_arguments
     ################################################################################################

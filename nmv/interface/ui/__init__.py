@@ -25,3 +25,4 @@ from .soma import *
 from .analysis import *
 from .mesh import *
 from .morphology import *
+from .synaptics import *

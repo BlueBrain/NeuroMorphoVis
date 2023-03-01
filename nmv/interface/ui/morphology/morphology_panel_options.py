@@ -18,8 +18,6 @@
 # Blender imports
 import bpy
 
-import mathutils
-
 # Internal imports
 import nmv.consts
 import nmv.enums

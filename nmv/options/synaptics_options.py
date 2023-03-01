@@ -15,11 +15,27 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .io_options import *
-from .mesh_options import *
-from .morphology_options import *
-from .soma_options import *
-from .rendering_options import *
-from .shading_options import *
-from .synaptics_options import *
-from .neuromorphovis_options import *
+# Internal imports
+import nmv.consts
+import nmv.enums
+
+
+####################################################################################################
+# @SynapticsOptions
+####################################################################################################
+class SynapticsOptions:
+    """Synaptics options
+    """
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        """Constructor
+        """
+
+        self.use_case = None
+
+        # Reconstruction method
+        self.synapses_radius = 1.0
+

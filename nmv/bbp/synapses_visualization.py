@@ -201,3 +201,23 @@ def visualize_synapses_on_post_synaptic_neuron_based_on_pre_etypes():
 
 def visualize_synapses_on_pre_synaptic_neuron_based_on_post_etypes():
     pass
+
+
+
+
+
+
+def visualize_afferent_synapses(nmv_options,
+                                display_neuron=True):
+    pass
+
+
+def visualize_efferent_synapses(nmv_options,
+                                display_neuron=True):
+    pass
+
+
+def visualize_afferent_and_efferent_synapses(nmv_options,
+                                             display_neuron=True):
+    visualize_afferent_synapses(nmv_options=nmv_options, display_neuron=display_neuron)
+    visualize_efferent_synapses(nmv_options=nmv_options, display_neuron=display_neuron)
