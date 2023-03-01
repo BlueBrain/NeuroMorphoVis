@@ -113,15 +113,15 @@ def create_neuron_mesh_in_circuit(
             soma_meshes.append(mesh)
 
     # Join
-    apical_mesh = nmv.mesh.join_mesh_objects(mesh_list=apical_meshes, name='Apical Dendrite')
-    basal_mesh = nmv.mesh.join_mesh_objects(mesh_list=basal_meshes, name='Basal Dendrite')
-    axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axon')
+    apical_mesh = nmv.mesh.join_mesh_objects(mesh_list=apical_meshes, name='Apical Dendrites')
+    basal_mesh = nmv.mesh.join_mesh_objects(mesh_list=basal_meshes, name='Basal Dendrites')
+    axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axons')
     soma_mesh = nmv.mesh.join_mesh_objects(mesh_list=soma_meshes, name='Soma')
 
     # Add the material top the reconstructed mesh
     if soma_mesh is not None:
         soma_material = nmv.shading.create_material(
-            name='Apical Dendrites [%s]' % morphology.label,
+            name='Soma [%s]' % morphology.label,
             color=soma_color, material_type=material_type)
         nmv.shading.set_material_to_object(mesh_object=soma_mesh, material_reference=soma_material)
 
@@ -139,7 +139,7 @@ def create_neuron_mesh_in_circuit(
 
     if axon_mesh is not None:
         axon_material = nmv.shading.create_material(
-            name='Axon [%s]' % morphology.label,
+            name='Axons [%s]' % morphology.label,
             color=axons_color, material_type=material_type)
         nmv.shading.set_material_to_object(mesh_object=axon_mesh, material_reference=axon_material)
 

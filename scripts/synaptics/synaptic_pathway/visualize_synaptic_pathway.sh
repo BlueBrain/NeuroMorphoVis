@@ -32,15 +32,17 @@ PRE_SYNAPTIC_NEURON_GID='961928'
 POST_SYNAPTIC_NEURON_GID='3793945'
 
 # If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
-UNIFY_BRANCHES_RADII='yes'
+UNIFY_BRANCHES_RADII='no'
 
 # A constant value for the radius of the neuron branches. This value will be ignore if
 # UNIFY_BRANCHES_RADII is set to yes
 UNIFIED_NEURON_RADIUS='1.0'
 
 # The colors of the pre- and post-synaptic neurons
-PRE_SYNAPTIC_NEURON_COLOR='#ff00ff'
-POST_SYNAPTIC_NEURON_COLOR='#ffaa00'
+PRE_SYNAPTIC_DENDRITES_COLOR='#c23bd4' # 194, 59, 212
+PRE_SYNAPTIC_AXONS_COLOR='#3b76d4' # 59, 118, 212
+POST_SYNAPTIC_DENDRITES_COLOR='#00ffaa' # 194, 59, 212
+POST_SYNAPTIC_AXONS_COLOR='#ff00aa' # 212, 59, 79
 
 # The color of the shared synapses
 SYNAPSES_COLOR='#ff00aa'
@@ -67,8 +69,10 @@ $BLENDER -b --verbose 0 --python visualize_synaptic_pathway.py --               
     --circuit-config=$CIRCUIT_CONFIG                                                                \
     --pre-synaptic-neuron-gid=$PRE_SYNAPTIC_NEURON_GID                                              \
     --post-synaptic-neuron-gid=$POST_SYNAPTIC_NEURON_GID                                            \
-    --pre-synaptic-neuron-color=$PRE_SYNAPTIC_NEURON_COLOR                                          \
-    --post-synaptic-neuron-color=$POST_SYNAPTIC_NEURON_COLOR                                        \
+    --pre-synaptic-dendrites-color=$PRE_SYNAPTIC_DENDRITES_COLOR                                    \
+    --pre-synaptic-axons-color=$PRE_SYNAPTIC_AXONS_COLOR                                            \
+    --post-synaptic-dendrites-color=$POST_SYNAPTIC_DENDRITES_COLOR                                  \
+    --post-synaptic-axons-color=$POST_SYNAPTIC_AXONS_COLOR                                          \
     --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                \
     --synapses-color=$SYNAPSES_COLOR                                                                \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \

@@ -27,7 +27,7 @@ import nmv.shading
 def create_particle_system_for_vertices(mesh_object,
                                         name='Particle System',
                                         vertex_radius=1,
-                                        particle_quality=2,
+                                        particle_quality=4,
                                         material=None):
 
     base_object = nmv.mesh.create_ico_sphere(name='%s Base' % name, subdivisions=particle_quality)
@@ -65,7 +65,6 @@ def create_particle_system_for_vertices(mesh_object,
     particle_system.settings.render_type = 'OBJECT'
 
     # Create a base object
-
     particle_system.settings.instance_object = base_object
 
     # Return a reference to the particle system

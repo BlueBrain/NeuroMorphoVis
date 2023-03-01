@@ -72,13 +72,21 @@ def parse_command_line_arguments():
     parser.add_argument('--unified-branches-radius',
                         action='store', dest='unified_branches_radius', type=float, help=arg_help)
 
-    arg_help = 'The color of the pre-synaptic neuron.'
-    parser.add_argument('--pre-synaptic-neuron-color',
-                        action='store', dest='pre_synaptic_neuron_color', help=arg_help)
+    arg_help = 'The color of the dendrites of the pre-synaptic neuron.'
+    parser.add_argument('--pre-synaptic-dendrites-color',
+                        action='store', dest='pre_synaptic_dendrites_color', help=arg_help)
 
-    arg_help = 'The color of the post-synaptic neuron.'
-    parser.add_argument('--post-synaptic-neuron-color',
-                        action='store', dest='post_synaptic_neuron_color', help=arg_help)
+    arg_help = 'The color of the axons of the pre-synaptic neuron.'
+    parser.add_argument('--pre-synaptic-axons-color',
+                        action='store', dest='pre_synaptic_axons_color', help=arg_help)
+
+    arg_help = 'The color of the dendrites of the post-synaptic neuron.'
+    parser.add_argument('--post-synaptic-dendrites-color',
+                        action='store', dest='post_synaptic_dendrites_color', help=arg_help)
+
+    arg_help = 'The color of the axons of the post-synaptic neuron.'
+    parser.add_argument('--post-synaptic-axons-color',
+                        action='store', dest='post_synaptic_axons_color', help=arg_help)
 
     arg_help = 'The color of the synapses.'
     parser.add_argument('--synapses-color',
@@ -124,75 +132,56 @@ if __name__ == "__main__":
     inverse_transformation = nmv.bbp.get_neuron_inverse_transformation_matrix(
         circuit=circuit, gid=args.post_gid)
 
-    '''
     # Create the mesh of the pre-synaptic neuron at the global coordinates
     nmv.logger.info('Creating the pre-synaptic neuron mesh')
-    pre_synaptic_neuron_color = nmv.utilities.confirm_rgb_color_from_color_string(
-        args.pre_synaptic_neuron_color)
-    pre_synaptic_neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
+    pre_synaptic_dendrites_color = nmv.utilities.confirm_rgb_color_from_color_string(
+        args.pre_synaptic_dendrites_color)
+    pre_synaptic_axons_color = nmv.utilities.confirm_rgb_color_from_color_string(
+        args.pre_synaptic_axons_color)
+    pre_synaptic_neuron_mesh = nmv.bbp.nmv.bbp.create_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.pre_gid,
         unified_radius=args.unify_branches_radii,
         branch_radius=args.unified_branches_radius,
-        soma_color=pre_synaptic_neuron_color,
-        basal_dendrites_color=pre_synaptic_neuron_color,
-        apical_dendrites_color=pre_synaptic_neuron_color,
-        axons_color=pre_synaptic_neuron_color,
+        soma_color=pre_synaptic_dendrites_color,
+        basal_dendrites_color=pre_synaptic_dendrites_color,
+        apical_dendrites_color=pre_synaptic_dendrites_color,
+        axons_color=pre_synaptic_axons_color,
         material_type=material_type)
+
+    # Transform the pre-synaptic neuron to its circuit coordinates
     nmv.bbp.transform_neuron_mesh_to_global_coordinates(
         circuit=circuit, gid=args.pre_gid, neuron_mesh=pre_synaptic_neuron_mesh)
-    '''
+
     nmv.logger.info('Creating the post-synaptic neuron mesh')
-    post_synaptic_neuron_color = nmv.utilities.confirm_rgb_color_from_color_string(
-        args.post_synaptic_neuron_color)
-    post_synaptic_neuron_mesh = nmv.bbp.create_to_scale_neuron_mesh_in_circuit(
+    post_synaptic_dendrites_color = nmv.utilities.confirm_rgb_color_from_color_string(
+        args.post_synaptic_dendrites_color)
+    post_synaptic_axons_color = nmv.utilities.confirm_rgb_color_from_color_string(
+        args.post_synaptic_axons_color)
+    post_synaptic_neuron_mesh = nmv.bbp.create_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.post_gid,
-        #unified_radius=args.unify_branches_radii,
-        #branch_radius=args.unified_branches_radius,
-        soma_color=post_synaptic_neuron_color,
-        basal_dendrites_color=post_synaptic_neuron_color,
-        apical_dendrites_color=post_synaptic_neuron_color,
-        axons_color=post_synaptic_neuron_color,
+        unified_radius=args.unify_branches_radii,
+        branch_radius=args.unified_branches_radius,
+        axon_branching_order=1,
+        soma_color=post_synaptic_dendrites_color,
+        basal_dendrites_color=post_synaptic_dendrites_color,
+        apical_dendrites_color=post_synaptic_dendrites_color,
+        axons_color=post_synaptic_axons_color,
         material_type=material_type)
+
+    # Transform the post-synaptic neuron to its circuit coordinates
     nmv.bbp.transform_neuron_mesh_to_global_coordinates(
         circuit=circuit, gid=args.post_gid, neuron_mesh=post_synaptic_neuron_mesh)
 
-
-    import nmv.builders
-
-    morphology_path = circuit.morph.get_filepath(int(args.post_gid))
-
-    # Read the morphology and get its NMV object, and ensure that it is centered at the origin
-    morphology = nmv.file.read_morphology_with_morphio(
-        morphology_file_path=morphology_path, center_at_origin=True)
-
-    # Adjust the label to be set according to the GID not the morphology label
-    morphology.label = str(args.post_gid)
-    import nmv.options
-    nmv_options = nmv.options.NeuroMorphoVisOptions()
-    builder = nmv.builders.CircuitSpineBuilder(morphology=morphology, options=nmv_options)
-    x, y = builder.add_spines_to_morphology(circuit=circuit, post_gid=args.post_gid)
-
-    #
-    import nmv.mesh
-    obj = nmv.mesh.join_mesh_objects(x, 'spinesss')
-    obj.matrix_world = inverse_transformation @ obj.matrix_world
-    #for i in x:
-    #    i.matrix_world = inverse_transformation @ i.matrix_world
-
-
-    # Build the spines
-
-    #
-    #pre_synaptic_neuron_mesh.matrix_world = \
-    #    inverse_transformation @ pre_synaptic_neuron_mesh.matrix_world
+    # Transform back the pair to the origin based on the inverse transformation of the
+    # post-synaptic neuron
+    pre_synaptic_neuron_mesh.matrix_world = \
+        inverse_transformation @ pre_synaptic_neuron_mesh.matrix_world
     post_synaptic_neuron_mesh.matrix_world = \
         inverse_transformation @ post_synaptic_neuron_mesh.matrix_world
 
-    # Transform the all the scene to the origin using the post-synaptic neuron transformation
-    synapse_groups = nmv.bbp.create_shared_synapse_group(circuit, args.pre_gid, args.post_gid)
-
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
+    synapse_groups = nmv.bbp.create_shared_synapse_group(circuit, args.pre_gid, args.post_gid)
     synapses_mesh = nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
