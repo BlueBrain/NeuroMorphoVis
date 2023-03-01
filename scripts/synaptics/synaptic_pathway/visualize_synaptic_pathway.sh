@@ -21,6 +21,7 @@ BLENDER=$PWD/../../../../../../../blender
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-4'
+OUTPUT_DIRECTORY='/abdellah2/scratch/spines'
 
 # BBP circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'

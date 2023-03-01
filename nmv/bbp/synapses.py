@@ -673,8 +673,104 @@ def create_color_coded_synapse_groups_by_post_etype(circuit,
                                                       mtype_color_dict=mtype_color_dict)
 
 
+def get_spines(circuit, post_gid):
+
+    import bluepy
+    # Get the IDs of the afferent synapses of a given GID
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(post_gid)
+
+    # Get the GIDs of all the pre-synaptic cells
+    pre_gids = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
+    pre_gids = [gid[0] for gid in pre_gids]
+
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_synaptic_center_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+
+    pre_synaptic_center_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'center').values.tolist()
+
+    pre_synaptic_contour_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'contour').values.tolist()
+
+    import nmv.skeleton
+    spines = list()
+    for i in range(len(pre_gids)):
+
+        #if random.uniform(0, 1) > 0.25: continue
+
+        # Synapse position is the mid-way between the pre- and post-synaptic centers
+        post_synaptic_center_position = Vector((post_synaptic_center_positions[i][0],
+                                         post_synaptic_center_positions[i][1],
+                                         post_synaptic_center_positions[i][2]))
+
+        pre_synaptic_center_position = Vector((pre_synaptic_center_positions[i][0],
+                                        pre_synaptic_center_positions[i][1],
+                                        pre_synaptic_center_positions[i][2]))
+
+        pre_synaptic_contour_position = Vector((pre_synaptic_contour_positions[i][0],
+                                               pre_synaptic_contour_positions[i][1],
+                                               pre_synaptic_contour_positions[i][2]))
+
+        #position = 0.5 * (post_synaptic_position + pre_synaptic_position)
+
+        spine = nmv.skeleton.Spine()
+        spine.pre_synaptic_position = pre_synaptic_center_position
+        spine.post_synaptic_position = post_synaptic_center_position
+
+        # To determine the spine size
+        spine.size = (pre_synaptic_contour_position - post_synaptic_center_position).length
+        print(spine.size)
+        spines.append(spine)
+
+    return spines
 
 
+def get_spines_for_synaptic_pair(circuit,
+                                      pre_gid,
+                                      post_gid):
+
+    import bluepy
+    # Get the IDs of the afferent synapses of a given GID
+    afferent_synapses_ids = circuit.connectome.afferent_synapses(post_gid)
+
+    # Get the GIDs of all the pre-synaptic cells
+    pre_gids = circuit.connectome.synapse_properties(
+        afferent_synapses_ids, [bluepy.enums.Synapse.PRE_GID]).values
+    pre_gids = [gid[0] for gid in pre_gids]
+
+    # Get the positions of the incoming synapses at the post synaptic side
+    post_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'post', 'center').values.tolist()
+    pre_synaptic_positions = circuit.connectome.synapse_positions(
+        afferent_synapses_ids, 'pre', 'contour').values.tolist()
+
+    import nmv.skeleton
+    spines = list()
+    for i in range(len(pre_gids)):
+
+        # Get only the shared synapses with the pre-synaptic gid
+        if pre_gid == int(pre_gids[i]):
+
+            # Synapse position is the mid-way between the pre- and post-synaptic centers
+            post_synaptic_position = Vector((post_synaptic_positions[i][0],
+                                             post_synaptic_positions[i][1],
+                                             post_synaptic_positions[i][2]))
+
+            pre_synaptic_position = Vector((pre_synaptic_positions[i][0],
+                                            pre_synaptic_positions[i][1],
+                                            pre_synaptic_positions[i][2]))
+
+            position = 0.5 * (post_synaptic_position + pre_synaptic_position)
+
+            spine = nmv.skeleton.Spine()
+            spine.pre_synaptic_position = pre_synaptic_position
+            spine.post_synaptic_position = post_synaptic_position
+
+            spines.append(spine)
+
+    return spines
 
 
 def create_shared_synapse_group(circuit,

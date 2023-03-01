@@ -23,10 +23,10 @@ BLENDER=$PWD/../../../../../../../blender
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 
 # The GID of the post synaptic neuron
-NEURON_GID='3774248'
+NEURON_GID='3793945'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-2'
+OUTPUT_DIRECTORY='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-4'
 
 # Color-map of the synapses based on their mtype
 SYNAPSES_COLOR_MAP='/gpfs/bbp.cscs.ch/project/proj3/projects-data/synaptics/ex-2/pre-mtypes.colors'

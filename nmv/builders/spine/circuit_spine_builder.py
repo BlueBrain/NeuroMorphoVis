@@ -121,7 +121,7 @@ class CircuitSpineBuilder:
 
         # Rotate it
         nmv.scene.ops.rotate_object_towards_target(
-            protrusion_object, Vector((0, 0, -1)), spine.pre_synaptic_position)
+            protrusion_object, Vector((0, 0, 1)), spine.pre_synaptic_position)
 
         # Return a reference to the spine
         return protrusion_object
@@ -160,15 +160,17 @@ class CircuitSpineBuilder:
         # Rotate the spine towards the pre-synaptic point
         # We assume that the normal is heading towards to -Z axis for computing the rotation
         nmv.scene.ops.rotate_object_towards_target(
-            spine_object, Vector((0, 0, -1)), spine.pre_synaptic_position)
+            spine_object, Vector((0, 0, 1)), spine.pre_synaptic_position)
 
         # Return a reference to the spine
         return spine_object
 
+
+
     ################################################################################################
     # @add_spines_to_morphology
     ################################################################################################
-    def add_spines_to_morphology(self):
+    def add_spines_to_morphology(self, circuit, post_gid, pre_gid=None):
         """Builds all the spines on a spiny neuron using a BBP circuit.
 
         :return:
@@ -183,85 +185,19 @@ class CircuitSpineBuilder:
 
         # To load the circuit, 'brain' must be imported
         try:
-            import brain
+            import bluepy
         except ImportError:
-            raise ImportError('ERROR: Cannot import \'brain\'')
+            raise ImportError('ERROR: Cannot import \'blurpy\'')
 
         # Load the template spine meshes
         self.load_spine_meshes()
 
-        # Load the circuit, silently please
-        circuit = brain.Circuit(self.options.morphology.blue_config)
-
-        # Get all the synapses for the corresponding gid.
-        synapses = circuit.afferent_synapses({int(self.morphology.gid)})
-
-        # Get the local to global transforms
-        global_to_local_transform = nmv.skeleton.ops.get_transformation_matrix(
-            self.options.morphology.blue_config, self.options.morphology.gid).inverted()
-
-        # Create a timer to report the performance
-        building_timer = nmv.utilities.timer.Timer()
-
-        nmv.logger.info('Integrating spines')
-        building_timer.start()
-
-        spines_list = list()
-
-        # Get a BBP morphology object loaded from the circuit
-        gids_set = circuit.gids('a' + str(self.morphology.gid))
-        loaded = circuit.load_morphologies(gids_set, circuit.Coordinates.local)
-        uris_set = circuit.morphology_uris(gids_set)
-        morphology = brain.neuron.Morphology(uris_set[0])
-
+        import nmv.bbp
+        #spines = nmv.bbp.get_spines_for_synaptic_pair(circuit=circuit, post_gid=post_gid, pre_gid=pre_gid)
+        spines = nmv.bbp.get_spines(circuit=circuit, post_gid=post_gid)
         # Load the synapses from the file
-        number_spines = len(synapses)
-        for i, synapse in enumerate(synapses):
-
-            # Show progress
-            nmv.utilities.time_line.show_iteration_progress('Spines', i, number_spines)
-
-            # Ignore soma synapses
-            # If the post-synaptic section index is zero, then revoke it, and continue
-            post_section_id = synapse.post_section()
-            if post_section_id == 0:
-                continue
-
-            # To make the spine realistic, you have to add a little notch on top of the location
-            # and then add the spine above.
-            # The spine length (or scale) will be computed from surface to surface
-            # The notch length (or scale) will be computed based on the radius of the branch at the
-            # spine
-
-            # Get the pre-and post-positions in the global coordinates
-            pre_position = synapse.pre_surface_position()
-            post_position = synapse.post_center_position()
-
-            # Transform the spine positions to the circuit coordinates
-            pre_synaptic_position = Vector((pre_position[0], pre_position[1], pre_position[2]))
-            post_synaptic_position = Vector((post_position[0], post_position[1], post_position[2]))
-
-            spine_scale = (pre_synaptic_position - post_synaptic_position).length
-            # print((pre_synaptic_position - post_synaptic_position).length)
-
-            if not self.options.mesh.global_coordinates:
-                pre_synaptic_position = global_to_local_transform * pre_synaptic_position
-                post_synaptic_position = global_to_local_transform * post_synaptic_position
-
-            # Add all the spines into a list
-            # Create the spine
-            spine = nmv.skeleton.Spine()
-            spine.post_synaptic_position = post_synaptic_position
-            spine.pre_synaptic_position = pre_synaptic_position
-            spine.post_synaptic_radius = \
-                morphology.section(synapse.post_section()).samples()[synapse.post_segment() + 1][3]
-            # print(spine.post_synaptic_radius)
-            spine.size = spine.post_synaptic_radius
-            spines_list.append(spine)
-
-        # Load the synapses from the file
-        number_spines = len(spines_list)
-        for i, spine in enumerate(spines_list):
+        number_spines = len(spines)
+        for i, spine in enumerate(spines):
 
             # Show progress
             nmv.utilities.time_line.show_iteration_progress('\t Spines', i, number_spines)
@@ -270,11 +206,11 @@ class CircuitSpineBuilder:
             spine_object = self.emanate_spine(spine, i)
 
             # Create a protrusion object
-            protrusion_object = self.emanate_protrusion(spine, i)
+            # protrusion_object = self.emanate_protrusion(spine, i)
 
             # Add the objects to the lists
             spines_objects.append(spine_object)
-            protrusion_objects.append(protrusion_object)
+            #protrusion_objects.append(protrusion_object)
 
         # Done
         nmv.utilities.time_line.show_iteration_progress(
@@ -286,12 +222,12 @@ class CircuitSpineBuilder:
             nmv.scene.link_object_to_scene(spine_object)
 
         # Link the protrusions to the scene in a single step
-        nmv.logger.info('Linking protrusions to the scene')
-        for protrusion_object in protrusion_objects:
-            bpy.context.scene.objects.link(protrusion_object)
+        #nmv.logger.info('Linking protrusions to the scene')
+        #for protrusion_object in protrusion_objects:
+        #    bpy.context.scene.objects.link(protrusion_object)
 
         # TODO: adjust
-        return spines_objects, spines_list
+        return spines_objects, spines
 
         # Merging spines into a single object
         nmv.logger.info('Grouping spines to a single mesh')

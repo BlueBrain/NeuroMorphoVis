@@ -124,6 +124,7 @@ if __name__ == "__main__":
     inverse_transformation = nmv.bbp.get_neuron_inverse_transformation_matrix(
         circuit=circuit, gid=args.post_gid)
 
+    '''
     # Create the mesh of the pre-synaptic neuron at the global coordinates
     nmv.logger.info('Creating the pre-synaptic neuron mesh')
     pre_synaptic_neuron_color = nmv.utilities.confirm_rgb_color_from_color_string(
@@ -139,14 +140,14 @@ if __name__ == "__main__":
         material_type=material_type)
     nmv.bbp.transform_neuron_mesh_to_global_coordinates(
         circuit=circuit, gid=args.pre_gid, neuron_mesh=pre_synaptic_neuron_mesh)
-
+    '''
     nmv.logger.info('Creating the post-synaptic neuron mesh')
     post_synaptic_neuron_color = nmv.utilities.confirm_rgb_color_from_color_string(
         args.post_synaptic_neuron_color)
-    post_synaptic_neuron_mesh = nmv.bbp.create_symbolic_neuron_mesh_in_circuit(
+    post_synaptic_neuron_mesh = nmv.bbp.create_to_scale_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.post_gid,
-        unified_radius=args.unify_branches_radii,
-        branch_radius=args.unified_branches_radius,
+        #unified_radius=args.unify_branches_radii,
+        #branch_radius=args.unified_branches_radius,
         soma_color=post_synaptic_neuron_color,
         basal_dendrites_color=post_synaptic_neuron_color,
         apical_dendrites_color=post_synaptic_neuron_color,
@@ -155,23 +156,46 @@ if __name__ == "__main__":
     nmv.bbp.transform_neuron_mesh_to_global_coordinates(
         circuit=circuit, gid=args.post_gid, neuron_mesh=post_synaptic_neuron_mesh)
 
-    pre_synaptic_neuron_mesh.matrix_world = inverse_transformation @ pre_synaptic_neuron_mesh.matrix_world
-    post_synaptic_neuron_mesh.matrix_world = inverse_transformation @ post_synaptic_neuron_mesh.matrix_world
+
+    import nmv.builders
+
+    morphology_path = circuit.morph.get_filepath(int(args.post_gid))
+
+    # Read the morphology and get its NMV object, and ensure that it is centered at the origin
+    morphology = nmv.file.read_morphology_with_morphio(
+        morphology_file_path=morphology_path, center_at_origin=True)
+
+    # Adjust the label to be set according to the GID not the morphology label
+    morphology.label = str(args.post_gid)
+    import nmv.options
+    nmv_options = nmv.options.NeuroMorphoVisOptions()
+    builder = nmv.builders.CircuitSpineBuilder(morphology=morphology, options=nmv_options)
+    x, y = builder.add_spines_to_morphology(circuit=circuit, post_gid=args.post_gid)
+
+    #
+    import nmv.mesh
+    obj = nmv.mesh.join_mesh_objects(x, 'spinesss')
+    obj.matrix_world = inverse_transformation @ obj.matrix_world
+    #for i in x:
+    #    i.matrix_world = inverse_transformation @ i.matrix_world
 
 
-    # Create the synapses point cloud
+    # Build the spines
+
+    #
+    #pre_synaptic_neuron_mesh.matrix_world = \
+    #    inverse_transformation @ pre_synaptic_neuron_mesh.matrix_world
+    post_synaptic_neuron_mesh.matrix_world = \
+        inverse_transformation @ post_synaptic_neuron_mesh.matrix_world
 
     # Transform the all the scene to the origin using the post-synaptic neuron transformation
     synapse_groups = nmv.bbp.create_shared_synapse_group(circuit, args.pre_gid, args.post_gid)
 
-
     # Create the synapses mesh
-    #nmv.logger.info('Creating the synapse mesh')
-    #transformation = nmv.bbp.get_neuron_transformation_matrix(circuit=circuit, gid=int(args.gid))
+    nmv.logger.info('Creating the synapse mesh')
     synapses_mesh = nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
-        synapses_percentage=100, #args.synapse_percentage,
         inverted_transformation=inverse_transformation,
         material_type=material_type)
 
