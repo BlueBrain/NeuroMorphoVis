@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -76,7 +76,7 @@ class IOPanel(bpy.types.Panel):
         input_source_row.prop(scene, 'NMV_InputSource')
 
         # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
+        if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
             morphology_file_row = layout.row()
             morphology_file_row.prop(scene, 'NMV_MorphologyFile')
 

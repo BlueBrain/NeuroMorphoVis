@@ -60,11 +60,8 @@ def create_vertices(locations):
     # Create a new bmesh object
     bmesh_object = bmesh.new()
 
-    # Vertices list
-    add_vert = bmesh_object.verts.new
-
     for loc in locations:
-        add_vert(Vector((loc[0], loc[1], loc[2])))
+        bmesh_object.verts.new(Vector((loc[0], loc[1], loc[2])))
 
     bmesh_object.verts.index_update()
     bmesh_object.verts.ensure_lookup_table()
@@ -73,18 +70,15 @@ def create_vertices(locations):
 
 
 ####################################################################################################
-# @create_vertex
+# @create_vertices
 ####################################################################################################
 def create_vertices(locations):
 
     # Create a new bmesh object
     bmesh_object = bmesh.new()
 
-    # Vertices list
-    add_vert = bmesh_object.verts.new
-
     for loc in locations:
-        add_vert(Vector((loc[0], loc[1], loc[2])))
+        bmesh_object.verts.new(Vector((loc[0], loc[1], loc[2])))
 
     bmesh_object.verts.index_update()
     bmesh_object.verts.ensure_lookup_table()

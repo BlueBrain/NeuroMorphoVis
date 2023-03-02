@@ -29,7 +29,9 @@ import nmv.enums
 import nmv.interface
 import nmv.utilities
 import nmv.scene
+from .synaptics_panel_ops import *
 from .synaptics_panel_options import *
+
 
 ####################################################################################################
 # @IOPanel
@@ -60,15 +62,33 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
 
         # Get a reference to the panel layout
         layout = self.layout
+        options = nmv.interface.ui_options
 
+        # Define the use case
         use_case_row = layout.row()
         use_case_row.prop(context.scene, 'NMV_SynapticsUseCase')
+        options.synaptics.use_case = context.scene.NMV_SynapticsUseCase
 
-        color_scheme_row = layout.row()
-        color_scheme_row.prop(context.scene, 'NMV_AfferentColorCoding')
+        # Display the options accordingly, based on the use case selection
+        if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+            draw_afferent_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+            draw_efferent_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+            draw_afferent_and_efferent_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+            draw_excitatory_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+            draw_inhibitory_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+            draw_excitatory_and_inhibitory_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
+            draw_specific_color_coded_set_options(layout, context.scene, options)
 
-        color_scheme_row = layout.row()
-        color_scheme_row.prop(context.scene, 'NMV_EfferentColorCoding')
+
+        else:
+            # No options to show
+            pass
 
         layout.row().separator()
         reconstruction_button_row = layout.row()

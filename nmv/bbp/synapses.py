@@ -30,10 +30,25 @@ import nmv.shading
 import nmv.utilities
 
 
+def is_axo_somatic_synapse(circuit, synapse_id):
+    import bluepy
+    import morphio
+    value = circuit.connectome.synapse_properties(
+        numpy.array([synapse_id]), [bluepy.enums.Synapse.POST_SECTION_ID])\
+        [bluepy.enums.Synapse.POST_SECTION_ID].values.tolist()[0]
+    print(type(value), value)
+    if value == 0:
+
+        return True
+    else:
+        return False
+
+
 ####################################################################################################
 # @is_inhibitory_synapse
 ####################################################################################################
-def is_inhibitory_synapse(synapse_type):
+def is_inhibitory_synapse(circuit,
+                          synapse_type):
     """Returns True if the synapse, that is identified by its type, is inhibitory, otherwise False.
 
     :param synapse_type:
@@ -43,7 +58,7 @@ def is_inhibitory_synapse(synapse_type):
         True if the synapse is inhibitory, and False otherwise.
     """
 
-    return True if synapse_type < 100 else False
+    return circuit.is_synapse_inhibitory(synapse_type_id=synapse_type)
 
 
 ####################################################################################################
@@ -103,8 +118,8 @@ def get_all_synapses_ids(circuit,
         Synapse IDs list.
     """
 
-    synapses_ids_list = get_afferent_synapses_ids(circuit=circuit, gid=gid)
-    synapses_ids_list.extend(get_efferent_synapses_ids(circuit=circuit, gid=gid))
+    synapses_ids_list = circuit.get_afferent_synapses_ids(gid=gid)
+    synapses_ids_list.extend(circuit.get_efferent_synapses_ids(gid=gid))
     return synapses_ids_list
 
 
@@ -525,6 +540,8 @@ def create_color_coded_synapse_groups_by_mtype(circuit,
 
     # Iterate over the afferent_synapses_ids and afferent_synapses_mtypes list
     for synapse_id, synapse_mtype in zip(synapses_ids, synapses_mtypes):
+        if nmv.bbp.is_axo_somatic_synapse(circuit=circuit, synapse_id=synapse_id):
+            continue
         mtype_dict[synapse_mtype].append(synapse_id)
 
     # Create the synapses groups

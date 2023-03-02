@@ -97,7 +97,23 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
     default=nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR)
 
 
+# Excitatory synapses color
+bpy.types.Scene.NMV_ExcitatorySynapsesColor = bpy.props.FloatVectorProperty(
+    name='Excitatory Synapses Color',
+    subtype='COLOR', default=nmv.enums.Color.EXCITATORY_SYNAPSES, min=0.0, max=1.0,
+    description='The color of the excitatory synapses')
 
+# Inhibitory synapses color
+bpy.types.Scene.NMV_InhibitorySynapsesColor = bpy.props.FloatVectorProperty(
+    name='Inhibitory Synapses Color',
+    subtype='COLOR', default=nmv.enums.Color.INHIBITORY_SYNAPSES, min=0.0, max=1.0,
+    description='The color of the inhibitory synapses')
+
+# A single color that is used to color all the synapses
+bpy.types.Scene.NMV_SynapsesColor = bpy.props.FloatVectorProperty(
+    name='Synapses Color',
+    subtype='COLOR', default=nmv.enums.Color.SYNAPSES, min=0.0, max=1.0,
+    description='A unifying color used to color all the shown synapses')
 
 
 

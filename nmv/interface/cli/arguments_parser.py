@@ -72,14 +72,14 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Cell GID, requires a circuit configuration
-    arg_help = 'Morphology file (.H5 or .SWC)'
+    arg_help = 'Morphology file: supported formats H5, SWC and ASCII)'
     input_args.add_argument(
         Args.MORPHOLOGY_FILE,
         action='store', default=None,
         help=arg_help)
 
     # Cell GID, requires a circuit configuration
-    arg_help = 'Morphology directory containing (.H5 or .SWC) files'
+    arg_help = 'Morphology directory containing morphologies: supported formats H5, SWC and ASCII)'
     input_args.add_argument(
         Args.MORPHOLOGY_DIRECTORY,
         action='store', default=None,

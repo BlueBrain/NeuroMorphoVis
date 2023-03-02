@@ -118,7 +118,7 @@ def load_morphology(panel_object,
     options = nmv.interface.ui_options
 
     # Read the data from a given morphology file either in .h5 or .swc formats
-    if bpy.context.scene.NMV_InputSource == nmv.enums.Input.H5_SWC_FILE:
+    if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
 
         try:
             # Pass options from UI to system

@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .bbp_circuit import *
 from .circuits import *
 from .neurons import *
 from .synapses import *

@@ -26,6 +26,24 @@ import nmv.utilities
 
 
 ####################################################################################################
+# @get_circuit_mtype_strings_list
+####################################################################################################
+def get_all_mtypes_in_circuit(circuit_config):
+
+    circuit = nmv.bbp.BBPCircuit(circuit_config=circuit_config)
+    return circuit.get_mtype_strings_list()
+
+
+####################################################################################################
+# @get_all_etypes_in_circuit
+####################################################################################################
+def get_all_etypes_in_circuit(circuit_config):
+
+    circuit = nmv.bbp.BBPCircuit(circuit_config=circuit_config)
+    return circuit.get_etype_strings_list()
+
+
+####################################################################################################
 # @get_circuit_mtype_strings_set
 ####################################################################################################
 def get_circuit_mtype_strings_set(circuit):

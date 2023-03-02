@@ -53,6 +53,15 @@ class Color:
     # Spines color
     SPINES = Vector((0.1, 0.75, 0.45))
 
+    # Synapses color
+    SYNAPSES = Vector((0.1, 0.75, 0.45))
+
+    # Excitatory synapses color
+    EXCITATORY_SYNAPSES = Vector((1.0, 0.0, 0.0))
+
+    # Inhibitory synapses color
+    INHIBITORY_SYNAPSES = Vector((0.0, 0.0, 1.0))
+
     # Nuclei color
     NUCLEI = Vector((0.75, 0.41, 0.77))
 

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,53 +15,30 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import random
+
+# Blender imports
+from mathutils import Vector
+
 # Internal imports
-import nmv.consts
-import nmv.enums
+import nmv.utilities
 
 
 ####################################################################################################
-# @SynapticsOptions
+# @Circuit
 ####################################################################################################
-class SynapticsOptions:
-    """Synaptics options
-    """
+class Circuit:
 
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self):
-        """Constructor
-        """
+    def __init__(self,
+                 circuit_config):
 
-        self.use_case = None
+        # Configuration file
+        self.circuit_config = circuit_config
 
-        # Reconstruction method
-        self.synapses_radius = 1.0
-
-        # Display neuron
-        self.display_neuron = True
-
-        # Colors for excitatory and inhibitory synapses
-        self.excitatory_synapses_color = nmv.enums.Color.EXCITATORY_SYNAPSES
-        self.inhibitory_synapses_color = nmv.enums.Color.INHIBITORY_SYNAPSES
-
-        # Color coding schemes of afferent and efferent synapses
-        self.afferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
-        self.efferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
-
-        # If the single color option is used, assign its value to this parameter
-        self.synapses_color = nmv.enums.Color.SYNAPSES
-
-        # Loading a circuit from GPFS - or any remote file systems - is painfully slow, but since
-        # we are loading the circuit at least once to obtain its data, we should pre-obtain some
-        # data that could be needed later.
-        self.circuit_mtypes = None
-        self.circuit_etypes = None
-
-
-
-
-
-
+        # This circuit must be loaded before being used later to access its contents
+        self.nmv_circuit = None
 
