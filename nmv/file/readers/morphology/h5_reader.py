@@ -68,7 +68,8 @@ class H5Reader:
     # @__init__
     ################################################################################################
     def __init__(self,
-                 h5_file):
+                 h5_file,
+                 center_at_origin=True):
         """Constructor
 
         :param h5_file:
@@ -98,6 +99,8 @@ class H5Reader:
 
         # The original centroid, as loaded from the file, or computed from the profile points
         self.original_centroid = Vector((0.0, 0.0, 0.0))
+
+        self.center_at_origin = center_at_origin
 
     ################################################################################################
     # @is_astrocyte_morphology_with_endfeet
@@ -591,12 +594,9 @@ class H5Reader:
         soma = self.build_soma()
 
         # Construct the morphology skeleton in NMV format
-        nmv_morphology = nmv.skeleton.Morphology(soma=soma,
-                                                 axons=axons,
-                                                 basal_dendrites=basal_dendrites,
-                                                 apical_dendrites=apical_dendrites,
-                                                 label=label,
-                                                 file_format=file_format)
+        nmv_morphology = nmv.skeleton.Morphology(
+            soma=soma, axons=axons, basal_dendrites=basal_dendrites,
+            apical_dendrites=apical_dendrites, label=label, file_format=file_format)
 
         # Update the centroid
         nmv_morphology.original_center = self.original_centroid

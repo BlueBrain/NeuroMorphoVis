@@ -16,9 +16,6 @@
 ####################################################################################################
 
 
-# System imports
-import os
-
 # Blender imports
 from mathutils import Vector
 
@@ -32,21 +29,25 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @H5Reader
+# @MorphIOLoader
 ####################################################################################################
 class MorphIOLoader:
-    """Morphology reader based on the MorphIO library.
+    """A powerful morphology reader that uses the MorphIO library to load the neuronal morphologies.
+    MorphIO is an open source project developed by the Blue Brain Project at EPFL. The code is
+    available on GitHub: https://github.com/BlueBrain/MorphIO. Note that we use MorphIO to load
+    morphologies in .ASC, .SWC and .H5 formats. The structure is mapped then to the NMV one.
     """
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
-                 morphology_file):
+                 morphology_file,
+                 center_morphology=True):
         """Constructor
 
         :param morphology_file:
-            A given .H5 morphology file.
+            A given path to the morphology file.
         """
 
         # Set the path to the given morphology file irrespective to its extension
@@ -58,7 +59,8 @@ class MorphIOLoader:
         # A list of all the points in the morphology file, for bounding box computations
         self.points_list = list()
 
-        # A list of the profile points of the soma, based on the arbors
+        # A list of the profile points of the soma, based on the arbors and those reported
+        # specifically for the soma
         self.soma_profile_points = list()
 
         # Final soma centroid, it could be the same as the original if the morphology is centered
@@ -67,8 +69,8 @@ class MorphIOLoader:
         # The average radius of the soma based on the arbors
         self.soma_mean_radius = None
 
-        # Centering the morphology at the origin
-        self.center_morphology = True# center_morphology
+        # If this flag is set, the soma of the neuron must be located at the origin
+        self.center_morphology = center_morphology
 
     ################################################################################################
     # @build_soma

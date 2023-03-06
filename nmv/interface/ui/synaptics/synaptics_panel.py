@@ -49,6 +49,8 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
+
+
     ################################################################################################
     # @draw
     ################################################################################################
@@ -85,15 +87,21 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
             draw_specific_color_coded_set_options(layout, context.scene, options)
 
-
         else:
             # No options to show
             pass
 
+        percentage_row = layout.row()
+        percentage_row.prop(context.scene, 'NMV_SynapsesPercentage')
+        options.synaptics.percentage = context.scene.NMV_SynapsesPercentage
+
+        synapse_radius_row = layout.row()
+        synapse_radius_row.prop(context.scene, 'NMV_SynapseRadius')
+        options.synaptics.synapses_radius = context.scene.NMV_SynapseRadius
+
         layout.row().separator()
         reconstruction_button_row = layout.row()
         reconstruction_button_row.operator('nmv.reconstruct_synaptics')
-
 
 ####################################################################################################
 # @InputOutputDocumentation

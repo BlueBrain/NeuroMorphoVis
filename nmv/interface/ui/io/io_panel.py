@@ -182,7 +182,7 @@ class IOPanel(bpy.types.Panel):
 
 
 ####################################################################################################
-# @SketchSkeleton
+# @LoadMorphology
 ####################################################################################################
 class LoadMorphology(bpy.types.Operator):
     """Loads morphology
@@ -289,6 +289,43 @@ class LoadMorphology(bpy.types.Operator):
         #
         if not nmv.interface.ui.Globals.nmv_initialized:
             nmv.interface.ui.Globals.nmv_initialized = True
+
+
+
+
+
+        from mathutils import Vector
+        from random import uniform
+
+        # UI color elements for the color map
+        if nmv.consts.Circuit.MTYPES is not None:
+            for i in range(len(nmv.consts.Circuit.MTYPES)):
+                r = uniform(0, 1)
+                g = uniform(0, 1)
+                b = uniform(0, 1)
+
+                setattr(bpy.types.Scene, 'NMV_MtypeColor_%d' % i,
+                        bpy.props.FloatVectorProperty(
+                            name='NMV_MtypeColor_%s' % nmv.consts.Circuit.MTYPES[i],
+                            subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
+                            description=''))
+
+        # UI color elements for the color map
+        if nmv.consts.Circuit.ETYPES is not None:
+            for i in range(len(nmv.consts.Circuit.ETYPES)):
+                r = uniform(0, 1)
+                g = uniform(0, 1)
+                b = uniform(0, 1)
+
+                setattr(bpy.types.Scene, 'NMV_EtypeColor_%d' % i,
+                        bpy.props.FloatVectorProperty(
+                            name='NMV_EtypeColor_%s' % nmv.consts.Circuit.ETYPES[i],
+                            subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
+                            description=''))
+
+
+
+
 
         # Modal
         return {'RUNNING_MODAL'}

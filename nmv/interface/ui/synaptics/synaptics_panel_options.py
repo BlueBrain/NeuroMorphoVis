@@ -109,11 +109,35 @@ bpy.types.Scene.NMV_InhibitorySynapsesColor = bpy.props.FloatVectorProperty(
     subtype='COLOR', default=nmv.enums.Color.INHIBITORY_SYNAPSES, min=0.0, max=1.0,
     description='The color of the inhibitory synapses')
 
+# Afferent synapses color
+bpy.types.Scene.NMV_AfferentSynapsesColor = bpy.props.FloatVectorProperty(
+    name='Afferent Synapses Color',
+    subtype='COLOR', default=nmv.enums.Color.AFFERENT_SYNAPSES, min=0.0, max=1.0,
+    description='The color of the afferent synapses')
+
+# Efferent synapses color
+bpy.types.Scene.NMV_EfferentSynapsesColor = bpy.props.FloatVectorProperty(
+    name='Efferent Synapses Color',
+    subtype='COLOR', default=nmv.enums.Color.EFFERENT_SYNAPSES, min=0.0, max=1.0,
+    description='The color of the efferent synapses')
+
 # A single color that is used to color all the synapses
 bpy.types.Scene.NMV_SynapsesColor = bpy.props.FloatVectorProperty(
     name='Synapses Color',
     subtype='COLOR', default=nmv.enums.Color.SYNAPSES, min=0.0, max=1.0,
     description='A unifying color used to color all the shown synapses')
+
+# The percentage of the synapses loaded in the scene
+bpy.types.Scene.NMV_SynapsesPercentage = bpy.props.FloatProperty(
+    name='Percentage',
+    default=100, min=0, max=100,
+    description='The percentage of the synapses loaded in the scene')
+
+# The unified radius of all the synapses
+bpy.types.Scene.NMV_SynapseRadius = bpy.props.FloatProperty(
+    name='Synapse Radius',
+    description='The unified radius of all the synapses',
+    default=0, min=0, max=1000000)
 
 
 

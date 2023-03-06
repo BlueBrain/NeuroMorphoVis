@@ -28,7 +28,7 @@ import imp
 
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2023, Blue Brain Project / EPFL"
-__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
+__credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann", "Nadir Roman"]
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
 __status__      = "Production"
@@ -46,7 +46,7 @@ bl_info = {
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
-    "blender": (2, 80, 0),
+    "blender": (3, 0, 0),
     # This is where users should look for this add-on.
     # "location": "View 3D > Edit Mode > Tool Shelf",
     # Description

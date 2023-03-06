@@ -37,7 +37,7 @@ class SynapticsOptions:
         self.use_case = None
 
         # Reconstruction method
-        self.synapses_radius = 1.0
+        self.synapses_radius = nmv.consts.Synaptics.SYNAPSES_RADIUS
 
         # Display neuron
         self.display_neuron = True
@@ -50,6 +50,10 @@ class SynapticsOptions:
         self.afferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
         self.efferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
 
+        # Afferent and efferent colors
+        self.afferent_synapses_color = nmv.enums.Color.AFFERENT_SYNAPSES
+        self.efferent_synapses_color = nmv.enums.Color.EFFERENT_SYNAPSES
+
         # If the single color option is used, assign its value to this parameter
         self.synapses_color = nmv.enums.Color.SYNAPSES
 
@@ -58,6 +62,10 @@ class SynapticsOptions:
         # data that could be needed later.
         self.circuit_mtypes = None
         self.circuit_etypes = None
+
+        # The percentage of the synapses loaded on the neuron
+        self.percentage = nmv.consts.Synaptics.SYNAPSES_PERCENTAGE
+
 
 
 

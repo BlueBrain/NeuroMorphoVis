@@ -32,6 +32,7 @@ class Color:
     def __init__(self):
         pass
 
+    # COLORS #######################################################################################
     # Soma color
     SOMA = Vector((1.0, 0.8, 0.15))
 
@@ -62,9 +63,16 @@ class Color:
     # Inhibitory synapses color
     INHIBITORY_SYNAPSES = Vector((0.0, 0.0, 1.0))
 
+    # Afferent synapses color
+    AFFERENT_SYNAPSES = Vector((1.0, 1.0, 0.0))
+
+    # Efferent synapses color
+    EFFERENT_SYNAPSES = Vector((1.0, 0.0, 1.0))
+
     # Nuclei color
     NUCLEI = Vector((0.75, 0.41, 0.77))
 
+    # INDICES ######################################################################################
     # The soma materials are found at the indices 0 and 1
     SOMA_MATERIAL_START_INDEX = 0
 
@@ -79,3 +87,4 @@ class Color:
 
     # The gray materials are found at the indices 9
     GRAY_MATERIAL_INDEX = 8
+

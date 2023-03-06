@@ -15,12 +15,72 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+
 # System imports
 import os
 
 # Internal imports
-import morphio
+import nmv.bbp
+import nmv.consts
 import nmv.file
+
+
+####################################################################################################
+# @read_swc_morphology_natively
+####################################################################################################
+def read_swc_morphology_natively(swc_file,
+                                 center_at_origin=True):
+    """Verifies if the given path is valid or not and then loads a .swc morphology file.
+    NOTE: If the path is not valid, this function returns None.
+
+    :param swc_file:
+        Path to the SWC morphology file.
+    :param center_at_origin:
+        Center the loaded morphology skeleton at the origin.
+    :return:
+        Morphology object (if the morphology is loaded) or False (if the something is wrong).
+    """
+
+    # Ensure that the given file is valid and then load the file
+    if os.path.isfile(swc_file):
+        reader = nmv.file.readers.SWCReader(swc_file=swc_file, center_at_origin=center_at_origin)
+        morphology_object = reader.read_file()
+
+        # Return a reference to the loaded morphology object
+        return morphology_object
+
+    # Issue an error and return None for panel processing
+    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % swc_file)
+    return None
+
+
+####################################################################################################
+# @read_h5_morphology_natively
+####################################################################################################
+def read_h5_morphology_natively(h5_file,
+                                center_at_origin=True):
+    """Verifies if the given path is valid or not and then loads a .h5 morphology file.
+    NOTE: If the path is not valid, this function returns None.
+
+    :param h5_file:
+        Path to the H5 morphology file.
+     :param center_at_origin:
+        Center the loaded morphology skeleton at the origin.
+    :return:
+        Morphology object (if the morphology is loaded) or False (if the something is wrong).
+    """
+
+    # Ensure that the given file is valid and then load the file
+    if os.path.isfile(h5_file):
+        reader = nmv.file.readers.H5Reader(h5_file=h5_file, center_at_origin=center_at_origin)
+        morphology_object = reader.read_file()
+
+        # Return a reference to the loaded morphology object
+        return morphology_object
+
+    # Issue an error and return None for panel processing
+    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % h5_file)
+    return None
 
 
 ####################################################################################################
@@ -28,10 +88,10 @@ import nmv.file
 ####################################################################################################
 def read_morphology_with_morphio(morphology_file_path,
                                  center_at_origin=True):
+    import morphio
 
-    # If the path is valid
+    # Ensure that the given file is valid and then load the file
     if os.path.isfile(morphology_file_path):
-
         # Load the .h5 morphology
         try:
             reader = nmv.file.readers.MorphIOLoader(morphology_file_path)
@@ -45,83 +105,16 @@ def read_morphology_with_morphio(morphology_file_path,
             nmv.logger.log('ERROR: The morphology [%s] could NOT be loaded with MorphIO: %s' %
                            (morphology_file_path, e))
 
-    # Issue an error
-    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % morphology_file_path)
-
-    # Otherwise, return None
-    return None
-
-
-####################################################################################################
-# @read_h5_morphology
-####################################################################################################
-def read_h5_morphology(h5_file):
-    """Verifies if the given path is valid or not and then loads a .h5 morphology file.
-
-    If the path is not valid, this function returns None.
-
-    :param h5_file: Path to the H5 morphology file.
-    :return: A morphology object or None if the path is not valid.
-    """
-
-    # If the path is valid
-    if os.path.isfile(h5_file):
-
-        # Load the .h5 morphology
-        reader = nmv.file.readers.H5Reader(h5_file=h5_file)
-        morphology_object = reader.read_file()
-
-        # Return a reference to this morphology object
-        return morphology_object
-
-    # Issue an error
-    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % h5_file)
-
-    # Otherwise, return None
-    return None
-
-
-####################################################################################################
-# @read_swc_morphology
-####################################################################################################
-def read_swc_morphology(swc_file,
-                        center_at_origin=True):
-    """Verifies if the given path is valid or not and then loads a .swc morphology file.
-
-    If the path is not valid, this function returns None.
-
-    :param swc_file:
-        Path to the SWC morphology file.
-    :param center_at_origin:
-        Center the morphology file at the origin.
-    :return:
-        Morphology object and True (if the morphology is loaded) or False (if the something is
-        wrong).
-    """
-
-    # If the path is valid
-    if os.path.isfile(swc_file):
-
-        # Load the .h5 morphology
-        reader = nmv.file.readers.SWCReader(swc_file=swc_file,
-                                            center_at_origin=center_at_origin)
-        morphology_object = reader.read_file()
-
-        # Return a reference to this morphology object
-        return morphology_object
-
-    # Issue an error
-    nmv.logger.log('ERROR: The morphology path [%s] is invalid' % swc_file)
-
-    # Otherwise, return None
-    return None
+        # Otherwise, return None
+        return None
 
 
 ####################################################################################################
 # @read_morphology_from_file
 ####################################################################################################
 def read_morphology_from_file(options):
-    """Loads a morphology object from file. This loader mainly supports .h5 or .swc file formats.
+    """Loads a morphology object from file.
+    This loader mainly supports .asc, .h5 or .swc file formats.
 
     :param options:
         A reference to the system options.
@@ -136,15 +129,28 @@ def read_morphology_from_file(options):
     # Get the extension from the file path
     morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
 
-    # If it is a .h5 file, use the h5 loader
+    # If it is a .h5 file, use the H5Reader to be able to load astrocytes with endfeet
+    # TODO: This option is made until further notice, when we are able to load endfeet from circuits
     if '.h5' in morphology_extension.lower():
-        morphology_object = read_h5_morphology(
-            morphology_file_path)
+        morphology_object = read_h5_morphology_natively(
+            h5_file=morphology_file_path, center_at_origin=options.morphology.center_at_origin)
 
+    # NOTE: We load the SWC files with MorphIO for performance reasons. If this fails, for whatever
+    # reason, we drop the native SWCReader
     elif '.swc' in morphology_extension.lower():
-        morphology_object = read_swc_morphology(
-            morphology_file_path, options.morphology.center_at_origin)
+        try:
+            morphology_object = read_morphology_with_morphio(
+                morphology_file_path=morphology_file_path,
+                center_at_origin=options.morphology.center_at_origin)
+        except ImportError:
+            try:
+                morphology_object = read_swc_morphology_natively(
+                    swc_file=morphology_file_path,
+                    center_at_origin=options.morphology.center_at_origin)
+            except FileNotFoundError:
+                return False, None
 
+    # NOTE: We will always use MorphIO to load .acc morphology files
     elif '.asc' in morphology_extension.lower():
         morphology_object = read_morphology_with_morphio(
             morphology_file_path, options.morphology.center_at_origin)
@@ -163,92 +169,48 @@ def read_morphology_from_file(options):
 
 
 ####################################################################################################
-# @read_morphology_from_file_naively
+# @read_morphology_from_circuit
 ####################################################################################################
-def read_morphology_from_file_naively(morphology_file_path):
-    """Loads a morphology object from file. This loader mainly supports .h5 or .swc file formats.
+def read_morphology_from_circuit(options):
+    """Reads a morphology file from a given circuit using the circuit configuration file and a GID
+    of the neuron and construct a morphology object.
+    NOTE: All the input parameters are part of the given @options argument, which is a type of
+    NeuroMorphoVisOption.
 
-    :param morphology_file_path:
-        The path where the morphology is.
+    :param options:
+        System options.
+    :type options:
+        NeuroMorphoVisOption
     :return:
-        Morphology object and True (if the morphology is loaded) or False (if the something is
-        wrong).
+        The loaded morphology object.
     """
 
-    # Get the extension from the file path
-    morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
-
-    # If it is a .h5 file, use the h5 loader
-    if '.h5' in morphology_extension:
-
-        # Load the .h5 file
-        morphology_object = read_h5_morphology(morphology_file_path)
-
-    elif '.swc' in morphology_extension:
-
-        # Load the .swc file
-        morphology_object = read_swc_morphology(morphology_file_path)
-
-    else:
-
-        # Issue an error
-        nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' %
-                       morphology_extension)
-        return False, None
-
-    # If the morphology object is None, return False
-    if morphology_object is None:
-        return False, None
-
-    # The morphology file was loaded successfully
-    return True, morphology_object
-
-
-####################################################################################################
-# @load_from_circuit
-####################################################################################################
-def load_from_circuit(options):
-    """
-    Loads a morphology object with a given GID from a given circuit.
-
-    :param options: A reference to the system options.
-    :return: Morphology object and True (if the morphology is loaded) or False (if the something is
-    wrong)
-    """
-
-    morphology_object = None
-
-    morphology_object = nmv.file.BBPReader.load_morphology_from_circuit(
-        blue_config=options.morphology.blue_config, gid=options.morphology.gid)
-
-    # If the morphology object is None, return False
-    if morphology_object is None:
-        return False, None
-
-    # The morphology file was loaded successfully
-    return True, morphology_object
-
-
-####################################################################################################
-# @import_morphology_from_circuit
-####################################################################################################
-def import_morphology_from_circuit(circuit_config,
-                                   gid,
-                                   center_at_origin=True):
-
-    # TODO: Handle sonata circuits
+    # TODO: Handle libSonata circuits
     # Load the circuit from the circuit config, and get the path to the morphology
-    import bluepy
-    circuit = bluepy.Circuit(circuit_config)
-    morphology_file_path = circuit.morph.get_filepath(gid)
+    circuit = nmv.bbp.BBPCircuit(circuit_config=options.morphology.blue_config)
+    morphology_file_path = circuit.get_neuron_morphology_path(options.morphology.gid)
+
+    # Get the data from the circuit and update the necessary fields in NMV
+    nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list()
+    nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list()
 
     # Load the morphology file into a NMV morphology object using MorphIO
     nmv_morphology_object = nmv.file.read_morphology_with_morphio(
-        morphology_file_path=morphology_file_path, center_at_origin=center_at_origin)
+        morphology_file_path=morphology_file_path,
+        center_at_origin=options.morphology.center_at_origin)
 
     # To identify the neuron in the scene, label the morphology object with the GID of the neuron
-    nmv_morphology_object.label = str(gid)
+    nmv_morphology_object.label = str(options.morphology.gid)
 
     # Return the morphology object
     return nmv_morphology_object
+
+
+
+
+
+
+
+
+
 

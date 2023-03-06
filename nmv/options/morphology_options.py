@@ -24,7 +24,7 @@ import nmv.enums
 # @MorphologyOptions
 ####################################################################################################
 class MorphologyOptions:
-    """Configuration options for reconstructing a morphology skeleton.
+    """The morphology options.
     """
 
     ################################################################################################
@@ -38,8 +38,14 @@ class MorphologyOptions:
         # The GID of a given neuron in a given circuit using a blue config
         self.gid = None
 
-        # The circuit
+        # The circuit configuration file
         self.blue_config = None
+
+        # The circuit, where the given neuron is loaded from. In fact, we keep a reference of the
+        # circuit within the morphology options to avoid the delays from loading the circuit data
+        # from a remote file system. This parameter will be automatically filled after loading a
+        # neuron morphology from a circuit
+        # self.circuit = None
 
         # Morphology file path (if read from .H5 or .SWC file)
         self.morphology_file_path = None
@@ -220,6 +226,8 @@ class MorphologyOptions:
         # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
         self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
 
+        # The color of the soma, see @create_morphology_color_palette
+        self.soma_color = None
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeleton.Branching.RADII
 

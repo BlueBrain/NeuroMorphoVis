@@ -87,6 +87,45 @@ def draw_excitatory_and_inhibitory_options(layout,
 
 
 ####################################################################################################
+# @draw_afferent_synapses_color
+####################################################################################################
+def draw_afferent_synapses_color_option(layout,
+                                        scene,
+                                        options):
+
+    # Afferent synapses color option
+    color_row = layout.row()
+    color_row.prop(scene, 'NMV_AfferentSynapsesColor')
+    options.synaptics.afferent_synapses_color = scene.NMV_AfferentSynapsesColor
+
+
+####################################################################################################
+# @draw_efferent_synapses_color
+####################################################################################################
+def draw_efferent_synapses_color_option(layout,
+                                        scene,
+                                        options):
+
+    # Afferent synapses color option
+    color_row = layout.row()
+    color_row.prop(scene, 'NMV_EfferentSynapsesColor')
+    options.synaptics.efferent_synapses_color = scene.NMV_EfferentSynapsesColor
+
+
+####################################################################################################
+# @draw_afferent_and_efferent_options
+####################################################################################################
+def draw_afferent_and_efferent_options(layout,
+                                       scene,
+                                       options):
+    draw_afferent_synapses_color_option(
+        layout=layout, scene=scene, options=options)
+
+    draw_efferent_synapses_color_option(
+        layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
 # @draw_synapses_color_option
 ####################################################################################################
 def draw_synapses_color_option(layout,
@@ -106,11 +145,21 @@ def draw_mtype_color_palette(layout,
                              scene,
                              options):
 
-    # Get the default palette of all the mtypes
-    mtypes = nmv.bbp.get_all_mtypes_in_circuit(circuit_config=options.morphology.blue_config)
-    print(mtypes)
+    # Fill list of colors
+    if nmv.consts.Circuit.MTYPES is not None:
 
-    pass
+        options.shading.mtypes_colors = list()
+
+        # Add the colormap element to the UI
+        colors = layout.column()
+        for i in range(len(nmv.consts.Circuit.MTYPES)):
+
+            # Colormap range values
+            # values = colors.colum()
+            colors.prop(scene, 'NMV_MtypeColor_%d' % i)
+
+            # Get the color value from the panel
+            options.shading.mtypes_colors.append(getattr(scene, 'NMV_MtypeColor_%d' % i))
 
 
 ####################################################################################################
@@ -120,12 +169,20 @@ def draw_etype_color_palette(layout,
                              scene,
                              options):
 
-    # Get the default palette of all the mtypes
-    etypes = nmv.bbp.get_all_etypes_in_circuit(circuit_config=options.morphology.blue_config)
-    print(etypes)
+    # Fill list of colors
+    if nmv.consts.Circuit.ETYPES is not None:
 
+        options.shading.etypes_colors = list()
 
-    pass
+        # Add the colormap element to the UI
+        colors = layout.column()
+        for i in range(len(nmv.consts.Circuit.ETYPES)):
+            # Colormap range values
+            # values = colors.colum()
+            colors.prop(scene, 'NMV_EtypeColor_%d' % i)
+
+            # Get the color value from the panel
+            options.shading.etypes_colors.append(getattr(scene, 'NMV_EtypeColor_%d' % i))
 
 
 ####################################################################################################
@@ -144,51 +201,42 @@ def draw_afferent_options(layout,
         draw_synapses_color_option(
             layout=layout, scene=scene, options=options)
     elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_MTYPE:
-        print('1')
-        #draw_mtype_color_palette(
-        #    layout=layout, scene=scene, options=options)
+        draw_mtype_color_palette(
+            layout=layout, scene=scene, options=options)
     elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_ETYPE:
-        print('2')
-        #draw_etype_color_palette(
-        #    layout=layout, scene=scene, options=options)
+        draw_etype_color_palette(
+            layout=layout, scene=scene, options=options)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+####################################################################################################
+# @draw_afferent_options
+####################################################################################################
 def draw_efferent_options(layout,
                           scene,
-                          synaptics_options):
+                          options):
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_EfferentColorCoding')
-    synaptics_options.efferent_color_coding = scene.NMV_EfferentColorCoding
+    options.synaptics.efferent_color_coding = scene.NMV_EfferentColorCoding
+
+    scheme = options.synaptics.efferent_color_coding
+    if scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+        draw_synapses_color_option(
+            layout=layout, scene=scene, options=options)
+    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_MTYPE:
+        draw_mtype_color_palette(
+            layout=layout, scene=scene, options=options)
+    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_ETYPE:
+        draw_etype_color_palette(
+            layout=layout, scene=scene, options=options)
 
 
-
-def draw_afferent_and_efferent_options(layout,
-                                       scene,
-                                       synaptics_options):
-
-    color_scheme_row = layout.row()
-    color_scheme_row.prop(scene, 'NMV_AfferentAndEfferentColorCoding')
-
-
-
+####################################################################################################
+# @draw_specific_color_coded_set_options
+####################################################################################################
 def draw_specific_color_coded_set_options(layout,
                                           scene,
-                                          synaptics_options):
+                                          options):
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_SpecificColorCoding')

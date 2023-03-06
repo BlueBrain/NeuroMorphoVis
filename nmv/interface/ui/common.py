@@ -229,12 +229,11 @@ def load_morphology(panel_object,
                 return 'ALREADY_LOADED'
 
         # Load the morphology from the circuit
-        loading_flag, morphology_object = nmv.file.readers.BBPReader.load_morphology_from_circuit(
-                blue_config=nmv.interface.ui_options.morphology.blue_config,
-                gid=nmv.interface.ui_options.morphology.gid)
+        morphology_object = nmv.file.readers.read_morphology_from_circuit(
+                options=nmv.interface.ui_options)
 
         # Verify the loading operation
-        if loading_flag:
+        if morphology_object is not None:
 
             # Update the morphology
             nmv.interface.ui_morphology = morphology_object

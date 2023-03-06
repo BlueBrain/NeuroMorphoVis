@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .circuit_consts import *
 from .geometry_conts import *
 from .analysis_consts import *
 from .skeleton_consts import *
@@ -33,3 +34,4 @@ from .soft_body_consts import *
 from .spines_consts import *
 from .suffix_consts import *
 from .meta_ball_consts import *
+from .synaptics import *

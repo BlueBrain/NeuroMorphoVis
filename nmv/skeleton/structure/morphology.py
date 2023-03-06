@@ -89,10 +89,10 @@ class Morphology:
         # A copy of the original apical dendrites list, needed for comparison
         self.origin_apical_dendrites = copy.deepcopy(apical_dendrites)
 
-        # Morphology GID
+        # Morphology GID, if loaded from a circuit
         self.gid = gid
 
-        # Morphology type
+        # Morphology type, if loaded from a circuit
         self.mtype = mtype
 
         # The original center of the morphology
@@ -129,6 +129,9 @@ class Morphology:
         # Maximum branching order
         self.maximum_branching_order = 1000
 
+        # The color of the soma, see @create_morphology_color_palette
+        self.soma_color = None
+
         # The color of the apical dendrites, see @create_morphology_color_palette
         self.apical_dendrites_colors = None
 
@@ -137,9 +140,6 @@ class Morphology:
 
         # The color of the axons, see @create_morphology_color_palette
         self.axons_colors = None
-
-        # The color of the soma, see @create_morphology_color_palette
-        self.soma_color = None
 
         # Statistical analysis data of the morphology
         self.stats = nmv.analysis.MorphologyStats()

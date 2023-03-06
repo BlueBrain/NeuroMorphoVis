@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # Load the morphology file
     loading_flag, morphology_object = \
-        nmv.file.readers.read_morphology_from_file_naively(args.morphology)
+        nmv.file.readers.read_morphology_from_file(args.morphology)
 
     # Verify the loading operation
     if not loading_flag:
