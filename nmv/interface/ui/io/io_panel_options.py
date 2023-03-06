@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,21 +15,26 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+
 # Blender imports
 import bpy
 
 # Internal imports
 import nmv.enums
-import nmv.scene
 
 # Input options (what is the input source)
 bpy.types.Scene.NMV_InputSource = bpy.props.EnumProperty(
     items=[(nmv.enums.Input.MORPHOLOGY_FILE,
-            'H5, SWC or ASC File',
-            'Load individual .h5, .swc or .asc file without a circuit'),
+            '.SWC, .ASC or .H5 File',
+            'Load individual .SWC, .ASC or .H5 morphology file of a neuron or an astrocyte. '
+            'For the astrocyte file format in H5 files, please refer to the paper by '
+            'Abdellah et al. 2021'),
            (nmv.enums.Input.CIRCUIT_GID,
-            'BBP Circuit (GID)',
-            'Load a specific GID from the circuit config')],
+            'Circuit (GID)',
+            'Load the morphology of either a neuron or an astrocyte with a specific GID from '
+            'a digitally reconstructed circuit using a circuit configuration file. The current '
+            'version of NeuroMorphoVis supports loading libSonata circuits. For details, please '
+            'refer to the software suits at https://github.com/BlueBrain')],
     name="Input Source",
     default=nmv.enums.Input.MORPHOLOGY_FILE)
 
@@ -48,19 +53,22 @@ bpy.types.Scene.NMV_MorphologyFile = bpy.props.StringProperty(
 # Morphology directory
 bpy.types.Scene.NMV_MorphologyDirectory = bpy.props.StringProperty(
     name="Morphology Directory",
-    description="Select a directory to mesh all the morphologies in it",
+    description="Select a directory to that contains multiple morphology files in it",
     default="Select Directory", maxlen=2048, subtype='DIR_PATH')
 
-# Circuit file or BlueConfig
+# A circuit configuration file
 bpy.types.Scene.NMV_CircuitFile = bpy.props.StringProperty(
     name="Circuit File",
-    description="Select a BBP circuit file (or blue config)",
+    description="Select a circuit file. The current version of NeuroMorphoVis supports loading "
+                "BBP circuits that can be loaded with BluePy or recent circuits that can be loaded "
+                "with libSonata",
     default="Select Circuit File", maxlen=2048, subtype='FILE_PATH')
 
 # Circuit target
 bpy.types.Scene.NMV_Target = bpy.props.StringProperty(
     name="Target",
-    description="Select a specific target that must exist in the circuit",
+    description="Select a specific circuit target that must exist in the circuit and contain "
+                "more than a single GID, or at least a single GID",
     default="Add Target", maxlen=1024)
 
 # Neuron GID
@@ -72,7 +80,9 @@ bpy.types.Scene.NMV_Gid = bpy.props.StringProperty(
 # Loading time
 bpy.types.Scene.NMV_MorphologyLoadingTime = bpy.props.FloatProperty(
     name="Loading Morphology (Sec)",
-    description="The time it takes to load the morphology from file and draw it to the viewport",
+    description="The time to load the morphology from file and draw it to viewport. If the neuron "
+                "is loaded from a circuit, it might takes several second depending on the "
+                "network performance to load from a remote file system",
     default=0, min=0, max=1000000)
 
 # Drawing time
@@ -84,7 +94,8 @@ bpy.types.Scene.NMV_MorphologyDrawingTime = bpy.props.FloatProperty(
 # Output directory
 bpy.types.Scene.NMV_OutputDirectory = bpy.props.StringProperty(
     name="Output Directory",
-    description="Select a directory where the results will be generated",
+    description="Select a directory where the results (analysis, images, movies, meshes, etc.) "
+                "will be generated",
     default="Select Directory", maxlen=5000, subtype='DIR_PATH')
 
 # Use default paths for the artifacts

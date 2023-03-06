@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -29,6 +29,7 @@ import nmv.options
 #   ui_options.options.analysis.VARIABLE : for the analysis options
 #   ui_options.options.rendering.VARIABLE : for the rendering options
 #   ui_options.options.shading.VARIABLE : for the shading options
+#   ui_options.options.synaptics.VARIABLE : for the synaptics options
 ui_options = nmv.options.NeuroMorphoVisOptions()
 
 # The morphology skeleton object loaded after UI interaction

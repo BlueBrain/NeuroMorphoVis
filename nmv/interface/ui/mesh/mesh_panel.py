@@ -46,16 +46,16 @@ is_mesh_rendered = False
 
 
 ####################################################################################################
-# @MeshPanel
+# @NMV_MeshPanel
 ####################################################################################################
-class MeshPanel(bpy.types.Panel):
+class NMV_MeshPanel(bpy.types.Panel):
     """MeshPanel class"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_MeshingToolBox"
     bl_label = 'Meshing Toolbox'
     bl_category = 'NeuroMorphoVis'
@@ -124,9 +124,9 @@ class MeshPanel(bpy.types.Panel):
 
 
 ####################################################################################################
-# @ReconstructNeuronMesh
+# @NMV_ReconstructNeuronMesh
 ####################################################################################################
-class ReconstructNeuronMesh(bpy.types.Operator):
+class NMV_ReconstructNeuronMesh(bpy.types.Operator):
     """Reconstructs the mesh of the neuron"""
 
     # Operator parameters
@@ -210,9 +210,9 @@ class ReconstructNeuronMesh(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMeshFront
+# @NMV_RenderMeshFront
 ####################################################################################################
-class RenderMeshFront(bpy.types.Operator):
+class NMV_RenderMeshFront(bpy.types.Operator):
     """Render front view of the reconstructed mesh"""
 
     # Operator parameters
@@ -253,9 +253,9 @@ class RenderMeshFront(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMeshSide
+# @NMV_RenderMeshSide
 ####################################################################################################
-class RenderMeshSide(bpy.types.Operator):
+class NMV_RenderMeshSide(bpy.types.Operator):
     """Render side view of the reconstructed mesh"""
 
     # Operator parameters
@@ -295,9 +295,9 @@ class RenderMeshSide(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMeshTop
+# @NMV_RenderMeshTop
 ####################################################################################################
-class RenderMeshTop(bpy.types.Operator):
+class NMV_RenderMeshTop(bpy.types.Operator):
     """Render top view of the reconstructed mesh"""
 
     # Operator parameters
@@ -337,9 +337,9 @@ class RenderMeshTop(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMesh360
+# @NMV_RenderMesh360
 ####################################################################################################
-class RenderMesh360(bpy.types.Operator):
+class NMV_RenderMesh360(bpy.types.Operator):
     """Render a 360 view of the reconstructed mesh"""
 
     # Operator parameters
@@ -535,9 +535,9 @@ class RenderMesh360(bpy.types.Operator):
 
 
 ####################################################################################################
-# @SaveNeuronMeshBLEND
+# @NMV_ExportMesh
 ####################################################################################################
-class ExportMesh(bpy.types.Operator):
+class NMV_ExportMesh(bpy.types.Operator):
     """Export neuron mesh"""
 
     # Operator parameters
@@ -582,9 +582,9 @@ class ExportMesh(bpy.types.Operator):
 
 
 ####################################################################################################
-# @InputOutputDocumentation
+# @NMV_MeshReconstructionDocumentation
 ####################################################################################################
-class MeshReconstructionDocumentation(bpy.types.Operator):
+class NMV_MeshReconstructionDocumentation(bpy.types.Operator):
     """Open the online documentation page of the Mesh Reconstruction panel."""
 
     # Operator parameters
@@ -616,16 +616,16 @@ def register_panel():
     """Register all the classes in this panel"""
 
     # Mesh reconstruction panel
-    bpy.utils.register_class(MeshPanel)
+    bpy.utils.register_class(NMV_MeshPanel)
 
     # Buttons
-    bpy.utils.register_class(MeshReconstructionDocumentation)
-    bpy.utils.register_class(ReconstructNeuronMesh)
-    bpy.utils.register_class(RenderMeshFront)
-    bpy.utils.register_class(RenderMeshSide)
-    bpy.utils.register_class(RenderMeshTop)
-    bpy.utils.register_class(RenderMesh360)
-    bpy.utils.register_class(ExportMesh)
+    bpy.utils.register_class(NMV_MeshReconstructionDocumentation)
+    bpy.utils.register_class(NMV_ReconstructNeuronMesh)
+    bpy.utils.register_class(NMV_RenderMeshFront)
+    bpy.utils.register_class(NMV_RenderMeshSide)
+    bpy.utils.register_class(NMV_RenderMeshTop)
+    bpy.utils.register_class(NMV_RenderMesh360)
+    bpy.utils.register_class(NMV_ExportMesh)
 
 
 ####################################################################################################
@@ -635,14 +635,14 @@ def unregister_panel():
     """Un-register all the classes in this panel"""
 
     # Mesh reconstruction panel
-    bpy.utils.unregister_class(MeshPanel)
+    bpy.utils.unregister_class(NMV_MeshPanel)
 
     # Buttons
-    bpy.utils.unregister_class(MeshReconstructionDocumentation)
-    bpy.utils.unregister_class(ReconstructNeuronMesh)
-    bpy.utils.unregister_class(RenderMeshFront)
-    bpy.utils.unregister_class(RenderMeshSide)
-    bpy.utils.unregister_class(RenderMeshTop)
-    bpy.utils.unregister_class(RenderMesh360)
-    bpy.utils.unregister_class(ExportMesh)
+    bpy.utils.unregister_class(NMV_MeshReconstructionDocumentation)
+    bpy.utils.unregister_class(NMV_ReconstructNeuronMesh)
+    bpy.utils.unregister_class(NMV_RenderMeshFront)
+    bpy.utils.unregister_class(NMV_RenderMeshSide)
+    bpy.utils.unregister_class(NMV_RenderMeshTop)
+    bpy.utils.unregister_class(NMV_RenderMesh360)
+    bpy.utils.unregister_class(NMV_ExportMesh)
 

@@ -43,7 +43,7 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_Synaptics"
     bl_label = 'Synaptics Toolbox'
     bl_category = 'NeuroMorphoVis'

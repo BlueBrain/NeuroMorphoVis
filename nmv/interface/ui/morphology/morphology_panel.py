@@ -48,16 +48,16 @@ morphology_builder = None
 
 
 ####################################################################################################
-# @MorphologyPanel
+# @NMV_MorphologyPanel
 ####################################################################################################
-class MorphologyPanel(bpy.types.Panel):
+class NMV_MorphologyPanel(bpy.types.Panel):
     """Morphology tools panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_MorphologyToolBox"
     bl_label = 'Morphology Toolbox'
     bl_category = 'NeuroMorphoVis'
@@ -177,9 +177,9 @@ class MorphologyPanel(bpy.types.Panel):
 
 
 ####################################################################################################
-# ReconstructMorphologyOperator
+# NMV_ReconstructMorphologyOperator
 ####################################################################################################
-class ReconstructMorphologyOperator(bpy.types.Operator):
+class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
     """Morphology reconstruction operator"""
 
     # Operator parameters
@@ -279,9 +279,9 @@ class ReconstructMorphologyOperator(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMorphologyFront
+# @NMV_RenderMorphologyFront
 ####################################################################################################
-class RenderMorphologyFront(bpy.types.Operator):
+class NMV_RenderMorphologyFront(bpy.types.Operator):
     """Render front view of the reconstructed morphology"""
 
     # Operator parameters
@@ -322,9 +322,9 @@ class RenderMorphologyFront(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMorphologySide
+# @NMV_RenderMorphologySide
 ####################################################################################################
-class RenderMorphologySide(bpy.types.Operator):
+class NMV_RenderMorphologySide(bpy.types.Operator):
     """Render side view of the reconstructed morphology"""
 
     # Operator parameters
@@ -364,9 +364,9 @@ class RenderMorphologySide(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMorphologyTop
+# @NMV_RenderMorphologyTop
 ####################################################################################################
-class RenderMorphologyTop(bpy.types.Operator):
+class NMV_RenderMorphologyTop(bpy.types.Operator):
     """Render top view of the reconstructed morphology"""
 
     # Operator parameters
@@ -406,9 +406,9 @@ class RenderMorphologyTop(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMorphology360
+# @NMV_RenderMorphology360
 ####################################################################################################
-class RenderMorphology360(bpy.types.Operator):
+class NMV_RenderMorphology360(bpy.types.Operator):
     """Render a 360 view of the reconstructed morphology"""
 
     # Operator parameters
@@ -586,9 +586,9 @@ class RenderMorphology360(bpy.types.Operator):
 
 
 ####################################################################################################
-# @RenderMorphologyProgressive
+# @NMV_RenderMorphologyProgressive
 ####################################################################################################
-class RenderMorphologyProgressive(bpy.types.Operator):
+class NMV_RenderMorphologyProgressive(bpy.types.Operator):
     """Render a progressive sequence of the reconstruction procedure (time-consuming)"""
 
     # Operator parameters
@@ -779,9 +779,9 @@ class RenderMorphologyProgressive(bpy.types.Operator):
 
 
 ####################################################################################################
-# @SaveMorphologySWC
+# @NMV_SaveMorphologySWC
 ####################################################################################################
-class SaveMorphologySWC(bpy.types.Operator):
+class NMV_SaveMorphologySWC(bpy.types.Operator):
     """Save the reconstructed morphology in an SWC file"""
 
     # Operator parameters
@@ -820,9 +820,9 @@ class SaveMorphologySWC(bpy.types.Operator):
 
 
 ####################################################################################################
-# @SaveMorphologySegments
+# @NMV_SaveMorphologySegments
 ####################################################################################################
-class SaveMorphologySegments(bpy.types.Operator):
+class NMV_SaveMorphologySegments(bpy.types.Operator):
     """Save the reconstructed morphology as a list of segments into file"""
 
     # Operator parameters
@@ -860,9 +860,9 @@ class SaveMorphologySegments(bpy.types.Operator):
 
 
 ####################################################################################################
-# @SaveMorphologyBLEND
+# @NMV_SaveMorphologyBLEND
 ####################################################################################################
-class SaveMorphologyBLEND(bpy.types.Operator):
+class NMV_SaveMorphologyBLEND(bpy.types.Operator):
     """Save the reconstructed morphology in a blender file"""
 
     # Operator parameters
@@ -901,9 +901,9 @@ class SaveMorphologyBLEND(bpy.types.Operator):
 
 
 ####################################################################################################
-# @MorphologyReconstructionDocumentation
+# @NMV_MorphologyReconstructionDocumentation
 ####################################################################################################
-class MorphologyReconstructionDocumentation(bpy.types.Operator):
+class NMV_MorphologyReconstructionDocumentation(bpy.types.Operator):
     """Open the online documentation page of the Morphology Reconstruction panel."""
 
     # Operator parameters
@@ -938,19 +938,19 @@ def register_panel():
     # bpy.utils.register_class(ColorMapOperator)
 
     # Soma reconstruction panel
-    bpy.utils.register_class(MorphologyPanel)
+    bpy.utils.register_class(NMV_MorphologyPanel)
 
     # Buttons
-    bpy.utils.register_class(MorphologyReconstructionDocumentation)
-    bpy.utils.register_class(ReconstructMorphologyOperator)
-    bpy.utils.register_class(RenderMorphologyFront)
-    bpy.utils.register_class(RenderMorphologySide)
-    bpy.utils.register_class(RenderMorphologyTop)
-    bpy.utils.register_class(RenderMorphology360)
-    bpy.utils.register_class(RenderMorphologyProgressive)
-    bpy.utils.register_class(SaveMorphologyBLEND)
-    bpy.utils.register_class(SaveMorphologySWC)
-    bpy.utils.register_class(SaveMorphologySegments)
+    bpy.utils.register_class(NMV_MorphologyReconstructionDocumentation)
+    bpy.utils.register_class(NMV_ReconstructMorphologyOperator)
+    bpy.utils.register_class(NMV_RenderMorphologyFront)
+    bpy.utils.register_class(NMV_RenderMorphologySide)
+    bpy.utils.register_class(NMV_RenderMorphologyTop)
+    bpy.utils.register_class(NMV_RenderMorphology360)
+    bpy.utils.register_class(NMV_RenderMorphologyProgressive)
+    bpy.utils.register_class(NMV_SaveMorphologyBLEND)
+    bpy.utils.register_class(NMV_SaveMorphologySWC)
+    bpy.utils.register_class(NMV_SaveMorphologySegments)
 
 
 ####################################################################################################
@@ -963,17 +963,17 @@ def unregister_panel():
     # bpy.utils.unregister_class(ColorMapOperator)
 
     # Morphology reconstruction panel
-    bpy.utils.unregister_class(MorphologyPanel)
+    bpy.utils.unregister_class(NMV_MorphologyPanel)
 
     # Buttons
-    bpy.utils.unregister_class(MorphologyReconstructionDocumentation)
-    bpy.utils.unregister_class(ReconstructMorphologyOperator)
-    bpy.utils.unregister_class(RenderMorphologyTop)
-    bpy.utils.unregister_class(RenderMorphologySide)
-    bpy.utils.unregister_class(RenderMorphologyFront)
-    bpy.utils.unregister_class(RenderMorphology360)
-    bpy.utils.unregister_class(RenderMorphologyProgressive)
-    bpy.utils.unregister_class(SaveMorphologyBLEND)
-    bpy.utils.unregister_class(SaveMorphologySWC)
-    bpy.utils.unregister_class(SaveMorphologySegments)
+    bpy.utils.unregister_class(NMV_MorphologyReconstructionDocumentation)
+    bpy.utils.unregister_class(NMV_ReconstructMorphologyOperator)
+    bpy.utils.unregister_class(NMV_RenderMorphologyTop)
+    bpy.utils.unregister_class(NMV_RenderMorphologySide)
+    bpy.utils.unregister_class(NMV_RenderMorphologyFront)
+    bpy.utils.unregister_class(NMV_RenderMorphology360)
+    bpy.utils.unregister_class(NMV_RenderMorphologyProgressive)
+    bpy.utils.unregister_class(NMV_SaveMorphologyBLEND)
+    bpy.utils.unregister_class(NMV_SaveMorphologySWC)
+    bpy.utils.unregister_class(NMV_SaveMorphologySegments)
 

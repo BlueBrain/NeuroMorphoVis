@@ -39,16 +39,16 @@ is_morphology_analyzed = False
 
 
 ####################################################################################################
-# @AnalysisPanel
+# @NMV_AnalysisPanel
 ####################################################################################################
-class AnalysisPanel(bpy.types.Panel):
+class NMV_AnalysisPanel(bpy.types.Panel):
     """Analysis panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_Analysis"
     bl_label = 'Morphology Analysis Tools'
     bl_category = 'NeuroMorphoVis'
@@ -110,9 +110,9 @@ class AnalysisPanel(bpy.types.Panel):
 
 
 ####################################################################################################
-# @cExportAnalysisResults
+# @NMV_ExportAnalysisResults
 ####################################################################################################
-class ExportAnalysisResults(bpy.types.Operator):
+class NMV_ExportAnalysisResults(bpy.types.Operator):
     """Export the analysis results into a file"""
 
     # Operator parameters
@@ -157,9 +157,9 @@ class ExportAnalysisResults(bpy.types.Operator):
 
 
 ####################################################################################################
-# @cExportAnalysisResults
+# @NMV_CreateNeuronCard
 ####################################################################################################
-class CreateNeuronCard(bpy.types.Operator):
+class NMV_CreateNeuronCard(bpy.types.Operator):
     """Export the analysis results into a file"""
 
     # Operator parameters
@@ -232,11 +232,11 @@ def register_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.register_class(AnalysisPanel)
+    bpy.utils.register_class(NMV_AnalysisPanel)
 
     # Export analysis button
-    bpy.utils.register_class(CreateNeuronCard)
-    bpy.utils.register_class(ExportAnalysisResults)
+    bpy.utils.register_class(NMV_CreateNeuronCard)
+    bpy.utils.register_class(NMV_ExportAnalysisResults)
 
 
 ####################################################################################################
@@ -247,8 +247,8 @@ def unregister_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.unregister_class(AnalysisPanel)
+    bpy.utils.unregister_class(NMV_AnalysisPanel)
 
     # Export analysis button
-    bpy.utils.unregister_class(CreateNeuronCard)
-    bpy.utils.unregister_class(ExportAnalysisResults)
+    bpy.utils.unregister_class(NMV_CreateNeuronCard)
+    bpy.utils.unregister_class(NMV_ExportAnalysisResults)

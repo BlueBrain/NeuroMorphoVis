@@ -41,16 +41,16 @@ in_edit_mode = False
 
 
 ####################################################################################################
-# @EditPanel
+# @NMV_EditPanel
 ####################################################################################################
-class EditPanel(bpy.types.Panel):
+class NMV_EditPanel(bpy.types.Panel):
     """Edit panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_MorphologyEditing"
     bl_label = 'Morphology Editing'
     bl_category = 'NeuroMorphoVis'
@@ -117,9 +117,9 @@ class EditPanel(bpy.types.Panel):
 
 
 ####################################################################################################
-# @SketchSkeleton
+# @NMV_SketchSkeleton
 ####################################################################################################
-class SketchSkeleton(bpy.types.Operator):
+class NMV_SketchSkeleton(bpy.types.Operator):
     """Repair the morphology skeleton, detect the artifacts and fix them
     """
 
@@ -164,9 +164,9 @@ class SketchSkeleton(bpy.types.Operator):
 
 
 ####################################################################################################
-# @UpdateMorphologyCoordinates
+# @NMV_EditMorphologyCoordinates
 ####################################################################################################
-class EditMorphologyCoordinates(bpy.types.Operator):
+class NMV_EditMorphologyCoordinates(bpy.types.Operator):
     """Update the morphology coordinates following to the repair process
     """
 
@@ -225,9 +225,9 @@ class EditMorphologyCoordinates(bpy.types.Operator):
 
 
 ####################################################################################################
-# @UpdateMorphologyCoordinates
+# @NMV_UpdateMorphologyCoordinates
 ####################################################################################################
-class UpdateMorphologyCoordinates(bpy.types.Operator):
+class NMV_UpdateMorphologyCoordinates(bpy.types.Operator):
     """Update the morphology coordinates following to the repair process.
     """
 
@@ -285,9 +285,9 @@ class UpdateMorphologyCoordinates(bpy.types.Operator):
 
 
 ####################################################################################################
-# @ExportMorphologySWC
+# @NMV_ExportMorphologySWC
 ####################################################################################################
-class ExportMorphologySWC(bpy.types.Operator):
+class NMV_ExportMorphologySWC(bpy.types.Operator):
     """Export the reconstructed morphology in an SWC file"""
 
     # Operator parameters
@@ -328,9 +328,9 @@ class ExportMorphologySWC(bpy.types.Operator):
 
 
 ####################################################################################################
-# @MorphologyEditingDocumentation
+# @NMV_MorphologyEditingDocumentation
 ####################################################################################################
-class MorphologyEditingDocumentation(bpy.types.Operator):
+class NMV_MorphologyEditingDocumentation(bpy.types.Operator):
     """Open the online documentation page of the Morphology Editing panel."""
 
     # Operator parameters
@@ -363,14 +363,14 @@ def register_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.register_class(EditPanel)
+    bpy.utils.register_class(NMV_EditPanel)
 
     # Buttons
-    bpy.utils.register_class(MorphologyEditingDocumentation)
-    bpy.utils.register_class(SketchSkeleton)
-    bpy.utils.register_class(EditMorphologyCoordinates)
-    bpy.utils.register_class(UpdateMorphologyCoordinates)
-    bpy.utils.register_class(ExportMorphologySWC)
+    bpy.utils.register_class(NMV_MorphologyEditingDocumentation)
+    bpy.utils.register_class(NMV_SketchSkeleton)
+    bpy.utils.register_class(NMV_EditMorphologyCoordinates)
+    bpy.utils.register_class(NMV_UpdateMorphologyCoordinates)
+    bpy.utils.register_class(NMV_ExportMorphologySWC)
 
 
 ####################################################################################################
@@ -381,11 +381,11 @@ def unregister_panel():
     """
 
     # Morphology analysis panel
-    bpy.utils.unregister_class(EditPanel)
+    bpy.utils.unregister_class(NMV_EditPanel)
 
     # Buttons
-    bpy.utils.unregister_class(MorphologyEditingDocumentation)
-    bpy.utils.unregister_class(SketchSkeleton)
-    bpy.utils.unregister_class(EditMorphologyCoordinates)
-    bpy.utils.unregister_class(UpdateMorphologyCoordinates)
-    bpy.utils.unregister_class(ExportMorphologySWC)
+    bpy.utils.unregister_class(NMV_MorphologyEditingDocumentation)
+    bpy.utils.unregister_class(NMV_SketchSkeleton)
+    bpy.utils.unregister_class(NMV_EditMorphologyCoordinates)
+    bpy.utils.unregister_class(NMV_UpdateMorphologyCoordinates)
+    bpy.utils.unregister_class(NMV_ExportMorphologySWC)

@@ -39,16 +39,16 @@ is_soma_reconstructed = False
 
 
 ####################################################################################################
-# @SomaPanel
+# @NMV_SomaPanel
 ####################################################################################################
-class SomaPanel(bpy.types.Panel):
+class NMV_SomaPanel(bpy.types.Panel):
     """Soma panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_SomaToolBox"
     bl_label = 'Soma Toolbox'
     bl_category = 'NeuroMorphoVis'
@@ -1166,7 +1166,7 @@ def register_panel():
     """
 
     # Soma reconstruction panel
-    bpy.utils.register_class(SomaPanel)
+    bpy.utils.register_class(NMV_SomaPanel)
 
     # Buttons
     bpy.utils.register_class(SomaReconstructionDocumentation)
@@ -1190,7 +1190,7 @@ def unregister_panel():
     """
 
     # Soma reconstruction panel
-    bpy.utils.unregister_class(SomaPanel)
+    bpy.utils.unregister_class(NMV_SomaPanel)
 
     # Buttons
     bpy.utils.unregister_class(SomaReconstructionDocumentation)

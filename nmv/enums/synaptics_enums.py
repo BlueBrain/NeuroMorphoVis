@@ -58,18 +58,7 @@ class Synaptics:
 
         SINGLE_COLOR = 'SYNAPSE_SINGLE_COLOR'
 
-        COLOR_CODED_PRE_SYNAPTIC_MTYPE = 'COLOR_CODED_PRE_SYNAPTIC_MTYPE'
+        MTYPE_COLOR_CODED = 'SYNAPSE_MTYPE_COLOR_CODED'
 
-        COLOR_CODED_POST_SYNAPTIC_MTYPE = 'COLOR_CODED_POST_SYNAPTIC_MTYPE'
-
-        COLOR_CODED_PRE_SYNAPTIC_ETYPE = 'COLOR_CODED_PRE_SYNAPTIC_ETYPE'
-
-        COLOR_CODED_POST_SYNAPTIC_ETYPE = 'COLOR_CODED_POST_SYNAPTIC_ETYPE'
-
-
-        ############################################################################################
-        # @__init__
-        ############################################################################################
-        def __init__(self):
-            pass
+        ETYPE_COLOR_CODED = 'SYNAPSE_ETYPE_COLOR_CODED'
 

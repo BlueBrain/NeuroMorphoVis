@@ -42,7 +42,7 @@ class NMV_AboutPanel(bpy.types.Panel):
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_About"
     bl_label = 'About'
     bl_category = 'NeuroMorphoVis'

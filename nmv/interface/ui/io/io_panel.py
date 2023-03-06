@@ -29,19 +29,20 @@ import nmv.interface
 import nmv.scene
 import nmv.utilities
 from .io_panel_options import *
+from .io_panel_ops import *
 
 
 ####################################################################################################
-# @IOPanel
+# @NMV_IOPanel
 ####################################################################################################
-class IOPanel(bpy.types.Panel):
-    """Input and output data panel"""
+class NMV_IOPanel(bpy.types.Panel):
+    """The input and output data panel of NeuroMorphoVis"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if nmv.utilities.is_blender_280() else 'TOOLS'
+    bl_region_type = 'UI'
     bl_idname = "OBJECT_PT_NMV_IO"
     bl_label = 'Input / Output'
     bl_category = 'NeuroMorphoVis'
@@ -49,148 +50,47 @@ class IOPanel(bpy.types.Panel):
     ################################################################################################
     # @draw
     ################################################################################################
-    def draw(self, context):
+    def draw(self,
+             context):
         """Draw the panel.
 
         :param context:
-            Panel context.
+            Blender context.
         """
 
-        # Get a reference to the panel layout
+        # References to the panel layout and the Blender scene
         layout = self.layout
-
-        # Get a reference to the scene
         scene = context.scene
 
-        # Documentation button
-        documentation_button = layout.column()
-        documentation_button.operator('nmv.documentation_io', icon='URL')
-        documentation_button.separator()
+        # Draw the documentation button
+        documentation_button_row = layout.column()
+        documentation_button_row.operator('nmv.documentation_io', icon='URL')
+        documentation_button_row.separator()
 
-        # Input data options
-        input_data_options_row = layout.row()
-        input_data_options_row.label(text='Input Data Options:', icon='LIBRARY_DATA_DIRECT')
+        # Draw the input options
+        draw_input_options(panel=self, scene=scene, options=nmv.interface.ui_options)
 
-        # Input source
-        input_source_row = layout.row()
-        input_source_row.prop(scene, 'NMV_InputSource')
+        # Draw the morphology loading button
+        draw_morphology_loading_button(panel=self)
 
-        # Read the data from a given morphology file either in .h5 or .swc formats
-        if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
-            morphology_file_row = layout.row()
-            morphology_file_row.prop(scene, 'NMV_MorphologyFile')
+        # Draw the morphology loading statistics elements, if possible after loading the morphology
+        draw_morphology_loading_statistics(
+            panel=self, scene=scene, morphology_object=nmv.interface.ui_morphology)
 
-        # Read the data from a specific gid in a given circuit
-        elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
-
-            blue_config_row = layout.row()
-            blue_config_row.prop(scene, 'NMV_CircuitFile')
-            gid_row = layout.row()
-            gid_row.prop(scene, 'NMV_Gid')
-
-        # Otherwise, ERROR
-        else:
-
-            # Report an invalid input source
-            self.report({'ERROR'}, 'Invalid Input Source')
-
-        # Center the morphology at the origin
-        centering_check_box = layout.row()
-        centering_check_box.prop(scene, 'NMV_CenterMorphologyAtOrigin')
-        nmv.interface.ui_options.morphology.center_at_origin = scene.NMV_CenterMorphologyAtOrigin
-
-        import_button = layout.column()
-        import_button.operator('nmv.load_morphology', icon='ANIM_DATA')
-        import_button.separator()
-
-        # Stats
-        if nmv.interface.ui_morphology is not None:
-            morphology_stats_row = layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-
-            loading_time_row = layout.row()
-            loading_time_row.prop(scene, 'NMV_MorphologyLoadingTime')
-            loading_time_row.enabled = False
-
-            drawing_time_row = layout.row()
-            drawing_time_row.prop(scene, 'NMV_MorphologyDrawingTime')
-            drawing_time_row.enabled = False
-
-        # Output options
-        output_data_options_row = layout.row()
-        output_data_options_row.label(text='Output Options:', icon='SCRIPT')
-
-        # Output directory
-        output_directory_row = layout.row()
-        output_directory_row.prop(scene, 'NMV_OutputDirectory')
-
-        # Default paths
-        default_paths_row = layout.row()
-        default_paths_row.prop(scene, 'NMV_DefaultArtifactsRelativePath')
-
-        # Images path
-        images_path_row = layout.row()
-        images_path_row.prop(scene, 'NMV_ImagesPath')
-
-        # Sequences path
-        sequences_path_row = layout.row()
-        sequences_path_row.prop(scene, 'NMV_SequencesPath')
-
-        # Meshes path
-        meshes_path_row = layout.row()
-        meshes_path_row.prop(scene, 'NMV_MeshesPath')
-
-        # Morphologies path
-        morphologies_path_row = layout.row()
-        morphologies_path_row.prop(scene, 'NMV_MorphologiesPath')
-
-        # Analysis path
-        analysis_path_row = layout.row()
-        analysis_path_row.prop(scene, 'NMV_AnalysisPath')
-
-        # Stats. path
-        stats_path_row = layout.row()
-        stats_path_row.prop(scene, 'NMV_StatisticsPath')
-
-        # Disable the default paths selection if the use default paths flag is set
-        if scene.NMV_DefaultArtifactsRelativePath:
-            images_path_row.enabled = False
-            sequences_path_row.enabled = False
-            meshes_path_row.enabled = False
-            morphologies_path_row.enabled = False
-            analysis_path_row.enabled = False
-            stats_path_row.enabled = False
-
-        # Pass options from UI to system
-        if 'Select Directory' in scene.NMV_OutputDirectory:
-            nmv.interface.ui_options.io.output_directory = None
-        else:
-            nmv.interface.ui_options.io.output_directory = \
-                scene.NMV_OutputDirectory
-            nmv.interface.ui_options.io.images_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_ImagesPath)
-            nmv.interface.ui_options.io.sequences_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_SequencesPath)
-            nmv.interface.ui_options.io.morphologies_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_MorphologiesPath)
-            nmv.interface.ui_options.io.meshes_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_MeshesPath)
-            nmv.interface.ui_options.io.analysis_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_AnalysisPath)
-            nmv.interface.ui_options.io.statistics_directory = \
-                '%s/%s' % (scene.NMV_OutputDirectory, scene.NMV_StatisticsPath)
+        # Draw the output options
+        draw_output_options(panel=self, scene=scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
-# @LoadMorphology
+# @NMV_LoadMorphology
 ####################################################################################################
-class LoadMorphology(bpy.types.Operator):
+class NMV_LoadMorphology(bpy.types.Operator):
     """Loads morphology
     """
 
     # Operator parameters
     bl_idname = "nmv.load_morphology"
-    bl_label = "Load"
+    bl_label = "Load Morphology"
 
     ################################################################################################
     # @execute
@@ -306,7 +206,7 @@ class LoadMorphology(bpy.types.Operator):
 
                 setattr(bpy.types.Scene, 'NMV_MtypeColor_%d' % i,
                         bpy.props.FloatVectorProperty(
-                            name='NMV_MtypeColor_%s' % nmv.consts.Circuit.MTYPES[i],
+                            name='%s' % nmv.consts.Circuit.MTYPES[i],
                             subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
                             description=''))
 
@@ -319,7 +219,7 @@ class LoadMorphology(bpy.types.Operator):
 
                 setattr(bpy.types.Scene, 'NMV_EtypeColor_%d' % i,
                         bpy.props.FloatVectorProperty(
-                            name='NMV_EtypeColor_%s' % nmv.consts.Circuit.ETYPES[i],
+                            name='%s' % nmv.consts.Circuit.ETYPES[i],
                             subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
                             description=''))
 
@@ -369,9 +269,9 @@ class LoadMorphology(bpy.types.Operator):
 
 
 ####################################################################################################
-# @InputOutputDocumentation
+# @NMV_InputOutputDocumentation
 ####################################################################################################
-class InputOutputDocumentation(bpy.types.Operator):
+class NMV_InputOutputDocumentation(bpy.types.Operator):
     """Open the online documentation page of the IO panel."""
 
     # Operator parameters
@@ -406,11 +306,11 @@ def register_panel():
     nmv.scene.activate_neuromorphovis_mode()
 
     # InputOutput data
-    bpy.utils.register_class(IOPanel)
+    bpy.utils.register_class(NMV_IOPanel)
 
     # Buttons
-    bpy.utils.register_class(InputOutputDocumentation)
-    bpy.utils.register_class(LoadMorphology)
+    bpy.utils.register_class(NMV_InputOutputDocumentation)
+    bpy.utils.register_class(NMV_LoadMorphology)
 
 
 ####################################################################################################
@@ -423,8 +323,8 @@ def unregister_panel():
     nmv.scene.deactivate_neuromorphovis_mode()
 
     # InputOutput data
-    bpy.utils.unregister_class(IOPanel)
+    bpy.utils.unregister_class(NMV_IOPanel)
 
     # Buttons
-    bpy.utils.unregister_class(InputOutputDocumentation)
-    bpy.utils.unregister_class(LoadMorphology)
+    bpy.utils.unregister_class(NMV_InputOutputDocumentation)
+    bpy.utils.unregister_class(NMV_LoadMorphology)

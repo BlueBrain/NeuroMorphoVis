@@ -57,12 +57,6 @@ class SynapticsOptions:
         # If the single color option is used, assign its value to this parameter
         self.synapses_color = nmv.enums.Color.SYNAPSES
 
-        # Loading a circuit from GPFS - or any remote file systems - is painfully slow, but since
-        # we are loading the circuit at least once to obtain its data, we should pre-obtain some
-        # data that could be needed later.
-        self.circuit_mtypes = None
-        self.circuit_etypes = None
-
         # The percentage of the synapses loaded on the neuron
         self.percentage = nmv.consts.Synaptics.SYNAPSES_PERCENTAGE
 

@@ -112,18 +112,6 @@ def draw_efferent_synapses_color_option(layout,
     options.synaptics.efferent_synapses_color = scene.NMV_EfferentSynapsesColor
 
 
-####################################################################################################
-# @draw_afferent_and_efferent_options
-####################################################################################################
-def draw_afferent_and_efferent_options(layout,
-                                       scene,
-                                       options):
-    draw_afferent_synapses_color_option(
-        layout=layout, scene=scene, options=options)
-
-    draw_efferent_synapses_color_option(
-        layout=layout, scene=scene, options=options)
-
 
 ####################################################################################################
 # @draw_synapses_color_option
@@ -153,10 +141,8 @@ def draw_mtype_color_palette(layout,
         # Add the colormap element to the UI
         colors = layout.column()
         for i in range(len(nmv.consts.Circuit.MTYPES)):
-
-            # Colormap range values
-            # values = colors.colum()
-            colors.prop(scene, 'NMV_MtypeColor_%d' % i)
+            values = colors.row()
+            values.prop(scene, 'NMV_MtypeColor_%d' % i)
 
             # Get the color value from the panel
             options.shading.mtypes_colors.append(getattr(scene, 'NMV_MtypeColor_%d' % i))
@@ -177,9 +163,8 @@ def draw_etype_color_palette(layout,
         # Add the colormap element to the UI
         colors = layout.column()
         for i in range(len(nmv.consts.Circuit.ETYPES)):
-            # Colormap range values
-            # values = colors.colum()
-            colors.prop(scene, 'NMV_EtypeColor_%d' % i)
+            values = colors.row()
+            values.prop(scene, 'NMV_EtypeColor_%d' % i)
 
             # Get the color value from the panel
             options.shading.etypes_colors.append(getattr(scene, 'NMV_EtypeColor_%d' % i))
@@ -200,10 +185,10 @@ def draw_afferent_options(layout,
     if scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
         draw_synapses_color_option(
             layout=layout, scene=scene, options=options)
-    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_MTYPE:
+    elif scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
         draw_mtype_color_palette(
             layout=layout, scene=scene, options=options)
-    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_ETYPE:
+    elif scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
         draw_etype_color_palette(
             layout=layout, scene=scene, options=options)
 
@@ -223,12 +208,25 @@ def draw_efferent_options(layout,
     if scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
         draw_synapses_color_option(
             layout=layout, scene=scene, options=options)
-    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_MTYPE:
+    elif scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
         draw_mtype_color_palette(
             layout=layout, scene=scene, options=options)
-    elif scheme == nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_ETYPE:
+    elif scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
         draw_etype_color_palette(
             layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
+# @draw_afferent_and_efferent_options
+####################################################################################################
+def draw_afferent_and_efferent_options(layout,
+                                       scene,
+                                       options):
+    draw_afferent_synapses_color_option(
+        layout=layout, scene=scene, options=options)
+
+    draw_efferent_synapses_color_option(
+        layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################

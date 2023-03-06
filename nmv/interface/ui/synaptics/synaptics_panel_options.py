@@ -24,8 +24,6 @@ import nmv.enums
 import nmv.utilities
 
 
-
-
 # Reconstruction method
 bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
     items=[(nmv.enums.Synaptics.UseCase.AFFERENT,
@@ -65,12 +63,12 @@ bpy.types.Scene.NMV_AfferentColorCoding = bpy.props.EnumProperty(
             'Unified Color',
             'Color all the synapses with a single color'),
 
-           (nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_MTYPE,
+           (nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED,
             'Pre-synaptic Morphological Type',
             'Color code the synapses based on the morphological type (or m-type) of the connecting'
             'pre-synaptic cell.'),
 
-           (nmv.enums.Synaptics.ColorCoding.COLOR_CODED_PRE_SYNAPTIC_ETYPE,
+           (nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED,
             'Pre-synaptic Electrical Type',
             'Color code the synapses based on the electrical type (or e-type) of the connecting'
             'pre-synaptic cell.')],
@@ -83,12 +81,12 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
             'Unified Color',
             'Color all the synapses with a single color'),
 
-           (nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_MTYPE,
+           (nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED,
             'Post-synaptic Morphological Type',
             'Color code the synapses based on the morphological type (or m-type) of the connecting'
             'post-synaptic cell.'),
 
-           (nmv.enums.Synaptics.ColorCoding.COLOR_CODED_POST_SYNAPTIC_ETYPE,
+           (nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED,
             'Pre-synaptic Electrical Type',
             'Color code the synapses based on the electrical type (or e-type) of the connecting'
             'post-synaptic cell.')],
