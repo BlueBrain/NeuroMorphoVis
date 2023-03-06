@@ -58,35 +58,30 @@ class NMV_IOPanel(bpy.types.Panel):
             Blender context.
         """
 
-        # References to the panel layout and the Blender scene
-        layout = self.layout
-        scene = context.scene
-
         # Draw the documentation button
-        documentation_button_row = layout.column()
+        documentation_button_row = self.layout.column()
         documentation_button_row.operator('nmv.documentation_io', icon='URL')
         documentation_button_row.separator()
 
         # Draw the input options
-        draw_input_options(panel=self, scene=scene, options=nmv.interface.ui_options)
+        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
         # Draw the morphology loading button
         draw_morphology_loading_button(panel=self)
 
         # Draw the morphology loading statistics elements, if possible after loading the morphology
         draw_morphology_loading_statistics(
-            panel=self, scene=scene, morphology_object=nmv.interface.ui_morphology)
+            panel=self, scene=context.scene, morphology_object=nmv.interface.ui_morphology)
 
         # Draw the output options
-        draw_output_options(panel=self, scene=scene, options=nmv.interface.ui_options)
+        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
 # @NMV_LoadMorphology
 ####################################################################################################
 class NMV_LoadMorphology(bpy.types.Operator):
-    """Loads morphology
-    """
+    """Loads the morphology into the Blender scene"""
 
     # Operator parameters
     bl_idname = "nmv.load_morphology"
@@ -97,12 +92,13 @@ class NMV_LoadMorphology(bpy.types.Operator):
     ################################################################################################
     def execute(self,
                 context):
-        """Execute the operator.
+        """Execute the button, or the operator. Note that the analysis of the loaded morphology
+        is executed in the background.
 
         :param context:
-            Rendering context
+            Blender context
         :return:
-            'FINISHED'
+             {'RUNNING_MODAL'}
         """
 
         # Clear the scene
@@ -240,7 +236,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
         Threading and non-blocking handling.
 
         :param context:
-            Panel context.
+            The Blender context.
         :param event:
             A given event for the panel.
         """
@@ -256,12 +252,13 @@ class NMV_LoadMorphology(bpy.types.Operator):
     ################################################################################################
     # @cancel
     ################################################################################################
-    def cancel(self, context):
+    def cancel(self,
+               context):
         """
         Cancel the panel processing and return to the interaction mode.
 
         :param context:
-            Panel context.
+            The Blender context.
         """
 
         # Finished
@@ -286,9 +283,9 @@ class NMV_InputOutputDocumentation(bpy.types.Operator):
         """Execute the operator.
 
         :param context:
-            Blender context
+            The Blender context.
         :return:
-            'FINISHED'
+            {'FINISHED'}
         """
 
         import webbrowser
@@ -302,10 +299,10 @@ class NMV_InputOutputDocumentation(bpy.types.Operator):
 def register_panel():
     """Registers all the classes in this panel"""
 
-    # Once loaded activate the mode
+    # Once loaded, activate the mode rendering mode in the viewport
     nmv.scene.activate_neuromorphovis_mode()
 
-    # InputOutput data
+    # Input/Output panel
     bpy.utils.register_class(NMV_IOPanel)
 
     # Buttons
@@ -322,7 +319,7 @@ def unregister_panel():
     # Get back to the original theme
     nmv.scene.deactivate_neuromorphovis_mode()
 
-    # InputOutput data
+    # Input/Output panel
     bpy.utils.unregister_class(NMV_IOPanel)
 
     # Buttons

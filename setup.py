@@ -196,7 +196,7 @@ def install_for_linux(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'morphio']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
 
     # Removing the site-packages directory
     blender_python_wheels = '%s/blender-neuromorphovis/%s/python/lib/python%s/site-packages/' % \
@@ -368,7 +368,7 @@ def install_for_mac(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'morphio']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
 
     for wheel in pip_wheels:
         log_detail('Installing: %s' % wheel)

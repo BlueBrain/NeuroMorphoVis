@@ -78,8 +78,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 # @register
 ####################################################################################################
 def register():
-    """Register the different modules of the interface.
-    """
+    """Register the different modules of the interface"""
 
     # Import the modules
     import nmv.interface
@@ -87,7 +86,7 @@ def register():
 
     nmv.logger.header('Loading NeuroMorphoVis')
     nmv.logger.info('Version %s' % str(nmv.utilities.get_nmv_version()))
-    nmv.logger.info('Copyrights (c) Blue Brain Project (BBP) / (EPFL)')
+    nmv.logger.info('Copyrights (c) Blue Brain Project (BBP) / (EPFL) - 2023')
     nmv.logger.info('Principal Author: Marwan Abdellah')
 
     # Register panels
@@ -107,8 +106,7 @@ def register():
 # @unregister
 ####################################################################################################
 def unregister():
-    """Unregister the different modules of the interface.
-    """
+    """Unregister the different modules of the interface"""
 
     # Import the modules
     import nmv.interface
