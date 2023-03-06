@@ -1,5 +1,5 @@
-####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+###################################################################################################
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,10 +17,10 @@
 
 
 ####################################################################################################
-# @Morphology
+# @Strings
 ####################################################################################################
-class Morphology:
-    """Morphology constants"""
+class Strings:
+    """Strings constants"""
 
     ################################################################################################
     # @__init__
@@ -28,17 +28,17 @@ class Morphology:
     def __init__(self):
         pass
 
-    # The radius of the sample located at the origin (auxiliary sample)
-    ORIGIN_SAMPLE_RADIUS = 0.1
+    # The default message in the select file field
+    SELECT_FILE = "Select File"
 
-    # The radius of the first sample along a branch
-    FIRST_SAMPLE_RADIUS = 0.1
+    # The default message in the select directory field
+    SELECT_DIRECTORY = "Select Directory"
 
-    # The radius of the last sample along a branch
-    LAST_SAMPLE_RADIUS = 0.05
+    # The default message in the select circuit file field
+    SELECT_CIRCUIT_FILE = "Select Circuit File"
 
-    # The scale factor of the radius of the first sample along a branch
-    FIRST_SAMPLE_RADIUS_SCALE_FACTOR = 0.5
+    # The default message in the add target field
+    ADD_TARGET = "Add Target"
 
-    # The scale factor of the radius of the last sample along a branch
-    LAST_SAMPLE_RADIUS_SCALE_FACTOR = 0.5
+    # The default message in the add GID field
+    ADD_GID = "Add GID"

@@ -103,7 +103,6 @@ class NMV_LoadMorphology(bpy.types.Operator):
 
         # Clear the scene
         import nmv.scene
-        nmv.scene.reset_scene()
         nmv.scene.clear_scene()
 
         # By default, set the background to transparent
@@ -232,8 +231,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
     def modal(self,
               context,
               event):
-        """
-        Threading and non-blocking handling.
+        """Threading and non-blocking handling.
 
         :param context:
             The Blender context.

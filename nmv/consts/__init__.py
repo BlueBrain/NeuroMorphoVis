@@ -34,4 +34,5 @@ from .soft_body_consts import *
 from .spines_consts import *
 from .suffix_consts import *
 from .meta_ball_consts import *
-from .synaptics import *
+from .synaptics_consts import *
+from .string_consts import *

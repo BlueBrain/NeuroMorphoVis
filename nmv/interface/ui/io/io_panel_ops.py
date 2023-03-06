@@ -42,6 +42,7 @@ def draw_input_options(panel,
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
         morphology_file_row = panel.layout.row()
         morphology_file_row.prop(scene, 'NMV_MorphologyFile')
+        options.morphology.morphology_file_path = scene.NMV_MorphologyFile
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
         circuit_file_row = panel.layout.row()
         circuit_file_row.prop(scene, 'NMV_CircuitFile')
@@ -153,3 +154,5 @@ def draw_output_options(panel,
         options.io.meshes_directory = '%s/%s' % (output_dir, scene.NMV_MeshesPath)
         options.io.analysis_directory = '%s/%s' % (output_dir, scene.NMV_AnalysisPath)
         options.io.statistics_directory = '%s/%s' % (output_dir, scene.NMV_StatisticsPath)
+
+

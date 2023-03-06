@@ -40,11 +40,11 @@ current_coordinate = None
 
 
 ####################################################################################################
-# @load_morphology
+# @load_icons
 ####################################################################################################
 def load_icons():
-    """Loads the external icons.
-    """
+    """Loads the external icons."""
+
     nmv.interface.ui_icons = bpy.utils.previews.new()
     images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
     nmv.interface.ui_icons.load("github", os.path.join(images_path, "github-logo.png"), 'IMAGE')
@@ -54,35 +54,30 @@ def load_icons():
 
 
 ####################################################################################################
-# @load_morphology
+# @unload_icons
 ####################################################################################################
 def unload_icons():
-    """Unloads the external icons, after loading them to Blender.
-    """
+    """Unloads the external icons, after loading them to Blender."""
 
-    # Remove the icons
     bpy.utils.previews.remove(nmv.interface.ui_icons)
 
 
 ####################################################################################################
-# @load_morphology
+# @load_fonts
 ####################################################################################################
 def load_fonts():
-    """Loads all the fonts to the add-on.
-    """
+    """Loads all the fonts to the add-on."""
 
-    # Get all the font files in the fonts directory
+    # Get all the font files in the fonts directory and load them into the scene
     font_files = nmv.file.get_files_in_directory(
         directory=nmv.consts.Paths.FONTS_DIRECTORY, file_extension='ttf')
-
-    # Load fonts
     for font_file in font_files:
         font = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, font_file)
         bpy.data.fonts.load(font)
 
 
 ####################################################################################################
-# @load_morphology
+# @enable_or_disable_layout
 ####################################################################################################
 def enable_or_disable_layout(layout):
     """Activates or deactivates the layout based on the status of the morphology.
@@ -105,7 +100,6 @@ def load_morphology(panel_object,
 
     :param panel_object:
         An object of a UI panel.
-
     :param context_scene:
         Current scene in the rendering context.
     """
@@ -117,98 +111,61 @@ def load_morphology(panel_object,
     # Alias, to make lines shorter than 100 characters
     options = nmv.interface.ui_options
 
-    # Read the data from a given morphology file either in .h5 or .swc formats
+    # If the input source is a morphology file
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
 
         try:
-            # Pass options from UI to system
-            options.morphology.morphology_file_path = context_scene.NMV_MorphologyFile
+            # In case the user does not select a file
+            if nmv.consts.Strings.SELECT_FILE in options.morphology.morphology_file_path:
 
-            # Ensure that a file has been selected
-            if 'Select File' in context_scene.NMV_MorphologyFile:
+                # Report the error
+                panel_object.report({'ERROR'},
+                                    'Please replace \'%s\' with a existing path to a '
+                                    'valid morphology file' % nmv.consts.Strings.SELECT_FILE)
+
+                # Return None to terminate the loading operation
                 return None
 
-            # If no morphologies are loaded
+            # If no morphologies are loaded, and the user adds a path into the text field
             if current_morphology_path is None:
+
+                # Verify that the path is valid
+                if not os.path.isfile(options.morphology.morphology_file_path):
+
+                    # Report the error
+                    panel_object.report({'ERROR'},
+                                        'The path is not a valid file. Please select a valid '
+                                        'morphology file with an existing path')
+
+                    # Return None to terminate the loading operation
+                    return None
+
+                # Load the morphology from the file
+                morphology_object = nmv.file.readers.read_morphology_from_file(
+                    options=options, panel=panel_object)
+
+                # Terminate the loading operation
+                if morphology_object is None:
+                    return None
 
                 # Update the morphology label
                 options.morphology.label = nmv.file.ops.get_file_name_from_path(
                     context_scene.NMV_MorphologyFile)
 
-                # Load the morphology file
-                # Load the morphology from the file
-                loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                    options=options)
+                # Update the morphology
+                nmv.interface.ui_morphology = morphology_object
 
-                # Verify the loading operation
-                if loading_flag:
+                # Update the current morphology path
+                current_morphology_path = context_scene.NMV_MorphologyFile
 
-                    # Update the morphology
-                    nmv.interface.ui_morphology = morphology_object
+                # Update the coordinate
+                current_coordinate = context_scene.NMV_CenterMorphologyAtOrigin
 
-                    # Update the current morphology path
-                    current_morphology_path = context_scene.NMV_MorphologyFile
-
-                    # Update the coordinate
-                    current_coordinate = context_scene.NMV_CenterMorphologyAtOrigin
-
-                    # New morphology loaded
-                    return 'NEW_MORPHOLOGY_LOADED'
-
-                # Otherwise, report an ERROR
-                else:
-
-                    # Report the issue
-                    panel_object.report({'ERROR'}, 'Invalid Morphology File')
-
-                    # None
-                    return None
-
-            # If there is file that is loaded
-            else:
-
-                # If the same path, and same coordinates, then return ALREADY_LOADED
-                if current_morphology_path == options.morphology.morphology_file_path:
-                    return 'ALREADY_LOADED'
-
-                # Load the new morphology file
-                else:
-
-                    # Update the morphology label
-                    nmv.interface.ui_options.morphology.label = \
-                        nmv.file.ops.get_file_name_from_path(context_scene.NMV_MorphologyFile)
-
-                    # Load the morphology from file
-                    loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                        options=nmv.interface.ui_options)
-
-                    # Verify the loading operation
-                    if loading_flag:
-
-                        # Update the morphology
-                        nmv.interface.ui_morphology = morphology_object
-
-                        # Update the current morphology path
-                        current_morphology_path = context_scene.NMV_MorphologyFile
-
-                        # New morphology loaded
-                        return 'NEW_MORPHOLOGY_LOADED'
-
-                    # Otherwise, report an ERROR
-                    else:
-
-                        # Report the issue
-                        panel_object.report({'ERROR'}, 'Invalid Morphology File')
-
-                        # None
-                        return None
+                return morphology_object
 
         # Invalid morphology file
         except ValueError:
-            # Report the issue
-            panel_object.report({'ERROR'}, 'CANNOT load. Invalid Morphology File')
-
-            # None
+            panel_object.report({'ERROR'}, 'Invalid Morphology File!')
             return None
 
     # Read the data from a specific gid in a given circuit

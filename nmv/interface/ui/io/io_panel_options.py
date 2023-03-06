@@ -20,6 +20,7 @@
 import bpy
 
 # Internal imports
+import nmv.consts
 import nmv.enums
 
 # Input options (what is the input source)
@@ -48,13 +49,13 @@ bpy.types.Scene.NMV_CenterMorphologyAtOrigin = bpy.props.BoolProperty(
 bpy.types.Scene.NMV_MorphologyFile = bpy.props.StringProperty(
     name="Morphology File",
     description="Select a specific morphology to load, visualize or to mesh",
-    default='Select File', maxlen=2048, subtype='FILE_PATH')
+    default=nmv.consts.Strings.SELECT_FILE, maxlen=2048, subtype='FILE_PATH')
 
 # Morphology directory
 bpy.types.Scene.NMV_MorphologyDirectory = bpy.props.StringProperty(
     name="Morphology Directory",
     description="Select a directory to that contains multiple morphology files in it",
-    default="Select Directory", maxlen=2048, subtype='DIR_PATH')
+    default=nmv.consts.Strings.SELECT_DIRECTORY, maxlen=2048, subtype='DIR_PATH')
 
 # A circuit configuration file
 bpy.types.Scene.NMV_CircuitFile = bpy.props.StringProperty(
@@ -62,20 +63,20 @@ bpy.types.Scene.NMV_CircuitFile = bpy.props.StringProperty(
     description="Select a circuit file. The current version of NeuroMorphoVis supports loading "
                 "BBP circuits that can be loaded with BluePy or recent circuits that can be loaded "
                 "with libSonata",
-    default="Select Circuit File", maxlen=2048, subtype='FILE_PATH')
+    default=nmv.consts.Strings.SELECT_CIRCUIT_FILE, maxlen=2048, subtype='FILE_PATH')
 
 # Circuit target
 bpy.types.Scene.NMV_Target = bpy.props.StringProperty(
     name="Target",
     description="Select a specific circuit target that must exist in the circuit and contain "
                 "more than a single GID, or at least a single GID",
-    default="Add Target", maxlen=1024)
+    default=nmv.consts.Strings.ADD_TARGET, maxlen=1024)
 
 # Neuron GID
 bpy.types.Scene.NMV_Gid = bpy.props.StringProperty(
     name="GID",
     description="Select a specific GID in the circuit",
-    default="Add a GID", maxlen=1024)
+    default=nmv.consts.Strings.ADD_GID, maxlen=1024)
 
 # Loading time
 bpy.types.Scene.NMV_MorphologyLoadingTime = bpy.props.FloatProperty(

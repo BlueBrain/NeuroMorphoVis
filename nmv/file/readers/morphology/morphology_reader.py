@@ -112,15 +112,16 @@ def read_morphology_with_morphio(morphology_file_path,
 ####################################################################################################
 # @read_morphology_from_file
 ####################################################################################################
-def read_morphology_from_file(options):
-    """Loads a morphology object from file.
-    This loader mainly supports .asc, .h5 or .swc file formats.
+def read_morphology_from_file(options,
+                              panel=None):
+    """Loads a morphology object from file. This loader supports .asc, .h5 or .swc file formats.
 
     :param options:
         A reference to the system options.
+    :param panel:
+        A reference to the GUI panel used to load the morphology file.
     :return:
-        Morphology object and True (if the morphology is loaded) or False (if the something is
-        wrong).
+        Morphology object if the morphology is loaded or False (if the something is wrong).
     """
 
     # The morphology file path is available from the system options
@@ -132,8 +133,17 @@ def read_morphology_from_file(options):
     # If it is a .h5 file, use the H5Reader to be able to load astrocytes with endfeet
     # TODO: This option is made until further notice, when we are able to load endfeet from circuits
     if '.h5' in morphology_extension.lower():
-        morphology_object = read_h5_morphology_natively(
-            h5_file=morphology_file_path, center_at_origin=options.morphology.center_at_origin)
+        try:
+            morphology_object = read_h5_morphology_natively(
+                h5_file=morphology_file_path, center_at_origin=options.morphology.center_at_origin)
+        except:
+            if panel is not None:
+                panel.report({'ERROR'},
+                             'Cannot load this H5 file, please verify its structure')
+                return None
+
+            nmv.logger.log('Cannot load this H5 file, please verify its structure')
+            return None
 
     # NOTE: We load the SWC files with MorphIO for performance reasons. If this fails, for whatever
     # reason, we drop the native SWCReader
@@ -142,30 +152,47 @@ def read_morphology_from_file(options):
             morphology_object = read_morphology_with_morphio(
                 morphology_file_path=morphology_file_path,
                 center_at_origin=options.morphology.center_at_origin)
-        except ImportError:
+        except:
             try:
                 morphology_object = read_swc_morphology_natively(
                     swc_file=morphology_file_path,
                     center_at_origin=options.morphology.center_at_origin)
-            except FileNotFoundError:
-                return False, None
+            except:
+                if panel is not None:
+                    panel.report(
+                        {'ERROR'}, 'Cannot load this SWC file, please verify its structure')
+                    return None
+
+                nmv.logger.log('Cannot load this SWC file, please verify its structure')
+                return None
 
     # NOTE: We will always use MorphIO to load .acc morphology files
     elif '.asc' in morphology_extension.lower():
-        morphology_object = read_morphology_with_morphio(
-            morphology_file_path, options.morphology.center_at_origin)
+        try:
+            morphology_object = read_morphology_with_morphio(
+                morphology_file_path, options.morphology.center_at_origin)
+        except:
+            if panel is not None:
+                panel.report(
+                    {'ERROR'}, 'Cannot load this ASC file, please verify its structure')
+                return None
 
+            nmv.logger.log('Cannot load this ASC file, please verify its structure')
+            return None
+
+    # Report the error for the users and return None to terminate the loading operation
     else:
-        nmv.logger.log('ERROR: The morphology extension [%s] is NOT SUPPORTED' %
-                       morphology_extension)
-        return False, None
+        if panel is not None:
+            panel.report(
+                {'ERROR'}, 'Cannot load files with the [%s] extension.' % morphology_extension)
+            return None
 
-    # If the morphology object is None, return False
-    if morphology_object is None:
-        return False, None
+        # Report the error for the GUI users and return None to terminate the loading operation
+        nmv.logger.log('Cannot load files with the [%s] extension.' % morphology_extension)
+        return None
 
     # The morphology file was loaded successfully
-    return True, morphology_object
+    return morphology_object
 
 
 ####################################################################################################

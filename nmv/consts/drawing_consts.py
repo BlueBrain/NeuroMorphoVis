@@ -20,8 +20,7 @@
 # @Color
 ####################################################################################################
 class Drawing:
-    """Drawing constants, to draw the particle simulations
-    """
+    """Drawing constants, to draw the particle simulations"""
 
     ################################################################################################
     # @__init__

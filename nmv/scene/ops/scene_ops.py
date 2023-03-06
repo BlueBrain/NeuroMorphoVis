@@ -352,18 +352,13 @@ def clear_scene():
     NOTE: This function targets clearing meshes, curve, objects and materials.
     """
 
-    # Adjust the clipping planes in case of perspective projection
-    # bpy.context.space_data.clip_start = 0.01
-    # bpy.context.space_data.clip_end = 10000
+    for i_object in bpy.data.objects:
+        i_object.hide_set(False)
+        i_object.hide_select = False
+        i_object.hide_viewport = False
 
-    # Select each object in the scene
-    for scene_object in bpy.context.scene.objects:
-        select_object(scene_object)
-
-    # Delete the object
-    nmv.utilities.disable_std_output()
+    bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete()
-    nmv.utilities.enable_std_output()
 
     # Unlink all the objects in all the layers
     for scene in bpy.data.scenes:
