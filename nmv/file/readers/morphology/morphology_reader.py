@@ -23,6 +23,7 @@ import os
 import nmv.bbp
 import nmv.consts
 import nmv.file
+import nmv.interface
 
 
 ####################################################################################################
@@ -216,7 +217,9 @@ def read_morphology_from_circuit(options):
 
     # Get the data from the circuit and update the necessary fields in NMV
     nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list()
+    print(nmv.consts.Circuit.MTYPES)
     nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list()
+    nmv.interface.ui_circuit = circuit
 
     # Load the morphology file into a NMV morphology object using MorphIO
     nmv_morphology_object = nmv.file.read_morphology_with_morphio(

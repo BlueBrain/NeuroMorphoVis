@@ -19,19 +19,25 @@
 import numpy
 
 # Blender imports
-from mathutils import Vector
+from mathutils import Vector, Matrix
 
 # Internal imports
 import nmv.utilities
 from .circuit import Circuit
 
 
+####################################################################################################
+# @BBPCircuit
+####################################################################################################
 class BBPCircuit(Circuit):
+    """A wrapper on top of the circuit loading API of BluePy to facilitate loading circuit-based
+    data from old circuits that are not stored in libSonata format."""
 
     ################################################################################################
     # @__init__
     ################################################################################################
-    def __init__(self, circuit_config):
+    def __init__(self,
+                 circuit_config):
 
         # Propagate to the base
         Circuit.__init__(self, circuit_config=circuit_config)
@@ -107,6 +113,17 @@ class BBPCircuit(Circuit):
         synapses_ids_list = self.get_afferent_synapses_ids(gid=gid)
         synapses_ids_list.extend(self.get_efferent_synapses_ids(gid=gid))
         return synapses_ids_list
+
+    ################################################################################################
+    # @get_synapse_types_ids
+    ################################################################################################
+    def get_synapse_types_ids(self,
+                              synapse_ids_list):
+
+        import bluepy
+        return self.circuit.connectome.synapse_properties(
+            numpy.array(synapse_ids_list),
+            [bluepy.enums.Synapse.TYPE])[bluepy.enums.Synapse.TYPE].values.tolist()
 
     ################################################################################################
     # @get_pre_synaptic_synapse_positions
@@ -209,7 +226,78 @@ class BBPCircuit(Circuit):
         else:
             return False
 
+    ################################################################################################
+    # @get_neuron_translation_vector
+    ################################################################################################
+    def get_neuron_translation_vector(self,
+                                      gid):
 
+        # Translation
+        neuron = self.circuit.cells.get(int(gid))
+        return Vector((neuron['x'], neuron['y'], neuron['z']))
+
+    ################################################################################################
+    # @get_neuron_orientation_matrix
+    ################################################################################################
+    def get_neuron_orientation_matrix(self,
+                                      gid):
+
+        # Orientation
+        neuron = self.circuit.cells.get(int(gid))
+        o = neuron['orientation']
+        o0 = Vector((o[0][0], o[0][1], o[0][2]))
+        o1 = Vector((o[1][0], o[1][1], o[1][2]))
+        o2 = Vector((o[2][0], o[2][1], o[2][2]))
+
+        # Initialize the orientation matrix to I
+        orientation_matrix = Matrix()
+
+        orientation_matrix[0][0] = o0[0]
+        orientation_matrix[0][1] = o0[1]
+        orientation_matrix[0][2] = o0[2]
+        orientation_matrix[0][3] = 1.0
+
+        orientation_matrix[1][0] = o1[0]
+        orientation_matrix[1][1] = o1[1]
+        orientation_matrix[1][2] = o1[2]
+        orientation_matrix[1][3] = 1.0
+
+        orientation_matrix[2][0] = o2[0]
+        orientation_matrix[2][1] = o2[1]
+        orientation_matrix[2][2] = o2[2]
+        orientation_matrix[2][3] = 1.0
+
+        orientation_matrix[3][0] = 0.0
+        orientation_matrix[3][1] = 0.0
+        orientation_matrix[3][2] = 0.0
+        orientation_matrix[3][3] = 1.0
+
+        return orientation_matrix
+
+    ################################################################################################
+    # @get_neuron_transformation_matrix
+    ################################################################################################
+    def get_neuron_transformation_matrix(self,
+                                         gid):
+
+        # Translation
+        translation_vector = self.get_neuron_translation_vector(gid=gid)
+
+        # Get the orientation and update the translation elements in the orientation matrix
+        matrix = self.get_neuron_orientation_matrix(gid=gid)
+        matrix[0][3] = translation_vector[0]
+        matrix[1][3] = translation_vector[1]
+        matrix[2][3] = translation_vector[2]
+
+        return matrix
+
+    ################################################################################################
+    # @get_neuron_inverse_transformation_matrix
+    ################################################################################################
+    def get_neuron_inverse_transformation_matrix(self,
+                                                 gid):
+
+        return self.get_neuron_transformation_matrix(gid=gid).inverted()
 
 
 

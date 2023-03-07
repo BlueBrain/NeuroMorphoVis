@@ -29,7 +29,7 @@ class Skeleton:
         pass
 
     # Maximum branching order
-    MAX_BRANCHING_ORDER = 100000000
+    MAX_BRANCHING_ORDER = 1000
 
     # Default branching order for the axon is different, as it is ignored in many cases
     AXON_DEFAULT_BRANCHING_ORDER = 2
@@ -61,7 +61,7 @@ class Skeleton:
     # The index of the sample index in an SWC file
     SWC_SAMPLE_INDEX_IDX = 0
 
-    # The index of the type of a sample in an SWC file
+    # The index of the type of samples in an SWC file
     SWC_SAMPLE_TYPE_IDX = 1
 
     # The index of the x-coordinates of a sample in an SWC file

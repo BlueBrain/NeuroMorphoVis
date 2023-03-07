@@ -28,7 +28,7 @@ import nmv.utilities
 ####################################################################################################
 # @visualize_synapses_on_neuron
 ####################################################################################################
-def visualize_synapses_on_neuron(circuit_config,
+def visualize_synapses_on_neuron(circuit,
                                  gid,
                                  color_coded_synapses_dict,
                                  synapse_radius,
@@ -42,12 +42,6 @@ def visualize_synapses_on_neuron(circuit_config,
                                  basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
                                  apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
                                  axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER):
-
-    # BBP imports
-    from bluepy import Circuit
-
-    # Read the circuit
-    circuit = Circuit(circuit_config)
 
     # Create the neuron mesh
     if unify_branch_radii:
@@ -148,11 +142,17 @@ def visualize_afferent_synapses_on_post_synaptic_neuron(
         material_type=material_type)
 
 
+
+
+
+
+
+
 ####################################################################################################
 # @visualize_excitatory_inhibitory_synapses_on_neuron
 ####################################################################################################
 def visualize_excitatory_inhibitory_synapses_on_neuron(
-        circuit_config,
+        circuit,
         gid,
         synapse_radius,
         soma_color=nmv.enums.Color.SOMA,
@@ -165,17 +165,13 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
         unify_branch_radii=False,
         unified_branch_radius=1.0):
 
-    # BBP imports
-    from bluepy import Circuit
-
     # Read the circuit and get a color-coded dictionary of the excitatory and inhibitory synapses
-    circuit = Circuit(circuit_config)
     color_coded_synapses_dict = nmv.bbp.get_excitatory_and_inhibitory_synapses_color_coded_dict(
         circuit=circuit, gid=int(gid),
         exc_color=excitatory_synapses_color, inh_color=inhibitory_synapses_color)
 
     return visualize_synapses_on_neuron(
-        circuit_config=circuit_config, gid=gid,
+        circuit=circuit, gid=gid,
         color_coded_synapses_dict=color_coded_synapses_dict, synapse_radius=synapse_radius,
         unify_branch_radii=unify_branch_radii, unified_branch_radius=unified_branch_radius,
         soma_color=soma_color,
@@ -204,20 +200,81 @@ def visualize_synapses_on_pre_synaptic_neuron_based_on_post_etypes():
 
 
 
+####################################################################################################
+# @visualize_afferent_and_efferent_synapses
+####################################################################################################
+def visualize_afferent_synapses_colored_by_pre_synaptic_mtypes(circuit,
+                                                               gid,
+                                                               color_dict,
+                                                               synapse_radius=2.0,
+                                                               synapses_percentage=100):
+
+    synapse_groups = nmv.bbp.create_color_coded_synapse_groups_by_pre_mtype(
+        circuit=circuit, post_gid=gid, mtype_color_dict=color_dict)
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=synapse_radius,
+        synapses_percentage=synapses_percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
 
+####################################################################################################
+# @visualize_afferent_and_efferent_synapses
+####################################################################################################
+def visualize_afferent_and_efferent_synapses(circuit,
+                                             gid,
+                                             synapse_radius=2.0,
+                                             synapses_percentage=100,
+                                             visualize_afferent=True,
+                                             visualize_efferent=True,
+                                             afferent_color='#ff0000',
+                                             efferent_color='#0000ff'):
 
-def visualize_afferent_synapses(nmv_options,
-                                display_neuron=True):
-    pass
+    nmv.logger.info('Loading synapses and creating synapse groups')
+    synapse_groups = list()
+    if visualize_afferent:
+        afferent_group = nmv.bbp.get_afferent_synapse_group(
+            circuit=circuit, gid=gid, color=afferent_color)
+        synapse_groups.append(afferent_group)
+
+    if visualize_efferent:
+        efferent_group = nmv.bbp.get_efferent_synapse_group(
+            circuit=circuit, gid=gid, color=efferent_color)
+        synapse_groups.append(efferent_group)
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=synapse_radius,
+        synapses_percentage=synapses_percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
 
-def visualize_efferent_synapses(nmv_options,
-                                display_neuron=True):
-    pass
+####################################################################################################
+# @visualize_excitatory_and_inhibitory_synapses
+####################################################################################################
+def visualize_excitatory_and_inhibitory_synapses(circuit,
+                                                 gid,
+                                                 synapse_radius=2.0,
+                                                 synapses_percentage=100,
+                                                 visualize_excitatory=True,
+                                                 visualize_inhibitory=True,
+                                                 exc_color='#ff0000',
+                                                 inh_color='#0000ff'):
 
+    #
+    nmv.logger.info('Loading synapses and creating synapse groups')
+    synapse_groups = nmv.bbp.get_excitatory_and_inhibitory_synapse_groups(
+        circuit=circuit, gid=gid,
+        load_excitatory=visualize_excitatory, load_inhibitory=visualize_inhibitory,
+        exc_color=exc_color, inh_color=inh_color)
 
-def visualize_afferent_and_efferent_synapses(nmv_options,
-                                             display_neuron=True):
-    visualize_afferent_synapses(nmv_options=nmv_options, display_neuron=display_neuron)
-    visualize_efferent_synapses(nmv_options=nmv_options, display_neuron=display_neuron)
+    #
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=synapse_radius,
+        synapses_percentage=synapses_percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))

@@ -128,14 +128,14 @@ bpy.types.Scene.NMV_SynapsesColor = bpy.props.FloatVectorProperty(
 # The percentage of the synapses loaded in the scene
 bpy.types.Scene.NMV_SynapsesPercentage = bpy.props.FloatProperty(
     name='Percentage',
-    default=100, min=0, max=100,
-    description='The percentage of the synapses loaded in the scene')
+    default=100.0, min=0, max=100,
+    description='The percentage of the synapses loaded in the scene. Applicable values [0-100]')
 
 # The unified radius of all the synapses
 bpy.types.Scene.NMV_SynapseRadius = bpy.props.FloatProperty(
     name='Synapse Radius',
-    description='The unified radius of all the synapses',
-    default=0, min=0, max=1000000)
+    description='The unified radius of all the synapses. Applicable values [2-5]',
+    default=2.0, min=0, max=5)
 
 
 

@@ -103,6 +103,7 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
         reconstruction_button_row = layout.row()
         reconstruction_button_row.operator('nmv.reconstruct_synaptics')
 
+
 ####################################################################################################
 # @InputOutputDocumentation
 ####################################################################################################
@@ -126,11 +127,131 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
             'FINISHED'
         """
 
-        # Reset the scene
-        nmv.scene.reset_scene()
+        import nmv.interface
+        import nmv.consts
 
         # Clear the scene
         nmv.scene.clear_scene()
+
+        # References
+        circuit = nmv.interface.ui_circuit
+        options = nmv.interface.ui_options
+
+        # Afferent synapses only (on dendrites)
+        if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+            afferent_scheme = options.synaptics.afferent_color_coding
+
+            # Single color
+            if afferent_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+                nmv.bbp.visualize_afferent_and_efferent_synapses(
+                    circuit=circuit, gid=options.morphology.gid,
+                    visualize_afferent=True, visualize_efferent=False,
+                    synapse_radius=options.synaptics.synapses_radius,
+                    synapses_percentage=options.synaptics.percentage,
+                    afferent_color=nmv.utilities.rgb_vector_to_hex(
+                        options.synaptics.afferent_synapses_color),
+                    efferent_color=nmv.utilities.rgb_vector_to_hex(
+                        options.synaptics.efferent_synapses_color))
+
+            # m-type colors
+            elif afferent_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
+
+                # Get the color-coding dictionary from the UI
+                color_set = {}
+                for i in range(len(nmv.consts.Circuit.MTYPES)):
+                    color_set[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
+
+                print(color_set)
+
+                nmv.bbp.visualize_afferent_synapses_colored_by_pre_synaptic_mtypes(
+                    circuit=circuit, gid=options.morphology.gid,
+                    color_dict=color_set,
+                    synapse_radius=options.synaptics.synapses_radius,
+                    synapses_percentage=options.synaptics.percentage)
+
+
+
+
+
+
+                pass
+
+            # e-type colors
+            elif afferent_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
+                pass
+
+
+
+        # Efferent synapses (on axon)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+            efferent_scheme = options.synaptics.efferent_color_coding
+
+            # Single color
+            if efferent_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+                nmv.bbp.visualize_afferent_and_efferent_synapses(
+                    circuit=circuit, gid=options.morphology.gid,
+                    visualize_afferent=False, visualize_efferent=True,
+                    synapse_radius=options.synaptics.synapses_radius,
+                    synapses_percentage=options.synaptics.percentage,
+                    afferent_color=nmv.utilities.rgb_vector_to_hex(
+                        options.synaptics.afferent_synapses_color),
+                    efferent_color=nmv.utilities.rgb_vector_to_hex(
+                        options.synaptics.efferent_synapses_color))
+
+        # Afferent and efferent synapses
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+            nmv.bbp.visualize_afferent_and_efferent_synapses(
+                circuit=circuit, gid=options.morphology.gid,
+                visualize_afferent=True, visualize_efferent=True,
+                synapse_radius=options.synaptics.synapses_radius,
+                synapses_percentage=options.synaptics.percentage,
+                afferent_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.afferent_synapses_color),
+                efferent_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.efferent_synapses_color))
+
+
+        # Excitatory synapses only
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+                circuit=circuit, gid=options.morphology.gid,
+                visualize_excitatory=True, visualize_inhibitory=False,
+                synapse_radius=options.synaptics.synapses_radius,
+                synapses_percentage=options.synaptics.percentage,
+                exc_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.excitatory_synapses_color),
+                inh_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.inhibitory_synapses_color))
+
+        # Inhibitory synapses only
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+                circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
+                visualize_excitatory=False, visualize_inhibitory=True,
+                synapse_radius=options.synaptics.synapses_radius,
+                synapses_percentage=options.synaptics.percentage,
+                exc_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.excitatory_synapses_color),
+                inh_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.inhibitory_synapses_color))
+
+        # Excitatory and inhibitory synapses
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+                circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
+                visualize_excitatory=True, visualize_inhibitory=True,
+                synapse_radius=options.synaptics.synapses_radius,
+                synapses_percentage=options.synaptics.percentage,
+                exc_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.excitatory_synapses_color),
+                inh_color=nmv.utilities.rgb_vector_to_hex(
+                    options.synaptics.inhibitory_synapses_color))
+
+
+        return {'FINISHED'}
+
+
+
 
         import bluepy
 

@@ -34,11 +34,6 @@ import nmv.scene
 import nmv.geometry
 import nmv.interface
 
-# Global variables to notify us if a new morphology has been loaded to the system or not
-current_morphology_label = None
-current_morphology_path = None
-current_coordinate = None
-
 
 ####################################################################################################
 # @load_icons

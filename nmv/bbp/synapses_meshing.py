@@ -175,11 +175,11 @@ def create_color_coded_synapses_particle_system(circuit,
     """
 
     # For every group in the synapse list, create a mesh and color code it.
-    for synapse_group in tqdm(synapse_groups):
+    for synapse_group in synapse_groups:
 
         # The post-synaptic position
-        positions = circuit.connectome.synapse_positions(
-            numpy.array(synapse_group.synapses_ids_list), 'post', 'center').values.tolist()
+        positions = circuit.get_post_synaptic_synapse_positions(
+            synapse_ids_list=synapse_group.synapses_ids_list)
 
         # Update the positions taking into consideration the transformation
         for j in range(len(positions)):

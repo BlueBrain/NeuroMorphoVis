@@ -183,7 +183,7 @@ def draw_afferent_options(layout,
 
     scheme = options.synaptics.afferent_color_coding
     if scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
-        draw_synapses_color_option(
+        draw_afferent_synapses_color_option(
             layout=layout, scene=scene, options=options)
     elif scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
         draw_mtype_color_palette(
@@ -194,7 +194,7 @@ def draw_afferent_options(layout,
 
 
 ####################################################################################################
-# @draw_afferent_options
+# @draw_efferent_options
 ####################################################################################################
 def draw_efferent_options(layout,
                           scene,
@@ -206,7 +206,7 @@ def draw_efferent_options(layout,
 
     scheme = options.synaptics.efferent_color_coding
     if scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
-        draw_synapses_color_option(
+        draw_efferent_synapses_color_option(
             layout=layout, scene=scene, options=options)
     elif scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
         draw_mtype_color_palette(

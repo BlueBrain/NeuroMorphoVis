@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
     # Creating the synapse group from the mesh
     nmv.logger.info('Loading synapses from the circuit ')
-    synapse_groups = nmv.bbp.get_exc_and_inhibitory_synapse_groups_from_circuit(
+    synapse_groups = nmv.bbp.get_excitatory_and_inhibitory_synapse_groups(
         circuit=circuit, gid=int(args.gid),
         exc_color=args.exc_synapses_color, inh_color=args.inh_synapses_color)
 

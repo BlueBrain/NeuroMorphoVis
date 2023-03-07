@@ -49,3 +49,5 @@ ui_reconstructed_skeleton = list()
 # joining all the mesh objects together
 ui_reconstructed_mesh = list()
 
+ui_circuit = None
+
