@@ -48,6 +48,9 @@ def draw_input_options(panel,
         circuit_file_row.prop(scene, 'NMV_CircuitFile')
         gid_row = panel.layout.row()
         gid_row.prop(scene, 'NMV_Gid')
+        # Pass options from UI to system
+        options.morphology.blue_config = scene.NMV_CircuitFile
+        options.morphology.gid = scene.NMV_Gid
     else:
         # Otherwise, report an invalid input source errors
         panel.report({'ERROR'}, 'Invalid Input Source')
@@ -56,6 +59,17 @@ def draw_input_options(panel,
     centering_check_box = panel.layout.row()
     centering_check_box.prop(scene, 'NMV_CenterMorphologyAtOrigin')
     options.morphology.center_at_origin = scene.NMV_CenterMorphologyAtOrigin
+
+
+####################################################################################################
+# @draw_io_documentation_button
+####################################################################################################
+def draw_io_documentation_button(panel):
+
+    # Draw the documentation button
+    documentation_button_row = panel.layout.column()
+    documentation_button_row.operator('nmv.documentation_io', icon='URL')
+    documentation_button_row.separator()
 
 
 ####################################################################################################

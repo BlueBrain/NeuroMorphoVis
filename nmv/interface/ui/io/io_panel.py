@@ -25,7 +25,6 @@ import bpy
 # Internal imports
 import nmv.consts
 import nmv.enums
-import nmv.interface
 import nmv.scene
 import nmv.utilities
 from .io_panel_options import *
@@ -59,9 +58,7 @@ class NMV_IOPanel(bpy.types.Panel):
         """
 
         # Draw the documentation button
-        documentation_button_row = self.layout.column()
-        documentation_button_row.operator('nmv.documentation_io', icon='URL')
-        documentation_button_row.separator()
+        draw_io_documentation_button(panel=self)
 
         # Draw the input options
         draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
@@ -96,51 +93,40 @@ class NMV_LoadMorphology(bpy.types.Operator):
         is executed in the background.
 
         :param context:
-            Blender context
+            Blender context.
         :return:
              {'RUNNING_MODAL'}
         """
 
-        # Clear the scene
-        import nmv.scene
-        nmv.scene.clear_scene()
-
-        # By default, set the background to transparent
-        nmv.scene.set_transparent_background()
-
-        # Load the images
-        logo_tex = bpy.data.textures.new("nmv-logo", "IMAGE")
-        logo_tex.image = bpy.data.images.load(
-            "%s/%s" % (nmv.consts.Paths.IMAGES_PATH, 'nmv-logo.png'))
-        logo_tex.extension = 'CLIP'
-
-        # Initialize all the operations that needs to run once and for all
         import nmv.interface
-        if not nmv.interface.ui.Globals.nmv_initialized:
-            nmv.interface.load_fonts()
+        import nmv.builders
 
-        # Load the morphology file
+        # Load the morphology
         start_time = time.time()
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+        loading_result = nmv.interface.ui.load_morphology(
+            panel=self, scene=context.scene)
         loading_time = time.time()
         context.scene.NMV_MorphologyLoadingTime = loading_time - start_time
 
-        # If the result is None, report the issue
+        # If the loading result is None, terminate the loading process
         if loading_result is None:
-            self.report({'ERROR'}, 'Please select a morphology file')
             return {'FINISHED'}
 
+        # If the morphology is successfully loaded
         nmv.logger.header('Loading Morphology')
         nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
         nmv.logger.info('Morphology loaded in [%f] seconds' %
                         context.scene.NMV_MorphologyLoadingTime)
 
-        # Clear the scene
-        import nmv.scene
+        # Get ready to draw the morphology to the scene, therefore clear the scene
         nmv.scene.clear_scene()
 
-        # Create a builder object to build the morphology skeleton
-        import nmv.builders
+        # By default, set the background to transparent
+        nmv.scene.set_transparent_background()
+
+        # Initialize all the operations that needs to run once and for all
+        if not nmv.interface.ui.Globals.nmv_initialized:
+            nmv.interface.load_fonts()
 
         # Always use meta builder to reconstruct the initial soma
         options = copy.deepcopy(nmv.interface.ui_options)
@@ -166,7 +152,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
         nmv.logger.info('Morphology drawn in [%f] seconds' %
                         context.scene.NMV_MorphologyDrawingTime)
 
-        # Switch to the top view
+        # Switch to the top view, to make the user realize that this is a new morphology
         nmv.scene.view_axis()
 
         # View all the objects in the scene
@@ -178,49 +164,14 @@ class NMV_LoadMorphology(bpy.types.Operator):
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
-        # self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
         wm.modal_handler_add(self)
 
-        #
+        # Switch the initialization flag to be able to use the add-on in the rest of the panel
         if not nmv.interface.ui.Globals.nmv_initialized:
             nmv.interface.ui.Globals.nmv_initialized = True
 
-
-
-
-
-        from mathutils import Vector
-        from random import uniform
-
-        # UI color elements for the color map
-        if nmv.consts.Circuit.MTYPES is not None:
-            for i in range(len(nmv.consts.Circuit.MTYPES)):
-                r = uniform(0, 1)
-                g = uniform(0, 1)
-                b = uniform(0, 1)
-
-                setattr(bpy.types.Scene, 'NMV_MtypeColor_%d' % i,
-                        bpy.props.FloatVectorProperty(
-                            name='%s' % nmv.consts.Circuit.MTYPES[i],
-                            subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
-                            description=''))
-
-        # UI color elements for the color map
-        if nmv.consts.Circuit.ETYPES is not None:
-            for i in range(len(nmv.consts.Circuit.ETYPES)):
-                r = uniform(0, 1)
-                g = uniform(0, 1)
-                b = uniform(0, 1)
-
-                setattr(bpy.types.Scene, 'NMV_EtypeColor_%d' % i,
-                        bpy.props.FloatVectorProperty(
-                            name='%s' % nmv.consts.Circuit.ETYPES[i],
-                            subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
-                            description=''))
-
-
-
-
+        # Initialize other relevant information that could be required later
+        nmv.interface.initialize_relevant_parameters(scene=context.scene)
 
         # Modal
         return {'RUNNING_MODAL'}

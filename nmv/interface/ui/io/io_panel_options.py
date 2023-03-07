@@ -42,7 +42,9 @@ bpy.types.Scene.NMV_InputSource = bpy.props.EnumProperty(
 # Center the loaded morphology at the origin
 bpy.types.Scene.NMV_CenterMorphologyAtOrigin = bpy.props.BoolProperty(
     name='Center At Origin',
-    description='Center the loaded morphology at the origin irrespective to its actual center',
+    description='Center the loaded morphology at the origin irrespective to its actual center. '
+                'If the soma is already located at the origin, then checking this checkbox is '
+                'irrelevant',
     default=True)
 
 # Morphology file

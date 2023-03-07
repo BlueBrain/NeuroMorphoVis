@@ -138,8 +138,7 @@ def read_morphology_from_file(options,
                 h5_file=morphology_file_path, center_at_origin=options.morphology.center_at_origin)
         except:
             if panel is not None:
-                panel.report({'ERROR'},
-                             'Cannot load this H5 file, please verify its structure')
+                panel.report({'ERROR'}, 'Cannot load this H5 file, please verify its structure')
                 return None
 
             nmv.logger.log('Cannot load this H5 file, please verify its structure')
@@ -159,8 +158,7 @@ def read_morphology_from_file(options,
                     center_at_origin=options.morphology.center_at_origin)
             except:
                 if panel is not None:
-                    panel.report(
-                        {'ERROR'}, 'Cannot load this SWC file, please verify its structure')
+                    panel.report({'ERROR'}, 'Cannot load this SWC file, please verify its structure')
                     return None
 
                 nmv.logger.log('Cannot load this SWC file, please verify its structure')
@@ -173,8 +171,7 @@ def read_morphology_from_file(options,
                 morphology_file_path, options.morphology.center_at_origin)
         except:
             if panel is not None:
-                panel.report(
-                    {'ERROR'}, 'Cannot load this ASC file, please verify its structure')
+                panel.report({'ERROR'}, 'Cannot load this ASC file, please verify its structure')
                 return None
 
             nmv.logger.log('Cannot load this ASC file, please verify its structure')
