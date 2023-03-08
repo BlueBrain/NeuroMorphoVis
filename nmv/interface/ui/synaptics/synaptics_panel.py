@@ -17,8 +17,6 @@
 
 # System imports
 import sys
-import os
-import subprocess
 
 # Blender imports
 import bpy
@@ -73,38 +71,67 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
 
         # Display the options accordingly, based on the use case selection
         if context.scene.NMV_SynapticsUseCase != nmv.enums.Synaptics.UseCase.NOT_SELECTED:
-            if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-                draw_afferent_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-                draw_efferent_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
-                draw_afferent_and_efferent_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
-                draw_excitatory_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
-                draw_inhibitory_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
-                draw_excitatory_and_inhibitory_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
-                draw_pre_synaptic_pathway_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
-                draw_post_synaptic_pathway_options(layout, context.scene, options)
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
-                draw_specific_color_coded_set_options(layout, context.scene, options)
-            else:
-                pass
-
-            # Draw the common options
-            draw_common_options_for_all_use_cases(
-                layout=layout, scene=context.scene, options=options)
-
-            draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
-
-            # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
 
             # Reconstruction options
             synapses_options_row = layout.row()
             synapses_options_row.label(text='Synapses Options:', icon='OUTLINER_OB_EMPTY')
+
+            if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+                draw_afferent_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+                draw_efferent_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+                draw_afferent_and_efferent_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+                draw_excitatory_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+                draw_inhibitory_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+                draw_excitatory_and_inhibitory_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
+                draw_specific_color_coded_set_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+
+                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+                draw_pre_synaptic_pathway_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+
+            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+                draw_post_synaptic_pathway_options(layout, context.scene, options)
+                draw_common_options_for_all_use_cases(layout, context.scene, options)
+
+
+            else:
+                pass
+
+
+
+
+
+            # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
+
+
 
             layout.row().separator()
             reconstruction_button_row = layout.row()
@@ -148,10 +175,14 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
             nmv.bbp.visualize_afferent_synapses(
                 circuit=circuit, gid=options.morphology.gid, options=options)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Efferent synapses (on axon)
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
             nmv.bbp.visualize_efferent_synapses(
+                circuit=circuit, gid=options.morphology.gid, options=options)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
                 circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Afferent and efferent synapses
@@ -159,24 +190,32 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
             nmv.bbp.visualize_afferent_and_efferent_synapses(
                 circuit=circuit, gid=options.morphology.gid, options=options,
                 visualize_afferent=True, visualize_efferent=True)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Excitatory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
                 circuit=circuit, gid=options.morphology.gid, options=options,
                 visualize_excitatory=True, visualize_inhibitory=False)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Inhibitory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
                 circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
                 visualize_excitatory=False, visualize_inhibitory=True, options=options)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Excitatory and inhibitory synapses
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
                 circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
                 visualize_excitatory=True, visualize_inhibitory=True, options=options)
+            nmv.bbp.visualize_circuit_neuron_for_synaptics(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # TODO: handle errors if no pre-synaptic or post-synaptic cells exist
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
@@ -192,12 +231,6 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
                 pre_gid=nmv.interface.ui_options.morphology.gid,
                 post_gid=options.synaptics.post_synaptic_gid,
                 options=options)
-
-
-        # Display the neuron
-        nmv.bbp.visualize_circuit_neuron_for_synaptics(
-            circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
-            options=options)
 
         return {'FINISHED'}
 

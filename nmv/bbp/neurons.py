@@ -39,7 +39,6 @@ def create_neuron_mesh_in_circuit(
         axons_color=nmv.enums.Color.AXONS,
         material_type=nmv.enums.Shader.LAMBERT_WARD):
 
-
     # Get the path of the morphology from the circuit
     morphology_path = circuit.get_neuron_morphology_path(gid=int(gid))
 
