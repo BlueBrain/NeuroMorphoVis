@@ -50,6 +50,14 @@ bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
             'Excitatory and Inhibitory Synapses',
             'Visualize the inhibitory synapses combined'),
 
+           (nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC,
+            'Shared Synapses with a Pre-synaptic Neuron',
+            'Visualize the shared synapses with a pre-synaptic neuron'),
+
+           (nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC,
+            'Shared Synapses with a Post-synaptic Neuron',
+            'Visualize the shared synapses with a post-synaptic neuron'),
+
            (nmv.enums.Synaptics.UseCase.NOT_SELECTED,
             'Please select a Use Case',
             'Select a specific use case or configuration to visualize a specific set of synapse'),
@@ -136,6 +144,18 @@ bpy.types.Scene.NMV_SynapseRadius = bpy.props.FloatProperty(
     name='Synapse Radius',
     description='The unified radius of all the synapses. Applicable values [2-5]',
     default=2.0, min=0, max=5)
+
+# Pre-synaptic neuron GID, for visualizing shared synapses
+bpy.types.Scene.NMV_PreSynapticGID = bpy.props.StringProperty(
+    name='Pre-Synaptic GID',
+    description="The GID of a pre-synaptic cell that shares synapses with this cell.",
+    default=nmv.consts.Strings.PRE_GID, maxlen=1024)
+
+# Post-synaptic neuron GID, for visualizing shared synapses
+bpy.types.Scene.NMV_PostSynapticGID = bpy.props.StringProperty(
+    name='Post-Synaptic GID',
+    description="The GID of a post-synaptic cell that shares synapses with this cell.",
+    default=nmv.consts.Strings.POST_GID, maxlen=1024)
 
 
 

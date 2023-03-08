@@ -182,41 +182,109 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
     )
 
 
-
-def visualize_synapses_on_post_synaptic_neuron_based_on_pre_mtypes():
-    pass
-
-
-def visualize_synapses_on_pre_synaptic_neuron_based_on_post_mtypes():
-    pass
-
-
-def visualize_synapses_on_post_synaptic_neuron_based_on_pre_etypes():
-    pass
-
-
-def visualize_synapses_on_pre_synaptic_neuron_based_on_post_etypes():
-    pass
-
-
-
 ####################################################################################################
-# @visualize_afferent_and_efferent_synapses
+# @visualize_afferent_synapses
 ####################################################################################################
-def visualize_afferent_synapses_colored_by_pre_synaptic_mtypes(circuit,
-                                                               gid,
-                                                               color_dict,
-                                                               synapse_radius=2.0,
-                                                               synapses_percentage=100):
+def visualize_afferent_synapses(circuit,
+                                gid,
+                                options):
 
-    synapse_groups = nmv.bbp.create_color_coded_synapse_groups_by_pre_mtype(
-        circuit=circuit, post_gid=gid, mtype_color_dict=color_dict)
+    # Create the synapse groups
+    synapse_groups = list()
+
+    # Select what to visualize based on the selected color coding scheme
+    color_coding_scheme = options.synaptics.afferent_color_coding
+    if color_coding_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+
+        # Create the afferent synapse group
+        afferent_group = nmv.bbp.get_afferent_synapse_group(
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.afferent_synapses_color))
+        synapse_groups.append(afferent_group)
+
+    elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.MTYPES)):
+            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
+
+        # Create the afferent synapse groups
+        synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_mtypes(
+            circuit=circuit, gid=gid, mtype_color_dict=color_dict)
+
+    elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.ETYPES)):
+            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.shading.etypes_colors[i]
+
+        # Create the afferent synapse group
+        synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_etypes(
+            circuit=circuit, gid=gid, etype_color_dict=color_dict)
+
+    else:
+        pass
 
     nmv.logger.info('Adding synapses to the scene')
     nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
-        synapse_radius=synapse_radius,
-        synapses_percentage=synapses_percentage,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+
+
+####################################################################################################
+# @visualize_efferent_synapses
+####################################################################################################
+def visualize_efferent_synapses(circuit,
+                                gid,
+                                options):
+
+    # Create the synapse groups
+    synapse_groups = list()
+
+    # Select what to visualize based on the selected color coding scheme
+    efferent_scheme = options.synaptics.efferent_color_coding
+    if efferent_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+
+        # Create the afferent synapse group
+        efferent_group = nmv.bbp.get_efferent_synapse_group(
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.efferent_synapses_color))
+        synapse_groups.append(efferent_group)
+
+    elif efferent_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.MTYPES)):
+            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
+
+        # Create the efferent synapse groups
+        synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_mtypes(
+            circuit=circuit, gid=gid, mtype_color_dict=color_dict)
+
+    elif efferent_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.ETYPES)):
+            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.shading.etypes_colors[i]
+
+        # Create the efferent synapse groups
+        synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_etypes(
+            circuit=circuit, gid=gid, etype_color_dict=color_dict)
+
+    else:
+        pass
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
 
@@ -225,30 +293,29 @@ def visualize_afferent_synapses_colored_by_pre_synaptic_mtypes(circuit,
 ####################################################################################################
 def visualize_afferent_and_efferent_synapses(circuit,
                                              gid,
-                                             synapse_radius=2.0,
-                                             synapses_percentage=100,
+                                             options,
                                              visualize_afferent=True,
-                                             visualize_efferent=True,
-                                             afferent_color='#ff0000',
-                                             efferent_color='#0000ff'):
+                                             visualize_efferent=True):
 
     nmv.logger.info('Loading synapses and creating synapse groups')
     synapse_groups = list()
     if visualize_afferent:
         afferent_group = nmv.bbp.get_afferent_synapse_group(
-            circuit=circuit, gid=gid, color=afferent_color)
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.afferent_synapses_color))
         synapse_groups.append(afferent_group)
 
     if visualize_efferent:
         efferent_group = nmv.bbp.get_efferent_synapse_group(
-            circuit=circuit, gid=gid, color=efferent_color)
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.efferent_synapses_color))
         synapse_groups.append(efferent_group)
 
     nmv.logger.info('Adding synapses to the scene')
     nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
-        synapse_radius=synapse_radius,
-        synapses_percentage=synapses_percentage,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
 
@@ -257,24 +324,53 @@ def visualize_afferent_and_efferent_synapses(circuit,
 ####################################################################################################
 def visualize_excitatory_and_inhibitory_synapses(circuit,
                                                  gid,
-                                                 synapse_radius=2.0,
-                                                 synapses_percentage=100,
+                                                 options,
                                                  visualize_excitatory=True,
-                                                 visualize_inhibitory=True,
-                                                 exc_color='#ff0000',
-                                                 inh_color='#0000ff'):
+                                                 visualize_inhibitory=True):
 
     #
     nmv.logger.info('Loading synapses and creating synapse groups')
-    synapse_groups = nmv.bbp.get_excitatory_and_inhibitory_synapse_groups(
-        circuit=circuit, gid=gid,
-        load_excitatory=visualize_excitatory, load_inhibitory=visualize_inhibitory,
-        exc_color=exc_color, inh_color=inh_color)
+    synapse_groups = list()
+    if visualize_excitatory:
+        excitatory_group = nmv.bbp.get_excitatory_synapse_group(
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.excitatory_synapses_color))
+        synapse_groups.append(excitatory_group)
+
+    if visualize_inhibitory:
+        inhibitory_group = nmv.bbp.get_inhibitory_synapse_group(
+            circuit=circuit, gid=gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.inhibitory_synapses_color))
+        synapse_groups.append(inhibitory_group)
 
     #
     nmv.logger.info('Adding synapses to the scene')
     nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
-        synapse_radius=synapse_radius,
-        synapses_percentage=synapses_percentage,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+
+
+####################################################################################################
+# @visualize_excitatory_and_inhibitory_synapses
+####################################################################################################
+def visualize_shared_synapses_between_two_neurons(circuit,
+                                                  pre_gid,
+                                                  post_gid,
+                                                  options):
+
+    # Create the shared group
+    synapse_groups = list()
+    synapse_groups.append(
+        nmv.bbp.get_shared_synapses_group_between_two_neurons(
+            circuit=circuit, pre_gid=pre_gid, post_gid=post_gid,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.synapses_color)))
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=pre_gid))
+        # TODO: Fix the transformation for the pre or the post

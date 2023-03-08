@@ -47,8 +47,8 @@ class SynapticsOptions:
         self.inhibitory_synapses_color = nmv.enums.Color.INHIBITORY_SYNAPSES
 
         # Color coding schemes of afferent and efferent synapses
-        self.afferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
-        self.efferent_synapses_color_scheme = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
+        self.afferent_color_coding = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
+        self.efferent_color_coding = nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR
 
         # Afferent and efferent colors
         self.afferent_synapses_color = nmv.enums.Color.AFFERENT_SYNAPSES
@@ -59,6 +59,10 @@ class SynapticsOptions:
 
         # The percentage of the synapses loaded on the neuron
         self.percentage = nmv.consts.Synaptics.SYNAPSES_PERCENTAGE
+
+        # The GIDs of pre- and post-synaptic neurons that are only used to visualize shared synapses
+        self.pre_synaptic_gid = None
+        self.post_synaptic_gid = None
 
 
 

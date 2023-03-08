@@ -352,7 +352,7 @@ def compute_min_section_radius(section):
     """
 
     # Average section radius
-    min_section_radius =1 0000000
+    min_section_radius =10000000
 
     # Sum the radii of all the sample
     for sample in section.samples:

@@ -28,6 +28,7 @@ import nmv.mesh
 import nmv.enums
 import nmv.shading
 import nmv.utilities
+import nmv.consts
 
 
 def is_axo_somatic_synapse(circuit, synapse_id):
@@ -293,6 +294,7 @@ def get_post_synaptic_etypes(circuit,
 
 
 
+
 ####################################################################################################
 # @get_pre_mtype_synapses_mtype_coded_dict
 ####################################################################################################
@@ -452,136 +454,10 @@ def get_synapse_groups_from_color_coded_json_file(synapse_json_file):
 
 
 
-####################################################################################################
-# @create_color_coded_synapse_groups_by_mtype
-####################################################################################################
-def create_color_coded_synapse_groups_by_mtype(circuit,
-                                               synapses_ids,
-                                               synapses_mtypes,
-                                               mtype_color_dict=None):
-
-    # Initially, get a dictionary where the lists corresponding to each mtype are empty
-    mtypes_set = circuit.get_mtype_strings_set()
-
-    # Create a dictionary, initialized with empty lists
-    mtype_dict = {}
-    for key in mtypes_set:
-        mtype_dict[key] = list()
-
-    # Iterate over the afferent_synapses_ids and afferent_synapses_mtypes list
-    for synapse_id, synapse_mtype in zip(synapses_ids, synapses_mtypes):
-        #if nmv.bbp.is_axo_somatic_synapse(circuit=circuit, synapse_id=synapse_id):
-        #    continue
-        mtype_dict[synapse_mtype].append(synapse_id)
-
-    # Create the synapses groups
-    synapse_groups = list()
-    for mtype in mtype_dict:
-
-        # Get a reference to the list of the synapses IDs and ensure that it is not empty
-        synapses_ids_list = mtype_dict[mtype]
-        if len(synapses_ids_list) > 0:
-            '''
-            # If the color dictionary is empty, then use random colors
-            if mtype_color_dict is None:
-                color = Vector((random.uniform(0.0, 1.0),
-                                random.uniform(0.0, 1.0),
-                                random.uniform(0.0, 1.0)))
-            else:
-                
-                color = nmv.utilities.confirm_rgb_color_from_color_string(
-                    color_string=mtype_color_dict[mtype])
-            '''
-            color = mtype_color_dict[mtype]
-            # Create the group and add it to the list
-            synapse_groups.append(
-                nmv.bbp.SynapseGroup(name=mtype, synapses_ids_list=synapses_ids_list, color=color))
-
-    # Return a reference to the synapse groups
-    return synapse_groups
 
 
-####################################################################################################
-# @create_color_coded_synapse_groups_by_pre_mtype
-####################################################################################################
-def create_color_coded_synapse_groups_by_pre_mtype(circuit,
-                                                   post_gid,
-                                                   mtype_color_dict=None):
-    # Get the afferent synapses of the post_gid
-    afferent_synapses_ids = circuit.get_afferent_synapses_ids(gid=post_gid)
-
-    # Get the mtypes of the pre-synaptic cells
-    afferent_synapses_mtypes = circuit.get_pre_synaptic_mtypes(
-        afferent_synapses_ids_list=afferent_synapses_ids)
-
-    return create_color_coded_synapse_groups_by_mtype(circuit=circuit,
-                                                      synapses_ids=afferent_synapses_ids,
-                                                      synapses_mtypes=afferent_synapses_mtypes,
-                                                      mtype_color_dict=mtype_color_dict)
 
 
-####################################################################################################
-# @create_color_coded_synapse_groups_by_post_mtype
-####################################################################################################
-def create_color_coded_synapse_groups_by_post_mtype(circuit,
-                                                    pre_gid,
-                                                    mtype_color_dict=None):
-    # Get the afferent synapses of the post_gid
-    efferent_synapses_ids = get_efferent_synapses_ids(circuit=circuit, gid=pre_gid)
-
-    # Get the mtypes of the pre-synaptic cells
-    efferent_synapses_mtypes = get_post_synaptic_mtypes(
-        circuit=circuit, efferent_synapses_ids_list=efferent_synapses_ids)
-
-    return create_color_coded_synapse_groups_by_mtype(circuit=circuit,
-                                                      synapses_ids=efferent_synapses_ids,
-                                                      synapses_mtypes=efferent_synapses_mtypes,
-                                                      mtype_color_dict=mtype_color_dict)
-
-
-####################################################################################################
-# @create_color_coded_synapse_groups_by_etype
-####################################################################################################
-def create_color_coded_synapse_groups_by_etype(circuit,
-                                               synapses_ids,
-                                               synapses_mtypes,
-                                               mtype_color_dict=None):
-
-    # Initially, get a dictionary where the lists corresponding to each mtype are empty
-    etypes_set = nmv.bbp.get_circuit_etype_strings_set(circuit=circuit)
-
-    # Create a dictionary, initialized with empty lists
-    etype_dict = {}
-    for key in etypes_set:
-        etype_dict[key] = list()
-
-    # Iterate over the afferent_synapses_ids and afferent_synapses_mtypes list
-    for synapse_id, synapse_mtype in zip(synapses_ids, synapses_mtypes):
-        etype_dict[synapse_mtype].append(synapse_id)
-
-    # Create the synapses groups
-    synapse_groups = list()
-    for etype in etype_dict:
-
-        # Get a reference to the list of the synapses IDs and ensure that it is not empty
-        synapses_ids_list = etype_dict[etype]
-        if len(synapses_ids_list) > 0:
-
-            # If the color dictionary is empty, then use random colors
-            if mtype_color_dict is None:
-                color = Vector((random.uniform(0.0, 1.0),
-                                random.uniform(0.0, 1.0),
-                                random.uniform(0.0, 1.0)))
-            else:
-                color = nmv.utilities.confirm_rgb_color_from_color_string(
-                    color_string=mtype_color_dict[etype])
-
-            # Create the group and add it to the list
-            synapse_groups.append(
-                nmv.bbp.SynapseGroup(name=etype, synapses_ids_list=synapses_ids_list, color=color))
-
-    # Return a reference to the synapse groups
-    return synapse_groups
 
 
 ####################################################################################################
@@ -589,18 +465,18 @@ def create_color_coded_synapse_groups_by_etype(circuit,
 ####################################################################################################
 def create_color_coded_synapse_groups_by_pre_etype(circuit,
                                                    post_gid,
-                                                   mtype_color_dict=None):
+                                                   etype_color_dict=None):
     # Get the afferent synapses of the post_gid
-    afferent_synapses_ids = get_afferent_synapses_ids(circuit=circuit, gid=post_gid)
+    afferent_synapses_ids = circuit.get_afferent_synapses_ids(gid=post_gid)
 
     # Get the mtypes of the pre-synaptic cells
-    afferent_synapses_etypes = get_pre_synaptic_etypes(
-        circuit=circuit, afferent_synapses_ids_list=afferent_synapses_ids)
+    afferent_synapses_etypes = circuit.get_pre_synaptic_etypes(
+        afferent_synapses_ids_list=afferent_synapses_ids)
 
     return create_color_coded_synapse_groups_by_etype(circuit=circuit,
                                                       synapses_ids=afferent_synapses_ids,
                                                       synapses_mtypes=afferent_synapses_etypes,
-                                                      mtype_color_dict=mtype_color_dict)
+                                                      etype_color_dict=etype_color_dict)
 
 
 ####################################################################################################
@@ -619,7 +495,7 @@ def create_color_coded_synapse_groups_by_post_etype(circuit,
     return create_color_coded_synapse_groups_by_etype(circuit=circuit,
                                                       synapses_ids=efferent_synapses_ids,
                                                       synapses_mtypes=efferent_synapses_etypes,
-                                                      mtype_color_dict=mtype_color_dict)
+                                                      etype_color_dict=etype_color_dict)
 
 
 def get_spines(circuit, post_gid):
@@ -769,115 +645,128 @@ def create_shared_synapse_group(circuit,
                                  synapses_ids_list=synapses_ids_list, color=(1.0, 0.0, 0.0))]
 
 
+####################################################################################################
+# @get_excitatory_synapse_group
+####################################################################################################
+def get_excitatory_synapse_group(circuit,
+                                 gid,
+                                 color):
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return nmv.bbp.SynapseGroup(
+        name='Excitatory Synapses',
+        color=nmv.utilities.confirm_rgb_color_from_color_string(color),
+        synapses_ids_list=circuit.get_excitatory_synapses_ids(gid=gid))
 
 
 ####################################################################################################
-# @get_excitatory_and_inhibitory_synapses_color_coded_dict
+# @get_inhibitory_synapse_group
 ####################################################################################################
-def get_excitatory_and_inhibitory_synapses_color_coded_dict(circuit,
-                                                            gid,
-                                                            load_excitatory=True,
-                                                            load_inhibitory=True,
-                                                            exc_color='#ff0000',
-                                                            inh_color='#0000ff'):
-    """Returns a color-coded dictionary containing the inhibitory and excitatory synapses or either
-    any of them.
+def get_inhibitory_synapse_group(circuit,
+                                 gid,
+                                 color):
 
-    :param circuit:
-        BBP circuit.
-    :param gid:
-        Neuron GID for which the synapses will be returned. Note that the synapse IDs are unique.
-    :param load_excitatory:
-        If this flag is set, the excitatory synapses will be loaded.
-    :param load_inhibitory:
-        If this flag is set, the inhibitory synapses will be loaded.
-    :param exc_color:
-        A Vector containing the RGB color of the excitatory synapses.
-    :param inh_color:
-        A vector containing the RGB color of the inhibitory synapses.
-    :return:
-        A color-coded dictionary containing the inhibitory and excitatory synapses.
-    """
+    return nmv.bbp.SynapseGroup(
+        name='Inhibitory Synapses',
+        color=nmv.utilities.confirm_rgb_color_from_color_string(color),
+        synapses_ids_list=circuit.get_inhibitory_synapses_ids(gid=gid))
 
-    # Get the IDs of all the synapses on the neuron
-    synapse_ids_list = circuit.get_all_synapses_ids(gid=gid)
 
-    # Get the IDs of the types of the synapses
-    synapse_types_ids = circuit.get_synapse_types_ids(synapse_ids_list=synapse_ids_list)
+####################################################################################################
+# @get_shared_synapses_group_between_two_neurons
+####################################################################################################
+def get_shared_synapses_group_between_two_neurons(circuit,
+                                                  pre_gid,
+                                                  post_gid,
+                                                  color):
 
-    # A list that will collect the synapses
-    excitatory_synapses = list()
-    inhibitory_synapses = list()
+    # Get the shared synapses IDs
+    shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(
+        pre_gid=pre_gid, post_gid=post_gid)
 
-    for i, synapse_type_id in enumerate(synapse_types_ids):
-        if circuit.is_synapse_inhibitory(synapse_type_id):
-            inhibitory_synapses.append(synapse_ids_list[i])
-        else:
-            excitatory_synapses.append(synapse_ids_list[i])
+    return nmv.bbp.SynapseGroup(
+        name='Shared Synapses [%s -> %s]' % (str(pre_gid), str(post_gid)),
+        color=nmv.utilities.confirm_rgb_color_from_color_string(color),
+        synapses_ids_list=shared_synapses_ids)
 
-    # Construct and return the dict of the synapses
-    if load_excitatory and load_inhibitory:
-        synapses_color_coded_dict = {
-            'Excitatory Synapses': {exc_color: excitatory_synapses},
-            'Inhibitory Synapses': {inh_color: inhibitory_synapses}}
-        return synapses_color_coded_dict
-    elif load_excitatory and not load_inhibitory:
-        synapses_color_coded_dict = {
-            'Excitatory Synapses': {exc_color: excitatory_synapses}}
-        return synapses_color_coded_dict
-    elif not load_excitatory and load_inhibitory:
-        synapses_color_coded_dict = {
-            'Inhibitory Synapses': {inh_color: inhibitory_synapses}}
-        return synapses_color_coded_dict
 
-    return None
+####################################################################################################
+# @get_afferent_synapse_groups_color_coded_by_pre_mtypes
+####################################################################################################
+def get_afferent_synapse_groups_color_coded_by_pre_mtypes(circuit,
+                                                          gid,
+                                                          mtype_color_dict):
+
+    # Get the afferent synapses of the given GID
+    afferent_synapses_ids = circuit.get_afferent_synapses_ids(gid=gid)
+
+    # Get the mtypes of the pre-synaptic cells
+    afferent_synapses_mtypes = circuit.get_pre_synaptic_mtypes(
+        afferent_synapses_ids_list=afferent_synapses_ids)
+
+    # Create and return the color coded synapses
+    return nmv.bbp.create_color_coded_synapse_groups_by_mtype(
+        circuit=circuit, synapses_ids=afferent_synapses_ids,
+        synapses_mtypes=afferent_synapses_mtypes, mtype_color_dict=mtype_color_dict)
+
+
+####################################################################################################
+# @get_afferent_synapse_groups_color_coded_by_pre_etypes
+####################################################################################################
+def get_afferent_synapse_groups_color_coded_by_pre_etypes(circuit,
+                                                          gid,
+                                                          etype_color_dict):
+
+    # Get the afferent synapses of the given GID
+    afferent_synapses_ids = circuit.get_afferent_synapses_ids(gid=gid)
+
+    # Get the mtypes of the pre-synaptic cells
+    afferent_synapses_etypes = circuit.get_pre_synaptic_etypes(
+        afferent_synapses_ids_list=afferent_synapses_ids)
+
+    # Create and return the color coded synapses
+    return nmv.bbp.create_color_coded_synapse_groups_by_etype(
+        circuit=circuit, synapses_ids=afferent_synapses_ids,
+        synapses_etypes=afferent_synapses_etypes, etype_color_dict=etype_color_dict)
+
+
+####################################################################################################
+# @get_efferent_synapse_groups_color_coded_by_post_mtypes
+####################################################################################################
+def get_efferent_synapse_groups_color_coded_by_post_mtypes(circuit,
+                                                           gid,
+                                                           mtype_color_dict):
+
+    # Get the efferent synapses of the given GID
+    efferent_synapses_ids = circuit.get_efferent_synapses_ids(gid=gid)
+
+    # Get the mtypes of the post-synaptic cells
+    efferent_synapses_mtypes = circuit.get_post_synaptic_mtypes(
+        efferent_synapses_ids_list=efferent_synapses_ids)
+
+    # Create and return the color coded synapses
+    return nmv.bbp.create_color_coded_synapse_groups_by_mtype(
+        circuit=circuit, synapses_ids=efferent_synapses_ids,
+        synapses_mtypes=efferent_synapses_mtypes, mtype_color_dict=mtype_color_dict)
+
+
+####################################################################################################
+# @get_efferent_synapse_groups_color_coded_by_post_etypes
+####################################################################################################
+def get_efferent_synapse_groups_color_coded_by_post_etypes(circuit,
+                                                           gid,
+                                                           etype_color_dict):
+
+    # Get the efferent synapses of the given GID
+    efferent_synapses_ids = circuit.get_efferent_synapses_ids(gid=gid)
+
+    # Get the etypes of the post-synaptic cells
+    efferent_synapses_etypes = circuit.get_post_synaptic_etypes(
+        efferent_synapses_ids_list=efferent_synapses_ids)
+
+    # Create and return the color coded synapses
+    return nmv.bbp.create_color_coded_synapse_groups_by_etype(
+        circuit=circuit, synapses_ids=efferent_synapses_ids,
+        synapses_etypes=efferent_synapses_etypes, etype_color_dict=etype_color_dict)
 
 
 ####################################################################################################
@@ -913,6 +802,11 @@ def get_excitatory_and_inhibitory_synapse_groups(circuit,
     return synapse_groups
 
 
+
+
+####################################################################################################
+# @get_afferent_synapse_group
+####################################################################################################
 def get_afferent_synapse_group(circuit,
                                gid,
                                color):
@@ -923,6 +817,9 @@ def get_afferent_synapse_group(circuit,
         synapses_ids_list=circuit.get_afferent_synapses_ids(gid=gid))
 
 
+####################################################################################################
+# @get_efferent_synapse_group
+####################################################################################################
 def get_efferent_synapse_group(circuit,
                                gid,
                                color):

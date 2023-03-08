@@ -1,4 +1,4 @@
-###################################################################################################
+###################################################################Pre################################
 # Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
@@ -42,3 +42,9 @@ class Strings:
 
     # The default message in the add GID field
     ADD_GID = "Add GID"
+
+    # The default message in the pre-synaptic GID field
+    PRE_GID = "Add Pre-Synaptic GID"
+
+    # The default message in the pre-synaptic GID field
+    POST_GID = "Add Post-Synaptic GID"

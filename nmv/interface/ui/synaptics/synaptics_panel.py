@@ -84,6 +84,10 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
             draw_inhibitory_options(layout, context.scene, options)
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
             draw_excitatory_and_inhibitory_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+            draw_pre_synaptic_pathway_options(layout, context.scene, options)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+            draw_post_synaptic_pathway_options(layout, context.scene, options)
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
             draw_specific_color_coded_set_options(layout, context.scene, options)
 
@@ -139,114 +143,52 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
 
         # Afferent synapses only (on dendrites)
         if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-            afferent_scheme = options.synaptics.afferent_color_coding
-
-            # Single color
-            if afferent_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
-                nmv.bbp.visualize_afferent_and_efferent_synapses(
-                    circuit=circuit, gid=options.morphology.gid,
-                    visualize_afferent=True, visualize_efferent=False,
-                    synapse_radius=options.synaptics.synapses_radius,
-                    synapses_percentage=options.synaptics.percentage,
-                    afferent_color=nmv.utilities.rgb_vector_to_hex(
-                        options.synaptics.afferent_synapses_color),
-                    efferent_color=nmv.utilities.rgb_vector_to_hex(
-                        options.synaptics.efferent_synapses_color))
-
-            # m-type colors
-            elif afferent_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
-
-                # Get the color-coding dictionary from the UI
-                color_set = {}
-                for i in range(len(nmv.consts.Circuit.MTYPES)):
-                    color_set[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
-
-                print(color_set)
-
-                nmv.bbp.visualize_afferent_synapses_colored_by_pre_synaptic_mtypes(
-                    circuit=circuit, gid=options.morphology.gid,
-                    color_dict=color_set,
-                    synapse_radius=options.synaptics.synapses_radius,
-                    synapses_percentage=options.synaptics.percentage)
-
-
-
-
-
-
-                pass
-
-            # e-type colors
-            elif afferent_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
-                pass
-
-
+            nmv.bbp.visualize_afferent_synapses(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Efferent synapses (on axon)
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-            efferent_scheme = options.synaptics.efferent_color_coding
-
-            # Single color
-            if efferent_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
-                nmv.bbp.visualize_afferent_and_efferent_synapses(
-                    circuit=circuit, gid=options.morphology.gid,
-                    visualize_afferent=False, visualize_efferent=True,
-                    synapse_radius=options.synaptics.synapses_radius,
-                    synapses_percentage=options.synaptics.percentage,
-                    afferent_color=nmv.utilities.rgb_vector_to_hex(
-                        options.synaptics.afferent_synapses_color),
-                    efferent_color=nmv.utilities.rgb_vector_to_hex(
-                        options.synaptics.efferent_synapses_color))
+            nmv.bbp.visualize_efferent_synapses(
+                circuit=circuit, gid=options.morphology.gid, options=options)
 
         # Afferent and efferent synapses
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
             nmv.bbp.visualize_afferent_and_efferent_synapses(
-                circuit=circuit, gid=options.morphology.gid,
-                visualize_afferent=True, visualize_efferent=True,
-                synapse_radius=options.synaptics.synapses_radius,
-                synapses_percentage=options.synaptics.percentage,
-                afferent_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.afferent_synapses_color),
-                efferent_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.efferent_synapses_color))
-
+                circuit=circuit, gid=options.morphology.gid, options=options,
+                visualize_afferent=True, visualize_efferent=True)
 
         # Excitatory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-                circuit=circuit, gid=options.morphology.gid,
-                visualize_excitatory=True, visualize_inhibitory=False,
-                synapse_radius=options.synaptics.synapses_radius,
-                synapses_percentage=options.synaptics.percentage,
-                exc_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.excitatory_synapses_color),
-                inh_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.inhibitory_synapses_color))
+                circuit=circuit, gid=options.morphology.gid, options=options,
+                visualize_excitatory=True, visualize_inhibitory=False)
 
         # Inhibitory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
                 circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
-                visualize_excitatory=False, visualize_inhibitory=True,
-                synapse_radius=options.synaptics.synapses_radius,
-                synapses_percentage=options.synaptics.percentage,
-                exc_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.excitatory_synapses_color),
-                inh_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.inhibitory_synapses_color))
+                visualize_excitatory=False, visualize_inhibitory=True, options=options)
 
         # Excitatory and inhibitory synapses
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
             nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
                 circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
-                visualize_excitatory=True, visualize_inhibitory=True,
-                synapse_radius=options.synaptics.synapses_radius,
-                synapses_percentage=options.synaptics.percentage,
-                exc_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.excitatory_synapses_color),
-                inh_color=nmv.utilities.rgb_vector_to_hex(
-                    options.synaptics.inhibitory_synapses_color))
+                visualize_excitatory=True, visualize_inhibitory=True, options=options)
 
+        # TODO: handle errors if no pre-synaptic or post-synaptic cells exist
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+            nmv.bbp.visualize_shared_synapses_between_two_neurons(
+                circuit=circuit,
+                pre_gid=options.synaptics.pre_synaptic_gid,
+                post_gid=nmv.interface.ui_options.morphology.gid,
+                options=options)
+
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+            nmv.bbp.visualize_shared_synapses_between_two_neurons(
+                circuit=circuit,
+                pre_gid=nmv.interface.ui_options.morphology.gid,
+                post_gid=options.synaptics.post_synaptic_gid,
+                options=options)
 
         return {'FINISHED'}
 

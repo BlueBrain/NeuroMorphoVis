@@ -87,6 +87,51 @@ def draw_excitatory_and_inhibitory_options(layout,
 
 
 ####################################################################################################
+# @draw_synapses_color_option
+####################################################################################################
+def draw_synapses_color_option(layout,
+                               scene,
+                               options):
+
+    # Excitatory synapses color option
+    color_row = layout.row()
+    color_row.prop(scene, 'NMV_SynapsesColor')
+    options.synaptics.synapses_color = scene.NMV_SynapsesColor
+
+
+####################################################################################################
+# @draw_pre_synaptic_pathway_options
+####################################################################################################
+def draw_pre_synaptic_pathway_options(layout,
+                                      scene,
+                                      options):
+
+    # Pre-synaptic GID
+    gid_row = layout.row()
+    gid_row.prop(scene, 'NMV_PreSynapticGID')
+    options.synaptics.pre_synaptic_gid = scene.NMV_PreSynapticGID
+
+    # Synapses color
+    draw_synapses_color_option(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
+# @draw_post_synaptic_pathway_options
+####################################################################################################
+def draw_post_synaptic_pathway_options(layout,
+                                       scene,
+                                       options):
+
+    # Post-synaptic GID
+    gid_row = layout.row()
+    gid_row.prop(scene, 'NMV_PostSynapticGID')
+    options.synaptics.post_synaptic_gid = scene.NMV_PostSynapticGID
+
+    # Synapses color
+    draw_synapses_color_option(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
 # @draw_afferent_synapses_color
 ####################################################################################################
 def draw_afferent_synapses_color_option(layout,
@@ -113,17 +158,6 @@ def draw_efferent_synapses_color_option(layout,
 
 
 
-####################################################################################################
-# @draw_synapses_color_option
-####################################################################################################
-def draw_synapses_color_option(layout,
-                               scene,
-                               options):
-
-    # Excitatory synapses color option
-    color_row = layout.row()
-    color_row.prop(scene, 'NMV_SynapsesColor')
-    options.synaptics.synapses_color = scene.NMV_SynapsesColor
 
 
 ####################################################################################################
