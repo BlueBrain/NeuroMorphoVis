@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -115,8 +115,13 @@ class MorphIOLoader:
         #     soma_mean_radius += (point - self.soma_centroid).length
         # soma_mean_radius = soma_mean_radius / len(self.soma_profile_points)
 
+        if self.center_morphology:
+            soma_centroid = Vector((0, 0, 0))
+        else:
+            soma_centroid = self.soma_centroid
+
         nmv_soma = nmv.skeleton.Soma(
-            centroid=self.soma_centroid, mean_radius=self.soma_mean_radius,
+            centroid=soma_centroid, mean_radius=self.soma_mean_radius,
             profile_points=self.soma_profile_points, arbors_profile_points=arbors_profile_points)
 
         # Return a reference to the soma object
@@ -125,13 +130,8 @@ class MorphIOLoader:
     ################################################################################################
     # @read_data_from_file
     ################################################################################################
-    def read_data_from_file(self,
-                            center_at_origin=False):
-        """Loads the data from the given file in the constructor.
-
-        :param: center_at_origin:
-            Centers the morphology at the origin.
-        """
+    def read_data_from_file(self):
+        """Loads the data from the given file in the constructor."""
 
         # Import the required module
         import morphio
@@ -150,17 +150,18 @@ class MorphIOLoader:
 
         # Soma mean radius from MorphIO
         self.soma_mean_radius = morphology_data.soma.diameters[0] * 0.5
-        self.soma_centroid = Vector((0, 0, 0))
-        self.soma_centroid[0] = morphology_data.soma.center[0]
-        self.soma_centroid[1] = morphology_data.soma.center[1]
-        self.soma_centroid[2] = morphology_data.soma.center[2]
+        self.soma_centroid = Vector((morphology_data.soma.center[0],
+                                     morphology_data.soma.center[1],
+                                     morphology_data.soma.center[2]))
 
-        # Get a list of points in the morphology
+        # Construct the points list in the Vector format
         for s in morphology_data.sections:
             for p in s.points:
-
-                # Construct a point in the Vector format
                 v_point = Vector((p[0], p[1], p[2]))
+
+                if self.center_morphology:
+                    v_point -= self.soma_centroid
+
                 self.points_list.append(v_point)
 
         # A linear list of the sections of the axons
@@ -211,6 +212,8 @@ class MorphIOLoader:
 
                 # Sample point
                 sample_point = Vector((s.points[i][0], s.points[i][1], s.points[i][2]))
+                if self.center_morphology:
+                    sample_point -= self.soma_centroid
 
                 # Sample radius
                 sample_radius = s.diameters[i] * 0.5

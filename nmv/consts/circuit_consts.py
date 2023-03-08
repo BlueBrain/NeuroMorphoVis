@@ -32,6 +32,6 @@ class Circuit:
     # until a circuit is loaded, and then it is filled with the correct values
     MTYPES = None
 
-    # A list of all the electrophysiological types in the circuit. Initially, this variable is set
+    # A list of all the electro-physiological types in the circuit. Initially, this variable is set
     # to None until a circuit is loaded, and then it is filled with the correct values
     ETYPES = None

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -95,8 +95,9 @@ def read_morphology_with_morphio(morphology_file_path,
     if os.path.isfile(morphology_file_path):
         # Load the .h5 morphology
         try:
-            reader = nmv.file.readers.MorphIOLoader(morphology_file_path)
-            morphology_object = reader.read_data_from_file(center_at_origin=center_at_origin)
+            reader = nmv.file.readers.MorphIOLoader(morphology_file_path,
+                                                    center_morphology=center_at_origin)
+            morphology_object = reader.read_data_from_file()
 
             # Return a reference to this morphology object
             return morphology_object
