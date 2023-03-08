@@ -17,22 +17,19 @@
 
 # Blender imports
 import bpy
-from mathutils import Vector
 
 # Internal imports
 import nmv.consts
 import nmv.enums
 import nmv.bbp
+import nmv.scene
 
 
 ####################################################################################################
 # @draw_excitatory_synapses_color
 ####################################################################################################
-def draw_excitatory_synapses_color(layout,
-                                   scene,
-                                   options):
+def draw_excitatory_synapses_color(layout, scene, options):
 
-    # Excitatory synapses color option
     color_row = layout.row()
     color_row.prop(scene, 'NMV_ExcitatorySynapsesColor')
     options.synaptics.excitatory_synapses_color = scene.NMV_ExcitatorySynapsesColor
@@ -41,11 +38,8 @@ def draw_excitatory_synapses_color(layout,
 ####################################################################################################
 # @draw_inhibitory_synapses_color
 ####################################################################################################
-def draw_inhibitory_synapses_color(layout,
-                                   scene,
-                                   options):
+def draw_inhibitory_synapses_color(layout, scene, options):
 
-    # Excitatory synapses color option
     color_row = layout.row()
     color_row.prop(scene, 'NMV_InhibitorySynapsesColor')
     options.synaptics.inhibitory_synapses_color = scene.NMV_InhibitorySynapsesColor
@@ -54,104 +48,91 @@ def draw_inhibitory_synapses_color(layout,
 ####################################################################################################
 # @draw_excitatory_options
 ####################################################################################################
-def draw_excitatory_options(layout,
-                            scene,
-                            options):
+def draw_excitatory_options(layout, scene, options):
 
-    draw_excitatory_synapses_color(
-        layout=layout, scene=scene, options=options)
+    draw_excitatory_synapses_color(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_inhibitory_options
 ####################################################################################################
-def draw_inhibitory_options(layout,
-                            scene,
-                            options):
+def draw_inhibitory_options(layout, scene, options):
 
-    draw_inhibitory_synapses_color(
-        layout=layout, scene=scene, options=options)
+    draw_inhibitory_synapses_color(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_excitatory_and_inhibitory_options
 ####################################################################################################
-def draw_excitatory_and_inhibitory_options(layout,
-                                           scene,
-                                           options):
-    draw_excitatory_synapses_color(
-        layout=layout, scene=scene, options=options)
+def draw_excitatory_and_inhibitory_options(layout, scene, options):
 
-    draw_inhibitory_synapses_color(
-        layout=layout, scene=scene, options=options)
+    draw_excitatory_synapses_color(layout=layout, scene=scene, options=options)
+    draw_inhibitory_synapses_color(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_synapses_color_option
 ####################################################################################################
-def draw_synapses_color_option(layout,
-                               scene,
-                               options):
+def draw_synapses_color_option(layout, scene, options):
 
-    # Excitatory synapses color option
     color_row = layout.row()
     color_row.prop(scene, 'NMV_SynapsesColor')
     options.synaptics.synapses_color = scene.NMV_SynapsesColor
 
 
 ####################################################################################################
-# @draw_pre_synaptic_pathway_options
+# @draw_pre_synaptic_gid
 ####################################################################################################
-def draw_pre_synaptic_pathway_options(layout,
-                                      scene,
-                                      options):
+def draw_pre_synaptic_gid(layout, scene, options):
 
-    # Pre-synaptic GID
     gid_row = layout.row()
     gid_row.prop(scene, 'NMV_PreSynapticGID')
     options.synaptics.pre_synaptic_gid = scene.NMV_PreSynapticGID
 
-    # Synapses color
+
+####################################################################################################
+# @draw_post_synaptic_gid
+####################################################################################################
+def draw_post_synaptic_gid(layout, scene, options):
+
+    gid_row = layout.row()
+    gid_row.prop(scene, 'NMV_PostSynapticGID')
+    options.synaptics.post_synaptic_gid = scene.NMV_PostSynapticGID
+
+
+####################################################################################################
+# @draw_pre_synaptic_pathway_options
+####################################################################################################
+def draw_pre_synaptic_pathway_options(layout, scene, options):
+
+    draw_pre_synaptic_gid(layout=layout, scene=scene, options=options)
     draw_synapses_color_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_post_synaptic_pathway_options
 ####################################################################################################
-def draw_post_synaptic_pathway_options(layout,
-                                       scene,
-                                       options):
+def draw_post_synaptic_pathway_options(layout, scene, options):
 
-    # Post-synaptic GID
-    gid_row = layout.row()
-    gid_row.prop(scene, 'NMV_PostSynapticGID')
-    options.synaptics.post_synaptic_gid = scene.NMV_PostSynapticGID
-
-    # Synapses color
+    draw_post_synaptic_gid(layout=layout, scene=scene, options=options)
     draw_synapses_color_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
-# @draw_afferent_synapses_color
+# @draw_afferent_synapses_color_option
 ####################################################################################################
-def draw_afferent_synapses_color_option(layout,
-                                        scene,
-                                        options):
+def draw_afferent_synapses_color_option(layout, scene, options):
 
-    # Afferent synapses color option
     color_row = layout.row()
     color_row.prop(scene, 'NMV_AfferentSynapsesColor')
     options.synaptics.afferent_synapses_color = scene.NMV_AfferentSynapsesColor
 
 
 ####################################################################################################
-# @draw_efferent_synapses_color
+# @draw_efferent_synapses_color_option
 ####################################################################################################
-def draw_efferent_synapses_color_option(layout,
-                                        scene,
-                                        options):
+def draw_efferent_synapses_color_option(layout, scene, options):
 
-    # Afferent synapses color option
     color_row = layout.row()
     color_row.prop(scene, 'NMV_EfferentSynapsesColor')
     options.synaptics.efferent_synapses_color = scene.NMV_EfferentSynapsesColor
@@ -160,13 +141,9 @@ def draw_efferent_synapses_color_option(layout,
 ####################################################################################################
 # @draw_mtype_color_palette
 ####################################################################################################
-def draw_mtype_color_palette(layout,
-                             scene,
-                             options):
+def draw_mtype_color_palette(layout, scene, options):
 
-    # Fill list of colors
     if nmv.consts.Circuit.MTYPES is not None:
-
         options.shading.mtypes_colors = list()
 
         # Add the colormap element to the UI
@@ -182,9 +159,7 @@ def draw_mtype_color_palette(layout,
 ####################################################################################################
 # @draw_etype_color_palette
 ####################################################################################################
-def draw_etype_color_palette(layout,
-                             scene,
-                             options):
+def draw_etype_color_palette(layout, scene, options):
 
     # Fill list of colors
     if nmv.consts.Circuit.ETYPES is not None:
@@ -204,9 +179,7 @@ def draw_etype_color_palette(layout,
 ####################################################################################################
 # @draw_afferent_options
 ####################################################################################################
-def draw_afferent_options(layout,
-                          scene,
-                          options):
+def draw_afferent_options(layout, scene, options):
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_AfferentColorCoding')
@@ -227,9 +200,7 @@ def draw_afferent_options(layout,
 ####################################################################################################
 # @draw_efferent_options
 ####################################################################################################
-def draw_efferent_options(layout,
-                          scene,
-                          options):
+def draw_efferent_options(layout, scene, options):
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_EfferentColorCoding')
@@ -250,22 +221,16 @@ def draw_efferent_options(layout,
 ####################################################################################################
 # @draw_afferent_and_efferent_options
 ####################################################################################################
-def draw_afferent_and_efferent_options(layout,
-                                       scene,
-                                       options):
-    draw_afferent_synapses_color_option(
-        layout=layout, scene=scene, options=options)
+def draw_afferent_and_efferent_options(layout, scene, options):
 
-    draw_efferent_synapses_color_option(
-        layout=layout, scene=scene, options=options)
+    draw_afferent_synapses_color_option(layout=layout, scene=scene, options=options)
+    draw_efferent_synapses_color_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_specific_color_coded_set_options
 ####################################################################################################
-def draw_specific_color_coded_set_options(layout,
-                                          scene,
-                                          options):
+def draw_specific_color_coded_set_options(layout, scene, options):
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_SpecificColorCoding')
@@ -274,9 +239,8 @@ def draw_specific_color_coded_set_options(layout,
 ####################################################################################################
 # @draw_synapse_percentage_option
 ####################################################################################################
-def draw_synapse_percentage_option(layout,
-                                   scene,
-                                   options):
+def draw_synapse_percentage_option(layout, scene, options):
+
     percentage_row = layout.row()
     percentage_row.prop(scene, 'NMV_SynapsesPercentage')
     options.synaptics.percentage = scene.NMV_SynapsesPercentage
@@ -285,9 +249,8 @@ def draw_synapse_percentage_option(layout,
 ####################################################################################################
 # @draw_synapse_radius_options
 ####################################################################################################
-def draw_synapse_radius_options(layout,
-                                scene,
-                                options):
+def draw_synapse_radius_options(layout, scene, options):
+
     synapse_radius_row = layout.row()
     synapse_radius_row.prop(scene, 'NMV_SynapseRadius')
     options.synaptics.synapses_radius = scene.NMV_SynapseRadius
@@ -296,14 +259,9 @@ def draw_synapse_radius_options(layout,
 ####################################################################################################
 # @draw_common_options_for_all_use_cases
 ####################################################################################################
-def draw_common_options_for_all_use_cases(layout,
-                                          scene,
-                                          options):
+def draw_common_options_for_all_use_cases(layout, scene, options):
 
-    # Synapse radius
     draw_synapse_radius_options(layout=layout, scene=scene, options=options)
-
-    # Synapses percentage
     draw_synapse_percentage_option(layout=layout, scene=scene, options=options)
 
 
@@ -321,10 +279,8 @@ def draw_neuron_radius_option(layout, scene, options):
     neuron_radius_column.prop(scene, 'NMV_SYNAPTICS_UnifiedNeuronRadius')
     options.synaptics.unified_radius = scene.NMV_SYNAPTICS_UnifiedNeuronRadius
 
-    if not scene.NMV_SYNAPTICS_UnifyRadius:
-        neuron_radius_column.enabled = False
-    else:
-        neuron_radius_column.enabled = True
+    # Disable the column
+    neuron_radius_column.enabled = False if not scene.NMV_SYNAPTICS_UnifyRadius else True
 
 
 ####################################################################################################
@@ -403,7 +359,71 @@ def draw_neuron_pair_options(layout, scene, options):
     draw_neuron_radius_option(layout, scene, options)
 
 
+####################################################################################################
+# @draw_neuron_pair_options
+####################################################################################################
+def reconstruct_synaptics(operator, context, circuit, options):
 
+    # Clear the scene
+    nmv.scene.clear_scene()
 
+    # Afferent synapses only (on dendrites)
+    if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+        nmv.bbp.visualize_afferent_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
 
+    # Efferent synapses (on axon)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+        nmv.bbp.visualize_efferent_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
 
+    # Afferent and efferent synapses
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+        nmv.bbp.visualize_afferent_and_efferent_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options,
+            visualize_afferent=True, visualize_efferent=True)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+    # Excitatory synapses only
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options,
+            visualize_excitatory=True, visualize_inhibitory=False)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+    # Inhibitory synapses only
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+            circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
+            visualize_excitatory=False, visualize_inhibitory=True, options=options)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+    # Excitatory and inhibitory synapses
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+            circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
+            visualize_excitatory=True, visualize_inhibitory=True, options=options)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+    # TODO: handle errors if no pre-synaptic or post-synaptic cells exist
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+        nmv.bbp.visualize_shared_synapses_between_two_neurons(
+            circuit=circuit,
+            pre_gid=options.synaptics.pre_synaptic_gid,
+            post_gid=nmv.interface.ui_options.morphology.gid,
+            options=options)
+
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+        nmv.bbp.visualize_shared_synapses_between_two_neurons(
+            circuit=circuit,
+            pre_gid=nmv.interface.ui_options.morphology.gid,
+            post_gid=options.synaptics.post_synaptic_gid,
+            options=options)

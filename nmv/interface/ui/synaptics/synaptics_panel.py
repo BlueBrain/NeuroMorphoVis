@@ -32,9 +32,9 @@ from .synaptics_panel_options import *
 
 
 ####################################################################################################
-# @IOPanel
+# @NMV_SynapticsPanel
 ####################################################################################################
-class NMV_SyynapticsPanel(bpy.types.Panel):
+class NMV_SynapticsPanel(bpy.types.Panel):
     """NMV Synaptics panel"""
 
     ################################################################################################
@@ -47,18 +47,10 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
-
-
     ################################################################################################
     # @draw
     ################################################################################################
-    def draw(self,
-             context):
-        """Draw the panel.
-
-        :param context:
-            Blender context.
-        """
+    def draw(self, context):
 
         # Get a reference to the panel layout
         layout = self.layout
@@ -137,9 +129,8 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
             time_row.enabled = False
 
 
-
 ####################################################################################################
-# @InputOutputDocumentation
+# @NMV_ReconstructSynaptics
 ####################################################################################################
 class NMV_ReconstructSynaptics(bpy.types.Operator):
     """Reconstruct the scene"""
@@ -151,87 +142,14 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self,
-                context):
-        """Execute the operator.
+    def execute(self, context):
 
-        :param context:
-            Blender context
-        :return:
-            'FINISHED'
-        """
+        # Reconstruct the selected use case
+        reconstruct_synaptics(operator=self, context=context,
+                              circuit=nmv.interface.ui_circuit,
+                              options=nmv.interface.ui_options)
 
-        import nmv.interface
-        import nmv.consts
-
-        # Clear the scene
-        nmv.scene.clear_scene()
-
-        # References
-        circuit = nmv.interface.ui_circuit
-        options = nmv.interface.ui_options
-
-        # Afferent synapses only (on dendrites)
-        if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-            nmv.bbp.visualize_afferent_synapses(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # Efferent synapses (on axon)
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-            nmv.bbp.visualize_efferent_synapses(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # Afferent and efferent synapses
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
-            nmv.bbp.visualize_afferent_and_efferent_synapses(
-                circuit=circuit, gid=options.morphology.gid, options=options,
-                visualize_afferent=True, visualize_efferent=True)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # Excitatory synapses only
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
-            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-                circuit=circuit, gid=options.morphology.gid, options=options,
-                visualize_excitatory=True, visualize_inhibitory=False)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # Inhibitory synapses only
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
-            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-                circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
-                visualize_excitatory=False, visualize_inhibitory=True, options=options)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # Excitatory and inhibitory synapses
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
-            nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-                circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
-                visualize_excitatory=True, visualize_inhibitory=True, options=options)
-            nmv.bbp.visualize_circuit_neuron_for_synaptics(
-                circuit=circuit, gid=options.morphology.gid, options=options)
-
-        # TODO: handle errors if no pre-synaptic or post-synaptic cells exist
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
-            nmv.bbp.visualize_shared_synapses_between_two_neurons(
-                circuit=circuit,
-                pre_gid=options.synaptics.pre_synaptic_gid,
-                post_gid=nmv.interface.ui_options.morphology.gid,
-                options=options)
-
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
-            nmv.bbp.visualize_shared_synapses_between_two_neurons(
-                circuit=circuit,
-                pre_gid=nmv.interface.ui_options.morphology.gid,
-                post_gid=options.synaptics.post_synaptic_gid,
-                options=options)
-
+        # Done
         return {'FINISHED'}
 
 
@@ -242,7 +160,7 @@ def register_panel():
     """Registers all the classes in this panel"""
 
     # Panel
-    bpy.utils.register_class(NMV_SyynapticsPanel)
+    bpy.utils.register_class(NMV_SynapticsPanel)
 
     # Button(s)
     bpy.utils.register_class(NMV_ReconstructSynaptics)
@@ -255,7 +173,7 @@ def unregister_panel():
     """Un-registers all the classes in this panel"""
 
     # Panel
-    bpy.utils.unregister_class(NMV_SyynapticsPanel)
+    bpy.utils.unregister_class(NMV_SynapticsPanel)
 
     # Button(s)
     bpy.utils.unregister_class(NMV_ReconstructSynaptics)
