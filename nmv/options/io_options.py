@@ -20,15 +20,13 @@
 # @IOOptions
 ####################################################################################################
 class IOOptions:
-    """Input / Output options.
-    """
+    """Input / Output options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # The root output directory where the results will be generated
         self.output_directory = None

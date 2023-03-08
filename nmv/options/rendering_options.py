@@ -24,15 +24,13 @@ import nmv.enums
 # @RenderingOptions
 ####################################################################################################
 class RenderingOptions:
-    """Rendering options.
-    """
+    """Rendering options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # Render a static frame of the morphology
         self.render_morphology_static_frame = False

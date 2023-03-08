@@ -38,33 +38,10 @@ def create_neuron_mesh_in_circuit(
         apical_dendrites_color=nmv.enums.Color.APICAL_DENDRITES,
         axons_color=nmv.enums.Color.AXONS,
         material_type=nmv.enums.Shader.LAMBERT_WARD):
-    """Creates a neuron mesh, specified by a GID in a given circuit.
-    NOTE: The soma is located at the origin.
 
-    :param circuit:
-        BBP circuit.
-    :param gid:
-        Neuron GID.
-    :param color:
-        Neuron RGB color in a Vector.
-    :param material_type:
-        The type of the material to be applied to the mesh.
-    :param unified_radius:
-        If this flag is set to true, the neuron will have unified radius across it all branches.
-    :param branch_radius:
-        The unified radius of all the branches in the neuron.
-    :param basal_branching_order:
-        The maximum branching order of the basal dendrites.
-    :param apical_branching_order:
-        The maximum branching order of the apical dendrites.
-    :param axon_branching_order:
-        The maximum branching order of the axons.
-    :return:
-        A reference to the created mesh object.
-    """
 
     # Get the path of the morphology from the circuit
-    morphology_path = circuit.morph.get_filepath(int(gid))
+    morphology_path = circuit.get_neuron_morphology_path(gid=int(gid))
 
     # Read the morphology and get its NMV object, and ensure that it is centered at the origin
     morphology = nmv.file.read_morphology_with_morphio(
@@ -159,6 +136,40 @@ def create_neuron_mesh_in_circuit(
 
     # Return a reference to the neuron mesh
     return neuron_mesh
+
+
+####################################################################################################
+# @create_neuron_mesh_in_circuit
+####################################################################################################
+def visualize_circuit_neuron_for_synaptics(circuit,
+                                           gid,
+                                           options):
+
+    if options.synaptics.display_dendrites:
+        dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+    else:
+        dendrites_branching_order = 0
+
+    if options.synaptics.display_axons:
+        axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+    else:
+        axons_branching_order = 0
+
+    if not (options.synaptics.display_dendrites or options.synaptics.display_axons):
+        return None
+
+    return create_neuron_mesh_in_circuit(circuit=circuit, gid=gid,
+                                         unified_radius=options.synaptics.unify_branch_radii,
+                                         branch_radius=options.synaptics.unified_radius,
+                                         basal_branching_order=dendrites_branching_order,
+                                         apical_branching_order=dendrites_branching_order,
+                                         axon_branching_order=axons_branching_order,
+                                         soma_color=options.synaptics.dendrites_color,
+                                         basal_dendrites_color=options.synaptics.dendrites_color,
+                                         apical_dendrites_color=options.synaptics.dendrites_color,
+                                         axons_color=options.synaptics.axons_color,
+                                         material_type=nmv.enums.Shader.LAMBERT_WARD)
+
 
 
 ####################################################################################################

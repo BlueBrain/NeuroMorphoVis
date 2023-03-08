@@ -27,15 +27,13 @@ import nmv.utilities as nmvu
 # @NeuroMorphoVisOptions
 ####################################################################################################
 class NeuroMorphoVisOptions:
-    """Workflow options all combined in a single structure.
-    """
+    """Workflow options all combined in a single structure."""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # Morphology options
         self.morphology = nmv.options.MorphologyOptions()

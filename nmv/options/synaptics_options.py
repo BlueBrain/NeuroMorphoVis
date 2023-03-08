@@ -24,23 +24,19 @@ import nmv.enums
 # @SynapticsOptions
 ####################################################################################################
 class SynapticsOptions:
-    """Synaptics options
-    """
+    """Synaptics options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
+        # Synapse visualization use case
         self.use_case = None
 
         # Reconstruction method
         self.synapses_radius = nmv.consts.Synaptics.SYNAPSES_RADIUS
-
-        # Display neuron
-        self.display_neuron = True
 
         # Colors for excitatory and inhibitory synapses
         self.excitatory_synapses_color = nmv.enums.Color.EXCITATORY_SYNAPSES
@@ -63,6 +59,27 @@ class SynapticsOptions:
         # The GIDs of pre- and post-synaptic neurons that are only used to visualize shared synapses
         self.pre_synaptic_gid = None
         self.post_synaptic_gid = None
+
+        # Parameters for a single neuron and NOT a PAIR
+        self.display_dendrites = True
+        self.display_axons = True
+        self.dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+        self.axons_color = nmv.enums.Color.AXONS
+
+        # Parameters for a PAIR and not a SINGLE neuron
+        self.display_pre_synaptic_dendrites = True
+        self.display_pre_synaptic_axons = True
+        self.pre_synaptic_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+        self.pre_synaptic_axons_color = nmv.enums.Color.AXONS
+        self.display_post_synaptic_dendrites = True
+        self.display_post_synaptic_axons = True
+        self.post_synaptic_dendrites_color = nmv.enums.Color.BASAL_DENDRITES
+        self.post_synaptic_axons_color = nmv.enums.Color.AXONS
+
+        # Neuron radius
+        self.unify_branch_radii = True
+        self.unified_radius = 1.0
+
 
 
 

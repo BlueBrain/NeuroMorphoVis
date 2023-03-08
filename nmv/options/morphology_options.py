@@ -24,15 +24,13 @@ import nmv.enums
 # @MorphologyOptions
 ####################################################################################################
 class MorphologyOptions:
-    """The morphology options.
-    """
+    """The morphology options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # INPUT SOURCE OPTIONS #####################################################################
         # The GID of a given neuron in a given circuit using a blue config

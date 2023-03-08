@@ -165,14 +165,16 @@ class BBPCircuit(Circuit):
     ################################################################################################
     def get_afferent_synapses_ids(self,
                                   gid):
-        return self.circuit.connectome.afferent_synapses(int(gid)).tolist()
+        ids = self.circuit.connectome.afferent_synapses(int(gid))
+        return ids if isinstance(ids, list) else ids.tolist()
 
     ################################################################################################
     # @get_efferent_synapses_ids
     ################################################################################################
     def get_efferent_synapses_ids(self,
                                   gid):
-        return self.circuit.connectome.efferent_synapses(int(gid)).tolist()
+        ids = self.circuit.connectome.efferent_synapses(int(gid))
+        return ids if isinstance(ids, list) else ids.tolist()
 
     ################################################################################################
     # @get_all_synapses_ids
@@ -190,7 +192,7 @@ class BBPCircuit(Circuit):
                               synapse_ids_list):
 
         import bluepy
-        return self.circuit.connectome.synapse_properties(
+        ids = self.circuit.connectome.synapse_properties(
             numpy.array(synapse_ids_list),
             [bluepy.enums.Synapse.TYPE])[bluepy.enums.Synapse.TYPE].values.tolist()
 
@@ -282,7 +284,6 @@ class BBPCircuit(Circuit):
 
         return True if synapse_type_id > 100 else False
 
-
     ################################################################################################
     # @is_synapse_inhibitory
     ################################################################################################
@@ -291,7 +292,6 @@ class BBPCircuit(Circuit):
 
         # TODO: Verify the latest types and their IDs and if there is a more robust way to do it
         return True if synapse_id < 100 else False
-
 
     def is_axo_somatic_synapse(self,
                                synapse_id):
@@ -390,5 +390,3 @@ class BBPCircuit(Circuit):
 
         # Return the resulting list
         return shared_synapses_ids
-
-

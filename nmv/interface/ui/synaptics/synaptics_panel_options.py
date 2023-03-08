@@ -24,7 +24,7 @@ import nmv.enums
 import nmv.utilities
 
 
-# Reconstruction method
+# Synaptics use case
 bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
     items=[(nmv.enums.Synaptics.UseCase.AFFERENT,
             'Afferent Synapses',
@@ -65,7 +65,7 @@ bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
     name='Use Case',
     default=nmv.enums.Synaptics.UseCase.NOT_SELECTED)
 
-
+# Color-coding schemes for the afferent synapses use case
 bpy.types.Scene.NMV_AfferentColorCoding = bpy.props.EnumProperty(
     items=[(nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR,
             'Unified Color',
@@ -84,6 +84,7 @@ bpy.types.Scene.NMV_AfferentColorCoding = bpy.props.EnumProperty(
     name='Coloring Scheme',
     default=nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR)
 
+# Color-coding schemes for the efferent synapses use case
 bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
     items=[(nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR,
             'Unified Color',
@@ -101,7 +102,6 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
 
     name='Coloring Scheme',
     default=nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR)
-
 
 # Excitatory synapses color
 bpy.types.Scene.NMV_ExcitatorySynapsesColor = bpy.props.FloatVectorProperty(
@@ -156,6 +156,92 @@ bpy.types.Scene.NMV_PostSynapticGID = bpy.props.StringProperty(
     name='Post-Synaptic GID',
     description="The GID of a post-synaptic cell that shares synapses with this cell.",
     default=nmv.consts.Strings.POST_GID, maxlen=1024)
+
+
+
+
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayDendrites = bpy.props.BoolProperty(
+    name='Display Dendrites',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayAxons = bpy.props.BoolProperty(
+    name='Display Axons',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayPreSynapticDendrites = bpy.props.BoolProperty(
+    name='Display Pre-Synaptic Dendrites',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayPreSynapticAxons = bpy.props.BoolProperty(
+    name='Display Pre-Synaptic Axons',
+    description='',
+    default=True)
+
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayPostSynapticDendrites = bpy.props.BoolProperty(
+    name='Display Post-Synaptic Dendrites',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_SYNAPTICS_DisplayPostSynapticAxons = bpy.props.BoolProperty(
+    name='Display Post-Synaptic Axons',
+    description='',
+    default=True)
+
+
+
+bpy.types.Scene.NMV_SYNAPTICS_DendritesColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
+    description='')
+
+bpy.types.Scene.NMV_SYNAPTICS_AxonsColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
+    description='')
+
+
+
+bpy.types.Scene.NMV_SYNAPTICS_PreSynapticDendritesColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
+    description='')
+
+bpy.types.Scene.NMV_SYNAPTICS_PreSynapticAxonsColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
+    description='')
+
+bpy.types.Scene.NMV_SYNAPTICS_PostSynapticDendritesColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
+    description='')
+
+bpy.types.Scene.NMV_SYNAPTICS_PostSynapticAxonsColor = bpy.props.FloatVectorProperty(
+    name='',
+    subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
+    description='')
+
+
+
+
+
+
+bpy.types.Scene.NMV_SYNAPTICS_UnifyRadius = bpy.props.BoolProperty(
+    name='Unify Branches Radii',
+    description='',
+    default=True)
+
+# The unified radius of all the synapses
+bpy.types.Scene.NMV_SYNAPTICS_UnifiedNeuronRadius = bpy.props.FloatProperty(
+    name='Neuron Radius',
+    description='The unified radius of all the branches of the neuron. Applicable values [0.1-5]',
+    default=0.5, min=0.1, max=5)
+
 
 
 

@@ -157,9 +157,6 @@ def draw_efferent_synapses_color_option(layout,
     options.synaptics.efferent_synapses_color = scene.NMV_EfferentSynapsesColor
 
 
-
-
-
 ####################################################################################################
 # @draw_mtype_color_palette
 ####################################################################################################
@@ -272,3 +269,141 @@ def draw_specific_color_coded_set_options(layout,
 
     color_scheme_row = layout.row()
     color_scheme_row.prop(scene, 'NMV_SpecificColorCoding')
+
+
+####################################################################################################
+# @draw_synapse_percentage_option
+####################################################################################################
+def draw_synapse_percentage_option(layout,
+                                   scene,
+                                   options):
+    percentage_row = layout.row()
+    percentage_row.prop(scene, 'NMV_SynapsesPercentage')
+    options.synaptics.percentage = scene.NMV_SynapsesPercentage
+
+
+####################################################################################################
+# @draw_synapse_radius_options
+####################################################################################################
+def draw_synapse_radius_options(layout,
+                                scene,
+                                options):
+    synapse_radius_row = layout.row()
+    synapse_radius_row.prop(scene, 'NMV_SynapseRadius')
+    options.synaptics.synapses_radius = scene.NMV_SynapseRadius
+
+
+####################################################################################################
+# @draw_common_options_for_all_use_cases
+####################################################################################################
+def draw_common_options_for_all_use_cases(layout,
+                                          scene,
+                                          options):
+
+    # Synapse radius
+    draw_synapse_radius_options(layout=layout, scene=scene, options=options)
+
+    # Synapses percentage
+    draw_synapse_percentage_option(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
+# @draw_neuron_radius_option
+####################################################################################################
+def draw_neuron_radius_option(layout, scene, options):
+
+    neuron_radius_row = layout.row()
+    unify_radius_column = neuron_radius_row.column()
+    unify_radius_column.prop(scene, 'NMV_SYNAPTICS_UnifyRadius')
+    options.synaptics.unify_branch_radii = scene.NMV_SYNAPTICS_UnifyRadius
+
+    neuron_radius_column = neuron_radius_row.column()
+    neuron_radius_column.prop(scene, 'NMV_SYNAPTICS_UnifiedNeuronRadius')
+    options.synaptics.unified_radius = scene.NMV_SYNAPTICS_UnifiedNeuronRadius
+
+    if not scene.NMV_SYNAPTICS_UnifyRadius:
+        neuron_radius_column.enabled = False
+    else:
+        neuron_radius_column.enabled = True
+
+
+####################################################################################################
+# @draw_single_neuron_options
+####################################################################################################
+def draw_single_neuron_options(layout, scene, options):
+
+    # Reconstruction options
+    neuron_options_row = layout.row()
+    neuron_options_row.label(text='Neuron Options:', icon='OUTLINER_OB_EMPTY')
+
+    dendrites_row = layout.row()
+    add_dendrites_column = dendrites_row.column()
+    add_dendrites_column.prop(scene, 'NMV_SYNAPTICS_DisplayDendrites')
+    options.synaptics.display_dendrites = scene.NMV_SYNAPTICS_DisplayDendrites
+
+    dendrites_options_column = dendrites_row.column()
+    dendrites_options_column.prop(scene, 'NMV_SYNAPTICS_DendritesColor')
+    options.synaptics.dendrites_color = scene.NMV_SYNAPTICS_DendritesColor
+
+    if not scene.NMV_SYNAPTICS_DisplayDendrites:
+        dendrites_options_column.enabled = False
+    else:
+        dendrites_options_column.enabled = True
+
+    axons_row = layout.row()
+    add_axons_column = axons_row.column()
+    add_axons_column.prop(scene, 'NMV_SYNAPTICS_DisplayAxons')
+    options.synaptics.display_axons = scene.NMV_SYNAPTICS_DisplayAxons
+
+    axons_options_column = axons_row.column()
+    axons_options_column.prop(scene, 'NMV_SYNAPTICS_AxonsColor')
+    options.synaptics.axons_color = scene.NMV_SYNAPTICS_AxonsColor
+
+    if not scene.NMV_SYNAPTICS_DisplayAxons:
+        axons_options_column.enabled = False
+    else:
+        axons_options_column.enabled = True
+
+    draw_neuron_radius_option(layout, scene, options)
+
+
+####################################################################################################
+# @draw_neuron_options
+####################################################################################################
+def draw_neuron_pair_options(layout, scene, options):
+
+    # Reconstruction options
+    neuron_options_row = layout.row()
+    neuron_options_row.label(text='Neurons Options:', icon='OUTLINER_OB_EMPTY')
+
+    for i in ['PreSynaptic', 'PostSynaptic']:
+
+        dendrites_row = layout.row()
+        add_dendrites_column = dendrites_row.column()
+        add_dendrites_column.prop(scene, 'NMV_SYNAPTICS_Display%sDendrites' % i)
+        dendrites_options_column = dendrites_row.column()
+        dendrites_options_column.prop(scene, 'NMV_SYNAPTICS_%sDendritesColor' % i)
+
+        if not getattr(scene, 'NMV_SYNAPTICS_Display%sDendrites' % i):
+            dendrites_options_column.enabled = False
+        else:
+            dendrites_options_column.enabled = True
+
+        axons_row = layout.row()
+        add_axons_column = axons_row.column()
+        add_axons_column.prop(scene, 'NMV_SYNAPTICS_Display%sAxons' % i)
+        axons_options_column = axons_row.column()
+        axons_options_column.prop(scene, 'NMV_SYNAPTICS_%sAxonsColor' % i)
+
+        if not getattr(scene, 'NMV_SYNAPTICS_%sAxonsColor' % i):
+            axons_options_column.enabled = False
+        else:
+            axons_options_column.enabled = True
+
+    draw_neuron_radius_option(layout, scene, options)
+
+
+
+
+
+
