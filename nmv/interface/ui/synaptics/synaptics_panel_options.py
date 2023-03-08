@@ -242,6 +242,8 @@ bpy.types.Scene.NMV_SYNAPTICS_UnifiedNeuronRadius = bpy.props.FloatProperty(
     description='The unified radius of all the branches of the neuron. Applicable values [0.1-5]',
     default=0.5, min=0.1, max=5)
 
-
-
-
+# Performance
+bpy.types.Scene.NMV_SynapticReconstructionTime = bpy.props.FloatProperty(
+    name="Time (Sec)",
+    description="The time it takes to reconstruct the reconstruct the synaptome",
+    default=0, min=0, max=1000000)

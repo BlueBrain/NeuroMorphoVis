@@ -368,7 +368,7 @@ def draw_single_neuron_options(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_neuron_options
+# @draw_neuron_pair_options
 ####################################################################################################
 def draw_neuron_pair_options(layout, scene, options):
 

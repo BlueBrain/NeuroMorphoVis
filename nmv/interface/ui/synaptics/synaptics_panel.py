@@ -110,32 +110,32 @@ class NMV_SyynapticsPanel(bpy.types.Panel):
             elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
                 draw_specific_color_coded_set_options(layout, context.scene, options)
                 draw_common_options_for_all_use_cases(layout, context.scene, options)
-
                 draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
 
             elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
                 draw_pre_synaptic_pathway_options(layout, context.scene, options)
                 draw_common_options_for_all_use_cases(layout, context.scene, options)
+                # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
 
             elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
                 draw_post_synaptic_pathway_options(layout, context.scene, options)
                 draw_common_options_for_all_use_cases(layout, context.scene, options)
-
+                # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
 
             else:
                 pass
 
-
-
-
-
-            # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
-
-
-
             layout.row().separator()
             reconstruction_button_row = layout.row()
             reconstruction_button_row.operator('nmv.reconstruct_synaptics')
+
+            layout.row().separator()
+            stats_row = self.layout.row()
+            stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            time_row = self.layout.row()
+            time_row.prop(context.scene, 'NMV_SynapticReconstructionTime')
+            time_row.enabled = False
+
 
 
 ####################################################################################################
