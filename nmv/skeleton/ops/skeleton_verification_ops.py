@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -26,8 +26,7 @@ import nmv.skeleton
 # @verify_number_of_samples_per_section
 ####################################################################################################
 def verify_segments_length(section):
-    """
-    Verifies the lengths of the segments that composed the section.
+    """Verifies the lengths of the segments that composed the section.
 
     :param section:
         A given section to be verified.
@@ -47,8 +46,7 @@ def verify_segments_length(section):
 # @verify_number_of_samples_per_section
 ####################################################################################################
 def verify_segments_length_wrt_radius(section):
-    """
-    Verifies the lengths of the segments that composed the section.
+    """Verifies the lengths of the segments that composed the section.
 
     :param section:
         A given section to be verified.
@@ -73,8 +71,7 @@ def verify_segments_length_wrt_radius(section):
 # @verify_number_of_samples_per_section
 ####################################################################################################
 def verify_number_of_samples_per_section(section):
-    """
-    Verifies the number of samples per section.
+    """Verifies the number of samples per section.
 
     :param section:
         A given section to be verified.
@@ -109,8 +106,7 @@ def verify_number_of_samples_per_section(section):
 # @verify_section_length_with_respect_to_radii
 ####################################################################################################
 def verify_section_length_with_respect_to_radii(section):
-    """
-    Verifies the section length with respect to its radii.
+    """Verifies the section length with respect to its radii.
     This verification determines if the section is long enough or not. The section is considered
     SHORT if its length was less than DOUBLE the sum of the radii of its first and last samples.
 
@@ -148,12 +144,11 @@ def verify_section_length_with_respect_to_radii(section):
 
 
 ####################################################################################################
-# @verify_section_length_with_respect_to_radii
+# @verify_short_sections_and_return_them
 ####################################################################################################
 def verify_short_sections_and_return_them(section,
                                           short_sections_detected=[]):
-    """
-    Verifies the section length with respect to its radii, identifies the short sections and
+    """Verifies the section length with respect to its radii, identifies the short sections and
     return them in a list.
 
     :param section:
@@ -173,8 +168,7 @@ def verify_short_sections_and_return_them(section,
 # @verify_number_of_children
 ####################################################################################################
 def verify_number_of_children(section):
-    """
-    Verifies the number of children for a given section.
+    """Verifies the number of children for a given section.
     Normally, each section should have TWO children at a bifurcation point, however, in
     certain cases, the section can contain only ONE child, THREE children or even more.
 
@@ -204,8 +198,7 @@ def verify_number_of_children(section):
 # @verify_radii_at_branching_points
 ####################################################################################################
 def verify_radii_at_branching_points(section):
-    """
-    Verifies the radii of the given section at the branching points.
+    """Verifies the radii of the given section at the branching points.
     If the radius of the first child sample is greater than that of the last sample of the
     parent, then report this issue.
 
@@ -231,8 +224,7 @@ def verify_radii_at_branching_points(section):
 ####################################################################################################
 def verify_duplicated_samples(section,
                               threshold=1.0):
-    """
-    Verifies if the section has doubles (or samples that are too close or not).
+    """Verifies if the section has doubles (or samples that are too close or not).
 
     :param: section
         A given section to be verified.

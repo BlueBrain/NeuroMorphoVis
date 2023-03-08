@@ -126,7 +126,7 @@ def build_arbors_from_sections(sections_list):
 
 
 ####################################################################################################
-# @draw_connected_sections
+# @build_arbor_as_single_object
 ####################################################################################################
 def build_arbor_as_single_object(section, name,
                                  poly_line_data=[],

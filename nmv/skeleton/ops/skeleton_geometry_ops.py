@@ -32,8 +32,7 @@ import nmv.skeleton
 def compute_section_bounding_box(section,
                                  p_min,
                                  p_max):
-    """
-    Computes the bounding box of a morphological section.
+    """Computes the bounding box of a morphological section.
 
     :param section:
         A given morphological section to compute the bounding box for. The result is stored in the
@@ -73,8 +72,7 @@ def compute_section_bounding_box(section,
 def compute_sections_bounding_box(arbor,
                                   p_min,
                                   p_max):
-    """
-    Computes the bounding box of a morphological section and its children.
+    """Computes the bounding box of a morphological section and its children.
 
     :param arbor:
         A given arbor to compute the bounding box for.
@@ -98,8 +96,7 @@ def compute_sections_bounding_box(arbor,
 # @compute_arbor_bounding_box
 ####################################################################################################
 def compute_arbor_bounding_box(arbor):
-    """
-    Computes the bounding box of a given arbor.
+    """Computes the bounding box of a given arbor.
 
     :param arbor:
         A given morphological arbor to compute the bounding box for.
@@ -151,8 +148,7 @@ def compute_sections_list_bounding_box(sections_list):
 # @compute_full_morphology_bounding_box
 ####################################################################################################
 def compute_full_morphology_bounding_box(morphology):
-    """
-    Computes the bounding box of the entire morphology including all the existing arbors.
+    """Computes the bounding box of the entire morphology including all the existing arbors.
 
     :param morphology:
         A given morphology to compute the bounding box for.

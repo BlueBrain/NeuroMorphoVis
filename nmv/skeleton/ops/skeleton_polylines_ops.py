@@ -316,7 +316,7 @@ def get_connected_poly_line(section,
 
 
 ####################################################################################################
-# @get_section_poly_line
+# @get_arbor_poly_lines_as_connected_sections
 ####################################################################################################
 def get_arbor_poly_lines_as_connected_sections(root,
                                                poly_lines_data=[],

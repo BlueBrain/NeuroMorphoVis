@@ -352,7 +352,7 @@ def compute_min_section_radius(section):
     """
 
     # Average section radius
-    min_section_radius =10000000
+    min_section_radius =1 0000000
 
     # Sum the radii of all the sample
     for sample in section.samples:
@@ -386,8 +386,7 @@ def compute_number_of_samples_per_section(section):
 ####################################################################################################
 def compute_number_of_segments_per_section(section):
 
-    """
-    Computes the number of segments per section in a certain arbor.
+    """Computes the number of segments per section in a certain arbor.
     NOTE: The number of segments is computed from the number of samples.
 
     :param section:
