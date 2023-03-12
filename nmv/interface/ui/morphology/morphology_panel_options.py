@@ -223,9 +223,9 @@ bpy.types.Scene.NMV_SomaConnectionToRoot = bpy.props.EnumProperty(
 
 # Arbor quality
 bpy.types.Scene.NMV_ArborQuality = bpy.props.IntProperty(
-    name='Sides',
-    description='Number of vertices of the cross-section of each segment along the arbor',
-    default=16, min=4, max=128)
+    name='Quality',
+    description='The tubular quality of the branches.',
+    default=3, min=1, max=64)
 
 # Section radius
 bpy.types.Scene.NMV_SectionsRadii = bpy.props.EnumProperty(

@@ -139,7 +139,7 @@ def get_random_spines_across_section(section,
         section_polyline_data = nmv.skeleton.ops.get_section_poly_line(section=section)
 
         # Construct a proxy poly-line
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16,
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16,
                                                      name='arbors_bevel')
         proxy_section_polyline = nmv.geometry.draw_poly_line(
             poly_line_data=section_polyline_data, bevel_object=bevel_object, caps=False)
@@ -246,7 +246,7 @@ def construct_polyline_mesh(polyline_data,
     """
 
     # Proxy bevel object
-    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name='proxy_arbor')
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name='proxy_arbor')
 
     # Polyline from polyline data
     proxy_polyline = nmv.geometry.draw_poly_line(

@@ -133,7 +133,7 @@ class NMV_SynapticsPanel(bpy.types.Panel):
 # @NMV_ReconstructSynaptics
 ####################################################################################################
 class NMV_ReconstructSynaptics(bpy.types.Operator):
-    """Reconstruct the scene"""
+    """Reconstruct the Synaptome"""
 
     # Operator parameters
     bl_idname = "nmv.reconstruct_synaptics"

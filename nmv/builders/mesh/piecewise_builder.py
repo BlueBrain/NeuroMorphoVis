@@ -226,7 +226,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16, name='arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -266,7 +266,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=8, name='arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin

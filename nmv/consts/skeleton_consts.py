@@ -49,6 +49,15 @@ class Skeleton:
     # Apical dendrites prefix
     APICAL_DENDRITES_PREFIX = 'ApicalDendrite'
 
+    # The identifier of a section of type axon defined in NeuroMorphoVis
+    NMV_AXON_SECTION_TYPE = 2
+
+    # The identifier of a section of type basal dendrite defined in NeuroMorphoVis
+    NMV_BASAL_DENDRITE_SECTION_TYPE = 3
+
+    # The identifier of a section of type apical dendrite defined in NeuroMorphoVis
+    NMV_APICAL_SECTION_TYPE = 4
+
     # A little distance before p0 on the root section from the soma side (for nice connection)
     SOMA_EXTRUSION_DELTA = 0.7
 

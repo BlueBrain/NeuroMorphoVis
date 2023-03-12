@@ -277,7 +277,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     line_data.use_fill_caps = fill_caps
 
     if bevel_object is None:
-        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name=name)
+        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name=name)
     else:
         line_data.bevel_object = bevel_object
 

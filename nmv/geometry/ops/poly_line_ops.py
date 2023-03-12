@@ -322,6 +322,7 @@ def draw_poly_lines_in_single_object(poly_lines,
 
     # If a bevel object is given, use it for scaling the diameter of the poly-line
     if bevel_object is not None:
+        poly_lines_object.bevel_mode = 'OBJECT'
         poly_lines_object.bevel_object = bevel_object
 
     # If a list of materials is given, then append it to the skeleton object

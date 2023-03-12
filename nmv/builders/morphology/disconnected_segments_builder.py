@@ -34,8 +34,7 @@ import nmv.utilities
 # @DisconnectedSegmentsBuilder
 ####################################################################################################
 class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
-    """Builds and draws the morphology as a series of disconnected segments for analysis.
-    """
+    """Builds and draws the morphology as a series of disconnected segments for analysis."""
 
     ################################################################################################
     # @__init__
@@ -80,7 +79,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
-    # @construct_tree_poly_lines
+    # @construct_color_coded_polylines
     ################################################################################################
     def construct_color_coded_polylines(self,
                                         root,

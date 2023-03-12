@@ -40,8 +40,7 @@ import nmv.analysis
 ####################################################################################################
 class ProgressiveBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of disconnected sections like the
-    DisconnectedSectionsBuilder, but PROGRESSIVELY.
-    """
+    DisconnectedSectionsBuilder, but PROGRESSIVELY."""
 
     ################################################################################################
     # @__init__

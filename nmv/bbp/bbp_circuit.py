@@ -165,16 +165,14 @@ class BBPCircuit(Circuit):
     ################################################################################################
     def get_afferent_synapses_ids(self,
                                   gid):
-        ids = self.circuit.connectome.afferent_synapses(int(gid))
-        return ids if isinstance(ids, list) else ids.tolist()
+        return self.circuit.connectome.afferent_synapses(int(gid))
 
     ################################################################################################
     # @get_efferent_synapses_ids
     ################################################################################################
     def get_efferent_synapses_ids(self,
                                   gid):
-        ids = self.circuit.connectome.efferent_synapses(int(gid))
-        return ids if isinstance(ids, list) else ids.tolist()
+        return self.circuit.connectome.efferent_synapses(int(gid))
 
     ################################################################################################
     # @get_all_synapses_ids
@@ -192,7 +190,7 @@ class BBPCircuit(Circuit):
                               synapse_ids_list):
 
         import bluepy
-        ids = self.circuit.connectome.synapse_properties(
+        return self.circuit.connectome.synapse_properties(
             numpy.array(synapse_ids_list),
             [bluepy.enums.Synapse.TYPE])[bluepy.enums.Synapse.TYPE].values.tolist()
 

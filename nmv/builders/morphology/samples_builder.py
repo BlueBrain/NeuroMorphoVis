@@ -36,9 +36,8 @@ import nmv.utilities
 ####################################################################################################
 class SamplesBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of samples where each sample is represented by
-    a sphere.
-
-    NOTE: We use bmeshes to generate the spheres and then link them to the scene all at once.
+    a sphere. Note that we use 'bmeshes' to generate the spheres and then link them to the scene
+    ALL AT ONCE to make their creation faster.
     """
 
     ################################################################################################

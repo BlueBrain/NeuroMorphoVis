@@ -103,8 +103,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
 
         # Load the morphology
         start_time = time.time()
-        loading_result = nmv.interface.ui.load_morphology(
-            panel=self, scene=context.scene)
+        loading_result = nmv.interface.ui.load_morphology(panel=self, scene=context.scene)
         loading_time = time.time()
         context.scene.NMV_MorphologyLoadingTime = loading_time - start_time
 
@@ -138,7 +137,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
         if nmv.interface.ui_morphology.is_astrocyte:
             options.morphology.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
         else:
-            options.morphology.axon_branch_order = 2
+            options.morphology.axon_branch_order = 1
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(

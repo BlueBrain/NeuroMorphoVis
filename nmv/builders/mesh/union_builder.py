@@ -299,7 +299,7 @@ class UnionBuilder(MeshBuilderBase):
 
         # Create a bevel object that will be used to create the mesh
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=16, name='hard_edges_arbors_bevel')
+            radius=1.0, resolution=16, name='hard_edges_arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -323,7 +323,7 @@ class UnionBuilder(MeshBuilderBase):
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=16, name='soft_edges_arbors_bevel')
+            radius=1.0, resolution=16, name='soft_edges_arbors_bevel')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin

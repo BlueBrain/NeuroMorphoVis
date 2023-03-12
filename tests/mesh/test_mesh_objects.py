@@ -88,7 +88,7 @@ class MeshObjectTesting(unittest.TestCase):
 
     def test_create_bezier_circle(self):
         mesh_object = nmv.mesh.create_bezier_circle(
-            radius=1, vertices=4, location=(0, 0, 0), name='bezier_circle')
+            radius=1, resolution=4, location=(0, 0, 0), name='bezier_circle')
         self.assertEqual(mesh_object.name, 'bezier_circle')
         self.assertFalse(mesh_object.data.is_editmode)
         self.assertEqual(mesh_object.type, 'CURVE')

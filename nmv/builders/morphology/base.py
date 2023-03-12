@@ -60,7 +60,7 @@ class MorphologyBuilderBase:
         self.options = copy.deepcopy(options)
 
         # All the reconstructed objects of the morphology, for example, poly-lines, spheres etc...
-        self.morphology_objects = []
+        self.morphology_objects = list()
 
         # A list of the colors/materials of the soma
         self.soma_materials = None
@@ -122,7 +122,8 @@ class MorphologyBuilderBase:
         :return:
         """
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='Cross Section')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides,
+            location=self.morphology.soma.centroid, name='Cross Section')
 
         return bevel_object
 
@@ -554,7 +555,9 @@ class MorphologyBuilderBase:
             color=self.options.shading.morphology_endfeet_color)
 
         # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.shading.morphology_material)
+        nmv.shading.create_material_specific_illumination(
+            material_type=self.options.shading.morphology_material,
+            location=self.morphology.soma.centroid)
 
     ################################################################################################
     # @transform_to_global_coordinates
@@ -563,6 +566,7 @@ class MorphologyBuilderBase:
         """Transforms the morphology to the global coordinates.
         """
 
+        return
         # Transform the arbors to the global coordinates if required for a circuit
         if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
 

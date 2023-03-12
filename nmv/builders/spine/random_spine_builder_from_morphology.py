@@ -69,7 +69,7 @@ class RandomSpineBuilderFromMorphology:
 
         # Construct a bevel object that will be used to build the spines
         self.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0,
-                                                          vertices=8,
+                                                          resolution=8,
                                                           name='spines_bevel')
 
         # Build the spine template structures

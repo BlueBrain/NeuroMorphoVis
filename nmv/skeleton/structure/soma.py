@@ -32,7 +32,9 @@ class Soma:
                  centroid,
                  mean_radius,
                  profile_points,
-                 arbors_profile_points=None):
+                 arbors_profile_points=None,
+                 reported_centroid=None,
+                 reported_mean_radius=None):
         """Constructor
 
         :param centroid:
@@ -45,11 +47,17 @@ class Soma:
             A list of profile points measured from the initial samples of the arbors.
         """
 
-        # Soma center (normally origin if local coordinates are used)
+        # Soma centroid (normally origin if local coordinates are used)
         self.centroid = centroid
 
-        # Soma average radius based on the profile points
+        # The soma centroid as reported in the morphology file
+        self.reported_centroid = reported_centroid
+
+        # Soma average radius
         self.mean_radius = mean_radius
+
+        # The soma average radius as reported in the morphology file
+        self.reported_mean_radius = reported_mean_radius
 
         # Soma profile points, they are typically ignored when reconstructing the soma on a
         # physically-plausible basis, but they can also used to make the soma more irregular
@@ -72,7 +80,7 @@ class Soma:
         # Add the arbors profile points radii to the distances_to_soma list
         if self.arbors_profile_points is not None:
             for point in self.arbors_profile_points:
-                self.distances_to_soma.append(point.length)
+                self.distances_to_soma.append((point - self.centroid).length)
 
         # Sort the radii in the list
         self.distances_to_soma = sorted(self.distances_to_soma)

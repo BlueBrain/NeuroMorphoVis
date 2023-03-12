@@ -17,6 +17,8 @@
 
 # System imports
 import copy
+import numpy
+import seaborn
 
 # Internal imports
 from .base import MorphologyBuilderBase
@@ -34,8 +36,7 @@ import nmv.utilities
 ####################################################################################################
 class ConnectedSectionsBuilder(MorphologyBuilderBase):
     """Builds and draws the morphology as a series of connected sections like a stream from the
-    root section to the leaf on every arbor.
-    """
+    root section to the leaf on every arbor."""
 
     ################################################################################################
     # @__init__
@@ -282,7 +283,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         return figure
 
     ################################################################################################
-    # @    def draw_poly_line_list_at_scale
+    # @draw_poly_line_list_at_scale
     ################################################################################################
     @staticmethod
     def draw_poly_line_list_at_scale(poly_lines,
@@ -306,10 +307,6 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Verify the presence of the plotting packages
         nmv.utilities.verify_plotting_packages()
-
-        # Plotting imports
-        import numpy
-        import seaborn
 
         # A handle to the figure
         figure = None

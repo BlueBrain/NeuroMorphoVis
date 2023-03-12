@@ -177,7 +177,7 @@ def load_morphology_from_circuit(panel,
         panel.report({'ERROR'}, 'The selected morphology cannot be loaded!')
         return None
     else:
-        nmv.interface.ui_options.morphology.label = str(scene.NMV_Gid)
+        options.morphology.label = str(scene.NMV_Gid)
         nmv.interface.ui_morphology = morphology_object
         return 'VALID_MORPHOLOGY'
 

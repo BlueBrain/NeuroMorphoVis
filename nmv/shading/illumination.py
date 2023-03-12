@@ -19,6 +19,7 @@
 
 # Blender imports
 import bpy
+from mathutils import Vector
 
 # Internal imports
 import nmv.consts
@@ -31,7 +32,7 @@ import nmv.utilities
 # @create_six_sun_lights
 ####################################################################################################
 def create_six_sun_lights(power=0.5,
-                          location=(0, 0, 0)):
+                          location=nmv.consts.Math.ORIGIN):
     """Creates a set of six sun-lights at specific location with a uniform power to cover the
     illumination from all the directions around the object.
 
@@ -71,7 +72,7 @@ def create_six_sun_lights(power=0.5,
 ####################################################################################################
 # @create_free_style_illumination
 ####################################################################################################
-def create_free_style_illumination():
+def create_free_style_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the default shader.
     """
 
@@ -79,13 +80,13 @@ def create_free_style_illumination():
     nmv.scene.ops.deselect_all()
 
     # Create the set of six sun lights
-    create_six_sun_lights(power=2.0)
+    create_six_sun_lights(power=2.0, location=location)
 
 
 ####################################################################################################
 # @create_lambert_ward_illumination
 ####################################################################################################
-def create_lambert_ward_illumination():
+def create_lambert_ward_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the default shader.
     """
 
@@ -96,13 +97,13 @@ def create_lambert_ward_illumination():
     nmv.scene.ops.deselect_all()
 
     # Create the set of six sun lights
-    create_six_sun_lights(power=1.0)
+    create_six_sun_lights(power=1.0, location=location)
 
 
 ####################################################################################################
 # @create_shadow_illumination
 ####################################################################################################
-def create_shadow_illumination():
+def create_shadow_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the shadow shader.
     """
 
@@ -115,9 +116,7 @@ def create_shadow_illumination():
         lamp_reference = bpy.context.object
         lamp_reference.name = 'LampUp'
         lamp_reference.data.name = "LampUp"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
+        lamp_reference.location = location
         lamp_reference.rotation_euler[0] = 1.5708
         bpy.data.lamps['LampUp'].node_tree.nodes["Emission"].inputs[1].default_value = 5
 
@@ -126,9 +125,7 @@ def create_shadow_illumination():
         lamp_reference = bpy.context.object
         lamp_reference.name = 'LampDown'
         lamp_reference.data.name = "LampDown"
-        lamp_reference.location[0] = 0
-        lamp_reference.location[1] = 0
-        lamp_reference.location[2] = 0
+        lamp_reference.location[0] = location
         lamp_reference.rotation_euler[0] = -1.5708
         bpy.data.lamps['LampDown'].node_tree.nodes["Emission"].inputs[1].default_value = 5
 
@@ -136,7 +133,7 @@ def create_shadow_illumination():
 ####################################################################################################
 # @create_glossy_illumination
 ####################################################################################################
-def create_glossy_illumination():
+def create_glossy_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the glossy shader.
     """
 
@@ -150,15 +147,15 @@ def create_glossy_illumination():
                       (-1.57, 0.000, 0.000),
                       (0.000, -1.57, 0.000)]
 
-    light_position = [(0, 0, 0.1),
-                      (0, 0.1, 0),
-                      (-0.1, 0, 0)]
+    light_position = [Vector((0, 0, 0.1)),
+                      Vector((0, 0.1, 0)),
+                      Vector((-0.1, 0, 0))]
 
     # Add the light sources
     for i, angle in enumerate(light_rotation):
 
         if nmv.utilities.is_blender_280():
-            bpy.ops.object.light_add(type='SUN', radius=1, location=light_position[i])
+            bpy.ops.object.light_add(type='SUN', radius=1, location=light_position[i] + location)
             lamp_reference = bpy.context.object
             lamp_reference.name = 'Lamp%d' % i
             lamp_reference.data.name = "Lamp%d" % i
@@ -170,7 +167,7 @@ def create_glossy_illumination():
             lamp_object = bpy.data.objects.new(name='Lamp%d' % i, object_data=lamp_data)
             bpy.context.scene.objects.link(lamp_object)
             lamp_object.rotation_euler = angle
-            lamp_object.location = light_position[i]
+            lamp_object.location = light_position[i] + location
             bpy.data.lamps['Lamp%d' % i].use_nodes = True
             bpy.data.lamps['Lamp%d' % i].node_tree.nodes["Emission"].inputs[
                 1].default_value = 1e5
@@ -179,7 +176,7 @@ def create_glossy_illumination():
 ####################################################################################################
 # @create_glossy_bumpy_illumination
 ####################################################################################################
-def create_glossy_bumpy_illumination():
+def create_glossy_bumpy_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the glossy-bumpy shader.
     """
 
@@ -187,21 +184,21 @@ def create_glossy_bumpy_illumination():
     nmv.scene.ops.deselect_all()
 
     # Multiple light sources from different directions
-    light_rotation = [(-1.57, 0.000, 0.000),
-                      (0.000, 1.570, 0.000),
-                      (0.000, -1.57, 0.000)]
+    light_rotation = [Vector((-1.57, 0.000, 0.000)),
+                      Vector((0.000, 1.570, 0.000)),
+                      Vector((0.000, -1.57, 0.000))]
 
     # Add the lights
     for i, angle in enumerate(light_rotation):
         if nmv.utilities.is_blender_280():
-            bpy.ops.object.light_add(type='SUN', radius=1, location=(0, 0, 0))
+            bpy.ops.object.light_add(type='SUN', radius=1, location=location)
             lamp_reference = bpy.context.object
             lamp_reference.name = 'Lamp%d' % i
             lamp_reference.data.name = "Lamp%d" % i
             lamp_reference.rotation_euler = angle
             lamp_reference.data.energy = 10
         else:
-            bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
+            bpy.ops.object.lamp_add(type='SUN', radius=1, location=location)
             lamp_reference = bpy.context.object
             lamp_reference.name = 'Lamp%d' % i
             lamp_reference.data.name = "Lamp%d" % i
@@ -213,32 +210,35 @@ def create_glossy_bumpy_illumination():
 ####################################################################################################
 # @create_material_specific_illumination
 ####################################################################################################
-def create_material_specific_illumination(material_type):
+def create_material_specific_illumination(material_type,
+                                          location=nmv.consts.Math.ORIGIN):
     """Create a specific illumination that corresponds to a given material.
 
     :param material_type:
         Material type.
+    :param location:
+        The location where the illumination sources will be added
     """
 
     # Lambert Ward
     if material_type == nmv.enums.Shader.LAMBERT_WARD:
-        return create_lambert_ward_illumination()
+        return create_lambert_ward_illumination(location=location)
 
     # Free-style
     elif material_type == nmv.enums.Shader.FREE_STYLE:
-        return create_free_style_illumination()
+        return create_free_style_illumination(location=location)
 
     # Glossy bumpy
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
-        return create_glossy_illumination()
+        return create_glossy_illumination(location=location)
 
     # Glossy
     elif material_type == nmv.enums.Shader.GLOSSY:
-        return create_glossy_illumination()
+        return create_glossy_illumination(location=location)
 
     elif material_type == nmv.enums.Shader.GLOSSY_BUMPY:
-        return create_glossy_bumpy_illumination()
+        return create_glossy_bumpy_illumination(location=location)
 
     # Default, just use the lambert shader illumination
     else:
-        return create_lambert_ward_illumination()
+        return create_lambert_ward_illumination(location=location)
