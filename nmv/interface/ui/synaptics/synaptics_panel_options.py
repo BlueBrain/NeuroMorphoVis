@@ -96,7 +96,7 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
             'post-synaptic cell.'),
 
            (nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED,
-            'Pre-synaptic Electrical Type',
+            'Post-synaptic Electrical Type',
             'Color code the synapses based on the electrical type (or e-type) of the connecting'
             'post-synaptic cell.')],
 

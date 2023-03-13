@@ -413,17 +413,89 @@ def reconstruct_synaptics(operator, context, circuit, options):
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
-    # TODO: handle errors if no pre-synaptic or post-synaptic cells exist
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+
+        # Initially, try to get a list of synapses shared between the two cells
+        shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(
+            pre_gid=options.synaptics.pre_synaptic_gid,
+            post_gid=options.morphology.gid)
+
+        # If that list is Zero, then report the error and exit
+        if len(shared_synapses_ids) == 0:
+            operator.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
+                            % (str(options.synaptics.pre_synaptic_gid),
+                               str(options.morphology.gid)))
+            return {'FINISHED'}
+
+        # Create the post-synaptic neuron AT ORIGIN - THIS IS THE FOCUS
+        post_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+        # Create the pre-synaptic neuron AT ORIGIN
+        pre_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.synaptics.pre_synaptic_gid, options=options)
+
+        # Get the transformations of the pre- and post-synaptic neurons
+        pre_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+            gid=options.synaptics.pre_synaptic_gid)
+        post_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+            gid=options.morphology.gid)
+
+        # Since the focus is given to the post-synaptic neuron; it is the originally loaded one,
+        # transform the pre-synaptic neuron w.r.t to the post synaptic one
+        pre_synaptic_neuron_mesh.matrix_world = pre_synaptic_transformation
+        pre_synaptic_neuron_mesh.matrix_world = \
+            post_synaptic_transformation.inverted() @ pre_synaptic_neuron_mesh.matrix_world
+
+        # Transform the synapses to be loaded on the post-synaptic neuron
         nmv.bbp.visualize_shared_synapses_between_two_neurons(
             circuit=circuit,
             pre_gid=options.synaptics.pre_synaptic_gid,
-            post_gid=nmv.interface.ui_options.morphology.gid,
-            options=options)
+            post_gid=options.morphology.gid,
+            options=options,
+            inverse_transformation=post_synaptic_transformation.inverted())
 
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+
+        # Initially, try to get a list of synapses shared between the two cells
+        shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(
+            pre_gid=options.morphology.gid,
+            post_gid=options.synaptics.post_synaptic_gid)
+
+        # If that list is Zero, then report the error and exit
+        if len(shared_synapses_ids) == 0:
+            operator.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
+                            % (str(options.morphology.gid),
+                               str(options.synaptics.post_synaptic_gid)))
+            return {'FINISHED'}
+
+        # Create the pre-synaptic neuron AT ORIGIN - THIS IS THE FOCUS
+        pre_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+        # Create the post-synaptic neuron AT ORIGIN
+        post_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.synaptics.post_synaptic_gid, options=options)
+
+        # Get the transformations of the pre- and post-synaptic neurons
+        pre_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+            gid=options.morphology.gid)
+        post_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+            gid=options.synaptics.post_synaptic_gid)
+
+        # Since the focus is given to the pre-synaptic neuron; it is the originally loaded one,
+        # transform the post-synaptic neuron w.r.t to the pre synaptic one
+        post_synaptic_neuron_mesh.matrix_world = post_synaptic_transformation
+        post_synaptic_neuron_mesh.matrix_world = \
+            pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
+
         nmv.bbp.visualize_shared_synapses_between_two_neurons(
             circuit=circuit,
             pre_gid=nmv.interface.ui_options.morphology.gid,
             post_gid=options.synaptics.post_synaptic_gid,
-            options=options)
+            options=options,
+            inverse_transformation=pre_synaptic_transformation.inverted())
+
+    # Done
+    return {'FINISHED'}
+

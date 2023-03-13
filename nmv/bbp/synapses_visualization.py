@@ -358,7 +358,8 @@ def visualize_excitatory_and_inhibitory_synapses(circuit,
 def visualize_shared_synapses_between_two_neurons(circuit,
                                                   pre_gid,
                                                   post_gid,
-                                                  options):
+                                                  options,
+                                                  inverse_transformation):
 
     # Create the shared group
     synapse_groups = list()
@@ -372,5 +373,8 @@ def visualize_shared_synapses_between_two_neurons(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=pre_gid))
-        # TODO: Fix the transformation for the pre or the post
+        inverted_transformation=inverse_transformation)
+
+
+
+

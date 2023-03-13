@@ -145,12 +145,11 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     def execute(self, context):
 
         # Reconstruct the selected use case
-        reconstruct_synaptics(operator=self, context=context,
-                              circuit=nmv.interface.ui_circuit,
-                              options=nmv.interface.ui_options)
+        return reconstruct_synaptics(operator=self, context=context,
+                                     circuit=nmv.interface.ui_circuit,
+                                     options=nmv.interface.ui_options)
 
-        # Done
-        return {'FINISHED'}
+
 
 
 ####################################################################################################
