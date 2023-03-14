@@ -78,3 +78,9 @@ class Suffix:
 
     # Rendered with a fixed radius
     FIXED_RADIUS = '_fixed_radius'
+
+    # Synaptics
+    SYNAPTICS_FRONT = "_synaptics_front"
+    SYNAPTICS_SIDE = "_synaptics_side"
+    SYNAPTICS_TOP = "_synaptics_top"
+

@@ -446,8 +446,7 @@ def render_mesh_image(panel,
     start_time = time.time()
 
     # Validate the output directory
-    if not nmv.interface.ui.validate_output_directory(
-            panel=panel, context_scene=context_scene):
+    if not nmv.interface.ui.validate_output_directory(panel=panel, context_scene=context_scene):
         return
 
     # Create the images directory if it does not exist

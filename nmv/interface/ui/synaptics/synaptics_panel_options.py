@@ -220,13 +220,13 @@ bpy.types.Scene.NMV_PostSynapticAxonsColor = bpy.props.FloatVectorProperty(
     description='')
 
 # Shared neuron parameters #########################################################################
-bpy.types.Scene.NMV_SYNAPTICS_UnifyRadius = bpy.props.BoolProperty(
+bpy.types.Scene.NMV_SynapticsUnifyRadius = bpy.props.BoolProperty(
     name='Unify Branches Radii',
     description='',
     default=True)
 
 # The unified radius of all the synapses
-bpy.types.Scene.NMV_SYNAPTICS_UnifiedNeuronRadius = bpy.props.FloatProperty(
+bpy.types.Scene.NMV_SynapticsUnifiedNeuronRadius = bpy.props.FloatProperty(
     name='Neuron Radius',
     description='The unified radius of all the branches of the neuron. Applicable values [0.1-5]',
     default=0.5, min=0.1, max=5)
@@ -261,4 +261,61 @@ bpy.types.Scene.NMV_SynapticsNumberSharedSynapses = bpy.props.IntProperty(
 bpy.types.Scene.NMV_SynapticReconstructionTime = bpy.props.FloatProperty(
     name="Time (Sec)",
     description="The time it takes to reconstruct the synaptome",
+    default=0, min=0, max=1000000)
+
+# Rendering options ################################################################################
+# Rendering resolution
+bpy.types.Scene.NMV_SynapticsRenderingResolution = bpy.props.EnumProperty(
+    items=[(nmv.enums.Rendering.Resolution.FIXED,
+            'Fixed',
+            'Renders an image at a specific resolution'),
+           (nmv.enums.Rendering.Resolution.TO_SCALE,
+            'To Scale',
+            'Renders an image at a multiple factor of the exact scale in (um)')],
+    name='Type',
+    default=nmv.enums.Rendering.Resolution.FIXED)
+
+# Rendering view
+bpy.types.Scene.NMV_SynapticsRenderingView = bpy.props.EnumProperty(
+    items=[(nmv.enums.Rendering.View.WIDE_SHOT,
+            'Wide Shot',
+            'Renders an image of the full view'),
+           (nmv.enums.Rendering.View.CLOSE_UP,
+            'Close Up',
+            'Renders a close up image the focuses on the soma of the chosen neuron')],
+    name='View', default=nmv.enums.Rendering.View.WIDE_SHOT)
+
+# Render the corresponding scale bar on the resulting image
+bpy.types.Scene.NMV_SynapticsScaleBar = bpy.props.BoolProperty(
+    name='Add Scale Bar',
+    description='Render the scale bar on the resulting image',
+    default=False)
+
+# Image format
+bpy.types.Scene.NMV_SynapticsImageFormat = bpy.props.EnumProperty(
+    items=nmv.enums.Image.Extension.IMAGE_EXTENSION_ITEMS,
+    name='',
+    default=nmv.enums.Image.Extension.PNG)
+
+# Image resolution
+bpy.types.Scene.NMV_SynapticsFrameResolution = bpy.props.IntProperty(
+    name='Resolution',
+    description='The resolution of the image generated from rendering the mesh',
+    default=nmv.consts.Image.DEFAULT_RESOLUTION, min=128, max=1024 * 10)
+
+# Frame scale factor 'for rendering to scale option '
+bpy.types.Scene.NMV_SynapticsFrameScaleFactor = bpy.props.FloatProperty(
+    name="Scale", default=1.0, min=1.0, max=100.0,
+    description="The scale factor for rendering a mesh to scale")
+
+# Rendering closeup size
+bpy.types.Scene.NMV_SynapticsCloseUpSize = bpy.props.FloatProperty(
+    name='Size',
+    description='The size of the view that will be rendered in microns',
+    default=20, min=5, max=100)
+
+# Rendering time
+bpy.types.Scene.NMV_SynapticsRenderingTime = bpy.props.FloatProperty(
+    name='Rendering (Sec)',
+    description='The time it takes to render the synaptics scene into an image',
     default=0, min=0, max=1000000)

@@ -17,6 +17,7 @@
 
 # System imports
 import sys
+import time
 
 # Blender imports
 import bpy
@@ -28,6 +29,7 @@ import nmv.interface
 import nmv.utilities
 import nmv.scene
 from .synaptics_panel_ops import *
+from .synaptics_panel_draw_ops import *
 from .synaptics_panel_options import *
 
 
@@ -52,114 +54,39 @@ class NMV_SynapticsPanel(bpy.types.Panel):
     ################################################################################################
     def draw(self, context):
 
-        # Get a reference to the panel layout
-        layout = self.layout
+        # Get a reference to the options
         options = nmv.interface.ui_options
 
-        # Select the use case
-        use_case_row = layout.row()
-        use_case_row.prop(context.scene, 'NMV_SynapticsUseCase')
-        options.synaptics.use_case = context.scene.NMV_SynapticsUseCase
+        # If a circuit is loaded, enable this panel, otherwise disable it
+        if nmv.interface.ui_circuit is not None:
 
-        # Display the options accordingly, based on the use case selection
-        if context.scene.NMV_SynapticsUseCase != nmv.enums.Synaptics.UseCase.NOT_SELECTED:
+            # Select a use case
+            use_case_row = self.layout.row()
+            use_case_row.prop(context.scene, 'NMV_SynapticsUseCase')
+            options.synaptics.use_case = context.scene.NMV_SynapticsUseCase
 
-            # Reconstruction options
-            synapses_options_row = layout.row()
-            synapses_options_row.label(text='Synapses Options:', icon='OUTLINER_OB_EMPTY')
+            # Display the options accordingly, based on the use case selection
+            if context.scene.NMV_SynapticsUseCase != nmv.enums.Synaptics.UseCase.NOT_SELECTED:
 
-            use_case = options.synaptics.use_case
-            if use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-                draw_afferent_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
+                # Draw the reconstruction options
+                draw_synaptics_reconstruction_options(
+                    layout=self.layout, scene=context.scene, options=options)
 
-            elif use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-                draw_efferent_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
+                # Draw the rendering options
+                draw_synaptics_rendering_options(
+                    layout=self.layout, scene=context.scene, options=options)
 
-            elif use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
-                draw_afferent_and_efferent_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
-                draw_excitatory_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
-                draw_inhibitory_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
-                draw_excitatory_and_inhibitory_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
-                draw_specific_color_coded_set_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_common_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_single_neuron_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
-                draw_pre_synaptic_pathway_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_synapse_radius_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_neuron_pair_options(
-                    layout=layout, scene=context.scene, options=options)
-
-            elif use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
-                draw_post_synaptic_pathway_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_synapse_radius_options(
-                    layout=layout, scene=context.scene, options=options)
-                draw_neuron_pair_options(
-                    layout=layout, scene=context.scene, options=options)
-            else:
-                pass
-
-            layout.row().separator()
-            reconstruction_button_row = layout.row()
-            reconstruction_button_row.operator('nmv.reconstruct_synaptics')
-
-            layout.row().separator()
-            stats_row = self.layout.row()
-            stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            time_row = self.layout.row()
-            time_row.prop(context.scene, 'NMV_SynapticReconstructionTime')
-            time_row.enabled = False
+        # Otherwise, draw the out of context message and disable the panel
+        else:
+            draw_out_of_context_message(layout=self.layout, scene=context.scene, options=options)
+            self.layout.enabled = False if nmv.interface.ui_circuit is None else True
 
 
 ####################################################################################################
 # @NMV_ReconstructSynaptics
 ####################################################################################################
 class NMV_ReconstructSynaptics(bpy.types.Operator):
-    """Reconstruct the Synaptome"""
+    """Reconstruct the synaptics scene"""
 
     # Operator parameters
     bl_idname = "nmv.reconstruct_synaptics"
@@ -170,12 +97,98 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
-        # Reconstruct the selected use case
         return reconstruct_synaptics(operator=self, context=context,
                                      circuit=nmv.interface.ui_circuit,
                                      options=nmv.interface.ui_options)
 
 
+####################################################################################################
+# @NMV_RenderSynapticsFront
+####################################################################################################
+class NMV_RenderSynapticsFront(bpy.types.Operator):
+    """Render front view of the reconstructed scene"""
+
+    # Operator parameters
+    bl_idname = "nmv.render_synaptics_front"
+    bl_label = "Front"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        # Render the image
+        start_time = time.time()
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
+            image_format=nmv.interface.ui_options.mesh.image_format)
+        rendering_time = time.time()
+
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
+                              context.scene.NMV_SynapticsRenderingTime)
+
+        # Confirm operation done
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @NMV_RenderSynapticsSide
+####################################################################################################
+class NMV_RenderSynapticsSide(bpy.types.Operator):
+    """Render side view of the reconstructed mesh"""
+
+    # Operator parameters
+    bl_idname = "nmv.render_synaptics_side"
+    bl_label = "Side"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        start_time = time.time()
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
+            image_format=nmv.interface.ui_options.mesh.image_format)
+        rendering_time = time.time()
+
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
+                              context.scene.NMV_SynapticsRenderingTime)
+
+        # Confirm operation done
+        return {'FINISHED'}
+
+
+####################################################################################################
+# @NMV_RenderSynapticsTop
+####################################################################################################
+class NMV_RenderSynapticsTop(bpy.types.Operator):
+    """Render top view of the reconstructed mesh"""
+
+    # Operator parameters
+    bl_idname = "nmv.render_synaptics_top"
+    bl_label = "Top"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        # Render the image
+        start_time = time.time()
+        nmv.interface.ui.render_mesh_image(
+            self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
+            image_format=nmv.interface.ui_options.mesh.image_format)
+        rendering_time = time.time()
+
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
+        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
+                              context.scene.NMV_SynapticsRenderingTime)
+
+        # Confirm operation done
+        return {'FINISHED'}
 
 
 ####################################################################################################
@@ -189,6 +202,9 @@ def register_panel():
 
     # Button(s)
     bpy.utils.register_class(NMV_ReconstructSynaptics)
+    bpy.utils.register_class(NMV_RenderSynapticsFront)
+    bpy.utils.register_class(NMV_RenderSynapticsSide)
+    bpy.utils.register_class(NMV_RenderSynapticsTop)
 
 
 ####################################################################################################
@@ -202,3 +218,6 @@ def unregister_panel():
 
     # Button(s)
     bpy.utils.unregister_class(NMV_ReconstructSynaptics)
+    bpy.utils.unregister_class(NMV_RenderSynapticsFront)
+    bpy.utils.unregister_class(NMV_RenderSynapticsSide)
+    bpy.utils.unregister_class(NMV_RenderSynapticsTop)

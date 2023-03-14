@@ -66,6 +66,11 @@ class SynapticsOptions:
         self.dendrites_color = nmv.enums.Color.BASAL_DENDRITES
         self.axons_color = nmv.enums.Color.AXONS
 
+        # A list of the color map of the pre- or post-synaptic mtypes and etypes synapses
+        # NOTE: This list is initialized once a neuron is loaded from the circuit
+        self.mtypes_colors = list()
+        self.etypes_colors = list()
+
         # Parameters for a PAIR, NOT a SINGLE neuron
         self.display_pre_synaptic_dendrites = True
         self.display_pre_synaptic_axons = True
@@ -79,6 +84,9 @@ class SynapticsOptions:
         # Neuron radius
         self.unify_branch_radii = True
         self.unified_radius = 1.0
+
+
+
 
 
 

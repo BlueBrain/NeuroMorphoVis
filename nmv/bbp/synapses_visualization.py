@@ -207,7 +207,7 @@ def visualize_afferent_synapses(circuit,
         # Get the color-coding dictionary from the UI
         color_dict = {}
         for i in range(len(nmv.consts.Circuit.MTYPES)):
-            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
+            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.synaptics.mtypes_colors[i]
 
         # Create the afferent synapse groups
         synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_mtypes(
@@ -223,7 +223,7 @@ def visualize_afferent_synapses(circuit,
         # Get the color-coding dictionary from the UI
         color_dict = {}
         for i in range(len(nmv.consts.Circuit.ETYPES)):
-            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.shading.etypes_colors[i]
+            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.synaptics.etypes_colors[i]
 
         # Create the afferent synapse group
         synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_etypes(
@@ -279,7 +279,7 @@ def visualize_efferent_synapses(circuit,
         # Get the color-coding dictionary from the UI
         color_dict = {}
         for i in range(len(nmv.consts.Circuit.MTYPES)):
-            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.shading.mtypes_colors[i]
+            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.synaptics.mtypes_colors[i]
 
         # Create the efferent synapse groups
         synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_mtypes(
@@ -295,7 +295,7 @@ def visualize_efferent_synapses(circuit,
         # Get the color-coding dictionary from the UI
         color_dict = {}
         for i in range(len(nmv.consts.Circuit.ETYPES)):
-            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.shading.etypes_colors[i]
+            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.synaptics.etypes_colors[i]
 
         # Create the efferent synapse groups
         synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_etypes(

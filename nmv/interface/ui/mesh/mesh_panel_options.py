@@ -255,7 +255,7 @@ bpy.types.Scene.NMV_MeshFrameScaleFactor = bpy.props.FloatProperty(
     name="Scale", default=1.0, min=1.0, max=100.0,
     description="The scale factor for rendering a mesh to scale")
 
-# Mesh rendering close up size
+# Mesh rendering closeup size
 bpy.types.Scene.NMV_MeshCloseUpSize = bpy.props.FloatProperty(
     name='Size',
     description='The size of the view that will be rendered in microns',

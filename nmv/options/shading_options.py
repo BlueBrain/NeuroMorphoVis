@@ -72,9 +72,6 @@ class ShadingOptions:
             nmv.enums.ColorMaps.get_hex_color_list(nmv.enums.ColorMaps.GNU_PLOT),
             nmv.consts.Color.COLORMAP_RESOLUTION)
 
-        self.mtypes_colors = list()
-        self.etypes_colors = list()
-
         # Mesh Shading Options #####################################################################
         # Soma color for the mesh toolbox
         self.mesh_soma_color = nmv.enums.Color.SOMA
