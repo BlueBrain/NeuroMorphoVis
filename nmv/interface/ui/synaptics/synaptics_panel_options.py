@@ -157,80 +157,69 @@ bpy.types.Scene.NMV_PostSynapticGID = bpy.props.StringProperty(
     description="The GID of a post-synaptic cell that shares synapses with this cell.",
     default=nmv.consts.Strings.POST_GID, maxlen=1024)
 
-
-
-
-
-bpy.types.Scene.NMV_SYNAPTICS_DisplayDendrites = bpy.props.BoolProperty(
-    name='Display Dendrites',
+# Single neuron properties #########################################################################
+bpy.types.Scene.NMV_DisplayDendrites = bpy.props.BoolProperty(
+    name='Dendrites',
     description='',
     default=True)
 
-bpy.types.Scene.NMV_SYNAPTICS_DisplayAxons = bpy.props.BoolProperty(
-    name='Display Axons',
+bpy.types.Scene.NMV_DisplayAxons = bpy.props.BoolProperty(
+    name='Axons',
     description='',
     default=True)
 
-bpy.types.Scene.NMV_SYNAPTICS_DisplayPreSynapticDendrites = bpy.props.BoolProperty(
-    name='Display Pre-Synaptic Dendrites',
-    description='',
-    default=True)
-
-bpy.types.Scene.NMV_SYNAPTICS_DisplayPreSynapticAxons = bpy.props.BoolProperty(
-    name='Display Pre-Synaptic Axons',
-    description='',
-    default=True)
-
-
-bpy.types.Scene.NMV_SYNAPTICS_DisplayPostSynapticDendrites = bpy.props.BoolProperty(
-    name='Display Post-Synaptic Dendrites',
-    description='',
-    default=True)
-
-bpy.types.Scene.NMV_SYNAPTICS_DisplayPostSynapticAxons = bpy.props.BoolProperty(
-    name='Display Post-Synaptic Axons',
-    description='',
-    default=True)
-
-
-
-bpy.types.Scene.NMV_SYNAPTICS_DendritesColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_SynapticsDendritesColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
     description='')
 
-bpy.types.Scene.NMV_SYNAPTICS_AxonsColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_SynapticsAxonsColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
     description='')
 
+# Neuron pair properties ###########################################################################
+bpy.types.Scene.NMV_DisplayPreSynapticDendrites = bpy.props.BoolProperty(
+    name='Pre-Synaptic Dendrites',
+    description='',
+    default=True)
 
+bpy.types.Scene.NMV_DisplayPreSynapticAxons = bpy.props.BoolProperty(
+    name='Pre-Synaptic Axons',
+    description='',
+    default=True)
 
-bpy.types.Scene.NMV_SYNAPTICS_PreSynapticDendritesColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_DisplayPostSynapticDendrites = bpy.props.BoolProperty(
+    name='Post-Synaptic Dendrites',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_DisplayPostSynapticAxons = bpy.props.BoolProperty(
+    name='Post-Synaptic Axons',
+    description='',
+    default=True)
+
+bpy.types.Scene.NMV_PreSynapticDendritesColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
     description='')
 
-bpy.types.Scene.NMV_SYNAPTICS_PreSynapticAxonsColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_PreSynapticAxonsColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
     description='')
 
-bpy.types.Scene.NMV_SYNAPTICS_PostSynapticDendritesColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_PostSynapticDendritesColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
     description='')
 
-bpy.types.Scene.NMV_SYNAPTICS_PostSynapticAxonsColor = bpy.props.FloatVectorProperty(
+bpy.types.Scene.NMV_PostSynapticAxonsColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,
     description='')
 
-
-
-
-
-
+# Shared neuron parameters #########################################################################
 bpy.types.Scene.NMV_SYNAPTICS_UnifyRadius = bpy.props.BoolProperty(
     name='Unify Branches Radii',
     description='',
@@ -242,8 +231,34 @@ bpy.types.Scene.NMV_SYNAPTICS_UnifiedNeuronRadius = bpy.props.FloatProperty(
     description='The unified radius of all the branches of the neuron. Applicable values [0.1-5]',
     default=0.5, min=0.1, max=5)
 
-# Performance
+# Number of synapses ###############################################################################
+bpy.types.Scene.NMV_SynapticsNumberAfferentSynapses = bpy.props.IntProperty(
+    name="Count",
+    description="The number of afferent synapses found",
+    default=0, min=0, max=1000000)
+
+bpy.types.Scene.NMV_SynapticsNumberEfferentSynapses = bpy.props.IntProperty(
+    name="Count",
+    description="The number of efferent synapses found",
+    default=0, min=0, max=1000000)
+
+bpy.types.Scene.NMV_SynapticsNumberExcitatorySynapses = bpy.props.IntProperty(
+    name="Count",
+    description="The number of excitatory synapses found",
+    default=0, min=0, max=1000000)
+
+bpy.types.Scene.NMV_SynapticsNumberInhibitorySynapses = bpy.props.IntProperty(
+    name="Count",
+    description="The number of inhibitory synapses found",
+    default=0, min=0, max=1000000)
+
+bpy.types.Scene.NMV_SynapticsNumberSharedSynapses = bpy.props.IntProperty(
+    name="Count",
+    description="The number of shared synapses between the two neurons",
+    default=0, min=0, max=1000000)
+
+# Performance ######################################################################################
 bpy.types.Scene.NMV_SynapticReconstructionTime = bpy.props.FloatProperty(
     name="Time (Sec)",
-    description="The time it takes to reconstruct the reconstruct the synaptome",
+    description="The time it takes to reconstruct the synaptome",
     default=0, min=0, max=1000000)

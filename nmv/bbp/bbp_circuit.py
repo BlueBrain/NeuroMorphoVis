@@ -165,14 +165,14 @@ class BBPCircuit(Circuit):
     ################################################################################################
     def get_afferent_synapses_ids(self,
                                   gid):
-        return self.circuit.connectome.afferent_synapses(int(gid))
+        return self.circuit.connectome.afferent_synapses(int(gid)).tolist()
 
     ################################################################################################
     # @get_efferent_synapses_ids
     ################################################################################################
     def get_efferent_synapses_ids(self,
                                   gid):
-        return self.circuit.connectome.efferent_synapses(int(gid))
+        return self.circuit.connectome.efferent_synapses(int(gid)).tolist()
 
     ################################################################################################
     # @get_all_synapses_ids

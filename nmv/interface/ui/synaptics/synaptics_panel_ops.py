@@ -33,6 +33,9 @@ def draw_excitatory_synapses_color(layout, scene, options):
     color_row = layout.row()
     color_row.prop(scene, 'NMV_ExcitatorySynapsesColor')
     options.synaptics.excitatory_synapses_color = scene.NMV_ExcitatorySynapsesColor
+    synapse_count_column = color_row.column()
+    synapse_count_column.prop(scene, 'NMV_SynapticsNumberExcitatorySynapses')
+    synapse_count_column.enabled = False
 
 
 ####################################################################################################
@@ -43,6 +46,9 @@ def draw_inhibitory_synapses_color(layout, scene, options):
     color_row = layout.row()
     color_row.prop(scene, 'NMV_InhibitorySynapsesColor')
     options.synaptics.inhibitory_synapses_color = scene.NMV_InhibitorySynapsesColor
+    synapse_count_column = color_row.column()
+    synapse_count_column.prop(scene, 'NMV_SynapticsNumberInhibitorySynapses')
+    synapse_count_column.enabled = False
 
 
 ####################################################################################################
@@ -126,6 +132,9 @@ def draw_afferent_synapses_color_option(layout, scene, options):
     color_row = layout.row()
     color_row.prop(scene, 'NMV_AfferentSynapsesColor')
     options.synaptics.afferent_synapses_color = scene.NMV_AfferentSynapsesColor
+    synapse_count_column = color_row.column()
+    synapse_count_column.prop(scene, 'NMV_SynapticsNumberAfferentSynapses')
+    synapse_count_column.enabled = False
 
 
 ####################################################################################################
@@ -136,6 +145,9 @@ def draw_efferent_synapses_color_option(layout, scene, options):
     color_row = layout.row()
     color_row.prop(scene, 'NMV_EfferentSynapsesColor')
     options.synaptics.efferent_synapses_color = scene.NMV_EfferentSynapsesColor
+    synapse_count_column = color_row.column()
+    synapse_count_column.prop(scene, 'NMV_SynapticsNumberEfferentSynapses')
+    synapse_count_column.enabled = False
 
 
 ####################################################################################################
@@ -151,6 +163,9 @@ def draw_mtype_color_palette(layout, scene, options):
         for i in range(len(nmv.consts.Circuit.MTYPES)):
             values = colors.row()
             values.prop(scene, 'NMV_MtypeColor_%d' % i)
+            count_column = values.column()
+            count_column.prop(scene, 'NMV_Synaptic_MtypeCount_%d' % i)
+            count_column.enabled = False
 
             # Get the color value from the panel
             options.shading.mtypes_colors.append(getattr(scene, 'NMV_MtypeColor_%d' % i))
@@ -171,6 +186,9 @@ def draw_etype_color_palette(layout, scene, options):
         for i in range(len(nmv.consts.Circuit.ETYPES)):
             values = colors.row()
             values.prop(scene, 'NMV_EtypeColor_%d' % i)
+            count_column = values.column()
+            count_column.prop(scene, 'NMV_Synaptic_EtypeCount_%d' % i)
+            count_column.enabled = False
 
             # Get the color value from the panel
             options.shading.etypes_colors.append(getattr(scene, 'NMV_EtypeColor_%d' % i))
@@ -257,9 +275,9 @@ def draw_synapse_radius_options(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_common_options_for_all_use_cases
+# @draw_common_options
 ####################################################################################################
-def draw_common_options_for_all_use_cases(layout, scene, options):
+def draw_common_options(layout, scene, options):
 
     draw_synapse_radius_options(layout=layout, scene=scene, options=options)
     draw_synapse_percentage_option(layout=layout, scene=scene, options=options)
@@ -294,32 +312,27 @@ def draw_single_neuron_options(layout, scene, options):
 
     dendrites_row = layout.row()
     add_dendrites_column = dendrites_row.column()
-    add_dendrites_column.prop(scene, 'NMV_SYNAPTICS_DisplayDendrites')
+    add_dendrites_column.prop(scene, 'NMV_DisplayDendrites')
     options.synaptics.display_dendrites = scene.NMV_SYNAPTICS_DisplayDendrites
 
     dendrites_options_column = dendrites_row.column()
-    dendrites_options_column.prop(scene, 'NMV_SYNAPTICS_DendritesColor')
+    dendrites_options_column.prop(scene, 'NMV_SynapticsDendritesColor')
     options.synaptics.dendrites_color = scene.NMV_SYNAPTICS_DendritesColor
 
-    if not scene.NMV_SYNAPTICS_DisplayDendrites:
-        dendrites_options_column.enabled = False
-    else:
-        dendrites_options_column.enabled = True
+    dendrites_options_column.enabled = True if scene.NMV_SynapticsDendritesColor else False
 
     axons_row = layout.row()
     add_axons_column = axons_row.column()
-    add_axons_column.prop(scene, 'NMV_SYNAPTICS_DisplayAxons')
+    add_axons_column.prop(scene, 'NMV_DisplayAxons')
     options.synaptics.display_axons = scene.NMV_SYNAPTICS_DisplayAxons
 
     axons_options_column = axons_row.column()
-    axons_options_column.prop(scene, 'NMV_SYNAPTICS_AxonsColor')
+    axons_options_column.prop(scene, 'NMV_SynapticsAxonsColor')
     options.synaptics.axons_color = scene.NMV_SYNAPTICS_AxonsColor
 
-    if not scene.NMV_SYNAPTICS_DisplayAxons:
-        axons_options_column.enabled = False
-    else:
-        axons_options_column.enabled = True
+    axons_options_column.enabled = True if scene.NMV_SYNAPTICS_DisplayAxons else False
 
+    # Radius options
     draw_neuron_radius_option(layout, scene, options)
 
 
@@ -332,35 +345,49 @@ def draw_neuron_pair_options(layout, scene, options):
     neuron_options_row = layout.row()
     neuron_options_row.label(text='Neurons Options:', icon='OUTLINER_OB_EMPTY')
 
-    for i in ['PreSynaptic', 'PostSynaptic']:
+    # Pre-synaptic neuron
+    pre_dendrites_row = layout.row()
+    add_dendrites_column = pre_dendrites_row.column()
+    add_dendrites_column.prop(scene, 'NMV_DisplayPreSynapticDendrites')
+    options.synaptics.display_pre_synaptic_dendrites = scene.NMV_DisplayPreSynapticDendrites
 
-        dendrites_row = layout.row()
-        add_dendrites_column = dendrites_row.column()
-        add_dendrites_column.prop(scene, 'NMV_SYNAPTICS_Display%sDendrites' % i)
-        dendrites_options_column = dendrites_row.column()
-        dendrites_options_column.prop(scene, 'NMV_SYNAPTICS_%sDendritesColor' % i)
+    dendrites_options_column = pre_dendrites_row.column()
+    dendrites_options_column.prop(scene, 'NMV_PreSynapticDendritesColor')
+    options.synaptics.pre_synaptic_dendrites_color = scene.NMV_PreSynapticDendritesColor
 
-        if not getattr(scene, 'NMV_SYNAPTICS_Display%sDendrites' % i):
-            dendrites_options_column.enabled = False
-        else:
-            dendrites_options_column.enabled = True
+    pre_axons_row = layout.row()
+    add_axons_column = pre_axons_row.column()
+    add_axons_column.prop(scene, 'NMV_DisplayPreSynapticAxons')
+    options.synaptics.display_pre_synaptic_axons = scene.NMV_DisplayPreSynapticAxons
 
-        axons_row = layout.row()
-        add_axons_column = axons_row.column()
-        add_axons_column.prop(scene, 'NMV_SYNAPTICS_Display%sAxons' % i)
-        axons_options_column = axons_row.column()
-        axons_options_column.prop(scene, 'NMV_SYNAPTICS_%sAxonsColor' % i)
+    axons_options_column = pre_axons_row.column()
+    axons_options_column.prop(scene, 'NMV_PreSynapticAxonsColor')
+    options.synaptics.pre_synaptic_axons_color = scene.NMV_PreSynapticAxonsColor
 
-        if not getattr(scene, 'NMV_SYNAPTICS_%sAxonsColor' % i):
-            axons_options_column.enabled = False
-        else:
-            axons_options_column.enabled = True
+    # Post-synaptic neuron
+    post_dendrites_row = layout.row()
+    add_dendrites_column = post_dendrites_row.column()
+    add_dendrites_column.prop(scene, 'NMV_DisplayPostSynapticDendrites')
+    options.synaptics.display_post_synaptic_dendrites = scene.NMV_DisplayPostSynapticDendrites
+
+    dendrites_options_column = post_dendrites_row.column()
+    dendrites_options_column.prop(scene, 'NMV_PostSynapticDendritesColor')
+    options.synaptics.post_synaptic_dendrites_color = scene.NMV_PostSynapticDendritesColor
+
+    axons_row = layout.row()
+    add_axons_column = axons_row.column()
+    add_axons_column.prop(scene, 'NMV_DisplayPostSynapticAxons')
+    options.synaptics.display_post_synaptic_axons = scene.NMV_DisplayPostSynapticAxons
+
+    axons_options_column = axons_row.column()
+    axons_options_column.prop(scene, 'NMV_PostSynapticAxonsColor')
+    options.synaptics.post_synaptic_axons_color = scene.NMV_PostSynapticAxonsColor
 
     draw_neuron_radius_option(layout, scene, options)
 
 
 ####################################################################################################
-# @draw_neuron_pair_options
+# @reconstruct_synaptics
 ####################################################################################################
 def reconstruct_synaptics(operator, context, circuit, options):
 
@@ -369,51 +396,92 @@ def reconstruct_synaptics(operator, context, circuit, options):
 
     # Afferent synapses only (on dendrites)
     if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-        nmv.bbp.visualize_afferent_synapses(
-            circuit=circuit, gid=options.morphology.gid, options=options)
+        synapse_groups = nmv.bbp.visualize_afferent_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options, context=context)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
+
+        # Synapses count
+        afferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
 
     # Efferent synapses (on axon)
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-        nmv.bbp.visualize_efferent_synapses(
-            circuit=circuit, gid=options.morphology.gid, options=options)
+        synapse_groups = nmv.bbp.visualize_efferent_synapses(
+            circuit=circuit, gid=options.morphology.gid, options=options, context=context)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
+        # Synapses count
+        efferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
+
     # Afferent and efferent synapses
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
-        nmv.bbp.visualize_afferent_and_efferent_synapses(
+        synapse_groups = nmv.bbp.visualize_afferent_and_efferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
             visualize_afferent=True, visualize_efferent=True)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
+        # Synapses count
+        afferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
+        efferent_synapses_count = len(synapse_groups[1].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
+
     # Excitatory synapses only
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
-        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+        synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
             visualize_excitatory=True, visualize_inhibitory=False)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
+        # Synapses count
+        excitatory_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberExcitatorySynapses = excitatory_synapses_count
+
     # Inhibitory synapses only
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
-        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+        synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=False, visualize_inhibitory=True, options=options)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
+        # Synapses count
+        inhibitory_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberInhibitorySynapses = inhibitory_synapses_count
+
     # Excitatory and inhibitory synapses
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
-        nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
+        synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=True, visualize_inhibitory=True, options=options)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
 
+        # Synapses count
+        excitatory_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberExcitatorySynapses = excitatory_synapses_count
+        inhibitory_synapses_count = len(synapse_groups[1].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberInhibitorySynapses = inhibitory_synapses_count
+
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+
+        # Ensure that the given pre-synaptic GID is an integer
+        try:
+            int(options.synaptics.pre_synaptic_gid)
+        except ValueError:
+            operator.report({'ERROR'}, 'Please enter a valid GID as an integer')
+            return {'FINISHED'}
+
+        # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
+        if int(options.synaptics.pre_synaptic_gid) != int(options.morphology.gid):
+            operator.report({'ERROR'}, 'Please enter a valid pre-synaptic GID, that is different '
+                                       'from the post-synaptic one')
+            return {'FINISHED'}
 
         # Initially, try to get a list of synapses shared between the two cells
         shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(
@@ -455,7 +523,23 @@ def reconstruct_synaptics(operator, context, circuit, options):
             options=options,
             inverse_transformation=post_synaptic_transformation.inverted())
 
+        # Synapses count
+        context.scene.NMV_SynapticsNumberExcitatorySynapses = len(shared_synapses_ids)
+
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+
+        # Ensure that the given post-synaptic GID is an integer
+        try:
+            int(options.synaptics.post_synaptic_gid)
+        except ValueError:
+            operator.report({'ERROR'}, 'Please enter a valid GID as an integer')
+            return {'FINISHED'}
+
+        # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
+        if int(options.synaptics.post_synaptic_gid) != int(options.morphology.gid):
+            operator.report({'ERROR'}, 'Please enter a valid post-synaptic GID, that is different '
+                                       'from the pre-synaptic one')
+            return {'FINISHED'}
 
         # Initially, try to get a list of synapses shared between the two cells
         shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(

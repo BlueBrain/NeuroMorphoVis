@@ -68,52 +68,78 @@ class NMV_SynapticsPanel(bpy.types.Panel):
             synapses_options_row = layout.row()
             synapses_options_row.label(text='Synapses Options:', icon='OUTLINER_OB_EMPTY')
 
-            if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
-                draw_afferent_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            use_case = options.synaptics.use_case
+            if use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+                draw_afferent_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
-                draw_efferent_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+                draw_efferent_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
-                draw_afferent_and_efferent_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+                draw_afferent_and_efferent_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
-                draw_excitatory_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+                draw_excitatory_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
-                draw_inhibitory_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+                draw_inhibitory_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
-                draw_excitatory_and_inhibitory_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
+            elif use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+                draw_excitatory_and_inhibitory_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
+                draw_specific_color_coded_set_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_common_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_single_neuron_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.SPECIFIC_COLOR_CODED_SET:
-                draw_specific_color_coded_set_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                draw_single_neuron_options(layout=layout, scene=context.scene, options=options)
+            elif use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+                draw_pre_synaptic_pathway_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_synapse_radius_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_neuron_pair_options(
+                    layout=layout, scene=context.scene, options=options)
 
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
-                draw_pre_synaptic_pathway_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
-
-            elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
-                draw_post_synaptic_pathway_options(layout, context.scene, options)
-                draw_common_options_for_all_use_cases(layout, context.scene, options)
-                # draw_neuron_pair_options(layout=layout, scene=context.scene, options=options)
-
+            elif use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+                draw_post_synaptic_pathway_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_synapse_radius_options(
+                    layout=layout, scene=context.scene, options=options)
+                draw_neuron_pair_options(
+                    layout=layout, scene=context.scene, options=options)
             else:
                 pass
 

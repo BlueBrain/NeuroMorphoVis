@@ -50,6 +50,11 @@ def create_color_coded_synapse_groups_by_mtype(circuit,
             synapse_groups.append(nmv.bbp.SynapseGroup(
                 name=mtype, synapses_ids_list=synapses_ids_list, color=mtype_color_dict[mtype]))
 
+        # To keep consistency for the indexing over all the types, add an empty group
+        else:
+            synapse_groups.append(nmv.bbp.SynapseGroup(
+                name=mtype, synapses_ids_list=list(), color=mtype_color_dict[mtype]))
+
     # Return a reference to the synapse groups
     return synapse_groups
 
@@ -83,6 +88,11 @@ def create_color_coded_synapse_groups_by_etype(circuit,
         if len(synapses_ids_list) > 0:
             synapse_groups.append(nmv.bbp.SynapseGroup(
                 name=etype, synapses_ids_list=synapses_ids_list, color=etype_color_dict[etype]))
+
+        # To keep consistency for the indexing over all the types, add an empty group
+        else:
+            synapse_groups.append(nmv.bbp.SynapseGroup(
+                name=etype, synapses_ids_list=list(), color=etype_color_dict[etype]))
 
     # Return a reference to the synapse groups
     return synapse_groups

@@ -66,7 +66,7 @@ class SynapticsOptions:
         self.dendrites_color = nmv.enums.Color.BASAL_DENDRITES
         self.axons_color = nmv.enums.Color.AXONS
 
-        # Parameters for a PAIR and not a SINGLE neuron
+        # Parameters for a PAIR, NOT a SINGLE neuron
         self.display_pre_synaptic_dendrites = True
         self.display_pre_synaptic_axons = True
         self.pre_synaptic_dendrites_color = nmv.enums.Color.BASAL_DENDRITES

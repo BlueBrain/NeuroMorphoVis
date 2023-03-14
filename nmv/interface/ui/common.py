@@ -590,6 +590,12 @@ def initialize_synaptic_colors():
                         subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
                         description=''))
 
+            setattr(bpy.types.Scene, 'NMV_Synaptic_MtypeCount_%d' % i,
+                    bpy.props.IntProperty(
+                        name="Count",
+                        description="The number of synapses of this specific morphological type",
+                        default=0, min=0, max=1000000))
+
     # UI color elements for the color map
     if nmv.consts.Circuit.ETYPES is not None:
         for i in range(len(nmv.consts.Circuit.ETYPES)):
@@ -601,6 +607,12 @@ def initialize_synaptic_colors():
                         name='%s' % nmv.consts.Circuit.ETYPES[i],
                         subtype='COLOR', default=Vector((r, g, b)), min=0.0, max=1.0,
                         description=''))
+
+            setattr(bpy.types.Scene, 'NMV_Synaptic_EtypeCount_%d' % i,
+                    bpy.props.IntProperty(
+                        name="Count",
+                        description="The number of synapses of this specific electrical type",
+                        default=0, min=0, max=1000000))
 
 
 ####################################################################################################

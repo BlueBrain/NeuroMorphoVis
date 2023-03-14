@@ -142,12 +142,6 @@ def visualize_afferent_synapses_on_post_synaptic_neuron(
         material_type=material_type)
 
 
-
-
-
-
-
-
 ####################################################################################################
 # @visualize_excitatory_inhibitory_synapses_on_neuron
 ####################################################################################################
@@ -187,7 +181,8 @@ def visualize_excitatory_inhibitory_synapses_on_neuron(
 ####################################################################################################
 def visualize_afferent_synapses(circuit,
                                 gid,
-                                options):
+                                options,
+                                context=None):
 
     # Create the synapse groups
     synapse_groups = list()
@@ -202,6 +197,11 @@ def visualize_afferent_synapses(circuit,
             color=nmv.utilities.rgb_vector_to_hex(options.synaptics.afferent_synapses_color))
         synapse_groups.append(afferent_group)
 
+        # Synapses count
+        if context is not None:
+            afferent_synapses_count = len(afferent_group.synapses_ids_list)
+            context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
+
     elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
 
         # Get the color-coding dictionary from the UI
@@ -212,6 +212,11 @@ def visualize_afferent_synapses(circuit,
         # Create the afferent synapse groups
         synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_mtypes(
             circuit=circuit, gid=gid, mtype_color_dict=color_dict)
+
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.MTYPES)):
+                setattr(context.scene, 'NMV_Synaptic_MtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
 
     elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
 
@@ -224,6 +229,11 @@ def visualize_afferent_synapses(circuit,
         synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_etypes(
             circuit=circuit, gid=gid, etype_color_dict=color_dict)
 
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.ETYPES)):
+                setattr(context.scene, 'NMV_Synaptic_EtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
+
     else:
         pass
 
@@ -234,13 +244,17 @@ def visualize_afferent_synapses(circuit,
         synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
+    # Return the synapse groups for statistics
+    return synapse_groups
+
 
 ####################################################################################################
 # @visualize_efferent_synapses
 ####################################################################################################
 def visualize_efferent_synapses(circuit,
                                 gid,
-                                options):
+                                options,
+                                context=None):
 
     # Create the synapse groups
     synapse_groups = list()
@@ -255,6 +269,11 @@ def visualize_efferent_synapses(circuit,
             color=nmv.utilities.rgb_vector_to_hex(options.synaptics.efferent_synapses_color))
         synapse_groups.append(efferent_group)
 
+        # Synapses count
+        if context is not None:
+            efferent_synapses_count = len(efferent_group.synapses_ids_list)
+            context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
+
     elif efferent_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
 
         # Get the color-coding dictionary from the UI
@@ -265,6 +284,11 @@ def visualize_efferent_synapses(circuit,
         # Create the efferent synapse groups
         synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_mtypes(
             circuit=circuit, gid=gid, mtype_color_dict=color_dict)
+
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.MTYPES)):
+                setattr(context.scene, 'NMV_Synaptic_MtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
 
     elif efferent_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
 
@@ -277,6 +301,11 @@ def visualize_efferent_synapses(circuit,
         synapse_groups = nmv.bbp.get_efferent_synapse_groups_color_coded_by_post_etypes(
             circuit=circuit, gid=gid, etype_color_dict=color_dict)
 
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.ETYPES)):
+                setattr(context.scene, 'NMV_Synaptic_EtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
+
     else:
         pass
 
@@ -286,6 +315,9 @@ def visualize_efferent_synapses(circuit,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+
+    # Return the synapse groups for statistics
+    return synapse_groups
 
 
 ####################################################################################################
@@ -317,6 +349,9 @@ def visualize_afferent_and_efferent_synapses(circuit,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+
+    # Return the synapse groups for statistics
+    return synapse_groups
 
 
 ####################################################################################################
@@ -351,6 +386,9 @@ def visualize_excitatory_and_inhibitory_synapses(circuit,
         synapses_percentage=options.synaptics.percentage,
         inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
+    # Return the synapse groups for statistics
+    return synapse_groups
+
 
 ####################################################################################################
 # @visualize_excitatory_and_inhibitory_synapses
@@ -374,6 +412,10 @@ def visualize_shared_synapses_between_two_neurons(circuit,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
         inverted_transformation=inverse_transformation)
+
+    # Return the synapse groups for statistics
+    return synapse_groups
+
 
 
 
