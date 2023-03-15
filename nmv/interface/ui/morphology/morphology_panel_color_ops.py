@@ -327,3 +327,4 @@ def draw_morphology_color_options(layout, scene, options, morphology):
     else:
         nmv.logger.log('UI_ERROR: add_morphology_color_options')
 
+    layout.separator()

@@ -36,6 +36,11 @@ import nmv.utilities
 import nmv.rendering
 import nmv.geometry
 from .morphology_panel_options import *
+from .morphology_panel_reconstruction_ops import *
+from .morphology_panel_skeleton_ops import *
+from .morphology_panel_export_ops import *
+from .morphology_panel_color_ops import *
+from .morphology_panel_button_ops import *
 
 # Is the morphology reconstructed or not
 is_morphology_reconstructed = False
@@ -45,6 +50,9 @@ is_morphology_rendered = False
 
 # What is the selected morphology builder
 morphology_builder = None
+
+
+
 
 
 ####################################################################################################
@@ -108,83 +116,48 @@ class NMV_MorphologyPanel(bpy.types.Panel):
     ################################################################################################
     # @draw
     ################################################################################################
-    def draw(self,
-             context):
-        """Draw the panel.
-
-        :param context:
-            Panel context.
-        """
-
-        # Get a reference to the layout of the panel
-        layout = self.layout
-
-        # Get a reference to the scene
-        current_scene = context.scene
+    def draw(self, context):
 
         # Documentation button
-        documentation_button = layout.column()
-        documentation_button.operator('nmv.documentation_morphology', icon='URL')
-        documentation_button.separator()
+        draw_documentation_button(layout=self.layout)
 
-        # Set the reconstruction options
-        #nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
-        #    layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+        # Reconstruction options
+        draw_morphology_reconstruction_options(
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
 
-        nmv.interface.ui.morphology_panel_ops.draw_morphology_reconstruction_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
-
-        self.layout.row().separator()
-
-        # Set the skeleton options
-        #nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
-        #    layout=layout, scene=current_scene, options=nmv.interface.ui_options)
-
-        nmv.interface.ui.morphology_panel_ops.draw_morphology_skeleton_display_options(
-            layout=layout, scene=current_scene,
+        # Skeleton display options
+        draw_morphology_skeleton_display_options(
+            layout=self.layout, scene=context.scene,
             options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
 
-        self.layout.row().separator()
-
-        # Set the color options
-        nmv.interface.ui.morphology_panel_ops.add_color_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+        # Morphology color options
+        draw_morphology_color_options(
+            layout=self.layout, scene=context.scene,
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
 
         # Reconstruction button
-        quick_reconstruction_row = layout.row()
-        quick_reconstruction_row.label(text='Quick Reconstruction:', icon='PARTICLE_POINT')
-        reconstruct_morphology_button_row = layout.row()
-        reconstruct_morphology_button_row.operator('nmv.reconstruct_morphology',
-                                                   text=bpy.types.Scene.NMV_MorphologyButtonLabel,
-                                                   icon='RNA_ADD')
-        reconstruct_morphology_button_row.enabled = True
-
         global is_morphology_reconstructed
-        if is_morphology_reconstructed:
-            morphology_stats_row = layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            reconstruction_time_row = layout.row()
-            reconstruction_time_row.prop(context.scene, 'NMV_MorphologyReconstructionTime')
-            reconstruction_time_row.enabled = False
+        draw_morphology_reconstruction_button(layout=self.layout,
+                                              scene=context.scene,
+                                              show_stats=is_morphology_reconstructed)
 
-        # Set the rendering options
+        # Rendering options
         nmv.interface.ui.morphology_panel_ops.set_rendering_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
 
         global is_morphology_rendered
         if is_morphology_rendered:
-            morphology_stats_row = layout.row()
+            morphology_stats_row = self.layout.row()
             morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            rendering_time_row = layout.row()
+            rendering_time_row = self.layout.row()
             rendering_time_row.prop(context.scene, 'NMV_MorphologyRenderingTime')
             rendering_time_row.enabled = False
 
-        # Set the rendering options
-        nmv.interface.ui.morphology_panel_ops.set_export_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+        # Export buttons
+        draw_export_options(layout=self.layout)
 
         # Enable or disable the layout
-        nmv.interface.enable_or_disable_layout(layout)
+        nmv.interface.enable_or_disable_layout(self.layout)
 
 
 ####################################################################################################
@@ -209,9 +182,6 @@ class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
         :return:
             'FINISHED'
         """
-
-        # Reset the scene
-        nmv.scene.reset_scene()
 
         # Clear the scene
         nmv.scene.clear_scene()
@@ -408,184 +378,6 @@ class NMV_RenderMorphologyTop(bpy.types.Operator):
         return {'FINISHED'}
 
 
-####################################################################################################
-# @NMV_RenderMorphology360
-####################################################################################################
-class NMV_RenderMorphology360(bpy.types.Operator):
-    """Render a 360 view of the reconstructed morphology"""
-
-    # Operator parameters
-    bl_idname = "nmv.render_morphology_360"
-    bl_label = "360"
-
-    # Timer parameters
-    event_timer = None
-    timer_limits = 0
-    start_time = 0
-
-    # Output data
-    output_directory = None
-
-    ################################################################################################
-    # @modal
-    ################################################################################################
-    def modal(self, context, event):
-        """
-        Threading and non-blocking handling.
-
-        :param context: Panel context.
-        :param event: A given event for the panel.
-        """
-
-        # Get a reference to the scene
-        scene = context.scene
-
-        # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > 360:
-
-            # Reset the orientation of the mesh
-            nmv.scene.reset_orientation_of_objects(
-                scene_objects=nmv.interface.ui_reconstructed_skeleton)
-
-            # Stats.
-            rendering_time = time.time()
-            global is_morphology_rendered
-            is_morphology_rendered = True
-            context.scene.NMV_MorphologyRenderingTime = rendering_time - self.start_time
-            nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                                  context.scene.NMV_MorphologyRenderingTime)
-
-            # Reset the timer limits
-            self.timer_limits = 0
-
-            # Refresh the panel context
-            self.cancel(context)
-
-            # Done
-            return {'FINISHED'}
-
-        # Timer event, where the function is executed here on a per-frame basis
-        if event.type == 'TIMER':
-
-            # Set the frame name
-            image_name = '%s/%s' % (
-                self.output_directory, '{0:05d}'.format(self.timer_limits))
-
-            # Compute the bounding box for a close up view
-            if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.CLOSEUP:
-
-                # Compute the bounding box for a close up view
-                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
-
-            # Compute the bounding box for a mid-shot view
-            elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.MID_SHOT:
-
-                # Compute the bounding box for the available meshes only
-                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Compute the bounding box for the wide-shot view that corresponds to the whole
-            # morphology
-            else:
-
-                # Compute the full morphology bounding box
-                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                    morphology=nmv.interface.ui_morphology)
-
-            # Compute a 360 bounding box to fit the arbors
-            bounding_box_360 = nmv.bbox.compute_360_bounding_box(
-                rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
-
-            # Stretch the bounding box by few microns
-            bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
-
-            # Render a frame
-            nmv.rendering.renderer.render_at_angle(
-                scene_objects=nmv.interface.ui_reconstructed_skeleton,
-                angle=self.timer_limits,
-                bounding_box=bounding_box_360,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_MorphologyFrameResolution,
-                image_name=image_name)
-
-            # Update the progress shell
-            nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
-
-            # Update the progress bar
-            context.scene.NMV_MorphologyRenderingProgress = int(100 * self.timer_limits / 360.0)
-
-            # Upgrade the timer limits
-            self.timer_limits += 1
-
-        # Next frame
-        return {'PASS_THROUGH'}
-
-    ################################################################################################
-    # @execute
-    ################################################################################################
-    def execute(self, context):
-        """
-        Execute the operator.
-
-        :param context: Panel context.
-        """
-
-        # If this is a dendrogram rendering, handle it in a very specific way.
-        if nmv.interface.ui_options.morphology.reconstruction_method == \
-            nmv.enums.Skeleton.Method.DENDROGRAM:
-
-            # Cannot render a 360 of the dendrogram
-            self.report({'INFO'}, 'Cannot render a 360 of the dendrogram')
-            return {'FINISHED'}
-
-        # Timer
-        self.start_time = time.time()
-
-        # Verify the output directory
-        if not nmv.interface.validate_output_directory(self, context.scene):
-            return {'FINISHED'}
-
-        # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
-            nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.sequences_directory)
-
-        # Create a specific directory for this mesh
-        self.output_directory = '%s/%s%s' % \
-                                (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label,
-                                 nmv.consts.Suffix.MORPHOLOGY_360)
-        nmv.file.ops.clean_and_create_directory(self.output_directory)
-
-        # Use the event timer to update the UI during the soma building
-        wm = context.window_manager
-        self.event_timer = wm.event_timer_add(time_step=0.01, window=context.window)
-        wm.modal_handler_add(self)
-
-        # Done
-        return {'RUNNING_MODAL'}
-
-    ################################################################################################
-    # @cancel
-    ################################################################################################
-    def cancel(self, context):
-        """
-        Cancel the panel processing and return to the interaction mode.
-
-        :param context: Panel context.
-        """
-
-        # Multi-threading
-        wm = context.window_manager
-        wm.event_timer_remove(self.event_timer)
-
-        # Report the process termination in the UI
-        self.report({'INFO'}, 'Morphology Rendering Done')
-
-        # Confirm operation done
-        return {'FINISHED'}
 
 
 ####################################################################################################

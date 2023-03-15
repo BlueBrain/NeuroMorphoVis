@@ -23,7 +23,7 @@ from mathutils import Vector
 import nmv.consts
 import nmv.enums
 from .morphology_panel_color_ops import *
-from .morphology_panel_draw_ops import *
+from .morphology_panel_skeleton_ops import *
 
 
 ####################################################################################################

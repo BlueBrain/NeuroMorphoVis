@@ -294,7 +294,7 @@ def draw_poly_lines_in_single_object(poly_lines,
     :param texture_size:
         For UV mapping.
     :return:
-        A reference to the drawn poly-lines object.
+        A reference to the drawn poly-lines object./home/abdellah/Downloads/pycharm-community-2022.3.2/bin
     """
 
     # Create the object as a new curve

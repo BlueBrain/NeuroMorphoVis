@@ -16,18 +16,45 @@
 ####################################################################################################
 
 
+# Internal imports
+import nmv.options
+
+
 ####################################################################################################
 # @Globals
 ####################################################################################################
 class Globals:
     """UI globals"""
 
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self):
-        pass
+    def __init__(self): pass
 
     # This flag is used to verify if NeuroMorphoVis is already initialized or not
     nmv_initialized = False
+
+    # NeuroMorphoVis options
+    options = nmv.options.NeuroMorphoVisOptions()
+
+    # The morphology skeleton object loaded after UI interaction
+    morphology = None
+
+    # All the icons loaded for the UI
+    icons = None
+
+    # The reconstructed soma mesh object
+    soma_mesh = None
+
+    # A list of all the objects that correspond to the reconstructed morphology skeleton
+    reconstructed_skeleton = list()
+
+    # A list of all the objects that correspond to the reconstructed mesh of the neuron
+    # NOTE: If this list contains a single mesh object, then it accounts for the entire mesh after
+    # joining all the mesh objects together
+    reconstructed_mesh = list()
+
+    # Reference to the circuit
+    circuit = None
+
+    is_morphology_reconstructed = False
+
+    is_morphology_rendered = False
 

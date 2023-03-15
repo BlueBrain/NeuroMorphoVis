@@ -351,4 +351,7 @@ def draw_morphology_reconstruction_options(layout, scene, options):
     else:
         nmv.logger.log('UI_ERROR: draw_morphology_reconstruction_options')
 
+    layout.separator()
+
+
 
