@@ -27,7 +27,7 @@ import nmv.skeleton
 ####################################################################################################
 def compute_segment_radius(sample_1,
                            sample_2):
-    """Computes the average radius of the segment.
+    """Computes the average radius of the segment in microns.
 
     :param sample_1:
         The first sample of the segment.
@@ -45,7 +45,7 @@ def compute_segment_radius(sample_1,
 ####################################################################################################
 def compute_segment_length(sample_1,
                            sample_2):
-    """Computes the segment length.
+    """Computes the segment length in microns.
 
     :param sample_1:
         First sample of the segment.

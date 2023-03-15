@@ -30,8 +30,7 @@ import nmv.scene
 # @Endfoot
 ####################################################################################################
 class Endfoot:
-    """Astrocyte endfoot
-    """
+    """Astrocyte endfoot"""
 
     ################################################################################################
     # @__init__
@@ -97,7 +96,8 @@ class Endfoot:
 
         # Assign the material to the endfeet
         if material is not None:
-            nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=material)
+            nmv.shading.set_material_to_object(
+                mesh_object=mesh_object, material_reference=material)
 
         # Smooth the surface for the shading
         nmv.mesh.shade_smooth_object(mesh_object=mesh_object)
