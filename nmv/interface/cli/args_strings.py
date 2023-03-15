@@ -279,7 +279,7 @@ class Args:
     CAMERA_VIEW = '--camera-view'
 
     # The size of a close up view in microns
-    CLOSE_UP_DIMENSIONS = '--close-up-dimensions'
+    CLOSEUP_DIMENSIONS = '--close-up-dimensions'
 
     # Frame resolution
     FRAME_RESOLUTION = '--frame-resolution'

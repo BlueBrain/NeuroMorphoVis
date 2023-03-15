@@ -227,7 +227,7 @@ bpy.types.Scene.NMV_MeshRenderingView = bpy.props.EnumProperty(
            (nmv.enums.Rendering.View.MID_SHOT,
             'Mid Shot',
             'Renders an image of the reconstructed arbors only'),
-           (nmv.enums.Rendering.View.CLOSE_UP,
+           (nmv.enums.Rendering.View.CLOSEUP,
             'Close Up',
             'Renders a close up image the focuses on the soma')],
     name='View', default=nmv.enums.Rendering.View.MID_SHOT)

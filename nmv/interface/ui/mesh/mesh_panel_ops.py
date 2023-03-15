@@ -549,10 +549,10 @@ def draw_rendering_options(panel,
     rendering_view_row.prop(scene, 'NMV_MeshRenderingView', expand=True)
     panel.shown_hidden_rows.append(rendering_view_row)
 
-    # Add the close up size option
-    if scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
+    # Add the closeup size option
+    if scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSEUP:
 
-        # Close up size option
+        # Closeup size option
         close_up_size_row = layout.row()
         close_up_size_row.label(text='Close Up Size:')
         close_up_size_row.prop(scene, 'NMV_MeshCloseUpSize')

@@ -66,13 +66,13 @@ SYNAPSE_PERCENTAGE='50'
 SYNAPSE_SIZE='2.0'
 
 # Close-up view size
-CLOSE_UP_SIZE='30'
+CLOSEUP_SIZE='30'
 
 # Base full view resolution
 FULL_VIEW_RESOLUTION='2000'
 
 # Base close-up resolution
-CLOSE_UP_RESOLUTION='2000'
+CLOSEUP_RESOLUTION='2000'
 
 # Render 360 movies
 RENDER_MOVIES='yes'
@@ -104,10 +104,10 @@ $BLENDER -b --verbose 0 --python create-synaptomes-cluster.py --                
     --color-map=$COLOR_MAP_FILE                                                                     \
     --neuron-color=$NEURON_COLOR                                                                    \
     --full-view-resolution=$FULL_VIEW_RESOLUTION                                                    \
-    --close-up-resolution=$CLOSE_UP_RESOLUTION                                                      \
+    --close-up-resolution=$CLOSEUP_RESOLUTION                                                      \
     --synapse-percentage=$SYNAPSE_PERCENTAGE                                                        \
     --synapse-size=$SYNAPSE_SIZE                                                                    \
-    --close-up-size=$CLOSE_UP_SIZE                                                                  \
+    --close-up-size=$CLOSEUP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     --number-jobs-per-core=$NUMBER_OF_JOBS_PER_CORE                                                 \
     --user-name=$USER_NAME                                                                          \

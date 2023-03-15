@@ -38,10 +38,10 @@ class Image:
     FULL_VIEW_RESOLUTION = 1024
 
     # Default close up view resolution
-    CLOSE_UP_RESOLUTION = 1024
+    CLOSEUP_RESOLUTION = 1024
 
     # Default close up dimensions (in microns)
-    CLOSE_UP_DIMENSIONS = 20
+    CLOSEUP_DIMENSIONS = 20
 
     # The bounding box increment that will clean the edges around the images
     GAP_DELTA = 5.0

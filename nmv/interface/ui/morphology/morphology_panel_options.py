@@ -54,7 +54,7 @@ bpy.types.Scene.NMV_BuildAxon = bpy.props.BoolProperty(
 
 # Axon branching order
 # Since the axon is so complicated, we will set its default branching order to 5
-bpy.types.Scene.NMV_AxonBranchingLevel = bpy.props.IntProperty(
+bpy.types.Scene.NMV_AxonsBranchingOrder = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the axon',
     default=nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER, min=0, max=1000)
@@ -66,7 +66,7 @@ bpy.types.Scene.NMV_BuildBasalDendrites = bpy.props.BoolProperty(
     default=True)
 
 # Basal dendrites branching order
-bpy.types.Scene.NMV_BasalDendritesBranchingLevel = bpy.props.IntProperty(
+bpy.types.Scene.NMV_BasalDendritesBranchingOrder = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the basal dendrites',
     default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=1000)
@@ -78,7 +78,7 @@ bpy.types.Scene.NMV_BuildApicalDendrite = bpy.props.BoolProperty(
     default=True)
 
 # Apical dendrite branching order
-bpy.types.Scene.NMV_ApicalDendriteBranchingLevel = bpy.props.IntProperty(
+bpy.types.Scene.NMV_ApicalDendritesBranchingOrder = bpy.props.IntProperty(
     name='Branching Order',
     description='Branching order for the apical dendrite',
     default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=1000)
@@ -376,7 +376,7 @@ bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
            (nmv.enums.Rendering.View.MID_SHOT,
             'Mid Shot',
             'Renders an image of the reconstructed arbors only'),
-           (nmv.enums.Rendering.View.CLOSE_UP,
+           (nmv.enums.Rendering.View.CLOSEUP,
             'Close Up',
             'Renders a close up image the focuses on the soma')],
     name='View',

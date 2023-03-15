@@ -91,6 +91,7 @@ def register():
 
     # Register panels
     nmv.interface.ui.io_panel.register_panel()
+    nmv.interface.ui.register_common_operators()
     nmv.interface.ui.analysis_panel.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma_panel.register_panel()
@@ -115,6 +116,7 @@ def unregister():
 
     # Un-register panels
     nmv.interface.ui.io_panel.unregister_panel()
+    nmv.interface.ui.unregister_common_operators()
     nmv.interface.ui.analysis_panel.unregister_panel()
     nmv.interface.ui.edit_panel.unregister_panel()
     nmv.interface.ui.soma_panel.unregister_panel()

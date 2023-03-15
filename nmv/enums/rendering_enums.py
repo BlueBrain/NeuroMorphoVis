@@ -35,11 +35,11 @@ class Rendering:
         """Rendering view options
         """
 
-        # Close up view
-        CLOSE_UP = 'RENDERING_CLOSE_UP_VIEW'
+        # Closeup view
+        CLOSEUP = 'RENDERING_CLOSEUP_VIEW'
 
         # The view will include the reconstructed arbors only
-        MID_SHOT = 'RENDERING_MID_SHORT_VIEW'
+        MID_SHOT = 'RENDERING_MID_SHOT_VIEW'
 
         # Full view
         WIDE_SHOT = 'RENDERING_WIDE_SHOT_VIEW'
@@ -58,7 +58,7 @@ class Rendering:
 
             # Close up view
             if argument == 'close-up':
-                return Rendering.View.CLOSE_UP
+                return Rendering.View.CLOSEUP
 
             # Mid-shot view
             elif argument == 'mid-shot':
@@ -105,6 +105,6 @@ class Rendering:
             elif argument == 'fixed':
                 return Rendering.Resolution.FIXED
 
-            # By default render at the specified resolution
+            # By default, render at the specified resolution
             else:
                 return Rendering.Resolution.FIXED

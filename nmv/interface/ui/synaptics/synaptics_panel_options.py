@@ -280,7 +280,7 @@ bpy.types.Scene.NMV_SynapticsRenderingView = bpy.props.EnumProperty(
     items=[(nmv.enums.Rendering.View.WIDE_SHOT,
             'Wide Shot',
             'Renders an image of the full view'),
-           (nmv.enums.Rendering.View.CLOSE_UP,
+           (nmv.enums.Rendering.View.CLOSEUP,
             'Close Up',
             'Renders a close up image the focuses on the soma of the chosen neuron')],
     name='View', default=nmv.enums.Rendering.View.WIDE_SHOT)

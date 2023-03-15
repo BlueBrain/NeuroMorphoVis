@@ -69,10 +69,10 @@ class RenderingOptions:
         self.frame_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
 
         # Close up image resolution
-        self.close_up_resolution = nmv.consts.Image.CLOSE_UP_RESOLUTION
+        self.close_up_resolution = nmv.consts.Image.CLOSEUP_RESOLUTION
 
         # Close up view dimensions
-        self.close_up_dimensions = nmv.consts.Image.CLOSE_UP_DIMENSIONS
+        self.close_up_dimensions = nmv.consts.Image.CLOSEUP_DIMENSIONS
 
         # The scale factor used to scale the frame, default 1.0
         self.resolution_scale_factor = nmv.consts.Image.DEFAULT_IMAGE_SCALE_FACTOR

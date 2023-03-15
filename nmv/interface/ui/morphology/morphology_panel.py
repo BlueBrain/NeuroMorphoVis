@@ -128,12 +128,23 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         documentation_button.separator()
 
         # Set the reconstruction options
-        nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
+        #nmv.interface.ui.morphology_panel_ops.set_reconstruction_options(
+        #    layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+
+        nmv.interface.ui.morphology_panel_ops.draw_morphology_reconstruction_options(
             layout=layout, scene=current_scene, options=nmv.interface.ui_options)
 
+        self.layout.row().separator()
+
         # Set the skeleton options
-        nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
-            layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+        #nmv.interface.ui.morphology_panel_ops.set_skeleton_options(
+        #    layout=layout, scene=current_scene, options=nmv.interface.ui_options)
+
+        nmv.interface.ui.morphology_panel_ops.draw_morphology_skeleton_display_options(
+            layout=layout, scene=current_scene,
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+
+        self.layout.row().separator()
 
         # Set the color options
         nmv.interface.ui.morphology_panel_ops.add_color_options(
@@ -462,7 +473,7 @@ class NMV_RenderMorphology360(bpy.types.Operator):
 
             # Compute the bounding box for a close up view
             if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.CLOSE_UP:
+                    nmv.enums.Rendering.View.CLOSEUP:
 
                 # Compute the bounding box for a close up view
                 rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
@@ -677,7 +688,7 @@ class NMV_RenderMorphologyProgressive(bpy.types.Operator):
         view = context.scene.NMV_MorphologyRenderingView
 
         # Compute the bounding box for a close up view
-        if view == nmv.enums.Rendering.View.CLOSE_UP:
+        if view == nmv.enums.Rendering.View.CLOSEUP:
             self.morphology_bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
                     extent=context.scene.NMV_MorphologyCloseUpDimensions)
 

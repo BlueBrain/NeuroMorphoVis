@@ -349,10 +349,10 @@ FULL_VIEW_FRAME_RESOLUTION=2048
 FULL_VIEW_SCALE_FACTOR=10.0
 
 # Close up frame resolution
-CLOSE_UP_FRAME_RESOLUTION=1024
+CLOSEUP_FRAME_RESOLUTION=1024
 
 # Close up view dimensions (in microns)
-CLOSE_UP_VIEW_DIMENSIONS=25
+CLOSEUP_VIEW_DIMENSIONS=25
 
 # Camera view
 # Use ['front'] for the front view

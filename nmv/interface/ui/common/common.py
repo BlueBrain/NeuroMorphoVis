@@ -35,41 +35,6 @@ import nmv.geometry
 import nmv.interface
 
 
-####################################################################################################
-# @load_icons
-####################################################################################################
-def load_icons():
-    """Loads the external icons to Blender to be able to use them on the panel interface."""
-
-    nmv.interface.ui_icons = bpy.utils.previews.new()
-    images_path = '%s/../../../data/images' % os.path.dirname(os.path.realpath(__file__))
-    nmv.interface.ui_icons.load("github", os.path.join(images_path, "github-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("bbp", os.path.join(images_path, "bbp-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("epfl", os.path.join(images_path, "epfl-logo.png"), 'IMAGE')
-    nmv.interface.ui_icons.load("nmv", os.path.join(images_path, "nmv-logo.png"), 'IMAGE')
-
-
-####################################################################################################
-# @unload_icons
-####################################################################################################
-def unload_icons():
-    """Unloads the external icons, after loading them to Blender."""
-
-    bpy.utils.previews.remove(nmv.interface.ui_icons)
-
-
-####################################################################################################
-# @load_fonts
-####################################################################################################
-def load_fonts():
-    """Loads all the fonts to the Blender system to be able to use them for the plotting."""
-
-    # Get all the font files in the fonts directory and load them into the scene
-    font_files = nmv.file.get_files_in_directory(
-        directory=nmv.consts.Paths.FONTS_DIRECTORY, file_extension='ttf')
-    for font_file in font_files:
-        font = '%s/%s' % (nmv.consts.Paths.FONTS_DIRECTORY, font_file)
-        bpy.data.fonts.load(font)
 
 
 ####################################################################################################
@@ -207,82 +172,6 @@ def load_morphology(panel,
         return None
 
 
-####################################################################################################
-# @configure_output_directory
-####################################################################################################
-def configure_output_directory(options,
-                               context=None):
-    """Configures the output directory after loading the data.
-
-    :param options:
-        System options.
-    :param context:
-        Context.
-    """
-
-    # If the output directory is not set
-    if options.io.output_directory is None:
-
-        # Suggest an output directory at the home folder
-        suggested_output_folder = '%s/neuromorphovis-output' % os.path.expanduser('~')
-
-        # Check if the output directory already exists or not
-        if os.path.exists(suggested_output_folder):
-
-            # Update the system options
-            nmv.interface.ui_options.io.output_directory = suggested_output_folder
-
-            # Update the UI
-            context.scene.NMV_OutputDirectory = suggested_output_folder
-
-        # Otherwise, create it
-        else:
-
-            # Try to create the directory there
-            try:
-
-                # Create the directory
-                os.mkdir(suggested_output_folder)
-
-                # Update the system options
-                nmv.interface.ui_options.io.output_directory = suggested_output_folder
-
-                # Update the UI
-                context.scene.NMV_OutputDirectory = suggested_output_folder
-
-            # Voila
-            except ValueError:
-                pass
-
-
-####################################################################################################
-# @validate_output_directory
-####################################################################################################
-def validate_output_directory(panel,
-                              context_scene):
-    """Validates the existence of the output directory.
-
-    :param panel:
-        An object of a UI panel.
-
-    :param context_scene:
-        Current scene in the rendering context.
-
-    :return
-        True if the output directory is valid or False otherwise.
-    """
-
-    # Ensure that there is a valid directory where the images will be written to
-    if nmv.interface.ui_options.io.output_directory is None:
-        panel.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
-        return False
-
-    if not nmv.file.ops.path_exists(context_scene.NMV_OutputDirectory):
-        panel.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
-        return False
-
-    # The output directory is valid
-    return True
 
 
 ####################################################################################################
@@ -348,7 +237,7 @@ def render_morphology_image(panel,
 
         # Compute the bounding box for a close up view
         if context_scene.NMV_MorphologyRenderingView == \
-                nmv.enums.Rendering.View.CLOSE_UP:
+                nmv.enums.Rendering.View.CLOSEUP:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
@@ -460,7 +349,7 @@ def render_mesh_image(panel,
     bpy.context.scene.render.image_settings.file_format = image_format
 
     # Compute the bounding box for a close up view
-    if context_scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
+    if context_scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSEUP:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
@@ -622,6 +511,127 @@ def initialize_relevant_parameters(scene):
 
 
 
+
+
+def compute_scene_bounding_box_for_meshes_based_on_view(options):
+
+    # Compute the bounding box, depending on the selected view
+    if options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
+        return nmv.bbox.compute_unified_extent_bounding_box(
+            extent=options.rendering.close_up_dimensions)
+    else:
+        return nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+
+####################################################################################################
+# @get_image_suffix_for_morphologies
+####################################################################################################
+def get_image_suffix_for_morphologies(view):
+
+    # Get the image suffix
+    if view == nmv.enums.Camera.View.FRONT:
+        return nmv.consts.Suffix.MORPHOLOGY_FRONT
+    elif view == nmv.enums.Camera.View.SIDE:
+        return nmv.consts.Suffix.MORPHOLOGY_SIDE
+    elif view == nmv.enums.Camera.View.TOP:
+        return nmv.consts.Suffix.MORPHOLOGY_TOP
+    return nmv.consts.Suffix.MORPHOLOGY_FRONT
+
+
+####################################################################################################
+# @get_image_suffix_for_meshes
+####################################################################################################
+def get_image_suffix_for_meshes(view):
+
+    # Get the image suffix
+    if view == nmv.enums.Camera.View.FRONT:
+        return nmv.consts.Suffix.MESH_FRONT
+    elif view == nmv.enums.Camera.View.SIDE:
+        return nmv.consts.Suffix.MESH_SIDE
+    elif view == nmv.enums.Camera.View.TOP:
+        return nmv.consts.Suffix.MESH_TOP
+    return nmv.consts.Suffix.MESH_FRONT
+
+
+####################################################################################################
+# @get_image_suffix_for_synaptics
+####################################################################################################
+def get_image_suffix_for_synaptics(view):
+
+    # Get the image suffix
+    if view == nmv.enums.Camera.View.FRONT:
+        return nmv.consts.Suffix.SYNAPTICS_FRONT
+    elif view == nmv.enums.Camera.View.SIDE:
+        return nmv.consts.Suffix.SYNAPTICS_SIDE
+    elif view == nmv.enums.Camera.View.TOP:
+        return nmv.consts.Suffix.SYNAPTICS_TOP
+    return nmv.consts.Suffix.SYNAPTICS_FRONT
+
+
+
+
+####################################################################################################
+# @render_synaptics_image
+####################################################################################################
+def render_synaptics_image(panel,
+                           scene,
+                           view,
+                           options):
+
+    # Validate the output directory
+    if not nmv.interface.ui.validate_output_directory(panel=panel, context_scene=scene):
+        return
+
+    # Report the process starting in the UI
+    start_time = time.time()
+    panel.report({'INFO'}, 'Rendering ... Wait')
+
+    # Compute the bounding box, depending on the shot
+    bounding_box = compute_scene_bounding_box_for_meshes_based_on_view(options=options)
+
+    # Get the image suffix
+    suffix = get_image_suffix_for_synaptics(view)
+
+    # Draw the morphology scale bar
+    if options.rendering.render_scale_bar:
+        scale_bar = nmv.interface.draw_scale_bar(
+            bounding_box=compute_scene_bounding_box_for_meshes_based_on_view(options=options),
+            material_type=options.synaptics.shader,
+            view=options.rendering.camera_view)
+
+    # Render at a specific resolution
+    if options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
+        nmv.rendering.render(
+            bounding_box=bounding_box,
+            camera_view=view,
+            image_resolution=options.rendering.frame_resolution,
+            image_name='%s%s' % (options.morphology.label, suffix),
+            image_format=options.rendering.image_format,
+            image_directory=options.io.images_directory)
+
+    # Render at a specific scale factor
+    else:
+
+        # Render the image
+        nmv.rendering.render_to_scale(
+            bounding_box=bounding_box,
+            camera_view=view,
+            image_scale_factor=options.rendering.resolution_scale_factor,
+            image_name='%s%s' % (options.morphology.label, suffix),
+            image_format=options.rendering.image_format,
+            image_directory=options.io.images_directory)
+
+    # Delete the morphology scale bar, if rendered
+    if options.rendering.render_scale_bar:
+        nmv.scene.delete_object_in_scene(scene_object=scale_bar)
+
+    rendering_time = time.time() - start_time
+    nmv.logger.statistics('Image rendered in [%f] seconds' % rendering_time)
+
+    # Report the process termination in the UI
+    panel.report({'INFO'}, 'Rendering Done')
+
+    return rendering_time
 
 
 

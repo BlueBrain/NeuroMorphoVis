@@ -85,7 +85,7 @@ class SynapticsOptions:
         self.unify_branch_radii = True
         self.unified_radius = 1.0
 
-
+        self.shader = nmv.enums.Shader.LAMBERT_WARD
 
 
 

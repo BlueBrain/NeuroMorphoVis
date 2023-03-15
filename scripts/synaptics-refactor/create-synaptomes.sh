@@ -53,13 +53,13 @@ SYNAPSE_PERCENTAGE='100'
 SYNAPSE_SIZE='2.0'
 
 # Close-up view size
-CLOSE_UP_SIZE='50'
+CLOSEUP_SIZE='50'
 
 # Base full view resolution
 FULL_VIEW_RESOLUTION='2000'
 
 # Base close-up resolution
-CLOSE_UP_RESOLUTION='1000'
+CLOSEUP_RESOLUTION='1000'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'
@@ -97,10 +97,10 @@ $PWD/../../../../../python/bin/python3.10 create-synaptomes.py                  
     --color-map=$COLOR_MAP_FILE                                                                     \
     --neuron-color=$NEURON_COLOR                                                                    \
     --full-view-resolution=$FULL_VIEW_RESOLUTION                                                    \
-    --close-up-resolution=$CLOSE_UP_RESOLUTION                                                      \
+    --close-up-resolution=$CLOSEUP_RESOLUTION                                                      \
     --synapse-percentage=$SYNAPSE_PERCENTAGE                                                        \
     --synapse-size=$SYNAPSE_SIZE                                                                    \
-    --close-up-size=$CLOSE_UP_SIZE                                                                  \
+    --close-up-size=$CLOSEUP_SIZE                                                                  \
     --background-image=$BACKGROUND_IMAGE                                                            \
     $BOOL_ARGS;
 

@@ -699,7 +699,7 @@ def parse_command_line_arguments():
                'Valid only when the --rendering-view = close-up. \n' \
                'Default 20.'
     rendering_args.add_argument(
-        Args.CLOSE_UP_DIMENSIONS,
+        Args.CLOSEUP_DIMENSIONS,
         action='store', type=int, default=20,
         help=arg_help)
 

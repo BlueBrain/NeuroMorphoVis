@@ -23,6 +23,7 @@ from mathutils import Vector
 import nmv.consts
 import nmv.enums
 from .morphology_panel_color_ops import *
+from .morphology_panel_draw_ops import *
 
 
 ####################################################################################################
@@ -90,7 +91,7 @@ def set_skeleton_options(layout,
             axon_row = layout.row()
             axon_row.prop(scene, 'NMV_BuildAxon')
             axon_level_row = axon_row.column()
-            axon_level_row.prop(scene, 'NMV_AxonBranchingLevel')
+            axon_level_row.prop(scene, 'NMV_AxonsBranchingOrder')
 
             if not scene.NMV_BuildAxon:
                 axon_level_row.enabled = False
@@ -99,14 +100,14 @@ def set_skeleton_options(layout,
 
             # Pass options from UI to system
             options.morphology.ignore_axons = not scene.NMV_BuildAxon
-            options.morphology.axon_branch_order = scene.NMV_AxonBranchingLevel
+            options.morphology.axon_branch_order = scene.NMV_AxonsBranchingOrder
 
         # Build basal dendrites options
         if nmv.interface.ui_morphology.has_basal_dendrites():
             basal_dendrites_row = layout.row()
             basal_dendrites_row.prop(scene, 'NMV_BuildBasalDendrites')
             basal_dendrites_level_row = basal_dendrites_row.column()
-            basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingLevel')
+            basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingOrder')
             if not scene.NMV_BuildBasalDendrites:
                 basal_dendrites_level_row.enabled = False
             else:
@@ -114,14 +115,14 @@ def set_skeleton_options(layout,
 
             # Pass options from UI to system
             options.morphology.ignore_basal_dendrites = not scene.NMV_BuildBasalDendrites
-            options.morphology.basal_dendrites_branch_order = scene.NMV_BasalDendritesBranchingLevel
+            options.morphology.basal_dendrites_branch_order = scene.NMV_BasalDendritesBranchingOrder
 
         # Build apical dendrite option
         if nmv.interface.ui_morphology.has_apical_dendrites():
             apical_dendrite_row = layout.row()
             apical_dendrite_row.prop(scene, 'NMV_BuildApicalDendrite')
             apical_dendrite_level_row = apical_dendrite_row.column()
-            apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendriteBranchingLevel')
+            apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendritesBranchingOrder')
 
             if not scene.NMV_BuildApicalDendrite:
                 apical_dendrite_level_row.enabled = False
@@ -130,7 +131,7 @@ def set_skeleton_options(layout,
 
             # Pass options from UI to system
             options.morphology.ignore_apical_dendrites = not scene.NMV_BuildApicalDendrite
-            options.morphology.apical_dendrite_branch_order = scene.NMV_ApicalDendriteBranchingLevel
+            options.morphology.apical_dendrite_branch_order = scene.NMV_ApicalDendritesBranchingOrder
 
     # Only a simple demo UI
     else:
@@ -139,19 +140,19 @@ def set_skeleton_options(layout,
         axon_row = layout.row()
         axon_row.prop(scene, 'NMV_BuildAxon')
         axon_level_row = axon_row.column()
-        axon_level_row.prop(scene, 'NMV_AxonBranchingLevel')
+        axon_level_row.prop(scene, 'NMV_AxonsBranchingOrder')
 
         # Basal dendrites
         basal_dendrites_row = layout.row()
         basal_dendrites_row.prop(scene, 'NMV_BuildBasalDendrites')
         basal_dendrites_level_row = basal_dendrites_row.column()
-        basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingLevel')
+        basal_dendrites_level_row.prop(scene, 'NMV_BasalDendritesBranchingOrder')
 
         # Apical Dendrites
         apical_dendrite_row = layout.row()
         apical_dendrite_row.prop(scene, 'NMV_BuildApicalDendrite')
         apical_dendrite_level_row = apical_dendrite_row.column()
-        apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendriteBranchingLevel')
+        apical_dendrite_level_row.prop(scene, 'NMV_ApicalDendritesBranchingOrder')
 
 
 ####################################################################################################
@@ -343,7 +344,7 @@ def set_rendering_options(layout,
     rendering_view_row.prop(scene, 'NMV_MorphologyRenderingView', expand=True)
 
     # Close up view
-    if scene.NMV_MorphologyRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
+    if scene.NMV_MorphologyRenderingView == nmv.enums.Rendering.View.CLOSEUP:
 
         # Rendering close up option
         render_close_up_row = layout.row()

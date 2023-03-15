@@ -390,12 +390,66 @@ def draw_neuron_pair_options(layout, scene, options):
     draw_neuron_radius_option(layout, scene, options)
 
 
+####################################################################################################
+# @draw_rendering_buttons
+####################################################################################################
+def draw_synaptics_rendering_options(panel, scene, options):
+
+    # Rendering header
+    nmv.interface.ui.draw_rendering_header(layout=panel.layout, scene=scene, options=options)
+
+    # Rendering view
+    nmv.interface.ui.draw_rendering_view_option(layout=panel.layout, scene=scene, options=options)
+
+    # Resolution basis
+    nmv.interface.ui.draw_resolution_basis_option(layout=panel.layout, scene=scene, options=options)
+
+    # Resolution
+    nmv.interface.ui.draw_resolution_options(layout=panel.layout, scene=scene, options=options)
+
+    # Image format
+    nmv.interface.ui.draw_image_format_option(layout=panel.layout, scene=scene, options=options)
+
+    # Scale bar
+    nmv.interface.ui.draw_scale_bar_option(layout=panel.layout, scene=scene, options=options)
+
+    # Rendering buttons
+    nmv.interface.ui.draw_rendering_buttons(panel=panel, scene=scene, options=options)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ####################################################################################################
 # @draw_synaptics_rendering_options
 ####################################################################################################
-def draw_synaptics_rendering_options(layout, scene, options):
+def draw_synaptics_rendering_options_x(layout, scene, options):
 
     # Rendering options
     quick_rendering_row = layout.row()
@@ -405,21 +459,23 @@ def draw_synaptics_rendering_options(layout, scene, options):
     rendering_view_row = layout.row()
     rendering_view_row.label(text='View:')
     rendering_view_row.prop(scene, 'NMV_SynapticsRenderingView', expand=True)
+    options.rendering.rendering_view = scene.NMV_SynapticsRenderingView
 
     # Add the closeup size option
-    if scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
+    if options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
 
         # Closeup size option
         close_up_size_row = layout.row()
         close_up_size_row.label(text='Closeup Size:')
         close_up_size_row.prop(scene, 'NMV_SynapticsCloseUpSize')
-        close_up_size_row.enabled = True
+        options.rendering.close_up_dimensions = scene.NMV_SynapticsCloseUpSize
 
         # Frame resolution option (only for the close up mode)
         frame_resolution_row = layout.row()
         frame_resolution_row.label(text='Frame Resolution:')
         frame_resolution_row.prop(scene, 'NMV_SynapticsFrameResolution')
-        frame_resolution_row.enabled = True
+
+        options.rendering.frame_resolution = scene.NMV_SynapticsFrameResolution
 
     # Otherwise, render the Mid and Wide shot modes
     else:
@@ -429,15 +485,18 @@ def draw_synaptics_rendering_options(layout, scene, options):
         rendering_resolution_row.label(text='Resolution:')
         rendering_resolution_row.prop(scene, 'NMV_SynapticsRenderingResolution', expand=True)
 
+        options.rendering.frame_resolution = scene.NMV_SynapticsFrameResolution
+
         # Add the frame resolution option
-        if scene.NMV_MeshRenderingResolution == \
-                nmv.enums.Rendering.Resolution.FIXED:
+        if scene.NMV_SynapticsRenderingResolution == nmv.enums.Rendering.Resolution.FIXED:
 
             # Frame resolution option (only for the close up mode)
             frame_resolution_row = layout.row()
             frame_resolution_row.label(text='Frame Resolution:')
             frame_resolution_row.prop(scene, 'NMV_SynapticsFrameResolution')
             frame_resolution_row.enabled = True
+
+            options.rendering.resolution_basis = scene.NMV_SynapticsFrameScaleFactor
 
         # Otherwise, add the scale factor option
         else:
@@ -448,24 +507,26 @@ def draw_synaptics_rendering_options(layout, scene, options):
             scale_factor_row.prop(scene, 'NMV_SynapticsFrameScaleFactor')
             scale_factor_row.enabled = True
 
+            options.rendering.resolution_scale_factor = scene.NMV_SynapticsFrameScaleFactor
+
     # Image extension
     image_extension_row = layout.row()
     image_extension_row.label(text='Image Format:')
     image_extension_row.prop(scene, 'NMV_SynapticsImageFormat')
-    nmv.interface.ui_options.mesh.image_format = scene.NMV_MeshImageFormat
+    options.rendering.image_format = scene.NMV_SynapticsImageFormat
 
     # Scale bar
     scale_bar_row = layout.row()
     scale_bar_row.prop(scene, 'NMV_SynapticsScaleBar')
-    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderMeshScaleBar
+    options.rendering.render_scale_bar = scene.NMV_SynapticsScaleBar
 
     # Rendering view
     render_view_row = layout.row()
     render_view_row.label(text='Render View:', icon='RESTRICT_RENDER_OFF')
     render_view_buttons_row = layout.row(align=True)
-    render_view_buttons_row.operator('nmv.render_mesh_front', icon='AXIS_FRONT')
-    render_view_buttons_row.operator('nmv.render_mesh_side', icon='AXIS_SIDE')
-    render_view_buttons_row.operator('nmv.render_mesh_top', icon='AXIS_TOP')
+    render_view_buttons_row.operator('nmv.render_synaptics_front', icon='AXIS_FRONT')
+    render_view_buttons_row.operator('nmv.render_synaptics_side', icon='AXIS_SIDE')
+    render_view_buttons_row.operator('nmv.render_synaptics_top', icon='AXIS_TOP')
     render_view_buttons_row.enabled = True
 
 

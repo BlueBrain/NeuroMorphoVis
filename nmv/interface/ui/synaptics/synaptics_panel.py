@@ -28,6 +28,9 @@ import nmv.enums
 import nmv.interface
 import nmv.utilities
 import nmv.scene
+
+import nmv.interface.ui
+
 from .synaptics_panel_ops import *
 from .synaptics_panel_draw_ops import *
 from .synaptics_panel_options import *
@@ -58,7 +61,7 @@ class NMV_SynapticsPanel(bpy.types.Panel):
         options = nmv.interface.ui_options
 
         # If a circuit is loaded, enable this panel, otherwise disable it
-        if nmv.interface.ui_circuit is not None:
+        if True:#nmv.interface.ui_circuit is not None:
 
             # Select a use case
             use_case_row = self.layout.row()
@@ -72,14 +75,13 @@ class NMV_SynapticsPanel(bpy.types.Panel):
                 draw_synaptics_reconstruction_options(
                     layout=self.layout, scene=context.scene, options=options)
 
-                # Draw the rendering options
-                draw_synaptics_rendering_options(
-                    layout=self.layout, scene=context.scene, options=options)
+                # Draw the rendering operations
+                draw_synaptics_rendering_options(panel=self, scene=context.scene, options=options)
 
         # Otherwise, draw the out of context message and disable the panel
         else:
             draw_out_of_context_message(layout=self.layout, scene=context.scene, options=options)
-            self.layout.enabled = False if nmv.interface.ui_circuit is None else True
+            #self.layout.enabled = False if nmv.interface.ui_circuit is None else True
 
 
 ####################################################################################################
@@ -116,19 +118,10 @@ class NMV_RenderSynapticsFront(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-
-        # Render the image
-        start_time = time.time()
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui_options.mesh.image_format)
-        rendering_time = time.time()
-
-        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
-                              context.scene.NMV_SynapticsRenderingTime)
-
-        # Confirm operation done
+        # Render the image and report the rendering time
+        context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
+            self, scene=context.scene, options=nmv.interface.ui_options,
+            view=nmv.enums.Camera.View.FRONT)
         return {'FINISHED'}
 
 
@@ -146,18 +139,10 @@ class NMV_RenderSynapticsSide(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-
-        start_time = time.time()
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui_options.mesh.image_format)
-        rendering_time = time.time()
-
-        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
-                              context.scene.NMV_SynapticsRenderingTime)
-
-        # Confirm operation done
+        # Render the image and report the rendering time
+        context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
+            self, scene=context.scene, options=nmv.interface.ui_options,
+            view=nmv.enums.Camera.View.SIDE)
         return {'FINISHED'}
 
 
@@ -176,18 +161,10 @@ class NMV_RenderSynapticsTop(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
-        # Render the image
-        start_time = time.time()
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui_options.mesh.image_format)
-        rendering_time = time.time()
-
-        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Synaptics rendered in [%f] seconds' %
-                              context.scene.NMV_SynapticsRenderingTime)
-
-        # Confirm operation done
+        # Render the image and report the rendering time
+        context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
+            self, scene=context.scene, options=nmv.interface.ui_options,
+            view=nmv.enums.Camera.View.TOP)
         return {'FINISHED'}
 
 

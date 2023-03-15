@@ -472,7 +472,7 @@ class NMV_RenderMesh360(bpy.types.Operator):
                 nmv.interface.ui_options.io.sequences_directory)
 
         # Compute the bounding box for a close up view
-        if context.scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSE_UP:
+        if context.scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSEUP:
 
             # Compute the bounding box for a close up view
             rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
