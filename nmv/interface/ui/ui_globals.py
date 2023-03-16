@@ -43,6 +43,9 @@ class Globals:
     # The reconstructed soma mesh object
     soma_mesh = None
 
+    # Builder
+    morphology_builder = None
+
     # A list of all the objects that correspond to the reconstructed morphology skeleton
     reconstructed_skeleton = list()
 

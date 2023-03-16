@@ -118,26 +118,32 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         draw_documentation_button(layout=self.layout)
 
         draw_morphology_reconstruction_options(
-            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui.globals.options)
 
         draw_morphology_skeleton_display_options(
             layout=self.layout, scene=context.scene,
-            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+            options=nmv.interface.ui.globals.options, morphology=nmv.interface.ui_morphology)
 
         draw_morphology_color_options(
             layout=self.layout, scene=context.scene,
-            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+            options=nmv.interface.ui.globals.options, morphology=nmv.interface.ui_morphology)
 
         global is_morphology_reconstructed
+        if nmv.interface.ui.globals.options.morphology.reconstruction_method == \
+                nmv.enums.Skeleton.Method.DENDROGRAM:
+            label = 'Draw Dendrogram'
+        else:
+            label = 'Draw Morphology'
+
         draw_morphology_reconstruction_button(layout=self.layout,
                                               scene=context.scene,
+                                              label=label,
                                               show_stats=is_morphology_reconstructed)
 
         draw_rendering_options(
-            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+            panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
 
-        global is_morphology_rendered
-        if is_morphology_rendered:
+        if nmv.interface.ui.is_morphology_rendered:
             morphology_stats_row = self.layout.row()
             morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
             rendering_time_row = self.layout.row()

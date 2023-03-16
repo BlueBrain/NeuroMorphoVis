@@ -35,14 +35,25 @@ def draw_rendering_header(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_rendering_view_option
+# @draw_morphology_rendering_view_option
 ####################################################################################################
-def draw_rendering_view_option(layout, scene, options):
+def draw_morphology_rendering_view_option(layout, scene, options):
 
     row = layout.row()
     row.label(text='Rendering View')
-    row.prop(scene, 'NMV_RenderingView', expand=True)
-    options.rendering.rendering_view = scene.NMV_RenderingView
+    row.prop(scene, 'NMV_MorphologyRenderingView', expand=True)
+    options.rendering.rendering_view = scene.NMV_MorphologyRenderingView
+
+
+####################################################################################################
+# @draw_morphology_rendering_view_option_for
+####################################################################################################
+def draw_synaptics_rendering_view_option(layout, scene, options):
+
+    row = layout.row()
+    row.label(text='Rendering View')
+    row.prop(scene, 'NMV_SynapticsRenderingView', expand=True)
+    options.rendering.rendering_view = scene.NMV_SynapticsRenderingView
 
 
 ####################################################################################################
@@ -152,10 +163,6 @@ def draw_resolution_options(layout, scene, options):
         draw_wide_shot_rendering_options(layout=layout, scene=scene, options=options)
     else:
         draw_full_view_rendering_options(layout=layout, scene=scene, options=options)
-
-
-
-
 
 
 ####################################################################################################

@@ -51,6 +51,39 @@ def draw_morphology_reconstruction_button(layout,
 
 
 ####################################################################################################
+# @draw_morphology_rendering_buttons
+####################################################################################################
+def draw_morphology_rendering_buttons(panel, scene, show_stats=False):
+
+    view_row = panel.layout.row()
+    view_row.label(text='Render View', icon='RESTRICT_RENDER_OFF')
+    buttons_row = panel.layout.row(align=True)
+    buttons_row.operator('nmv.render_morphology_front', icon='AXIS_FRONT')
+    buttons_row.operator('nmv.render_morphology_side', icon='AXIS_SIDE')
+    buttons_row.operator('nmv.render_morphology_top', icon='AXIS_TOP')
+    panel.layout.separator()
+
+
+####################################################################################################
+# @draw_morphology_rendering_buttons
+####################################################################################################
+def draw_animated_morphology_rendering_buttons(panel, scene):
+
+    animation_row = panel.layout.row()
+    animation_row.label(text='Render Animation (XY View)', icon='CAMERA_DATA')
+    buttons_row = panel.layout.row(align=True)
+    buttons_row.operator('nmv.render_morphology_360', icon='FORCE_MAGNETIC')
+    buttons_row.operator('nmv.render_morphology_progressive', icon='FORCE_HARMONIC')
+    buttons_row.enabled = True
+
+    # Progress bar
+    progress_bar_row = panel.layout.row()
+    progress_bar_row.prop(scene, 'NMV_MorphologyRenderingProgress')
+    progress_bar_row.enabled = False
+    panel.layout.separator()
+
+
+####################################################################################################
 # draw_export_options
 ####################################################################################################
 def draw_export_options(layout):
@@ -65,4 +98,3 @@ def draw_export_options(layout):
     row.operator('nmv.save_morphology_segments', icon='GROUP_VERTEX')
     row.enabled = True
     layout.separator()
-

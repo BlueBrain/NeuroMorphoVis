@@ -22,15 +22,15 @@ import nmv.options
 # All the parameters of the system are stored in this global variable and updated following the
 # execution of an active element in the GUI.
 # You can access all the parameters of the system as follows:
-#   ui_options.options.io.VARIABLE : for the input/output directories
-#   ui_options.options.soma.VARIABLE : for the soma options
-#   ui_options.options.morphology.VARIABLE : for the morphology options
-#   ui_options.options.mesh.VARIABLE : for the mesh options
-#   ui_options.options.analysis.VARIABLE : for the analysis options
-#   ui_options.options.rendering.VARIABLE : for the rendering options
-#   ui_options.options.shading.VARIABLE : for the shading options
-#   ui_options.options.synaptics.VARIABLE : for the synaptics options
-ui_options = nmv.options.NeuroMorphoVisOptions()
+#   ui.globals.options.options.io.VARIABLE : for the input/output directories
+#   ui.globals.options.options.soma.VARIABLE : for the soma options
+#   ui.globals.options.options.morphology.VARIABLE : for the morphology options
+#   ui.globals.options.options.mesh.VARIABLE : for the mesh options
+#   ui.globals.options.options.analysis.VARIABLE : for the analysis options
+#   ui.globals.options.options.rendering.VARIABLE : for the rendering options
+#   ui.globals.options.options.shading.VARIABLE : for the shading options
+#   ui.globals.options.options.synaptics.VARIABLE : for the synaptics options
+options = nmv.options.NeuroMorphoVisOptions()
 
 # The morphology skeleton object loaded after UI interaction
 ui_morphology = None
@@ -50,4 +50,12 @@ ui_reconstructed_skeleton = list()
 ui_reconstructed_mesh = list()
 
 ui_circuit = None
+
+morphology_builder = None
+
+is_morphology_reconstructed = False
+
+is_morphology_rendered = False
+
+nmv_initialized = False
 

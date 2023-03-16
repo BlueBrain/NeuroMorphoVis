@@ -58,7 +58,7 @@ class NMV_SynapticsPanel(bpy.types.Panel):
     def draw(self, context):
 
         # Get a reference to the options
-        options = nmv.interface.ui_options
+        options = nmv.interface.ui.globals.options
 
         # If a circuit is loaded, enable this panel, otherwise disable it
         if True:#nmv.interface.ui_circuit is not None:
@@ -101,7 +101,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
 
         return reconstruct_synaptics(operator=self, context=context,
                                      circuit=nmv.interface.ui_circuit,
-                                     options=nmv.interface.ui_options)
+                                     options=nmv.interface.ui.globals.options)
 
 
 ####################################################################################################
@@ -120,7 +120,7 @@ class NMV_RenderSynapticsFront(bpy.types.Operator):
     def execute(self, context):
         # Render the image and report the rendering time
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-            self, scene=context.scene, options=nmv.interface.ui_options,
+            self, scene=context.scene, options=nmv.interface.ui.globals.options,
             view=nmv.enums.Camera.View.FRONT)
         return {'FINISHED'}
 
@@ -141,7 +141,7 @@ class NMV_RenderSynapticsSide(bpy.types.Operator):
     def execute(self, context):
         # Render the image and report the rendering time
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-            self, scene=context.scene, options=nmv.interface.ui_options,
+            self, scene=context.scene, options=nmv.interface.ui.globals.options,
             view=nmv.enums.Camera.View.SIDE)
         return {'FINISHED'}
 
@@ -163,7 +163,7 @@ class NMV_RenderSynapticsTop(bpy.types.Operator):
 
         # Render the image and report the rendering time
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-            self, scene=context.scene, options=nmv.interface.ui_options,
+            self, scene=context.scene, options=nmv.interface.ui.globals.options,
             view=nmv.enums.Camera.View.TOP)
         return {'FINISHED'}
 

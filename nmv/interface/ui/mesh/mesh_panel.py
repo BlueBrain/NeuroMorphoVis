@@ -163,7 +163,7 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
             return {'FINISHED'}
 
         # Meshing technique
-        meshing_technique = nmv.interface.ui_options.mesh.meshing_technique
+        meshing_technique = nmv.interface.ui.globals.options.mesh.meshing_technique
 
         # Start reconstruction
         start_time = time.time()
@@ -171,25 +171,25 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
         # Piece-wise watertight meshing
         if meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
             mesh_builder = nmv.builders.PiecewiseBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Union
         elif meshing_technique == nmv.enums.Meshing.Technique.UNION:
             mesh_builder = nmv.builders.UnionBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Skinning
         elif meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
             mesh_builder = nmv.builders.SkinningBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Meta Balls
         elif meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
             mesh_builder = nmv.builders.MetaBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         else:
@@ -238,7 +238,7 @@ class NMV_RenderMeshFront(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui.globals.options.mesh.image_format)
 
         # Stats.
         rendering_time = time.time()
@@ -280,7 +280,7 @@ class NMV_RenderMeshSide(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui.globals.options.mesh.image_format)
 
         # Stats.
         rendering_time = time.time()
@@ -322,7 +322,7 @@ class NMV_RenderMeshTop(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui.globals.options.mesh.image_format)
 
         # Stats.
         rendering_time = time.time()
@@ -467,9 +467,9 @@ class NMV_RenderMesh360(bpy.types.Operator):
         self.scene_objects = nmv.scene.get_list_of_meshes_in_scene()
 
         # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.sequences_directory)
+                nmv.interface.ui.globals.options.io.sequences_directory)
 
         # Compute the bounding box for a close up view
         if context.scene.NMV_MeshRenderingView == nmv.enums.Rendering.View.CLOSEUP:
@@ -500,8 +500,8 @@ class NMV_RenderMesh360(bpy.types.Operator):
 
         # Create a specific directory for this mesh
         self.output_directory = '%s/%s%s' % (
-            nmv.interface.ui_options.io.sequences_directory,
-            nmv.interface.ui_options.morphology.label,
+            nmv.interface.ui.globals.options.io.sequences_directory,
+            nmv.interface.ui.globals.options.morphology.label,
             nmv.consts.Suffix.MESH_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
@@ -565,15 +565,15 @@ class NMV_ExportMesh(bpy.types.Operator):
         nmv.interface.ui.validate_output_directory(panel_object=self, context_scene=context.scene)
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.meshes_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.meshes_directory)
 
         # Get a list of all the meshes in the scene
         mesh_objects = nmv.scene.get_list_of_meshes_in_scene()
 
         # Export
         nmv.file.export_mesh_objects_to_file(mesh_objects,
-                                             nmv.interface.ui_options.io.meshes_directory,
+                                             nmv.interface.ui.globals.options.io.meshes_directory,
                                              nmv.interface.ui_morphology.label,
                                              context.scene.NMV_ExportedMeshFormat,
                                              context.scene.NMV_ExportIndividuals)

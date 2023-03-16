@@ -67,12 +67,11 @@ class NMV_RenderMorphologyFront(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui_options.morphology.image_format)
+            image_format=nmv.interface.ui.globals.options.morphology.image_format)
 
         # Stats.
         rendering_time = time.time()
-        global is_morphology_rendered
-        is_morphology_rendered = True
+        nmv.interface.ui.is_morphology_rendered = True
         context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         nmv.logger.statistics('Morphology rendered in [%f] seconds' %
                               context.scene.NMV_MorphologyRenderingTime)
@@ -109,12 +108,11 @@ class NMV_RenderMorphologySide(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui_options.morphology.image_format)
+            image_format=nmv.interface.ui.globals.options.morphology.image_format)
 
         # Stats.
         rendering_time = time.time()
-        global is_morphology_rendered
-        is_morphology_rendered = True
+        nmv.interface.ui.is_morphology_rendered = True
         context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         nmv.logger.statistics('Morphology rendered in [%f] seconds' %
                               context.scene.NMV_MorphologyRenderingTime)
@@ -151,12 +149,11 @@ class NMV_RenderMorphologyTop(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_morphology_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui_options.morphology.image_format)
+            image_format=nmv.interface.ui.globals.options.morphology.image_format)
 
         # Stats.
         rendering_time = time.time()
-        global is_morphology_rendered
-        is_morphology_rendered = True
+        nmv.interface.ui.is_morphology_rendered = True
         context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         nmv.logger.statistics('Morphology rendered in [%f] seconds' %
                               context.scene.NMV_MorphologyRenderingTime)

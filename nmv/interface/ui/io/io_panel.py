@@ -61,7 +61,7 @@ class NMV_IOPanel(bpy.types.Panel):
         draw_io_documentation_button(panel=self)
 
         # Draw the input options
-        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
+        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
 
         # Draw the morphology loading button
         draw_morphology_loading_button(panel=self)
@@ -71,7 +71,7 @@ class NMV_IOPanel(bpy.types.Panel):
             panel=self, scene=context.scene, morphology_object=nmv.interface.ui_morphology)
 
         # Draw the output options
-        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
+        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
 
 
 ####################################################################################################
@@ -124,11 +124,11 @@ class NMV_LoadMorphology(bpy.types.Operator):
         nmv.scene.set_transparent_background()
 
         # Initialize all the operations that needs to run once and for all
-        if not nmv.interface.ui.Globals.nmv_initialized:
+        if not nmv.interface.ui.globals.nmv_initialized:
             nmv.interface.load_fonts()
 
         # Always use meta builder to reconstruct the initial soma
-        options = copy.deepcopy(nmv.interface.ui_options)
+        options = copy.deepcopy(nmv.interface.ui.globals.options)
         options.morphology.set_default()
         options.shading.set_default()
 
@@ -159,15 +159,15 @@ class NMV_LoadMorphology(bpy.types.Operator):
         nmv.scene.ops.view_all_scene()
 
         # Configure the output directory
-        nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
+        nmv.interface.configure_output_directory(options=nmv.interface.ui.globals.options, context=context)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
         wm.modal_handler_add(self)
 
         # Switch the initialization flag to be able to use the add-on in the rest of the panel
-        if not nmv.interface.ui.Globals.nmv_initialized:
-            nmv.interface.ui.Globals.nmv_initialized = True
+        if not nmv.interface.ui.globals.nmv_initialized:
+            nmv.interface.ui.globals.nmv_initialized = True
 
         # Initialize other relevant information that could be required later
         nmv.interface.initialize_relevant_parameters(scene=context.scene)

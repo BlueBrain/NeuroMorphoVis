@@ -35,8 +35,22 @@ bpy.types.Scene.NMV_ResolutionBasis = bpy.props.EnumProperty(
     name='Type',
     default=nmv.enums.Rendering.Resolution.FIXED)
 
-# Rendering view, for the Synaptics and Mesh Reconstruction panels
-bpy.types.Scene.NMV_RenderingView = bpy.props.EnumProperty(
+# Rendering view, for the Morphology and Mesh Reconstruction panels
+bpy.types.Scene.NMV_MorphologyRenderingView = bpy.props.EnumProperty(
+    items=[(nmv.enums.Rendering.View.WIDE_SHOT,
+            'Wide Shot',
+            'Renders an image of the full view'),
+           (nmv.enums.Rendering.View.MID_SHOT,
+            'Mid Shot',
+            'Renders an image of the reconstructed arbors only'),
+           (nmv.enums.Rendering.View.CLOSEUP,
+            'Close Up',
+            'Renders a close up image the focuses on the soma')],
+    name='View',
+    default=nmv.enums.Rendering.View.MID_SHOT)
+
+# Rendering view, for the Synaptics
+bpy.types.Scene.NMV_SynapticsRenderingView = bpy.props.EnumProperty(
     items=[(nmv.enums.Rendering.View.WIDE_SHOT,
             'Wide Shot',
             'Renders an image of the full view'),

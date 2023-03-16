@@ -399,7 +399,7 @@ def draw_synaptics_rendering_options(panel, scene, options):
     nmv.interface.ui.draw_rendering_header(layout=panel.layout, scene=scene, options=options)
 
     # Rendering view
-    nmv.interface.ui.draw_rendering_view_option(layout=panel.layout, scene=scene, options=options)
+    nmv.interface.ui.draw_synaptics_rendering_view_option(layout=panel.layout, scene=scene, options=options)
 
     # Resolution basis
     nmv.interface.ui.draw_resolution_basis_option(layout=panel.layout, scene=scene, options=options)

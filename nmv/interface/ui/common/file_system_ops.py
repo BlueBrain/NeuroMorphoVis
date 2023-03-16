@@ -92,17 +92,13 @@ def validate_output_directory(panel,
     """
 
     # Ensure that there is a valid directory where the images will be written to
-    if nmv.interface.ui_options.io.output_directory is None:
+    if nmv.interface.ui.globals.options.io.output_directory is None:
         panel.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
         return False
 
     if not nmv.file.ops.path_exists(context_scene.NMV_OutputDirectory):
         panel.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
         return False
-
-    # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
     # The output directory is valid
     return True

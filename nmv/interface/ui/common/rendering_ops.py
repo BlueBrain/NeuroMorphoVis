@@ -120,7 +120,7 @@ def render_morphology_image(panel,
         if context_scene.NMV_RenderMorphologyScaleBar:
             scale_bar = nmv.interface.draw_scale_bar(
                 bounding_box=bounding_box,
-                material_type=nmv.interface.ui_options.shading.morphology_material,
+                material_type=nmv.interface.ui.globals.options.shading.morphology_material,
                 view=view)
 
         # Render at a specific resolution
@@ -131,9 +131,9 @@ def render_morphology_image(panel,
                 bounding_box=bounding_box,
                 camera_view=view,
                 image_resolution=context_scene.NMV_MorphologyFrameResolution,
-                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
+                image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
                 image_format=image_format,
-                image_directory=nmv.interface.ui_options.io.images_directory,
+                image_directory=nmv.interface.ui.globals.options.io.images_directory,
                 keep_camera_in_scene=False)
 
         # Render at a specific scale factor
@@ -144,9 +144,9 @@ def render_morphology_image(panel,
                 bounding_box=bounding_box,
                 camera_view=view,
                 image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
-                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
+                image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
                 image_format=image_format,
-                image_directory=nmv.interface.ui_options.io.images_directory,
+                image_directory=nmv.interface.ui.globals.options.io.images_directory,
                 keep_camera_in_scene=False)
 
         # Delete the morphology scale bar, if rendered

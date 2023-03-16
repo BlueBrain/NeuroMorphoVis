@@ -161,7 +161,7 @@ class NMV_RenderMorphologyProgressive(bpy.types.Operator):
         """
 
         # If this is a dendrogram rendering, handle it in a very specific way.
-        if nmv.interface.ui_options.morphology.reconstruction_method == \
+        if nmv.interface.ui.globals.options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.DENDROGRAM:
             # Cannot render a 360 of the dendrogram
             self.report({'INFO'}, 'Cannot render a progressive reconstruction of the dendrogram')
@@ -175,14 +175,14 @@ class NMV_RenderMorphologyProgressive(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.sequences_directory)
+                nmv.interface.ui.globals.options.io.sequences_directory)
 
         # Create a specific directory for this mesh
         self.output_directory = '%s/%s%s' % \
-                                (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label,
+                                (nmv.interface.ui.globals.options.io.sequences_directory,
+                                 nmv.interface.ui.globals.options.morphology.label,
                                  nmv.consts.Suffix.MORPHOLOGY_PROGRESSIVE)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
@@ -191,7 +191,7 @@ class NMV_RenderMorphologyProgressive(bpy.types.Operator):
 
         # Reconstruct the morphology using the progressive builder
         progressive_builder = nmv.builders.ProgressiveBuilder(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
         progressive_builder.draw_morphology_skeleton()
 
         # Compute the bounding box of the morphology directly after the reconstruction

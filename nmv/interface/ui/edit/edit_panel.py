@@ -152,7 +152,7 @@ class NMV_SketchSkeleton(bpy.types.Operator):
             return {'FINISHED'}
 
         # Clone the options to avoid messing the other panels
-        options_clone = copy.deepcopy(nmv.interface.ui_options)
+        options_clone = copy.deepcopy(nmv.interface.ui.globals.options)
         options_clone.shading.set_default()
 
         # Plot the morphology (whatever issues it contains)
@@ -197,14 +197,14 @@ class NMV_EditMorphologyCoordinates(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Sketch the guide to make sure users can see something
-        options_clone = copy.deepcopy(nmv.interface.ui_options)
+        options_clone = copy.deepcopy(nmv.interface.ui.globals.options)
         options_clone.morphology.soma_representation = nmv.enums.Soma.Representation.META_BALLS
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology, options=options_clone)
 
         # Sketch the morphological skeleton for repair
         morphology_editor = nmv.edit.MorphologyEditor(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
         morphology_editor.sketch_morphology_skeleton()
 
         # Switch to the wire-frame mode
@@ -272,7 +272,7 @@ class NMV_UpdateMorphologyCoordinates(bpy.types.Operator):
         # Plot the morphology (whatever issues it contains)
         nmv.interface.ui.sketch_morphology_skeleton_guide(
             morphology=nmv.interface.ui_morphology,
-            options=copy.deepcopy(nmv.interface.ui_options))
+            options=copy.deepcopy(nmv.interface.ui.globals.options))
 
         # Update the edit mode
         global in_edit_mode
@@ -307,7 +307,7 @@ class NMV_ExportMorphologySWC(bpy.types.Operator):
         """
 
         # Ensure that there is a valid directory where the meshes will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
+        if nmv.interface.ui.globals.options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
@@ -316,13 +316,13 @@ class NMV_ExportMorphologySWC(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.morphologies_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.morphologies_directory)
+                nmv.interface.ui.globals.options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .swc file
         nmv.file.write_morphology_to_swc_file(
-            nmv.interface.ui_morphology, nmv.interface.ui_options.io.morphologies_directory)
+            nmv.interface.ui_morphology, nmv.interface.ui.globals.options.io.morphologies_directory)
 
         return {'FINISHED'}
 

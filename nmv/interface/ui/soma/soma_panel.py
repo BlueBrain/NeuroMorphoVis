@@ -76,7 +76,7 @@ class NMV_SomaPanel(bpy.types.Panel):
         documentation_button.separator()
 
         # Get a reference to the soma options
-        soma_options = nmv.interface.ui_options.soma
+        soma_options = nmv.interface.ui.globals.options.soma
 
         reconstruction_method_row = layout.row()
         reconstruction_method_row.prop(scene, 'NMV_SomaReconstructionMethod')
@@ -131,12 +131,12 @@ class NMV_SomaPanel(bpy.types.Panel):
         # Pass options from UI to system
         color = scene.NMV_SomaBaseColor
         soma_base_color_value = Vector((color.r, color.g, color.b))
-        nmv.interface.ui_options.shading.soma_color = soma_base_color_value
+        nmv.interface.ui.globals.options.shading.soma_color = soma_base_color_value
 
         # Soma material option
         soma_material_row = layout.row()
         soma_material_row.prop(scene, 'NMV_SomaMaterial')
-        nmv.interface.ui_options.shading.soma_material = scene.NMV_SomaMaterial
+        nmv.interface.ui.globals.options.shading.soma_material = scene.NMV_SomaMaterial
 
         # Soma reconstruction options
         soma_reconstruction_row = layout.row()
@@ -184,7 +184,7 @@ class NMV_SomaPanel(bpy.types.Panel):
         image_extension_row = layout.row()
         image_extension_row.label(text='Image Format:')
         image_extension_row.prop(scene, 'NMV_SomaImageFormat')
-        nmv.interface.ui_options.soma.image_format = scene.NMV_SomaImageFormat
+        nmv.interface.ui.globals.options.soma.image_format = scene.NMV_SomaImageFormat
 
         # Render view buttons
         render_view_row = layout.row()
@@ -229,7 +229,7 @@ class NMV_SomaPanel(bpy.types.Panel):
         # for the soma mesh by name and accordingly activate or deactivate the buttons.
 
         # Ensure that the morphology is loaded to get its label
-        if nmv.interface.ui_options.morphology.label is not None:
+        if nmv.interface.ui.globals.options.morphology.label is not None:
 
             # Does the soma mesh exist in the scene, then activate the buttons
             if nmv.scene.ops.is_object_in_scene_by_name(nmv.consts.Skeleton.SOMA_PREFIX):
@@ -382,7 +382,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Create a some builder
             self.soma_builder = nmv.builders.SomaMetaBuilder(
-                nmv.interface.ui_morphology, nmv.interface.ui_options)
+                nmv.interface.ui_morphology, nmv.interface.ui.globals.options)
 
             # Reconstruct the soma in a single step
             nmv.interface.ui_soma_mesh = self.soma_builder.reconstruct_soma_mesh()
@@ -407,7 +407,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # Create a some builder
             self.soma_builder = nmv.builders.SomaHybridBuilder(
-                nmv.interface.ui_morphology, nmv.interface.ui_options)
+                nmv.interface.ui_morphology, nmv.interface.ui.globals.options)
 
             # Reconstruct the soma in a single step
             nmv.interface.ui_soma_mesh = self.soma_builder.reconstruct_soma_mesh()
@@ -431,7 +431,7 @@ class ReconstructSomaOperator(bpy.types.Operator):
 
             # SoftBody reconstruction
             self.soma_builder = nmv.builders.SomaSoftBodyBuilder(
-                nmv.interface.ui_morphology, nmv.interface.ui_options)
+                nmv.interface.ui_morphology, nmv.interface.ui.globals.options)
 
             # Build the basic profile of the some from the soft body operation, but don't run the
             # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
@@ -533,18 +533,18 @@ class RenderSomaFront(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label,
                                  nmv.consts.Suffix.SOMA_FRONT),
-            image_format=nmv.interface.ui_options.soma.image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory)
+            image_format=nmv.interface.ui.globals.options.soma.image_format,
+            image_directory=nmv.interface.ui.globals.options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Rendering Soma Done')
@@ -583,18 +583,18 @@ class RenderSomaSide(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.SIDE,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label,
                                  nmv.consts.Suffix.SOMA_SIDE),
-            image_format=nmv.interface.ui_options.soma.image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory)
+            image_format=nmv.interface.ui.globals.options.soma.image_format,
+            image_directory=nmv.interface.ui.globals.options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -633,18 +633,18 @@ class RenderSomaTop(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the images directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
 
         # Render the soma
         nmv.rendering.SomaRenderer.render(
             view_extent=scene.NMV_ViewDimensions,
             camera_view=nmv.enums.Camera.View.TOP,
             image_resolution=scene.NMV_SomaFrameResolution,
-            image_name='%s%s' % (nmv.interface.ui_options.morphology.label,
+            image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label,
                                  nmv.consts.Suffix.SOMA_TOP),
-            image_format=nmv.interface.ui_options.soma.image_format,
-            image_directory=nmv.interface.ui_options.io.images_directory)
+            image_format=nmv.interface.ui.globals.options.soma.image_format,
+            image_directory=nmv.interface.ui.globals.options.io.images_directory)
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')
@@ -747,13 +747,13 @@ class RenderSoma360(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.sequences_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.sequences_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.sequences_directory)
 
         # Create a specific directory for this soma mesh
         self.output_directory = '%s/%s%s' % \
-                                (nmv.interface.ui_options.io.sequences_directory,
-                                 nmv.interface.ui_options.morphology.label,
+                                (nmv.interface.ui.globals.options.io.sequences_directory,
+                                 nmv.interface.ui.globals.options.morphology.label,
                                  nmv.consts.Suffix.SOMA_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
@@ -892,13 +892,13 @@ class RenderSomaProgressive(bpy.types.Operator):
         nmv.scene.ops.clear_scene()
 
         # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.sequences_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.sequences_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.sequences_directory)
 
         # Create a specific directory for this mesh
         self.output_directory = '%s/%s%s' % (
-            nmv.interface.ui_options.io.sequences_directory,
-            nmv.interface.ui_options.morphology.label,
+            nmv.interface.ui.globals.options.io.sequences_directory,
+            nmv.interface.ui.globals.options.morphology.label,
             nmv.consts.Suffix.SOMA_PROGRESSIVE)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
@@ -912,7 +912,7 @@ class RenderSomaProgressive(bpy.types.Operator):
 
         # Create a some builder object
         self.soma_builder = nmv.builders.SomaSoftBodyBuilder(
-            nmv.interface.ui_morphology, nmv.interface.ui_options)
+            nmv.interface.ui_morphology, nmv.interface.ui.globals.options)
 
         # Build the basic profile of the some from the soft body operation, but don't run the
         # simulation now. Run the simulation in the '@modal' mode, to avoid freezing the UI
@@ -987,13 +987,13 @@ class SaveSomaMeshOBJ(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.meshes_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.meshes_directory)
 
         # Export the selected soma mesh as an .obj file
         nmv.file.export_object_to_obj_file(
             mesh_object=nmv.interface.ui_soma_mesh,
-            output_directory=nmv.interface.ui_options.io.meshes_directory,
+            output_directory=nmv.interface.ui.globals.options.io.meshes_directory,
             file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
         # Finished
@@ -1029,13 +1029,13 @@ class SaveSomaMeshPLY(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.meshes_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.meshes_directory)
 
         # Export the selected soma mesh as an .ply file
         nmv.file.export_object_to_ply_file(
             mesh_object=nmv.interface.ui_soma_mesh,
-            output_directory=nmv.interface.ui_options.io.meshes_directory,
+            output_directory=nmv.interface.ui.globals.options.io.meshes_directory,
             file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
         # Finished
@@ -1072,13 +1072,13 @@ class SaveSomaMeshSTL(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.meshes_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.meshes_directory)
 
         # Export the selected soma mesh as an .stl file
         nmv.file.export_object_to_stl_file(
             mesh_object=nmv.interface.ui_soma_mesh,
-            output_directory=nmv.interface.ui_options.io.meshes_directory,
+            output_directory=nmv.interface.ui.globals.options.io.meshes_directory,
             file_name='%s%s' % (nmv.interface.ui_morphology.label, nmv.consts.Suffix.SOMA_MESH))
 
         # Finished
@@ -1117,12 +1117,12 @@ class SaveSomaMeshBLEND(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.meshes_directory):
-            nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.meshes_directory)
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.meshes_directory):
+            nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.meshes_directory)
 
         # Export the selected soma mesh as a .blend file
         nmv.file.export_scene_to_blend_file(
-            output_directory=nmv.interface.ui_options.io.meshes_directory,
+            output_directory=nmv.interface.ui.globals.options.io.meshes_directory,
             output_file_name='%s%s' % (nmv.interface.ui_morphology.label,
                                        nmv.consts.Suffix.SOMA_MESH))
 

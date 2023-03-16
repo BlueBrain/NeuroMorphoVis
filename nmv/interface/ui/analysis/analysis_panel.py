@@ -133,7 +133,7 @@ class NMV_ExportAnalysisResults(bpy.types.Operator):
         """
 
         # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
+        if nmv.interface.ui.globals.options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
@@ -145,13 +145,13 @@ class NMV_ExportAnalysisResults(bpy.types.Operator):
         nmv.interface.validate_output_directory(self, context.scene)
 
         # Create the analysis directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.analysis_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.analysis_directory)
+                nmv.interface.ui.globals.options.io.analysis_directory)
 
         # Export the analysis results
         nmv.interface.ui.export_analysis_results(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
 
         return {'FINISHED'}
 
@@ -180,7 +180,7 @@ class NMV_CreateNeuronCard(bpy.types.Operator):
         """
 
         # Ensure that there is a valid directory where the images will be written to
-        if nmv.interface.ui_options.io.output_directory is None:
+        if nmv.interface.ui.globals.options.io.output_directory is None:
             self.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
             return {'FINISHED'}
 
@@ -192,12 +192,12 @@ class NMV_CreateNeuronCard(bpy.types.Operator):
         nmv.interface.validate_output_directory(self, context.scene)
 
         # Create the analysis directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.analysis_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.analysis_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui_options.io.analysis_directory)
+                nmv.interface.ui.globals.options.io.analysis_directory)
 
         # Create a specific directory per morphology
-        morphology_analysis_directory = '%s/%s' % (nmv.interface.ui_options.io.analysis_directory,
+        morphology_analysis_directory = '%s/%s' % (nmv.interface.ui.globals.options.io.analysis_directory,
                                                    nmv.interface.ui_morphology.label)
         if not nmv.file.ops.path_exists(morphology_analysis_directory):
             nmv.file.ops.clean_and_create_directory(morphology_analysis_directory)
@@ -207,11 +207,11 @@ class NMV_CreateNeuronCard(bpy.types.Operator):
 
         # Export the analysis results
         nmv.interface.ui.export_analysis_results(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
 
         # Analysis plots
         nmv.analysis.plot_analysis_results(
-            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
 
         # Morphology analyzed
         analysis_time = time.time()
