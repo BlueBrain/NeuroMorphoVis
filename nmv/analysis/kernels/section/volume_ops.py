@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
 import math
 
 
@@ -83,7 +84,7 @@ def compute_sections_volumes_from_segments(section,
 
 
 ####################################################################################################
-# @compute_section_volume_from_segments
+# @compute_segments_volumes_in_section
 ####################################################################################################
 def compute_segments_volumes_in_section(section,
                                         segments_volumes):

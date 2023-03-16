@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import nmv
+# Internal imports
 import nmv.analysis
 import nmv.skeleton
 

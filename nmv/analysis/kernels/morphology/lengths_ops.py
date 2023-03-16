@@ -199,7 +199,7 @@ def kernel_average_segment_length(morphology):
 
 
 ####################################################################################################
-# @kernel_average_segment_length
+# @kernel_zero_length_segments
 ####################################################################################################
 def kernel_zero_length_segments(morphology):
     """Find the number of zero-length segments of the given morphology.
@@ -216,7 +216,7 @@ def kernel_zero_length_segments(morphology):
 
 
 ####################################################################################################
-# @kernel_average_segment_length
+# @kernel_short_sections
 ####################################################################################################
 def kernel_short_sections(morphology):
     """Find the number of the short sections of the given morphology.

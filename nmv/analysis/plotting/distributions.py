@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
+# Internal imports
 import nmv.consts
 import nmv.enums
 import nmv.utilities

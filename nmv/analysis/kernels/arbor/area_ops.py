@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.analysis
 import nmv.skeleton
 
@@ -56,7 +55,7 @@ def compute_arbor_total_surface_area(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_surface_area_per_section
+# @compute_minimum_section_surface_area
 ####################################################################################################
 def compute_minimum_section_surface_area(arbor):
     """Computes the minimum section surface area per section of the given arbor.
@@ -84,7 +83,7 @@ def compute_minimum_section_surface_area(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_surface_area_per_section
+# @compute_minimum_segment_surface_area
 ####################################################################################################
 def compute_minimum_segment_surface_area(arbor):
     """Computes the minimum section surface area per section of the given arbor.
@@ -140,7 +139,7 @@ def compute_maximum_segment_surface_area(arbor):
 
 
 ####################################################################################################
-# @compute_maximum_segment_surface_area
+# @compute_average_segment_surface_area
 ####################################################################################################
 def compute_average_segment_surface_area(arbor):
     """Computes the minimum section surface area per section of the given arbor.
@@ -169,7 +168,7 @@ def compute_average_segment_surface_area(arbor):
 
 
 ####################################################################################################
-# @compute_maximum_surface_area_per_section
+# @compute_maximum_section_surface_area
 ####################################################################################################
 def compute_maximum_section_surface_area(arbor):
     """Computes the maximum section surface area of the given arbor.

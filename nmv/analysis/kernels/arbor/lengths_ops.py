@@ -16,13 +16,12 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.analysis
 import nmv.skeleton
 
 
 ####################################################################################################
-# @compute_arbor_total_length
+# @compute_total_length_of_arbor
 ####################################################################################################
 def compute_total_length_of_arbor(arbor):
     """Computes the total length of the given arbor.
@@ -283,7 +282,7 @@ def compute_average_section_contraction_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_section_contraction_of_arbor
+# @compute_maximum_section_contraction_of_arbor
 ####################################################################################################
 def compute_maximum_section_contraction_of_arbor(arbor):
     """Computes the minimum section contraction along the given arbor.
@@ -520,7 +519,7 @@ def compute_maximum_hillman_taper_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_average_section_length_of_arbor
+# @compute_average_burke_taper_of_arbor
 ####################################################################################################
 def compute_average_burke_taper_of_arbor(arbor):
     """Computes the average Burke taper along the given arbor.

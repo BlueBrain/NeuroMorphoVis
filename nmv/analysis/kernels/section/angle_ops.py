@@ -17,7 +17,7 @@
 
 
 ####################################################################################################
-# @compute_section_surface_area_from_segments
+# @compute_sections_local_bifurcation_angles
 ####################################################################################################
 def compute_sections_local_bifurcation_angles(section,
                                               sections_local_angles):

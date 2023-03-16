@@ -74,7 +74,7 @@ def kernel_average_local_bifurcation_angle(morphology):
 
 
 ####################################################################################################
-# @kernel_minimum_local_bifurcation_angle
+# @kernel_minimum_global_bifurcation_angle
 ####################################################################################################
 def kernel_minimum_global_bifurcation_angle(morphology):
     """Compute the minimum global bifurcation angles of the given morphology.

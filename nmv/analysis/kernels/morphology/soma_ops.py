@@ -15,9 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Internal imports
-import nmv.analysis
-
 
 ####################################################################################################
 # @kernel_soma_get_reported_mean_radius
@@ -82,7 +79,7 @@ def kernel_soma_get_average_surface_area(morphology):
 
 
 ####################################################################################################
-# @kernel_global_get_soma_volume
+# @kernel_soma_get_average_volume
 ####################################################################################################
 def kernel_soma_get_average_volume(morphology):
     """Get the volume of the soma based on its mean radius as reported in the morphology.
@@ -98,7 +95,7 @@ def kernel_soma_get_average_volume(morphology):
 
 
 ####################################################################################################
-# @kernel_soma_get_reported_mean_radius
+# @kernel_soma_count_profile_points
 ####################################################################################################
 def kernel_soma_count_profile_points(morphology):
     """Count the profile points of the soma as reported in the morphology file.

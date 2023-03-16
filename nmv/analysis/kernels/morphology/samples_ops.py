@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # Internal imports
 import nmv.consts
 import nmv.analysis
@@ -457,7 +456,7 @@ def compute_distribution_number_of_samples_of_morphology(morphology):
 
 
 ####################################################################################################
-# @compute_distribution_segments_length_of_morphology
+# @compute_distribution_samples_radii_of_morphology
 ####################################################################################################
 def compute_distribution_samples_radii_of_morphology(morphology):
 

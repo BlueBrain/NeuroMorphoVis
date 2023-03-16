@@ -20,7 +20,7 @@ import nmv.analysis
 
 
 ####################################################################################################
-# @kernel_total_number_samples
+# @kernel_total_number_sections
 ####################################################################################################
 def kernel_total_number_sections(morphology):
     """Compute the total number of sections of the given morphology.
