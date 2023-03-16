@@ -43,16 +43,16 @@ class NMV_ExportMorphologySWC(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.morphologies_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui.globals.options.io.morphologies_directory)
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
         nmv.file.write_morphology_to_swc_file(
             nmv.interface.ui.globals.ui_morphology,
-            nmv.interface.ui.globals.options.io.morphologies_directory)
+            nmv.interface.ui_options.io.morphologies_directory)
 
         return {'FINISHED'}
 
@@ -77,16 +77,16 @@ class NMV_ExportMorphologySegments(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.morphologies_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui.globals.options.io.morphologies_directory)
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
         nmv.file.write_morphology_to_segments_file(
             nmv.interface.ui_morphology,
-            nmv.interface.ui.globals.options.io.morphologies_directory)
+            nmv.interface.ui_options.io.morphologies_directory)
 
         return {'FINISHED'}
 
@@ -111,15 +111,15 @@ class NMV_ExportMorphologyBLEND(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the meshes directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.morphologies_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.morphologies_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui.globals.options.io.morphologies_directory)
+                nmv.interface.ui_options.io.morphologies_directory)
 
         # Export the reconstructed morphology as an .blend file
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
         nmv.file.export_scene_to_blend_file(
-            output_directory=nmv.interface.ui.globals.options.io.morphologies_directory,
+            output_directory=nmv.interface.ui_options.io.morphologies_directory,
             output_file_name=nmv.interface.ui_morphology.label)
 
         return {'FINISHED'}

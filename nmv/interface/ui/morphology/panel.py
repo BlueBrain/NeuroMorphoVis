@@ -15,36 +15,16 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import time
-import copy
-
 # Blender imports
 import bpy
 
 # Internal imports
-import nmv.bbox
-import nmv.builders
 import nmv.consts
 import nmv.enums
-import nmv.file
 import nmv.interface
-import nmv.shading
-import nmv.scene
-import nmv.skeleton
 import nmv.utilities
-import nmv.rendering
-import nmv.geometry
 
-# Is the morphology reconstructed or not
-is_morphology_reconstructed = False
-
-# Is the morphology rendered or not
-is_morphology_rendered = False
-
-# What is the selected morphology builder
-morphology_builder = None
-
+# Layout
 from .layout_buttons import *
 from .layout_skeleton_props import *
 from .layout_reconstruction_props import *
@@ -56,7 +36,7 @@ from .layout_rendering_props import *
 # @NMV_MorphologyPanel
 ####################################################################################################
 class NMV_MorphologyPanel(bpy.types.Panel):
-    """Morphology tools panel"""
+    """Morphology Tools Panel"""
 
     ################################################################################################
     # Panel parameters
@@ -118,48 +98,37 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         draw_documentation_button(layout=self.layout)
 
         draw_morphology_reconstruction_options(
-            layout=self.layout, scene=context.scene, options=nmv.interface.ui.globals.options)
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+        self.layout.separator()
 
         draw_morphology_skeleton_display_options(
             layout=self.layout, scene=context.scene,
-            options=nmv.interface.ui.globals.options, morphology=nmv.interface.ui_morphology)
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+        self.layout.separator()
 
         draw_morphology_color_options(
             layout=self.layout, scene=context.scene,
-            options=nmv.interface.ui.globals.options, morphology=nmv.interface.ui_morphology)
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+        self.layout.separator()
 
-        global is_morphology_reconstructed
-        if nmv.interface.ui.globals.options.morphology.reconstruction_method == \
-                nmv.enums.Skeleton.Method.DENDROGRAM:
-            label = 'Draw Dendrogram'
+        method = nmv.interface.ui_options.morphology.reconstruction_method
+        if method == nmv.enums.Skeleton.Method.DENDROGRAM:
+            draw_morphology_reconstruction_button(
+                layout=self.layout, scene=context.scene, label='Draw Dendrogram',
+                show_stats=nmv.interface.ui_morphology_reconstructed)
         else:
-            label = 'Draw Morphology'
-
-        draw_morphology_reconstruction_button(layout=self.layout,
-                                              scene=context.scene,
-                                              label=label,
-                                              show_stats=is_morphology_reconstructed)
+            draw_morphology_reconstruction_button(
+                layout=self.layout, scene=context.scene, label='Draw Morphology',
+                show_stats=nmv.interface.ui_morphology_reconstructed)
+        self.layout.separator()
 
         draw_rendering_options(
-            panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
-
-        if nmv.interface.ui.is_morphology_rendered:
-            morphology_stats_row = self.layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            rendering_time_row = self.layout.row()
-            rendering_time_row.prop(context.scene, 'NMV_MorphologyRenderingTime')
-            rendering_time_row.enabled = False
+            panel=self, scene=context.scene, options=nmv.interface.ui_options,
+            show_stats=nmv.interface.ui_morphology_rendered)
+        self.layout.separator()
 
         # Export buttons
         draw_export_options(layout=self.layout)
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(self.layout)
-
-
-
-
-
-
-
-

@@ -17,47 +17,26 @@
 
 
 # Internal imports
-import nmv.options
+import nmv.consts
 
 
 ####################################################################################################
-# @Globals
+# @verify_output_directory
 ####################################################################################################
-class Globals:
-    """UI globals"""
+def verify_output_directory(options,
+                            panel=None):
 
-    def __init__(self): pass
+    # Ensure that there is a valid directory where the images will be written to
+    if options.io.output_directory is None:
+        if panel is not None:
+            panel.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
+        return False
 
-    # This flag is used to verify if NeuroMorphoVis is already initialized or not
-    nmv_initialized = False
+    if not nmv.file.ops.path_exists(options.io.output_directory):
+        if panel is not None:
+            panel.report({'ERROR'}, nmv.consts.Messages.INVALID_OUTPUT_PATH)
+        return False
 
-    # NeuroMorphoVis options
-    options = nmv.options.NeuroMorphoVisOptions()
-
-    # The morphology skeleton object loaded after UI interaction
-    morphology = None
-
-    # All the icons loaded for the UI
-    icons = None
-
-    # The reconstructed soma mesh object
-    soma_mesh = None
-
-    # Builder
-    morphology_builder = None
-
-    # A list of all the objects that correspond to the reconstructed morphology skeleton
-    reconstructed_skeleton = list()
-
-    # A list of all the objects that correspond to the reconstructed mesh of the neuron
-    # NOTE: If this list contains a single mesh object, then it accounts for the entire mesh after
-    # joining all the mesh objects together
-    reconstructed_mesh = list()
-
-    # Reference to the circuit
-    circuit = None
-
-    is_morphology_reconstructed = False
-
-    is_morphology_rendered = False
+    # Otherwise, the output directory is valid
+    return True
 

@@ -17,32 +17,20 @@
 
 # System imports
 import time
-import copy
 
 # Blender imports
 import bpy
 
 # Internal imports
-import nmv.bbox
-import nmv.builders
 import nmv.consts
 import nmv.enums
-import nmv.file
-import nmv.interface
-import nmv.shading
-import nmv.scene
-import nmv.skeleton
-import nmv.utilities
-import nmv.rendering
-import nmv.geometry
-
 
 
 ####################################################################################################
 # @NMV_RenderMorphologyFront
 ####################################################################################################
 class NMV_RenderMorphologyFront(bpy.types.Operator):
-    """Render front view of the reconstructed morphology"""
+    """Render the front view (XY) of the morphology"""
 
     # Operator parameters
     bl_idname = "nmv.render_morphology_front"
@@ -51,32 +39,20 @@ class NMV_RenderMorphologyFront(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self,
-                context):
-        """Execute the operator.
+    def execute(self, context):
 
-        :param context:
-            Rendering Context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_morphology_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui.globals.options.morphology.image_format)
-
-        # Stats.
+        nmv.interface.render_morphology_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.FRONT,
+            image_suffix=nmv.consts.Suffix.MORPHOLOGY_FRONT)
         rendering_time = time.time()
-        nmv.interface.ui.is_morphology_rendered = True
-        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MorphologyRenderingTime)
 
-        # Confirm operation done
+        # Update the UI
+        nmv.interface.ui_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         return {'FINISHED'}
 
 
@@ -84,7 +60,7 @@ class NMV_RenderMorphologyFront(bpy.types.Operator):
 # @NMV_RenderMorphologySide
 ####################################################################################################
 class NMV_RenderMorphologySide(bpy.types.Operator):
-    """Render side view of the reconstructed morphology"""
+    """Render the side view (YZ) of the morphology"""
 
     # Operator parameters
     bl_idname = "nmv.render_morphology_side"
@@ -94,30 +70,19 @@ class NMV_RenderMorphologySide(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """Execute the operator.
 
-        :param context:
-            Rendering context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_morphology_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui.globals.options.morphology.image_format)
-
-        # Stats.
+        nmv.interface.render_morphology_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.SIDE,
+            image_suffix=nmv.consts.Suffix.MORPHOLOGY_SIDE)
         rendering_time = time.time()
-        nmv.interface.ui.is_morphology_rendered = True
-        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MorphologyRenderingTime)
 
-        # Confirm operation done
+        # Update the UI
+        nmv.interface.ui_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         return {'FINISHED'}
 
 
@@ -125,7 +90,7 @@ class NMV_RenderMorphologySide(bpy.types.Operator):
 # @NMV_RenderMorphologyTop
 ####################################################################################################
 class NMV_RenderMorphologyTop(bpy.types.Operator):
-    """Render top view of the reconstructed morphology"""
+    """Render the top view (XZ) of the morphology"""
 
     # Operator parameters
     bl_idname = "nmv.render_morphology_top"
@@ -135,28 +100,17 @@ class NMV_RenderMorphologyTop(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """Execute the operator.
 
-        :param context:
-            Rendering context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_morphology_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui.globals.options.morphology.image_format)
-
-        # Stats.
+        nmv.interface.render_morphology_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.TOP,
+            image_suffix=nmv.consts.Suffix.MORPHOLOGY_TOP)
         rendering_time = time.time()
-        nmv.interface.ui.is_morphology_rendered = True
-        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MorphologyRenderingTime)
 
-        # Confirm operation done
+        # Update the UI
+        nmv.interface.ui_morphology_rendered = True
+        context.scene.NMV_MorphologyRenderingTime = rendering_time - start_time
         return {'FINISHED'}

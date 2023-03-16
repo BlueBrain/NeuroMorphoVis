@@ -125,6 +125,3 @@ def draw_morphology_skeleton_display_options(layout, scene, options, morphology)
             layout=layout, scene=scene, options=options, morphology=morphology)
     else:
         draw_demo_options(layout=layout, scene=scene)
-    layout.separator()
-
-

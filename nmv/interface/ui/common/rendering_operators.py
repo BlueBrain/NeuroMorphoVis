@@ -38,7 +38,7 @@ class NMV_RenderFrontView(bpy.types.Operator):
 
         # Render the image and report the rendering time
         #context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-        #    self, scene=context.scene, options=nmv.interface.ui.globals.options,
+        #    self, scene=context.scene, options=nmv.interface.ui_options,
         #    view=nmv.enums.Camera.View.FRONT)
         return {'FINISHED'}
 
@@ -60,7 +60,7 @@ class NMV_RenderSideView(bpy.types.Operator):
 
         # Render the image and report the rendering time
         #context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-        #    self, scene=context.scene, options=nmv.interface.ui.globals.options,
+        #    self, scene=context.scene, options=nmv.interface.ui_options,
         #    view=nmv.enums.Camera.View.FRONT)
         return {'FINISHED'}
 
@@ -82,7 +82,7 @@ class NMV_RenderTopView(bpy.types.Operator):
 
         # Render the image and report the rendering time
         #context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
-        #    self, scene=context.scene, options=nmv.interface.ui.globals.options,
+        #    self, scene=context.scene, options=nmv.interface.ui_options,
         #    view=nmv.enums.Camera.View.FRONT)
         return {'FINISHED'}
 

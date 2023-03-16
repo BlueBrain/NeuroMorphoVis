@@ -201,8 +201,8 @@ def draw_colormap_options(layout, scene, options):
     color_map_row.prop(scene, 'NMV_InvertColorMap')
 
     # Clear the color map passed to VMV if it is full
-    if len(nmv.interface.ui.globals.options.shading.morphology_colormap_list) > 0:
-        nmv.interface.ui.globals.options.shading.morphology_colormap_list.clear()
+    if len(nmv.interface.ui_options.shading.morphology_colormap_list) > 0:
+        nmv.interface.ui_options.shading.morphology_colormap_list.clear()
 
     # Soma
     draw_soma_color_option(layout=layout, scene=scene, options=options)
@@ -223,7 +223,7 @@ def draw_colormap_options(layout, scene, options):
 
         # Get the color value from the panel
         color = getattr(scene, 'NMV_Color%d' % i)
-        nmv.interface.ui.globals.options.shading.morphology_colormap_list.append(color)
+        nmv.interface.ui_options.shading.morphology_colormap_list.append(color)
 
 
 ####################################################################################################
@@ -332,4 +332,3 @@ def draw_morphology_color_options(layout, scene, options, morphology):
             layout=layout, scene=scene, options=options, morphology=morphology)
     else:
         nmv.logger.log('UI_ERROR: add_morphology_color_options')
-    layout.separator()

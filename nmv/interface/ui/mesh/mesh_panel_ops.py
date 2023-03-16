@@ -48,7 +48,7 @@ def draw_soma_to_arbors_connectivity(panel,
     """
 
     # Meshing options reference
-    meshing_options = nmv.interface.ui.globals.options.mesh
+    meshing_options = nmv.interface.ui_options.mesh
 
     # The soft body soma must be used to connect the arbors
     if meshing_options.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
@@ -74,7 +74,7 @@ def draw_mesh_connectivity_options(panel,
     """
 
     # Meshing options reference
-    meshing_options = nmv.interface.ui.globals.options.mesh
+    meshing_options = nmv.interface.ui_options.mesh
 
     # If the soma is connected, then by default, the arbors are connected
     if meshing_options.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
@@ -101,7 +101,7 @@ def draw_spines_options(panel,
     """
 
     # Meshing options reference
-    meshing_options = nmv.interface.ui.globals.options.mesh
+    meshing_options = nmv.interface.ui_options.mesh
 
     # Spines options
     spine_options_row = panel.layout.row()
@@ -153,7 +153,7 @@ def draw_tessellation_options(panel,
     """
 
     # Meshing options reference
-    meshing_options = nmv.interface.ui.globals.options.mesh
+    meshing_options = nmv.interface.ui_options.mesh
 
     # Tessellation parameters
     tess_level_row = panel.layout.row()
@@ -192,22 +192,22 @@ def draw_piece_wise_meshing_options(panel,
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
     soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
-    nmv.interface.ui.globals.options.mesh.soma_type = scene.NMV_MeshingSomaType
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Edges
     mesh_edges_row = panel.layout.row()
     mesh_edges_row.label(text='Edges:')
     mesh_edges_row.prop(scene, 'NMV_MeshSmoothing', expand=True)
-    nmv.interface.ui.globals.options.mesh.edges = scene.NMV_MeshSmoothing
+    nmv.interface.ui_options.mesh.edges = scene.NMV_MeshSmoothing
 
     # Surface roughness
-    if nmv.interface.ui.globals.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+    if nmv.interface.ui_options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
         mesh_surface_row = panel.layout.row()
         mesh_surface_row.label(text='Surface:')
         mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-        nmv.interface.ui.globals.options.mesh.surface = scene.NMV_SurfaceRoughness
+        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
     else:
-        nmv.interface.ui.globals.options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
     # Soma connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
@@ -239,13 +239,13 @@ def draw_skinning_meshing_options(panel,
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
     soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
-    nmv.interface.ui.globals.options.mesh.soma_type = scene.NMV_MeshingSomaType
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Surface roughness
     mesh_surface_row = panel.layout.row()
     mesh_surface_row.label(text='Surface:')
     mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-    nmv.interface.ui.globals.options.mesh.surface = scene.NMV_SurfaceRoughness
+    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
 
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
@@ -277,13 +277,13 @@ def draw_meta_objects_meshing_options(panel,
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
     soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
-    nmv.interface.ui.globals.options.mesh.soma_type = scene.NMV_MeshingSomaType
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Surface roughness
     mesh_surface_row = panel.layout.row()
     mesh_surface_row.label(text='Surface:')
     mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-    nmv.interface.ui.globals.options.mesh.surface = scene.NMV_SurfaceRoughness
+    nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
 
     # Tessellation options
     draw_tessellation_options(panel=panel, scene=scene)
@@ -309,13 +309,13 @@ def draw_union_meshing_options(panel,
     soma_type_row = panel.layout.row()
     soma_type_row.label(text='Soma:')
     soma_type_row.prop(scene, 'NMV_MeshingSomaType', expand=True)
-    nmv.interface.ui.globals.options.mesh.soma_type = scene.NMV_MeshingSomaType
+    nmv.interface.ui_options.mesh.soma_type = scene.NMV_MeshingSomaType
 
     # Edges
     mesh_edges_row = panel.layout.row()
     mesh_edges_row.label(text='Edges:')
     mesh_edges_row.prop(scene, 'NMV_MeshSmoothing', expand=True)
-    nmv.interface.ui.globals.options.mesh.edges = scene.NMV_MeshSmoothing
+    nmv.interface.ui_options.mesh.edges = scene.NMV_MeshSmoothing
 
     if scene.NMV_MeshSmoothing == nmv.enums.Meshing.Edges.SMOOTH:
 
@@ -323,11 +323,11 @@ def draw_union_meshing_options(panel,
         mesh_surface_row = panel.layout.row()
         mesh_surface_row.label(text='Surface:')
         mesh_surface_row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
-        nmv.interface.ui.globals.options.mesh.surface = scene.NMV_SurfaceRoughness
+        nmv.interface.ui_options.mesh.surface = scene.NMV_SurfaceRoughness
 
     # Use a smooth surface
     else:
-        nmv.interface.ui.globals.options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+        nmv.interface.ui_options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
     # Connectivity options
     draw_soma_to_arbors_connectivity(panel=panel, scene=scene)
@@ -365,7 +365,7 @@ def draw_meshing_options(panel,
     # Which meshing technique to use
     meshing_method_row = layout.row()
     meshing_method_row.prop(scene, 'NMV_MeshingTechnique', icon='OUTLINER_OB_EMPTY')
-    nmv.interface.ui.globals.options.mesh.meshing_technique = scene.NMV_MeshingTechnique
+    nmv.interface.ui_options.mesh.meshing_technique = scene.NMV_MeshingTechnique
 
     # Draw the meshing options
     if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
@@ -403,7 +403,7 @@ def draw_color_options(panel,
     # Mesh material
     mesh_material_row = layout.row()
     mesh_material_row.prop(scene, 'NMV_MeshMaterial')
-    nmv.interface.ui.globals.options.shading.mesh_material = scene.NMV_MeshMaterial
+    nmv.interface.ui_options.shading.mesh_material = scene.NMV_MeshMaterial
 
     # The morphology must be loaded to be able to draw these options
     if nmv.interface.ui_morphology is not None:
@@ -419,58 +419,58 @@ def draw_color_options(panel,
 
             # If the homogeneous color flag is set
             if scene.NMV_MeshHomogeneousColor or \
-               nmv.interface.ui.globals.options.mesh.soma_connection == \
+               nmv.interface.ui_options.mesh.soma_connection == \
                nmv.enums.Meshing.SomaConnection.CONNECTED and  \
-               nmv.interface.ui.globals.options.mesh.soma_type == nmv.enums.Soma.Representation.META_BALLS:
+               nmv.interface.ui_options.mesh.soma_type == nmv.enums.Soma.Representation.META_BALLS:
                 neuron_color_row = layout.row()
                 neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
 
-                nmv.interface.ui.globals.options.shading.mesh_soma_color = \
+                nmv.interface.ui_options.shading.mesh_soma_color = \
                     scene.NMV_NeuronMeshColor
-                nmv.interface.ui.globals.options.shading.mesh_axons_color = \
+                nmv.interface.ui_options.shading.mesh_axons_color = \
                     scene.NMV_NeuronMeshColor
-                nmv.interface.ui.globals.options.shading.mesh_basal_dendrites_color = \
+                nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
                     scene.NMV_NeuronMeshColor
-                nmv.interface.ui.globals.options.shading.mesh_apical_dendrites_color = \
+                nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
                     scene.NMV_NeuronMeshColor
-                nmv.interface.ui.globals.options.shading.mesh_spines_color = \
+                nmv.interface.ui_options.shading.mesh_spines_color = \
                     scene.NMV_NeuronMeshColor
-                nmv.interface.ui.globals.options.shading.mesh_endfeet_color = \
+                nmv.interface.ui_options.shading.mesh_endfeet_color = \
                     scene.NMV_NeuronMeshColor
 
             # Different colors
             else:
                 soma_color_row = layout.row()
                 soma_color_row.prop(scene, 'NMV_SomaMeshColor')
-                nmv.interface.ui.globals.options.shading.mesh_soma_color = scene.NMV_SomaMeshColor
+                nmv.interface.ui_options.shading.mesh_soma_color = scene.NMV_SomaMeshColor
 
                 if nmv.interface.ui_morphology.has_axons():
                     axons_color_row = layout.row()
                     axons_color_row.prop(scene, 'NMV_AxonMeshColor')
-                    nmv.interface.ui.globals.options.shading.mesh_axons_color = scene.NMV_AxonMeshColor
+                    nmv.interface.ui_options.shading.mesh_axons_color = scene.NMV_AxonMeshColor
 
                 if nmv.interface.ui_morphology.has_basal_dendrites():
                     basal_dendrites_color_row = layout.row()
                     basal_dendrites_color_row.prop(scene, 'NMV_BasalDendritesMeshColor')
-                    nmv.interface.ui.globals.options.shading.mesh_basal_dendrites_color = \
+                    nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
                         scene.NMV_BasalDendritesMeshColor
 
                 if nmv.interface.ui_morphology.has_apical_dendrites():
                     apical_dendrites_color_row = layout.row()
                     apical_dendrites_color_row.prop(scene, 'NMV_ApicalDendriteMeshColor')
-                    nmv.interface.ui.globals.options.shading.mesh_apical_dendrites_color = \
+                    nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
                         scene.NMV_ApicalDendriteMeshColor
 
                 # Spines must be there to set a color for them
-                if nmv.interface.ui.globals.options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
+                if nmv.interface.ui_options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
                     spines_color_row = layout.row()
                     spines_color_row.prop(scene, 'NMV_SpinesMeshColor')
-                    nmv.interface.ui.globals.options.shading.mesh_spines_color = scene.NMV_SpinesMeshColor
+                    nmv.interface.ui_options.shading.mesh_spines_color = scene.NMV_SpinesMeshColor
 
                 if nmv.interface.ui_morphology.has_endfeet():
                     endfeet_color_row = layout.row()
                     endfeet_color_row.prop(scene, 'NMV_EndfeetMeshColor')
-                    nmv.interface.ui.globals.options.shading.mesh_endfeet_color = scene.NMV_EndfeetMeshColor
+                    nmv.interface.ui_options.shading.mesh_endfeet_color = scene.NMV_EndfeetMeshColor
 
         elif scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.META_OBJECTS:
 
@@ -478,15 +478,15 @@ def draw_color_options(panel,
             neuron_color_row.prop(scene, 'NMV_NeuronMeshColor')
 
             # Pass options from UI to system
-            nmv.interface.ui.globals.options.shading.mesh_soma_color = \
+            nmv.interface.ui_options.shading.mesh_soma_color = \
                 scene.NMV_NeuronMeshColor
-            nmv.interface.ui.globals.options.shading.mesh_axons_color = \
+            nmv.interface.ui_options.shading.mesh_axons_color = \
                 scene.NMV_NeuronMeshColor
-            nmv.interface.ui.globals.options.shading.mesh_basal_dendrites_color = \
+            nmv.interface.ui_options.shading.mesh_basal_dendrites_color = \
                 scene.NMV_NeuronMeshColor
-            nmv.interface.ui.globals.options.shading.mesh_apical_dendrites_color = \
+            nmv.interface.ui_options.shading.mesh_apical_dendrites_color = \
                 scene.NMV_NeuronMeshColor
-            nmv.interface.ui.globals.options.shading.mesh_spines_color = \
+            nmv.interface.ui_options.shading.mesh_spines_color = \
                 scene.NMV_NeuronMeshColor
 
         # Add nucleus color option if they are not ignored
@@ -494,7 +494,7 @@ def draw_color_options(panel,
             nucleus_color_row = layout.row()
             nucleus_color_row.prop(scene, 'NMV_NucleusMeshColor')
 
-            nmv.interface.ui.globals.options.shading.mesh_nucleus_color = Vector((
+            nmv.interface.ui_options.shading.mesh_nucleus_color = Vector((
                 scene.NMV_NucleusMeshColor.r, scene.NMV_NucleusMeshColor.g,
                 scene.NMV_NucleusMeshColor.b))
 
@@ -600,12 +600,12 @@ def draw_rendering_options(panel,
     image_extension_row = layout.row()
     image_extension_row.label(text='Image Format:')
     image_extension_row.prop(scene, 'NMV_MeshImageFormat')
-    nmv.interface.ui.globals.options.mesh.image_format = scene.NMV_MeshImageFormat
+    nmv.interface.ui_options.mesh.image_format = scene.NMV_MeshImageFormat
 
     # Scale bar
     scale_bar_row = layout.row()
     scale_bar_row.prop(scene, 'NMV_RenderMeshScaleBar')
-    nmv.interface.ui.globals.options.rendering.render_scale_bar = scene.NMV_RenderMeshScaleBar
+    nmv.interface.ui_options.rendering.render_scale_bar = scene.NMV_RenderMeshScaleBar
 
     # Rendering view
     render_view_row = layout.row()

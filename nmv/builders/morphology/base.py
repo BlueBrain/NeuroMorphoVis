@@ -425,7 +425,7 @@ class MorphologyBuilderBase:
 
         # Draw the soma as a sphere
         soma_sphere = nmv.mesh.create_uv_sphere(
-            radius=soma.mean_radius, location=soma.centroid, name='soma')
+            radius=soma.mean_radius, location=soma.centroid, name='Soma')
 
         # Assign a material to the soma sphere
         nmv.shading.set_material_to_object(soma_sphere, self.soma_materials[0])
@@ -601,3 +601,12 @@ class MorphologyBuilderBase:
                     nmv.scene.translate_object(scene_object=morphology_object,
                                                shift=self.morphology.original_center)
 
+    ################################################################################################
+    # @collection_morphology_objects_in_collection
+    ################################################################################################
+    def collection_morphology_objects_in_collection(self):
+
+        # Create a new collection from the created objects of the morphology
+        nmv.utilities.create_collection_with_objects(
+            name=self.morphology.label,
+            objects_list=self.morphology_objects)

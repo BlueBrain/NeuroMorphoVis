@@ -16,6 +16,7 @@
 ####################################################################################################
 
 from .auxiliary import *
+from .collections import *
 from .colors import *
 from .parser import *
 from .parser import *

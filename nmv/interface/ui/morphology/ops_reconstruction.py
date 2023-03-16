@@ -56,44 +56,44 @@ class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
 
         # Create a skeleton builder object to build the morphology skeleton
         start_time = time.time()
-        method = nmv.interface.ui.globals.options.morphology.reconstruction_method
+        method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.DisconnectedSegmentsBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.DisconnectedSegmentsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of disconnected tubes, where each SECTION is a tube
         elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS or \
                 method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology as a set of spheres, where each SPHERE represents a sample
         elif method == nmv.enums.Skeleton.Method.SAMPLES:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.SamplesBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.SamplesBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         elif method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.ConnectedSectionsBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.ConnectedSectionsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.ProgressiveBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.ProgressiveBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.DendrogramBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.DendrogramBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Default: DisconnectedSectionsBuilder
         else:
-            nmv.interface.ui.globals.morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
-                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui.globals.options)
+            nmv.interface.ui_morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
 
         # Draw the morphology skeleton and return a list of all the reconstructed objects
         nmv.interface.ui_reconstructed_skeleton = \
-            nmv.interface.ui.globals.morphology_builder.draw_morphology_skeleton(context=context)
+            nmv.interface.ui_morphology_builder.draw_morphology_skeleton(context=context)
         reconstruction_time = time.time()
-        nmv.interface.ui.globals.is_morphology_reconstructed = True
+        nmv.interface.ui_morphology_reconstructed = True
 
         context.scene.NMV_MorphologyReconstructionTime = reconstruction_time - start_time
         nmv.logger.statistics('Morphology reconstructed in [%f] seconds' %

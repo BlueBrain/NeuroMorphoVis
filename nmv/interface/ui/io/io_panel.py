@@ -61,7 +61,7 @@ class NMV_IOPanel(bpy.types.Panel):
         draw_io_documentation_button(panel=self)
 
         # Draw the input options
-        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
+        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
         # Draw the morphology loading button
         draw_morphology_loading_button(panel=self)
@@ -71,7 +71,7 @@ class NMV_IOPanel(bpy.types.Panel):
             panel=self, scene=context.scene, morphology_object=nmv.interface.ui_morphology)
 
         # Draw the output options
-        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui.globals.options)
+        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
@@ -128,7 +128,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
             nmv.interface.load_fonts()
 
         # Always use meta builder to reconstruct the initial soma
-        options = copy.deepcopy(nmv.interface.ui.globals.options)
+        options = copy.deepcopy(nmv.interface.ui_options)
         options.morphology.set_default()
         options.shading.set_default()
 
@@ -159,7 +159,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
         nmv.scene.ops.view_all_scene()
 
         # Configure the output directory
-        nmv.interface.configure_output_directory(options=nmv.interface.ui.globals.options, context=context)
+        nmv.interface.configure_output_directory(options=nmv.interface.ui_options, context=context)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager

@@ -354,12 +354,14 @@ def draw_morphology_reconstruction_options(layout, scene, options):
     elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
         draw_progressive_options(layout=layout, scene=scene, options=options)
 
+    elif method == nmv.enums.Skeleton.Method.SAMPLES:
+        draw_samples_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
         draw_dendrogram_options(layout=layout, scene=scene, options=options)
 
     else:
         nmv.logger.log('UI_ERROR: draw_morphology_reconstruction_options')
-    layout.separator()
 
 
 

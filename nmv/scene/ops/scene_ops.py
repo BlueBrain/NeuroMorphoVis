@@ -391,6 +391,13 @@ def clear_scene():
         bpy.data.materials.remove(scene_material, do_unlink=True)
         nmv.utilities.enable_std_output()
 
+    # Delete all the collections
+    for scene_collection in bpy.data.collections:
+        nmv.utilities.disable_std_output()
+        bpy.data.collections.remove(scene_collection)
+        nmv.utilities.enable_std_output()
+
+
 
 ####################################################################################################
 # @clear_lights

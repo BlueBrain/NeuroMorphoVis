@@ -86,7 +86,7 @@ def reconstruct_synaptics(operator, context, circuit, options):
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-            circuit=circuit, gid=nmv.interface.ui.globals.options.morphology.gid,
+            circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=False, visualize_inhibitory=True, options=options)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
@@ -99,7 +99,7 @@ def reconstruct_synaptics(operator, context, circuit, options):
     elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
-            circuit=circuit, gid=nmv.interface.ui.globals.options.morphology.gid,
+            circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=True, visualize_inhibitory=True, options=options)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
             circuit=circuit, gid=options.morphology.gid, options=options)
@@ -221,7 +221,7 @@ def reconstruct_synaptics(operator, context, circuit, options):
 
         nmv.bbp.visualize_shared_synapses_between_two_neurons(
             circuit=circuit,
-            pre_gid=nmv.interface.ui.globals.options.morphology.gid,
+            pre_gid=nmv.interface.ui_options.morphology.gid,
             post_gid=options.synaptics.post_synaptic_gid,
             options=options,
             inverse_transformation=pre_synaptic_transformation.inverted())

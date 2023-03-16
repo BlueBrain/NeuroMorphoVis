@@ -224,6 +224,9 @@ class DendrogramBuilder(MorphologyBuilderBase):
         # Always switch to the top view to see the dendrogram quite well
         nmv.scene.view_axis(axis='TOP')
 
+        # Add the morphology objects to a collection
+        self.collection_morphology_objects_in_collection()
+
         # Return the list of the drawn morphology objects
         return self.morphology_objects
 

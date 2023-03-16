@@ -64,7 +64,6 @@ class NMV_RenderMorphology360(bpy.types.Operator):
 
             # Stats.
             rendering_time = time.time()
-            nmv.interface.ui.is_morphology_rendered = True
             context.scene.NMV_MorphologyRenderingTime = rendering_time - self.start_time
             nmv.logger.statistics('Morphology rendered in [%f] seconds' %
                                   context.scene.NMV_MorphologyRenderingTime)
@@ -138,7 +137,7 @@ class NMV_RenderMorphology360(bpy.types.Operator):
     def execute(self, context):
 
         # If this is a dendrogram rendering, handle it in a very specific way.
-        if nmv.interface.ui.globals.options.morphology.reconstruction_method == \
+        if nmv.interface.ui_options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.DENDROGRAM:
 
             # Cannot render a 360 of the dendrogram
@@ -153,14 +152,14 @@ class NMV_RenderMorphology360(bpy.types.Operator):
             return {'FINISHED'}
 
         # Create the sequences directory if it does not exist
-        if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.sequences_directory):
+        if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.sequences_directory):
             nmv.file.ops.clean_and_create_directory(
-                nmv.interface.ui.globals.options.io.sequences_directory)
+                nmv.interface.ui_options.io.sequences_directory)
 
         # Create a specific directory for this mesh
         self.output_directory = '%s/%s%s' % \
-                                (nmv.interface.ui.globals.options.io.sequences_directory,
-                                 nmv.interface.ui.globals.options.morphology.label,
+                                (nmv.interface.ui_options.io.sequences_directory,
+                                 nmv.interface.ui_options.morphology.label,
                                  nmv.consts.Suffix.MORPHOLOGY_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
 
@@ -186,4 +185,3 @@ class NMV_RenderMorphology360(bpy.types.Operator):
 
         # Confirm operation done
         return {'FINISHED'}
-

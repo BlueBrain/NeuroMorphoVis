@@ -26,7 +26,6 @@ def draw_documentation_button(layout):
 
     row = layout.row()
     row.operator('nmv.documentation_morphology', icon='URL')
-    layout.separator()
 
 
 ####################################################################################################
@@ -47,7 +46,6 @@ def draw_morphology_reconstruction_button(layout,
         row = layout.row()
         row.prop(scene, 'NMV_MorphologyReconstructionTime')
         row.enabled = False
-    layout.separator()
 
 
 ####################################################################################################
@@ -61,7 +59,6 @@ def draw_morphology_rendering_buttons(panel, scene, show_stats=False):
     buttons_row.operator('nmv.render_morphology_front', icon='AXIS_FRONT')
     buttons_row.operator('nmv.render_morphology_side', icon='AXIS_SIDE')
     buttons_row.operator('nmv.render_morphology_top', icon='AXIS_TOP')
-    panel.layout.separator()
 
 
 ####################################################################################################
@@ -70,7 +67,7 @@ def draw_morphology_rendering_buttons(panel, scene, show_stats=False):
 def draw_animated_morphology_rendering_buttons(panel, scene):
 
     animation_row = panel.layout.row()
-    animation_row.label(text='Render Animation (XY View)', icon='CAMERA_DATA')
+    animation_row.label(text='Render Animation (Front View - XY)', icon='CAMERA_DATA')
     buttons_row = panel.layout.row(align=True)
     buttons_row.operator('nmv.render_morphology_360', icon='FORCE_MAGNETIC')
     buttons_row.operator('nmv.render_morphology_progressive', icon='FORCE_HARMONIC')
@@ -80,7 +77,6 @@ def draw_animated_morphology_rendering_buttons(panel, scene):
     progress_bar_row = panel.layout.row()
     progress_bar_row.prop(scene, 'NMV_MorphologyRenderingProgress')
     progress_bar_row.enabled = False
-    panel.layout.separator()
 
 
 ####################################################################################################
@@ -97,4 +93,3 @@ def draw_export_options(layout):
     row.operator('nmv.save_morphology_swc', icon='GROUP_VERTEX')
     row.operator('nmv.save_morphology_segments', icon='GROUP_VERTEX')
     row.enabled = True
-    layout.separator()

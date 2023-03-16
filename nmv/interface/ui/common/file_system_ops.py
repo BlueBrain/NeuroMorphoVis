@@ -92,7 +92,7 @@ def validate_output_directory(panel,
     """
 
     # Ensure that there is a valid directory where the images will be written to
-    if nmv.interface.ui.globals.options.io.output_directory is None:
+    if nmv.interface.ui_options.io.output_directory is None:
         panel.report({'ERROR'}, nmv.consts.Messages.PATH_NOT_SET)
         return False
 

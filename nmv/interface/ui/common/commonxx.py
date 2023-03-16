@@ -135,7 +135,7 @@ def load_morphology_from_circuit(panel,
 
     # Load the morphology from the circuit
     morphology_object = nmv.file.readers.read_morphology_from_circuit(
-        options=nmv.interface.ui.globals.options)
+        options=nmv.interface.ui_options)
 
     # If the loaded morphology object is not None, update the global references
     if morphology_object is None:
@@ -163,10 +163,10 @@ def load_morphology(panel,
     # Load the morphology either from an individual file or from a digitally reconstructed circuit
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
         return load_morphology_from_file(
-            panel=panel, scene=scene, options=nmv.interface.ui.globals.options)
+            panel=panel, scene=scene, options=nmv.interface.ui_options)
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
         return load_morphology_from_circuit(
-            panel=panel, scene=scene, options=nmv.interface.ui.globals.options)
+            panel=panel, scene=scene, options=nmv.interface.ui_options)
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')
         return None
@@ -177,7 +177,7 @@ def load_morphology(panel,
 ####################################################################################################
 # @render_morphology_image
 ####################################################################################################
-def render_morphology_image(panel,
+def render_morphology_image___(panel,
                             context_scene,
                             view,
                             image_format=nmv.enums.Image.Extension.PNG):
@@ -204,8 +204,8 @@ def render_morphology_image(panel,
         return
 
     # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
-        nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
     # Report the process starting in the UI
     panel.report({'INFO'}, 'Rendering ... Wait')
@@ -214,7 +214,7 @@ def render_morphology_image(panel,
     bpy.context.scene.render.image_settings.file_format = image_format
 
     # If this is a dendrogram rendering, handle it in a very specific way.
-    if nmv.interface.ui.globals.options.morphology.reconstruction_method == \
+    if nmv.interface.ui_options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.DENDROGRAM:
 
         # Compute the bounding box of the dendrogram and stretch it
@@ -227,9 +227,9 @@ def render_morphology_image(panel,
             bounding_box=bounding_box,
             camera_view=nmv.enums.Camera.View.FRONT,
             image_resolution=context_scene.NMV_MorphologyFrameResolution,
-            image_name='%s_dendrogram' % nmv.interface.ui.globals.options.morphology.label,
+            image_name='%s_dendrogram' % nmv.interface.ui_options.morphology.label,
             image_format=image_format,
-            image_directory=nmv.interface.ui.globals.options.io.images_directory,
+            image_directory=nmv.interface.ui_options.io.images_directory,
             keep_camera_in_scene=False)
 
     # All other cases are okay
@@ -271,7 +271,7 @@ def render_morphology_image(panel,
         if context_scene.NMV_RenderMorphologyScaleBar:
             scale_bar = nmv.interface.draw_scale_bar(
                 bounding_box=bounding_box,
-                material_type=nmv.interface.ui.globals.options.shading.morphology_material,
+                material_type=nmv.interface.ui_options.shading.morphology_material,
                 view=view)
 
         # Render at a specific resolution
@@ -282,9 +282,9 @@ def render_morphology_image(panel,
                 bounding_box=bounding_box,
                 camera_view=view,
                 image_resolution=context_scene.NMV_MorphologyFrameResolution,
-                image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
+                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
                 image_format=image_format,
-                image_directory=nmv.interface.ui.globals.options.io.images_directory,
+                image_directory=nmv.interface.ui_options.io.images_directory,
                 keep_camera_in_scene=False)
 
         # Render at a specific scale factor
@@ -295,9 +295,9 @@ def render_morphology_image(panel,
                 bounding_box=bounding_box,
                 camera_view=view,
                 image_scale_factor=context_scene.NMV_MorphologyFrameScaleFactor,
-                image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
+                image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
                 image_format=image_format,
-                image_directory=nmv.interface.ui.globals.options.io.images_directory,
+                image_directory=nmv.interface.ui_options.io.images_directory,
                 keep_camera_in_scene=False)
 
         # Delete the morphology scale bar, if rendered 
@@ -339,8 +339,8 @@ def render_mesh_image(panel,
         return
 
     # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
-        nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
     # Report the process starting in the UI
     panel.report({'INFO'}, 'Rendering ... Wait')
@@ -382,7 +382,7 @@ def render_mesh_image(panel,
     if context_scene.NMV_RenderMeshScaleBar:
         scale_bar = nmv.interface.draw_scale_bar(
             bounding_box=bounding_box,
-            material_type=nmv.interface.ui.globals.options.shading.mesh_material,
+            material_type=nmv.interface.ui_options.shading.mesh_material,
             view=view)
 
     # Render at a specific resolution
@@ -393,9 +393,9 @@ def render_mesh_image(panel,
             bounding_box=bounding_box,
             camera_view=view,
             image_resolution=context_scene.NMV_MeshFrameResolution,
-            image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
-            image_directory=nmv.interface.ui.globals.options.io.images_directory)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
     # Render at a specific scale factor
     else:
@@ -405,9 +405,9 @@ def render_mesh_image(panel,
             bounding_box=bounding_box,
             camera_view=view,
             image_scale_factor=context_scene.NMV_MeshFrameScaleFactor,
-            image_name='%s%s' % (nmv.interface.ui.globals.options.morphology.label, suffix),
+            image_name='%s%s' % (nmv.interface.ui_options.morphology.label, suffix),
             image_format=image_format,
-            image_directory=nmv.interface.ui.globals.options.io.images_directory)
+            image_directory=nmv.interface.ui_options.io.images_directory)
 
     # Delete the morphology scale bar, if rendered
     if context_scene.NMV_RenderMeshScaleBar:
@@ -433,8 +433,8 @@ def render_morphology_image_for_catalogue(resolution_scale_factor=10,
     """
 
     # Create the images directory if it does not exist
-    if not nmv.file.ops.path_exists(nmv.interface.ui.globals.options.io.images_directory):
-        nmv.file.ops.clean_and_create_directory(nmv.interface.ui.globals.options.io.images_directory)
+    if not nmv.file.ops.path_exists(nmv.interface.ui_options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(nmv.interface.ui_options.io.images_directory)
 
     # Compute the bounding box for the available curves and meshes
     bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
@@ -454,8 +454,8 @@ def render_morphology_image_for_catalogue(resolution_scale_factor=10,
         bounding_box=bounding_box,
         camera_view=view,
         image_scale_factor=resolution_scale_factor,
-        image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui.globals.options.morphology.label),
-        image_directory=nmv.interface.ui.globals.options.io.analysis_directory)
+        image_name='MORPHOLOGY_%s_%s' % (view_prefix, nmv.interface.ui_options.morphology.label),
+        image_directory=nmv.interface.ui_options.io.analysis_directory)
 
 
 ####################################################################################################

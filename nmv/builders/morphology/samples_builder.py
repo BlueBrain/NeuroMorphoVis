@@ -327,5 +327,8 @@ class SamplesBuilder(MorphologyBuilderBase):
         # Transforming to global coordinates
         self.transform_to_global_coordinates()
 
+        # Add the morphology objects to a collection
+        self.collection_morphology_objects_in_collection()
+
         # Return the list of the drawn morphology objects
         return self.morphology_objects
