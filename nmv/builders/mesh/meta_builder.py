@@ -767,5 +767,9 @@ class MetaBuilder(MeshBuilderBase):
         # Write the stats to file
         self.write_statistics_to_file(tag='meta')
 
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=[self.meta_mesh])
+
         # Return a reference to the reconstructed mesh
         return self.meta_mesh

@@ -402,6 +402,11 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # Return a list of all the mesh objects in the scene
         mesh_objects = self.get_neuron_mesh_objects()
+
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=mesh_objects)
+
         return mesh_objects
 
     ################################################################################################

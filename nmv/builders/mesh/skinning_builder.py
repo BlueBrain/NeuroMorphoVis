@@ -614,6 +614,10 @@ class SkinningBuilder(MeshBuilderBase):
         # Write the stats to file
         self.write_statistics_to_file(tag='skinning')
 
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=[neuron_mesh])
+
         # Return a reference to the neuron mesh if joint
         return neuron_mesh
 
