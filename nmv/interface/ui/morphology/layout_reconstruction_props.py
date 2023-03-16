@@ -15,9 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
-import bpy
-
 # Internal imports
 import nmv.consts
 import nmv.enums
@@ -26,9 +23,9 @@ import nmv.scene
 
 
 ####################################################################################################
-# @draw_morphology_resampling_method_option
+# @draw_morphology_reconstruction_header
 ####################################################################################################
-def draw_morphology_reconstruction_header(layout, scene, options):
+def draw_morphology_reconstruction_header(layout):
 
     row = layout.row()
     row.label(text='Reconstruction Options', icon='OUTLINER_OB_EMPTY')
@@ -200,14 +197,19 @@ def draw_arbors_radii_options(layout, scene, options):
     draw_arbors_radii_option(layout=layout, scene=scene, options=options)
     if options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.ORIGINAL:
         draw_original_arbors_radii_option(layout=layout, scene=scene, options=options)
+
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED:
         draw_unified_radii_option(layout=layout, scene=scene, options=options)
+
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE:
         draw_unified_radii_per_arbor_option(layout=layout, scene=scene, options=options)
+
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.SCALED:
         draw_scaled_radii_option(layout=layout, scene=scene, options=options)
+
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.FILTERED:
         draw_filtered_radii_option(layout=layout, scene=scene, options=options)
+
     else:
         nmv.logger.log('UI_ERROR: draw_arbors_radii_options')
 
@@ -330,27 +332,33 @@ def draw_dendrogram_options(layout, scene, options):
 ####################################################################################################
 def draw_morphology_reconstruction_options(layout, scene, options):
 
-    draw_morphology_reconstruction_header(layout=layout, scene=scene, options=options)
+    draw_morphology_reconstruction_header(layout=layout)
     draw_morphology_reconstruction_technique_option(layout=layout, scene=scene, options=options)
 
     method = options.morphology.reconstruction_method
     if method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
         draw_connected_sections_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS:
         draw_disconnected_sections_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
         draw_disconnected_segments_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         draw_articulated_sections_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
         draw_articulated_sections_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
         draw_progressive_options(layout=layout, scene=scene, options=options)
+
     elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
         draw_dendrogram_options(layout=layout, scene=scene, options=options)
+
     else:
         nmv.logger.log('UI_ERROR: draw_morphology_reconstruction_options')
-
     layout.separator()
 
 

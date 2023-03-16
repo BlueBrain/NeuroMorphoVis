@@ -15,3 +15,26 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+import bpy
+
+
+####################################################################################################
+# @NMV_MorphologyReconstructionDocumentation
+####################################################################################################
+class NMV_MorphologyReconstructionDocumentation(bpy.types.Operator):
+    """Open the online documentation page of the Morphology Reconstruction panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_morphology"
+    bl_label = "Online User Guide"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        import webbrowser
+        webbrowser.open(
+            'https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Reconstruction')
+        return {'FINISHED'}

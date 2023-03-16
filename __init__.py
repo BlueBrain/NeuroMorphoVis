@@ -90,12 +90,14 @@ def register():
     nmv.logger.info('Principal Author: Marwan Abdellah')
 
     # Register panels
-    nmv.interface.ui.io_panel.register_panel()
     nmv.interface.ui.register_common_operators()
+    nmv.interface.ui.io_panel.register_panel()
     nmv.interface.ui.analysis_panel.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma_panel.register_panel()
-    nmv.interface.ui.morphology_panel.register_panel()
+
+    nmv.interface.ui.morphology.registration.register_panel()
+
     nmv.interface.ui.synaptics_panel.register_panel()
     nmv.interface.ui.mesh_panel.register_panel()
     nmv.interface.ui.about_panel.register_panel()
@@ -115,12 +117,14 @@ def unregister():
     nmv.logger.header('Unloading NeuroMorphoVis')
 
     # Un-register panels
-    nmv.interface.ui.io_panel.unregister_panel()
     nmv.interface.ui.unregister_common_operators()
+    nmv.interface.ui.io_panel.unregister_panel()
     nmv.interface.ui.analysis_panel.unregister_panel()
     nmv.interface.ui.edit_panel.unregister_panel()
     nmv.interface.ui.soma_panel.unregister_panel()
-    nmv.interface.ui.morphology_panel.unregister_panel()
+
+    nmv.interface.ui.morphology.registration.unregister_panel()
+
     nmv.interface.ui.synaptics_panel.unregister_panel()
     nmv.interface.ui.mesh_panel.unregister_panel()
     nmv.interface.ui.about_panel.unregister_panel()

@@ -15,15 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
-import bpy
-
-# Internal imports
-import nmv.consts
-import nmv.enums
-import nmv.bbp
-import nmv.scene
-
 
 ####################################################################################################
 # @draw_morphology_skeleton_display_header
@@ -126,8 +117,10 @@ def draw_morphology_skeleton_display_options(layout, scene, options, morphology)
     if morphology is not None:
         draw_axons_building_option(
             layout=layout, scene=scene, options=options, morphology=morphology)
+
         draw_basal_dendrites_building_option(
             layout=layout, scene=scene, options=options, morphology=morphology)
+
         draw_apical_dendrites_building_option(
             layout=layout, scene=scene, options=options, morphology=morphology)
     else:

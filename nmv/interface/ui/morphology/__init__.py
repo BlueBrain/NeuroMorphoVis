@@ -15,5 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .morphology_panel import *
-from .morphology_panel_ops import *
+from .panel_props import *
+from .registration import *
+

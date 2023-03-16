@@ -239,10 +239,13 @@ def draw_per_section_color_coding_options(layout, scene, options, morphology):
     if options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.DEFAULT_SCHEME:
         draw_default_morphology_color_options(
             layout=layout, scene=scene, options=options, morphology=morphology)
+
     elif options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
         draw_homogeneous_color_option(layout=layout, scene=scene, options=options)
+
     elif options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
         draw_alternating_colors_option(layout=layout, scene=scene, options=options)
+
     else:
         draw_colormap_options(layout=layout, scene=scene, options=options)
 
@@ -260,10 +263,13 @@ def draw_per_segment_color_coding_options(layout, scene, options, morphology):
     if options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.DEFAULT_SCHEME:
         draw_default_morphology_color_options(
             layout=layout, scene=scene, options=options, morphology=morphology)
+
     elif options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
         draw_homogeneous_color_option(layout=layout, scene=scene, options=options)
+
     elif options.shading.morphology_coloring_scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
         draw_alternating_colors_option(layout=layout, scene=scene, options=options)
+
     else:
         draw_colormap_options(layout=layout, scene=scene, options=options)
 
@@ -326,5 +332,4 @@ def draw_morphology_color_options(layout, scene, options, morphology):
             layout=layout, scene=scene, options=options, morphology=morphology)
     else:
         nmv.logger.log('UI_ERROR: add_morphology_color_options')
-
     layout.separator()

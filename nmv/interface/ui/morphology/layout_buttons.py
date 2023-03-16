@@ -47,7 +47,6 @@ def draw_morphology_reconstruction_button(layout,
         row = layout.row()
         row.prop(scene, 'NMV_MorphologyReconstructionTime')
         row.enabled = False
-
     layout.separator()
 
 

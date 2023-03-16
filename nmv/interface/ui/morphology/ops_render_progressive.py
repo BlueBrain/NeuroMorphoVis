@@ -17,54 +17,56 @@
 
 # System imports
 import time
+import copy
 
 # Blender imports
 import bpy
 
 # Internal imports
 import nmv.bbox
-import nmv.builders
-import nmv.consts
-import nmv.enums
-import nmv.file
-import nmv.interface
-import nmv.shading
-import nmv.scene
-import nmv.skeleton
 import nmv.utilities
 import nmv.rendering
-import nmv.geometry
+import nmv.enums
+import nmv.skeleton
+import nmv.consts
+import nmv.builders
+import nmv.scene
 
 
 ####################################################################################################
-# @NMV_RenderMorphology360
+# @NMV_RenderMorphologyProgressive
 ####################################################################################################
-class NMV_RenderMorphology360(bpy.types.Operator):
-    """Render a 360 sequence of the reconstructed morphology"""
+class NMV_RenderMorphologyProgressive(bpy.types.Operator):
+    """Render a progressive sequence of the reconstruction procedure (time-consuming)"""
 
     # Operator parameters
-    bl_idname = "nmv.render_morphology_360"
-    bl_label = "360"
+    bl_idname = "nmv.render_morphology_progressive"
+    bl_label = "Progressive"
 
     # Timer parameters
+    start_time = 0
     event_timer = None
     timer_limits = 0
-    start_time = 0
 
     # Output data
     output_directory = None
+
+    # The bounding box of the morphology
+    morphology_bounding_box = None
 
     ################################################################################################
     # @modal
     ################################################################################################
     def modal(self, context, event):
+        """
+        Threading and non-blocking handling.
+
+        :param context: Panel context.
+        :param event: A given event for the panel.
+        """
 
         # Cancelling event, if using right click or exceeding the time limit of the simulation
-        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > 360:
-
-            # Reset the orientation of the mesh
-            nmv.scene.reset_orientation_of_objects(
-                scene_objects=nmv.interface.ui_reconstructed_skeleton)
+        if event.type in {'RIGHTMOUSE', 'ESC'} or self.timer_limits > bpy.context.scene.frame_end:
 
             # Stats.
             rendering_time = time.time()
@@ -77,59 +79,35 @@ class NMV_RenderMorphology360(bpy.types.Operator):
             # Reset the timer limits
             self.timer_limits = 0
 
-            # Refresh the panel and return
+            # Refresh the panel context
             self.cancel(context)
+
+            # Done
             return {'FINISHED'}
 
         # Timer event, where the function is executed here on a per-frame basis
         if event.type == 'TIMER':
 
+            # Update the frame number
+            bpy.context.scene.frame_set(self.timer_limits)
+
             # Set the frame name
-            image_name = '%s/%s' % (self.output_directory, '{0:05d}'.format(self.timer_limits))
-
-            # Compute the bounding box for a close up view
-            if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.CLOSEUP:
-                
-                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
-
-            # Compute the bounding box for a mid-shot view
-            elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.MID_SHOT:
-
-                # Compute the bounding box for the available meshes only
-                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Compute the bounding box for the wide-shot view that corresponds to the whole
-            # morphology
-            else:
-
-                # Compute the full morphology bounding box
-                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                    morphology=nmv.interface.ui_morphology)
-
-            # Compute a 360 bounding box to fit the arbors
-            bounding_box_360 = nmv.bbox.compute_360_bounding_box(
-                rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
-
-            # Stretch the bounding box by few microns
-            bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
+            image_name = '%s' % '{0:05d}'.format(self.timer_limits)
 
             # Render a frame
-            nmv.rendering.renderer.render_at_angle(
-                scene_objects=nmv.interface.ui_reconstructed_skeleton,
-                angle=self.timer_limits,
-                bounding_box=bounding_box_360,
+            nmv.rendering.renderer.render(
+                bounding_box=self.morphology_bounding_box,
                 camera_view=nmv.enums.Camera.View.FRONT,
                 image_resolution=context.scene.NMV_MorphologyFrameResolution,
-                image_name=image_name)
+                image_name=image_name,
+                image_directory=self.output_directory)
 
             # Update the progress shell
-            nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
+            nmv.utilities.show_progress('Rendering', self.timer_limits, bpy.context.scene.frame_end)
 
             # Update the progress bar
-            context.scene.NMV_MorphologyRenderingProgress = int(100 * self.timer_limits / 360.0)
+            context.scene.NMV_MorphologyRenderingProgress = \
+                int(100 * self.timer_limits / float(bpy.context.scene.frame_end))
 
             # Upgrade the timer limits
             self.timer_limits += 1
@@ -138,16 +116,55 @@ class NMV_RenderMorphology360(bpy.types.Operator):
         return {'PASS_THROUGH'}
 
     ################################################################################################
+    # @compute_morphology_bounding_box_for_progressive_reconstruction
+    ################################################################################################
+    def compute_morphology_bounding_box_for_progressive_reconstruction(self,
+                                                                       context):
+        """Computes the bounding box of the reconstructed morphology from the progressive builder.
+
+        :param context:
+            Blender context.
+        """
+
+        # Move to the last frame to get the bounding box of all the drawn objects
+        bpy.context.scene.frame_set(bpy.context.scene.frame_end)
+
+        # Morphology view
+        view = context.scene.NMV_MorphologyRenderingView
+
+        # Compute the bounding box for a close up view
+        if view == nmv.enums.Rendering.View.CLOSEUP:
+            self.morphology_bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
+
+        # Compute the bounding box for a mid-shot view
+        elif view == nmv.enums.Rendering.View.MID_SHOT:
+            self.morphology_bounding_box = copy.deepcopy(
+                nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes())
+
+        # The bounding box for the wide-shot view that corresponds to the whole morphology
+        else:
+            self.morphology_bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                    morphology=nmv.interface.ui_morphology)
+
+        # Stretch the bounding box by few microns
+        self.morphology_bounding_box.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
+
+    ################################################################################################
     # @execute
     ################################################################################################
     def execute(self, context):
+        """
+        Execute the operator.
+
+        :param context: Panel context.
+        """
 
         # If this is a dendrogram rendering, handle it in a very specific way.
         if nmv.interface.ui_options.morphology.reconstruction_method == \
             nmv.enums.Skeleton.Method.DENDROGRAM:
-
             # Cannot render a 360 of the dendrogram
-            self.report({'INFO'}, 'Cannot render a 360 of the dendrogram')
+            self.report({'INFO'}, 'Cannot render a progressive reconstruction of the dendrogram')
             return {'FINISHED'}
 
         # Timer
@@ -166,8 +183,19 @@ class NMV_RenderMorphology360(bpy.types.Operator):
         self.output_directory = '%s/%s%s' % \
                                 (nmv.interface.ui_options.io.sequences_directory,
                                  nmv.interface.ui_options.morphology.label,
-                                 nmv.consts.Suffix.MORPHOLOGY_360)
+                                 nmv.consts.Suffix.MORPHOLOGY_PROGRESSIVE)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
+
+        # Clear the scene
+        nmv.scene.clear_scene()
+
+        # Reconstruct the morphology using the progressive builder
+        progressive_builder = nmv.builders.ProgressiveBuilder(
+            morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+        progressive_builder.draw_morphology_skeleton()
+
+        # Compute the bounding box of the morphology directly after the reconstruction
+        self.compute_morphology_bounding_box_for_progressive_reconstruction(context=context)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager
@@ -181,13 +209,18 @@ class NMV_RenderMorphology360(bpy.types.Operator):
     # @cancel
     ################################################################################################
     def cancel(self, context):
+        """
+        Cancel the panel processing and return to the interaction mode.
+
+        :param context: Panel context.
+        """
 
         # Multi-threading
         wm = context.window_manager
         wm.event_timer_remove(self.event_timer)
 
         # Report the process termination in the UI
-        self.report({'INFO'}, 'Rendering Done')
+        self.report({'INFO'}, 'Morphology Rendering Done')
 
         # Confirm operation done
         return {'FINISHED'}

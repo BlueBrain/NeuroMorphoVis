@@ -1,0 +1,159 @@
+####################################################################################################
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
+
+# System imports
+import time
+import copy
+
+# Blender imports
+import bpy
+
+# Internal imports
+import nmv.bbox
+import nmv.builders
+import nmv.consts
+import nmv.enums
+import nmv.file
+import nmv.interface
+import nmv.shading
+import nmv.scene
+import nmv.skeleton
+import nmv.utilities
+import nmv.rendering
+import nmv.geometry
+
+# Is the morphology reconstructed or not
+is_morphology_reconstructed = False
+
+# Is the morphology rendered or not
+is_morphology_rendered = False
+
+# What is the selected morphology builder
+morphology_builder = None
+
+from .layout_buttons import *
+from .layout_skeleton_props import *
+from .layout_reconstruction_props import *
+from .layout_color_props import *
+from .layout_rendering_props import *
+
+
+####################################################################################################
+# @NMV_MorphologyPanel
+####################################################################################################
+class NMV_MorphologyPanel(bpy.types.Panel):
+    """Morphology tools panel"""
+
+    ################################################################################################
+    # Panel parameters
+    ################################################################################################
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_idname = "OBJECT_PT_NMV_MorphologyToolBox"
+    bl_label = 'Morphology Toolbox'
+    bl_category = 'NeuroMorphoVis'
+    bl_options = {'DEFAULT_CLOSED'}
+
+    ################################################################################################
+    # @update_ui_colors
+    ################################################################################################
+    def update_ui_colors(self, context):
+
+        # Get a list of initial colors from the selected colormap
+        colors = nmv.utilities.create_colormap_from_hex_list(
+            nmv.enums.ColorMaps.get_hex_color_list(context.scene.NMV_ColorMap),
+            nmv.consts.Color.COLORMAP_RESOLUTION)
+
+        # Invert the colormap
+        if context.scene.NMV_InvertColorMap:
+            colors.reverse()
+
+        # Update the colormap in the UI
+        for color_index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+            setattr(context.scene, 'NMV_Color%d' % color_index, colors[color_index])
+
+    # A list of all the color maps available in NeuroMorphoVis
+    # Note that once a new colormap is selected, the corresponding colors will be set in the UI
+    bpy.types.Scene.NMV_ColorMap = bpy.props.EnumProperty(
+        items=nmv.enums.ColorMaps.COLOR_MAPS,
+        name='',
+        default=nmv.enums.ColorMaps.GNU_PLOT,
+        update=update_ui_colors)
+
+    bpy.types.Scene.NMV_InvertColorMap = bpy.props.BoolProperty(
+        name='Invert',
+        description='Invert the selected colormap',
+        default=False,
+        update=update_ui_colors)
+
+    # Create a list of colors from the selected colormap
+    colors = nmv.utilities.create_colormap_from_hex_list(
+        nmv.enums.ColorMaps.get_hex_color_list(bpy.types.Scene.NMV_ColorMap),
+        nmv.consts.Color.COLORMAP_RESOLUTION)
+
+    # Update the UI color elements from the color map list
+    for index in range(nmv.consts.Color.COLORMAP_RESOLUTION):
+        setattr(bpy.types.Scene, 'NMV_Color%d' % index, bpy.props.FloatVectorProperty(
+            name='', subtype='COLOR', default=colors[index], min=0.0, max=1.0, description=''))
+
+    ################################################################################################
+    # @draw
+    ################################################################################################
+    def draw(self, context):
+
+        draw_documentation_button(layout=self.layout)
+
+        draw_morphology_reconstruction_options(
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+
+        draw_morphology_skeleton_display_options(
+            layout=self.layout, scene=context.scene,
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+
+        draw_morphology_color_options(
+            layout=self.layout, scene=context.scene,
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+
+        global is_morphology_reconstructed
+        draw_morphology_reconstruction_button(layout=self.layout,
+                                              scene=context.scene,
+                                              show_stats=is_morphology_reconstructed)
+
+        draw_rendering_options(
+            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+
+        global is_morphology_rendered
+        if is_morphology_rendered:
+            morphology_stats_row = self.layout.row()
+            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
+            rendering_time_row = self.layout.row()
+            rendering_time_row.prop(context.scene, 'NMV_MorphologyRenderingTime')
+            rendering_time_row.enabled = False
+
+        # Export buttons
+        draw_export_options(layout=self.layout)
+
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(self.layout)
+
+
+
+
+
+
+
+
