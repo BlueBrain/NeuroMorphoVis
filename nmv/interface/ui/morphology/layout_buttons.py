@@ -62,7 +62,18 @@ def draw_morphology_rendering_buttons(panel, scene, show_stats=False):
 
 
 ####################################################################################################
-# @draw_morphology_rendering_buttons
+# @draw_dendrogram_rendering_button
+####################################################################################################
+def draw_dendrogram_rendering_button(panel, scene):
+
+    row = panel.layout.row()
+    row.label(text='Render Dendrogram', icon='RESTRICT_RENDER_OFF')
+    buttons_row = panel.layout.row()
+    buttons_row.operator('nmv.render_morphology_front', icon='AXIS_FRONT')
+
+
+####################################################################################################
+# @draw_animated_morphology_rendering_buttons
 ####################################################################################################
 def draw_animated_morphology_rendering_buttons(panel, scene):
 

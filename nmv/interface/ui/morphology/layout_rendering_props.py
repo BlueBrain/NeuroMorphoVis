@@ -25,6 +25,7 @@ import nmv.bbp
 import nmv.scene
 
 from .layout_buttons import draw_morphology_rendering_buttons
+from .layout_buttons import draw_dendrogram_rendering_button
 from .layout_buttons import draw_animated_morphology_rendering_buttons
 
 
@@ -52,7 +53,10 @@ def draw_still_frame_rendering_options(panel, scene, options, show_stats=False):
         layout=panel.layout, scene=scene, options=options)
 
     # Specific morphology rendering buttons
-    draw_morphology_rendering_buttons(panel=panel, scene=scene)
+    if options.morphology.reconstruction_method == nmv.enums.Skeleton.Method.DENDROGRAM:
+        draw_dendrogram_rendering_button(panel=panel, scene=scene)
+    else:
+        draw_morphology_rendering_buttons(panel=panel, scene=scene)
 
     if show_stats:
         row = panel.layout.row()

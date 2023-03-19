@@ -608,5 +608,5 @@ class MorphologyBuilderBase:
 
         # Create a new collection from the created objects of the morphology
         nmv.utilities.create_collection_with_objects(
-            name=self.morphology.label,
-            objects_list='Morphology %s' % self.morphology_objects)
+            name='Morphology %s' % self.morphology.label,
+            objects_list=self.morphology_objects)

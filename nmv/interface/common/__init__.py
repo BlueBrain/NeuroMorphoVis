@@ -15,6 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .file_system_ops import *
+from .file_ops import *
 from .rendering_ops import *
 from .suffix_ops import *
