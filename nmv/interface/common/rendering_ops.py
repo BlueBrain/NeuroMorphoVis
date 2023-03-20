@@ -53,7 +53,7 @@ def render_dendrogram(options):
         image_name='%s%s' % (options.morphology.label, nmv.consts.Suffix.DENDROGRAM),
         image_format=options.rendering.image_format,
         image_directory=options.io.images_directory,
-        keep_camera_in_scene=False)
+        keep_camera_in_scene=True)
 
 
 ####################################################################################################

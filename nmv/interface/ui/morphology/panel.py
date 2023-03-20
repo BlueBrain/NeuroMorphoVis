@@ -114,11 +114,11 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         method = nmv.interface.ui_options.morphology.reconstruction_method
         if method == nmv.enums.Skeleton.Method.DENDROGRAM:
             draw_morphology_reconstruction_button(
-                layout=self.layout, scene=context.scene, label='Draw Dendrogram',
+                layout=self.layout, scene=context.scene, label='Reconstruct Dendrogram',
                 show_stats=nmv.interface.ui_morphology_reconstructed)
         else:
             draw_morphology_reconstruction_button(
-                layout=self.layout, scene=context.scene, label='Draw Morphology',
+                layout=self.layout, scene=context.scene, label='Reconstruct Morphology',
                 show_stats=nmv.interface.ui_morphology_reconstructed)
         self.layout.separator()
 

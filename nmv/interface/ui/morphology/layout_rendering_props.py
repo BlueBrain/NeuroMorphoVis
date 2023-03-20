@@ -52,11 +52,26 @@ def draw_still_frame_rendering_options(panel, scene, options, show_stats=False):
     nmv.interface.ui.common.draw_scale_bar_option(
         layout=panel.layout, scene=scene, options=options)
 
-    # Specific morphology rendering buttons
-    if options.morphology.reconstruction_method == nmv.enums.Skeleton.Method.DENDROGRAM:
-        draw_dendrogram_rendering_button(panel=panel, scene=scene)
-    else:
-        draw_morphology_rendering_buttons(panel=panel, scene=scene)
+    draw_morphology_rendering_buttons(panel=panel, scene=scene)
+
+    if show_stats:
+        row = panel.layout.row()
+        row.prop(scene, 'NMV_MorphologyRenderingTime')
+        row.enabled = False
+
+
+####################################################################################################
+# draw_dendrogram_rendering_options
+####################################################################################################
+def draw_dendrogram_rendering_options(panel, scene, options, show_stats):
+
+    nmv.interface.ui.common.draw_rendering_header(
+        layout=panel.layout, scene=scene, options=options)
+
+    nmv.interface.ui.common.draw_resolution_options(
+        layout=panel.layout, scene=scene, options=options)
+
+    draw_dendrogram_rendering_button(panel=panel, scene=scene)
 
     if show_stats:
         row = panel.layout.row()
@@ -77,10 +92,11 @@ def draw_animated_sequences_rendering_options(panel, scene, options):
 ####################################################################################################
 def draw_rendering_options(panel, scene, options, show_stats=False):
 
-    draw_still_frame_rendering_options(
-        panel=panel, scene=scene, options=options, show_stats=show_stats)
-    panel.layout.separator()
-
-    # Do NOT add the animated sequences for the dendrogram
-    if options.morphology.reconstruction_method != nmv.enums.Skeleton.Method.DENDROGRAM:
-        draw_animated_sequences_rendering_options(panel=panel, scene=scene, options=options)
+    if options.morphology.reconstruction_method == nmv.enums.Skeleton.Method.DENDROGRAM:
+        draw_dendrogram_rendering_options(
+            panel=panel, scene=scene, options=options, show_stats=show_stats)
+    else:
+        draw_still_frame_rendering_options(
+            panel=panel, scene=scene, options=options, show_stats=show_stats)
+        draw_animated_sequences_rendering_options(
+            panel=panel, scene=scene, options=options)

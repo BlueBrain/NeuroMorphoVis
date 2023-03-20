@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.enums
+
 
 ####################################################################################################
 # @draw_morphology_skeleton_display_header
@@ -111,17 +114,30 @@ def draw_demo_options(layout, scene):
 def draw_morphology_skeleton_display_options(layout, scene, options, morphology):
 
     draw_morphology_skeleton_display_header(layout=layout)
-    draw_soma_building_option(layout=layout, scene=scene, options=options)
 
     # The morphology must be loaded to be able to draw these options, otherwise draw a demo
     if morphology is not None:
-        draw_axons_building_option(
-            layout=layout, scene=scene, options=options, morphology=morphology)
 
-        draw_basal_dendrites_building_option(
-            layout=layout, scene=scene, options=options, morphology=morphology)
+        if options.morphology.reconstruction_method == nmv.enums.Skeleton.Method.DENDROGRAM:
+            draw_axons_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
 
-        draw_apical_dendrites_building_option(
-            layout=layout, scene=scene, options=options, morphology=morphology)
+            draw_basal_dendrites_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
+
+            draw_apical_dendrites_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
+        else:
+
+            draw_soma_building_option(layout=layout, scene=scene, options=options)
+
+            draw_axons_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
+
+            draw_basal_dendrites_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
+
+            draw_apical_dendrites_building_option(
+                layout=layout, scene=scene, options=options, morphology=morphology)
     else:
         draw_demo_options(layout=layout, scene=scene)
