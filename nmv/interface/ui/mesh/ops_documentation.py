@@ -15,5 +15,25 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .panel_props import *
-from .registration import *
+
+import bpy
+
+
+####################################################################################################
+# @NMV_MeshReconstructionDocumentation
+####################################################################################################
+class NMV_MeshReconstructionDocumentation(bpy.types.Operator):
+    """Open the online documentation page of the Mesh Reconstruction panel"""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_mesh"
+    bl_label = "Online User Guide"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Mesh-Reconstruction')
+        return {'FINISHED'}

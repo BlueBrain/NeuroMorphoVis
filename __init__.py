@@ -99,7 +99,7 @@ def register():
     nmv.interface.ui.morphology.registration.register_panel()
 
     nmv.interface.ui.synaptics_panel.register_panel()
-    nmv.interface.ui.mesh_panel.register_panel()
+    nmv.interface.ui.mesh.registration.register_panel()
     nmv.interface.ui.about_panel.register_panel()
 
     nmv.logger.info_done('NeuroMorphoVis Loaded! Enjoy')
@@ -126,7 +126,7 @@ def unregister():
     nmv.interface.ui.morphology.registration.unregister_panel()
 
     nmv.interface.ui.synaptics_panel.unregister_panel()
-    nmv.interface.ui.mesh_panel.unregister_panel()
+    nmv.interface.ui.mesh.registration.unregister_panel()
     nmv.interface.ui.about_panel.unregister_panel()
     nmv.logger.info_done('NeuroMorphoVis Unloaded!')
 

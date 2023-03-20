@@ -18,6 +18,10 @@
 # Internal imports
 import nmv.options
 
+# If this flag is set, this means that the system has been initialized and all the icons, fonts
+# and other relevant data have been loaded into the system.
+nmv_initialized = False
+
 # A global variable for the system options.
 # All the parameters of the system are stored in this global variable and updated following the
 # execution of an active element in the GUI.
@@ -53,14 +57,18 @@ ui_circuit = None
 
 ui_morphology_builder = None
 
+# If this flag is set, this means that a morphology is already reconstructed, and we can display the
+# morphology export options to be able to save the morphology to disk. If this flag is not set,
+# this means that the morphology reconstruction operator has never been executed.
 ui_morphology_reconstructed = False
 
+# If this flag is set, this means that the reconstructed morphology is rendered at least once.
 ui_morphology_rendered = False
 
+# If this flag is set, this means that a mesh is already reconstructed, and we can display the
+# mesh export options to be able to export the mesh. If this flag is not set, this means that the
+# mesh reconstruction operator has never been executed.
 ui_mesh_reconstructed = False
 
+# If this flag is set, this means that the reconstructed mesh is rendered at least once.
 ui_mesh_rendered = False
-
-
-nmv_initialized = False
-

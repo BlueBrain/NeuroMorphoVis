@@ -656,36 +656,4 @@ def draw_mesh_reconstruction_button(panel,
     mesh_reconstruction_row.operator('nmv.reconstruct_neuron_mesh', icon='MESH_DATA')
 
 
-####################################################################################################
-# @draw_mesh_export_options
-####################################################################################################
-def draw_mesh_export_options(panel,
-                             scene):
-    """Draw the mesh export options.
 
-    :param panel:
-        Blender UI panel.
-    :param scene:
-        Blender scene.
-    """
-
-    # Get a reference to the layout of the panel
-    layout = panel.layout
-
-    # Saving meshes parameters
-    save_neuron_mesh_row = layout.row()
-    save_neuron_mesh_row.label(text='Export Neuron Mesh:', icon='MESH_UVSPHERE')
-
-    export_format = layout.row()
-    export_format.prop(scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
-
-    if not scene.NMV_ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
-        if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
-            export_individual_row = layout.row()
-            export_individual_row.prop(scene, 'NMV_ExportIndividuals')
-
-    # Save button
-    save_neuron_mesh_buttons_column = layout.column(align=True)
-    save_neuron_mesh_buttons_column.operator('nmv.export_neuron_mesh', icon='MESH_DATA')
-    save_neuron_mesh_buttons_column.enabled = True
-    panel.shown_hidden_rows.append(save_neuron_mesh_buttons_column)

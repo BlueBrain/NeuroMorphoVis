@@ -109,6 +109,16 @@ class Soma:
              'This method takes few seconds to reconstruct a soma mesh')
         ]
 
+        # Soma types for meshing
+        META_SOMA_FOR_MESHING = [
+
+            (META_BALLS,
+             'MetaBalls',
+             'Reconstruct a rough shape of the soma using MetaBalls. '
+             'This approach is real-time and can reconstruct good shapes for the somata, but '
+             'more accurate profiles could be reconstructed with the Soft Body option'),
+        ]
+
     ################################################################################################
     # @Profile
     ################################################################################################

@@ -100,7 +100,9 @@ def draw_export_options(layout):
     row.label(text='Export Morphology', icon='MESH_UVSPHERE')
 
     row = layout.column(align=True)
-    row.operator('nmv.save_morphology_blend', icon='OUTLINER_OB_META')
-    row.operator('nmv.save_morphology_swc', icon='GROUP_VERTEX')
-    row.operator('nmv.save_morphology_segments', icon='GROUP_VERTEX')
+    row.operator('nmv.save_morphology_blend', icon='MESH_MONKEY')
+    row.operator('nmv.save_morphology_swc', icon='GRAPH')
+    row.operator('nmv.save_morphology_segments', icon='NOCURVE')
     row.enabled = True
+
+

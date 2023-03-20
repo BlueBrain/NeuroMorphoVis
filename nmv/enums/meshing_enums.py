@@ -38,6 +38,9 @@ class Meshing:
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
 
+        # Watertight meshing using voxelization
+        WATERTIGHT = 'MESHING_TECHNIQUE_WATERTIGHT'
+
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
 
@@ -59,23 +62,16 @@ class Meshing:
         @staticmethod
         def get_enum(argument):
 
-            # Piecewise-watertight
             if argument == 'piecewise-watertight':
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
-
-            # Union
+            elif argument == 'watertight':
+                return Meshing.Technique.WATERTIGHT
             elif argument == 'union':
                 return Meshing.Technique.UNION
-
-            # Skinning
             elif argument == 'skinning':
                 return Meshing.Technique.SKINNING
-
-            # Meta objects
             elif argument == 'meta-balls':
                 return Meshing.Technique.META_OBJECTS
-
-            # By default use piecewise-watertight
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
@@ -87,6 +83,10 @@ class Meshing:
              'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
              'composed of multiple mesh objects, where each object is a watertight component. '
              'This method is used to reconstruct high fidelity volumes from the generated meshes'),
+
+            (WATERTIGHT,
+             'Watertight with Voxelization',
+             'This approach (Abdellah et al., 2017) creates a watertight mesh'),
 
             (SKINNING,
              'Skinning',
@@ -179,7 +179,7 @@ class Meshing:
             elif argument == 'disconnected':
                 return Meshing.SomaConnection.DISCONNECTED
 
-            # By default use the soma disconnected mode
+            # By default, use the soma disconnected mode
             else:
                 return Meshing.SomaConnection.DISCONNECTED
 

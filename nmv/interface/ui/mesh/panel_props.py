@@ -37,6 +37,13 @@ bpy.types.Scene.NMV_MeshingSomaType = bpy.props.EnumProperty(
     name='Soma',
     default=nmv.enums.Soma.Representation.META_BALLS)
 
+# Just displaying that there is a single option for the soma meshing
+bpy.types.Scene.NMV_MeshingMetaSoma = bpy.props.EnumProperty(
+    items=nmv.enums.Soma.Representation.META_SOMA_FOR_MESHING,
+    name='Soma',
+    default=nmv.enums.Soma.Representation.META_BALLS)
+
+
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,
