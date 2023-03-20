@@ -56,6 +56,19 @@ def draw_mesh_reconstruction_button(panel, scene):
 
 
 ####################################################################################################
+# @draw_mesh_rendering_buttons
+####################################################################################################
+def draw_mesh_rendering_buttons(panel, scene, show_stats=False):
+
+    view_row = panel.layout.row()
+    view_row.label(text='Render View', icon='RESTRICT_RENDER_OFF')
+    buttons_row = panel.layout.row(align=True)
+    buttons_row.operator('nmv.render_mesh_front', icon='AXIS_FRONT')
+    buttons_row.operator('nmv.render_mesh_side', icon='AXIS_SIDE')
+    buttons_row.operator('nmv.render_mesh_top', icon='AXIS_TOP')
+
+
+####################################################################################################
 # @draw_mesh_export_options
 ####################################################################################################
 def draw_mesh_export_options(panel, scene, options):

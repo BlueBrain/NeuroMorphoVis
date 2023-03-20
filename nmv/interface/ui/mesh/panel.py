@@ -26,8 +26,9 @@ import nmv.interface
 
 # Layout
 from .layout_buttons import *
-from .layout_reconstruction_props import *
 from .layout_color_props import *
+from .layout_reconstruction_props import *
+from .layout_rendering_props import *
 
 
 ####################################################################################################
@@ -72,6 +73,9 @@ class NMV_MeshPanel(bpy.types.Panel):
         self.layout.separator()
 
         draw_mesh_reconstruction_button(panel=self, scene=context.scene)
+        self.layout.separator()
+
+        draw_rendering_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
         self.layout.separator()
 
         draw_mesh_export_options(
