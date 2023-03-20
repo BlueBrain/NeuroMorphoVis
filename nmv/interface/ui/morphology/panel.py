@@ -98,7 +98,8 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         draw_documentation_button(layout=self.layout)
 
         draw_morphology_reconstruction_options(
-            layout=self.layout, scene=context.scene, options=nmv.interface.ui_options)
+            layout=self.layout, scene=context.scene,
+            options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
         self.layout.separator()
 
         draw_morphology_skeleton_display_options(

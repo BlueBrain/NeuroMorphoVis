@@ -87,7 +87,7 @@ def render_morphology_relevant_image(options,
         # Bounding box computation
         if options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
-                extent=options.rendering.closeup_size)
+                extent=options.rendering.close_up_dimensions)
         elif options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
             bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
         else:

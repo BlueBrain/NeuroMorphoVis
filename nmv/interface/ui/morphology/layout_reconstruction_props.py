@@ -94,6 +94,7 @@ def draw_arbors_radii_option(layout, scene, options):
     row = layout.row()
     row.label(text='Arbors Radii:')
     row.prop(scene, 'NMV_SectionsRadii', icon='SURFACE_NCURVE')
+    options.morphology.arbors_radii = scene.NMV_SectionsRadii
 
 
 ####################################################################################################
@@ -153,7 +154,7 @@ def draw_unified_radii_per_arbor_option(layout, scene, options, morphology):
 
 
 ####################################################################################################
-# @draw_unified_radii_per_arbor_option
+# @draw_scaled_radii_option
 ####################################################################################################
 def draw_scaled_radii_option(layout, scene, options):
 
@@ -190,9 +191,9 @@ def draw_filtered_radii_option(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_sections_radii_options
+# @draw_arbors_radii_options
 ####################################################################################################
-def draw_arbors_radii_options(layout, scene, options):
+def draw_arbors_radii_options(layout, scene, options, morphology):
 
     draw_arbors_radii_option(layout=layout, scene=scene, options=options)
     if options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.ORIGINAL:
@@ -202,7 +203,8 @@ def draw_arbors_radii_options(layout, scene, options):
         draw_unified_radii_option(layout=layout, scene=scene, options=options)
 
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.UNIFIED_PER_ARBOR_TYPE:
-        draw_unified_radii_per_arbor_option(layout=layout, scene=scene, options=options)
+        draw_unified_radii_per_arbor_option(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif options.morphology.arbors_radii == nmv.enums.Skeleton.Radii.SCALED:
         draw_scaled_radii_option(layout=layout, scene=scene, options=options)
@@ -260,62 +262,62 @@ def draw_morphology_resampling_options(layout, scene, options):
 ####################################################################################################
 # @draw_disconnected_segments_options
 ####################################################################################################
-def draw_disconnected_segments_options(layout, scene, options):
+def draw_disconnected_segments_options(layout, scene, options, morphology):
 
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_option(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
     draw_arbor_quality_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_disconnected_sections_options
 ####################################################################################################
-def draw_disconnected_sections_options(layout, scene, options):
+def draw_disconnected_sections_options(layout, scene, options, morphology):
 
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_options(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
     draw_arbor_quality_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_samples_options
 ####################################################################################################
-def draw_samples_options(layout, scene, options):
+def draw_samples_options(layout, scene, options, morphology):
 
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_options(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
 
 
 ####################################################################################################
 # @draw_progressive_options
 ####################################################################################################
-def draw_progressive_options(layout, scene, options):
+def draw_progressive_options(layout, scene, options, morphology):
 
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_options(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
     draw_arbor_quality_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_articulated_sections_options
 ####################################################################################################
-def draw_articulated_sections_options(layout, scene, options):
+def draw_articulated_sections_options(layout, scene, options, morphology):
 
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_options(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
     draw_arbor_quality_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
 # @draw_connected_sections_options
 ####################################################################################################
-def draw_connected_sections_options(layout, scene, options):
+def draw_connected_sections_options(layout, scene, options, morphology):
 
     draw_arbor_style_option(layout=layout, scene=scene, options=options)
     draw_branching_option(layout=layout, scene=scene, options=options)
     draw_arbor_to_soma_connection_option(layout=layout, scene=scene, options=options)
     draw_morphology_resampling_options(layout=layout, scene=scene, options=options)
-    draw_arbors_radii_options(layout=layout, scene=scene, options=options)
+    draw_arbors_radii_options(layout=layout, scene=scene, options=options, morphology=morphology)
     draw_arbor_quality_option(layout=layout, scene=scene, options=options)
 
 
@@ -330,7 +332,7 @@ def draw_dendrogram_options(layout, scene, options):
 ####################################################################################################
 # @draw_morphology_reconstruction_options
 ####################################################################################################
-def draw_morphology_reconstruction_options(layout, scene, options):
+def draw_morphology_reconstruction_options(layout, scene, options, morphology):
 
     draw_morphology_reconstruction_header(layout=layout)
     draw_morphology_reconstruction_technique_option(layout=layout, scene=scene, options=options)
@@ -340,22 +342,28 @@ def draw_morphology_reconstruction_options(layout, scene, options):
         draw_connected_sections_options(layout=layout, scene=scene, options=options)
 
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS:
-        draw_disconnected_sections_options(layout=layout, scene=scene, options=options)
+        draw_disconnected_sections_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SEGMENTS:
-        draw_disconnected_segments_options(layout=layout, scene=scene, options=options)
+        draw_disconnected_segments_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-        draw_articulated_sections_options(layout=layout, scene=scene, options=options)
+        draw_articulated_sections_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-        draw_articulated_sections_options(layout=layout, scene=scene, options=options)
+        draw_articulated_sections_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.PROGRESSIVE:
-        draw_progressive_options(layout=layout, scene=scene, options=options)
+        draw_progressive_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.SAMPLES:
-        draw_samples_options(layout=layout, scene=scene, options=options)
+        draw_samples_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.DENDROGRAM:
         draw_dendrogram_options(layout=layout, scene=scene, options=options)
