@@ -163,3 +163,8 @@ bpy.types.Scene.NMV_SomaRenderingTime = bpy.props.FloatProperty(
     name='Rendering (Sec)',
     description='The time it takes to render the soma into an image',
     default=0, min=0, max=1000000)
+
+# Exported mesh file formats
+bpy.types.Scene.NMV_ExportedSomaMeshFormat = bpy.props.EnumProperty(
+    items=nmv.enums.Meshing.ExportFormat.FORMATS_ITEMS,
+    name='Format', default=nmv.enums.Meshing.ExportFormat.OBJ)

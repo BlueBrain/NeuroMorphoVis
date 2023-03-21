@@ -98,7 +98,7 @@ def render_morphology_relevant_image(options,
         if options.rendering.render_scale_bar:
             scale_bar = nmv.interface.draw_scale_bar(
                 bounding_box=bounding_box,
-                material_type=nmv.interface.ui_options.shading.morphology_material,
+                material_type=options.shading.morphology_material,
                 view=camera_view)
 
         # Resolution basis
@@ -124,6 +124,75 @@ def render_morphology_relevant_image(options,
         # Delete the morphology scale bar, if rendered
         if scale_bar is not None:
             nmv.scene.delete_object_in_scene(scene_object=scale_bar)
+
+    nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
+
+    # Report the process termination in the UI
+    if panel is not None:
+        panel.report({'INFO'}, 'Rendering Done')
+
+
+####################################################################################################
+# @render_meshes_relevant_image
+####################################################################################################
+def render_meshes_relevant_image(options,
+                                 morphology,
+                                 camera_view,
+                                 image_suffix,
+                                 panel=None):
+
+    # Profile the rendering
+    start_time = time.time()
+
+    # Verify the output directory
+    nmv.interface.verify_output_directory(options=options, panel=panel)
+
+    # Create the images directory if it does not exist
+    if not nmv.file.ops.path_exists(options.io.images_directory):
+        nmv.file.ops.clean_and_create_directory(options.io.images_directory)
+
+    # Report the process starting in the UI
+    if panel is not None:
+        panel.report({'INFO'}, 'Rendering mesh ... Wait')
+
+    # Bounding box computation
+    if options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
+        bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+            extent=options.rendering.close_up_dimensions)
+    else:
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+    # Draw the morphology scale bar
+    scale_bar = None
+    if options.rendering.render_scale_bar:
+        scale_bar = nmv.interface.draw_scale_bar(
+            bounding_box=bounding_box,
+            material_type=options.shading.mesh_material,
+            view=camera_view)
+
+    # Resolution basis
+    if options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
+        nmv.rendering.render(
+            bounding_box=bounding_box,
+            camera_view=camera_view,
+            image_resolution=options.rendering.frame_resolution,
+            image_name='%s%s' % (morphology.label, image_suffix),
+            image_format=options.rendering.image_format,
+            image_directory=options.io.images_directory,
+            keep_camera_in_scene=False)
+    else:
+        nmv.rendering.render_to_scale(
+            bounding_box=bounding_box,
+            camera_view=camera_view,
+            image_scale_factor=options.rendering.resolution_scale_factor,
+            image_name='%s%s' % (options.morphology.label, image_suffix),
+            image_format=options.rendering.image_format,
+            image_directory=options.io.images_directory,
+            keep_camera_in_scene=False)
+
+    # Delete the morphology scale bar, if rendered
+    if scale_bar is not None:
+        nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
     nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
 

@@ -48,6 +48,11 @@ ui_morphology_analyzed = False
 # The reconstructed soma mesh object
 ui_soma_mesh = None
 
+ui_soma_reconstructed = False
+
+# If this flag is set, the morphology is rendered and it is safe to display relevant infoemation
+ui_soma_rendered = False
+
 # A list of all the objects that correspond to the reconstructed morphology skeleton
 ui_reconstructed_skeleton = list()
 

@@ -36,7 +36,6 @@ def draw_morphology_reconstruction_header(layout):
 ####################################################################################################
 def draw_morphology_reconstruction_technique_option(layout, scene, options):
 
-    # Morphology reconstruction techniques option
     row = layout.row()
     row.prop(scene, 'NMV_MorphologyReconstructionTechnique', icon='FORCE_CURVE')
     options.morphology.reconstruction_method = scene.NMV_MorphologyReconstructionTechnique
@@ -339,7 +338,8 @@ def draw_morphology_reconstruction_options(layout, scene, options, morphology):
 
     method = options.morphology.reconstruction_method
     if method == nmv.enums.Skeleton.Method.CONNECTED_SECTIONS:
-        draw_connected_sections_options(layout=layout, scene=scene, options=options)
+        draw_connected_sections_options(
+            layout=layout, scene=scene, options=options, morphology=morphology)
 
     elif method == nmv.enums.Skeleton.Method.DISCONNECTED_SECTIONS:
         draw_disconnected_sections_options(

@@ -94,7 +94,7 @@ def register():
     nmv.interface.ui.io_panel.register_panel()
     nmv.interface.ui.analysis.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
-    nmv.interface.ui.soma_panel.register_panel()
+    nmv.interface.ui.soma.register_panel()
 
     nmv.interface.ui.morphology.register_panel()
 
@@ -121,7 +121,7 @@ def unregister():
     nmv.interface.ui.io_panel.unregister_panel()
     nmv.interface.ui.analysis.unregister_panel()
     nmv.interface.ui.edit_panel.unregister_panel()
-    nmv.interface.ui.soma_panel.unregister_panel()
+    nmv.interface.ui.soma.unregister_panel()
 
     nmv.interface.ui.morphology.registration.unregister_panel()
 

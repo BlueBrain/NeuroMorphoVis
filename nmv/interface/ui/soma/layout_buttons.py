@@ -15,6 +15,27 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .panel_props import *
-from .registration import *
 
+####################################################################################################
+# @draw_documentation_button
+####################################################################################################
+def draw_documentation_button(layout):
+
+    row = layout.row()
+    row.operator('nmv.documentation_soma', icon='URL')
+
+
+####################################################################################################
+# @draw_soma_mesh_export_button
+####################################################################################################
+def draw_soma_mesh_export_button(panel, scene):
+
+    row = panel.layout.row()
+    row.label(text='Export Soma Mesh', icon='MESH_UVSPHERE')
+
+    export_format = panel.layout.row()
+    export_format.prop(scene, 'NMV_ExportedSomaMeshFormat', icon='GROUP_VERTEX')
+
+    # Save button
+    row = panel.layout.column()
+    row.operator('nmv.export_soma_mesh', icon='MESH_DATA')

@@ -54,6 +54,9 @@ class SomaOptions:
         # Simulation steps
         self.simulation_steps = nmv.consts.SoftBody.SIMULATION_STEPS_DEFAULT
 
+        # Reconstruction profile 2D/3D
+        self.profile = nmv.enums.Soma.Profile.COMBINED
+
         # MESH EXPORT OPTIONS ######################################################################
         # Export soma mesh in .ply format
         self.export_ply = False

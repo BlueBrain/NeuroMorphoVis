@@ -75,7 +75,7 @@ def draw_mesh_export_options(panel, scene, options):
 
     # Saving meshes parameters
     save_neuron_mesh_row = panel.layout.row()
-    save_neuron_mesh_row.label(text='Export Neuron Mesh:', icon='MESH_UVSPHERE')
+    save_neuron_mesh_row.label(text='Export Mesh', icon='MESH_UVSPHERE')
 
     export_format = panel.layout.row()
     export_format.prop(scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
