@@ -46,8 +46,13 @@ class NMV_Update(bpy.types.Operator):
             self.report({'INFO'}, 'Cannot update NeuroMorphoVis! git must be installed.')
             return {'FINISHED'}
 
-        # TODO: Verify git or use wget or curl.
-        # TODO: Ignore this option for windows.
+        if 'posix' in os.name:
+            nmv.logger('Updating NeuroMorphoVis on a unix-based OS')
+        else:
+            self.report({'ERROR'}, 'Cannot update NeuroMorphoVis on Windows! '
+                                   'Please download the latest version from the GitHub '
+                                   'Release page.')
+            return {'FINISHED'}
 
         # Get the current path
         current_path = os.path.dirname(os.path.realpath(__file__))
