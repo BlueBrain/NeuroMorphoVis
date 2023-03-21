@@ -15,4 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .about_panel import *
+from .registration import *

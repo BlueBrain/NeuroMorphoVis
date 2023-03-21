@@ -96,11 +96,11 @@ def register():
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma_panel.register_panel()
 
-    nmv.interface.ui.morphology.registration.register_panel()
+    nmv.interface.ui.morphology.register_panel()
 
     nmv.interface.ui.synaptics_panel.register_panel()
-    nmv.interface.ui.mesh.registration.register_panel()
-    nmv.interface.ui.about_panel.register_panel()
+    nmv.interface.ui.mesh.register_panel()
+    nmv.interface.ui.about.register_panel()
 
     nmv.logger.info_done('NeuroMorphoVis Loaded! Enjoy')
 
@@ -126,8 +126,9 @@ def unregister():
     nmv.interface.ui.morphology.registration.unregister_panel()
 
     nmv.interface.ui.synaptics_panel.unregister_panel()
-    nmv.interface.ui.mesh.registration.unregister_panel()
-    nmv.interface.ui.about_panel.unregister_panel()
+
+    nmv.interface.ui.mesh.unregister_panel()
+    nmv.interface.ui.about.unregister_panel()
     nmv.logger.info_done('NeuroMorphoVis Unloaded!')
 
 
@@ -136,5 +137,5 @@ def unregister():
 ####################################################################################################
 if __name__ == "__main__":
 
-    # Register the add-on
+    # Register the add-on, ENTRY POINT -> NeuroMorphoVis
     register()
