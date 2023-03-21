@@ -15,6 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .analysis_panel import *
-from .analysis_panel_ops import *
-from .analysis_panel_options import *
+from .panel_ops import *
+from .panel_props import *
+from .registration import *

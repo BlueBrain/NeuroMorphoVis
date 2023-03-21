@@ -15,27 +15,40 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import copy
+import time
+
 # Blender imports
 import bpy
 
-# Internal imports
+import nmv.consts
+import nmv.analysis
+import nmv.builders
+import nmv.enums
+import nmv.file
+import nmv.interface
+import nmv.skeleton
+import nmv.scene
 import nmv.utilities
+
+
 from .layout_props import draw_layout_props
 
 
 ####################################################################################################
-# @NMV_AboutPanel
+# @NMV_AnalysisPanel
 ####################################################################################################
-class NMV_AboutPanel(bpy.types.Panel):
-    """NMV About panel"""
+class NMV_AnalysisPanel(bpy.types.Panel):
+    """Analysis panel"""
 
     ################################################################################################
     # Panel parameters
     ################################################################################################
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_idname = "OBJECT_PT_NMV_About"
-    bl_label = 'About'
+    bl_idname = "OBJECT_PT_NMV_Analysis"
+    bl_label = 'Morphology Analysis Tools'
     bl_category = 'NeuroMorphoVis'
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -44,4 +57,11 @@ class NMV_AboutPanel(bpy.types.Panel):
     ################################################################################################
     def draw(self, context):
 
-        draw_layout_props(panel=self, scene=context.scene, options=nmv.interface.ui_options)
+        draw_layout_props(panel=self, scene=context.scene,
+                          options=nmv.interface.ui_options, morphology=nmv.interface.ui_morphology)
+
+        # Enable or disable the layout
+        nmv.interface.enable_or_disable_layout(self.layout)
+
+
+

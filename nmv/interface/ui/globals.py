@@ -42,6 +42,9 @@ ui_morphology = None
 # All the icons loaded for the UI
 ui_icons = None
 
+ui_morphology_analyzed = False
+
+
 # The reconstructed soma mesh object
 ui_soma_mesh = None
 
