@@ -18,18 +18,12 @@
 # System imports
 import copy
 
-# Blender imports
-import bpy
-from bpy.props import BoolProperty
-
 # Internal imports
 import nmv.analysis
 import nmv.builders
 import nmv.scene
 import nmv.enums
 import nmv.consts
-
-
 import nmv.interface
 
 
@@ -86,12 +80,20 @@ def analyze_morphology(morphology,
         register_analysis_groups(morphology=morphology)
 
         # Register the global morphology variables to be able to show and update them on the UI
+        for item in nmv.analysis.ui_soma_analysis_items:
+            item.register_global_analysis_variables(morphology=morphology)
+
+        # Register the global morphology variables to be able to show and update them on the UI
         for item in nmv.analysis.ui_global_analysis_items:
             item.register_global_analysis_variables(morphology=morphology)
 
         # Register the per-arbor variables to be able to show and update them on the UI
         for item in nmv.analysis.ui_per_arbor_analysis_items:
             item.register_per_arbor_analysis_variables(morphology=morphology)
+
+        # Apply the global analysis filters and update the results
+        for item in nmv.analysis.ui_soma_analysis_items:
+            item.apply_global_analysis_kernel(morphology=morphology, context=context)
 
         # Apply the global analysis filters and update the results
         for item in nmv.analysis.ui_global_analysis_items:

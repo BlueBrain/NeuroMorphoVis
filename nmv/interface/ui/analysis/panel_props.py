@@ -25,46 +25,57 @@ bpy.types.Scene.NMV_BBoxPMinX = bpy.props.FloatProperty(
     name="X",
     description="X-coordinate of PMin",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxPMinY = bpy.props.FloatProperty(
     name="Y",
     description="Y-coordinate of PMin",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxPMinZ = bpy.props.FloatProperty(
     name="Z",
     description="Z-coordinate of PMin",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxPMaxX = bpy.props.FloatProperty(
     name="X",
     description="X-coordinate of PMax",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxPMaxY = bpy.props.FloatProperty(
     name="Y",
     description="Y-coordinate of PMax",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxPMaxZ = bpy.props.FloatProperty(
     name="Z",
     description="Z-coordinate of PMax",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxCenterX = bpy.props.FloatProperty(
     name="X",
     description="X-coordinate of center of the morphology",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxCenterY = bpy.props.FloatProperty(
     name="Y",
     description="Y-coordinate of center of the morphology",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BBoxCenterZ = bpy.props.FloatProperty(
     name="Z",
     description="Z-coordinate of center of the morphology",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BoundsX = bpy.props.FloatProperty(
     name="X",
     description="Morphology width",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BoundsY = bpy.props.FloatProperty(
     name="Y",
     description="Morphology height",
     min=-1e10, max=1e10, subtype='FACTOR')
+
 bpy.types.Scene.NMV_BoundsZ = bpy.props.FloatProperty(
     name="Z",
     description="Morphology depth",

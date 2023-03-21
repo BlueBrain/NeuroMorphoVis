@@ -423,15 +423,11 @@ ui_per_arbor_analysis_items = [
                  unit='VOLUME'),
 ]
 
-
 ####################################################################################################
-# Global analysis items, only applied on a global level not per-arbor level
+# Soma analysis items
 ####################################################################################################
-ui_global_analysis_items = [
+ui_soma_analysis_items = [
 
-    ################################################################################################
-    # Soma items
-    ################################################################################################
     AnalysisItem(variable='SomaReportedRadius',
                  name='Soma Reported Radius',
                  kernel=kernel_soma_get_reported_mean_radius,
@@ -471,6 +467,12 @@ ui_global_analysis_items = [
                  kernel=kernel_soma_count_profile_points,
                  description='The number of profile points of the soma',
                  data_format='INT'),
+]
+
+####################################################################################################
+# Global analysis items, only applied on a global level not per-arbor level
+####################################################################################################
+ui_global_analysis_items = [
 
     ################################################################################################
     # Arborization items

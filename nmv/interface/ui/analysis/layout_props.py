@@ -1,3 +1,19 @@
+####################################################################################################
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+#
+# This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This Blender-based tool is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <http://www.gnu.org/licenses/>.
+####################################################################################################
 
 # System imports
 import copy
@@ -76,13 +92,20 @@ def add_analysis_group_to_panel(prefix,
     if getattr(scene, prefix):
 
         # Create a sub-column that aligns the analysis data from the original outline
-        analysis_area = outline.column(align=True)
+        analysis_area = outline.column()
 
         # In case of showing the analysis results of the entire morphology, add the
         # results of the global analysis before the common ones
         if 'Morphology' in prefix:
+            analysis_area.label(text='Soma')
+            soma_area = analysis_area.column(align=True)
+            for item in nmv.analysis.ui_soma_analysis_items:
+                soma_area.prop(scene, '%s' % item.variable)
+
+            analysis_area.label(text='Arbors')
+            arbors_area = analysis_area.column(align=True)
             for item in nmv.analysis.ui_global_analysis_items:
-                analysis_area.prop(scene, '%s' % item.variable)
+                arbors_area.prop(scene, '%s' % item.variable)
 
         # Update the analysis area with all the filters, that are common
         for item in nmv.analysis.ui_per_arbor_analysis_items:
@@ -176,11 +199,6 @@ def add_bounding_box_information_to_panel(morphology,
     bounding_box_bounds_row.prop(scene, 'NMV_BoundsY')
     bounding_box_bounds_row.prop(scene, 'NMV_BoundsZ')
     bounding_box_bounds_row.enabled = False
-
-
-
-
-
 
 
 ####################################################################################################
