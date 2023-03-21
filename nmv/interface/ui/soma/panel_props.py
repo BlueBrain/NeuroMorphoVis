@@ -61,16 +61,24 @@ bpy.types.Scene.NMV_SomaMetaBallResolution = bpy.props.FloatProperty(
 # Profile
 bpy.types.Scene.NMV_SomaProfile = bpy.props.EnumProperty(
     items=[(nmv.enums.Soma.Profile.ARBORS_ONLY,
-            '3D Profile',
+            '3D Profile - Arbor Points',
             'Reconstruct the shape of the soma using the initial samples of the arbors only'),
            (nmv.enums.Soma.Profile.PROFILE_POINTS_ONLY,
-            '2D Profile',
+            '2D Profile - Profile Points',
             'Reconstruct the shape of the soma using the reported profile points only. '
             'If the morphology file does not contain any profile points, the initial sphere will '
             'not be deformed at all'),
            (nmv.enums.Soma.Profile.COMBINED,
-            'Mixed',
+            'Combined',
             'Reconstruct a complex shape for the soma using all available data')],
+    name='Profile',
+    default=nmv.enums.Soma.Profile.ARBORS_ONLY)
+
+# Profile of arbors only if no profile points were available
+bpy.types.Scene.NMV_SomaArborsOnlyProfile = bpy.props.EnumProperty(
+    items=[(nmv.enums.Soma.Profile.ARBORS_ONLY,
+            '3D Profile - Arbor Points',
+            'Reconstruct the shape of the soma using the initial samples of the arbors only')],
     name='Profile',
     default=nmv.enums.Soma.Profile.ARBORS_ONLY)
 
@@ -129,7 +137,7 @@ bpy.types.Scene.NMV_SimulationSteps = bpy.props.IntProperty(
 
 # Soma simulation progress bar
 bpy.types.Scene.NMV_SomaSimulationProgress = bpy.props.IntProperty(
-    name='Physics Simulation Progress',
+    name='Simulation Progress',
     description='Reconstruction progress',
     default=0, min=0, max=100, subtype='PERCENTAGE')
 

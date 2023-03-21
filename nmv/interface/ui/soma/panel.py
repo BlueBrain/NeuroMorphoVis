@@ -67,24 +67,33 @@ class NMV_SomaPanel(bpy.types.Panel):
         options = nmv.interface.ui_options
         morphology = nmv.interface.ui_morphology
 
+        # Documentation button
         draw_documentation_button(layout=self.layout)
         self.layout.separator()
 
+        # Soma reconstruction options
         draw_soma_reconstruction_options(
             panel=self, scene=context.scene, options=options, morphology=morphology)
         self.layout.separator()
 
+        # Color options
         draw_soma_color_options(
             panel=self, scene=context.scene, options=options)
         self.layout.separator()
 
-        draw_soma_reconstruction_button(layout=self.layout, scene=context.scene)
+        # Reconstruction buttons
+        draw_soma_reconstruction_button(
+            layout=self.layout, scene=context.scene, options=options)
         self.layout.separator()
 
-        draw_soma_frame_rendering_options(panel=self, scene=context.scene, options=options)
+        # Still-frame rendering options
+        draw_soma_frame_rendering_options(
+            panel=self, scene=context.scene, options=options)
         self.layout.separator()
 
-        draw_soma_progressive_rendering_options(panel=self, scene=context.scene, options=options)
+        # Progressive rendering options
+        draw_soma_progressive_rendering_options(
+            panel=self, scene=context.scene, options=options)
         self.layout.separator()
 
         draw_soma_mesh_export_button(panel=self, scene=context.scene)

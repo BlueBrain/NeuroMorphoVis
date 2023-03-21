@@ -60,7 +60,7 @@ class Soma:
         self.reported_mean_radius = reported_mean_radius
 
         # Soma profile points, they are typically ignored when reconstructing the soma on a
-        # physically-plausible basis, but they can also used to make the soma more irregular
+        # physically-plausible basis, but they can also be used to make the soma more irregular
         self.profile_points = profile_points
 
         # The profile points of the arbors
