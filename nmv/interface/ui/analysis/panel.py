@@ -22,17 +22,8 @@ import time
 # Blender imports
 import bpy
 
-import nmv.consts
-import nmv.analysis
-import nmv.builders
-import nmv.enums
-import nmv.file
+# Internal imports
 import nmv.interface
-import nmv.skeleton
-import nmv.scene
-import nmv.utilities
-
-
 from .layout_props import draw_layout_props
 
 

@@ -46,12 +46,8 @@ def show_progress(message,
     """
 
     if done:
-
-        # Done message
         sys.stdout.write('\t%s: [100 %%]%s\n' % (message, nmv.consts.Messages.SPACES))
     else:
-
-        # In progress message
         progress = 100.0 * (float(current) / float(total))
         sys.stdout.write('\t%s: [%2.2f %%]\r' % (message, progress))
 
@@ -76,13 +72,8 @@ def show_iteration_progress(message,
     """
 
     if done:
-
-        # Done message
         sys.stdout.write('%s: [%d/%d]\n' % (message, current, total))
-
     else:
-
-        # In progress message
         sys.stdout.write('%s: [%d/%d]\r' % (message, current, total))
 
 

@@ -27,8 +27,7 @@ stderr_hook = None
 # @disable_std_output
 ####################################################################################################
 def disable_std_output():
-    """Ignore the output from Blender verbose functions to make the output more clear to read.
-    """
+    """Ignore the output from Blender verbose functions to make the output more clear to read."""
 
     # Hooks the stdout until further notice
     global stdout_hook
@@ -47,8 +46,7 @@ def disable_std_output():
 # @enable_std_output
 ####################################################################################################
 def enable_std_output():
-    """Re-enable stdout again.
-    """
+    """Re-enable stdout again."""
 
     global stdout_hook
     global stderr_hook
