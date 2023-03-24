@@ -15,44 +15,58 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import copy
+import time
+
+# Blender imports
+import bpy
+
+# Internal imports
+import nmv.consts
+import nmv.enums
+import nmv.scene
+import nmv.utilities
+
+from .layout_props import *
+
 
 ####################################################################################################
-# @IOOptions
+# @NMV_IOPanel
 ####################################################################################################
-class IOOptions:
-    """Input / Output options"""
+class NMV_IOPanel(bpy.types.Panel):
+    """The input and output data panel of NeuroMorphoVis"""
 
     ################################################################################################
-    # @__init__
+    # Panel parameters
     ################################################################################################
-    def __init__(self):
-        """Constructor"""
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_idname = "OBJECT_PT_NMV_IO"
+    bl_label = 'Input / Output'
+    bl_category = 'NeuroMorphoVis'
 
-        # The input source of the morphology
-        self.input_source = None
+    ################################################################################################
+    # @draw
+    ################################################################################################
+    def draw(self, context):
 
-        # The root output directory where the results will be generated
-        self.output_directory = None
+        draw_io_documentation_button(panel=self)
+        self.layout.separator()
 
-        # Use the default paths while creating the subdirectory tree
-        self.use_default_path_for_artifacts = False
+        draw_input_data_options(
+            panel=self, scene=context.scene, options=nmv.interface.ui_options)
+        self.layout.separator()
 
-        # Images directory, where the images will be rendered
-        self.images_directory = None
+        draw_morphology_loading_button(panel=self)
+        self.layout.separator()
 
-        # Sequences directory, where the movies will be rendered
-        self.sequences_directory = None
+        draw_morphology_loading_statistics(
+            panel=self, scene=context.scene, morphology=nmv.interface.ui_morphology)
+        self.layout.separator()
 
-        # Meshes directory, where the reconstructed meshes will be saved
-        self.meshes_directory = None
+        draw_output_data_options(
+            panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
-        # Morphologies directory, where the repaired morphologies will be saved
-        self.morphologies_directory = None
-
-        # Analysis directory, where the analysis reports will be saved
-        self.analysis_directory = None
-
-        # Statistics directory, where the stats. will be saved
-        self.statistics_directory = None
 
 

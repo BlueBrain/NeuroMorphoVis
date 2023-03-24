@@ -16,8 +16,8 @@
 ####################################################################################################
 
 # System imports
-import copy
 import time
+import copy
 
 # Blender imports
 import bpy
@@ -26,52 +26,6 @@ import bpy
 import nmv.consts
 import nmv.enums
 import nmv.scene
-import nmv.utilities
-from .io_panel_options import *
-from .io_panel_ops import *
-
-
-####################################################################################################
-# @NMV_IOPanel
-####################################################################################################
-class NMV_IOPanel(bpy.types.Panel):
-    """The input and output data panel of NeuroMorphoVis"""
-
-    ################################################################################################
-    # Panel parameters
-    ################################################################################################
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_idname = "OBJECT_PT_NMV_IO"
-    bl_label = 'Input / Output'
-    bl_category = 'NeuroMorphoVis'
-
-    ################################################################################################
-    # @draw
-    ################################################################################################
-    def draw(self,
-             context):
-        """Draw the panel.
-
-        :param context:
-            Blender context.
-        """
-
-        # Draw the documentation button
-        draw_io_documentation_button(panel=self)
-
-        # Draw the input options
-        draw_input_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
-
-        # Draw the morphology loading button
-        draw_morphology_loading_button(panel=self)
-
-        # Draw the morphology loading statistics elements, if possible after loading the morphology
-        draw_morphology_loading_statistics(
-            panel=self, scene=context.scene, morphology_object=nmv.interface.ui_morphology)
-
-        # Draw the output options
-        draw_output_options(panel=self, scene=context.scene, options=nmv.interface.ui_options)
 
 
 ####################################################################################################
@@ -87,16 +41,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self,
-                context):
-        """Execute the button, or the operator. Note that the analysis of the loaded morphology
-        is executed in the background.
-
-        :param context:
-            Blender context.
-        :return:
-             {'RUNNING_MODAL'}
-        """
+    def execute(self, context):
 
         import nmv.interface
         import nmv.builders
@@ -178,16 +123,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
     ###############################################################################################
     # @modal
     ################################################################################################
-    def modal(self,
-              context,
-              event):
-        """Threading and non-blocking handling.
-
-        :param context:
-            The Blender context.
-        :param event:
-            A given event for the panel.
-        """
+    def modal(self, context, event):
 
         # Analyze the morphology once loaded as well
         analysis_time = time.time()
@@ -200,14 +136,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
     ################################################################################################
     # @cancel
     ################################################################################################
-    def cancel(self,
-               context):
-        """
-        Cancel the panel processing and return to the interaction mode.
-
-        :param context:
-            The Blender context.
-        """
+    def cancel(self, context):
 
         # Finished
         return {'FINISHED'}
@@ -226,50 +155,8 @@ class NMV_InputOutputDocumentation(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self,
-                context):
-        """Execute the operator.
-
-        :param context:
-            The Blender context.
-        :return:
-            {'FINISHED'}
-        """
+    def execute(self, context):
 
         import webbrowser
         webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Input-&-Output')
         return {'FINISHED'}
-
-
-####################################################################################################
-# @register_panel
-####################################################################################################
-def register_panel():
-    """Registers all the classes in this panel"""
-
-    # Once loaded, activate the mode rendering mode in the viewport
-    nmv.scene.activate_neuromorphovis_mode()
-
-    # Input/Output panel
-    bpy.utils.register_class(NMV_IOPanel)
-
-    # Buttons
-    bpy.utils.register_class(NMV_InputOutputDocumentation)
-    bpy.utils.register_class(NMV_LoadMorphology)
-
-
-####################################################################################################
-# @unregister_panel
-####################################################################################################
-def unregister_panel():
-    """Un-registers all the classes in this panel"""
-
-    # Get back to the original theme
-    nmv.scene.deactivate_neuromorphovis_mode()
-
-    # Input/Output panel
-    bpy.utils.unregister_class(NMV_IOPanel)
-
-    # Buttons
-    bpy.utils.unregister_class(NMV_InputOutputDocumentation)
-    bpy.utils.unregister_class(NMV_LoadMorphology)
