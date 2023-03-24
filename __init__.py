@@ -95,10 +95,8 @@ def register():
     nmv.interface.ui.analysis.register_panel()
     nmv.interface.ui.edit_panel.register_panel()
     nmv.interface.ui.soma.register_panel()
-
     nmv.interface.ui.morphology.register_panel()
-
-    nmv.interface.ui.synaptics_panel.register_panel()
+    nmv.interface.ui.synaptics.register_panel()
     nmv.interface.ui.mesh.register_panel()
     nmv.interface.ui.about.register_panel()
 
@@ -122,11 +120,8 @@ def unregister():
     nmv.interface.ui.analysis.unregister_panel()
     nmv.interface.ui.edit_panel.unregister_panel()
     nmv.interface.ui.soma.unregister_panel()
-
     nmv.interface.ui.morphology.registration.unregister_panel()
-
-    nmv.interface.ui.synaptics_panel.unregister_panel()
-
+    nmv.interface.ui.synaptics.unregister_panel()
     nmv.interface.ui.mesh.unregister_panel()
     nmv.interface.ui.about.unregister_panel()
     nmv.logger.info_done('NeuroMorphoVis Unloaded!')

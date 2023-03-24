@@ -72,6 +72,9 @@ class Synaptics:
         # Visualize the synapses on a single neuron with a specific color map and specific labels
         SPECIFIC_COLOR_CODED_SET = 'VISUALIZE_SPECIFIC_COLOR_CODED_SET'
 
+        # Visualize projections
+        PROJECTION = 'VISUALIZE_PROJECTIONS'
+
     ################################################################################################
     # @ColorCoding
     ################################################################################################

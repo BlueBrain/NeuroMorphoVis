@@ -15,4 +15,5 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .synaptics_panel import *
+from .panel_props import *
+from .registration import *

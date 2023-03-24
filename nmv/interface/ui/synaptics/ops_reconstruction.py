@@ -15,23 +15,36 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import sys
+import time
+
 # Blender imports
 import bpy
 
 # Internal imports
-import nmv.consts
-import nmv.enums
 import nmv.bbp
+import nmv.enums
+import nmv.interface
+import nmv.utilities
 import nmv.scene
 
 
 ####################################################################################################
-# @reconstruct_synaptics
+# @NMV_ReconstructSynaptics
 ####################################################################################################
-def reconstruct_synaptics(operator, context, circuit, options):
+class NMV_ReconstructSynaptics(bpy.types.Operator):
+    """Reconstruct the synaptics scene"""
 
-    # Afferent synapses only (on dendrites)
-    if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+    # Operator parameters
+    bl_idname = "nmv.reconstruct_synaptics"
+    bl_label = "Reconstruct Synaptics"
+
+    ################################################################################################
+    # @reconstruct_afferent
+    ################################################################################################
+    def reconstruct_afferent(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_afferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options, context=context)
@@ -42,8 +55,11 @@ def reconstruct_synaptics(operator, context, circuit, options):
         afferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
         context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
 
-    # Efferent synapses (on axon)
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+    ################################################################################################
+    # @reconstruct_efferent
+    ################################################################################################
+    def reconstruct_efferent(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_efferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options, context=context)
@@ -54,8 +70,11 @@ def reconstruct_synaptics(operator, context, circuit, options):
         efferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
         context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
 
-    # Afferent and efferent synapses
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+    ################################################################################################
+    # @reconstruct_afferent_and_afferent
+    ################################################################################################
+    def reconstruct_afferent_and_afferent(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_afferent_and_efferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
@@ -69,8 +88,11 @@ def reconstruct_synaptics(operator, context, circuit, options):
         efferent_synapses_count = len(synapse_groups[1].synapses_ids_list)
         context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
 
-    # Excitatory synapses only
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+    ################################################################################################
+    # @reconstruct_excitatory
+    ################################################################################################
+    def reconstruct_excitatory(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
@@ -82,8 +104,11 @@ def reconstruct_synaptics(operator, context, circuit, options):
         excitatory_synapses_count = len(synapse_groups[0].synapses_ids_list)
         context.scene.NMV_SynapticsNumberExcitatorySynapses = excitatory_synapses_count
 
-    # Inhibitory synapses only
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+    ################################################################################################
+    # @reconstruct_inhibitory
+    ################################################################################################
+    def reconstruct_inhibitory(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
@@ -95,8 +120,11 @@ def reconstruct_synaptics(operator, context, circuit, options):
         inhibitory_synapses_count = len(synapse_groups[0].synapses_ids_list)
         context.scene.NMV_SynapticsNumberInhibitorySynapses = inhibitory_synapses_count
 
-    # Excitatory and inhibitory synapses
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+    ################################################################################################
+    # @reconstruct_excitatory_and_inhibitory
+    ################################################################################################
+    def reconstruct_excitatory_and_inhibitory(self, context, circuit, options):
+
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
@@ -110,18 +138,21 @@ def reconstruct_synaptics(operator, context, circuit, options):
         inhibitory_synapses_count = len(synapse_groups[1].synapses_ids_list)
         context.scene.NMV_SynapticsNumberInhibitorySynapses = inhibitory_synapses_count
 
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+    ################################################################################################
+    # @reconstruct_pathway_pre_synaptic
+    ################################################################################################
+    def reconstruct_pathway_pre_synaptic(self, context, circuit, options):
 
         # Ensure that the given pre-synaptic GID is an integer
         try:
             int(options.synaptics.pre_synaptic_gid)
         except ValueError:
-            operator.report({'ERROR'}, 'Please enter a valid GID as an integer')
+            self.report({'ERROR'}, 'Please enter a valid GID as an integer')
             return {'FINISHED'}
 
         # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
         if int(options.synaptics.pre_synaptic_gid) == int(options.morphology.gid):
-            operator.report({'ERROR'}, 'Please enter a valid pre-synaptic GID, that is different '
+            self.report({'ERROR'}, 'Please enter a valid pre-synaptic GID, that is different '
                                        'from the post-synaptic one')
             return {'FINISHED'}
 
@@ -132,7 +163,7 @@ def reconstruct_synaptics(operator, context, circuit, options):
 
         # If that list is Zero, then report the error and exit
         if len(shared_synapses_ids) == 0:
-            operator.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
+            self.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
                             % (str(options.synaptics.pre_synaptic_gid),
                                str(options.morphology.gid)))
             return {'FINISHED'}
@@ -170,18 +201,21 @@ def reconstruct_synaptics(operator, context, circuit, options):
         # Synapses count
         context.scene.NMV_SynapticsNumberSharedSynapses = len(shared_synapses_ids)
 
-    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+    ################################################################################################
+    # @reconstruct_pathway_post_synaptic
+    ################################################################################################
+    def reconstruct_pathway_post_synaptic(self, context, circuit, options):
 
         # Ensure that the given post-synaptic GID is an integer
         try:
             int(options.synaptics.post_synaptic_gid)
         except ValueError:
-            operator.report({'ERROR'}, 'Please enter a valid GID as an integer')
+            self.report({'ERROR'}, 'Please enter a valid GID as an integer')
             return {'FINISHED'}
 
         # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
         if int(options.synaptics.post_synaptic_gid) == int(options.morphology.gid):
-            operator.report({'ERROR'}, 'Please enter a valid post-synaptic GID, that is different '
+            self.report({'ERROR'}, 'Please enter a valid post-synaptic GID, that is different '
                                        'from the pre-synaptic one')
             return {'FINISHED'}
 
@@ -192,7 +226,7 @@ def reconstruct_synaptics(operator, context, circuit, options):
 
         # If that list is Zero, then report the error and exit
         if len(shared_synapses_ids) == 0:
-            operator.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
+            self.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
                             % (str(options.morphology.gid),
                                str(options.synaptics.post_synaptic_gid)))
             return {'FINISHED'}
@@ -229,5 +263,69 @@ def reconstruct_synaptics(operator, context, circuit, options):
         # Synapses count
         context.scene.NMV_SynapticsNumberSharedSynapses = len(shared_synapses_ids)
 
-    # Done
-    return {'FINISHED'}
+    ################################################################################################
+    # @reconstruct_projection
+    ################################################################################################
+    def reconstruct_projection(self, context, circuit, options):
+
+        pass
+
+    ################################################################################################
+    # @reconstruct_synaptics
+    ################################################################################################
+    def reconstruct_synaptics(self, context, circuit, options):
+
+        # Afferent synapses only (on dendrites)
+        if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+            self.reconstruct_afferent(context=context, circuit=circuit, options=options)
+
+        # Efferent synapses (on axon)
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+            self.reconstruct_efferent(context=context, circuit=circuit, options=options)
+
+        # Afferent and efferent synapses
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+            self.reconstruct_afferent_and_efferent(
+                context=context, circuit=circuit, options=options)
+
+        # Excitatory synapses only
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+            self.reconstruct_excitatory(context=context, circuit=circuit, options=options)
+
+        # Inhibitory synapses only
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+            self.reconstruct_inhibitory(context=context, circuit=circuit, options=options)
+
+        # Excitatory and inhibitory synapses
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+            self.reconstruct_excitatory_and_inhibitory(
+                context=context, circuit=circuit, options=options)
+
+        # Pre-synaptic pathways
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+            self.reconstruct_pathway_pre_synaptic(
+                context=context, circuit=circuit, options=options)
+
+        # Post-synaptic pathways
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+            self.reconstruct_pathway_post_synaptic(
+                context=context, circuit=circuit, options=options)
+
+        # Projection
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PROJECTION:
+            self.reconstruct_projection(
+                context=context, circuit=circuit, options=options)
+
+        else:
+            self.report({'ERROR'}, 'Please select a valid option')
+            nmv.logger.log('UI_ERROR: NMV_ReconstructSynaptics::reconstruct_synaptics')
+
+        return {'FINISHED'}
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        return self.reconstruct_synaptics(
+            context=context, circuit=nmv.interface.ui_circuit, options=nmv.interface.ui_options)

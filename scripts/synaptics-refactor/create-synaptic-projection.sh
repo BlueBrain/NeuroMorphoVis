@@ -20,10 +20,11 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Circuit config
-CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj112/circuits/CA1/20200820/CircuitConfig'
+CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj112/circuits/CA1/20211110-BioM/BlueConfig'
 
 # Post synaptic neurons GIDs, a list separate by '_'
 GIDS='2080_14739_128625'
+GIDS='1689_2232_1957_2080_14739_128625'
 
 # Projection
 PROJECTION='SC'
