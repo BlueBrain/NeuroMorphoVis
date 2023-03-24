@@ -56,7 +56,7 @@ SYNAPSE_COLOR='255_255_0'
 SYNAPSE_SIZE='8.0'
 
 # Base image resolution
-IMAGE_RESOLUTION='4000'
+IMAGE_RESOLUTION='6000'
 
 # The background image the frames will get blended to
 BACKGROUND_IMAGE='/gpfs/bbp.cscs.ch/project/proj83/visualization-SSCXDIS-178/synaptomes-data/backgrounds/background_1900x1080.png'

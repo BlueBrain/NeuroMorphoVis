@@ -41,6 +41,7 @@ import nmv.rendering
 import nmv.scene
 import nmv.shading
 import nmv.utilities
+import nmv.interface
 
 # BBP imports
 from bluepy import Synapse, Circuit
@@ -133,7 +134,7 @@ def create_neuron_mesh(circuit,
 
     # Use the H5 morphology loader to load this file
     # Don't center the morphology, as it is assumed to be cleared and reviewed by the team
-    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_morphology=False)
+    h5_reader = nmv.file.H5Reader(h5_file=h5_morphology_path, center_at_origin=True)
     morphology = h5_reader.read_file()
 
     # Adjust the label to be set according to the GID not the morphology label
@@ -142,8 +143,8 @@ def create_neuron_mesh(circuit,
     # Create default NMV options
     nmv_options = nmv.options.NeuroMorphoVisOptions()
     nmv_options.io.statistics_directory = output_directory
-    # nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-    # nmv_options.morphology.samples_unified_radii_value = 1.0
+    nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+    nmv_options.morphology.samples_unified_radii_value = 1.0
     nmv_options.mesh.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
     nmv_options.shading.mesh_material = nmv.enums.shading_enums.Shader.FLAT # shader
     nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
@@ -318,17 +319,23 @@ if __name__ == "__main__":
         # Compute the mesh bounding box
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
-        # Export the scene into a blender file
-        prefix = 'projection_%s_%s_%dp' % (args.projection, str(gid), args.synapse_percentage)
-        nmv.logger.info('Exporting %s' % prefix)
-        nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,
-                                            output_file_name=prefix)
+        scale_bar = nmv.interface.draw_scale_bar(
+            bounding_box=bounding_box,
+            material_type=shader,
+            view=nmv.enums.Camera.View.FRONT)
 
         # Render the image
+        prefix = 'projection_%s_%s_%dp' % (args.projection, str(gid), args.synapse_percentage)
         nmv.logger.info('Rendering %s' % prefix)
         nmv.rendering.render(
             camera_view=nmv.enums.Camera.View.FRONT,
             bounding_box=bounding_box,
             image_resolution=args.image_resolution,
             image_name=prefix,
-            image_directory=args.output_directory)
+            image_directory=args.output_directory,
+            keep_camera_in_scene=True)
+
+        # Export the scene into a blender file
+        nmv.logger.info('Exporting %s' % prefix)
+        nmv.file.export_scene_to_blend_file(output_directory=args.output_directory,
+                                            output_file_name=prefix)

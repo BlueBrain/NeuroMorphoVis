@@ -23,23 +23,21 @@ BLENDER=$PWD/../../../../../../blender
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj112/circuits/CA1/20200820/CircuitConfig'
 
 # Post synaptic neurons GIDs, a list separate by '_'
-GIDS='1681_408231'
+GIDS='2080_14739_128625'
 
 # Projection
 PROJECTION='SC'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/hdd1/projects-data/2021.05.05-synapse-projections/trial-4'
+OUTPUT_DIRECTORY='/abdellah2/projects-data/2023.03.24-synaptic-projections'
 
 # Neuron color
-NEURON_COLOR='0.05_0.2_1'
-NEURON_COLOR='0.0_1.0_0.0'
-
+NEURON_COLOR='1_1.0_1'
+# NEURON_COLOR='0.0_1.0_0.0'
 
 # Neuron color
-SYNAPSE_COLOR='1.0_0.8_0.06'
-SYNAPSE_COLOR='1.0_0.0_0.0'
-
+SYNAPSE_COLOR='1.0_0.3_0.06'
+# SYNAPSE_COLOR='1.0_0.0_0.0'
 
 # Synapse percentage
 SYNAPSE_PERCENTAGE='10'
