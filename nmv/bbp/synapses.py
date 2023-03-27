@@ -237,6 +237,19 @@ def get_excitatory_and_inhibitory_synapse_groups(circuit,
     return synapse_groups
 
 
+####################################################################################################
+# @get_afferent_synapse_group_for_projection
+####################################################################################################
+def get_afferent_synapse_group_for_projection(circuit,
+                                              gid,
+                                              projection_name,
+                                              color):
+
+    return nmv.bbp.SynapseGroup(
+        name='Afferent Synapses',
+        color=nmv.utilities.confirm_rgb_color_from_color_string(color),
+        synapses_ids_list=circuit.get_afferent_synapses_ids_for_projection(
+            gid=gid, projection_name=projection_name))
 
 
 ####################################################################################################

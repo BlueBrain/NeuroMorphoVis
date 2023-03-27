@@ -72,8 +72,8 @@ class Synaptics:
         # Visualize the synapses on a single neuron with a specific color map and specific labels
         SPECIFIC_COLOR_CODED_SET = 'VISUALIZE_SPECIFIC_COLOR_CODED_SET'
 
-        # Visualize projections
-        PROJECTION = 'VISUALIZE_PROJECTIONS'
+        # Visualize projection to a cell (afferent projection)
+        PROJECTION_TO_CELL = 'VISUALIZE_PROJECTIONS_TO_CELL'
 
         # Visualize targets
         TARGETS = 'VISUALIZE_SYNAPTIC_TARGETS'

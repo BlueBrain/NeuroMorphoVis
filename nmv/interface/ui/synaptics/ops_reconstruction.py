@@ -265,11 +265,19 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         context.scene.NMV_SynapticsNumberSharedSynapses = len(shared_synapses_ids)
 
     ################################################################################################
-    # @reconstruct_projection
+    # @reconstruct_afferent_synapses_for_projection
     ################################################################################################
-    def reconstruct_projection(self, context, circuit, options):
+    def reconstruct_afferent_synapses_for_projection(self, context, circuit, options):
 
-        pass
+        nmv.scene.clear_scene()
+        synapse_groups = nmv.bbp.visualize_afferent_synapses_for_projection(
+            circuit=circuit, gid=options.morphology.gid, options=options, context=context)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+        # Synapses count
+        afferent_synapses_count = len(synapse_groups[0].synapses_ids_list)
+        context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
 
     ################################################################################################
     # @reconstruct_projection
@@ -369,8 +377,8 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
             nmv.interface.ui_synaptics_reconstructed = True
 
         # Projection
-        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PROJECTION:
-            self.reconstruct_projection(
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PROJECTION_TO_CELL:
+            self.reconstruct_afferent_synapses_for_projection(
                 context=context, circuit=circuit, options=options)
             nmv.interface.ui_synaptics_reconstructed = True
 

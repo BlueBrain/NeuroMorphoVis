@@ -250,6 +250,78 @@ def visualize_afferent_synapses(circuit,
 
 
 ####################################################################################################
+# @visualize_afferent_synapses_for_projection
+####################################################################################################
+def visualize_afferent_synapses_for_projection(circuit,
+                                               gid,
+                                               options,
+                                               context=None):
+
+    # Create the synapse groups
+    synapse_groups = list()
+
+    # Select what to visualize based on the selected color coding scheme
+    color_coding_scheme = options.synaptics.afferent_color_coding
+    if color_coding_scheme == nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR:
+
+        # Create the afferent synapse group
+        afferent_group = nmv.bbp.get_afferent_synapse_group_for_projection(
+            circuit=circuit, gid=gid, projection_name=options.synaptics.projection_name,
+            color=nmv.utilities.rgb_vector_to_hex(options.synaptics.afferent_synapses_color))
+        synapse_groups.append(afferent_group)
+
+        # Synapses count
+        if context is not None:
+            afferent_synapses_count = len(afferent_group.synapses_ids_list)
+            context.scene.NMV_SynapticsNumberAfferentSynapses = afferent_synapses_count
+
+    elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.MTYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.MTYPES)):
+            color_dict[nmv.consts.Circuit.MTYPES[i]] = options.synaptics.mtypes_colors[i]
+
+        # Create the afferent synapse groups
+        synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_mtypes(
+            circuit=circuit, gid=gid, mtype_color_dict=color_dict)
+
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.MTYPES)):
+                setattr(context.scene, 'NMV_Synaptic_MtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
+
+    elif color_coding_scheme == nmv.enums.Synaptics.ColorCoding.ETYPE_COLOR_CODED:
+
+        # Get the color-coding dictionary from the UI
+        color_dict = {}
+        for i in range(len(nmv.consts.Circuit.ETYPES)):
+            color_dict[nmv.consts.Circuit.ETYPES[i]] = options.synaptics.etypes_colors[i]
+
+        # Create the afferent synapse group
+        synapse_groups = nmv.bbp.get_afferent_synapse_groups_color_coded_by_pre_etypes(
+            circuit=circuit, gid=gid, etype_color_dict=color_dict)
+
+        if context is not None:
+            for i in range(len(nmv.consts.Circuit.ETYPES)):
+                setattr(context.scene, 'NMV_Synaptic_EtypeCount_%d' % i,
+                        len(synapse_groups[i].synapses_ids_list))
+
+    else:
+        pass
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
+
+    # Return the synapse groups for statistics
+    return synapse_groups
+
+####################################################################################################
 # @visualize_efferent_synapses
 ####################################################################################################
 def visualize_efferent_synapses(circuit,

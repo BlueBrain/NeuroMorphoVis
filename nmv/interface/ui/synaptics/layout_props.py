@@ -131,6 +131,15 @@ def draw_synaptics_reconstruction_options(layout, scene, options):
 
         draw_single_neuron_options(layout=layout, scene=scene, options=options)
 
+    elif use_case == nmv.enums.Synaptics.UseCase.PROJECTION_TO_CELL:
+
+        draw_synaptics_afferent_projection(layout=layout, scene=scene, options=options)
+        draw_afferent_options(layout=layout, scene=scene, options=options)
+        draw_common_options(layout=layout, scene=scene, options=options)
+        layout.separator()
+
+        draw_single_neuron_options(layout=layout, scene=scene, options=options)
+
     else:
         nmv.logger.log('UI_ERROR: draw_synaptics_reconstruction_options')
     layout.separator()

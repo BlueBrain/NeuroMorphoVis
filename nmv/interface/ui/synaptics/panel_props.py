@@ -62,6 +62,10 @@ bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
             'Customized Synapse List',
             'Visualize a customized color-coded lists of synapses valid only for the input neuron'),
 
+           (nmv.enums.Synaptics.UseCase.PROJECTION_TO_CELL,
+            'Projection to Neuron',
+            'Visualize a the afferent synapses from a given projection'),
+
            (nmv.enums.Synaptics.UseCase.NOT_SELECTED,
             'Please select a Use Case',
             'Select a specific use case or configuration to visualize a specific set of synapse')],
@@ -335,3 +339,10 @@ bpy.types.Scene.NMV_SynapticsShader = bpy.props.EnumProperty(
     items=nmv.enums.Shader.MATERIAL_ITEMS,
     name='',
     default=nmv.enums.Shader.LAMBERT_WARD)
+
+# Synaptics projection name
+bpy.types.Scene.NMV_SynapticsProjectionName = bpy.props.StringProperty(
+    name="Projection Name",
+    description="Enter the name of the projection.",
+    default='Enter Projection Name', maxlen=2048
+)

@@ -338,3 +338,15 @@ def draw_synaptic_targets(layout, scene, options):
             # Get the color value from the panel
             options.synaptics.customized_synaptics_colors.append(
                 getattr(scene, 'NMV_CustomizedColor%d' % i))
+
+
+####################################################################################################
+# @draw_synaptics_afferent_projection
+####################################################################################################
+def draw_synaptics_afferent_projection(layout, scene, options):
+
+    row = layout.row()
+    row.label(text='Projection Name')
+    row.prop(scene, 'NMV_SynapticsProjectionName')
+    options.synaptics.projection_name = scene.NMV_SynapticsProjectionName
+    

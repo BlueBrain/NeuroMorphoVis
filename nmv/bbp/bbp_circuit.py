@@ -179,9 +179,20 @@ class BBPCircuit(Circuit):
     ################################################################################################
     def get_all_synapses_ids(self,
                              gid):
+
         synapses_ids_list = self.get_afferent_synapses_ids(gid=gid)
         synapses_ids_list.extend(self.get_efferent_synapses_ids(gid=gid))
         return synapses_ids_list
+
+    ################################################################################################
+    # @get_afferent_synapses_ids_for_projection
+    ################################################################################################
+    def get_afferent_synapses_ids_for_projection(self,
+                                                 gid,
+                                                 projection_name):
+
+        projection = self.circuit.projection(projection_name)
+        return projection.afferent_synapses(gid=int(gid)).tolist()
 
     ################################################################################################
     # @get_synapse_types_ids

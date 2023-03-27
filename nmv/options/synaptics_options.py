@@ -93,6 +93,8 @@ class SynapticsOptions:
         self.customized_synaptics_group = None
         self.customized_synaptics_colors = list()
 
+        self.projection_name = None
+
 
 
 
