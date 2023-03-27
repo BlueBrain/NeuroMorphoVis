@@ -75,6 +75,9 @@ class Synaptics:
         # Visualize projections
         PROJECTION = 'VISUALIZE_PROJECTIONS'
 
+        # Visualize targets
+        TARGETS = 'VISUALIZE_SYNAPTIC_TARGETS'
+
     ################################################################################################
     # @ColorCoding
     ################################################################################################

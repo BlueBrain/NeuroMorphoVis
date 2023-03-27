@@ -17,7 +17,7 @@
 
 # System imports
 import sys
-import time
+import os
 
 # Blender imports
 import bpy
@@ -271,6 +271,54 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         pass
 
     ################################################################################################
+    # @reconstruct_projection
+    ################################################################################################
+    def reconstruct_targets(self, context, circuit, options):
+
+        # If the given synaptics file is not valid, handle the error
+        if not os.path.isfile(options.synaptics.synaptics_json_file):
+            self.report({'ERROR'}, 'The given synaptics file does not exist.')
+            return {'FINISHED'}
+
+        # Try to load the synaptics file
+        try:
+            options.synaptics.customized_synaptics_group = \
+                nmv.bbp.get_synapse_groups_from_color_coded_json_file(
+                    synapse_json_file=options.synaptics.synaptics_json_file)
+        except IOError:
+            self.report({'ERROR'}, 'Cannot load the given synaptics file. FORMAT ERROR!')
+            return {'FINISHED'}
+
+        # If the number of synapse groups is less than 1 report the issue
+        if len(options.synaptics.customized_synaptics_group) < 1:
+            self.report({'ERROR'}, 'The file has no groups')
+            return {'FINISHED'}
+
+        # If we reach that point, the file has been successfully loaded
+        nmv.interface.ui_synaptics_file_loaded = True
+
+        # Create the info (colors and stats.) of the drawn synapses
+        for i, group in enumerate(options.synaptics.customized_synaptics_group):
+            setattr(bpy.types.Scene, 'NMV_CustomizedColor%d' % i,
+                    bpy.props.FloatVectorProperty(
+                        name=group.name, subtype='COLOR', default=group.color, min=0.0, max=1.0,
+                        description='The color of the synapses of the %s group' % group.name))
+
+            synapse_count = len(group.synapses_ids_list)
+            setattr(bpy.types.Scene, 'NMV_CustomizedCount%d' % i,
+                    bpy.props.IntProperty(
+                        name="Count", default=synapse_count, min=synapse_count, max=synapse_count,
+                        description="The number of the synapses of the %s group" % group.name,))
+
+        # Visualize the synapses and the neuron
+        nmv.scene.clear_scene()
+        nmv.bbp.visualize_synapse_groups(
+            circuit=circuit, synapse_groups=options.synaptics.customized_synaptics_group,
+            gid=options.morphology.gid, options=options)
+        nmv.bbp.visualize_circuit_neuron_for_synaptics(
+            circuit=circuit, gid=options.morphology.gid, options=options)
+
+    ################################################################################################
     # @reconstruct_synaptics
     ################################################################################################
     def reconstruct_synaptics(self, context, circuit, options):
@@ -314,6 +362,11 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         # Projection
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PROJECTION:
             self.reconstruct_projection(
+                context=context, circuit=circuit, options=options)
+
+        # Targets
+        elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.TARGETS:
+            self.reconstruct_targets(
                 context=context, circuit=circuit, options=options)
 
         else:

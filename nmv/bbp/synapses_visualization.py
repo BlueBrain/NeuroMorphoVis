@@ -417,6 +417,20 @@ def visualize_shared_synapses_between_two_neurons(circuit,
     return synapse_groups
 
 
+####################################################################################################
+# @visualize_synapse_groups
+####################################################################################################
+def visualize_synapse_groups(circuit,
+                             synapse_groups,
+                             gid,
+                             options):
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
+        circuit=circuit, synapse_groups=synapse_groups,
+        synapse_radius=options.synaptics.synapses_radius,
+        synapses_percentage=options.synaptics.percentage,
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
 
 
 

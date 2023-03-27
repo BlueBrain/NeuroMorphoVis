@@ -424,33 +424,49 @@ def draw_synaptics_rendering_options(panel, scene, options):
         panel=panel, scene=scene, options=options)
 
 
+####################################################################################################
+# @draw_synaptics_color_options
+####################################################################################################
+def draw_synaptics_color_options(layout, scene, options):
+
+    # Shading options
+    shading_row = layout.row()
+    shading_row.prop(scene, 'NMV_MeshMaterial')
+    options.shading.mesh_material = scene.NMV_MeshMaterial
 
 
+####################################################################################################
+# @draw_synaptic_targets
+####################################################################################################
+def draw_synaptic_targets(layout, scene, options):
 
+    row = layout.row()
+    row.prop(scene, 'NMV_SynapticsJsonFile')
+    options.synaptics.synaptics_json_file = scene.NMV_SynapticsJsonFile
 
+    # If the target is loaded, show the color map
+    if nmv.interface.ui_synaptics_file_loaded:
 
+        draw_synaptics_color_options(layout=layout, scene=scene, options=options)
 
+        # Get the colors of the customized synapses
+        options.synaptics.customized_colors = list()
 
+        # Add the colormap element to the UI
+        colors = layout.column()
+        for i, group in enumerate(options.synaptics.customized_synaptics_group):
+            values = colors.row()
+            values.prop(scene, 'NMV_CustomizedColor%d' % i)
+            values.enabled = False
+            count_column = values.column()
+            count_column.prop(scene, 'NMV_CustomizedCount%d' % i)
+            count_column.enabled = False
 
+            # Get the color value from the panel
+            options.synaptics.customized_synaptics_colors.append(
+                getattr(scene, 'NMV_CustomizedColor%d' % i))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        draw_single_neuron_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -618,16 +634,12 @@ def draw_synaptics_reconstruction_options(layout, scene, options):
             layout=layout, scene=scene, options=options)
         draw_neuron_pair_options(
             layout=layout, scene=scene, options=options)
+
+    elif use_case == nmv.enums.Synaptics.UseCase.TARGETS:
+        draw_synaptic_targets(layout=layout, scene=scene, options=options)
+
     else:
         pass
-
-    # Shading options
-    layout.row().separator()
-    shading_options_row = layout.row()
-    shading_options_row.label(text='Shading Options:', icon='OUTLINER_OB_EMPTY')
-    shading_row = layout.row()
-    shading_row.prop(scene, 'NMV_MeshMaterial')
-    options.shading.mesh_material = scene.NMV_MeshMaterial
 
     # Draw the reconstruction button
     layout.row().separator()

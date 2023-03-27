@@ -209,4 +209,3 @@ def create_color_coded_synapses_particle_system(circuit,
 
 
 
-

@@ -58,10 +58,13 @@ bpy.types.Scene.NMV_SynapticsUseCase = bpy.props.EnumProperty(
             'Shared Synapses with a Post-synaptic Neuron',
             'Visualize the shared synapses with a post-synaptic neuron'),
 
+           (nmv.enums.Synaptics.UseCase.TARGETS,
+            'Customized Synapse List',
+            'Visualize a customized color-coded lists of synapses valid only for the input neuron'),
+
            (nmv.enums.Synaptics.UseCase.NOT_SELECTED,
             'Please select a Use Case',
-            'Select a specific use case or configuration to visualize a specific set of synapse'),
-           ],
+            'Select a specific use case or configuration to visualize a specific set of synapse')],
     name='Use Case',
     default=nmv.enums.Synaptics.UseCase.NOT_SELECTED)
 
@@ -105,25 +108,25 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
 
 # Excitatory synapses color
 bpy.types.Scene.NMV_ExcitatorySynapsesColor = bpy.props.FloatVectorProperty(
-    name='Excitatory Synapses Color',
+    name='Excitatory Synapses',
     subtype='COLOR', default=nmv.enums.Color.EXCITATORY_SYNAPSES, min=0.0, max=1.0,
     description='The color of the excitatory synapses')
 
 # Inhibitory synapses color
 bpy.types.Scene.NMV_InhibitorySynapsesColor = bpy.props.FloatVectorProperty(
-    name='Inhibitory Synapses Color',
+    name='Inhibitory Synapses',
     subtype='COLOR', default=nmv.enums.Color.INHIBITORY_SYNAPSES, min=0.0, max=1.0,
     description='The color of the inhibitory synapses')
 
 # Afferent synapses color
 bpy.types.Scene.NMV_AfferentSynapsesColor = bpy.props.FloatVectorProperty(
-    name='Afferent Synapses Color',
+    name='Afferent Synapses',
     subtype='COLOR', default=nmv.enums.Color.AFFERENT_SYNAPSES, min=0.0, max=1.0,
     description='The color of the afferent synapses')
 
 # Efferent synapses color
 bpy.types.Scene.NMV_EfferentSynapsesColor = bpy.props.FloatVectorProperty(
-    name='Efferent Synapses Color',
+    name='Efferent Synapses',
     subtype='COLOR', default=nmv.enums.Color.EFFERENT_SYNAPSES, min=0.0, max=1.0,
     description='The color of the efferent synapses')
 
@@ -319,3 +322,10 @@ bpy.types.Scene.NMV_SynapticsRenderingTime = bpy.props.FloatProperty(
     name='Rendering (Sec)',
     description='The time it takes to render the synaptics scene into an image',
     default=0, min=0, max=1000000)
+
+# Synaptics json file
+bpy.types.Scene.NMV_SynapticsJsonFile = bpy.props.StringProperty(
+    name="Synaptics File",
+    description="Select a specific synaptics json file that contains a color-coded list "
+                "of synapses",
+    default=nmv.consts.Strings.SELECT_FILE, maxlen=2048, subtype='FILE_PATH')

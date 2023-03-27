@@ -80,3 +80,9 @@ ui_mesh_reconstructed = False
 
 # If this flag is set, this means that the reconstructed mesh is rendered at least once.
 ui_mesh_rendered = False
+
+#
+ui_synaptics_file_loaded = False
+
+#
+ui_synaptics_reconstructed = False

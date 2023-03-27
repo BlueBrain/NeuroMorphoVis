@@ -35,6 +35,9 @@ class SynapticsOptions:
         # Synapse visualization use case
         self.use_case = None
 
+        # In case
+        self.synaptics_json_file = None
+
         # Reconstruction method
         self.synapses_radius = nmv.consts.Synaptics.SYNAPSES_RADIUS
 
@@ -87,6 +90,9 @@ class SynapticsOptions:
 
         self.shader = nmv.enums.Shader.LAMBERT_WARD
 
+
+        self.customized_synaptics_group = None
+        self.customized_synaptics_colors = list()
 
 
 
