@@ -86,3 +86,6 @@ ui_synaptics_file_loaded = False
 
 #
 ui_synaptics_reconstructed = False
+
+#
+ui_synaptics_rendered = False

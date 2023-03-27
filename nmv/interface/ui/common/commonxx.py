@@ -593,11 +593,12 @@ def render_synaptics_image(panel,
     suffix = get_image_suffix_for_synaptics(view)
 
     # Draw the morphology scale bar
+    scale_bar = None
     if options.rendering.render_scale_bar:
         scale_bar = nmv.interface.draw_scale_bar(
             bounding_box=compute_scene_bounding_box_for_meshes_based_on_view(options=options),
             material_type=options.synaptics.shader,
-            view=options.rendering.camera_view)
+            view=view)
 
     # Render at a specific resolution
     if options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
@@ -622,7 +623,7 @@ def render_synaptics_image(panel,
             image_directory=options.io.images_directory)
 
     # Delete the morphology scale bar, if rendered
-    if options.rendering.render_scale_bar:
+    if scale_bar is not None:
         nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
     rendering_time = time.time() - start_time

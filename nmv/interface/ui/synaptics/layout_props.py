@@ -140,40 +140,6 @@ def draw_synaptics_reconstruction_options(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_rendering_buttons
-####################################################################################################
-def draw_synaptics_rendering_options(panel, scene, options):
-
-    # Rendering header
-    nmv.interface.ui.draw_rendering_header(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Rendering view
-    nmv.interface.ui.draw_synaptics_rendering_view_option(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Resolution basis
-    nmv.interface.ui.draw_resolution_basis_option(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Resolution
-    nmv.interface.ui.draw_resolution_options(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Image format
-    nmv.interface.ui.draw_image_format_option(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Scale bar
-    nmv.interface.ui.draw_scale_bar_option(
-        layout=panel.layout, scene=scene, options=options)
-
-    # Rendering buttons
-    nmv.interface.ui.draw_rendering_buttons(
-        panel=panel, scene=scene, options=options)
-
-
-####################################################################################################
 # @draw_out_of_context_message
 ####################################################################################################
 def draw_out_of_context_message(layout, scene, options):

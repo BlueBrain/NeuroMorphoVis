@@ -27,7 +27,9 @@ import nmv.enums
 import nmv.interface
 import nmv.utilities
 import nmv.scene
+
 from .layout_props import *
+from .layout_rendering_props import *
 
 
 ####################################################################################################
@@ -76,7 +78,9 @@ class NMV_SynapticsPanel(bpy.types.Panel):
                 self.layout.separator()
 
                 # Draw the rendering operations
-                draw_synaptics_rendering_options(panel=self, scene=context.scene, options=options)
+                if nmv.interface.ui_synaptics_reconstructed:
+                    draw_synaptics_rendering_options(
+                        panel=self, scene=context.scene, options=options)
 
         # Otherwise, draw the out of context message and disable the panel
         else:

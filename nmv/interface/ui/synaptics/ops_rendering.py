@@ -15,6 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# System imports
+import time
+
 # Blender imports
 import bpy
 
@@ -38,9 +41,15 @@ class NMV_RenderSynapticsFront(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
+        start_time = time.time()
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
             self, scene=context.scene, options=nmv.interface.ui_options,
             view=nmv.enums.Camera.View.FRONT)
+        rendering_time = time.time()
+
+        # Update the UI
+        nmv.interface.ui_synaptics_rendered = True
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
         return {'FINISHED'}
 
 
@@ -59,9 +68,15 @@ class NMV_RenderSynapticsSide(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
+        start_time = time.time()
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
             self, scene=context.scene, options=nmv.interface.ui_options,
             view=nmv.enums.Camera.View.SIDE)
+        rendering_time = time.time()
+
+        # Update the UI
+        nmv.interface.ui_synaptics_rendered = True
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
         return {'FINISHED'}
 
 
@@ -80,8 +95,14 @@ class NMV_RenderSynapticsTop(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
+        start_time = time.time()
         context.scene.NMV_SynapticsRenderingTime = nmv.interface.ui.render_synaptics_image(
             self, scene=context.scene, options=nmv.interface.ui_options,
             view=nmv.enums.Camera.View.TOP)
+        rendering_time = time.time()
+
+        # Update the UI
+        nmv.interface.ui_synaptics_rendered = True
+        context.scene.NMV_SynapticsRenderingTime = rendering_time - start_time
         return {'FINISHED'}
 
