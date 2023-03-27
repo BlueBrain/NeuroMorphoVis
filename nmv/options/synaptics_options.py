@@ -90,7 +90,6 @@ class SynapticsOptions:
 
         self.shader = nmv.enums.Shader.LAMBERT_WARD
 
-
         self.customized_synaptics_group = None
         self.customized_synaptics_colors = list()
 

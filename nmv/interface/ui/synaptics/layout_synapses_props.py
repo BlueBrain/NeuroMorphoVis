@@ -37,9 +37,10 @@ def draw_shading_options_header(layout):
 def draw_shading_option(layout, scene, options):
 
     # Shading options
-    shading_row = layout.row()
-    shading_row.prop(scene, 'NMV_MeshMaterial')
-    options.shading.mesh_material = scene.NMV_MeshMaterial
+    row = layout.row()
+    row.label(text='Shading')
+    row.prop(scene, 'NMV_SynapticsShader')
+    options.synaptics.shader = scene.NMV_SynapticsShader
 
 
 ####################################################################################################

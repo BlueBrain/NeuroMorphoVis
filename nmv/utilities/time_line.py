@@ -107,3 +107,13 @@ def play_simulation(first_frame_index=1,
 
     # Display the simulation time
     nmv.logger.log('Simulation time [%f] seconds' % simulation_timer.duration())
+
+
+####################################################################################################
+# @reset_time_line_to_first_frame
+####################################################################################################
+def reset_time_line_to_first_frame():
+    """Resets the time-line to the first frame.
+    """
+
+    bpy.context.scene.frame_set(1)

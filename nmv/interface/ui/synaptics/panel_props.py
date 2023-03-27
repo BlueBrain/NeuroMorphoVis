@@ -329,3 +329,9 @@ bpy.types.Scene.NMV_SynapticsJsonFile = bpy.props.StringProperty(
     description="Select a specific synaptics json file that contains a color-coded list "
                 "of synapses",
     default=nmv.consts.Strings.SELECT_FILE, maxlen=2048, subtype='FILE_PATH')
+
+# Shader applied to the synaptics elements
+bpy.types.Scene.NMV_SynapticsShader = bpy.props.EnumProperty(
+    items=nmv.enums.Shader.MATERIAL_ITEMS,
+    name='',
+    default=nmv.enums.Shader.LAMBERT_WARD)

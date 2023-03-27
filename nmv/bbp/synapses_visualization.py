@@ -242,7 +242,8 @@ def visualize_afferent_synapses(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
 
     # Return the synapse groups for statistics
     return synapse_groups
@@ -314,7 +315,8 @@ def visualize_efferent_synapses(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
 
     # Return the synapse groups for statistics
     return synapse_groups
@@ -348,7 +350,8 @@ def visualize_afferent_and_efferent_synapses(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
 
     # Return the synapse groups for statistics
     return synapse_groups
@@ -384,7 +387,8 @@ def visualize_excitatory_and_inhibitory_synapses(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
 
     # Return the synapse groups for statistics
     return synapse_groups
@@ -411,7 +415,8 @@ def visualize_shared_synapses_between_two_neurons(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=inverse_transformation)
+        inverted_transformation=inverse_transformation,
+        material_type=options.synaptics.shader)
 
     # Return the synapse groups for statistics
     return synapse_groups
@@ -430,7 +435,8 @@ def visualize_synapse_groups(circuit,
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=options.synaptics.synapses_radius,
         synapses_percentage=options.synaptics.percentage,
-        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid))
+        inverted_transformation=circuit.get_neuron_inverse_transformation_matrix(gid=gid),
+        material_type=options.synaptics.shader)
 
 
 

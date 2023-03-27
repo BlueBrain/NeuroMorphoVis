@@ -167,7 +167,7 @@ def visualize_circuit_neuron_for_synaptics(circuit,
                                          basal_dendrites_color=options.synaptics.dendrites_color,
                                          apical_dendrites_color=options.synaptics.dendrites_color,
                                          axons_color=options.synaptics.axons_color,
-                                         material_type=options.shading.mesh_material)
+                                         material_type=options.synaptics.shader)
 
 
 

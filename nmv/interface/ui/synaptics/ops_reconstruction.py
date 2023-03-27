@@ -395,6 +395,13 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         end_time = time.time()
         context.scene.NMV_SynapticReconstructionTime = end_time - start_time
 
+        # Resets the time-line to the first frame to preserve the structure of the point-cloud
+        # that forms the synapses
+        nmv.utilities.reset_time_line_to_first_frame()
+
+        # Deselect all the objects to be able to see the reconstructed data
+        nmv.scene.deselect_all()
+
         # Done
         return {'FINISHED'}
 

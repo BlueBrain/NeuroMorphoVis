@@ -15,15 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
-import bpy
-
-# Internal imports
-import nmv.consts
-import nmv.enums
-import nmv.bbp
-import nmv.scene
-
 
 ####################################################################################################
 # @draw_neuron_options_header
@@ -61,6 +52,7 @@ def draw_neuron_radius_option(layout, scene, options):
 # @draw_dendrites_options
 ####################################################################################################
 def draw_dendrites_options(layout, scene, options):
+
     dendrites_row = layout.row()
     add_dendrites_column = dendrites_row.column()
     add_dendrites_column.prop(scene, 'NMV_DisplayDendrites')
@@ -77,6 +69,7 @@ def draw_dendrites_options(layout, scene, options):
 # @draw_axons_options
 ####################################################################################################
 def draw_axons_options(layout, scene, options):
+
     axons_row = layout.row()
     add_axons_column = axons_row.column()
     add_axons_column.prop(scene, 'NMV_DisplayAxons')
@@ -95,11 +88,8 @@ def draw_axons_options(layout, scene, options):
 def draw_single_neuron_options(layout, scene, options):
 
     draw_neuron_options_header(layout=layout)
-
     draw_dendrites_options(layout=layout, scene=scene, options=options)
     draw_axons_options(layout=layout, scene=scene, options=options)
-
-    # Common other options
     draw_neuron_radius_option(layout=layout, scene=scene, options=options)
 
 
@@ -107,7 +97,7 @@ def draw_single_neuron_options(layout, scene, options):
 # @draw_pre_synaptic_dendrites_options
 ####################################################################################################
 def draw_pre_synaptic_dendrites_options(layout, scene, options):
-    # Pre-synaptic neuron
+
     pre_dendrites_row = layout.row()
     add_dendrites_column = pre_dendrites_row.column()
     add_dendrites_column.prop(scene, 'NMV_DisplayPreSynapticDendrites')
