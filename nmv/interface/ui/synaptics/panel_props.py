@@ -84,7 +84,7 @@ bpy.types.Scene.NMV_AfferentColorCoding = bpy.props.EnumProperty(
             'Color code the synapses based on the electrical type (or e-type) of the connecting'
             'pre-synaptic cell.')],
 
-    name='Coloring Scheme',
+    name='Color Scheme',
     default=nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR)
 
 # Color-coding schemes for the efferent synapses use case
@@ -103,7 +103,7 @@ bpy.types.Scene.NMV_EfferentColorCoding = bpy.props.EnumProperty(
             'Color code the synapses based on the electrical type (or e-type) of the connecting'
             'post-synaptic cell.')],
 
-    name='Coloring Scheme',
+    name='Color Scheme',
     default=nmv.enums.Synaptics.ColorCoding.SINGLE_COLOR)
 
 # Excitatory synapses color
@@ -140,12 +140,12 @@ bpy.types.Scene.NMV_SynapsesColor = bpy.props.FloatVectorProperty(
 bpy.types.Scene.NMV_SynapsesPercentage = bpy.props.FloatProperty(
     name='Percentage',
     default=100.0, min=0, max=100,
-    description='The percentage of the synapses loaded in the scene. Applicable values [0-100]')
+    description='The percentage of the synapses loaded in the scene. Applicable values [0-100%]')
 
 # The unified radius of all the synapses
 bpy.types.Scene.NMV_SynapseRadius = bpy.props.FloatProperty(
-    name='Synapse Radius',
-    description='The unified radius of all the synapses. Applicable values [2-5]',
+    name='Radius',
+    description='The unified radius of all the synapses in μm. Applicable values [2-5]',
     default=2.0, min=0, max=5)
 
 # Pre-synaptic neuron GID, for visualizing shared synapses

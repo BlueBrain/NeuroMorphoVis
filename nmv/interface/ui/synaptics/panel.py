@@ -17,7 +17,6 @@
 
 # System imports
 import sys
-import time
 
 # Blender imports
 import bpy
@@ -29,6 +28,7 @@ import nmv.interface
 import nmv.utilities
 import nmv.scene
 from .layout_props import *
+
 
 ####################################################################################################
 # @NMV_SynapticsPanel
@@ -55,12 +55,13 @@ class NMV_SynapticsPanel(bpy.types.Panel):
         options = nmv.interface.ui_options
 
         # If a circuit is loaded, enable this panel, otherwise disable it
-        if True:#nmv.interface.ui_circuit is not None:
+        if nmv.interface.ui_circuit is not None:
 
             # Select a use case
             use_case_row = self.layout.row()
             use_case_row.prop(context.scene, 'NMV_SynapticsUseCase')
             options.synaptics.use_case = context.scene.NMV_SynapticsUseCase
+            self.layout.separator()
 
             # Display the options accordingly, based on the use case selection
             if context.scene.NMV_SynapticsUseCase != nmv.enums.Synaptics.UseCase.NOT_SELECTED:
@@ -68,6 +69,11 @@ class NMV_SynapticsPanel(bpy.types.Panel):
                 # Draw the reconstruction options
                 draw_synaptics_reconstruction_options(
                     layout=self.layout, scene=context.scene, options=options)
+                self.layout.separator()
+
+                # Draw the reconstruction button
+                draw_synaptics_reconstruction_button(layout=self.layout, scene=context.scene)
+                self.layout.separator()
 
                 # Draw the rendering operations
                 draw_synaptics_rendering_options(panel=self, scene=context.scene, options=options)
@@ -75,7 +81,7 @@ class NMV_SynapticsPanel(bpy.types.Panel):
         # Otherwise, draw the out of context message and disable the panel
         else:
             draw_out_of_context_message(layout=self.layout, scene=context.scene, options=options)
-            #self.layout.enabled = False if nmv.interface.ui_circuit is None else True
+            self.layout.enabled = False if nmv.interface.ui_circuit is None else True
 
 
 

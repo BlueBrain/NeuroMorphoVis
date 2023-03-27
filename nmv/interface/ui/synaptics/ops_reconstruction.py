@@ -18,6 +18,7 @@
 # System imports
 import sys
 import os
+import time
 
 # Blender imports
 import bpy
@@ -71,9 +72,9 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         context.scene.NMV_SynapticsNumberEfferentSynapses = efferent_synapses_count
 
     ################################################################################################
-    # @reconstruct_afferent_and_afferent
+    # @reconstruct_afferent_and_efferent
     ################################################################################################
-    def reconstruct_afferent_and_afferent(self, context, circuit, options):
+    def reconstruct_afferent_and_efferent(self, context, circuit, options):
 
         nmv.scene.clear_scene()
         synapse_groups = nmv.bbp.visualize_afferent_and_efferent_synapses(
@@ -326,59 +327,74 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         # Afferent synapses only (on dendrites)
         if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
             self.reconstruct_afferent(context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Efferent synapses (on axon)
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
             self.reconstruct_efferent(context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Afferent and efferent synapses
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
             self.reconstruct_afferent_and_efferent(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Excitatory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
             self.reconstruct_excitatory(context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Inhibitory synapses only
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
             self.reconstruct_inhibitory(context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Excitatory and inhibitory synapses
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
             self.reconstruct_excitatory_and_inhibitory(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Pre-synaptic pathways
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
             self.reconstruct_pathway_pre_synaptic(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Post-synaptic pathways
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
             self.reconstruct_pathway_post_synaptic(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Projection
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PROJECTION:
             self.reconstruct_projection(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         # Targets
         elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.TARGETS:
             self.reconstruct_targets(
                 context=context, circuit=circuit, options=options)
+            nmv.interface.ui_synaptics_reconstructed = True
 
         else:
             self.report({'ERROR'}, 'Please select a valid option')
             nmv.logger.log('UI_ERROR: NMV_ReconstructSynaptics::reconstruct_synaptics')
-
-        return {'FINISHED'}
 
     ################################################################################################
     # @execute
     ################################################################################################
     def execute(self, context):
 
-        return self.reconstruct_synaptics(
+        start_time = time.time()
+        self.reconstruct_synaptics(
             context=context, circuit=nmv.interface.ui_circuit, options=nmv.interface.ui_options)
+        end_time = time.time()
+        context.scene.NMV_SynapticReconstructionTime = end_time - start_time
+
+        # Done
+        return {'FINISHED'}
+
