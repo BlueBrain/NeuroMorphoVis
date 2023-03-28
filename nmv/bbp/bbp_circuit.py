@@ -328,24 +328,6 @@ class BBPCircuit(Circuit):
             numpy.array(synapse_ids_list), 'post', synapse_location).values.tolist()
 
     ################################################################################################
-    # @get_synapse_mtypes_ids
-    ################################################################################################
-    def get_synapse_mtypes_ids(self,
-                               synapse_ids_list):
-        """Gets the mtypes (represented by IDs) of the synapses.
-
-        :param synapse_ids_list:
-            A list containing the IDs of a given set of synapses.
-        :return:
-            A list containing the mtypes of the synapses.
-        """
-
-        import bluepy
-        return self.circuit.connectome.synapse_properties(
-            numpy.array(synapse_ids_list),
-            [bluepy.enums.Synapse.TYPE])[bluepy.enums.Synapse.TYPE].values.tolist()
-
-    ################################################################################################
     # @get_pre_synaptic_mtypes
     ################################################################################################
     def get_pre_synaptic_mtypes(self,

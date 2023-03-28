@@ -22,6 +22,7 @@ import os
 # Internal imports
 import nmv.bbp
 import nmv.consts
+import nmv.enums
 import nmv.file
 import nmv.interface
 
@@ -88,15 +89,17 @@ def read_h5_morphology_natively(h5_file,
 # @read_morphology_with_morphio
 ####################################################################################################
 def read_morphology_with_morphio(morphology_file_path,
+                                 morphology_format,
                                  center_at_origin=True):
-    import morphio
 
     # Ensure that the given file is valid and then load the file
+    import morphio
     if os.path.isfile(morphology_file_path):
-        # Load the .h5 morphology
         try:
-            reader = nmv.file.readers.MorphIOLoader(morphology_file_path,
+            reader = nmv.file.readers.MorphIOLoader(morphology_file=morphology_file_path,
+                                                    morphology_format=morphology_format,
                                                     center_morphology=center_at_origin)
+
             # Return a reference to this morphology object
             return reader.read_data_from_file()
 
@@ -136,7 +139,7 @@ def read_morphology_from_file(options,
         try:
             morphology_object = read_h5_morphology_natively(
                 h5_file=morphology_file_path, center_at_origin=options.morphology.center_at_origin)
-        except:
+        except IOError:
             if panel is not None:
                 panel.report({'ERROR'}, 'Cannot load this H5 file, please verify its structure')
                 return None
@@ -150,13 +153,14 @@ def read_morphology_from_file(options,
         try:
             morphology_object = read_morphology_with_morphio(
                 morphology_file_path=morphology_file_path,
+                morphology_format=nmv.enums.Morphology.Format.SWC,
                 center_at_origin=options.morphology.center_at_origin)
-        except:
+        except IOError:
             try:
                 morphology_object = read_swc_morphology_natively(
                     swc_file=morphology_file_path,
                     center_at_origin=options.morphology.center_at_origin)
-            except:
+            except IOError:
                 if panel is not None:
                     panel.report({'ERROR'}, 'Cannot load this SWC file, please verify its structure')
                     return None
@@ -168,8 +172,10 @@ def read_morphology_from_file(options,
     elif '.asc' in morphology_extension.lower():
         try:
             morphology_object = read_morphology_with_morphio(
-                morphology_file_path, options.morphology.center_at_origin)
-        except:
+                morphology_file_path=morphology_file_path,
+                morphology_format=nmv.enums.Morphology.Format.ASCII,
+                center_at_origin=options.morphology.center_at_origin)
+        except IOError:
             if panel is not None:
                 panel.report({'ERROR'}, 'Cannot load this ASC file, please verify its structure')
                 return None

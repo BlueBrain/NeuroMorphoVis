@@ -15,18 +15,30 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .analysis_enums import *
-from .camera_enums import *
-from .color_enums import *
-from .color_coding_enums import *
-from .colormaps_enums import *
-from .dendrogram_enums import *
-from .image_enums import *
-from .input_enums import *
-from .meshing_enums import *
-from .rendering_enums import *
-from .shading_enums import *
-from .skeleton_enums import *
-from .soma_enums import *
-from .synaptics_enums import *
-from .morphology_enums import *
+
+####################################################################################################
+# @Morphology
+####################################################################################################
+class Morphology:
+    """Morphology enumerators"""
+
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self):
+        pass
+
+    ################################################################################################
+    # @Format
+    ################################################################################################
+    class Format:
+        """Morphology format enumerators"""
+
+        # SWC format
+        SWC = 'SWC_MORPHOLOGY_FORMAT'
+
+        # H5 format
+        H5 = 'H5_MORPHOLOGY_FORMAT'
+
+        # ASCII format
+        ASCII = 'ASCII_MORPHOLOGY_FORMAT'

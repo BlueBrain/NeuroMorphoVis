@@ -25,6 +25,7 @@ import nmv.scene
 ####################################################################################################
 def arbors_intersect(branch_1,
                      branch_2,
+                     soma_center,
                      soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
     Since the two branches would not be exactly located at the given soma radius, therefore, a good
@@ -50,8 +51,8 @@ def arbors_intersect(branch_1,
     is_radius_2 = branch_2.samples[0].radius
 
     # Get the directions of the initial segments of the two branches
-    is_direction_1 = is_point_1.normalized()
-    is_direction_2 = is_point_2.normalized()
+    is_direction_1 = (is_point_1 - soma_center).normalized()
+    is_direction_2 = (is_point_2 - soma_center).normalized()
 
     # Compute the mapping radii (i.e. the scale required to connect the branch to the soma radius)
     scaled_point_1 = is_direction_1 * soma_radius
@@ -79,6 +80,7 @@ def arbors_intersect(branch_1,
 ####################################################################################################
 def arbors_intersect_with_bvh(branch_1,
                               branch_2,
+                              soma_center,
                               soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
     Since the two branches would not be exactly located at the given soma radius, therefore, a good
@@ -104,8 +106,8 @@ def arbors_intersect_with_bvh(branch_1,
     is_radius_2 = branch_2.samples[0].radius
 
     # Get the directions of the initial segments of the two branches
-    is_direction_1 = is_point_1.normalized()
-    is_direction_2 = is_point_2.normalized()
+    is_direction_1 = (is_point_1 - soma_center).normalized()
+    is_direction_2 = (is_point_2 - soma_center).normalized()
 
     # Compute the mapping radii (i.e. the scale required to connect the branch to the soma radius)
     scaled_point_1 = is_direction_1 * soma_radius

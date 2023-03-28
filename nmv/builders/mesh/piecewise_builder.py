@@ -122,6 +122,7 @@ class PiecewiseBuilder(MeshBuilderBase):
 
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         name=arbor.label,
                         material_list=self.apical_dendrites_materials,
@@ -158,6 +159,7 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Draw the basal dendrites as a set connected sections
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=arbor.label,
                         material_list=self.basal_dendrites_materials,
@@ -194,6 +196,7 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Draw the axon as a set connected sections
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.axon_branch_order,
                         name=arbor.label,
                         material_list=self.axons_materials,

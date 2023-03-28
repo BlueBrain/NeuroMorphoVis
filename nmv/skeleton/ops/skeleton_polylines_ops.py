@@ -225,18 +225,21 @@ def get_section_polyline_without_terminal_samples(section):
 # @connect_root_to_origin
 ####################################################################################################
 def connect_root_to_origin(section,
+                           soma_center,
                            poly_line):
     """Connect the roots of the connected arbors to the soma by adiing few samples till
     reaching the origin.
 
     :param section:
         A given section to connect to the soma.
+    :param soma_center:
+        The center of the soma.
     :param poly_line:
         The polyline list used to collect the samples.
     """
 
     # Get the direction from the origin to the first sample of the section
-    direction = section.samples[0].point.normalized()
+    direction = (section.samples[0].point - soma_center).normalized()
 
     # Get the distance from the origin to the first sample of the section
     distance = section.samples[0].point.length
@@ -247,7 +250,7 @@ def connect_root_to_origin(section,
     # Add the 'auxiliary' samples to the poly-line and use the same radius of the first
     # sample on the section
     for i in range(0, number_samples):
-        point = Vector((0.0, 0.0, 0.0)) + (i * direction)
+        point = soma_center + (i * direction)
         poly_line.append([(point[0], point[1], point[2], 1), section.samples[0].radius])
 
 
@@ -380,7 +383,8 @@ def get_arbor_poly_lines_as_connected_sections(root,
 ####################################################################################################
 # @get_soma_connection_poly_line_
 ####################################################################################################
-def get_soma_connection_poly_line_(section):
+def get_soma_connection_poly_line_(section,
+                                   soma_center):
     """Get an extra poly-line that accounts for the connection between the root section and soma.
 
     This poly-line is NOT described in the morphology file, but it is added to make a smooth
@@ -390,6 +394,8 @@ def get_soma_connection_poly_line_(section):
 
     :param section:
         Section structure.
+    :param soma_center
+        The center of the soma.
     :return:
         Section data in poly-line format that is suitable for drawing by Blender.
     """
@@ -401,7 +407,7 @@ def get_soma_connection_poly_line_(section):
     if section.connected_to_soma:
 
         # Add a sample around the origin
-        direction = section.samples[0].point.normalized()
+        direction = (section.samples[0].point - soma_center).normalized()
 
         # Sample radius
         radius = section.samples[0].radius
@@ -410,7 +416,7 @@ def get_soma_connection_poly_line_(section):
         point = section.samples[0].point
 
         # Get the starting point of the bridging section
-        point = point - nmv.consts.Skeleton.ARBOR_EXTRUSION_DELTA * direction
+        point = soma_center # point - nmv.consts.Skeleton.ARBOR_EXTRUSION_DELTA * direction
 
         # Append the sample to the list
         poly_line.append([(point[0], point[1], point[2], 1), radius])
@@ -570,6 +576,7 @@ def get_last_section_polyline(section,
 ####################################################################################################
 def get_connected_sections_poly_line(section,
                                      roots_connection,
+                                     soma_center,
                                      is_continuous=False,
                                      is_last_section=False,
                                      ignore_branching_samples=False,
@@ -602,16 +609,17 @@ def get_connected_sections_poly_line(section,
 
         # If the root section is connected to the soma (soma bridging)
         if roots_connection == nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA:
-            poly_line.extend(get_soma_connection_poly_line_(section=section))
+            poly_line.extend(get_soma_connection_poly_line_(
+                section=section, soma_center=soma_center))
 
         # All connected
         elif roots_connection == nmv.enums.Skeleton.Roots.ALL_CONNECTED:
-            connect_root_to_origin(section=section, poly_line=poly_line)
+            connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
 
         # Only connect the arbors connected to the soma to the origin
         elif roots_connection == nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN:
             if not section.far_from_soma:
-                connect_root_to_origin(section=section, poly_line=poly_line)
+                connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
         else:
             pass
 

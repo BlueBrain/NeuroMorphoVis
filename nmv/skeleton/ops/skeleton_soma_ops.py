@@ -23,6 +23,7 @@ import nmv.skeleton
 # @get_connected_arbors_to_soma_after_verification
 ####################################################################################################
 def get_connected_arbors_to_soma_after_verification(morphology,
+                                                    soma_center,
                                                     soma_radius):
     """This functions checks the connectivity of all the arbors of the morphology and soma.
 
@@ -84,7 +85,7 @@ def get_connected_arbors_to_soma_after_verification(morphology,
                 continue
 
             # Check the intersection
-            if nmv.skeleton.arbors_intersect(primary, secondary, soma_radius):
+            if nmv.skeleton.arbors_intersect(primary, secondary, soma_center, soma_radius):
 
                 # The arbor is intersecting
                 is_intersecting = True

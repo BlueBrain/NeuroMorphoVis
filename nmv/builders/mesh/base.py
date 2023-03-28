@@ -360,6 +360,8 @@ class MeshBuilderBase:
         this function applies only to the arbors and the soma.
         """
 
+        return
+
         # Transform the arbors to the global coordinates if required for a circuit
         if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
 

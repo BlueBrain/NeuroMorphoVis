@@ -63,10 +63,10 @@ class SomaMetaBuilder:
         # All the options of the project (an instance of MeshyOptions)
         self.options = options
 
-        # Meta object skeleton, used to build the skeleton of the soma before making it a mesh
+        # Meta-object skeleton, used to build the skeleton of the soma before making it a mesh
         self.meta_skeleton = None
 
-        # Meta object mesh, used to build the mesh of the soma
+        # Meta-object mesh, used to build the mesh of the soma
         self.meta_mesh = None
 
         # A scale factor that was figured out by trial and error to correct the scaling of the radii
@@ -101,7 +101,7 @@ class SomaMetaBuilder:
         self.meta_mesh = bpy.data.objects.new(name, self.meta_skeleton)
 
         # Adjust the location of the meta_mesh
-        self.meta_mesh.location = self.morphology.soma.centroid
+        self.meta_mesh.location = Vector((0, 0, 0)) #self.morphology.soma.centroid
 
         # Link the meta object to the scene
         nmv.scene.link_object_to_scene(self.meta_mesh)
@@ -307,8 +307,8 @@ class SomaMetaBuilder:
         if not arbor.far_from_soma:
 
             # Assume that from the soma center towards the first point along the arbor is a segment
-            p1 = Vector((self.morphology.soma.centroid[0], 
-                         self.morphology.soma.centroid[1], 
+            p1 = Vector((self.morphology.soma.centroid[0],
+                         self.morphology.soma.centroid[1],
                          self.morphology.soma.centroid[2]))
             p2 = arbor.samples[0].point
 
@@ -333,9 +333,10 @@ class SomaMetaBuilder:
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
-        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.initial_soma_radius)
 
+        valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
+            morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+            soma_radius=self.initial_soma_radius)
         # Re-classify the arbors to be able to deal with the selectivity
         valid_apical_dendrites = list()
         valid_basal_dendrites = list()
@@ -404,7 +405,7 @@ class SomaMetaBuilder:
         if apply_shader:
             self.assign_material_to_mesh()
 
-        # A dd a little bit of noise
+        # Add a bit of noise
         if add_noise_to_surface:
             self.add_noise_to_soma_surface()
 
@@ -427,7 +428,7 @@ class SomaMetaBuilder:
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()
 
-        # Update the meta object and convert it to a mesh
+        # Update the meta-object and convert it to a mesh
         self.finalize_meta_object(name='SomaProfile')
 
         # List of vertices

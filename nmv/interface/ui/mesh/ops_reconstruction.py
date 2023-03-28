@@ -43,8 +43,8 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
     ################################################################################################
     def execute(self, context):
 
-        # Reset the scene
-        nmv.scene.reset_scene()
+        # Clear the scene
+        nmv.scene.clear_scene()
 
         # If no morphology file is loaded, load the morphology file
         if nmv.interface.ui_morphology is None:

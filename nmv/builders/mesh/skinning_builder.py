@@ -275,13 +275,15 @@ class SkinningBuilder(MeshBuilderBase):
 
             # If the arbor is not far from soma, then connect it to the origin
             if not arbor.far_from_soma:
-                arbor_bmesh_object = nmv.bmeshi.create_vertex()
+                print('not farrr')
+                arbor_bmesh_object = nmv.bmeshi.create_vertex(location=self.morphology.soma.centroid)
 
                 # Add an auxiliary sample just before the arbor starts
                 auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[
                     0].point.normalized()
 
             else:
+                print('farrr')
                 arbor_bmesh_object = nmv.bmeshi.create_vertex(location=arbor.samples[0].point)
 
                 # Add an auxiliary sample just after the arbor starts

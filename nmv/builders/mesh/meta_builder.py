@@ -430,7 +430,8 @@ class MetaBuilder(MeshBuilderBase):
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
         valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.morphology.soma.smallest_radius)
+            morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+            soma_radius=self.morphology.soma.smallest_radius)
 
         # Re-classify the arbors to be able to deal with the selectivity
         valid_apical_dendrites = list()
@@ -745,6 +746,17 @@ class MetaBuilder(MeshBuilderBase):
             nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
             nmv.mesh.clean_mesh_object(self.meta_mesh)
             self.profiling_statistics += stats
+
+        def set_mesh_origin(ob, pos):
+            '''Given a mesh object set it's origin to a given position.'''
+            # Casting pos to vector so you can pass in tuples or lists
+
+            mat = Matrix.Translation(pos - ob.location)
+            ob.location = pos
+            ob.data.transform(mat.inverted())
+            ob.data.update()
+
+        set_mesh_origin(ob=self.meta_mesh, pos=self.morphology.soma.centroid)
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment

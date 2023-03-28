@@ -185,8 +185,9 @@ class UnionBuilder(MeshBuilderBase):
         # is actually connected to the soma
         if not connection_to_soma and not arbor.far_from_soma:
 
-            # Add an auxiliary point at the origin to the first poly-line in the list
-            arbor_poly_lines[0].samples.insert(0, [(0, 0, 0, 1), arbor.samples[0].radius])
+            # Add an auxiliary point at the soma centroid to the first poly-line in the list
+            c = self.morphology.soma.centroid
+            arbor_poly_lines[0].samples.insert(0, [(c[0], c[1], c[2], 1), arbor.samples[0].radius])
 
         # A list that will contain all the drawn poly-lines to be able to access them later,
         # although we can access them by name

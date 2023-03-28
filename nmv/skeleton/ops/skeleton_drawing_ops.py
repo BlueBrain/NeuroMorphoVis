@@ -396,7 +396,9 @@ def draw_connected_sections_poly_lines(arbor,
 ####################################################################################################
 # @draw_connected_sections
 ####################################################################################################
-def draw_connected_sections(section, name,
+def draw_connected_sections(section,
+                            soma_center,
+                            name,
                             poly_line_data=[],
                             sections_objects=[],
                             secondary_sections=[],
@@ -474,6 +476,7 @@ def draw_connected_sections(section, name,
     # Get a list of all the poly-line that corresponds to the given section
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
         section=section,
+        soma_center=soma_center,
         roots_connection=roots_connection,
         is_continuous=is_continuous,
         is_last_section=is_last_section,
@@ -517,7 +520,7 @@ def draw_connected_sections(section, name,
 
         # Draw the children sections
         draw_connected_sections(
-            section=child, name=name, poly_line_data=poly_line_data,
+            section=child, soma_center=soma_center, name=name, poly_line_data=poly_line_data,
             sections_objects=sections_objects, secondary_sections=secondary_sections,
             branching_order=branching_order, max_branching_order=max_branching_order,
             material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
