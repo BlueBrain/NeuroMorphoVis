@@ -23,7 +23,7 @@ import bpy
 # @NMV_MorphologyEditingDocumentation
 ####################################################################################################
 class NMV_MorphologyEditingDocumentation(bpy.types.Operator):
-    """Open the online documentation page of the Morphology Editing panel."""
+    """Open the online documentation page of the Morphology Editing panel"""
 
     # Operator parameters
     bl_idname = "nmv.documentation_editing"

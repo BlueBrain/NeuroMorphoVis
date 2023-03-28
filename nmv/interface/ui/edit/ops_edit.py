@@ -120,7 +120,7 @@ class NMV_EditMorphologyCoordinates(bpy.types.Operator):
 # @NMV_UpdateMorphologyCoordinates
 ####################################################################################################
 class NMV_UpdateMorphologyCoordinates(bpy.types.Operator):
-    """Update the morphology coordinates following to the repair process."""
+    """Update the morphology coordinates following to the repair process"""
 
     # Operator parameters
     bl_idname = "update.morphology_coordinates"
@@ -143,6 +143,7 @@ class NMV_UpdateMorphologyCoordinates(bpy.types.Operator):
             # Update the morphology skeleton
             nmv.interface.ui_morphology_editor.update_skeleton_coordinates()
 
+            # Update the state
             nmv.interface.ui_is_skeleton_edited = False
 
         # Clear the scene

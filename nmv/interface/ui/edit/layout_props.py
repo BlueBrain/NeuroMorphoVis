@@ -31,8 +31,17 @@ def draw_documentation_button(layout):
 ####################################################################################################
 def draw_sketch_skeleton_button(layout):
 
-    sketching_morphology_column = layout.column(align=True)
-    sketching_morphology_column.operator('sketch.skeleton', icon='PARTICLE_POINT')
+    row = layout.column(align=True)
+    row.operator('sketch.skeleton', icon='PARTICLE_POINT')
+
+
+####################################################################################################
+# @draw_skeleton_edit_header
+####################################################################################################
+def draw_skeleton_edit_header(layout):
+
+    row = layout.row()
+    row.label(text='Editing Samples Coordinates', icon='OUTLINER_OB_EMPTY')
 
 
 ####################################################################################################
@@ -40,25 +49,29 @@ def draw_sketch_skeleton_button(layout):
 ####################################################################################################
 def draw_edit_skeleton_button(layout):
 
-    edit_morphology_column = layout.column(align=True)
-    edit_morphology_column.operator('edit.morphology_coordinates', icon='MESH_DATA')
+    draw_skeleton_edit_header(layout=layout)
+
+    row = layout.column(align=True)
+    row.operator('edit.morphology_coordinates', icon='MESH_DATA')
 
 
 ####################################################################################################
-# @draw_edit_skeleton_button
+# @draw_update_skeleton_button
 ####################################################################################################
-def draw_skeleton_update_button(layout):
+def draw_update_skeleton_button(layout):
 
-    update_morphology_column = layout.column(align=True)
-    update_morphology_column.operator('update.morphology_coordinates', icon='MESH_DATA')
+    draw_skeleton_edit_header(layout=layout)
+
+    row = layout.column(align=True)
+    row.operator('update.morphology_coordinates', icon='MESH_DATA')
 
 
 ####################################################################################################
 # @draw_morphology_export_button
 ####################################################################################################
 def draw_morphology_export_button(layout):
-    save_morphology_row = layout.row()
-    save_morphology_row.label(text='Save Morphology As:', icon='MESH_UVSPHERE')
+    row = layout.row()
+    row.label(text='Export Morphology', icon='MESH_UVSPHERE')
 
-    save_morphology_buttons_column = self.layout.column(align=True)
-    save_morphology_buttons_column.operator('export_morphology.swc', icon='GROUP_VERTEX')
+    row = layout.column(align=True)
+    row.operator('export_morphology.swc', icon='GROUP_VERTEX')

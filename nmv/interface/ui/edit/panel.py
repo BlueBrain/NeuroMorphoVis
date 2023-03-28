@@ -59,30 +59,27 @@ class NMV_EditPanel(bpy.types.Panel):
     ################################################################################################
     def draw(self, context):
 
-        # Documentation button
+        # Draw the documentation button
         draw_documentation_button(layout=self.layout)
-        self.layout.separaor()
+        self.layout.separator()
 
-        # Morphology sketching button
+        # Draw the morphology sketching button if the edit mode is not activated
         if not nmv.interface.ui_in_edit_mode:
             draw_sketch_skeleton_button(layout=self.layout)
+            self.layout.separator()
 
-        # Reconstruction options
-        edit_coordinates_row = self.layout.row()
-        edit_coordinates_row.label(text='Editing Samples Coordinates:',
-                                   icon='OUTLINER_OB_EMPTY')
-
+        # If the skeleton is not being edited, draw the edit button, otherwise the update one
         if not nmv.interface.ui_is_skeleton_edited:
             draw_edit_skeleton_button(layout=self.layout)
+            self.layout.separator()
         else:
-            draw_skeleton_update_button(layout=self.layout)
+            draw_update_skeleton_button(layout=self.layout)
+            self.layout.separator()
 
-        # Saving morphology buttons
+        # Draw the morphology export button(s)
         if not nmv.interface.ui_in_edit_mode:
             draw_morphology_export_button(layout=self.layout)
+            self.layout.separator()
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(self.layout)
-
-
-

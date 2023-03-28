@@ -34,7 +34,7 @@ import nmv.enums
 # @NMV_ExportMorphologySWC
 ####################################################################################################
 class NMV_ExportMorphologySWC(bpy.types.Operator):
-    """Export the reconstructed morphology in an SWC file"""
+    """Export the reconstructed morphology to SWC file"""
 
     # Operator parameters
     bl_idname = "export_morphology.swc"
