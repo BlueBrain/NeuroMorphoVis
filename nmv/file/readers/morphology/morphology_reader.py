@@ -97,10 +97,8 @@ def read_morphology_with_morphio(morphology_file_path,
         try:
             reader = nmv.file.readers.MorphIOLoader(morphology_file_path,
                                                     center_morphology=center_at_origin)
-            morphology_object = reader.read_data_from_file()
-
             # Return a reference to this morphology object
-            return morphology_object
+            return reader.read_data_from_file()
 
         # Throw exception
         except morphio.RawDataError as e:
@@ -218,7 +216,6 @@ def read_morphology_from_circuit(options):
 
     # Get the data from the circuit and update the necessary fields in NMV
     nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list()
-    print(nmv.consts.Circuit.MTYPES)
     nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list()
     nmv.interface.ui_circuit = circuit
 

@@ -54,6 +54,13 @@ class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
         # Clear the scene
         nmv.scene.clear_scene()
 
+        # If no morphology file is loaded, load the morphology file
+        if nmv.interface.ui_morphology is None:
+            loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+            if loading_result is None:
+                self.report({'ERROR'}, 'Please select a morphology file')
+                return {'FINISHED'}
+
         # Create a skeleton builder object to build the morphology skeleton
         start_time = time.time()
         method = nmv.interface.ui_options.morphology.reconstruction_method

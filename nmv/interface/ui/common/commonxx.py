@@ -129,7 +129,7 @@ def load_morphology_from_circuit(panel,
     # If the given GID contains non-integer characters
     try:
         int(options.morphology.gid)
-    except:
+    except ArithmeticError:
         panel.report({'ERROR'}, 'The provided GID must be an integer')
         return None
 
@@ -507,12 +507,13 @@ def initialize_synaptic_colors():
 # @initialize_relevant_parameters
 ####################################################################################################
 def initialize_relevant_parameters(scene):
+
     initialize_synaptic_colors()
 
 
-
-
-
+####################################################################################################
+# @compute_scene_bounding_box_for_meshes_based_on_view
+####################################################################################################
 def compute_scene_bounding_box_for_meshes_based_on_view(options):
 
     # Compute the bounding box, depending on the selected view

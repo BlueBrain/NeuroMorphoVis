@@ -52,7 +52,8 @@ class NMV_LoadMorphology(bpy.types.Operator):
         loading_time = time.time()
         context.scene.NMV_MorphologyLoadingTime = loading_time - start_time
 
-        # If the loading result is None, terminate the loading process
+        # If the loading result is None, terminate the loading process, ERROR handling is done
+        # within the scope of the function @nmv.interface.ui.load_morphology
         if loading_result is None:
             return {'FINISHED'}
 

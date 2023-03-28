@@ -46,13 +46,12 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
         # Reset the scene
         nmv.scene.reset_scene()
 
-        # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
-
-        # If the result is None, report the issue
-        if loading_result is None:
-            self.report({'ERROR'}, 'Please select a morphology file')
-            return {'FINISHED'}
+        # If no morphology file is loaded, load the morphology file
+        if nmv.interface.ui_morphology is None:
+            loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+            if loading_result is None:
+                self.report({'ERROR'}, 'Please select a morphology file')
+                return {'FINISHED'}
 
         # Meshing technique
         meshing_technique = nmv.interface.ui_options.mesh.meshing_technique

@@ -120,11 +120,9 @@ class NMV_ReconstructSoma(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
-        # Load the morphology file
+        # If no morphology file is loaded, load the morphology file
         if nmv.interface.ui_morphology is None:
             loading_result = nmv.interface.ui.load_morphology(self, context.scene)
-
-            # If the result is None, report the issue
             if loading_result is None:
                 self.report({'ERROR'}, 'Please select a morphology file')
                 return {'FINISHED'}

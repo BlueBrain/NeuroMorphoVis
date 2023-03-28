@@ -132,6 +132,32 @@ class MorphIOLoader:
         return nmv_soma
 
     ################################################################################################
+    # @read_soma_data
+    ################################################################################################
+    def read_soma_data(self, morphio_soma):
+
+        # Get the soma centroid
+        self.reported_soma_centroid = Vector((morphio_soma.center[0],
+                                              morphio_soma.center[1],
+                                              morphio_soma.center[2]))
+
+        # The soma profile points are stored in the soma.points array
+        for i_point in morphio_soma.points:
+            x = i_point[0]
+            y = i_point[1]
+            z = i_point[2]
+
+            if x > 0 or y > 0 or z > 0:
+                self.soma_profile_points.append(Vector((x, y, z)))
+
+        # Compute the average soma radius from the profile points
+        if len(self.soma_profile_points) > 0:
+            self.reported_soma_radius = 0
+            for i_point in self.soma_profile_points:
+                self.reported_soma_radius += (i_point - self.reported_soma_centroid).length
+            self.reported_soma_radius /= len(self.soma_profile_points)
+
+    ################################################################################################
     # @read_data_from_file
     ################################################################################################
     def read_data_from_file(self):
@@ -149,15 +175,12 @@ class MorphIOLoader:
         try:
             morphio_morphology = Morphology(self.morphology_file)
             nmv.logger.log("The morphology file [%s] is loaded successfully" % self.morphology_file)
-        except:
+        except IOError:
             nmv.logger.error("Cannot load morphology file! [%s]" % self.morphology_file)
             return None
 
         # Get the soma parameters reported in the morphology file
-        self.reported_soma_radius = morphio_morphology.soma.diameters[0] * 0.5
-        self.reported_soma_centroid = Vector((morphio_morphology.soma.center[0],
-                                              morphio_morphology.soma.center[1],
-                                              morphio_morphology.soma.center[2]))
+        self.read_soma_data(morphio_soma=morphio_morphology.soma)
 
         # Determine the translation vector if it is required to center the morphology
         if self.center_morphology:

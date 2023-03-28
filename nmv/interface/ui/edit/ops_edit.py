@@ -46,13 +46,12 @@ class NMV_SketchSkeleton(bpy.types.Operator):
         # Clear the scene
         nmv.scene.ops.clear_scene()
 
-        # Load the morphology file
-        loading_result = nmv.interface.ui.load_morphology(self, context.scene)
-
-        # If the result is None, report the issue
-        if loading_result is None:
-            self.report({'ERROR'}, 'Please select a morphology file')
-            return {'FINISHED'}
+        # If no morphology file is loaded, load the morphology file
+        if nmv.interface.ui_morphology is None:
+            loading_result = nmv.interface.ui.load_morphology(self, context.scene)
+            if loading_result is None:
+                self.report({'ERROR'}, 'Please select a morphology file')
+                return {'FINISHED'}
 
         # Clone the options to avoid messing the other panels
         options_clone = copy.deepcopy(nmv.interface.ui_options)
@@ -63,6 +62,7 @@ class NMV_SketchSkeleton(bpy.types.Operator):
             morphology=nmv.interface.ui_morphology,
             options=options_clone)
 
+        # Done
         return {'FINISHED'}
 
 
@@ -111,6 +111,7 @@ class NMV_EditMorphologyCoordinates(bpy.types.Operator):
         # Update the edit mode
         nmv.interface.ui_in_edit_mode = True
 
+        # Done
         return {'FINISHED'}
 
 
@@ -158,4 +159,5 @@ class NMV_UpdateMorphologyCoordinates(bpy.types.Operator):
         # Switch back from the analysis mode to the visualization mode
         nmv.scene.switch_interface_to_visualization_mode()
 
+        # Done
         return {'FINISHED'}
