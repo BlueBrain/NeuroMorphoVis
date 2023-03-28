@@ -21,7 +21,7 @@ from .neurons import *
 from .synapses import *
 from .synapse_group import *
 from .synapses_color_coding import *
-from .synapses_meshing import *
+from .synapses_generation import *
 from .synapses_visualization import *
 from .transformations import *
 

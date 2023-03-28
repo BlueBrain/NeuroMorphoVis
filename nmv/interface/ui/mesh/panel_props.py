@@ -269,7 +269,7 @@ bpy.types.Scene.NMV_MeshCloseUpSize = bpy.props.FloatProperty(
     default=20, min=5, max=100,)
 
 # Soma rendering progress bar
-bpy.types.Scene.NMV_NeuronMeshRenderingProgress = bpy.props.IntProperty(
+bpy.types.Scene.NMV_MeshRenderingProgress = bpy.props.IntProperty(
     name="Rendering Progress",
     default=0, min=0, max=100, subtype='PERCENTAGE')
 
