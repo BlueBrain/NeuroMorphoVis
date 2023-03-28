@@ -148,6 +148,18 @@ def load_morphology_from_circuit(panel,
 
 
 ####################################################################################################
+# @disable_circuit_options
+####################################################################################################
+def disable_circuit_options():
+    """Disables all the circuit related parameters"""
+
+    nmv.interface.ui_circuit = None
+    nmv.interface.ui_synaptics_file_loaded = False
+    nmv.interface.ui_synaptics_reconstructed = False
+    nmv.interface.ui_synaptics_rendered = False
+
+
+####################################################################################################
 # @load_morphology
 ####################################################################################################
 def load_morphology(panel,
@@ -162,16 +174,18 @@ def load_morphology(panel,
 
     # Load the morphology either from an individual file or from a digitally reconstructed circuit
     if bpy.context.scene.NMV_InputSource == nmv.enums.Input.MORPHOLOGY_FILE:
+
+        # Disable all the options for the circuit
+        disable_circuit_options()
         return load_morphology_from_file(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
+
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
         return load_morphology_from_circuit(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')
         return None
-
-
 
 
 ####################################################################################################
