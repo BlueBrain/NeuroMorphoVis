@@ -37,9 +37,6 @@ def register_panel():
     from .ops_exports import NMV_ExportMorphologySegments
     from .ops_exports import NMV_ExportMorphologyBLEND
 
-    # ColorMap
-    # bpy.utils.register_class(ColorMapOperator)
-
     # Soma reconstruction panel
     bpy.utils.register_class(NMV_MorphologyPanel)
 
@@ -73,9 +70,6 @@ def unregister_panel():
     from .ops_exports import NMV_ExportMorphologySWC
     from .ops_exports import NMV_ExportMorphologySegments
     from .ops_exports import NMV_ExportMorphologyBLEND
-
-    # ColorMap
-    # bpy.utils.unregister_class(ColorMapOperator)
 
     # Morphology reconstruction panel
     bpy.utils.unregister_class(NMV_MorphologyPanel)

@@ -23,7 +23,7 @@ import bpy
 # @register_panel
 ####################################################################################################
 def register_panel():
-    """Registers all the classes in this panel."""
+    """Registers all the classes in this panel"""
 
     from .panel import NMV_EditPanel
     from .ops_documentation import NMV_MorphologyEditingDocumentation
@@ -47,7 +47,7 @@ def register_panel():
 # @unregister_panel
 ####################################################################################################
 def unregister_panel():
-    """Un-registers all the classes in this panel."""
+    """Un-registers all the classes in this panel"""
 
     from .panel import NMV_EditPanel
     from .ops_documentation import NMV_MorphologyEditingDocumentation

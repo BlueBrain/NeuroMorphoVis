@@ -101,8 +101,7 @@ def register_analysis_groups(morphology):
 # @register_panel
 ####################################################################################################
 def register_panel():
-    """Registers all the classes in this panel.
-    """
+    """Registers all the classes in this panel"""
 
     from .panel import NMV_AnalysisPanel
     from .ops_export import NMV_ExportAnalysisResults
@@ -120,8 +119,7 @@ def register_panel():
 # @unregister_panel
 ####################################################################################################
 def unregister_panel():
-    """Un-registers all the classes in this panel.
-    """
+    """Un-registers all the classes in this panel"""
 
     from .panel import NMV_AnalysisPanel
     from .ops_export import NMV_ExportAnalysisResults

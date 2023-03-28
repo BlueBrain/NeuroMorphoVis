@@ -15,24 +15,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
-# System imports
-import copy
-
 # Blender imports
 import bpy
-from bpy.props import BoolProperty
 
 # Internal imports
-import nmv.edit
 import nmv.interface
-import nmv.scene
-import nmv.consts
-import nmv.utilities
-import nmv.enums
-
-
 from .layout_props import *
+
 
 ####################################################################################################
 # @NMV_EditPanel
@@ -51,8 +40,8 @@ class NMV_EditPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     # Register a variable that indicates that the morphology is sketched to be able to update the UI
-    bpy.types.Scene.NMV_MorphologySketched = BoolProperty(default=False)
-    bpy.types.Scene.NMV_MorphologyCoordinatesEdited = BoolProperty(default=False)
+    bpy.types.Scene.NMV_MorphologySketched = bpy.props.BoolProperty(default=False)
+    bpy.types.Scene.NMV_MorphologyCoordinatesEdited = bpy.props.BoolProperty(default=False)
 
     ################################################################################################
     # @draw

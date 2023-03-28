@@ -25,8 +25,6 @@ import bpy
 import nmv.edit
 import nmv.interface
 import nmv.scene
-import nmv.consts
-import nmv.utilities
 import nmv.enums
 
 

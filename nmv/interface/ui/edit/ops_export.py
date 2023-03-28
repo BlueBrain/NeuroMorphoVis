@@ -15,19 +15,12 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import copy
-
 # Blender imports
 import bpy
 
 # Internal imports
-import nmv.edit
 import nmv.interface
-import nmv.scene
 import nmv.consts
-import nmv.utilities
-import nmv.enums
 
 
 ####################################################################################################
