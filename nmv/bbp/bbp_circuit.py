@@ -22,7 +22,6 @@ import numpy
 from mathutils import Vector, Matrix
 
 # Internal imports
-import nmv.utilities
 from .circuit import Circuit
 
 
@@ -31,7 +30,9 @@ from .circuit import Circuit
 ####################################################################################################
 class BBPCircuit(Circuit):
     """A wrapper on top of the circuit loading API of BluePy to facilitate loading circuit-based
-    data from old circuits that are not stored in libSonata format."""
+    data from old circuits that are not stored in libSonata format.
+    Documentation: https://bbpteam.epfl.ch/documentation/projects/bluepy/latest/index.html
+    """
 
     ################################################################################################
     # @__init__
