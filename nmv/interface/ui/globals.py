@@ -89,3 +89,12 @@ ui_synaptics_reconstructed = False
 
 #
 ui_synaptics_rendered = False
+
+#
+ui_morphology_editor = None
+
+# A flag to indicate that the morphology has been edited and ready for update
+ui_is_skeleton_edited = False
+
+# A flag that indicates if we are in the edit mode or not
+ui_in_edit_mode = False

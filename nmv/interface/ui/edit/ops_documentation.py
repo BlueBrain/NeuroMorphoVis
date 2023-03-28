@@ -15,4 +15,25 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .registration import *
+# Blender imports
+import bpy
+
+
+####################################################################################################
+# @NMV_MorphologyEditingDocumentation
+####################################################################################################
+class NMV_MorphologyEditingDocumentation(bpy.types.Operator):
+    """Open the online documentation page of the Morphology Editing panel."""
+
+    # Operator parameters
+    bl_idname = "nmv.documentation_editing"
+    bl_label = "Online User Guide"
+
+    ################################################################################################
+    # @execute
+    ################################################################################################
+    def execute(self, context):
+
+        import webbrowser
+        webbrowser.open('https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Editing')
+        return {'FINISHED'}
