@@ -40,7 +40,12 @@ def create_six_sun_lights(power=0.5,
         The energy of the light sources.
     :param location:
         The locations of the light sources.
+    :return
+        A list of all the created light sources.
     """
+
+    # A list that will contain all the created light sources
+    lights = list()
 
     # Multiple light sources from different directions
     light_directions = [(-0.78, 0.000, -0.78), (0.000, 3.140, 0.000), (1.570, 0.000, 0.000),
@@ -68,11 +73,17 @@ def create_six_sun_lights(power=0.5,
         # Set the power
         lamp_reference.data.energy = power
 
+        lights.append(lamp_reference)
+
+    # Return the lights
+    return lights
+
 
 ####################################################################################################
 # @create_free_style_illumination
 ####################################################################################################
 def create_free_style_illumination(location=nmv.consts.Math.ORIGIN):
+
     """Creates an illumination specific for the default shader.
     """
 
@@ -80,7 +91,7 @@ def create_free_style_illumination(location=nmv.consts.Math.ORIGIN):
     nmv.scene.ops.deselect_all()
 
     # Create the set of six sun lights
-    create_six_sun_lights(power=2.0, location=location)
+    return create_six_sun_lights(power=2.0, location=location)
 
 
 ####################################################################################################
@@ -97,7 +108,7 @@ def create_lambert_ward_illumination(location=nmv.consts.Math.ORIGIN):
     nmv.scene.ops.deselect_all()
 
     # Create the set of six sun lights
-    create_six_sun_lights(power=1.0, location=location)
+    return create_six_sun_lights(power=1.0, location=location)
 
 
 ####################################################################################################
@@ -106,6 +117,9 @@ def create_lambert_ward_illumination(location=nmv.consts.Math.ORIGIN):
 def create_shadow_illumination(location=nmv.consts.Math.ORIGIN):
     """Creates an illumination specific for the shadow shader.
     """
+
+    # A list that will contain all the created light sources
+    lights = list()
 
     # If no light sources in the scene, then create two sources one towards the top and the
     # other one towards the bottom
@@ -119,6 +133,7 @@ def create_shadow_illumination(location=nmv.consts.Math.ORIGIN):
         lamp_reference.location = location
         lamp_reference.rotation_euler[0] = 1.5708
         bpy.data.lamps['LampUp'].node_tree.nodes["Emission"].inputs[1].default_value = 5
+        lights.append(lamp_reference)
 
         nmv.scene.ops.deselect_all()
         bpy.ops.object.lamp_add(type='SUN', radius=1, location=(0, 0, 0))
@@ -128,6 +143,10 @@ def create_shadow_illumination(location=nmv.consts.Math.ORIGIN):
         lamp_reference.location[0] = location
         lamp_reference.rotation_euler[0] = -1.5708
         bpy.data.lamps['LampDown'].node_tree.nodes["Emission"].inputs[1].default_value = 5
+        lights.append(lamp_reference)
+
+    # Return the lights
+    return lights
 
 
 ####################################################################################################
@@ -138,6 +157,9 @@ def create_glossy_illumination(location=nmv.consts.Math.ORIGIN):
     """
 
     nmv.scene.ops.clear_lights()
+
+    # A list that will contain all the created light sources
+    lights = list()
 
     # deselect all
     nmv.scene.ops.deselect_all()
@@ -161,6 +183,7 @@ def create_glossy_illumination(location=nmv.consts.Math.ORIGIN):
             lamp_reference.data.name = "Lamp%d" % i
             lamp_reference.rotation_euler = angle
             lamp_reference.data.energy = 2.5
+            lights.append(lamp_reference)
 
         else:
             lamp_data = bpy.data.lamps.new(name='Lamp%d' % i, type='HEMI')
@@ -169,8 +192,11 @@ def create_glossy_illumination(location=nmv.consts.Math.ORIGIN):
             lamp_object.rotation_euler = angle
             lamp_object.location = light_position[i] + location
             bpy.data.lamps['Lamp%d' % i].use_nodes = True
-            bpy.data.lamps['Lamp%d' % i].node_tree.nodes["Emission"].inputs[
-                1].default_value = 1e5
+            bpy.data.lamps['Lamp%d' % i].node_tree.nodes["Emission"].inputs[1].default_value = 1e5
+            lights.append(lamp_object)
+
+    # Return the lights
+    return lights
 
 
 ####################################################################################################
@@ -187,6 +213,8 @@ def create_glossy_bumpy_illumination(location=nmv.consts.Math.ORIGIN):
     light_rotation = [Vector((-1.57, 0.000, 0.000)),
                       Vector((0.000, 1.570, 0.000)),
                       Vector((0.000, -1.57, 0.000))]
+    # A list that will contain all the created light sources
+    lights = list()
 
     # Add the lights
     for i, angle in enumerate(light_rotation):
@@ -197,6 +225,7 @@ def create_glossy_bumpy_illumination(location=nmv.consts.Math.ORIGIN):
             lamp_reference.data.name = "Lamp%d" % i
             lamp_reference.rotation_euler = angle
             lamp_reference.data.energy = 10
+            lights.append(lamp_reference)
         else:
             bpy.ops.object.lamp_add(type='SUN', radius=1, location=location)
             lamp_reference = bpy.context.object
@@ -205,6 +234,10 @@ def create_glossy_bumpy_illumination(location=nmv.consts.Math.ORIGIN):
             lamp_reference.rotation_euler = angle
             lamp_reference.data.use_specular = True if i == 0 else False
             lamp_reference.data.energy = 10
+            lights.append(lamp_reference)
+
+    # Return the lights
+    return lights
 
 
 ####################################################################################################

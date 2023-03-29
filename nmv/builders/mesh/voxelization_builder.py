@@ -148,6 +148,9 @@ class VoxelizationBuilder(MeshBuilderBase):
     def adjust_mesh_origin(self):
         """Adjusts the origin of the mesh to be located at the soma."""
 
+        pass
+
+
     ################################################################################################
     # @post_process_mesh
     ################################################################################################

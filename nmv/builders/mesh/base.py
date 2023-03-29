@@ -77,6 +77,27 @@ class MeshBuilderBase:
         # A list of the colors/materials of the spines
         self.spines_materials = None
 
+        # A reference to the reconstructed soma mesh
+        self.soma_mesh = None
+
+        # A list of the reconstructed meshes of the apical dendrites
+        self.apical_dendrites_meshes = list()
+
+        # A list of the reconstructed meshes of the basal dendrites
+        self.basal_dendrites_meshes = list()
+
+        # A list of the reconstructed meshes of the axon
+        self.axons_meshes = list()
+
+        # A list of the endfeet meshes, if exist
+        self.endfeet_meshes = list()
+
+        # A list of the spine meshes, if exist
+        self.spines_meshes = list()
+
+        # A list of all the neuron/astrocyte meshes that are reconstructed
+        self.neuron_meshes = list()
+
         # Statistics
         self.profiling_statistics = ''
 
@@ -85,6 +106,72 @@ class MeshBuilderBase:
 
         # Stats. about the mesh
         self.mesh_statistics = ''
+
+        # Initialization
+        self._init_builder_()
+
+    ################################################################################################
+    # @_init_builder_
+    ################################################################################################
+    def _init_builder_(self):
+        """Initialize the relevant parameters of the builder."""
+
+        # Create the skeleton material
+        self.create_skeleton_materials()
+
+    ################################################################################################
+    # @create_skeleton_materials
+    ################################################################################################
+    def create_skeleton_materials(self):
+        """Create the materials that will be used to shade the mesh objects."""
+
+        # Initially, delete the old materials
+        for material in bpy.data.materials:
+            if self.morphology.label in material.name:
+                nmv.scene.delete_material(material=material)
+
+        # Soma
+        self.soma_materials = nmv.shading.create_materials(
+            material_type=self.options.shading.mesh_material,
+            name='Soma Mesh Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_soma_color)
+
+        # Axon
+        self.axons_materials = nmv.shading.create_materials(
+            material_type=self.options.shading.mesh_material,
+            name='Axons Mesh Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_axons_color)
+
+        # Basal dendrites
+        self.basal_dendrites_materials = nmv.shading.create_materials(
+            material_type=self.options.shading.mesh_material,
+            name='Basal Dendrites Mesh Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_basal_dendrites_color)
+
+        # Apical dendrite
+        self.apical_dendrites_materials = nmv.shading.create_materials(
+            material_type=self.options.shading.mesh_material,
+            name='Apical Dendrite Mesh Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_apical_dendrites_color)
+
+        # Spines
+        self.spines_materials = nmv.shading.create_materials(
+            material_type=self.options.shading.mesh_material,
+            name='Spines Material [%s]' % self.morphology.label,
+            color=self.options.shading.mesh_spines_color)
+
+        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Endfeet Material [%s]' % self.morphology.label,
+            material_type=self.options.shading.mesh_material,
+            color=self.options.shading.mesh_endfeet_color,
+            number_elements=1)
+
+        # Create an illumination specific for the given material
+        lights = nmv.shading.create_material_specific_illumination(
+            self.options.shading.mesh_material)
+
+        # Create a new collection from the created lights
+        nmv.utilities.create_collection_with_objects(name='Illumination', objects_list=lights)
 
     ################################################################################################
     # @resample_skeleton_sections
@@ -150,61 +237,6 @@ class MeshBuilderBase:
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
-
-    ################################################################################################
-    # @create_skeleton_materials
-    ################################################################################################
-    def create_skeleton_materials(self):
-        """Create the materials that will be used to shade the mesh objects.
-        """
-
-        # Delete the old materials
-        for material in bpy.data.materials:
-            if self.morphology.label in material.name:
-
-                # Remove the materials
-                nmv.utilities.disable_std_output()
-                bpy.data.materials.remove(material, do_unlink=True)
-                nmv.utilities.enable_std_output()
-
-        # Soma
-        self.soma_materials = nmv.shading.create_materials(
-            material_type=self.options.shading.mesh_material,
-            name='Soma Mesh Material [%s]' % self.morphology.label,
-            color=self.options.shading.mesh_soma_color)
-
-        # Axon
-        self.axons_materials = nmv.shading.create_materials(
-            material_type=self.options.shading.mesh_material,
-            name='Axons Mesh Material [%s]' % self.morphology.label,
-            color=self.options.shading.mesh_axons_color)
-
-        # Basal dendrites
-        self.basal_dendrites_materials = nmv.shading.create_materials(
-            material_type=self.options.shading.mesh_material,
-            name='Basal Dendrites Mesh Material [%s]' % self.morphology.label,
-            color=self.options.shading.mesh_basal_dendrites_color)
-
-        # Apical dendrite
-        self.apical_dendrites_materials = nmv.shading.create_materials(
-            material_type=self.options.shading.mesh_material,
-            name='Apical Dendrite Mesh Material [%s]' % self.morphology.label,
-            color=self.options.shading.mesh_apical_dendrites_color)
-
-        # Spines
-        self.spines_materials = nmv.shading.create_materials(
-            material_type=self.options.shading.mesh_material,
-            name='Spines Material [%s]' % self.morphology.label,
-            color=self.options.shading.mesh_spines_color)
-
-        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Endfeet Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.mesh_material,
-            color=self.options.shading.mesh_endfeet_color,
-            number_elements=1)
-
-        # Create an illumination specific for the given material
-        nmv.shading.create_material_specific_illumination(self.options.shading.mesh_material)
 
     ################################################################################################
     # @get_neuron_mesh_objects

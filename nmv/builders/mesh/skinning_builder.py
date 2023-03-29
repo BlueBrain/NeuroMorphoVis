@@ -515,10 +515,6 @@ class SkinningBuilder(MeshBuilderBase):
 
         nmv.logger.header('Building Mesh: SkinningBuilder')
 
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
-
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats

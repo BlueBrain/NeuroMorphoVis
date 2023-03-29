@@ -104,7 +104,7 @@ class MetaBuilder(MeshBuilderBase):
     # @update_morphology_skeleton
     ################################################################################################
     def update_morphology_skeleton(self):
-        """Verifies and repairs the morphology if the contain any artifacts that would potentially
+        """Verifies and repairs the morphology if they contain any artifacts that would potentially
         affect the reconstruction quality of the mesh.
         """
 
@@ -618,7 +618,8 @@ class MetaBuilder(MeshBuilderBase):
         bpy.ops.object.convert(target='MESH')
 
         # Update the label of the reconstructed mesh
-        self.meta_mesh = bpy.context.scene.objects[0]
+        self.meta_mesh = nmv.scene.get_object_by_name(object_name='meta_mesh.001')
+        print(self.meta_mesh)
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
@@ -626,11 +627,6 @@ class MetaBuilder(MeshBuilderBase):
 
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.meta_mesh)
-
-        # Clean the mesh object and remove the non-manifold edges
-        if not self.ignore_watertightness:
-            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
-            nmv.mesh.clean_mesh_object(self.meta_mesh)
 
         # Remove the islands (or small partitions from the mesh) and smooth it to look nice
         if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
@@ -751,10 +747,6 @@ class MetaBuilder(MeshBuilderBase):
         # Update the center of the mesh to the soma
         nmv.mesh.set_mesh_origin(
             mesh_object=self.meta_mesh, coordinate=self.morphology.soma.centroid)
-
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
 
         # Assign the material to the mesh
         self.assign_material_to_mesh()

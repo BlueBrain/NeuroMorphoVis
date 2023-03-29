@@ -134,7 +134,7 @@ class MeshCleaner:
         """Set the mode as edit, select mode as vertices, and reveal hidden vertices.
         """
 
-        # Set to EDIT mode
+        # Set to edit mode
         bpy.ops.object.mode_set(mode='EDIT')
 
         # Set to vertex mode
@@ -368,6 +368,7 @@ def clean_mesh_object(mesh_object,
 
     # Select the mesh object
     nmv.scene.select_object(scene_object=mesh_object)
+    nmv.scene.set_active_object(scene_object=mesh_object)
 
     # Construct a mesh cleaner object
     mesh_cleaner = MeshCleaner(threshold=threshold, sides=sides)

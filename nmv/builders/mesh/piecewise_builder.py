@@ -60,21 +60,6 @@ class PiecewiseBuilder(MeshBuilderBase):
         # Initialize the parent with the common parameters
         MeshBuilderBase.__init__(self, morphology, options)
 
-        # A reference to the reconstructed soma mesh
-        self.soma_mesh = None
-
-        # A list of the reconstructed meshes of the apical dendrites
-        self.apical_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the basal dendrites
-        self.basal_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the axon
-        self.axons_meshes = list()
-
-        # A list of the endfeet meshes, if exist
-        self.endfeet_meshes = list()
-
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
 
@@ -326,8 +311,7 @@ class PiecewiseBuilder(MeshBuilderBase):
     # @build_endfeet
     ################################################################################################
     def build_endfeet(self):
-        """Builds the endfeet in case of loading astrocytic morphologies.
-        """
+        """Builds the endfeet in case of loading astrocytic morphologies."""
 
         self.endfeet_meshes.extend(self.reconstruct_endfeet())
 
@@ -344,10 +328,6 @@ class PiecewiseBuilder(MeshBuilderBase):
         """
 
         nmv.logger.header('Building Mesh: PiecewiseBuilder')
-
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
 
         # Verify and repair the morphology, if required
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)

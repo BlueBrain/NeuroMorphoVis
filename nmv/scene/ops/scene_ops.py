@@ -344,6 +344,25 @@ def clear_default_scene():
 
 
 ####################################################################################################
+# @delete_material
+####################################################################################################
+def delete_material(material,
+                    unlink_from_scene=True):
+    """Deletes a material from the scene.
+
+    :param material:
+        A reference to the material that must be deleted.
+    :param unlink_from_scene:
+        Unlink this material from the scene, by default True.
+    """
+
+    # Remove the materials
+    nmv.utilities.disable_std_output()
+    bpy.data.materials.remove(material, do_unlink=unlink_from_scene)
+    nmv.utilities.enable_std_output()
+
+
+####################################################################################################
 # @clear_scene
 ####################################################################################################
 def clear_scene():
@@ -357,6 +376,7 @@ def clear_scene():
         i_object.hide_select = False
         i_object.hide_viewport = False
 
+    # Select all the objects in the scene and delete them all at once
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete()
 
@@ -398,7 +418,6 @@ def clear_scene():
         nmv.utilities.enable_std_output()
 
 
-
 ####################################################################################################
 # @clear_lights
 ####################################################################################################
@@ -430,23 +449,6 @@ def clear_lights():
             nmv.utilities.disable_std_output()
             bpy.data.lamps.remove(scene_lamp, do_unlink=True)
             nmv.utilities.enable_std_output()
-
-
-####################################################################################################
-# @reset_scene
-####################################################################################################
-def reset_scene():
-    """Resets the scene and does several operations that are needed to avoid any errors.
-    """
-
-    # Set all the objects in the scene to visible
-    for scene_object in bpy.context.scene.objects:
-        return
-        # Switch to the object mode to avoid any errors if by default the editing mode was active
-        #bpy.ops.object.mode_set(mode='OBJECT')
-
-        # Un-hide any object in the scene to be able to delete all the objects
-        #unhide_object(scene_object=scene_object)
 
 
 ####################################################################################################
