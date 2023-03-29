@@ -91,9 +91,20 @@ def draw_mesh_surface_roughness_option(layout, scene, options):
 def draw_mesh_connectivity_options(layout, scene, options):
 
     row = layout.row()
-    row.label(text='Skeleton Objects:')
+    row.label(text='Mesh Objects')
     row.prop(scene, 'NMV_MeshObjectsConnection', expand=True)
     options.mesh.neuron_objects_connection = scene.NMV_MeshObjectsConnection
+
+
+####################################################################################################
+# @draw_proxy_mesh_option
+####################################################################################################
+def draw_proxy_mesh_option(layout, scene, options):
+
+    row = layout.row()
+    row.label(text='Proxy Mesh')
+    row.prop(scene, 'NMV_ProxyMeshes', expand=True)
+    options.mesh.proxy_mesh_method = scene.NMV_ProxyMeshes
 
 
 ####################################################################################################
@@ -111,6 +122,7 @@ def draw_piecewise_watertight_meshing_options(layout, scene, options):
 def draw_voxelization_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
+    draw_proxy_mesh_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################

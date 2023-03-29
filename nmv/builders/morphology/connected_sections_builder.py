@@ -615,7 +615,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -646,7 +646,8 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Draw every endfoot in the list and append the resulting mesh to the collector
         for endfoot in self.morphology.endfeet:
-            self.morphology_objects.append(endfoot.create_surface_patch(material=self.endfeet_materials[0]))
+            self.morphology_objects.append(
+                endfoot.create_surface_patch(material=self.endfeet_materials[0]))
 
         # Transforming to global coordinates
         self.transform_to_global_coordinates()

@@ -469,7 +469,7 @@ def verify_arbor_proximity_to_soma(arbor,
                                    soma):
     """Validates the proximity of a given arbor to the given soma. If the arbor is too far, then
     probably, it is NOT connected to the soma, otherwise it is.
-    This function simply updates the self.far_from_soma  flag of the given arbor
+    This function simply updates the self.far_from_soma  flag of the given a0rbor
 
     :param arbor:
         A given arbor of the morphology to check.
@@ -478,7 +478,7 @@ def verify_arbor_proximity_to_soma(arbor,
     """
 
     # TODO: Fix this based on some algorithm -> nmv.consts.Skeleton.MAXIMUM_SOMA_RADIUS_REPORTED
-    if (arbor.samples[0].point - soma.centroid).length < soma.largest_radius * 2:
+    if (arbor.samples[0].point - soma.centroid).length < soma.mean_radius * 4:
         arbor.far_from_soma = False
     else:
         arbor.far_from_soma = True

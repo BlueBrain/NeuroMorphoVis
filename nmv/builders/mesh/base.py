@@ -98,6 +98,9 @@ class MeshBuilderBase:
         # A list of all the neuron/astrocyte meshes that are reconstructed
         self.neuron_meshes = list()
 
+        # A reference to the neuron mesh after its creation 
+        self.neuron_mesh = None
+
         # Statistics
         self.profiling_statistics = ''
 
@@ -232,7 +235,9 @@ class MeshBuilderBase:
             morphology=self.morphology, morphology_options=self.options.morphology)
 
         # Branching
-        # nmv.builders.morphology.update_sections_branching(builder=builder)
+        nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
+                                               branching_method=self.options.morphology.branching)
+        #nmv.builders.morphology.update_sections_branching(builder=builder)
 
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
@@ -535,27 +540,74 @@ class MeshBuilderBase:
             #        clean_union_operator_reconstructed_surface(mesh_object=mesh_object)
 
     ################################################################################################
-    # @join_mesh_object_into_single_object
+    # @adjust_origins_to_soma_center
     ################################################################################################
-    def join_mesh_object_into_single_object(self):
+    def adjust_origins_to_soma_center(self):
+
+        for i_mesh in self.apical_dendrites_meshes:
+            nmv.mesh.set_mesh_origin(
+                mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+        for i_mesh in self.basal_dendrites_meshes:
+            nmv.mesh.set_mesh_origin(
+                mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+        for i_mesh in self.axons_meshes:
+            nmv.mesh.set_mesh_origin(
+                mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+    ################################################################################################
+    # @join_objects_and_adjust_origin
+    ################################################################################################
+    def join_objects_and_adjust_origin(self):
         """Join all the mesh objects in the scene into a single mesh.
 
         :return:
             A reference to the joint mesh.
         """
 
-        # Build spines from a BBP circuit
-        if self.options.mesh.neuron_objects_connection == \
-                nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+        # Are the objects connected or not
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
-            # Get a list of all the neuron mesh objects
-            mesh_objects = self.get_neuron_mesh_objects()
+            # Join all the mesh objects  into a single object
+            joint_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
 
-            # Join them into a single object
-            joint_mesh = nmv.mesh.join_mesh_objects(mesh_objects, self.morphology.label)
+            # Adjust the origin of the resulting mesh
+            nmv.mesh.set_mesh_origin(
+                mesh_object=joint_mesh, coordinate=self.morphology.soma.centroid)
+
+            nmv.utilities.create_collection_with_objects(
+                name='Mesh %s' % self.morphology.label, objects_list=[joint_mesh])
 
             # Return a reference to the joint mesh object
             return joint_mesh
+
+        # If they are not connected, then adjust the origins only
+        else:
+
+            # Adjust the origin of the soma mesh
+            nmv.mesh.set_mesh_origin(
+                mesh_object=self.soma_mesh, coordinate=self.morphology.soma.centroid)
+
+            # Adjust the origin of the apical dendrites meshes
+            for i_mesh in self.apical_dendrites_meshes:
+                nmv.mesh.set_mesh_origin(
+                    mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+            # Adjust the origin of the basal dendrites meshes
+            for i_mesh in self.basal_dendrites_meshes:
+                nmv.mesh.set_mesh_origin(
+                    mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+            # Adjust the origin of the axons meshes
+            for i_mesh in self.axons_meshes:
+                nmv.mesh.set_mesh_origin(
+                    mesh_object=i_mesh, coordinate=self.morphology.soma.centroid)
+
+            # Create a new collection from the created objects of the mesh
+            nmv.utilities.create_collection_with_objects(
+                name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
 
     ################################################################################################
     # @add_spines_to_surface
@@ -611,8 +663,7 @@ class MeshBuilderBase:
         since the soma will not be connected to the arbor at all.
         """
 
-        if self.options.mesh.soma_type == \
-                nmv.enums.Soma.Representation.META_BALLS:
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.META_BALLS:
 
             # If the soma is connected to the root arbors
             soma_builder_object = nmv.builders.SomaMetaBuilder(
@@ -620,6 +671,9 @@ class MeshBuilderBase:
 
             # Reconstruct the soma mesh
             self.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+            # Add to the meshes list
+            self.neuron_meshes.append(self.soma_mesh)
 
         else:
 
@@ -629,6 +683,9 @@ class MeshBuilderBase:
 
             # Reconstruct the soma mesh
             self.soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
+
+            # Add to the meshes list
+            self.neuron_meshes.append(self.soma_mesh)
 
         # Apply the shader to the reconstructed soma mesh
         nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])

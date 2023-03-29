@@ -51,6 +51,9 @@ class MeshOptions:
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
 
+        # Which proxy meshing method will be within the voxelization-based re-meshing
+        self.proxy_mesh_method = nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS
+
         # Soma connection to the arbors, connected or disconnected
         self.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
 

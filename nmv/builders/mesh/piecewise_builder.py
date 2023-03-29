@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # Internal modules
 from .base import MeshBuilderBase
 import nmv.bbox
@@ -39,8 +38,7 @@ class PiecewiseBuilder(MeshBuilderBase):
     NOTES:
         - The meshes produced by this builder are not guaranteed to be watertight.
         - This is the fastest mesh builder amongst all the other builders in the Meshing Toolbox.
-        - You can still color-code each arbor type in the morphology, unlike the MetaBuilder.
-        - The resulting mehes can be used with Ultraliser to create optimized and watertight ones.
+        - You can still color-code each arbor type in the morphology.
     """
 
     ################################################################################################
@@ -52,7 +50,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Constructor
 
         :param morphology:
-            A given morphology skeleton to create the mesh for.
+            A given morphology skeleton to create a mesh for.
         :param options:
             Loaded options from NeuroMorphoVis.
         """
@@ -132,6 +130,12 @@ class PiecewiseBuilder(MeshBuilderBase):
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
+
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
@@ -168,6 +172,12 @@ class PiecewiseBuilder(MeshBuilderBase):
 
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
+
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
 
         # Axons
         if not self.options.morphology.ignore_axons:
@@ -206,15 +216,20 @@ class PiecewiseBuilder(MeshBuilderBase):
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
+
     ################################################################################################
     # @build_hard_edges_arbors
     ################################################################################################
     def build_hard_edges_arbors(self):
-        """Reconstruct the meshes of the arbors of the neuron with HARD edges.
-        """
+        """Reconstruct the meshes of the arbors of the neuron with HARD edges."""
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=5, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -228,9 +243,6 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
-
-        # Close caps
-        nmv.logger.detail('Closing caps')
 
         # Close the caps of the apical dendrites meshes
         for arbor_object in self.apical_dendrites_meshes:
@@ -254,7 +266,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=8, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=8, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -285,27 +297,12 @@ class PiecewiseBuilder(MeshBuilderBase):
     # @reconstruct_arbors_meshes
     ################################################################################################
     def reconstruct_arbors_meshes(self):
-        """Reconstruct the arbors.
-
-        There are two techniques for reconstructing the mesh. The first uses sharp edges without
-        any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
-        The other method creates a smoothed mesh with soft edges. In this method, we will use a
-        simplified bevel object with only 'four' vertices and smooth it later using vertices
-        smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
-        """
+        """Reconstruct the arbors."""
 
         nmv.logger.header('Reconstructing arbors')
 
         # Hard edges (less samples per branch)
-        if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
-            self.build_hard_edges_arbors()
-
-        # Smooth edges (more samples per branch)
-        elif self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-            self.build_soft_edges_arbors()
-
-        else:
-            nmv.logger.log('ERROR')
+        self.build_hard_edges_arbors()
 
     ################################################################################################
     # @build_endfeet
@@ -333,8 +330,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
-        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
+        # Verify the connectivity of the arbors to the soma
         nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
 
         # Build the soma, with the default parameters
@@ -365,12 +361,8 @@ class PiecewiseBuilder(MeshBuilderBase):
         result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
-        # Join all the objects into a single object
-        result, stats = nmv.utilities.profile_function(self.join_mesh_object_into_single_object)
-        self.profiling_statistics += stats
-
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
+        # Aggregation and origin adjustments
+        result, stats = nmv.utilities.profile_function(self.join_objects_and_adjust_origin)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
@@ -383,14 +375,7 @@ class PiecewiseBuilder(MeshBuilderBase):
         # Write the stats to file
         self.write_statistics_to_file(tag='piecewise')
 
-        # Return a list of all the mesh objects in the scene
-        mesh_objects = self.get_neuron_mesh_objects()
-
-        # Create a new collection from the created objects of the mesh
-        nmv.utilities.create_collection_with_objects(
-            name='Mesh %s' % self.morphology.label, objects_list=mesh_objects)
-
-        return mesh_objects
+        return self.neuron_meshes
 
     ################################################################################################
     # @reconstruct_mesh_in_single_object

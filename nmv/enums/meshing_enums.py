@@ -110,6 +110,56 @@ class Meshing:
         ]
 
     ################################################################################################
+    # @Proxy
+    ################################################################################################
+    class Proxy:
+        """The method used to create the proxy meshes for the voxelization-based re-meshing"""
+
+        # Use the articulated sections morphology builder
+        ARTICULATED_SECTIONS = 'PROXY_ARTICULATED_SECTIONS'
+
+        # Use the connected sections morphology builder
+        CONNECTED_SECTIONS = 'PROXY_CONNECTED_SECTIONS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            if argument == 'articulated-sections':
+                return Meshing.Proxy.ARTICULATED_SECTIONS
+            elif argument == 'connected-sections':
+                return Meshing.Proxy.CONNECTED_SECTIONS
+            else:
+                return Meshing.Proxy.ARTICULATED_SECTIONS
+
+        # All the methods list
+        PROXY_MESHES_METHODS = [
+
+            (ARTICULATED_SECTIONS,
+             'Articulated Sections',
+             'Use the articulated sections morphology builder to build the proxy mesh that is '
+             'used later to construct the final mesh. The articulated sections builder builds '
+             'every section in the morphology independently and then adds spheres at the terminal '
+             'points of every section to make a continuation of the path from the parent sections '
+             'to the child ones.'),
+
+            (CONNECTED_SECTIONS,
+             'Connected Sections',
+             'Use the connected sections morphology building style to build the proxy mesh that is '
+             'used later to construct the final mesh. This method constructs a single mesh for a '
+             'full path from a root node to a leaf one. This method is more robust than the '
+             'Articulated Sections.')
+        ]
+
+    ################################################################################################
     # @PiecewiseFilling
     ################################################################################################
     class PiecewiseFilling:

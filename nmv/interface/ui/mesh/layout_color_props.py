@@ -43,7 +43,6 @@ def draw_mesh_shading_option(layout, scene, options):
     options.shading.mesh_material = scene.NMV_MeshMaterial
 
 
-
 ####################################################################################################
 # @draw_soma_color_option
 ####################################################################################################

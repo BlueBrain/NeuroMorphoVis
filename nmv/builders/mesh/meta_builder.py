@@ -105,8 +105,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def update_morphology_skeleton(self):
         """Verifies and repairs the morphology if they contain any artifacts that would potentially
-        affect the reconstruction quality of the mesh.
-        """
+        affect the reconstruction quality of the mesh."""
 
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
@@ -279,8 +278,7 @@ class MetaBuilder(MeshBuilderBase):
     def build_arbors(self):
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
-        getting exponentially slower.
-        """
+        getting exponentially slower."""
 
         # Header
         nmv.logger.info('Building arbors')
@@ -316,6 +314,7 @@ class MetaBuilder(MeshBuilderBase):
     # @build_endfeet
     ################################################################################################
     def build_endfeet(self):
+        """Builds the endfeet if the input morphology is an astrocyte."""
 
         # Construct the meta-object from the endfeet
         for endfoot in self.morphology.endfeet:
@@ -358,7 +357,7 @@ class MetaBuilder(MeshBuilderBase):
         """Constructs and initialize a new meta object that will be the basis of the mesh.
 
         :param name:
-            Meta-object name.
+            The name of the meta object.
         """
 
         # Header
@@ -420,8 +419,7 @@ class MetaBuilder(MeshBuilderBase):
     # @build_soma_from_meta_objects
     ################################################################################################
     def build_soma_from_meta_objects(self):
-        """Builds the soma from meta-objects ONLY.
-        """
+        """Builds the soma from meta-objects ONLY."""
 
         # Header
         nmv.logger.info('Building soma from Meta Objects')
@@ -473,8 +471,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def build_soma_from_soft_body_mesh(self):
         """Builds the soma profile in the meta skeleton based on a soma that is reconstructed with
-        the with soft-body algorithm.
-        """
+        the with soft-body algorithm."""
 
         # Use the SomaSoftBodyBuilder to reconstruct the soma
         soft_body_soma_builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology,
@@ -536,8 +533,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def build_random_spines(self):
         """Builds integrated spines into the neuron meta-object that will be meshed and will be
-        part of the neuron mesh.
-        """
+        part of the neuron mesh."""
 
         # Header
         nmv.logger.info('Integrating spines')
@@ -619,7 +615,6 @@ class MetaBuilder(MeshBuilderBase):
 
         # Update the label of the reconstructed mesh
         self.meta_mesh = nmv.scene.get_object_by_name(object_name='meta_mesh.001')
-        print(self.meta_mesh)
         self.meta_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
@@ -691,8 +686,7 @@ class MetaBuilder(MeshBuilderBase):
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh using meta objects.
-        """
+        """Reconstructs a high fidelity surface mesh of the input morphology."""
 
         nmv.logger.header('Building Mesh: MetaBuilder')
 
@@ -700,19 +694,15 @@ class MetaBuilder(MeshBuilderBase):
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        # Initialize the meta object
-        # Note that self.label should be replaced by self.options.morphology.label
-        result, stats = nmv.utilities.profile_function(
-            self.initialize_meta_object, self.label)
+        # Initialization of the meta object
+        result, stats = nmv.utilities.profile_function(self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
 
-        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
-            soma_building_function = self.build_soma_from_soft_body_mesh
-        else:
-            soma_building_function = self.build_soma_from_meta_objects
-
         # Build the soma
-        result, stats = nmv.utilities.profile_function(soma_building_function)
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+            result, stats = nmv.utilities.profile_function(self.build_soma_from_soft_body_mesh)
+        else:
+            result, stats = nmv.utilities.profile_function(self.build_soma_from_meta_objects)
         self.profiling_statistics += stats
 
         # Build the arbors
@@ -751,9 +741,9 @@ class MetaBuilder(MeshBuilderBase):
         # Assign the material to the mesh
         self.assign_material_to_mesh()
 
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
-        self.profiling_statistics += stats
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=[self.meta_mesh])
 
         # Collect the stats. of the mesh
         result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
@@ -764,10 +754,6 @@ class MetaBuilder(MeshBuilderBase):
 
         # Write the stats to file
         self.write_statistics_to_file(tag='meta')
-
-        # Create a new collection from the created objects of the mesh
-        nmv.utilities.create_collection_with_objects(
-            name='Mesh %s' % self.morphology.label, objects_list=[self.meta_mesh])
 
         # Return a reference to the reconstructed mesh
         return self.meta_mesh

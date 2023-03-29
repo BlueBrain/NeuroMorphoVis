@@ -43,6 +43,11 @@ bpy.types.Scene.NMV_MeshingMetaSoma = bpy.props.EnumProperty(
     name='Soma',
     default=nmv.enums.Soma.Representation.META_BALLS)
 
+# The method that is used to create the proxy meshes
+bpy.types.Scene.NMV_ProxyMeshes = bpy.props.EnumProperty(
+    items=nmv.enums.Meshing.Proxy.PROXY_MESHES_METHODS,
+    name='Proxy Meshes',
+    default=nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS)
 
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
@@ -158,7 +163,7 @@ bpy.types.Scene.NMV_NumberSpinesPerMicron = bpy.props.FloatProperty(
 
 bpy.types.Scene.NMV_MeshMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shader.MATERIAL_ITEMS,
-    name="Shading",
+    name="",
     default=nmv.enums.Shader.LAMBERT_WARD)
 
 # Use single color for the all the objects in the mesh

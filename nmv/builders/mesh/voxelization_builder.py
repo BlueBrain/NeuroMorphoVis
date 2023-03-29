@@ -53,24 +53,6 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Initialize the parent with the common parameters
         MeshBuilderBase.__init__(self, morphology, options)
 
-        # A reference to the reconstructed soma mesh
-        self.soma_mesh = None
-
-        # A list of the reconstructed meshes of the apical dendrites
-        self.apical_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the basal dendrites
-        self.basal_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the axon
-        self.axons_meshes = list()
-
-        # A list of the endfeet meshes, if exist
-        self.endfeet_meshes = list()
-
-        # A reference to the reconstructed mesh
-        self.mesh = None
-
         # Statistics
         self.profiling_statistics = 'VoxelizationBuilder Profiling Stats.: \n'
 
@@ -91,16 +73,16 @@ class VoxelizationBuilder(MeshBuilderBase):
         nmv.scene.ops.deselect_all()
 
         # Activate the mesh object
-        nmv.scene.set_active_object(self.mesh)
+        nmv.scene.set_active_object(self.neuron_mesh)
 
         # Assign the material to the selected mesh
-        nmv.shading.set_material_to_object(self.mesh, self.soma_materials[0])
+        nmv.shading.set_material_to_object(self.neuron_mesh, self.soma_materials[0])
 
         # Update the UV mapping
-        nmv.shading.adjust_material_uv(self.mesh)
+        nmv.shading.adjust_material_uv(self.neuron_mesh)
 
         # Activate the mesh object
-        nmv.scene.set_active_object(self.mesh)
+        nmv.scene.set_active_object(self.neuron_mesh)
 
     ################################################################################################
     # @build_proxy_mesh_using_articulated_sections_builder
@@ -130,7 +112,30 @@ class VoxelizationBuilder(MeshBuilderBase):
             nmv.scene.convert_object_to_mesh(scene_object=i_object)
 
         # Join all the objects into a single mesh object
-        self.mesh = nmv.scene.join_objects(scene_objects=objects)
+        self.neuron_mesh = nmv.scene.join_objects(scene_objects=objects)
+
+    ################################################################################################
+    # @build_proxy_mesh_using_connected_sections_builder
+    ################################################################################################
+    def build_proxy_mesh_using_connected_sections_builder(self):
+
+        # Adjust the minimum radius to 0.1 to avoid discontinuities
+        nmv.skeleton.set_smallest_sample_radius_to_value(
+            morphology=self.morphology, smallest_radius=0.1)
+
+        # Create the proxy mesh builder and generate the morphology skeleton
+        morphology_builder = nmv.builders.ConnectedSectionsBuilder(
+            morphology=self.morphology, options=self.options)
+
+        # Generate a list of objects (currently morphologies)
+        objects = morphology_builder.draw_morphology_skeleton()
+
+        # Convert the morphologies into meshes, if not meshes
+        for i_object in objects:
+            nmv.scene.convert_object_to_mesh(scene_object=i_object)
+
+        # Reconstruct the proxy mesh
+        self.neuron_mesh = nmv.scene.join_objects(scene_objects=objects)
 
     ################################################################################################
     # @remesh_with_voxelization_modifier
@@ -140,16 +145,7 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Apply the modifier
         nmv.mesh.apply_voxelization_remeshing_modifier(
-            mesh_object=self.mesh, voxel_size=0.1)
-
-    ################################################################################################
-    # @adjust_mesh_origin
-    ################################################################################################
-    def adjust_mesh_origin(self):
-        """Adjusts the origin of the mesh to be located at the soma."""
-
-        pass
-
+            mesh_object=self.neuron_mesh, voxel_size=0.1)
 
     ################################################################################################
     # @post_process_mesh
@@ -163,7 +159,26 @@ class VoxelizationBuilder(MeshBuilderBase):
         # nmv.mesh.remove_doubles(mesh_object=self.mesh, distance=0.01)
 
         # Smooth vertices to remove any sphere-like shapes
-        nmv.mesh.smooth_object_vertices(self.mesh, level=5)
+        nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=5)
+
+    ################################################################################################
+    # @build_proxy_mesh
+    ################################################################################################
+    def build_proxy_mesh(self):
+        """Builds the proxy mesh that will be used for the voxelization"""
+
+        if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
+            return self.build_proxy_mesh_using_connected_sections_builder()
+        else:
+            return self.build_proxy_mesh_using_articulated_sections_builder()
+
+    ################################################################################################
+    # @adjust_origin_to_soma_center
+    ################################################################################################
+    def adjust_origin_to_soma_center(self):
+
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -176,8 +191,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        result, stats = nmv.utilities.profile_function(
-            self.build_proxy_mesh_using_articulated_sections_builder)
+        result, stats = nmv.utilities.profile_function(self.build_proxy_mesh)
         self.profiling_statistics += stats
 
         # Voxelization modifier
@@ -193,7 +207,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Adjust the origin of the mesh
-        result, stats = nmv.utilities.profile_function(self.adjust_mesh_origin)
+        result, stats = nmv.utilities.profile_function(self.adjust_origin_to_soma_center)
         self.profiling_statistics += stats
 
         # Collect the stats. of the mesh
@@ -208,6 +222,6 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Create a new collection from the created objects of the mesh
         nmv.utilities.create_collection_with_objects(
-            name='Mesh %s' % self.morphology.label, objects_list=[self.mesh])
+            name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
 
 
