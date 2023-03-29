@@ -120,10 +120,7 @@ class SkinningBuilder(MeshBuilderBase):
         """
 
         # Make sure to include the first sample of the root section
-        if section.is_root():
-            starting_index = 0
-        else:
-            starting_index = 1
+        starting_index = 0 if section.is_root() else 1
 
         # Sample by sample along the section
         for i in range(starting_index, len(section.samples)):
@@ -252,7 +249,8 @@ class SkinningBuilder(MeshBuilderBase):
                 arbor, samples_global_arbor_index, max_branching_order)
 
             # Add an auxiliary sample just before the arbor starts
-            auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[0].point.normalized()
+            auxiliary_point = arbor.samples[0].point - 0.01 * \
+                              (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
 
             # Create the initial vertex of the arbor skeleton at the auxiliary point
             arbor_bmesh_object = nmv.bmeshi.create_vertex(location=auxiliary_point)
@@ -275,15 +273,15 @@ class SkinningBuilder(MeshBuilderBase):
 
             # If the arbor is not far from soma, then connect it to the origin
             if not arbor.far_from_soma:
-                print('not farrr')
                 arbor_bmesh_object = nmv.bmeshi.create_vertex(location=self.morphology.soma.centroid)
 
                 # Add an auxiliary sample just before the arbor starts
-                auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[
-                    0].point.normalized()
+                auxiliary_point = arbor.samples[0].point - 0.01 * \
+                (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
+                print('not far')
 
             else:
-                print('farrr')
+                print('far')
                 arbor_bmesh_object = nmv.bmeshi.create_vertex(location=arbor.samples[0].point)
 
                 # Add an auxiliary sample just after the arbor starts

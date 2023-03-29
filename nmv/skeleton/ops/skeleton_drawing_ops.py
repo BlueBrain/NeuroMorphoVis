@@ -419,6 +419,8 @@ def draw_connected_sections(section,
 
     :param section:
         Section root.
+    :param soma_center:
+        The center of the soma.
     :param poly_line_data:
         A list of lists containing the data of the poly-line format.
     :param sections_objects:

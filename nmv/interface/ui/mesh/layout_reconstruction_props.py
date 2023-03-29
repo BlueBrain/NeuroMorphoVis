@@ -64,7 +64,7 @@ def draw_meta_soma_option(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_meshing_technique_option
+# @draw_mesh_smoothing_option
 ####################################################################################################
 def draw_mesh_smoothing_option(layout, scene, options):
 
@@ -74,6 +74,9 @@ def draw_mesh_smoothing_option(layout, scene, options):
     options.mesh.edges = scene.NMV_MeshSmoothing
 
 
+####################################################################################################
+# @draw_mesh_surface_roughness_option
+####################################################################################################
 def draw_mesh_surface_roughness_option(layout, scene, options):
 
     row = layout.row()
@@ -81,6 +84,10 @@ def draw_mesh_surface_roughness_option(layout, scene, options):
     row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
     options.mesh.surface = scene.NMV_SurfaceRoughness
 
+
+####################################################################################################
+# @draw_mesh_connectivity_options
+####################################################################################################
 def draw_mesh_connectivity_options(layout, scene, options):
 
     row = layout.row()
@@ -89,18 +96,26 @@ def draw_mesh_connectivity_options(layout, scene, options):
     options.mesh.neuron_objects_connection = scene.NMV_MeshObjectsConnection
 
 
+####################################################################################################
+# @draw_piecewise_watertight_meshing_options
+####################################################################################################
 def draw_piecewise_watertight_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
 
 
+####################################################################################################
+# @draw_voxelization_meshing_options
+####################################################################################################
 def draw_voxelization_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
-    draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
 
 
+####################################################################################################
+# @draw_skinning_meshing_options
+####################################################################################################
 def draw_skinning_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
@@ -108,12 +123,18 @@ def draw_skinning_meshing_options(layout, scene, options):
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
 
 
+####################################################################################################
+# @draw_union_operators_meshing_options
+####################################################################################################
 def draw_union_operators_meshing_options(layout, scene, options):
 
     draw_meta_soma_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
 
 
+####################################################################################################
+# @draw_meta_objects_meshing_options
+####################################################################################################
 def draw_meta_objects_meshing_options(layout, scene, options):
 
     draw_meta_soma_option(layout=layout, scene=scene, options=options)

@@ -102,3 +102,21 @@ def update_arbors_radii(morphology,
     else:
         return
 
+
+####################################################################################################
+# @set_smallest_sample_radius_to_value
+####################################################################################################
+def set_smallest_sample_radius_to_value(morphology,
+                                        smallest_radius=0.1):
+    """Sets the radius of the smallest sample to a given value. This function is mainly used for
+    the meshing builder to avoid meshing artifacts.
+
+    :param morphology:
+        A given morphology skeleton.
+    :param smallest_radius:
+        The value of the smallest radius of the samples in the morphology.
+    """
+
+    nmv.logger.info('Verifying samples radii')
+    nmv.skeleton.ops.apply_operation_to_morphology(
+        *[morphology, nmv.skeleton.ops.verify_smallest_radius_to_value, smallest_radius])

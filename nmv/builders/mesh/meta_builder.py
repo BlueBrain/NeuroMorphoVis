@@ -111,7 +111,8 @@ class MetaBuilder(MeshBuilderBase):
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
+              self.morphology.soma.centroid])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites

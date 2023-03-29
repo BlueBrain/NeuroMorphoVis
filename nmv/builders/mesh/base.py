@@ -134,7 +134,8 @@ class MeshBuilderBase:
         # section and each arbor
         nmv.logger.info('Removing Internal Samples')
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
+              self.morphology.soma.centroid])
 
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()

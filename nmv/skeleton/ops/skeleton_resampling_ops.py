@@ -541,7 +541,8 @@ def remove_duplicate_samples(section,
 ####################################################################################################
 # @remove_duplicate_samples
 ####################################################################################################
-def remove_samples_inside_soma(section):
+def remove_samples_inside_soma(section,
+                               soma_center):
     """
     Remove the samples located inside the soma that result in intersecting the initial section of
     the branch with the soma. This function is ONLY applied to a root section that is connected
@@ -555,6 +556,8 @@ def remove_samples_inside_soma(section):
 
     :param section:
         A given section to remove its internal samples that are located inside the soma.
+    :param soma_center:
+        The center of the soma.
     """
 
     # If the section is not a root one, then ignore this filter and return
@@ -568,7 +571,7 @@ def remove_samples_inside_soma(section):
 
         # Report the error
         nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples' %
-              (section.get_type_string(), section.index))
+                       (section.get_type_string(), section.index))
 
         # Return
         return
@@ -591,7 +594,7 @@ def remove_samples_inside_soma(section):
         sample_1 = copy.copy(section.samples[1])
 
         # Compare the distances between the two samples and the origin
-        if sample_1.point.length < sample_0.point.length:
+        if (sample_1.point - soma_center).length < (sample_0.point - soma_center).length:
 
             # Report the repair
             nmv.logger.log('\t\t* REPAIRING: Removing internal sample, section [%s: %d]' %
@@ -605,7 +608,7 @@ def remove_samples_inside_soma(section):
     else:
 
         # Compute the minimal distance at which the samples with smaller distances will be filtered
-        minimal_distance = section.samples[0].point.length
+        minimal_distance = (section.samples[0].point - soma_center).length
 
         # Iterate over the next samples
         for i, sample in enumerate(list(section.samples)):
@@ -615,7 +618,7 @@ def remove_samples_inside_soma(section):
                 continue
 
             # Compare the distance between the sample and the origin to the minimal distance
-            if sample.point.length < minimal_distance:
+            if (sample.point - soma_center).length < minimal_distance:
 
                 # Remove the sample
                 section.samples.remove(sample)
@@ -626,7 +629,7 @@ def remove_samples_inside_soma(section):
 
                 # After removing this sample, the section might have two samples only, so we
                 # recursively call this function and break afterwards.
-                remove_samples_inside_soma(section=section)
+                remove_samples_inside_soma(section=section, soma_center=soma_center)
 
                 # Break
                 break

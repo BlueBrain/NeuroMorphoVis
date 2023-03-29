@@ -222,12 +222,12 @@ def get_section_polyline_without_terminal_samples(section):
 
 
 ####################################################################################################
-# @connect_root_to_origin
+# @connect_root_to_soma_center
 ####################################################################################################
-def connect_root_to_origin(section,
-                           soma_center,
-                           poly_line):
-    """Connect the roots of the connected arbors to the soma by adiing few samples till
+def connect_root_to_soma_center(section,
+                                soma_center,
+                                poly_line):
+    """Connect the roots of the connected arbors to the soma by adding a few samples till
     reaching the origin.
 
     :param section:
@@ -238,11 +238,11 @@ def connect_root_to_origin(section,
         The polyline list used to collect the samples.
     """
 
-    # Get the direction from the origin to the first sample of the section
+    # Get the direction from the soma center to the first sample of the section
     direction = (section.samples[0].point - soma_center).normalized()
 
     # Get the distance from the origin to the first sample of the section
-    distance = section.samples[0].point.length
+    distance = (section.samples[0].point - soma_center).length
 
     # Number of samples required to connect the origin to the soma to the first sample
     number_samples = int(distance / 5.0)
@@ -296,13 +296,14 @@ def get_connected_poly_line(section,
 
         # All connected
         if connection_to_soma == nmv.enums.Skeleton.Roots.ALL_CONNECTED:
-            connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
+            connect_root_to_soma_center(
+                section=section, soma_center=soma_center, poly_line=poly_line)
 
         # Only connect the arbors connected to the soma to the origin
         elif connection_to_soma == nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN:
 
             if not section.far_from_soma:
-                connect_root_to_origin(
+                connect_root_to_soma_center(
                     section=section, soma_center=soma_center, poly_line=poly_line)
         else:
             pass
@@ -595,6 +596,8 @@ def get_connected_sections_poly_line(section,
         The geometry of the section.
     :param roots_connection:
         How to root sections will be connected to the soma.
+    :param soma_center:
+        The center of the soma.
     :param is_continuous:
         Is this section a continuation from a previous one or not.
     :param is_last_section:
@@ -621,12 +624,14 @@ def get_connected_sections_poly_line(section,
 
         # All connected
         elif roots_connection == nmv.enums.Skeleton.Roots.ALL_CONNECTED:
-            connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
+            connect_root_to_soma_center(
+                section=section, soma_center=soma_center, poly_line=poly_line)
 
         # Only connect the arbors connected to the soma to the origin
         elif roots_connection == nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN:
             if not section.far_from_soma:
-                connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
+                connect_root_to_soma_center(
+                    section=section, soma_center=soma_center, poly_line=poly_line)
         else:
             pass
 

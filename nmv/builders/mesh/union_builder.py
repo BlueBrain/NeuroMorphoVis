@@ -84,7 +84,8 @@ class UnionBuilder(MeshBuilderBase):
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
+              self.morphology.soma.centroid])
 
         # The arbors can be selected to be reconstructed with sharp edges or smooth ones. For the
         # sharp edges, we do NOT need to re-sample the morphology skeleton. However, if the smooth
@@ -517,7 +518,7 @@ class UnionBuilder(MeshBuilderBase):
         self.resample_skeleton_sections()
 
         # Build the soma, with the default parameters
-        self.options.soma.meta_ball_resolution = 0.25
+        self.options.soma.meta_ball_resolution = 0.15
         result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 

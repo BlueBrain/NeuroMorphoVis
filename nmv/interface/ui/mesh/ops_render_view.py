@@ -53,7 +53,7 @@ class NMV_RenderMeshFront(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui_options.rendering.image_format)
 
         # Stats.
         rendering_time = time.time()
@@ -94,7 +94,7 @@ class NMV_RenderMeshSide(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui_options.rendering.image_format)
 
         # Stats.
         rendering_time = time.time()
@@ -135,7 +135,7 @@ class NMV_RenderMeshTop(bpy.types.Operator):
         # Render the image
         nmv.interface.ui.render_mesh_image(
             self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui_options.mesh.image_format)
+            image_format=nmv.interface.ui_options.rendering.image_format)
 
         # Stats.
         rendering_time = time.time()

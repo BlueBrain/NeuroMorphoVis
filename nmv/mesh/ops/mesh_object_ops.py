@@ -186,7 +186,7 @@ def smooth_object_vertices(mesh_object,
     :param mesh_object:
         A given mesh object.
     :param level:
-        Smoothing or subdivision level, by default 1.
+        Smoothing or subdivision level or number of iterations, by default 1.
     """
 
     # Deselect all the objects in the scene
@@ -195,18 +195,14 @@ def smooth_object_vertices(mesh_object,
     # Activate the selected object
     nmv.scene.ops.set_active_object(mesh_object)
 
-    # Toggle from the object mode to edit mode
-    bpy.ops.object.editmode_toggle()
+    # Select the SMOOTH modifier
+    bpy.ops.object.modifier_add(type='SMOOTH')
 
-    # Select all the vertices of the mesh
-    bpy.ops.mesh.select_all(action='TOGGLE')
+    # Update the number of iterations
+    bpy.context.object.modifiers["Smooth"].iterations = level
 
-    # Smooth
-    for i in range(level):
-        bpy.ops.mesh.vertices_smooth(factor=0.5)
-
-    # Toggle from the edit mode to the object mode
-    bpy.ops.object.editmode_toggle()
+    # Apply the modifier
+    bpy.ops.object.modifier_apply(modifier="Smooth")
 
 
 ####################################################################################################

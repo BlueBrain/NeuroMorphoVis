@@ -337,6 +337,7 @@ class SomaMetaBuilder:
         valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
             morphology=self.morphology, soma_center=self.morphology.soma.centroid,
             soma_radius=self.initial_soma_radius)
+
         # Re-classify the arbors to be able to deal with the selectivity
         valid_apical_dendrites = list()
         valid_basal_dendrites = list()

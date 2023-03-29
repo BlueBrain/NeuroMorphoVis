@@ -609,6 +609,25 @@ def set_section_radii_between_given_range(section,
 
 
 ####################################################################################################
+# @verify_smallest_radius_to_value
+####################################################################################################
+def verify_smallest_radius_to_value(section,
+                                    smallest_radius):
+    """Ensures that the section has no samples with radii smaller than the given value
+
+    :param section:
+         A given section to filter.
+    :param smallest_radius:
+        The value of the radius of the smallest sample in the section.
+    """
+
+    # Iterate over all the samples in the section, verify the radius and update if necessary
+    for i_sample in section.samples:
+        if i_sample.radius < smallest_radius:
+            i_sample.radius = smallest_radius
+
+
+####################################################################################################
 # @update_branching_order_section
 ####################################################################################################
 def update_branching_order_section(section,
