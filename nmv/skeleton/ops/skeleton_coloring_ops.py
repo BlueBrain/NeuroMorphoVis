@@ -114,7 +114,7 @@ def create_multiple_materials(name,
 
 
 ####################################################################################################
-# @create_materials
+# @create_skeleton_materials
 ####################################################################################################
 def create_skeleton_materials(name,
                               material_type,

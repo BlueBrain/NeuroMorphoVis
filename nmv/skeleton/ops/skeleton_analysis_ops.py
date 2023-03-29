@@ -18,9 +18,6 @@
 # System imports
 import math
 
-# Internal imports
-import nmv.skeleton
-
 
 ####################################################################################################
 # @compute_segment_radius
@@ -437,7 +434,7 @@ def analyze_number_of_segments_per_section(section,
 
 
 ####################################################################################################
-# @analyze_number_of_children
+# @analyze_number_of_children_per_section
 ####################################################################################################
 def analyze_number_of_children_per_section(section,
                                            analysis_data_list):

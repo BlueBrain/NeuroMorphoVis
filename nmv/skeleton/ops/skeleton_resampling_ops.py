@@ -470,8 +470,7 @@ def resample_section_based_on_smallest_segment(section):
 # @add_sample_at_section_center
 ####################################################################################################
 def add_sample_at_section_center(section):
-    """
-    Adds an additional or auxiliary sample at the center of the section between the first and
+    """Adds additional or auxiliary sample at the center of the section between the first and
     last samples to avoid any under-sampling artifacts.
     NOTE: This function is ONLY applied on sections that have two samples.
 
@@ -505,8 +504,7 @@ def add_sample_at_section_center(section):
 ####################################################################################################
 def remove_duplicate_samples(section,
                              threshold=1.0):
-    """
-    Remove duplicate samples along a given section.
+    """Remove duplicate samples along a given section.
     If the distance between the samples is less than the threshold, then remove the second sample.
 
     :param section:
@@ -539,12 +537,11 @@ def remove_duplicate_samples(section,
 
 
 ####################################################################################################
-# @remove_duplicate_samples
+# @remove_samples_inside_soma
 ####################################################################################################
 def remove_samples_inside_soma(section,
                                soma_center):
-    """
-    Remove the samples located inside the soma that result in intersecting the initial section of
+    """Remove the samples located inside the soma that result in intersecting the initial section of
     the branch with the soma. This function is ONLY applied to a root section that is connected
     directly to the soma. It compute the distance between the first sample and the origin
     and then, computes the distance between the rest of the samples and the origin. If the
@@ -642,8 +639,7 @@ def remove_samples_within_extent(section,
                                  extent_center,
                                  extent_radius,
                                  ignore_first_sample=False):
-    """
-    Remove the samples located within a given extent (or sphere) from a section beginning.
+    """Remove the samples located within a given extent (or sphere) from a section beginning.
     This function verifies whether the samples along the given sphere are located within its extent
     or not. If yes, the samples are removed, otherwise nothing happens.
     NOTE: The function returns the number of samples removed from the section, for verification.
@@ -706,202 +702,3 @@ def remove_samples_within_extent(section,
 
     # Return the number of removed samples
     return number_of_removed_samples
-
-
-####################################################################################################
-# @resample_section_front
-####################################################################################################
-def resample_section_front(section):
-    """
-    Re-samples the front side of a section.
-
-    :param section:
-        A section to be resampled at its front end.
-    """
-
-    # TODO: Report the resampling operation to identify any issues till further notice
-    nmv.logger.log('\t\t* RESAMPLING: Section [%s] front' % (str(section.index)))
-
-    # The re-sampling distance of the primary section is computed based on the section radius
-    resampling_distance = section.samples[0].radius * math.sqrt(2)
-
-    # To resample the front side of a primary section, we MUST remove all the samples located
-    # within the range of the computed resampling distance. The center of this extent is the
-    # considered the position of the first sample of the given section and the extent radius is
-    # considered the re-sampling distance
-    number_removed_sampled = remove_samples_within_extent(
-        section=section, extent_center= section.samples[0].point,
-        extent_radius=resampling_distance, ignore_first_sample=True)
-
-    # Report the number of removed samples
-    if number_removed_sampled > 0:
-        nmv.logger.log('\t\t\t* Removing [%d] samples on the front side' % number_removed_sampled)
-
-    # Compute the section direction after the re-sampling operation to add an auxiliary sample
-    # after the first sample
-    section_direction = (section.samples[1].point - section.samples[0].point).normalized()
-
-    # Auxiliary sample position
-    sample_position = section.samples[0].point + (section_direction * resampling_distance)
-
-    # The auxiliary sample radius is the same as that of the first sample
-    sample_radius = section.samples[1].radius
-
-    # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
-    auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, index=-1, section=section,
-        type=section.samples[0])
-
-    # Insert the auxiliary sample just after the first sample
-    section.samples.insert(1, auxiliary_sample)
-
-    # Reorder the samples and their IDs along the section
-    section.reorder_samples()
-
-
-####################################################################################################
-# @resample_section_rear
-####################################################################################################
-def resample_section_rear(section):
-    """
-    Re-samples the rear side of a section.
-
-    :param section:
-        A section to be resampled at its rear end.
-    """
-
-    # To make it easy to resample section from the rear end, reverse the samples, resample the
-    # section and then reverse them back again
-    # Reverse the sample list
-    section.samples = list(reversed(section.samples))
-
-    # TODO: Report the resampling operation to identify any issues till further notice
-    nmv.logger.log('\t\t* RESAMPLING: Primary section [%s]' % (str(section.index)))
-
-    # The re-sampling distance of the primary section is computed based on the section radius
-    resampling_distance = section.samples[0].radius * math.sqrt(2)
-
-    # To resample the front side of a primary section, we MUST remove all the samples located
-    # within the range of the computed resampling distance. The center of this extent is the
-    # considered the position of the first sample of the given section and the extent radius is
-    # considered the re-sampling distance
-    number_removed_sampled = remove_samples_within_extent(
-        section=section, extent_center= section.samples[0].point,
-        extent_radius=resampling_distance, ignore_first_sample=True)
-
-    # Report the number of removed samples
-    if number_removed_sampled > 0:
-        nmv.logger.log('\t\t* Removing [%d] samples on the rear side' % number_removed_sampled)
-
-    # Compute the section direction after the re-sampling operation to add an auxiliary sample
-    # after the first sample
-    section_direction = (section.samples[1].point - section.samples[0].point).normalized()
-
-    # Auxiliary sample position
-    sample_position = section.samples[0].point + (section_direction * resampling_distance)
-
-    # The auxiliary sample radius is the same as that of the first sample
-    sample_radius = section.samples[1].radius
-
-    # Build the extra samples, and use -1 for the ID to indicate that it is an auxiliary sample
-    auxiliary_sample = nmv.skeleton.Sample(
-        point=sample_position, radius=sample_radius, index=-1, section=section,
-        type=section.samples[0].type)
-
-    # Insert the auxiliary sample just after the first sample
-    section.samples.insert(1, auxiliary_sample)
-
-    # Reverse the sample list back to be in the right order
-    section.samples = list(reversed(section.samples))
-
-    # Reorder the samples and their IDs along the section
-    section.reorder_samples()
-
-
-####################################################################################################
-# @resample_section_stem
-####################################################################################################
-def resample_section_stem(section):
-    """
-    Re-samples the stem of a section. This resampling preserves the first and last two
-    samples along the section to preserve the resampling of the front and rear ends of the section.
-    The resampling distance is computed based on the first and last samples of the section,
-    where the diameter of the first sample will be used to resample the first half of the section,
-    and that of the last sample will be used to resample the second half of the section.
-
-    :param section:
-        A section to be resampled at the stem, ignoring its front and rear ends.
-    """
-
-    # Compute the section length in advance
-    section_length = nmv.skeleton.ops.compute_section_length(section)
-
-    # The resampling distance that will be used to resample the front end of the section
-    front_resampling_distance = section.samples[0].radius * 2
-
-    # The resampling distance that will be used to resample the rear end of the section
-    rear_resampling_distance = section.samples[-1].radius * 2
-
-    # Epsilon, for avoiding floating point operations
-    epsilon = 1e-5
-
-    # An index that will be used to keep track on the samples list
-    i = 1
-    while True:
-
-        # Compute the current length along the section
-        current_length = nmv.skeleton.ops.compute_section_length_until_sample(section, i)
-
-        # Compute the resampling distance
-        resampling_distance = front_resampling_distance if current_length < 0.5 * section_length \
-            else rear_resampling_distance
-
-        # Break at the last two sample
-        if i == len(section.samples) - 2:
-            break
-
-        # Compute the distance between the two samples
-        distance = (section.samples[i + 1].point - section.samples[i].point).length
-
-        # Compute distance ratio to overcome the 'epsilon' floating point comparison
-        distance_ratio = float(distance) / float(resampling_distance)
-
-        # If the distance is greater than the resampling distance, then add the new sample at the
-        #  exact distance
-        if distance_ratio > 1.001:
-
-            # Compute the direction
-            direction = (section.samples[i + 1].point - section.samples[i].point).normalized()
-
-            # Compute the auxiliary sample point, use epsilon for floating point comparison
-            sample_point = \
-                section.samples[i].point + (direction * (resampling_distance + epsilon))
-
-            # Compute the auxiliary sample radius based on the previous and next samples
-            sample_radius = (section.samples[i + 1].radius + section.samples[i].radius) * 0.5
-
-            # Add the auxiliary sample, the index of the sample is set to -1 (auxiliary sample)
-            auxiliary_sample = nmv.skeleton.Sample(
-                point=sample_point, radius=sample_radius, index=-1, section=section,
-                type=section.samples[i].type)
-
-            # Update the samples list
-            section.samples.insert(i + 1, auxiliary_sample)
-
-            # Reset the index to start from the beginning (the second sample @samples[1])
-            i = 1
-
-        # If the distance is shorter than the resampling distance then remove the sample
-        elif distance_ratio < 0.999:
-
-            section.samples.remove(section.samples[i + 1])
-
-            # Reset the index to start from the beginning (the second sample @samples[1])
-            i = 1
-
-        else:
-
-            i += 1
-
-    # After resampling the section, update the logical indexes of the samples
-    section.reorder_samples()

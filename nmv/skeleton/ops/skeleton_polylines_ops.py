@@ -17,12 +17,12 @@
 
 # System import
 import copy
-import random
 
 # Blender imports
-from mathutils import Vector, Matrix, bvhtree
-import bmesh
 import bpy
+import bmesh
+from mathutils import Vector, Matrix, bvhtree
+from mathutils.bvhtree import BVHTree
 
 # Internal imports
 import nmv.consts
@@ -32,14 +32,6 @@ import nmv.geometry
 import nmv.mesh
 import nmv.bmeshi
 import nmv.utilities
-
-import bpy
-import bmesh
-import time
-
-from mathutils.bvhtree import BVHTree
-from mathutils import Vector
-from random import randint
 
 
 ####################################################################################################
@@ -434,7 +426,7 @@ def get_soma_connection_poly_line_(section,
 
 
 ####################################################################################################
-# @get_soma_connection_poly_line
+# @get_origin_connection_poly_line
 ####################################################################################################
 def get_origin_connection_poly_line(section,
                                     ignore_physical_connectivity=False):
@@ -580,7 +572,7 @@ def get_last_section_polyline(section,
 
 
 ####################################################################################################
-# @get_last_section_polyline
+# @get_connected_sections_poly_line
 ####################################################################################################
 def get_connected_sections_poly_line(section,
                                      roots_connection,
@@ -860,7 +852,7 @@ def poly_lines_intersect(poly_line_1,
 
 
 ####################################################################################################
-# @poly_lines_intersect
+# @poly_line_intersect_mesh
 ####################################################################################################
 def poly_line_intersect_mesh(poly_line,
                              mesh):

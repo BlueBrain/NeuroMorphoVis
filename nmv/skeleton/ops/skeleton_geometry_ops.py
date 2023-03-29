@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy
+import random
 
 # Blender imports
 from mathutils import Vector, Matrix
@@ -277,7 +277,7 @@ def transform_to_local_coordinates(mesh_object,
 
 
 ####################################################################################################
-# @transform_to_global
+# @transform_to_global_coordinates
 ####################################################################################################
 def transform_to_global_coordinates(mesh_object,
                                     blue_config,
@@ -458,7 +458,7 @@ def zigzag_section(section,
 
 
 ####################################################################################################
-# @project_to_plane
+# @project_to_xy_plane
 ####################################################################################################
 def project_to_xy_plane(section):
     """Project the section to XY plane.

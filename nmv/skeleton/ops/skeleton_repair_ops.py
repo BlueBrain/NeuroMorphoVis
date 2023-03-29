@@ -16,7 +16,8 @@
 ####################################################################################################
 
 # System imports
-import os, sys, copy, math
+import os
+import math
 
 # Internal imports
 import nmv.skeleton

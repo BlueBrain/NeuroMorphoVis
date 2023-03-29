@@ -21,10 +21,9 @@ import sys
 import copy
 
 # Blender imports
-import bpy
 from mathutils import Vector, Matrix
 
-# Append the internal modules into the system paths
+# TODO: Append the internal modules into the system paths
 sys.path.append("%s/../modules" % os.path.dirname(os.path.realpath(__file__)))
 
 # Internal imports
@@ -124,7 +123,7 @@ def extrude_section_from_poly_line_data(data,
 
 
 ####################################################################################################
-# @draw_connected_sections
+# @extrude_connected_sections
 ####################################################################################################
 def extrude_connected_sections(section,
                                name,
@@ -532,7 +531,7 @@ def draw_connected_sections(section,
 
 
 ####################################################################################################
-# @draw_disconnected_sections
+# @draw_disconnected_skeleton_sections
 ####################################################################################################
 def draw_disconnected_skeleton_sections(section,
                                         name,
@@ -689,7 +688,7 @@ def draw_disconnected_skeleton_sections(section,
 
 
 ####################################################################################################
-# @draw_section_as_disconnected_segments
+# @draw_disconnected_segments
 ####################################################################################################
 def draw_disconnected_segments(section,
                                name,

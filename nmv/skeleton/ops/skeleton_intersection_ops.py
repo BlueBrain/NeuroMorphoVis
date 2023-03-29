@@ -133,7 +133,6 @@ def arbors_intersect_with_bvh(branch_1,
     return value
 
 
-
 ####################################################################################################
 # @profile_points_intersect
 ####################################################################################################
@@ -413,5 +412,3 @@ def basal_dendrite_intersects_basal_dendrite(dendrite,
 
     # No intersection
     return False
-
-

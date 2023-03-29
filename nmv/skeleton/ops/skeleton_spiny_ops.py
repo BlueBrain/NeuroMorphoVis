@@ -21,7 +21,6 @@ import random
 
 # Blender imports
 from mathutils import Vector, Matrix
-import bpy
 
 # Internal modules
 import nmv.builders

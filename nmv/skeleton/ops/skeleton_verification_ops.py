@@ -23,7 +23,7 @@ import nmv.skeleton
 
 
 ####################################################################################################
-# @verify_number_of_samples_per_section
+# @verify_segments_length
 ####################################################################################################
 def verify_segments_length(section):
     """Verifies the lengths of the segments that composed the section.
@@ -43,7 +43,7 @@ def verify_segments_length(section):
 
 
 ####################################################################################################
-# @verify_number_of_samples_per_section
+# @verify_segments_length_wrt_radius
 ####################################################################################################
 def verify_segments_length_wrt_radius(section):
     """Verifies the lengths of the segments that composed the section.
