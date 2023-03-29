@@ -589,7 +589,8 @@ class SomaSoftBodyBuilder:
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
         self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.initial_soma_radius)
+            morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+            soma_radius=self.initial_soma_radius)
 
         # Create a ico-sphere bmesh to represent the starting shape of the soma
         soma_bmesh_sphere = nmv.bmeshi.create_ico_sphere(
@@ -934,7 +935,8 @@ class SomaSoftBodyBuilder:
         # Check if the valid arbors are there or not
         if self.valid_arbors is None:
             self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-                morphology=self.morphology, soma_radius=self.initial_soma_radius)
+                morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+                soma_radius=self.initial_soma_radius)
 
         # Select the mesh object
         nmv.scene.select_object(mesh_object)
@@ -991,7 +993,8 @@ class SomaSoftBodyBuilder:
         # Check if the valid arbors are there or not
         if self.valid_arbors is None:
             self.valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-                morphology=self.morphology, soma_radius=self.initial_soma_radius)
+                morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+                soma_radius=self.initial_soma_radius)
 
         # Select the mesh object
         nmv.scene.select_object(mesh_object)

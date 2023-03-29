@@ -15,20 +15,14 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # Internal modules
 from .base import MeshBuilderBase
-import nmv.bbox
 import nmv.builders
-import nmv.consts
 import nmv.enums
-import nmv.geometry
 import nmv.mesh
 import nmv.shading
 import nmv.skeleton
 import nmv.scene
-import nmv.utilities
-import nmv.rendering
 
 
 ####################################################################################################
@@ -91,6 +85,9 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.options.morphology.reconstruction_method = \
             nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS
 
+        # Adjust the options to use the soma-generation method of the mesh toolbox
+        self.options.morphology.soma_representation = self.options.mesh.soma_type
+
         # Create the morphology builder and generate the morphology skeleton
         morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
             morphology=self.morphology, options=self.options)
@@ -110,7 +107,7 @@ class VoxelizationBuilder(MeshBuilderBase):
             mesh_object=mesh_object, voxel_size=0.15)
 
     ################################################################################################
-    # @build_proxy_mesh_using_articulated_sections_builder
+    # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
         self.build_proxy_mesh_using_articulated_sections_builder()

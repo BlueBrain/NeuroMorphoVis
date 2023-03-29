@@ -258,6 +258,7 @@ def connect_root_to_origin(section,
 # @get_connected_poly_line
 ####################################################################################################
 def get_connected_poly_line(section,
+                            soma_center,
                             connection_to_soma=nmv.enums.Skeleton.Roots.ALL_DISCONNECTED,
                             transform=None):
     """Get the poly-line list or a series of points that reflect a connected stream passing by
@@ -266,6 +267,8 @@ def get_connected_poly_line(section,
 
     :param section:
         The geometry of a section.
+    :param soma_center:
+        The center of the soma.
     :param connection_to_soma:
         A flag that indicates that this section is a root and is connected to the origin.
         If this flag is activated, we will add few more samples between the origin and the first
@@ -293,13 +296,14 @@ def get_connected_poly_line(section,
 
         # All connected
         if connection_to_soma == nmv.enums.Skeleton.Roots.ALL_CONNECTED:
-            connect_root_to_origin(section=section, poly_line=poly_line)
+            connect_root_to_origin(section=section, soma_center=soma_center, poly_line=poly_line)
 
         # Only connect the arbors connected to the soma to the origin
         elif connection_to_soma == nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN:
 
             if not section.far_from_soma:
-                connect_root_to_origin(section=section, poly_line=poly_line)
+                connect_root_to_origin(
+                    section=section, soma_center=soma_center, poly_line=poly_line)
         else:
             pass
 
@@ -322,6 +326,7 @@ def get_connected_poly_line(section,
 # @get_arbor_poly_lines_as_connected_sections
 ####################################################################################################
 def get_arbor_poly_lines_as_connected_sections(root,
+                                               soma_center,
                                                poly_lines_data=[],
                                                poly_line_data=[],
                                                branching_order=0,
@@ -346,7 +351,8 @@ def get_arbor_poly_lines_as_connected_sections(root,
     branching_order += 1
 
     # Get a list of all the poly-line that corresponds to the given section
-    section_poly_line = get_connected_poly_line(section=root, connection_to_soma=connection_to_soma)
+    section_poly_line = get_connected_poly_line(
+        section=root, soma_center=soma_center, connection_to_soma=connection_to_soma)
 
     # Extend the polyline samples for final mesh building
     poly_line_data.extend(section_poly_line)
@@ -376,7 +382,8 @@ def get_arbor_poly_lines_as_connected_sections(root,
     # Iterate over the children sections and draw them, if any
     for i, child in enumerate(root.children):
         get_arbor_poly_lines_as_connected_sections(
-            root=child, poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
+            root=child, soma_center=soma_center,
+            poly_lines_data=poly_lines_data, poly_line_data=poly_line_data,
             branching_order=branching_order, max_branching_order=max_branching_order)
 
 

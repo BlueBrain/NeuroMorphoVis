@@ -108,6 +108,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         # Construct the poly-line objects
         nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
             root=arbor,
+            soma_center=self.morphology.soma.centroid,
             poly_lines_data=skeleton_poly_lines,
             connection_to_soma=self.options.morphology.arbors_to_soma_connection,
             max_branching_order=max_branching_order)
@@ -183,6 +184,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     nmv.logger.detail(arbor.label)
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=skeleton_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order)
@@ -194,6 +196,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     nmv.logger.detail(arbor.label)
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=skeleton_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
@@ -205,6 +208,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     nmv.logger.detail(arbor.label)
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=skeleton_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.axon_branch_order)
@@ -487,6 +491,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     apical_dendrite_poly_lines = list()
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=apical_dendrite_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order)
@@ -507,6 +512,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     basal_dendrite_poly_lines = list()
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=basal_dendrite_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
@@ -527,6 +533,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                     axon_poly_lines = list()
                     nmv.skeleton.get_arbor_poly_lines_as_connected_sections(
                         root=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         poly_lines_data=axon_poly_lines,
                         connection_to_soma=self.options.morphology.arbors_to_soma_connection,
                         max_branching_order=self.options.morphology.axon_branch_order)
