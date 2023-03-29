@@ -165,8 +165,8 @@ class SomaMetaBuilder:
             iterations = 0
 
         # Apply the decimation operation
-        for i in range(iterations):
-            nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.25)
+        #for i in range(iterations):
+        #    nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.25)
 
     ################################################################################################
     # @assign_material_to_mesh
