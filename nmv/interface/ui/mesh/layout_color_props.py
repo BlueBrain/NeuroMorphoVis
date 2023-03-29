@@ -182,7 +182,7 @@ def draw_mesh_color_options(layout, scene, options, morphology):
 
         draw_mesh_shading_option(layout=layout, scene=scene, options=options)
 
-        if options.mesh.meshing_technique == nmv.enums.Meshing.Technique.WATERTIGHT:
+        if options.mesh.meshing_technique == nmv.enums.Meshing.Technique.VOXELIZATION:
             draw_single_component_mesh_color_options(
                 layout=layout, scene=scene, options=options)
         elif options.mesh.meshing_technique == nmv.enums.Meshing.Technique.UNION:

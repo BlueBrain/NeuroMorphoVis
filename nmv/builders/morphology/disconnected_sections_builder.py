@@ -369,7 +369,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Draw the root sample as a sphere
         self.articulations_spheres.append(nmv.bmeshi.create_ico_sphere(
-            root.samples[0].radius * 1.025, location=root.samples[0].point, subdivisions=3))
+            root.samples[0].radius * 0.975, location=root.samples[0].point, subdivisions=3))
 
         # Increment the branching level
         branching_order += 1
@@ -481,7 +481,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
                     # Append it to the morphology objects
                     self.morphology_objects.append(morphology_object)
-                    #bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
 
         # Axon
         if not self.options.morphology.ignore_axons:
@@ -655,8 +654,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                     # Append it to the morphology objects
                     self.morphology_objects.append(morphology_object)
 
-
-
     ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
@@ -682,7 +679,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -747,7 +744,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Do NOT create the skeleton materials list and instead create the colors on the fly
         # self.create_single_skeleton_materials_list()
@@ -874,7 +871,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Do NOT create the skeleton materials list and instead creat the colors on the fly
         # self.create_single_skeleton_materials_list()

@@ -65,8 +65,10 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
                 morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
             nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
-        elif meshing_technique == nmv.enums.Meshing.Technique.WATERTIGHT:
-            pass
+        elif meshing_technique == nmv.enums.Meshing.Technique.VOXELIZATION:
+            mesh_builder = nmv.builders.VoxelizationBuilder(
+                morphology=nmv.interface.ui_morphology, options=nmv.interface.ui_options)
+            nmv.interface.ui_reconstructed_mesh = mesh_builder.reconstruct_mesh()
 
         # Union
         elif meshing_technique == nmv.enums.Meshing.Technique.UNION:

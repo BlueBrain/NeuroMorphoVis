@@ -747,16 +747,9 @@ class MetaBuilder(MeshBuilderBase):
             nmv.mesh.clean_mesh_object(self.meta_mesh)
             self.profiling_statistics += stats
 
-        def set_mesh_origin(ob, pos):
-            '''Given a mesh object set it's origin to a given position.'''
-            # Casting pos to vector so you can pass in tuples or lists
-
-            mat = Matrix.Translation(pos - ob.location)
-            ob.location = pos
-            ob.data.transform(mat.inverted())
-            ob.data.update()
-
-        set_mesh_origin(ob=self.meta_mesh, pos=self.morphology.soma.centroid)
+        # Update the center of the mesh to the soma
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.meta_mesh, coordinate=self.morphology.soma.centroid)
 
         # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
         # performance since this is way better than creating a new material per section or segment

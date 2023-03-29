@@ -20,3 +20,4 @@ from .meta_builder import *
 from .piecewise_builder import *
 from .union_builder import *
 from .skinning_builder import *
+from .voxelization_builder import *

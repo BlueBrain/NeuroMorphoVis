@@ -38,8 +38,8 @@ class Meshing:
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
 
-        # Watertight meshing using voxelization
-        WATERTIGHT = 'MESHING_TECHNIQUE_WATERTIGHT'
+        # Using voxelization-based re-meshing
+        VOXELIZATION = 'MESHING_TECHNIQUE_VOXELIZATION'
 
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
@@ -64,8 +64,8 @@ class Meshing:
 
             if argument == 'piecewise-watertight':
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
-            elif argument == 'watertight':
-                return Meshing.Technique.WATERTIGHT
+            elif argument == 'voxelization':
+                return Meshing.Technique.VOXELIZATION
             elif argument == 'union':
                 return Meshing.Technique.UNION
             elif argument == 'skinning':
@@ -84,9 +84,9 @@ class Meshing:
              'composed of multiple mesh objects, where each object is a watertight component. '
              'This method is used to reconstruct high fidelity volumes from the generated meshes'),
 
-            (WATERTIGHT,
-             'Watertight with Voxelization',
-             'This approach (Abdellah et al., 2017) creates a watertight mesh'),
+            (VOXELIZATION,
+             'Voxelization-based Remeshing',
+             'This approach creates a watertight mesh'),
 
             (SKINNING,
              'Skinning',

@@ -15,10 +15,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
+# System imports
 import random
 
-import bpy, bmesh
+# Blender imports
+import bpy
+import bmesh
+from mathutils import Matrix
 
 # Internal imports
 import nmv.scene
@@ -993,3 +996,64 @@ def create_wire_frame(mesh_object,
 
     # Return a reference to the wireframe object
     return duplicated_mesh
+
+
+####################################################################################################
+# @set_mesh_origin
+####################################################################################################
+def set_mesh_origin(mesh_object,
+                    coordinate):
+    """Sets the origin of the given mesh object to a specific coordinate.
+
+    :param mesh_object:
+        The given mesh object.
+    :param coordinate:
+        The coordinates of the new origin in mathutils::Vector format
+    """
+
+    # Compute the transform that accounts for the difference
+    transform = Matrix.Translation(coordinate - mesh_object.location)
+
+    # Update the location to the given coordinate
+    mesh_object.location = coordinate
+
+    # Apply the transform
+    mesh_object.data.transform(transform.inverted())
+
+    # Update the mesh object
+    mesh_object.data.update()
+
+
+####################################################################################################
+# @apply_voxelization_remeshing_modifier
+####################################################################################################
+def apply_voxelization_remeshing_modifier(mesh_object,
+                                          voxel_size=0.1):
+    """Apply the voxelization-based remeshing algorithm to the given mesh object to create a
+    connected mesh.
+
+    :param mesh_object:
+        A given mesh object to remesh.
+    :param voxel_size:
+        The size of the voxel represents the resolution of the grid. It should be set to the
+        radius of the smallest element - or edge - in the mesh object
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Add the REMESH modifier to the scene
+    bpy.ops.object.modifier_add(type='REMESH')
+
+    # Ensure that it is the voxelization-based one
+    bpy.context.object.modifiers["Remesh"].mode = 'VOXEL'
+
+    # Update the voxel size
+    bpy.context.object.modifiers["Remesh"].voxel_size = voxel_size
+
+    # Apply the modifier
+    bpy.ops.object.modifier_apply(modifier="Remesh")
+

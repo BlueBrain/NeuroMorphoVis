@@ -57,7 +57,7 @@ class MeshBuilderBase:
         self.morphology = copy.deepcopy(morphology)
 
         # Loaded options from NeuroMorphoVis
-        self.options = options
+        self.options = copy.deepcopy(options)
 
         # A list of the colors/materials of the soma
         self.soma_materials = None

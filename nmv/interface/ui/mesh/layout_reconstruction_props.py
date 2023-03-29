@@ -95,8 +95,7 @@ def draw_piecewise_watertight_meshing_options(layout, scene, options):
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
 
 
-
-def draw_watertight_meshing_options(layout, scene, options):
+def draw_voxelization_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
@@ -132,8 +131,8 @@ def draw_mesh_reconstruction_options(panel, scene, options, morphology):
     if options.mesh.meshing_technique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
         draw_piecewise_watertight_meshing_options(layout=panel.layout, scene=scene, options=options)
 
-    elif options.mesh.meshing_technique == nmv.enums.Meshing.Technique.WATERTIGHT:
-        draw_watertight_meshing_options(layout=panel.layout, scene=scene, options=options)
+    elif options.mesh.meshing_technique == nmv.enums.Meshing.Technique.VOXELIZATION:
+        draw_voxelization_meshing_options(layout=panel.layout, scene=scene, options=options)
 
     elif options.mesh.meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
         draw_skinning_meshing_options(layout=panel.layout, scene=scene, options=options)
