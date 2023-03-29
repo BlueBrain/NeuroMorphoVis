@@ -124,18 +124,11 @@ class VoxelizationBuilder(MeshBuilderBase):
             morphology=self.morphology, smallest_radius=0.1)
 
         # Create the proxy mesh builder and generate the morphology skeleton
-        morphology_builder = nmv.builders.ConnectedSectionsBuilder(
+        proxy_mesh_builder = nmv.builders.PiecewiseBuilder(
             morphology=self.morphology, options=self.options)
 
-        # Generate a list of objects (currently morphologies)
-        objects = morphology_builder.draw_morphology_skeleton()
-
-        # Convert the morphologies into meshes, if not meshes
-        for i_object in objects:
-            nmv.scene.convert_object_to_mesh(scene_object=i_object)
-
         # Reconstruct the proxy mesh
-        self.neuron_mesh = nmv.scene.join_objects(scene_objects=objects)
+        self.neuron_mesh = proxy_mesh_builder.reconstruct_proxy_mesh()
 
     ################################################################################################
     # @remesh_with_voxelization_modifier

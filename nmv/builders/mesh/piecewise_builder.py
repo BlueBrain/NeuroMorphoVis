@@ -380,12 +380,34 @@ class PiecewiseBuilder(MeshBuilderBase):
     ################################################################################################
     # @reconstruct_mesh_in_single_object
     ################################################################################################
-    def reconstruct_mesh_in_single_object(self):
+    def reconstruct_proxy_mesh(self):
         """Returns a single mesh object for all the neuron components.
 
         :return:
             A single mesh object of the neuron.
         """
 
-        return nmv.mesh.join_mesh_objects(mesh_list=self.reconstruct_mesh(),
-                                          name='Mesh_%s' % self.morphology.label)
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
+
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
+
+        # Build the soma, with the default parameters
+        self.reconstruct_soma_mesh()
+
+        # Build the arbors
+        self.reconstruct_arbors_meshes()
+
+        # Connect to the soma
+        self.connect_arbors_to_soma()
+
+        self.connect_arbors_to_soma()
+
+        self.build_endfeet()
+
+        self.add_spines_to_surface()
+
+        # Join all the mesh objects into a single one
+        return nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
+

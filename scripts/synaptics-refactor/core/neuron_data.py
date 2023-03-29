@@ -89,7 +89,7 @@ def create_neuron_mesh(circuit,
     mesh_builder = nmv.builders.PiecewiseBuilder(morphology=morphology, options=nmv_options)
 
     # Create the neuron mesh
-    neuron_mesh = mesh_builder.reconstruct_mesh_in_single_object()
+    neuron_mesh = mesh_builder.reconstruct_proxy_mesh()
 
     # Smooth the mesh to make it look nice
     # nmv.mesh.smooth_object(mesh_object=neuron_mesh, level=1)

@@ -77,6 +77,9 @@ class MeshBuilderBase:
         # A list of the colors/materials of the spines
         self.spines_materials = None
 
+        # All lights created in the scene
+        self.lights = None
+
         # A reference to the reconstructed soma mesh
         self.soma_mesh = None
 
@@ -98,7 +101,7 @@ class MeshBuilderBase:
         # A list of all the neuron/astrocyte meshes that are reconstructed
         self.neuron_meshes = list()
 
-        # A reference to the neuron mesh after its creation 
+        # A reference to the neuron mesh after its creation
         self.neuron_mesh = None
 
         # Statistics
@@ -123,15 +126,27 @@ class MeshBuilderBase:
         self.create_skeleton_materials()
 
     ################################################################################################
+    # @clear_materials
+    ################################################################################################
+    def clear_materials(self):
+        """Clears existing morphology materials"""
+
+        for material in bpy.data.materials:
+            if self.morphology.label in material.name:
+                nmv.scene.delete_material(material=material)
+
+    ################################################################################################
     # @create_skeleton_materials
     ################################################################################################
     def create_skeleton_materials(self):
         """Create the materials that will be used to shade the mesh objects."""
 
         # Initially, delete the old materials
-        for material in bpy.data.materials:
-            if self.morphology.label in material.name:
-                nmv.scene.delete_material(material=material)
+        self.clear_materials()
+
+        # Clear the lights
+        if self.lights is not None:
+            nmv.scene.delete_list_objects(object_list=self.lights)
 
         # Soma
         self.soma_materials = nmv.shading.create_materials(
@@ -170,11 +185,11 @@ class MeshBuilderBase:
             number_elements=1)
 
         # Create an illumination specific for the given material
-        lights = nmv.shading.create_material_specific_illumination(
+        self.lights = nmv.shading.create_material_specific_illumination(
             self.options.shading.mesh_material)
 
         # Create a new collection from the created lights
-        nmv.utilities.create_collection_with_objects(name='Illumination', objects_list=lights)
+        nmv.utilities.create_collection_with_objects(name='Illumination', objects_list=self.lights)
 
     ################################################################################################
     # @resample_skeleton_sections
@@ -570,18 +585,26 @@ class MeshBuilderBase:
         connection = self.options.mesh.neuron_objects_connection
         if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
 
-            # Join all the mesh objects  into a single object
-            joint_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
+            # Join all the mesh objects into a single one
+            self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
+
+            # Clear all the lists that contain references to the meshes, they are not valid anymore
+            self.axons_meshes.clear()
+            self.basal_dendrites_meshes.clear()
+            self.apical_dendrites_meshes.clear()
+            self.endfeet_meshes.clear()
+            self.spines_meshes.clear()
+            self.neuron_meshes.clear()
 
             # Adjust the origin of the resulting mesh
             nmv.mesh.set_mesh_origin(
-                mesh_object=joint_mesh, coordinate=self.morphology.soma.centroid)
+                mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
 
             nmv.utilities.create_collection_with_objects(
-                name='Mesh %s' % self.morphology.label, objects_list=[joint_mesh])
+                name='Mesh %s' % self.morphology.label, objects_list=[self.neuron_mesh])
 
             # Return a reference to the joint mesh object
-            return joint_mesh
+            return self.neuron_mesh
 
         # If they are not connected, then adjust the origins only
         else:
