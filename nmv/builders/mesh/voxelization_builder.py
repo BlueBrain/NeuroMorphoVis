@@ -51,7 +51,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
+        MeshBuilderBase.__init__(self, morphology, options, 'voxelization')
 
         # Statistics
         self.profiling_statistics = 'VoxelizationBuilder Profiling Stats.: \n'
@@ -59,30 +59,37 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Stats. about the mesh
         self.mesh_statistics = 'VoxelizationBuilder Mesh: \n'
 
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """The resulting mesh from this builder is always contained in a single object."""
+
+        self.result_is_single_object_mesh = True
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Modify the morphology skeleton, if required
+        self.modify_morphology_skeleton()
+
+        # Remove the internal samples of the arbors that are located within the soma extent
+        self.remove_arbors_samples_inside_soma()
+
+        # Resample the morphology skeleton using the adaptive relaxed method
+        self.resample_skeleton_adaptive_relaxed()
+
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
-    ################################################################################################
-    # @assign_material_to_mesh
-    ################################################################################################
-    def assign_material_to_mesh(self):
-
-        self.create_skeleton_materials()
-
-        # Deselect all objects
-        nmv.scene.ops.deselect_all()
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.neuron_mesh)
-
-        # Assign the material to the selected mesh
-        nmv.shading.set_material_to_object(self.neuron_mesh, self.soma_materials[0])
-
-        # Update the UV mapping
-        nmv.shading.adjust_material_uv(self.neuron_mesh)
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.neuron_mesh)
+        # Optimized meta-ball soma resolution for the voxelization modifier
+        self.options.soma.meta_ball_resolution = 0.15
 
     ################################################################################################
     # @build_proxy_mesh_using_articulated_sections_builder
@@ -125,15 +132,15 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Create the proxy mesh builder and generate the morphology skeleton
         proxy_mesh_builder = nmv.builders.PiecewiseBuilder(
-            morphology=self.morphology, options=self.options)
+            morphology=self.morphology, options=self.options, this_is_proxy_mesh=True)
 
         # Reconstruct the proxy mesh
-        self.neuron_mesh = proxy_mesh_builder.reconstruct_proxy_mesh()
+        self.neuron_mesh = proxy_mesh_builder.reconstruct_mesh()[0]
 
     ################################################################################################
-    # @remesh_with_voxelization_modifier
+    # @apply_voxelization_modifier
     ################################################################################################
-    def remesh_with_voxelization_modifier(self):
+    def apply_voxelization_modifier(self):
         """Apply the voxelization-based re-meshing modifier to create a new mesh."""
 
         # Apply the modifier
@@ -141,24 +148,37 @@ class VoxelizationBuilder(MeshBuilderBase):
             mesh_object=self.neuron_mesh, voxel_size=0.1)
 
     ################################################################################################
-    # @post_process_mesh
+    # @finalize_mesh
     ################################################################################################
-    def post_process_mesh(self):
-        """Post-processes the resulting mesh to create a clean one"""
+    def finalize_mesh(self):
+        """Finalize the resulting mesh to create a clean one."""
 
-        nmv.logger.info('Post processing')
+        nmv.logger.info('Mesh finalization')
+
+        self.create_skeleton_materials()
+        self.assign_material_to_single_object_mesh()
 
         # Remove doubles
-        # nmv.mesh.remove_doubles(mesh_object=self.mesh, distance=0.01)
+        nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
 
         # Smooth vertices to remove any sphere-like shapes
         nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=5)
+
+        # Adjust the origin of the mesh
+        self.adjust_origin_to_soma_center()
+
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
 
     ################################################################################################
     # @build_proxy_mesh
     ################################################################################################
     def build_proxy_mesh(self):
         """Builds the proxy mesh that will be used for the voxelization"""
+
+        # Ensure that we use a high quality cross-sectional bevel
+        # self.options.morphology.bevel_object_sides = 16
 
         if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
             return self.build_proxy_mesh_using_connected_sections_builder()
@@ -180,41 +200,23 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         nmv.logger.header('Building Mesh: VoxelizationBuilder')
 
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        result, stats = nmv.utilities.profile_function(self.build_proxy_mesh)
+        result, stats = self.PROFILE(self.build_proxy_mesh)
         self.profiling_statistics += stats
 
         # Voxelization modifier
-        result, stats = nmv.utilities.profile_function(self.remesh_with_voxelization_modifier)
+        result, stats = self.PROFILE(self.apply_voxelization_modifier)
         self.profiling_statistics += stats
 
         # Adjust the origin of the mesh
-        result, stats = nmv.utilities.profile_function(self.post_process_mesh)
+        result, stats = self.PROFILE(self.finalize_mesh)
         self.profiling_statistics += stats
 
-        # Assign the material to the mesh
-        result, stats = nmv.utilities.profile_function(self.assign_material_to_mesh)
-        self.profiling_statistics += stats
+        # Report the statistics of this builder
+        self.report_builder_statistics()
 
-        # Adjust the origin of the mesh
-        result, stats = nmv.utilities.profile_function(self.adjust_origin_to_soma_center)
-        self.profiling_statistics += stats
-
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
-        self.profiling_statistics += stats
-
-        # Report
-        nmv.logger.statistics(self.profiling_statistics)
-
-        # Write the stats to file
-        self.write_statistics_to_file(tag='voxelization')
-
-        # Create a new collection from the created objects of the mesh
-        nmv.utilities.create_collection_with_objects(
-            name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
-
-
+        # This builder creates a single mesh object
+        return [self.neuron_mesh]

@@ -740,7 +740,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
@@ -867,7 +867,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors

@@ -63,8 +63,12 @@ def draw_still_frame_rendering_options(panel, scene, options, show_stats=False):
 # @draw_animated_360_rendering_buttons
 ####################################################################################################
 def draw_animated_360_rendering_buttons(panel, scene):
+
+    # Animation row
     animation_row = panel.layout.row()
     animation_row.label(text='Render Animation (Front View - XY)', icon='CAMERA_DATA')
+
+    # Buttons
     buttons_row = panel.layout.row(align=True)
     buttons_row.operator('nmv.render_mesh_360', icon='FORCE_MAGNETIC')
     buttons_row.enabled = True
@@ -73,6 +77,13 @@ def draw_animated_360_rendering_buttons(panel, scene):
     progress_bar_row = panel.layout.row()
     progress_bar_row.prop(scene, 'NMV_MeshRenderingProgress')
     progress_bar_row.enabled = False
+
+    if nmv.interface.ui_mesh_reconstructed:
+        animation_row.enabled = True
+        buttons_row.enabled = True
+    else:
+        animation_row.enabled = False
+        buttons_row.enabled = False
 
 
 ####################################################################################################

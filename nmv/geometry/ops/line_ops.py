@@ -235,7 +235,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    color=(1, 1, 1, 1),
                    name='line',
                    fill_caps=True,
-                   sides=8,
+                   sides=16,
                    bevel_object=None,
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
@@ -278,7 +278,9 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
 
     if bevel_object is None:
         line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name=name)
+        line_data.bevel_mode = 'OBJECT'
     else:
+        line_data.bevel_mode = 'OBJECT'
         line_data.bevel_object = bevel_object
 
     # Create a new material (color) and assign it to the line
@@ -361,6 +363,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
 
         # If a bevel object is given, use it for scaling the diameter of the poly-line
         if bevel_object is not None:
+            line_data.bevel_mode = 'OBJECT'
             line_data.bevel_object = bevel_object
             line_data.use_fill_caps = caps
 

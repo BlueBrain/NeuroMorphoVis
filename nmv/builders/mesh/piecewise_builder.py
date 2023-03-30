@@ -46,23 +46,62 @@ class PiecewiseBuilder(MeshBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 this_is_proxy_mesh=False):
         """Constructor
 
         :param morphology:
             A given morphology skeleton to create a mesh for.
         :param options:
             Loaded options from NeuroMorphoVis.
+        :param this_is_proxy_mesh:
+            A flag to indicate that the resulting mesh from this builder is a proxy mesh or not.
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
+        MeshBuilderBase.__init__(self, morphology, options, 'piecewise')
+
+        # A flag to indicate that the resulting mesh is a proxy mesh
+        self.this_is_proxy_mesh = this_is_proxy_mesh
 
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
 
         # Stats. about the mesh
         self.mesh_statistics = 'PiecewiseBuilder Mesh: \n'
+
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """Confirms if the generated mesh from this builder is joint in a single mesh object or
+        multiple ones. The result depends on the selection of the user and the nature of the builder
+        and other factors, therefore this function is re-implemented for every builder."""
+
+        # If this is a proxy mesh, then it is a single mesh object, otherwise, it is user-defined
+        if self.this_is_proxy_mesh:
+            self.result_is_single_object_mesh = True
+        else:
+            connection = self.options.mesh.neuron_objects_connection
+            if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+                self.result_is_single_object_mesh = True
+            else:
+                self.result_is_single_object_mesh = False
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Create the materials of the morphology skeleton
+        self.create_skeleton_materials()
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
 
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
@@ -229,7 +268,8 @@ class PiecewiseBuilder(MeshBuilderBase):
         """Reconstruct the meshes of the arbors of the neuron with HARD edges."""
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=5, name='Cross Section')
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -260,40 +300,6 @@ class PiecewiseBuilder(MeshBuilderBase):
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
     ################################################################################################
-    # @build_soft_edges_arbors
-    ################################################################################################
-    def build_soft_edges_arbors(self):
-        """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
-        """
-        # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=8, name='Cross Section')
-
-        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
-        #  soma origin, otherwise extend the arbors to the origin
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA
-        else:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN
-
-        # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
-        self.build_arbors(bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
-
-        # Smooth and close the faces of the apical dendrites meshes
-        for mesh in self.apical_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the basal dendrites meshes
-        for mesh in self.basal_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the axon meshes
-        for mesh in self.axons_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Delete the bevel object
-        nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-    ################################################################################################
     # @reconstruct_arbors_meshes
     ################################################################################################
     def reconstruct_arbors_meshes(self):
@@ -313,101 +319,71 @@ class PiecewiseBuilder(MeshBuilderBase):
         self.endfeet_meshes.extend(self.reconstruct_endfeet())
 
     ################################################################################################
+    # @create_joint_proxy_mesh
+    ################################################################################################
+    def create_joint_proxy_mesh(self):
+
+        # Join all the mesh objects into a single one
+        self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
+
+        # Clear all the lists that contain references to the meshes, they are not valid anymore
+        self.clear_meshes_lists()
+
+        # Adjust the origin of the resulting mesh
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh as a set of piecewise-watertight meshes.
-
-        The meshes are logically connected, but the different branches are intersecting,
-        so they can be used perfectly for voxelization purposes, but they cannot be used for
-        surface rendering with 'transparency'. For this purpose, we recommend to use the skinning
-        builder.
-        """
+        """Reconstructs the mesh."""
 
         nmv.logger.header('Building Mesh: PiecewiseBuilder')
 
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        # Verify the connectivity of the arbors to the soma
-        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
-
-        # Build the soma, with the default parameters
-        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
+        # Build the soma
+        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors
-        result, stats = nmv.utilities.profile_function(self.reconstruct_arbors_meshes)
+        result, stats = self.PROFILE(self.reconstruct_arbors_meshes)
         self.profiling_statistics += stats
 
-        # Connect to the soma
-        result, stats = nmv.utilities.profile_function(self.connect_arbors_to_soma)
+        # Connect to the soma to the arbors, if required
+        result, stats = self.PROFILE(self.connect_arbors_to_soma)
         self.profiling_statistics += stats
 
-        # Build the endfeet
-        result, stats = nmv.utilities.profile_function(self.build_endfeet)
+        # Build the endfeet, if required
+        result, stats = self.PROFILE(self.build_endfeet)
         self.profiling_statistics += stats
 
-        # Tessellation
-        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
-        self.profiling_statistics += stats
+        # Tessellation, if required
+        if not self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.decimate_neuron_mesh)
+            self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
-        self.profiling_statistics += stats
+        if not self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.add_surface_noise_to_arbor)
+            self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
+        result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
         # Aggregation and origin adjustments
-        result, stats = nmv.utilities.profile_function(self.join_objects_and_adjust_origin)
+        if self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.join_objects_and_adjust_origin)
+        else:
+            result, stats = self.PROFILE(self.create_joint_proxy_mesh)
         self.profiling_statistics += stats
 
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
-        self.profiling_statistics += stats
+        # Report the statistics of this builder
+        self.report_builder_statistics()
 
-        # Report
-        nmv.logger.statistics(self.profiling_statistics)
-
-        # Write the stats to file
-        self.write_statistics_to_file(tag='piecewise')
-
-        return self.neuron_meshes
-
-    ################################################################################################
-    # @reconstruct_mesh_in_single_object
-    ################################################################################################
-    def reconstruct_proxy_mesh(self):
-        """Returns a single mesh object for all the neuron components.
-
-        :return:
-            A single mesh object of the neuron.
-        """
-
-        # Verify and repair the morphology, if required
-        self.update_morphology_skeleton()
-
-        # Verify the connectivity of the arbors to the soma
-        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
-
-        # Build the soma, with the default parameters
-        self.reconstruct_soma_mesh()
-
-        # Build the arbors
-        self.reconstruct_arbors_meshes()
-
-        # Connect to the soma
-        self.connect_arbors_to_soma()
-
-        self.connect_arbors_to_soma()
-
-        self.build_endfeet()
-
-        self.add_spines_to_surface()
-
-        # Join all the mesh objects into a single one
-        return nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
-
+        # Return the list of the resulting mesh, either as a single object or multiple ones
+        return [self.neuron_mesh] if self.result_is_single_object_mesh else self.neuron_meshes

@@ -53,10 +53,7 @@ class UnionBuilder(MeshBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
-
-        # A reference to the reconstructed soma mesh, and potentially the neuron mesh after welding
-        self.soma_mesh = None
+        MeshBuilderBase.__init__(self, morphology, options, 'union')
 
         # Statistics
         self.profiling_statistics = 'UnionBuilder Profiling Stats.: \n'
@@ -67,8 +64,40 @@ class UnionBuilder(MeshBuilderBase):
         # Stats. about the mesh
         self.mesh_statistics = 'UnionBuilder Mesh: \n'
 
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """The resulting mesh from this builder is always contained in a single object."""
+
+        self.result_is_single_object_mesh = True
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Create the materials of the morphology skeleton
+        self.create_skeleton_materials()
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
+
+        # Modify the morphology skeleton, if required
+        self.modify_morphology_skeleton()
+
+        # Resample the sections of the morphology skeleton, if required
+        self.resample_skeleton_sections()
+
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
+        # Optimized meta-ball soma resolution for union operations
+        self.options.soma.meta_ball_resolution = 0.15
 
     ################################################################################################
     # @update_morphology_skeleton
@@ -301,7 +330,7 @@ class UnionBuilder(MeshBuilderBase):
 
         # Create a bevel object that will be used to create the mesh
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=16, name='hard_edges_arbors_bevel')
+            radius=1.0, resolution=16, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -325,7 +354,7 @@ class UnionBuilder(MeshBuilderBase):
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=16, name='soft_edges_arbors_bevel')
+            radius=1.0, resolution=16, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -355,8 +384,6 @@ class UnionBuilder(MeshBuilderBase):
         """
 
         nmv.logger.header('Reconstructing arbors')
-        self.build_hard_edges_arbors()
-        return
 
         # Hard edges (less samples per branch)
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
@@ -502,65 +529,49 @@ class UnionBuilder(MeshBuilderBase):
 
         nmv.logger.header('Building Mesh: UnionBuilder')
 
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        # Apply skeleton - based operation, if required, to slightly modify the skeleton
-        result, stats = nmv.utilities.profile_function(self.modify_morphology_skeleton)
-        self.profiling_statistics += stats
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        # Build the soma, with the default parameters
-        self.options.soma.meta_ball_resolution = 0.15
-        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
+        # Build the soma
+        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors
-        result, stats = nmv.utilities.profile_function(self.build_arbors)
+        result, stats = self.PROFILE(self.build_arbors)
         self.profiling_statistics += stats
 
         # Connect to the soma
-        result, stats = nmv.utilities.profile_function(self.weld_arbors_to_soma)
+        result, stats = self.PROFILE(self.weld_arbors_to_soma)
         self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
+        result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
         # Cleaning mesh
-        result, stats = nmv.utilities.profile_function(self.smooth_edges)
+        result, stats = self.PROFILE(self.smooth_edges)
         self.profiling_statistics += stats
 
         # Build the endfeet
-        result, stats = nmv.utilities.profile_function(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet)
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
+        result, stats = self.PROFILE(self.add_surface_noise_to_arbor)
         self.profiling_statistics += stats
 
         # Decimation
-        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
+        result, stats = self.PROFILE(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
-        self.profiling_statistics += stats
-
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
-        self.profiling_statistics += stats
-
-        # Report
-        nmv.logger.statistics(self.profiling_statistics)
-
-        # Write the stats to file
-        self.write_statistics_to_file(tag='union')
+        # Report the statistics of this builder
+        self.report_builder_statistics()
 
         # Create a new collection from the created objects of the mesh
         nmv.utilities.create_collection_with_objects(
             name='Mesh %s' % self.morphology.label, objects_list=[self.soma_mesh])
+
+        # This builder creates a single mesh object
+        return [self.neuron_mesh]
 

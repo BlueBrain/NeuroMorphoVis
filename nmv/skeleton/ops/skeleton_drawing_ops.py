@@ -493,11 +493,12 @@ def draw_connected_sections(section,
 
         # Section material
         section_material = None
-        if material_list is not None:
-            if section.index % 2 == 0:
-                section_material = material_list[0]
-            else:
-                section_material = material_list[1]
+        if len(material_list) >= 2:
+            if material_list is not None:
+                if section.index % 2 == 0:
+                    section_material = material_list[0]
+                else:
+                    section_material = material_list[1]
 
         # Section name
         section_name = '%s_%d' % (name, section.index)

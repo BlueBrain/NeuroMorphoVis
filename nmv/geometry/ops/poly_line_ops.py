@@ -211,6 +211,7 @@ def draw_poly_line(poly_line_data,
 
         # If a bevel object is given, use it for scaling the diameter of the poly-line
         if bevel_object is not None:
+            line_data.bevel_mode = 'OBJECT'
             line_data.bevel_object = bevel_object
             line_data.use_fill_caps = caps
 
@@ -231,6 +232,7 @@ def draw_poly_line(poly_line_data,
 
         # Create a material from a given color
         if color is not None:
+
             # Create a new material (color) and assign it to the line
             line_material = bpy.data.materials.new('color.%s' % name)
             line_material.diffuse_color = color

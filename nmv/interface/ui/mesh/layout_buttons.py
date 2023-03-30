@@ -67,6 +67,13 @@ def draw_mesh_rendering_buttons(panel, scene, show_stats=False):
     buttons_row.operator('nmv.render_mesh_side', icon='AXIS_SIDE')
     buttons_row.operator('nmv.render_mesh_top', icon='AXIS_TOP')
 
+    if nmv.interface.ui_mesh_reconstructed:
+        view_row.enabled = True
+        buttons_row.enabled = True
+    else:
+        view_row.enabled = False
+        buttons_row.enabled = False
+
 
 ####################################################################################################
 # @draw_mesh_export_options
@@ -77,8 +84,8 @@ def draw_mesh_export_options(panel, scene, options):
     save_neuron_mesh_row = panel.layout.row()
     save_neuron_mesh_row.label(text='Export Mesh', icon='MESH_UVSPHERE')
 
-    export_format = panel.layout.row()
-    export_format.prop(scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
+    export_format_row = panel.layout.row()
+    export_format_row.prop(scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
 
     if not scene.NMV_ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
         if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
@@ -88,5 +95,11 @@ def draw_mesh_export_options(panel, scene, options):
     # Save button
     save_neuron_mesh_buttons_column = panel.layout.column(align=True)
     save_neuron_mesh_buttons_column.operator('nmv.export_mesh', icon='MESH_DATA')
-    save_neuron_mesh_buttons_column.enabled = True
+
+    if nmv.interface.ui_mesh_reconstructed:
+        export_format_row.enabled = True
+        save_neuron_mesh_buttons_column.enabled = True
+    else:
+        export_format_row.enabled = False
+        save_neuron_mesh_buttons_column.enabled = False
 

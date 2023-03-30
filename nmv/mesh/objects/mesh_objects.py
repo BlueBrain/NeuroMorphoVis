@@ -184,7 +184,7 @@ def create_circle(radius=1,
 # @create_bezier_circle
 ####################################################################################################
 def create_bezier_circle(radius=1,
-                         resolution=4,
+                         resolution=16,
                          location=(0, 0, 0),
                          name='bezier_circle'):
     """Create a BEZIER circle mesh object that is linked to the scene and return a reference to it.

@@ -22,13 +22,13 @@ import copy
 import bpy
 
 # Internal imports
-import nmv.utilities
 import nmv.enums
 import nmv.consts
 import nmv.skeleton
 import nmv.mesh
 import nmv.shading
 import nmv.scene
+import nmv.utilities
 
 
 ####################################################################################################
@@ -44,13 +44,16 @@ class MeshBuilderBase:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 builder_name):
         """Constructor
 
         :param morphology:
             A given morphology skeleton to create the mesh for.
         :param options:
-            System options
+            NeuroMorphoVis options.
+        :param builder_name:
+            The name of the used mesh builder.
         """
 
         # Morphology
@@ -59,26 +62,12 @@ class MeshBuilderBase:
         # Loaded options from NeuroMorphoVis
         self.options = copy.deepcopy(options)
 
-        # A list of the colors/materials of the soma
-        self.soma_materials = None
+        # The name of the builder
+        self.builder_name = builder_name
 
-        # A list of the colors/materials of the axon
-        self.axons_materials = None
-
-        # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
-
-        # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
-
-        # A list of all the materials of the endfeet
-        self.endfeet_materials = None
-
-        # A list of the colors/materials of the spines
-        self.spines_materials = None
-
-        # All lights created in the scene
-        self.lights = None
+        # This flag is set to True if the resulting neuron, or astrocyte, mesh is entirely
+        # represented by a single mesh object.
+        self.result_is_single_object_mesh = False
 
         # A reference to the reconstructed soma mesh
         self.soma_mesh = None
@@ -104,6 +93,27 @@ class MeshBuilderBase:
         # A reference to the neuron mesh after its creation
         self.neuron_mesh = None
 
+        # A list of the colors/materials of the soma, or the entire membrane
+        self.soma_materials = None
+
+        # A list of the colors/materials of the axon
+        self.axons_materials = None
+
+        # A list of the colors/materials of the basal dendrites
+        self.basal_dendrites_materials = None
+
+        # A list of the colors/materials of the apical dendrite
+        self.apical_dendrites_materials = None
+
+        # A list of all the materials of the endfeet
+        self.endfeet_materials = None
+
+        # A list of the colors/materials of the spines
+        self.spines_materials = None
+
+        # All lights created in the scene
+        self.lights = None
+
         # Statistics
         self.profiling_statistics = ''
 
@@ -113,17 +123,22 @@ class MeshBuilderBase:
         # Stats. about the mesh
         self.mesh_statistics = ''
 
-        # Initialization
-        self._init_builder_()
+        # Profiling function object
+        self.PROFILE = nmv.utilities.profile_function
 
     ################################################################################################
-    # @_init_builder_
+    # @clear_meshes_lists
     ################################################################################################
-    def _init_builder_(self):
-        """Initialize the relevant parameters of the builder."""
+    def clear_meshes_lists(self):
+        """Clear all the lists of the meshes. Normally, this operation is done after a joint
+        operation."""
 
-        # Create the skeleton material
-        self.create_skeleton_materials()
+        self.axons_meshes.clear()
+        self.basal_dendrites_meshes.clear()
+        self.apical_dendrites_meshes.clear()
+        self.endfeet_meshes.clear()
+        self.spines_meshes.clear()
+        self.neuron_meshes.clear()
 
     ################################################################################################
     # @clear_materials
@@ -192,6 +207,34 @@ class MeshBuilderBase:
         nmv.utilities.create_collection_with_objects(name='Illumination', objects_list=self.lights)
 
     ################################################################################################
+    # @resample_skeleton_adaptive_relaxed
+    ################################################################################################
+    def resample_skeleton_adaptive_relaxed(self):
+        """Resamples the morphology skeleton using the adaptive relaxed method."""
+
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
+
+    ################################################################################################
+    # @resample_skeleton_adaptive_relaxed
+    ################################################################################################
+    def resample_skeleton_adaptive_packed(self):
+        """Resamples the morphology skeleton using the adaptive packed method."""
+
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
+
+    ################################################################################################
+    # @resample_skeleton_adaptive_relaxed
+    ################################################################################################
+    def resample_skeleton_at_fixed_step(self):
+        """Resamples the morphology skeleton using the fixed step relaxed method."""
+
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
+              self.options.morphology.resampling_step])
+
+    ################################################################################################
     # @resample_skeleton_sections
     ################################################################################################
     def resample_skeleton_sections(self):
@@ -202,27 +245,26 @@ class MeshBuilderBase:
         """
 
         nmv.logger.info('Resampling skeleton')
-
-        # A reference to the resampling method
         method = self.options.morphology.resampling_method
-
-        # The adaptive resampling is quite important to prevent breaking the structure
         if method == nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
-
+            self.resample_skeleton_adaptive_relaxed()
         elif method == nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
-
+            self.resample_skeleton_adaptive_packed()
         elif method == nmv.enums.Skeleton.Resampling.FIXED_STEP:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
-                  self.options.morphology.resampling_step])
+            self.resample_skeleton_at_fixed_step()
         else:
-
-            # Don't resample the morphology skeleton
             pass
+
+    ################################################################################################
+    # @remove_arbors_samples_inside_soma
+    ################################################################################################
+    def remove_arbors_samples_inside_soma(self):
+        """Removes the internal arbor samples that are considered located inside the soma."""
+
+        nmv.logger.info('Removing Internal Samples')
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
+              self.morphology.soma.centroid])
 
     ################################################################################################
     # @update_morphology_skeleton
@@ -235,12 +277,8 @@ class MeshBuilderBase:
         builders might apply a different set of filters.
         """
 
-        # Remove the internal samples, or the samples that intersect the soma at the first
-        # section and each arbor
-        nmv.logger.info('Removing Internal Samples')
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
-              self.morphology.soma.centroid])
+        # Remove internal samples
+        self.remove_arbors_samples_inside_soma()
 
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
@@ -895,3 +933,40 @@ class MeshBuilderBase:
 
         # Return the resulting list
         return endfeet_meshes
+
+    ################################################################################################
+    # @assign_material_to_single_object_mesh
+    ################################################################################################
+    def assign_material_to_single_object_mesh(self):
+        """Assigns the soma material, as an entire membrane material, to the meshes reconstructed
+        in a single mesh object."""
+
+        # Deselect all objects
+        nmv.scene.ops.deselect_all()
+
+        # Activate the mesh object
+        nmv.scene.set_active_object(self.neuron_mesh)
+
+        # Assign the material to the selected mesh
+        nmv.shading.set_material_to_object(self.neuron_mesh, self.soma_materials[0])
+
+        # Update the UV mapping
+        nmv.shading.adjust_material_uv(self.neuron_mesh)
+
+        # Activate the mesh object
+        nmv.scene.set_active_object(self.neuron_mesh)
+
+    ################################################################################################
+    # @report_builder_statistics
+    ################################################################################################
+    def report_builder_statistics(self):
+        """Reports the relevant performance statistics about the used mesh builder."""
+
+        # Collect the statistics of the mesh building process
+        self.collect_mesh_stats()
+
+        # Add the statistics to the logger and display them
+        nmv.logger.statistics(self.profiling_statistics)
+
+        # Write the statistics to a file
+        self.write_statistics_to_file(tag=self.builder_name)

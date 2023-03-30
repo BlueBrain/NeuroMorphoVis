@@ -211,7 +211,7 @@ class DendrogramBuilder(MorphologyBuilderBase):
             ignore_axons=self.options.morphology.ignore_axons)
 
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
@@ -470,7 +470,7 @@ class DendrogramBuilder(MorphologyBuilderBase):
             dendrogram_type=dendrogram_type)
 
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(

@@ -1196,6 +1196,52 @@ def clone_mesh_objects_into_joint_mesh(mesh_objects):
 
 
 ####################################################################################################
+# @verify_object_in_scene
+####################################################################################################
+def verify_object_in_scene(scene_object):
+    """Verifies if the given reference to an object exists in the scene or not.
+
+    :param scene_object:
+        A reference to the scene object.
+    :return:
+        True if the object still exists in the scene, otherwise False.
+    """
+
+    # If the given object is None, then it cannot be in the scene
+    if scene_object is None:
+        return False
+
+    # Use exception handling to verify the existence of the object in the scene
+    try:
+        scene_object.name
+    except:
+        return False
+
+    # If no exception raised, the object exists in the scene
+    return True
+
+
+####################################################################################################
+# @verify_objects_list_in_scene
+####################################################################################################
+def verify_objects_list_in_scene(scene_objects_list):
+    """Verifies if the given references to a list of objects exist in the scene or not.
+
+    :param scene_objects_list:
+        A list of scene objects.
+    :return:
+        True if all the objects still exist in the scene, otherwise False.
+    """
+
+    for scene_object in scene_objects_list:
+        if verify_object_in_scene(scene_object=scene_object):
+            continue
+        else:
+            return False
+    return True
+
+
+####################################################################################################
 # @is_object_in_scene
 ####################################################################################################
 def is_object_in_scene(input_object):

@@ -23,6 +23,7 @@ import bpy
 
 # Internal imports
 import nmv.interface
+import nmv.scene
 
 # Layout
 from .layout_buttons import *
@@ -59,6 +60,15 @@ class NMV_MeshPanel(bpy.types.Panel):
     ################################################################################################
     def draw(self, context):
 
+        # Verify the presence of a reconstructed mesh in the scene
+        if len(nmv.interface.ui_reconstructed_mesh) > 0:
+            if nmv.scene.verify_objects_list_in_scene(nmv.interface.ui_reconstructed_mesh):
+                nmv.interface.ui_mesh_reconstructed = True
+            else:
+                nmv.interface.ui_mesh_reconstructed = False
+        else:
+            nmv.interface.ui_mesh_reconstructed = False
+
         draw_documentation_button(layout=self.layout)
         self.layout.separator()
 
@@ -84,45 +94,3 @@ class NMV_MeshPanel(bpy.types.Panel):
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(self.layout)
-
-        """
-        # Meshing options
-        draw_meshing_options(panel=self, scene=context.scene)
-
-        # Color options
-        draw_color_options(panel=self, scene=context.scene)
-
-        # Mesh reconstruction button
-        draw_mesh_reconstruction_button(panel=self, scene=context.scene)
-
-        # Profiling
-        if is_mesh_reconstructed:
-            morphology_stats_row = self.layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            reconstruction_time_row = self.layout.row()
-            reconstruction_time_row.prop(context.scene, 'NMV_MeshReconstructionTime')
-            reconstruction_time_row.enabled = False
-
-        # Rendering options
-        draw_rendering_options(panel=self, scene=context.scene)
-
-        global is_mesh_rendered
-        if is_mesh_rendered:
-            morphology_stats_row = self.layout.row()
-            morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-            rendering_time_row = self.layout.row()
-            rendering_time_row.prop(context.scene, 'NMV_MeshRenderingTime')
-            rendering_time_row.enabled = False
-
-        # Mesh export options
-        draw_mesh_export_options(panel=self, scene=context.scene)
-
-        # Enable or disable the layout
-        nmv.interface.enable_or_disable_layout(self.layout)
-
-        """
-
-
-
-
-
