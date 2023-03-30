@@ -53,6 +53,9 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Initialize the parent with the common parameters
         MeshBuilderBase.__init__(self, morphology, options, 'voxelization')
 
+        # Voxelization resolution use for the re-meshing modifier
+        self.voxelization_resolution = 0.1
+
         # Statistics
         self.profiling_statistics = 'VoxelizationBuilder Profiling Stats.: \n'
 
@@ -88,8 +91,22 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
+        # Computes the smallest radius of the morphology skeleton until the specified branch order
+        smallest_radius = nmv.skeleton.get_smallest_sample_radius_of_trimmed_morphology(
+            morphology=self.morphology,
+            axon_branch_order=self.options.morphology.axon_branch_order,
+            basal_dendrites_branch_order=self.options.morphology.basal_dendrites_branch_order,
+            apical_dendrite_branch_order=self.options.morphology.apical_dendrite_branch_order)
+
+        # Get the voxelization resolution
+        if smallest_radius < 0.1:
+            self.voxelization_resolution = 0.1 * 0.85
+        else:
+            self.voxelization_resolution = smallest_radius * 0.85
+        nmv.logger.info('Voxelization Resolution [%f]' % self.voxelization_resolution)
+
         # Optimized meta-ball soma resolution for the voxelization modifier
-        self.options.soma.meta_ball_resolution = 0.15
+        self.options.soma.meta_ball_resolution = self.voxelization_resolution
 
     ################################################################################################
     # @build_proxy_mesh_using_articulated_sections_builder
@@ -145,7 +162,7 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Apply the modifier
         nmv.mesh.apply_voxelization_remeshing_modifier(
-            mesh_object=self.neuron_mesh, voxel_size=0.1)
+            mesh_object=self.neuron_mesh, voxel_size=self.voxelization_resolution)
 
     ################################################################################################
     # @finalize_mesh
@@ -155,7 +172,8 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         nmv.logger.info('Mesh finalization')
 
-        self.create_skeleton_materials()
+        # Create the soma material and assign it to the final object
+        self.create_soma_materials()
         self.assign_material_to_single_object_mesh()
 
         # Remove doubles
@@ -178,7 +196,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         """Builds the proxy mesh that will be used for the voxelization"""
 
         # Ensure that we use a high quality cross-sectional bevel
-        # self.options.morphology.bevel_object_sides = 16
+        self.options.morphology.bevel_object_sides = 16
 
         if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
             return self.build_proxy_mesh_using_connected_sections_builder()

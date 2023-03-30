@@ -132,6 +132,9 @@ class SkinningBuilder(MeshBuilderBase):
         # Create the materials of the morphology skeleton
         self.create_skeleton_materials()
 
+        # Create the illumination
+        self.create_illumination()
+
         # Is it a single object or multiple objects
         self.confirm_single_or_multiple_mesh_objects()
 

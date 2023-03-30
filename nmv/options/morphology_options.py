@@ -224,8 +224,6 @@ class MorphologyOptions:
         # Soma reconstruction technique (IGNORE, SPHERE, or SOFT_BODY, or META_BALLS by default)
         self.soma_representation = nmv.enums.Soma.Representation.META_BALLS
 
-        # The color of the soma, see @create_morphology_color_palette
-        self.soma_color = None
         # Branching of the morphologies in the connected modes, either based on angles or radii
         self.branching = nmv.enums.Skeleton.Branching.RADII
 
@@ -259,4 +257,3 @@ class MorphologyOptions:
         # Number of sides of the bevel object used to scale the sections
         # This parameter controls the quality of the reconstructed morphology
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
-

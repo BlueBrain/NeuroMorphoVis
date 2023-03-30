@@ -94,11 +94,15 @@ class PiecewiseBuilder(MeshBuilderBase):
     def initialize_builder(self):
         """Initializes the different parameters/options of the builder required for building."""
 
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
         # Create the materials of the morphology skeleton
         self.create_skeleton_materials()
 
-        # Is it a single object or multiple objects
-        self.confirm_single_or_multiple_mesh_objects()
+        # Create illumination only if this is not a proxy mesh
+        if not self.this_is_proxy_mesh:
+            self.create_illumination()
 
         # Verify and repair the morphology, if required
         self.update_morphology_skeleton()

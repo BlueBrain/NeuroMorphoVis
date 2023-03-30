@@ -117,8 +117,11 @@ class MetaBuilder(MeshBuilderBase):
     def initialize_builder(self):
         """Initializes the different parameters/options of the builder required for building."""
 
-        # Create the materials of the morphology skeleton
-        self.create_skeleton_materials()
+        # Create the soma materials only
+        self.create_soma_materials()
+
+        # Create the illumination
+        self.create_illumination()
 
         # Is it a single object or multiple objects
         self.confirm_single_or_multiple_mesh_objects()

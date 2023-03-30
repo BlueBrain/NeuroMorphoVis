@@ -741,3 +741,65 @@ def find_section_radius_near_point(section,
 
     # Return the final radius
     return radius
+
+
+####################################################################################################
+# @get_section_radii
+####################################################################################################
+def get_section_radii(max_branching_order,
+                      section,
+                      radii_list=[]):
+    """Appends to the input radii list the radii of all the samples of the section.
+
+    :param max_branching_order:
+        Maximum branching order specified by the user.
+    :param section:
+        A given section to get its radii.
+    :param radii_list:
+        A given list to collect the radii of the section.
+    """
+
+    # If the current branching level is greater than the maximum one, exit
+    if section.branching_order > max_branching_order:
+        return
+
+    for i_sample in section.samples:
+        radii_list.append(i_sample.radius)
+
+
+####################################################################################################
+# @get_smallest_sample_radius_of_trimmed_morphology
+####################################################################################################
+def get_smallest_sample_radius_of_trimmed_morphology(morphology,
+                                                     axon_branch_order,
+                                                     basal_dendrites_branch_order,
+                                                     apical_dendrite_branch_order):
+    """Returns the smallest radius in the morphology for a specific branching order.
+
+    :param morphology:
+        The input morphology.
+    :param axon_branch_order:
+        The maximum branching order along the axons.
+    :param basal_dendrites_branch_order:
+        The maximum branching order along the basal dendrites.
+    :param apical_dendrite_branch_order:
+        The maximum branching order along the apical dendrites.
+    :return:
+        The smallest radius in the morphology for a specific branching order.
+    """
+
+    # A list that will collect all the radii of the sections in the morphology until the
+    # requested branching orders
+    radii = list()
+
+    # Apply the operation recursively on the trimmed morphology
+    nmv.skeleton.ops.apply_operation_to_trimmed_morphology(
+        *[morphology,
+          axon_branch_order,
+          basal_dendrites_branch_order,
+          apical_dendrite_branch_order,
+          nmv.skeleton.ops.get_section_radii,
+          radii])
+
+    # Return the minimum radius
+    return min(radii)

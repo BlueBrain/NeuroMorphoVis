@@ -81,6 +81,9 @@ class UnionBuilder(MeshBuilderBase):
         # Create the materials of the morphology skeleton
         self.create_skeleton_materials()
 
+        # Create the illumination
+        self.create_illumination()
+
         # Is it a single object or multiple objects
         self.confirm_single_or_multiple_mesh_objects()
 
@@ -97,7 +100,7 @@ class UnionBuilder(MeshBuilderBase):
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
         # Optimized meta-ball soma resolution for union operations
-        self.options.soma.meta_ball_resolution = 0.15
+        self.options.soma.meta_ball_resolution = 0.5
 
     ################################################################################################
     # @update_morphology_skeleton
@@ -330,7 +333,7 @@ class UnionBuilder(MeshBuilderBase):
 
         # Create a bevel object that will be used to create the mesh
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=16, name='Cross Section')
+            radius=1.0, resolution=2, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -354,7 +357,7 @@ class UnionBuilder(MeshBuilderBase):
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=16, name='Cross Section')
+            radius=1.0, resolution=2, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
