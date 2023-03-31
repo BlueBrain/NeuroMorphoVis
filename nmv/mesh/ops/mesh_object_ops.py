@@ -722,7 +722,9 @@ def subdivide_mesh(mesh_object,
 # @add_surface_noise_to_mesh_using_displacement_modifier
 ####################################################################################################
 def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
-                                                          strength=1.0):
+                                                          strength=1.0,
+                                                          noise_scale=2.0,
+                                                          noise_depth=2):
 
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
@@ -735,13 +737,15 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
 
     # Add a new texture for the modifier
     displacement_modifier.texture = bpy.data.textures.new(
-        name='SurfaceNoise%s' % mesh_object.name, type='CLOUDS')
+        name='Surface Noise [%s]' % mesh_object.name, type='CLOUDS')
 
-    # Update the noise range
+    # Select a PERLIN noise
+    displacement_modifier.texture.noise_basis = 'ORIGINAL_PERLIN'
+
+    # Update the noise parameters
     displacement_modifier.strength = strength
-
-    # Update the noise range
-    displacement_modifier.texture.noise_scale = 1.5
+    displacement_modifier.texture.noise_scale = noise_scale
+    displacement_modifier.texture.noise_depth = int(noise_depth)
 
     # Apply the modifiers
     if nmv.utilities.is_blender_290():

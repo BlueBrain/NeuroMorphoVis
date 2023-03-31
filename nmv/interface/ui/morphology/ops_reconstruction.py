@@ -117,5 +117,8 @@ class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
             setattr(context.scene, 'NMV_R0_Value%d' % color_index, r0_value)
             setattr(context.scene, 'NMV_R1_Value%d' % color_index, r1_value)
 
+        # Deselect everything in the scene to be able to see the morphology
+        nmv.scene.deselect_all()
+
         # Confirm operation done
         return {'FINISHED'}

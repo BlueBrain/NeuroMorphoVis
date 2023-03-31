@@ -94,14 +94,17 @@ class NMV_ReconstructNeuronMesh(bpy.types.Operator):
             self.report({'ERROR'}, 'Invalid Meshing Technique')
             return {'FINISHED'}
 
-        # Mesh reconstructed
+        # Update the timing
         reconstruction_time = time.time()
-
         nmv.interface.ui_mesh_reconstructed = True
         context.scene.NMV_MeshReconstructionTime = reconstruction_time - start_time
         nmv.logger.statistics('Mesh reconstructed in [%f] seconds' %
                               context.scene.NMV_MeshReconstructionTime)
 
+        # Deselect everything in the scene to be able to see the morphology
+        nmv.scene.deselect_all()
+
+        # Operation done
         return {'FINISHED'}
 
 

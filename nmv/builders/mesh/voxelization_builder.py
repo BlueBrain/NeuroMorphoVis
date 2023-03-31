@@ -122,7 +122,7 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Adjust the minimum radius to 0.1 to avoid discontinuities
         nmv.skeleton.set_smallest_sample_radius_to_value(
-            morphology=self.morphology, smallest_radius=0.1)
+            morphology=self.morphology, smallest_radius=0.2)
 
         # Create the morphology builder and generate the morphology skeleton
         morphology_builder = nmv.builders.DisconnectedSectionsBuilder(
@@ -145,7 +145,7 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Adjust the minimum radius to 0.1 to avoid discontinuities
         nmv.skeleton.set_smallest_sample_radius_to_value(
-            morphology=self.morphology, smallest_radius=0.1)
+            morphology=self.morphology, smallest_radius=0.2)
 
         # Create the proxy mesh builder and generate the morphology skeleton
         proxy_mesh_builder = nmv.builders.PiecewiseBuilder(
@@ -163,6 +163,27 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Apply the modifier
         nmv.mesh.apply_voxelization_remeshing_modifier(
             mesh_object=self.neuron_mesh, voxel_size=self.voxelization_resolution)
+
+    ################################################################################################
+    # @adjust_origin_to_soma_center
+    ################################################################################################
+    def adjust_origin_to_soma_center(self):
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
+
+    ################################################################################################
+    # @build_proxy_mesh
+    ################################################################################################
+    def build_proxy_mesh(self):
+        """Builds the proxy mesh that will be used for the voxelization"""
+
+        # Ensure that we use a high quality cross-sectional bevel
+        self.options.morphology.bevel_object_sides = 16
+
+        if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
+            return self.build_proxy_mesh_using_connected_sections_builder()
+        else:
+            return self.build_proxy_mesh_using_articulated_sections_builder()
 
     ################################################################################################
     # @finalize_mesh
@@ -190,26 +211,14 @@ class VoxelizationBuilder(MeshBuilderBase):
             name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
 
     ################################################################################################
-    # @build_proxy_mesh
+    # @add_surface_noise
     ################################################################################################
-    def build_proxy_mesh(self):
-        """Builds the proxy mesh that will be used for the voxelization"""
+    def add_surface_noise(self):
 
-        # Ensure that we use a high quality cross-sectional bevel
-        self.options.morphology.bevel_object_sides = 16
-
-        if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
-            return self.build_proxy_mesh_using_connected_sections_builder()
-        else:
-            return self.build_proxy_mesh_using_articulated_sections_builder()
-
-    ################################################################################################
-    # @adjust_origin_to_soma_center
-    ################################################################################################
-    def adjust_origin_to_soma_center(self):
-
-        nmv.mesh.set_mesh_origin(
-            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+            nmv.logger.info('Adding surface noise')
+            nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
+                mesh_object=self.neuron_mesh, strength=1, noise_scale=1.5, noise_depth=2)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -231,6 +240,10 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Adjust the origin of the mesh
         result, stats = self.PROFILE(self.finalize_mesh)
+        self.profiling_statistics += stats
+
+        # Surface roughness
+        result, stats = self.PROFILE(self.add_surface_noise)
         self.profiling_statistics += stats
 
         # Report the statistics of this builder

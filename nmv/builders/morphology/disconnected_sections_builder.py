@@ -56,7 +56,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Initialize the parent with the common parameters
         MorphologyBuilderBase.__init__(self, morphology, options)
 
-        # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
+        # A list of all the articulation spheres
         self.articulations_spheres = list()
 
         # Force using the MetaBalls soma in case loading a new morphology
@@ -291,6 +291,34 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                                            highlight=highlight)
 
     ################################################################################################
+    # @draw_articulation_sphere
+    ################################################################################################
+    def draw_articulation_sphere(self,
+                                 point,
+                                 radius,
+                                 use_uv_spheres=False):
+        """Draws the articulation spheres with different resolutions to improve performance.
+
+        :param point:
+            The center of the sphere.
+        :param radius:
+            The radius of the sphere.
+        :param use_uv_spheres:
+            If this flag is set, UV-spheres will be used, otherwise, ico-spheres.
+        :return:
+            A reference to the created sphere.
+        """
+
+        if use_uv_spheres:
+            subdivisions = 5 if radius > 0.5 else 3
+            return nmv.bmeshi.create_ico_sphere(
+                radius=radius, location=point, subdivisions=subdivisions)
+        else:
+            subdivisions = 32 if radius > 0.5 else 16
+            return nmv.bmeshi.create_uv_sphere(
+                radius=radius, location=point, subdivisions=subdivisions)
+
+    ################################################################################################
     # @draw_section_terminal_as_sphere
     ################################################################################################
     def draw_section_terminal_as_sphere(self,
@@ -337,8 +365,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
-        section_terminal_sphere = nmv.bmeshi.create_ico_sphere(
-            sphere_radius * 1.025, location=point, subdivisions=3)
+        section_terminal_sphere = self.draw_articulation_sphere(radius=sphere_radius, point=point)
 
         # Add the created bmesh sphere to the list
         self.articulations_spheres.append(section_terminal_sphere)
@@ -368,8 +395,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             return
 
         # Draw the root sample as a sphere
-        self.articulations_spheres.append(nmv.bmeshi.create_ico_sphere(
-            root.samples[0].radius * 0.975, location=root.samples[0].point, subdivisions=3))
+        self.articulations_spheres.append(self.draw_articulation_sphere(
+            radius=root.samples[0].radius, point=root.samples[0].point))
 
         # Increment the branching level
         branching_order += 1

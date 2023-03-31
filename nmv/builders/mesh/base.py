@@ -344,7 +344,7 @@ class MeshBuilderBase:
         """Reconstructs a soma mesh using the SomaMetaBuilder."""
 
         # Create a builder object and reconstruct the soma mesh
-        builder  = nmv.builders.SomaMetaBuilder(morphology=self.morphology, options=self.options)
+        builder = nmv.builders.SomaMetaBuilder(morphology=self.morphology, options=self.options)
         self.soma_mesh = builder.reconstruct_soma_mesh(apply_shader=False)
 
         # Add the soma mesh to the meshes list

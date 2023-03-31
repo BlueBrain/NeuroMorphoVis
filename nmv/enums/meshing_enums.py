@@ -85,7 +85,7 @@ class Meshing:
              'This method is used to reconstruct high fidelity volumes from the generated meshes'),
 
             (VOXELIZATION,
-             'Voxelization-based Remeshing',
+             'Voxelization',
              'This approach creates a watertight mesh'),
 
             (SKINNING,

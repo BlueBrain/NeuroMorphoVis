@@ -109,6 +109,9 @@ class NMV_ReconstructSoma(bpy.types.Operator):
         # View all the objects in the scene
         nmv.scene.ops.view_all_scene()
 
+        # Deselect everything in the scene to be able to see the morphology
+        nmv.scene.deselect_all()
+
         # Next frame
         return {'PASS_THROUGH'}
 
@@ -244,6 +247,9 @@ class NMV_ReconstructSoma(bpy.types.Operator):
             # Smooth the mesh again to look nice
             nmv.logger.info('Smoothing')
             nmv.mesh.ops.smooth_object(self.soma_sphere_object, level=2)
+
+        # Deselect everything in the scene to be able to see the morphology
+        nmv.scene.deselect_all()
 
         # Report the process termination in the UI
         self.report({'INFO'}, 'Soma Reconstruction Done')

@@ -123,6 +123,7 @@ def draw_voxelization_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_proxy_mesh_option(layout=layout, scene=scene, options=options)
+    draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -152,6 +153,7 @@ def draw_union_operators_meshing_options(layout, scene, options):
 def draw_meta_objects_meshing_options(layout, scene, options):
 
     draw_meta_soma_option(layout=layout, scene=scene, options=options)
+    draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
 
 

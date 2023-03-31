@@ -59,6 +59,9 @@ class MorphologyBuilderBase:
         # System options, and we deepcopy them in case a reference is changed by accident
         self.options = copy.deepcopy(options)
 
+        # A reference to the created soma object
+        self.soma_mesh = None
+
         # All the reconstructed objects of the morphology, for example, poly-lines, spheres etc...
         self.morphology_objects = list()
 
@@ -120,21 +123,19 @@ class MorphologyBuilderBase:
         """Creates a bevel object that is used to interpolate the polylines.
 
         :return:
+            A reference to the created bevel object.
         """
-        bevel_object = nmv.mesh.create_bezier_circle(
+
+        return nmv.mesh.create_bezier_circle(
             radius=1.0, resolution=self.options.morphology.bevel_object_sides,
             location=self.morphology.soma.centroid, name='Cross Section')
-
-        return bevel_object
 
     ################################################################################################
     # @create_soma_material
     ################################################################################################
     def create_soma_material(self):
-        """Creates the material of the soma for all the modes.
-        """
+        """Creates the material of the soma for all the modes."""
 
-        # Soma material
         self.soma_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='soma_skeleton', material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_soma_color,
@@ -144,10 +145,8 @@ class MorphologyBuilderBase:
     # @create_articulations_material
     ################################################################################################
     def create_articulations_material(self):
-        """Creates the material of the articulations
-        """
+        """Creates the material of the articulations."""
 
-        # Articulations, ONLY, for the articulated reconstruction method
         self.articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='articulations', material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_articulation_color,
@@ -157,6 +156,8 @@ class MorphologyBuilderBase:
     # @endfeet_materials
     ################################################################################################
     def create_endfeet_material(self):
+        """Creates the materials of the endfeet."""
+
         self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='endfeet', material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_endfeet_color,
@@ -167,10 +168,10 @@ class MorphologyBuilderBase:
     ################################################################################################
     def create_homogeneous_materials(self,
                                      number_elements=1):
-        """
+        """Create homogeneous materials to color-code all the objects of the morphology.
 
         :param number_elements:
-        :return:
+            The number of colors created. By default, 1.
         """
 
         # Soma material
@@ -414,89 +415,82 @@ class MorphologyBuilderBase:
             self.create_colormap_materials()
 
     ################################################################################################
-    # @create_base_skeleton_materials
+    # @shade_soma_mesh
     ################################################################################################
-    def draw_soma_sphere(self):
-        """Draws a sphere that represents the soma.
-        """
-
-        # Get a reference to the soma
-        soma = self.morphology.soma
-
-        # Draw the soma as a sphere
-        soma_sphere = nmv.mesh.create_uv_sphere(
-            radius=soma.mean_radius, location=soma.centroid, name='Soma')
+    def shade_soma_mesh(self):
+        """Shades the soma mesh before displaying it in the scene."""
 
         # Assign a material to the soma sphere
-        nmv.shading.set_material_to_object(soma_sphere, self.soma_materials[0])
+        nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])
 
-        # Return a reference to the object
-        return soma_sphere
+        # Smooth shade the sphere to look nice
+        nmv.mesh.ops.shade_smooth_object(self.soma_mesh)
+
+    ################################################################################################
+    # @draw_soma_as_sphere
+    ################################################################################################
+    def draw_soma_as_sphere(self):
+        """Draws the soma as a symbolic sphere."""
+
+        nmv.logger.detail('Symbolic Sphere Soma')
+        self.soma_mesh = nmv.mesh.create_uv_sphere(
+            radius=self.morphology.soma.mean_radius, location=self.morphology.soma.centroid,
+            name='Soma')
+
+        # Add the soma mesh to the morphology objects
+        self.morphology_objects.append(self.soma_mesh)
+
+        # Shades the soma mesh
+        self.shade_soma_mesh()
 
     ################################################################################################
     # @create_base_skeleton_materials
     ################################################################################################
     def draw_meta_balls_soma(self):
-        """Draws the soma.
-        """
+        """Reconstructs a soma mesh using the SomaMetaBuilder."""
 
-        # Create the MetaBuilder
-        soma_builder_object = nmv.builders.SomaMetaBuilder(self.morphology, self.options)
-
-        # Reconstruct the soma, don't apply the default shader and use the one from the
-        # morphology panel
-        soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-        # Apply the shader given in the morphology options, not the one in the soma toolbox
-        nmv.shading.set_material_to_object(soma_mesh, self.soma_materials[0])
+        nmv.logger.detail('Meta-ball Soma')
+        builder = nmv.builders.SomaMetaBuilder(morphology=self.morphology, options=self.options)
+        self.soma_mesh = builder.reconstruct_soma_mesh(apply_shader=False)
 
         # Add the soma mesh to the morphology objects
-        self.morphology_objects.append(soma_mesh)
+        self.morphology_objects.append(self.soma_mesh)
+
+        # Shades the soma mesh
+        self.shade_soma_mesh()
 
     ################################################################################################
-    # @create_base_skeleton_materials
+    # @draw_soft_body_soma
+    ################################################################################################
+    def draw_soft_body_soma(self):
+        """Reconstructs a soma mesh using the SomaSoftBodyBuilder."""
+
+        nmv.logger.detail('Soft-body Soma')
+        builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology, options=self.options)
+        self.soma_mesh = builder.reconstruct_soma_mesh(apply_shader=False)
+
+        # Add the soma mesh to the morphology objects
+        self.morphology_objects.append(self.soma_mesh)
+
+        # Shades the soma mesh
+        self.shade_soma_mesh()
+
+    ################################################################################################
+    # @draw_soma
     ################################################################################################
     def draw_soma(self):
-        """Draws the soma.
-        """
+        """Draws the soma."""
 
-        # Draw the soma as a sphere object
-        if self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SPHERE:
-
-            # Draw the soma sphere
-            nmv.logger.detail('Symbolic sphere')
-            soma_sphere = self.draw_soma_sphere()
-
-            # Smooth shade the sphere to look nice
-            nmv.mesh.ops.shade_smooth_object(soma_sphere)
-
-            # Add the soma sphere to the morphology objects to keep track on it
-            self.morphology_objects.append(soma_sphere)
-
-        # Or as a reconstructed profile using the soma builder
-        elif self.options.morphology.soma_representation == nmv.enums.Soma.Representation.SOFT_BODY:
-
-            # Create a soma builder object
-            soma_builder_object = nmv.builders.SomaSoftBodyBuilder(self.morphology, self.options)
-
-            # Reconstruct the three-dimensional profile of the soma mesh without applying the
-            # default shader to it,
-            # since we need to use the shader specified in the morphology options
-            soma_mesh = soma_builder_object.reconstruct_soma_mesh(apply_shader=False)
-
-            # Apply the shader given in the morphology options, not the one in the soma toolbox
-            nmv.shading.set_material_to_object(soma_mesh, self.soma_materials[0])
-
-            # Add the soma mesh to the morphology objects
-            self.morphology_objects.append(soma_mesh)
-
-        elif self.options.morphology.soma_representation == \
-                nmv.enums.Soma.Representation.META_BALLS:
+        method = self.options.morphology.soma_representation
+        if method == nmv.enums.Soma.Representation.SPHERE:
+            self.draw_soma_as_sphere()
+        elif method == nmv.enums.Soma.Representation.SOFT_BODY:
+            self.draw_soft_body_soma()
+        elif method == nmv.enums.Soma.Representation.META_BALLS:
             self.draw_meta_balls_soma()
-
-        # Otherwise, ignore the soma drawing
         else:
-            nmv.logger.detail('Ignoring soma')
+            nmv.logger.detail('Soma is ignored')
+
 
     ################################################################################################
     # @create_base_skeleton_materials
@@ -604,8 +598,7 @@ class MorphologyBuilderBase:
     # @collection_morphology_objects_in_collection
     ################################################################################################
     def collection_morphology_objects_in_collection(self):
+        """Collects all the resulting objects of the morphology in a group."""
 
-        # Create a new collection from the created objects of the morphology
         nmv.utilities.create_collection_with_objects(
-            name='Morphology %s' % self.morphology.label,
-            objects_list=self.morphology_objects)
+            name='Morphology %s' % self.morphology.label, objects_list=self.morphology_objects)
