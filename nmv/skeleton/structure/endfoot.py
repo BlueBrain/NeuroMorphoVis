@@ -71,7 +71,7 @@ class Endfoot:
     ################################################################################################
     def create_surface_patch(self,
                              material=None,
-                             collection_name="Collection"):
+                             collection_name="Endfeet"):
         """Creates a surface patch of the endfoot.
 
         :param material:

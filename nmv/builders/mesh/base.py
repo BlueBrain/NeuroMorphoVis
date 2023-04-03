@@ -234,7 +234,7 @@ class MeshBuilderBase:
         self.create_endfeet_materials()
 
     ################################################################################################
-    # @resample_skeleton_adaptive_relaxed
+    # @create_illumination
     ################################################################################################
     def create_illumination(self):
         """Creates the illumination sources that correspond to the selected shader."""

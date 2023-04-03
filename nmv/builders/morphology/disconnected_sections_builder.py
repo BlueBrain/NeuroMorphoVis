@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import copy
-
+# Blender imports
 from mathutils import Vector
 
 # Internal imports
@@ -63,6 +61,14 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.force_meta_ball = force_meta_ball_soma
 
     ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+
+        pass
+
+
+    ################################################################################################
     # @create_single_skeleton_materials_list
     ################################################################################################
     def create_single_skeleton_materials_list(self):
@@ -78,7 +84,10 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.skeleton_materials.clear()
 
         # Create the default material list
-        self.create_skeleton_materials_and_illumination()
+        self.create_skeleton_materials()
+
+        # Create the illumination
+        self.create_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -95,7 +104,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Index 8 for the gray color
         self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
             name='gray', material_type=self.options.shading.morphology_material,
-            color=Vector((0.5, 0.5, 0.5))))
+            color=nmv.consts.Color.GRAY))
 
     ################################################################################################
     # @construct_color_coded_polylines
@@ -291,34 +300,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                                            highlight=highlight)
 
     ################################################################################################
-    # @draw_articulation_sphere
-    ################################################################################################
-    def draw_articulation_sphere(self,
-                                 point,
-                                 radius,
-                                 use_uv_spheres=False):
-        """Draws the articulation spheres with different resolutions to improve performance.
-
-        :param point:
-            The center of the sphere.
-        :param radius:
-            The radius of the sphere.
-        :param use_uv_spheres:
-            If this flag is set, UV-spheres will be used, otherwise, ico-spheres.
-        :return:
-            A reference to the created sphere.
-        """
-
-        if use_uv_spheres:
-            subdivisions = 5 if radius > 0.5 else 3
-            return nmv.bmeshi.create_ico_sphere(
-                radius=radius, location=point, subdivisions=subdivisions)
-        else:
-            subdivisions = 32 if radius > 0.5 else 16
-            return nmv.bmeshi.create_uv_sphere(
-                radius=radius, location=point, subdivisions=subdivisions)
-
-    ################################################################################################
     # @draw_section_terminal_as_sphere
     ################################################################################################
     def draw_section_terminal_as_sphere(self,
@@ -365,7 +346,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
-        section_terminal_sphere = self.draw_articulation_sphere(radius=sphere_radius, point=point)
+        section_terminal_sphere = nmv.skeleton.draw_articulation_sphere(
+            radius=sphere_radius, point=point)
 
         # Add the created bmesh sphere to the list
         self.articulations_spheres.append(section_terminal_sphere)
@@ -395,7 +377,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             return
 
         # Draw the root sample as a sphere
-        self.articulations_spheres.append(self.draw_articulation_sphere(
+        self.articulations_spheres.append(nmv.skeleton.draw_articulation_sphere(
             radius=root.samples[0].radius, point=root.samples[0].point))
 
         # Increment the branching level
@@ -615,8 +597,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     ################################################################################################
     # @draw_arbors
     ################################################################################################
-    def draw_arbors(self,
-                    bevel_object):
+    def draw_arbors(self):
+        """Draws the arbors of the morphology."""
 
         # Apical dendrite
         nmv.logger.info('Reconstructing arbors')
@@ -633,7 +615,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.apical_dendrites_materials)
 
                     # Append it to the morphology objects
@@ -654,7 +636,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.basal_dendrites_materials)
 
                     # Append it to the morphology objects
@@ -675,7 +657,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.axons_materials)
 
                     # Append it to the morphology objects
@@ -700,9 +682,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Updating radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        bevel_object = self.create_bevel_object()
+        # Create the bevel object
+        self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
@@ -719,7 +700,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Draw each arbor as a single object
         # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
 
-        self.draw_arbors(bevel_object=bevel_object)
+        self.draw_arbors()
 
         # For the articulated sections, draw the spheres
         if self.options.morphology.reconstruction_method == \
@@ -1023,6 +1004,9 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     def render_highlighted_arbors(self,
                                   image_resolution=3000):
         """Render the morphology with different colors per arbor for analysis.
+
+        @param image_resolution:
+            The rendering resolution of the resulting images. Default 3000 pixels.
         """
 
         # NOTE: Readjust the parameters here to plot everything for the whole morphology

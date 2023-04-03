@@ -73,7 +73,10 @@ class ProgressiveBuilder(MorphologyBuilderBase):
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        self.create_skeleton_materials_and_illumination()
+        self.create_skeleton_materials()
+
+        # Create the illumination
+        self.create_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -368,11 +371,11 @@ class ProgressiveBuilder(MorphologyBuilderBase):
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
-        bevel_object = self.create_bevel_object()
+        self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
@@ -401,7 +404,7 @@ class ProgressiveBuilder(MorphologyBuilderBase):
                     poly_lines=skeleton_poly_lines,
                     object_name='%s_%d' % (self.morphology.label, i),
                     edges=self.options.morphology.edges,
-                    bevel_object=bevel_object,
+                    bevel_object=self.bevel_object,
                     materials=self.skeleton_materials)
 
                 drawn_poly_lines.data.bevel_factor_end = 0.0
@@ -427,10 +430,8 @@ class ProgressiveBuilder(MorphologyBuilderBase):
 
         # Draw every endfoot in the list and append the resulting mesh to the collector
         for endfoot in self.morphology.endfeet:
-            self.morphology_objects.append(endfoot.create_surface_patch(material=self.endfeet_materials[0]))
-
-        # Transforming to global coordinates
-        self.transform_to_global_coordinates()
+            self.morphology_objects.append(endfoot.create_surface_patch(
+                material=self.endfeet_materials[0]))
 
         # Add the morphology objects to a collection
         self.collection_morphology_objects_in_collection()

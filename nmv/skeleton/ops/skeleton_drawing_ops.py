@@ -810,11 +810,14 @@ def visualize_extrusion_connection(point,
 ####################################################################################################
 # @draw_section_samples_as_spheres
 ####################################################################################################
-def draw_section_samples_as_spheres(section):
+def draw_section_samples_as_spheres(section,
+                                    optimize_based_on_radius=False):
     """Draw the section samples as a set of spheres.
 
     :param section:
         A given section to draw.
+    :param optimize_based_on_radius:
+        Draw the smaller spheres with lower subdivisions to improve the performance.
     :return:
         List of spheres of the section.
     """
@@ -826,9 +829,47 @@ def draw_section_samples_as_spheres(section):
     for sample in section.samples:
 
         # Construct a sphere and append it to the list
-        sphere = nmv.bmeshi.create_ico_sphere(
-            radius=sample.radius, location=sample.point, subdivisions=3)
+        if optimize_based_on_radius:
+            if 0.1 < sample.radius <= 0.2:
+                subdivisions = 1
+            elif 0.2 < sample.radius <= 0.3:
+                subdivisions = 2
+            else:
+                subdivisions = 3
+            sphere = nmv.bmeshi.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=subdivisions)
+        else:
+            sphere = nmv.bmeshi.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=3)
         output.append(sphere)
 
         # Return the resulting list that contains all the spheres
     return output
+
+
+####################################################################################################
+# @draw_articulation_sphere
+####################################################################################################
+def draw_articulation_sphere(point,
+                             radius,
+                             use_uv_spheres=False):
+    """Draws the articulation spheres with different resolutions to improve performance.
+
+    :param point:
+        The center of the sphere.
+    :param radius:
+        The radius of the sphere.
+    :param use_uv_spheres:
+        If this flag is set, UV-spheres will be used, otherwise, ico-spheres.
+    :return:
+        A reference to the created sphere.
+    """
+
+    if use_uv_spheres:
+        subdivisions = 5 if radius > 0.5 else 3
+        return nmv.bmeshi.create_ico_sphere(
+            radius=radius, location=point, subdivisions=subdivisions)
+    else:
+        subdivisions = 32 if radius > 0.5 else 16
+        return nmv.bmeshi.create_uv_sphere(
+            radius=radius, location=point, subdivisions=subdivisions)

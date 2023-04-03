@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # System imports
-import copy
 import numpy
 import seaborn
 
@@ -69,7 +68,10 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        self.create_skeleton_materials_and_illumination()
+        self.create_skeleton_materials()
+
+        # Create the illumination
+        self.create_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -611,7 +613,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
-        bevel_object = self.create_bevel_object()
+        self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
@@ -635,7 +637,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         self.resample_skeleton_sections()
 
         # Create each arbor as a separate component
-        self.create_each_arbor_as_separate_component(bevel_object=bevel_object)
+        self.create_each_arbor_as_separate_component(bevel_object=self.bevel_object)
 
         # TODO: Add an option to handle this.
         # Create all the arbors as a single component

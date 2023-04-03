@@ -320,7 +320,9 @@ class PiecewiseBuilder(MeshBuilderBase):
     def build_endfeet(self):
         """Builds the endfeet in case of loading astrocytic morphologies."""
 
-        self.endfeet_meshes.extend(self.reconstruct_endfeet())
+        # If the morphology has endfeet
+        if self.morphology.endfeet:
+            self.endfeet_meshes.extend(self.reconstruct_endfeet())
 
     ################################################################################################
     # @create_joint_proxy_mesh
@@ -370,14 +372,10 @@ class PiecewiseBuilder(MeshBuilderBase):
             result, stats = self.PROFILE(self.decimate_neuron_mesh)
             self.profiling_statistics += stats
 
-        # Surface roughness
-        if not self.this_is_proxy_mesh:
-            result, stats = self.PROFILE(self.add_surface_noise_to_arbor)
-            self.profiling_statistics += stats
-
         # Add the spines
-        result, stats = self.PROFILE(self.add_spines_to_surface)
-        self.profiling_statistics += stats
+        if not self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.add_spines_to_surface)
+            self.profiling_statistics += stats
 
         # Aggregation and origin adjustments
         if self.this_is_proxy_mesh:
@@ -387,7 +385,8 @@ class PiecewiseBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Report the statistics of this builder
-        self.report_builder_statistics()
+        if not self.this_is_proxy_mesh:
+            self.report_builder_statistics()
 
         # Return the list of the resulting mesh, either as a single object or multiple ones
         return [self.neuron_mesh] if self.result_is_single_object_mesh else self.neuron_meshes

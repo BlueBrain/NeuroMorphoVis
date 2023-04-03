@@ -64,7 +64,10 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         nmv.logger.info('Creating materials')
 
         # Create the default material list
-        self.create_skeleton_materials_and_illumination()
+        self.create_skeleton_materials()
+
+        # Create the illumination
+        self.create_illumination()
 
         # Index: 0 - 1
         self.skeleton_materials.extend(self.soma_materials)
@@ -444,8 +447,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
     ################################################################################################
     # @draw_arbors
     ################################################################################################
-    def draw_arbors(self,
-                    bevel_object):
+    def draw_arbors(self):
 
         # Apical dendrites
         nmv.logger.info('Reconstructing arbors')
@@ -463,7 +465,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.apical_dendrites_materials)
 
                     # Append it to the morphology objects
@@ -484,7 +486,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.basal_dendrites_materials)
 
                     # Append it to the morphology objects
@@ -505,7 +507,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.axons_materials)
 
                     # Append it to the morphology objects
@@ -607,7 +609,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
 
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
-        bevel_object = self.create_bevel_object()
+        self.create_bevel_object()
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
@@ -624,7 +626,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
 
         self.create_base_skeleton_materials()
 
-        self.draw_arbors(bevel_object=bevel_object)
+        self.draw_arbors()
 
         # Draws each arbor in the morphology as a single object
         # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
@@ -634,7 +636,8 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
 
         # Draw every endfoot in the list and append the resulting mesh to the collector
         for endfoot in self.morphology.endfeet:
-            self.morphology_objects.append(endfoot.create_surface_patch(material=self.endfeet_materials[0]))
+            self.morphology_objects.append(endfoot.create_surface_patch(
+                material=self.endfeet_materials[0]))
 
         # Transforming to global coordinates
         self.transform_to_global_coordinates()

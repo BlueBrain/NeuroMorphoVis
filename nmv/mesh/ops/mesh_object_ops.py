@@ -1054,6 +1054,11 @@ def apply_voxelization_remeshing_modifier(mesh_object,
     # Update the voxel size
     bpy.context.object.modifiers["Remesh"].voxel_size = voxel_size
 
+    # Use smooth shading 
+    bpy.context.object.modifiers["Remesh"].use_smooth_shade = True
+
     # Apply the modifier
     bpy.ops.object.modifier_apply(modifier="Remesh")
+
+
 
