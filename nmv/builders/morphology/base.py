@@ -99,6 +99,12 @@ class MorphologyBuilderBase:
         self.bevel_object = None
 
     ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        pass
+
+    ################################################################################################
     # @create_bevel_object
     ################################################################################################
     def create_bevel_object(self):
@@ -344,6 +350,50 @@ class MorphologyBuilderBase:
         self.create_endfeet_material()
 
     ################################################################################################
+    # @create_base_skeleton_materials
+    ################################################################################################
+    def create_skeleton_materials(self):
+        """Creates the materials of the entire morphology skeleton.
+
+        NOTE: The created materials are stored in member variables of the given builder.
+        """
+
+        self.clear_materials()
+
+        # Soma
+        self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='soma_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_soma_color)
+
+        # Axon
+        self.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='axon_skeleton', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_axons_color)
+
+        # Basal dendrites
+        self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='basal_dendrites_skeleton',
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_basal_dendrites_color)
+
+        # Apical dendrite
+        self.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='apical_dendrite_skeleton',
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_apical_dendrites_color)
+
+        # Articulations, ONLY, for the articulated reconstruction method
+        if self.options.morphology.reconstruction_method == \
+                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
+            self.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
+                name='articulation', material_type=self.options.shading.morphology_material,
+                color=self.options.shading.morphology_articulation_color)
+
+        self.endfeet_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='endfeet', material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_endfeet_color)
+
+    ################################################################################################
     # @create_illumination
     ################################################################################################
     def create_illumination(self):
@@ -389,9 +439,8 @@ class MorphologyBuilderBase:
     def resample_skeleton_sections(self):
         """Re-samples the sections of the morphology skeleton before drawing it.
 
-        NOTE: This resampling process is performed on a per-section basis, so the first and last samples
-        of the section are left intact.
-            A given skeleton builder.
+        NOTE: This resampling process is performed on a per-section basis, so the first and last
+        samples of the section are left intact.
         """
 
         nmv.logger.info('Resampling skeleton')
@@ -512,100 +561,17 @@ class MorphologyBuilderBase:
             nmv.logger.detail('Soma is ignored')
 
     ################################################################################################
-    # @create_base_skeleton_materials
+    # @draw_endfeet_if_applicable
     ################################################################################################
-    def create_skeleton_materials(self):
-        """Creates the materials of the entire morphology skeleton.
+    def draw_endfeet_if_applicable(self):
+        """Draws the endfeet of the astrocytes if they are present in the skeleton."""
 
-        NOTE: The created materials are stored in member variables of the given builder.
-        """
+        # Draw every endfoot in the list and append the resulting mesh to the collector
+        for endfoot in self.morphology.endfeet:
+            self.morphology_objects.append(endfoot.create_surface_patch(
+                material=self.endfeet_materials[0]))
 
-        # Clear all the materials that are already present in the scene
-        for material in bpy.data.materials:
-            if 'soma_skeleton' in material.name or \
-               'axon_skeleton' in material.name or \
-               'basal_dendrites_skeleton' in material.name or \
-               'apical_dendrite_skeleton' in material.name or \
-               'articulation' in material.name or \
-               'endfeet' in material.name or \
-               'gray' in material.name:
 
-                nmv.utilities.disable_std_output()
-                bpy.data.materials.remove(material, do_unlink=True)
-                nmv.utilities.enable_std_output()
-
-        # Soma
-        self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='soma_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color)
-
-        # Axon
-        self.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='axon_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_axons_color)
-
-        # Basal dendrites
-        self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='basal_dendrites_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_basal_dendrites_color)
-
-        # Apical dendrite
-        self.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='apical_dendrite_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_apical_dendrites_color)
-
-        # Articulations, ONLY, for the articulated reconstruction method
-        if self.options.morphology.reconstruction_method == \
-                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-            self.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
-                name='articulation', material_type=self.options.shading.morphology_material,
-                color=self.options.shading.morphology_articulation_color)
-
-        self.endfeet_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='endfeet', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_endfeet_color)
-
-    ################################################################################################
-    # @transform_to_global_coordinates
-    ################################################################################################
-    def transform_to_global_coordinates(self):
-        """Transforms the morphology to the global coordinates.
-        """
-
-        return
-        # Transform the arbors to the global coordinates if required for a circuit
-        if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
-
-            # Ignore if no information is given
-            if self.options.morphology.gid is None and self.morphology.original_center is None:
-                return
-
-            # Make sure that a GID is selected
-            if self.options.morphology.gid is not None:
-                nmv.logger.log('Transforming morphology to global coordinates ')
-                nmv.skeleton.ops.transform_morphology_to_global_coordinates(
-                    morphology_objects=self.morphology_objects,
-                    blue_config=self.options.morphology.blue_config,
-                    gid=self.options.morphology.gid)
-
-                # Don't proceed
-                return
-
-            # If the original center is updated
-            if self.morphology.original_center is not None:
-                nmv.logger.info('Transforming to global coordinates')
-
-                # Do it mesh by mesh
-                for i, morphology_object in enumerate(self.morphology_objects):
-
-                    # Progress
-                    nmv.utilities.show_progress('* Transforming to global coordinates',
-                                                float(i),
-                                                float(len(self.morphology_objects)))
-
-                    # Translate the object
-                    nmv.scene.translate_object(scene_object=morphology_object,
-                                               shift=self.morphology.original_center)
 
     ################################################################################################
     # @collection_morphology_objects_in_collection

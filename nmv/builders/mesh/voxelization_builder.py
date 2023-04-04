@@ -234,6 +234,9 @@ class VoxelizationBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.build_proxy_mesh)
         self.profiling_statistics += stats
 
+        result, stats = self.PROFILE(self.build_endfeet)
+        self.profiling_statistics += stats
+
         # Voxelization modifier
         result, stats = self.PROFILE(self.apply_voxelization_modifier)
         self.profiling_statistics += stats

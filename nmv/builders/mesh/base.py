@@ -231,7 +231,6 @@ class MeshBuilderBase:
         self.create_basal_dendrites_materials()
         self.create_apical_dendrites_materials()
         self.create_endfeet_materials()
-        self.create_endfeet_materials()
 
     ################################################################################################
     # @create_illumination
@@ -956,24 +955,24 @@ class MeshBuilderBase:
     ################################################################################################
     # @reconstruct_endfeet
     ################################################################################################
-    def reconstruct_endfeet(self):
-        """Reconstructs the endfeet geometry
-        """
+    def build_endfeet(self):
+        """Reconstructs the endfeet geometry"""
 
         # Header
         nmv.logger.header('Reconstructing endfeet')
-
-        # A list of the reconstructed endfeet meshes
-        endfeet_meshes = list()
 
         # Build the endfoot mesh
         for endfoot in self.morphology.endfeet:
 
             # Append the resulting mesh to the resulting meshes
-            endfeet_meshes.append(endfoot.create_geometry_with_metaballs(self.endfeet_materials[0]))
+            if self.endfeet_meshes:
+                endfoot_mesh = endfoot.create_geometry_with_metaballs(
+                    material=self.endfeet_materials[0])
+            else:
+                endfoot_mesh = endfoot.create_geometry_with_metaballs()
 
-        # Return the resulting list
-        return endfeet_meshes
+            self.endfeet_meshes.append(endfoot_mesh)
+            self.neuron_meshes.append(endfoot_mesh)
 
     ################################################################################################
     # @assign_material_to_single_object_mesh

@@ -317,10 +317,7 @@ class SkinningBuilder(MeshBuilderBase):
                 # Add an auxiliary sample just before the arbor starts
                 auxiliary_point = arbor.samples[0].point - 0.01 * \
                 (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
-                print('not far')
-
             else:
-                print('far')
                 arbor_bmesh_object = nmv.bmeshi.create_vertex(location=arbor.samples[0].point)
 
                 # Add an auxiliary sample just after the arbor starts
@@ -535,16 +532,6 @@ class SkinningBuilder(MeshBuilderBase):
         # Update the children sections recursively
         for child in section.children:
             self.update_samples_indices_per_arbor(child, index, max_branching_order)
-
-    ################################################################################################
-    # @build_endfeet
-    ################################################################################################
-    def build_endfeet(self):
-        """Builds the endfeet in case of loading astrocytic morphologies."""
-
-        endfeet_meshes = self.reconstruct_endfeet()
-        if len(endfeet_meshes) > 0:
-            self.neuron_meshes.extend(endfeet_meshes)
 
     ################################################################################################
     # @reconstruct_mesh

@@ -86,8 +86,8 @@ class Endfoot:
         mesh = bpy.data.meshes.new(self.name)
         mesh_object = bpy.data.objects.new(mesh.name, mesh)
 
-        # Link the mesh to the scene
-        collection = bpy.data.collections.get(collection_name)
+        # Create the collection and link the mesh object to it
+        collection = nmv.utilities.create_new_collection(name=collection_name)
         collection.objects.link(mesh_object)
 
         # Update the data in the mesh
@@ -239,7 +239,6 @@ class Endfoot:
         meta_skeleton.resolution = smallest_radius
         nmv.logger.detail('Endfeet [%s], Meta Resolution [%f]' % (self.name,
                                                                   meta_skeleton.resolution))
-
         # Select the mesh
         for scene_object in bpy.context.scene.objects:
             if endfoot_geometry_name in scene_object:

@@ -315,16 +315,6 @@ class PiecewiseBuilder(MeshBuilderBase):
         self.build_hard_edges_arbors()
 
     ################################################################################################
-    # @build_endfeet
-    ################################################################################################
-    def build_endfeet(self):
-        """Builds the endfeet in case of loading astrocytic morphologies."""
-
-        # If the morphology has endfeet
-        if self.morphology.endfeet:
-            self.endfeet_meshes.extend(self.reconstruct_endfeet())
-
-    ################################################################################################
     # @create_joint_proxy_mesh
     ################################################################################################
     def create_joint_proxy_mesh(self):

@@ -51,6 +51,13 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Initialize the parent with the common parameters
         MorphologyBuilderBase.__init__(self, morphology, options)
 
+    def initialize_builder(self):
+        """Initialization"""
+
+        nmv.logger.info('Initialization')
+
+        pass
+
     ################################################################################################
     # @create_single_skeleton_materials_list
     ################################################################################################
@@ -387,13 +394,8 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
     ################################################################################################
     # @draw_arbors_as_single_object
     ################################################################################################
-    def draw_arbors_as_single_object(self,
-                                     bevel_object):
-        """Draws all the arbors as a single object.
-
-        :param bevel_object:
-            Bevel object used to interpolate the polylines.
-        """
+    def draw_arbors_as_single_object(self):
+        """Draws all the arbors as a single object."""
 
         # A list of all the skeleton poly-lines
         skeleton_poly_lines = list()
@@ -438,7 +440,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Draw the poly-lines as a single object
         morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
             poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            edges=self.options.morphology.edges, bevel_object=self.bevel_object,
             materials=self.skeleton_materials)
 
         # Append it to the morphology objects
@@ -516,8 +518,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
     ################################################################################################
     # @draw_each_arbor_as_single_object
     ################################################################################################
-    def draw_each_arbor_as_single_object(self,
-                                         bevel_object):
+    def draw_each_arbor_as_single_object(self):
         """Draws each arbor as a single object.
 
          :param bevel_object:
@@ -541,7 +542,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.skeleton_materials)
 
                     # Append it to the morphology objects
@@ -563,7 +564,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.skeleton_materials)
 
                     # Append it to the morphology objects
@@ -585,7 +586,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
                     # Draw the poly-lines as a single object
                     morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
                         poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
                         materials=self.skeleton_materials)
 
                     # Append it to the morphology objects
@@ -611,10 +612,6 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # of the morphology and then hide it
         self.create_bevel_object()
 
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
-
         # Create the skeleton materials
         self.create_single_skeleton_materials_list()
 
@@ -634,13 +631,8 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Draw the soma
         self.draw_soma()
 
-        # Draw every endfoot in the list and append the resulting mesh to the collector
-        for endfoot in self.morphology.endfeet:
-            self.morphology_objects.append(endfoot.create_surface_patch(
-                material=self.endfeet_materials[0]))
-
-        # Transforming to global coordinates
-        self.transform_to_global_coordinates()
+        # Draw the endfeet, if applicable
+        self.draw_endfeet_if_applicable()
 
         # Add the morphology objects to a collection
         self.collection_morphology_objects_in_collection()
