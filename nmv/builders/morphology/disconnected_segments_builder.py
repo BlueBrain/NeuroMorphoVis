@@ -59,36 +59,6 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         pass
 
     ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
-
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
-
-        # Create the default material list
-        self.create_skeleton_materials()
-
-        # Create the illumination
-        self.create_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
-
-    ################################################################################################
     # @construct_color_coded_polylines
     ################################################################################################
     def construct_color_coded_polylines(self,
@@ -613,7 +583,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         self.create_bevel_object()
 
         # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
+        self.create_morphology_skeleton_materials()
 
         # Updating radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
@@ -621,7 +591,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
 
-        self.create_base_skeleton_materials()
+        self.create_morphology_skeleton_materials()
 
         self.draw_arbors()
 

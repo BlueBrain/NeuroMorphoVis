@@ -65,46 +65,16 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     ################################################################################################
     def initialize_builder(self):
 
-        pass
+        # Create the bevel object
+        self.create_bevel_object()
 
+        # Updating radii
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
-    ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
+        # Resample the sections of the morphology skeleton
+        self.resample_skeleton_sections()
 
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
-
-        # Clear teh materials list
-        self.skeleton_materials.clear()
-
-        # Create the default material list
-        self.create_skeleton_materials()
-
-        # Create the illumination
-        self.create_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
-
-        # Index 8 for the gray color
-        self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
-            name='gray', material_type=self.options.shading.morphology_material,
-            color=nmv.consts.Color.GRAY))
+        self.create_morphology_skeleton_materials()
 
     ################################################################################################
     # @construct_color_coded_polylines
@@ -200,11 +170,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         elif scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
             minimum_value = 0
             maximum_value = 100
-
-            if root.index % 2 == 0:
-                material_index = 0
-            else:
-                material_index = 1
+            material_index = 0 if root.index % 2 == 0 else 1
 
         # Else, just add 0 and 100 for a placeholder in the color map
         else:
@@ -279,7 +245,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         if highlight:
             material_index = material_start_index + (branching_order % 2)
         else:
-            material_index = nmv.enums.Color.GRAY_MATERIAL_INDEX
+            material_index = nmv.enums.Color.GRAY_MATERIAL_START_INDEX
 
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(
@@ -679,23 +645,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
 
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Create the bevel object
-        self.create_bevel_object()
-
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        # self.morphology_objects.append(bevel_object)
-
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        self.create_base_skeleton_materials()
+        # Initialize the builder
+        self.initialize_builder()
 
         # Draw each arbor as a single object
         # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)

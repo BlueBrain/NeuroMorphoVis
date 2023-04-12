@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -14,9 +14,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
-# System imports
-import copy
 
 # Internal imports
 from .base import MorphologyBuilderBase
@@ -63,42 +60,17 @@ class SamplesBuilder(MorphologyBuilderBase):
     def initialize_builder(self):
         """Initializes the builder"""
 
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
-
-        # Creates the illumination of the scene based on the material
-        self.create_illumination()
-
         # Updating radii
         nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
 
-    ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton."""
-        nmv.logger.info('Creating materials')
+        # Create the skeleton materials
+        self.create_morphology_skeleton_materials()
 
-        # Create the default material list
-        self.create_skeleton_materials()
-
-        # Create the illumination
+        # Creates the illumination of the scene based on the material
         self.create_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
     # @draw_sections_as_spheres
@@ -106,7 +78,6 @@ class SamplesBuilder(MorphologyBuilderBase):
     def draw_sections_as_spheres(self,
                                  root,
                                  name,
-                                 material_list=[],
                                  sphere_objects=[],
                                  branching_order=0,
                                  max_branching_order=nmv.consts.Math.INFINITY):
@@ -116,8 +87,6 @@ class SamplesBuilder(MorphologyBuilderBase):
             Root section of the tree to be drawn.
         :param name:
             Prefix for labeling the spheres.
-        :param material_list:
-            A list of materials specific to the type of arbor being drawn.
         :param sphere_objects:
             A list of the drawn spheres.
          :param branching_order:
@@ -153,7 +122,6 @@ class SamplesBuilder(MorphologyBuilderBase):
                     branching_order=branching_order,
                     max_branching_order=max_branching_order,
                     name=name,
-                    material_list=material_list,
                     sphere_objects=sphere_objects)
 
     ################################################################################################
@@ -161,40 +129,42 @@ class SamplesBuilder(MorphologyBuilderBase):
     ################################################################################################
     def link_and_shade_spheres_as_group(self,
                                         sphere_list,
-                                        materials_list,
+                                        material,
                                         prefix):
         """Links the spheres created from the bmesh interface to the scene.
 
         :param sphere_list:
             A list of sphere to be linked to the scene and shaded with the corresponding materials.
-        :param materials_list:
-            A list of materials to be applied to the spheres after being linked to the scene.
+        :param material:
+            The material that will be applied to the spheres (representing the samples) after being
+            linked to the scene.
         :param prefix:
             Prefix to name each sphere object after linking it to the scene.
         """
 
+        # Join all the bmesh objects into a single joint bmesh
         joint_bmesh = nmv.bmeshi.join_bmeshes_list(bmeshes_list=sphere_list)
 
-        # Link the bmesh spheres to the scene
-        sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, prefix)
+        # Link the bmesh spheres to the scene to visualize the arbor samples
+        arbor_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(joint_bmesh, prefix)
 
         # Smooth shading
-        nmv.mesh.shade_smooth_object(sphere_mesh)
+        nmv.mesh.shade_smooth_object(arbor_mesh)
 
         # Assign the material
-        nmv.shading.set_material_to_object(sphere_mesh, materials_list[0])
+        nmv.shading.set_material_to_object(arbor_mesh, material)
 
-        # Append the sphere mesh to the morphology objects
-        self.morphology_objects.append(sphere_mesh)
+        # Append the arbor mesh to the morphology objects
+        self.morphology_objects.append(arbor_mesh)
 
     ################################################################################################
-    # @link_and_shade_spheres
+    # @link_and_shade_arbor_spheres
     ################################################################################################
-    def link_and_shade_spheres(self,
-                               sphere_list,
-                               materials_list,
-                               prefix):
-        """Links the added sphere to the scene.
+    def link_and_shade_arbor_spheres(self,
+                                     sphere_list,
+                                     materials_list,
+                                     prefix):
+        """Links the added sphere that compose the arbor to the scene.
 
         :param sphere_list:
             A list of sphere to be linked to the scene and shaded with the corresponding materials.
@@ -215,7 +185,7 @@ class SamplesBuilder(MorphologyBuilderBase):
             # Show progress
             nmv.utilities.time_line.show_iteration_progress('Sample', i, len(sphere_list))
 
-            name = '%s_%d' % (prefix, i)
+            name = '%s %d' % (prefix, i)
 
             # Link the bmesh spheres to the scene
             sphere_mesh = nmv.bmeshi.ops.link_to_new_object_in_scene(sphere, name)
@@ -266,7 +236,7 @@ class SamplesBuilder(MorphologyBuilderBase):
     def draw_arbors(self):
         """Draws the arbors."""
 
-        nmv.logger.info('Constructing spheres')
+        nmv.logger.info('Constructing arbors - spheres')
 
         # Apical dendrite
         if not self.options.morphology.ignore_apical_dendrites:
@@ -277,13 +247,11 @@ class SamplesBuilder(MorphologyBuilderBase):
                     self.draw_sections_as_spheres(
                         root=arbor, name=arbor.label,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                        material_list=self.apical_dendrites_materials,
                         sphere_objects=apical_dendrite_spheres)
-
-                    # Link the spheres and shade
-                    self.link_and_shade_spheres(sphere_list=apical_dendrite_spheres,
-                                                materials_list=self.apical_dendrites_materials,
-                                                prefix=arbor.label)
+                    self.link_and_shade_arbor_spheres(
+                        sphere_list=apical_dendrite_spheres,
+                        materials_list=self.apical_dendrites_materials,
+                        prefix=arbor.label)
 
         # Axon
         if not self.options.morphology.ignore_axons:
@@ -294,12 +262,11 @@ class SamplesBuilder(MorphologyBuilderBase):
                     self.draw_sections_as_spheres(
                         root=arbor, name=arbor.label,
                         max_branching_order=self.options.morphology.axon_branch_order,
-                        material_list=self.axons_materials, sphere_objects=axon_spheres)
-
-                    # Link the spheres and shade
-                    self.link_and_shade_spheres(sphere_list=axon_spheres,
-                                                materials_list=self.axons_materials,
-                                                prefix=arbor.label)
+                        sphere_objects=axon_spheres)
+                    self.link_and_shade_arbor_spheres(
+                        sphere_list=axon_spheres,
+                        materials_list=self.axons_materials,
+                        prefix=arbor.label)
 
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
@@ -310,13 +277,11 @@ class SamplesBuilder(MorphologyBuilderBase):
                     self.draw_sections_as_spheres(
                         root=arbor, name=arbor.label,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        material_list=self.basal_dendrites_materials,
                         sphere_objects=basal_dendrites_spheres)
-
-                    # Link the spheres and shade
-                    self.link_and_shade_spheres(sphere_list=basal_dendrites_spheres,
-                                                materials_list=self.basal_dendrites_materials,
-                                                prefix=arbor.label)
+                    self.link_and_shade_arbor_spheres(
+                        sphere_list=basal_dendrites_spheres,
+                        materials_list=self.basal_dendrites_materials,
+                        prefix=arbor.label)
 
     ################################################################################################
     # @draw_morphology_skeleton

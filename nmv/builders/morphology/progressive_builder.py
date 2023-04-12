@@ -63,40 +63,18 @@ class ProgressiveBuilder(MorphologyBuilderBase):
     ################################################################################################
     def initialize_builder(self):
 
-        pass
+        # Create a static bevel object that you can use to scale the samples along the arbors
+        # of the morphology and then hide it
+        self.create_bevel_object()
 
-    ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
+        # Create the skeleton materials
+        self.create_morphology_skeleton_materials()
 
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
+        # Updating radii
+        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
 
-        # Create the default material list
-        self.create_skeleton_materials()
-
-        # Create the illumination
-        self.create_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
-
-        # Index: 8 - 9
-        self.skeleton_materials.extend(self.endfeet_materials)
+        # Resample the sections of the morphology skeleton
+        self.resample_skeleton_sections()
 
     ################################################################################################
     # @construct_arbors_poly_lines_list_at_branching_order
@@ -255,18 +233,7 @@ class ProgressiveBuilder(MorphologyBuilderBase):
         # Update the context
         self.context = context
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        self.create_bevel_object()
-
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
-
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
+        self.initialize_builder()
 
         # Draw the arbors progressively
         self.draw_arbors_progressively()

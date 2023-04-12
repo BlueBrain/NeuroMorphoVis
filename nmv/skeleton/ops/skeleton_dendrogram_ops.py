@@ -326,6 +326,7 @@ def create_dendrogram_poly_lines_list_of_arbor(section,
     material_index = section.get_material_index() + (section.branching_order % 2)
     if arbor_material_index > -1:
         material_index = arbor_material_index
+
     # Construct the poly-line
     poly_line = nmv.geometry.PolyLine(
         name='section_%s' % str(section.index), samples=samples, material_index=material_index)

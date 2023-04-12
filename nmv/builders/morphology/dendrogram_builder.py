@@ -56,42 +56,16 @@ class DendrogramBuilder(MorphologyBuilderBase):
     # @initialize_builder
     ################################################################################################
     def initialize_builder(self):
+        """Initializes the builder."""
 
         # Create the bevel object
         self.create_bevel_object()
 
         # Create the skeleton materials, without illumination
-        self.create_single_skeleton_materials_list()
+        self.create_morphology_skeleton_materials()
 
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
-
-    ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
-
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
-
-        # Create the default material list
-        self.create_skeleton_materials()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
     # @create_per_arbor_material_list

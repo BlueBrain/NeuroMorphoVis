@@ -74,9 +74,8 @@ def create_multiple_materials_with_same_color(name,
 
     # Iterate and append
     for i in range(number_elements):
-        material_list.append(
-            create_single_material(name='%s_%d' % (name, i), color=color,
-                                   material_type=material_type))
+        material_list.append(create_single_material(name='%s %d' % (name, i), color=color,
+                                                    material_type=material_type))
 
     # Return a reference to the material list
     return material_list

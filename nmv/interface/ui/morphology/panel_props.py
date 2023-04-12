@@ -95,6 +95,13 @@ bpy.types.Scene.NMV_PerSegmentColorCodingBasis = bpy.props.EnumProperty(
     name='',
     default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
 
+# Connected object color-coding
+bpy.types.Scene.NMV_ConnectedObjectColorCodingBasis = bpy.props.EnumProperty(
+    items=nmv.enums.ColorCoding.CONNECTED_OBJECT_COLOR_CODING_ITEMS,
+    name='',
+    default=nmv.enums.ColorCoding.DEFAULT_SCHEME)
+
+
 # Per-section color-coding
 bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
     items=nmv.enums.ColorCoding.SECTIONS_COLOR_CODING_ITEMS,

@@ -159,6 +159,23 @@ class ColorCoding:
          'Color-code the morphology based on the number of samples along the section')
     ]
 
+    ################################################################################################
+    # Connected object color-coding items to be added to the interface list
+    ################################################################################################
+    CONNECTED_OBJECT_COLOR_CODING_ITEMS = [
+
+        # Default coloring scheme
+        (DEFAULT_SCHEME,
+         'Default Colors',
+         'Use a single color for all the segments in the entire morphology, and assign a different '
+         'color to the soma or the articulations at the branching points'),
+
+        # Single color for all the components in the morphology including the soma
+        (HOMOGENEOUS_COLOR,
+         'Homogeneous Color',
+         'Use a homogeneous color for all the components in the morphology including the soma')
+        ]
+
     ############################################################################################
     # @__init__
     ############################################################################################

@@ -56,34 +56,33 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)
 
     ################################################################################################
-    # @create_single_skeleton_materials_list
+    # @initialize_builder
     ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
+    def initialize_builder(self):
 
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
+        # Create a static bevel object that you can use to scale the samples along the arbors
+        # of the morphology and then hide it
+        self.create_bevel_object()
 
-        # Create the default material list
-        self.create_skeleton_materials()
+        # Update the radii
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
 
-        # Create the illumination
+        # Update the branching
+        self.update_sections_branching()
+
+        # Update the style of the arbors
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+
+        # Resample the sections of the morphology skeleton
+        self.resample_skeleton_sections()
+
+        # Create the skeleton materials
+        self.create_morphology_skeleton_materials()
+
+        # Illumination
         self.create_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
 
     ################################################################################################
     # @create_arbor_component
@@ -127,13 +126,8 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
     ################################################################################################
     # @create_all_arbors_as_single_component
     ################################################################################################
-    def create_each_arbor_as_separate_component(self,
-                                                bevel_object):
-        """Creates each arbor in the morphology as a single separate component.
-
-        :param bevel_object:
-            Bevel object used to extrude the arbors.
-        """
+    def create_each_arbor_as_separate_component(self):
+        """Creates each arbor in the morphology as a single separate component."""
 
         nmv.logger.info('Reconstructing arbors')
 
@@ -143,7 +137,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                 for arbor in self.morphology.apical_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.create_arbor_component(
-                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        arbor=arbor, bevel_object=self.bevel_object, arbor_name=arbor.label,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order)
 
         # Basal dendrites
@@ -152,7 +146,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                 for arbor in self.morphology.basal_dendrites:
                     nmv.logger.detail(arbor.label)
                     self.create_arbor_component(
-                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        arbor=arbor, bevel_object=self.bevel_object, arbor_name=arbor.label,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order)
 
         # Axons
@@ -161,7 +155,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
                 for arbor in self.morphology.axons:
                     nmv.logger.detail(arbor.label)
                     self.create_arbor_component(
-                        arbor=arbor, bevel_object=bevel_object, arbor_name=arbor.label,
+                        arbor=arbor, bevel_object=self.bevel_object, arbor_name=arbor.label,
                         max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
@@ -611,33 +605,11 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
 
         nmv.logger.header('Building Skeleton: ConnectedSectionsBuilder')
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        self.create_bevel_object()
-
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        # self.morphology_objects.append(bevel_object)
-
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
-
-        # Update the radii
-        nmv.skeleton.update_arbors_radii(
-            morphology=self.morphology, morphology_options=self.options.morphology)
-
-        # Update the branching
-        self.update_sections_branching()
-
-        # Update the style of the arbors
-        nmv.skeleton.ops.update_arbors_style(
-            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
+        # Initializes the builder
+        self.initialize_builder()
 
         # Create each arbor as a separate component
-        self.create_each_arbor_as_separate_component(bevel_object=self.bevel_object)
+        self.create_each_arbor_as_separate_component()
 
         # TODO: Add an option to handle this.
         # Create all the arbors as a single component

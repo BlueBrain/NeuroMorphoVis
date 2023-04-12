@@ -84,6 +84,14 @@ class Color:
     # The axon materials are found at the indices 6 and 7
     AXON_MATERIAL_START_INDEX = 6
 
-    # The gray materials are found at the indices 9
-    GRAY_MATERIAL_INDEX = 8
+    # The gray (shaded or non-highlighted) materials are found at the indices 8 and 9
+    GRAY_MATERIAL_START_INDEX = 8
+
+    # The articulation materials are found at the indices 10 and 11
+    ARTICULATION_MATERIAL_START_INDEX = 10
+
+    # The endfeet materials are found at the indices 12 and 13
+    ENDFEET_MATERIAL_START_INDEX = 12
+
+
 

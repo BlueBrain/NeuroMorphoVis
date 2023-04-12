@@ -66,22 +66,22 @@ class MorphologyBuilderBase:
         self.morphology_objects = list()
 
         # A list of the colors/materials of the soma
-        self.soma_materials = None
+        self.soma_materials = list()
 
         # A list of the colors/materials of the axon
-        self.axons_materials = None
+        self.axons_materials = list()
 
         # A list of the colors/materials of the basal dendrites
-        self.basal_dendrites_materials = None
+        self.basal_dendrites_materials = list()
 
         # A list of the colors/materials of the apical dendrite
-        self.apical_dendrites_materials = None
+        self.apical_dendrites_materials = list()
 
         # A list of the colors/materials of the articulation spheres
-        self.articulations_materials = None
+        self.articulations_materials = list()
 
         # A list of the color/materials of the endfeet patches
-        self.endfeet_materials = None
+        self.endfeet_materials = list()
 
         # An aggregate list of all the materials of the skeleton
         self.skeleton_materials = list()
@@ -102,6 +102,14 @@ class MorphologyBuilderBase:
     # @initialize_builder
     ################################################################################################
     def initialize_builder(self):
+        """Initializes the builder."""
+        pass
+
+    ################################################################################################
+    # @pre_process_morphology
+    ################################################################################################
+    def pre_process_morphology(self):
+        """Pre-processes the morphology before visualizing it."""
         pass
 
     ################################################################################################
@@ -129,269 +137,276 @@ class MorphologyBuilderBase:
             if self.morphology.label in material.name:
                 nmv.scene.delete_material(material=material)
 
-    ################################################################################################
-    # @create_soma_material
-    ################################################################################################
-    def create_soma_material(self):
-        """Creates the material of the soma for all the modes."""
+        # Clear the lists (the materials references)
+        self.soma_materials.clear()
+        self.axons_materials.clear()
+        self.basal_dendrites_materials.clear()
+        self.apical_dendrites_materials.clear()
+        self.articulations_materials.clear()
+        self.endfeet_materials.clear()
+        self.skeleton_materials.clear()
 
-        self.soma_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Soma Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
+    ################################################################################################
+    # @create_soma_materials
+    ################################################################################################
+    def create_soma_materials(self):
+        """Creates the soma materials and updates the corresponding list.
+
+        :return:
+            A list containing the created materials.
+        """
+
+        soma_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Soma Material - Morphology [%s]' % self.morphology.label,
             color=self.options.shading.morphology_soma_color,
-            number_elements=1)
-
-    ################################################################################################
-    # @create_articulations_material
-    ################################################################################################
-    def create_articulations_material(self):
-        """Creates the material of the articulations."""
-
-        self.articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Articulations Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_articulation_color,
-            number_elements=1)
-
-    ################################################################################################
-    # @endfeet_materials
-    ################################################################################################
-    def create_endfeet_material(self):
-        """Creates the materials of the endfeet."""
-
-        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Endfeet Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_endfeet_color,
-            number_elements=1)
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.soma_materials.extend(soma_materials)
+        return soma_materials
 
     ################################################################################################
     # @create_axons_materials
     ################################################################################################
-    def create_axons_materials(self,
-                               number_elements=1):
+    def create_axons_materials(self):
+        """Creates the axons materials and updates the corresponding list.
 
-        self.axons_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Axons Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color,
-            number_elements=number_elements)
+        :return:
+           A list containing the created materials.
+        """
+
+        axons_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Axons Material - Morphology [%s]' % self.morphology.label,
+            color=self.options.shading.morphology_axons_color,
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.axons_materials.extend(axons_materials)
+        return axons_materials
 
     ################################################################################################
     # @create_basal_dendrites_materials
     ################################################################################################
-    def create_basal_dendrites_materials(self,
-                                         number_elements=1):
+    def create_basal_dendrites_materials(self):
+        """Creates the basal dendrites materials and updates the corresponding list.
 
-        self.basal_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Basal Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color,
-            number_elements=number_elements)
+        :return:
+           A list containing the created materials.
+        """
+        basal_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Basal Dendrites Material - Morphology [%s]' % self.morphology.label,
+            color=self.options.shading.morphology_basal_dendrites_color,
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.basal_dendrites_materials.extend(basal_dendrites_materials)
+        return basal_dendrites_materials
 
     ################################################################################################
     # @create_apical_dendrites_materials
     ################################################################################################
-    def create_apical_dendrites_materials(self,
-                                          number_elements=1):
+    def create_apical_dendrites_materials(self):
+        """Creates the apical dendrites materials and updates the corresponding list.
 
-        self.apical_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Apical Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color,
-            number_elements=number_elements)
-
-    ################################################################################################
-    # @create_homogeneous_materials
-    ################################################################################################
-    def create_homogeneous_materials(self,
-                                     number_elements=1):
-        """Create homogeneous materials to color-code all the objects of the morphology.
-
-        :param number_elements:
-            The number of colors created. By default, 1.
-        """
-
-        # Skeleton materials
-        self.create_soma_material()
-        self.create_axons_materials(number_elements=number_elements)
-        self.create_basal_dendrites_materials(number_elements=number_elements)
-        self.create_apical_dendrites_materials(number_elements=number_elements)
-        self.create_articulations_material()
-        self.create_endfeet_material()
-
-    ################################################################################################
-    # @create_arbors_materials
-    ################################################################################################
-    def create_arbors_materials(self,
-                                number_elements=1):
-        """
-
-        :param number_elements:
         :return:
+           A list containing the created materials.
         """
-        # Soma material
-        self.create_soma_material()
-
-        # Axon
-        self.axons_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Axons Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_axons_color,
-            number_elements=number_elements)
-
-        # Basal dendrites
-        self.basal_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Basal Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_basal_dendrites_color,
-            number_elements=number_elements)
-
-        # Apical dendrite
-        self.apical_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Apical Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
+        apical_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Apical Dendrites Material - Morphology [%s]' % self.morphology.label,
             color=self.options.shading.morphology_apical_dendrites_color,
-            number_elements=number_elements)
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.apical_dendrites_materials.extend(apical_dendrites_materials)
+        return apical_dendrites_materials
 
-        # Articulations, ONLY, for the articulated reconstruction method
-        self.create_articulations_material()
+    ################################################################################################
+    # @create_gray_materials
+    ################################################################################################
+    def create_gray_materials(self):
+        """Creates the gray materials and updates the corresponding list.
 
-        # Endfeet, ONLY, for the astrocyte morphologies
-        self.create_endfeet_material()
+        :return:
+           A list containing the created materials.
+        """
+
+        gray_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Gray Material - Morphology [%s]' % self.morphology.label,
+            color=nmv.consts.Color.GREYSH,
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        return gray_materials
+
+    ################################################################################################
+    # @create_articulation_materials
+    ################################################################################################
+    def create_articulation_materials(self):
+        """Creates the articulations materials and updates the corresponding list.
+
+        :return:
+           A list containing the created materials.
+        """
+        articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Articulations Material - Morphology [%s]' % self.morphology.label,
+            color=self.options.shading.morphology_articulation_color,
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.articulations_materials.extend(articulations_materials)
+        return articulations_materials
+
+    ################################################################################################
+    # @create_endfeet_materials
+    ################################################################################################
+    def create_endfeet_materials(self):
+        """Creates the endfeet materials and updates the corresponding list.
+
+        :return:
+           A list containing the created materials.
+        """
+
+        endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
+            name='Endfeet Material - Morphology [%s]' % self.morphology.label,
+            color=self.options.shading.morphology_endfeet_color,
+            material_type=self.options.shading.morphology_material, number_elements=2)
+        self.endfeet_materials.extend(endfeet_materials)
+        return endfeet_materials
+
+    ################################################################################################
+    # @create_default_coloring_scheme_materials
+    ################################################################################################
+    def create_default_coloring_scheme_materials(self):
+        """Creates the materials for the default coloring scheme."""
+
+        # Soma, Indices 0 and 1 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_soma_materials())
+
+        # Apical dendrites, Indices 2 and 3 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_apical_dendrites_materials())
+
+        # Basals dendrites, Indices 4 and 5 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_basal_dendrites_materials())
+
+        # Axons, Indices 6 and 7 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_axons_materials())
+
+        # Gray material, Indices 8 and 9 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_gray_materials())
+
+        # Articulations, Indices 10 and 11 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_articulation_materials())
+
+        # Endfeet, if applicable, Indices 12 and 13 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_endfeet_materials())
 
     ################################################################################################
     # @create_alternating_materials
     ################################################################################################
     def create_alternating_materials(self):
-        """
+        """Creates alternating materials for arbors, and a single material for other components."""
 
-        :return:
-        """
+        # Soma material, Indices 0 and 1 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_soma_materials())
 
-        # Soma material
-        self.create_soma_material()
-
-        # Axon
-        self.axons_materials = list()
-        self.axons_materials.append(nmv.skeleton.create_single_material(
-            name='Axons Morphology Material 1 [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_alternating_color_1))
-        self.axons_materials.append(nmv.skeleton.create_single_material(
-            name='Axons Morphology Material 2 [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_alternating_color_2))
-
-        # Basal dendrites
-        self.basal_dendrites_materials = list()
-        self.basal_dendrites_materials.append(nmv.skeleton.create_single_material(
-            name='Basal Dendrites Morphology Material 1 [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_alternating_color_1))
-        self.basal_dendrites_materials.append(nmv.skeleton.create_single_material(
-            name='Basal Dendrites Morphology Material 2 [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_alternating_color_2))
 
         # Apical dendrite
-        self.apical_dendrites_materials = list()
-        self.apical_dendrites_materials.append(nmv.skeleton.create_single_material(
+        self.apical_dendrites_materials.append(nmv.shading.create_material(
             name='Apical Dendrites Morphology Material 1 [%s]' % self.morphology.label,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_1))
-        self.apical_dendrites_materials.append(nmv.skeleton.create_single_material(
+        self.apical_dendrites_materials.append(nmv.shading.create_material(
             name='Apical Dendrites Morphology Material 2 [%s]' % self.morphology.label,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_2))
+        self.skeleton_materials.extend(self.apical_dendrites_materials)
 
-        # Articulations, ONLY, for the articulated reconstruction method
-        self.create_articulations_material()
+        # Basal dendrites
+        self.basal_dendrites_materials.append(nmv.shading.create_material(
+            name='Basal Dendrites Morphology Material 1 [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_alternating_color_1))
+        self.basal_dendrites_materials.append(nmv.shading.create_material(
+            name='Basal Dendrites Morphology Material 2 [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_alternating_color_2))
+        self.skeleton_materials.extend(self.basal_dendrites_materials)
 
-        # Endfeet, ONLY, for the astrocyte morphologies
-        self.create_endfeet_material()
+        # Axon
+        self.axons_materials.append(nmv.shading.create_material(
+            name='Axons Morphology Material 1 [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_alternating_color_1))
+        self.axons_materials.append(nmv.shading.create_material(
+            name='Axons Morphology Material 2 [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color=self.options.shading.morphology_alternating_color_2))
+        self.skeleton_materials.extend(self.axons_materials)
+
+        # Gray material
+        self.skeleton_materials.extend(self.create_gray_materials())
+
+        # Articulations
+        self.skeleton_materials.extend(self.create_articulation_materials())
+
+        # Endfeet, if applicable
+        self.skeleton_materials.extend(self.create_endfeet_materials())
 
     ################################################################################################
     # @create_colormap_materials
     ################################################################################################
     def create_colormap_materials(self):
-        """Creates the
+        """Creates the materials associated with the selected colormap."""
 
-        :return:
-        """
-
-        self.clear_materials()
-
-        # Soma material
-        self.create_soma_material()
-
-        # Basal dendrites
-        self.basal_dendrites_materials = nmv.skeleton.create_multiple_materials(
-            name='Basal Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color_list=self.options.shading.morphology_colormap_list)
-
-        # Apical dendrites
-        self.apical_dendrites_materials = nmv.skeleton.create_multiple_materials(
-            name='Apical Dendrites Morphology Material [%s]' % self.morphology.label,
-            material_type=self.options.shading.morphology_material,
-            color_list=self.options.shading.morphology_colormap_list)
+        # Soma
+        self.skeleton_materials.extend(self.create_soma_materials())
 
         # Axons
         self.axons_materials = nmv.skeleton.create_multiple_materials(
             name='Axons Morphology Material [%s]' % self.morphology.label,
             material_type=self.options.shading.morphology_material,
             color_list=self.options.shading.morphology_colormap_list)
+        self.skeleton_materials.extend(self.axons_materials)
 
-        # Articulations, ONLY, for the articulated reconstruction method
-        self.create_articulations_material()
+        # Basal dendrites
+        self.basal_dendrites_materials = nmv.skeleton.create_multiple_materials(
+            name='Basal Dendrites Morphology Material [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color_list=self.options.shading.morphology_colormap_list)
+        self.skeleton_materials.extend(self.basal_dendrites_materials)
 
-        # Endfeet, ONLY, for the astrocyte morphologies
-        self.create_endfeet_material()
+        # Apical dendrites
+        self.apical_dendrites_materials = nmv.skeleton.create_multiple_materials(
+            name='Apical Dendrites Morphology Material [%s]' % self.morphology.label,
+            material_type=self.options.shading.morphology_material,
+            color_list=self.options.shading.morphology_colormap_list)
+        self.skeleton_materials.extend(self.apical_dendrites_materials)
+
+        # Gray material, Indices 8 and 9 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_gray_materials())
+
+        # Articulations, Indices 10 and 11 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_articulation_materials())
+
+        # Endfeet, if applicable, Indices 12 and 13 in @self.skeleton_materials
+        self.skeleton_materials.extend(self.create_endfeet_materials())
 
     ################################################################################################
     # @create_base_skeleton_materials
     ################################################################################################
-    def create_skeleton_materials(self):
-        """Creates the materials of the entire morphology skeleton.
+    def create_morphology_skeleton_materials(self):
+        """Creates the materials of the morphology skeleton."""
 
-        NOTE: The created materials are stored in member variables of the given builder.
-        """
-
+        # Clean the already existing materials
         self.clear_materials()
 
-        # Soma
-        self.soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='soma_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_soma_color)
+        # Create the new materials
+        scheme = self.options.shading.morphology_coloring_scheme
 
-        # Axon
-        self.axons_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='axon_skeleton', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_axons_color)
+        # Every component (axons, apicals, basals, articulations, endfeet) has a specific color
+        if scheme == nmv.enums.ColorCoding.DEFAULT_SCHEME:
+            self.create_default_coloring_scheme_materials()
 
-        # Basal dendrites
-        self.basal_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='basal_dendrites_skeleton',
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_basal_dendrites_color)
+        # All the components have the same color (homogeneous coloring)
+        # NOTE: The homogeneous coloring is done during obtaining the values from the interface
+        elif scheme == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
+            self.create_default_coloring_scheme_materials()
 
-        # Apical dendrite
-        self.apical_dendrites_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='apical_dendrite_skeleton',
-            material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_apical_dendrites_color)
+        # Alternating colors, for the arbors, but same for the soma, articulations and endfeet
+        elif scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
+            self.create_alternating_materials()
 
-        # Articulations, ONLY, for the articulated reconstruction method
-        if self.options.morphology.reconstruction_method == \
-                nmv.enums.Skeleton.Method.ARTICULATED_SECTIONS:
-            self.articulations_materials = nmv.skeleton.ops.create_skeleton_materials(
-                name='articulation', material_type=self.options.shading.morphology_material,
-                color=self.options.shading.morphology_articulation_color)
-
-        self.endfeet_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='endfeet', material_type=self.options.shading.morphology_material,
-            color=self.options.shading.morphology_endfeet_color)
+        # Color map(s)
+        else:
+            self.create_colormap_materials()
 
     ################################################################################################
     # @create_illumination
@@ -463,25 +478,6 @@ class MorphologyBuilderBase:
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
                   self.options.morphology.resampling_step])
-
-    ################################################################################################
-    # @create_base_skeleton_materials
-    ################################################################################################
-    def create_base_skeleton_materials(self):
-
-        # Clean the already existing materials
-        self.clear_materials()
-
-        # Create the new materials
-        scheme = self.options.shading.morphology_coloring_scheme
-        if scheme == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
-            self.create_homogeneous_materials()
-        elif scheme == nmv.enums.ColorCoding.DEFAULT_SCHEME:
-            self.create_arbors_materials()
-        elif scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
-            self.create_alternating_materials()
-        else:
-            self.create_colormap_materials()
 
     ################################################################################################
     # @shade_soma_mesh
@@ -570,8 +566,6 @@ class MorphologyBuilderBase:
         for endfoot in self.morphology.endfeet:
             self.morphology_objects.append(endfoot.create_surface_patch(
                 material=self.endfeet_materials[0]))
-
-
 
     ################################################################################################
     # @collection_morphology_objects_in_collection

@@ -124,8 +124,8 @@ class Section:
         # NOTE: This variable is only set to the root sections.
         self.soma_face_centroid = None
 
-        # This parameters defines whether this section is a continuation for a parent section or
-        # not. By default it is set to False, however, during the morphology pre-processing, it must
+        # This parameter defines whether this section is a continuation for a parent section or
+        # not. By default, it is set to False, however, during the morphology pre-processing, it must
         # be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
