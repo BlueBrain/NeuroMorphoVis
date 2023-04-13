@@ -69,7 +69,8 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
             morphology=self.morphology, morphology_options=self.options.morphology)
 
         # Update the branching
-        self.update_sections_branching()
+        nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
+                                               branching_method=self.options.morphology.branching)
 
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
@@ -429,8 +430,9 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         nmv.skeleton.update_arbors_radii(
             morphology=self.morphology, morphology_options=self.options.morphology)
 
-        # Branching
-        self.update_sections_branching()
+        # Update the branching
+        nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
+                                               branching_method=self.options.morphology.branching)
 
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(

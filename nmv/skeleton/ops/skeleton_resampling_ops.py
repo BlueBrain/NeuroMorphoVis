@@ -22,6 +22,7 @@ import os, copy, math
 import nmv.consts
 import nmv.geometry
 import nmv.skeleton
+import nmv.enums
 
 
 ####################################################################################################
@@ -702,3 +703,29 @@ def remove_samples_within_extent(section,
 
     # Return the number of removed samples
     return number_of_removed_samples
+
+
+####################################################################################################
+# @resample_skeleton
+####################################################################################################
+def resample_skeleton(morphology,
+                      morphology_options):
+    """Resamples the morphology skeleton based no the input of the user.
+
+    :param morphology:
+        The morphology object.
+    :param morphology_options:
+        The options of the morphology.
+    """
+    # The adaptive resampling is quite important to prevent breaking the structure
+    if morphology_options.resampling_method == nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, resample_section_adaptively_relaxed])
+    elif morphology_options.resampling_method == nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, resample_section_adaptively])
+    elif morphology_options.resampling_method == nmv.enums.Skeleton.Resampling.FIXED_STEP:
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[morphology, resample_section_at_fixed_step, morphology_options.resampling_step])
+
+

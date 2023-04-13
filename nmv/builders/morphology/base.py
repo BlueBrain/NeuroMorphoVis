@@ -125,7 +125,7 @@ class MorphologyBuilderBase:
 
         # Add it to the base collection
         nmv.utilities.create_collection_with_objects(
-            name='Base %s' % self.morphology.label, objects_list=[self.bevel_object])
+            name='Auxiliary %s' % self.morphology.label, objects_list=[self.bevel_object])
 
     ################################################################################################
     # @clear_materials
@@ -297,7 +297,6 @@ class MorphologyBuilderBase:
         # Soma material, Indices 0 and 1 in @self.skeleton_materials
         self.skeleton_materials.extend(self.create_soma_materials())
 
-
         # Apical dendrite
         self.apical_dendrites_materials.append(nmv.shading.create_material(
             name='Apical Dendrites Morphology Material 1 [%s]' % self.morphology.label,
@@ -425,28 +424,6 @@ class MorphologyBuilderBase:
         # Create a new collection from the created lights
         nmv.utilities.create_collection_with_objects(name='Illumination',
                                                      objects_list=self.lights)
-
-    ################################################################################################
-    # @update_sections_branching
-    ################################################################################################
-    def update_sections_branching(self):
-        """Updates the sections at the branching points and label them to primary or secondary based
-        on their angles and radii.
-        """
-
-        nmv.logger.info('Updating section branching to primary and secondary')
-
-        # Label the primary and secondary sections based on angles
-        if self.options.morphology.branching == nmv.enums.Skeleton.Branching.ANGLES:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
-
-        # Label the primary and secondary sections based on radii
-        else:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology,
-                  nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
     ################################################################################################
     # @resample_skeleton_sections

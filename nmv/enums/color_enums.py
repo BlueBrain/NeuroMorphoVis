@@ -71,7 +71,7 @@ class Color:
     # Nuclei color
     NUCLEI = Vector((0.75, 0.41, 0.77))
 
-    # INDICES ######################################################################################
+    # MATERIALS INDICES ############################################################################
     # The soma materials are found at the indices 0 and 1
     SOMA_MATERIAL_START_INDEX = 0
 

@@ -330,7 +330,6 @@ class MeshBuilderBase:
         # Branching
         nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
                                                branching_method=self.options.morphology.branching)
-        #nmv.builders.morphology.update_sections_branching(builder=builder)
 
         # Update the style of the arbors
         nmv.skeleton.ops.update_arbors_style(
