@@ -66,8 +66,8 @@ class MeshOptions:
         # Edges of the meshes, either hard or smooth
         self.edges = nmv.enums.Meshing.Edges.HARD
 
-        # The shape of the skeleton that is used in the union meshing algorithm
-        self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON
+        # Remove the small edges that might cause the mesh to be non-watertight
+        self.remove_small_edges = False
 
         # SPINES OPTIONS ###########################################################################
         # The source where the spines will be loaded from, by default ignore the spines

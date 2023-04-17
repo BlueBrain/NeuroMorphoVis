@@ -190,7 +190,6 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Ensure that we use a high quality cross-sectional bevel
         self.options.morphology.bevel_object_sides = 16
-
         if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
             return self.build_proxy_mesh_using_connected_sections_builder()
         else:
@@ -209,7 +208,8 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.assign_material_to_single_object_mesh()
 
         # Remove doubles
-        nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
+        if self.options.mesh.remove_small_edges:
+            nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
 
         # Smooth vertices to remove any sphere-like shapes
         nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=1)

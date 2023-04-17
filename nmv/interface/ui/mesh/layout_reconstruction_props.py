@@ -47,7 +47,7 @@ def draw_meshing_technique_option(layout, scene, options):
 def draw_soma_type_option(layout, scene, options):
 
     row = layout.row()
-    row.label(text='Soma')
+    row.label(text='Soma:')
     row.prop(scene, 'NMV_MeshingSomaType', expand=True)
     options.mesh.soma_type = scene.NMV_MeshingSomaType
 
@@ -58,7 +58,7 @@ def draw_soma_type_option(layout, scene, options):
 def draw_meta_soma_option(layout, scene, options):
 
     row = layout.row()
-    row.label(text='Soma')
+    row.label(text='Soma:')
     row.prop(scene, 'NMV_MeshingMetaSoma', expand=True)
     options.mesh.soma_type = scene.NMV_MeshingMetaSoma
 
@@ -69,9 +69,19 @@ def draw_meta_soma_option(layout, scene, options):
 def draw_mesh_smoothing_option(layout, scene, options):
 
     row = layout.row()
-    row.label(text='Edges')
+    row.label(text='Edges:')
     row.prop(scene, 'NMV_MeshSmoothing', expand=True)
     options.mesh.edges = scene.NMV_MeshSmoothing
+
+
+####################################################################################################
+# @draw_small_edges_removal_option
+####################################################################################################
+def draw_small_edges_removal_option(layout, scene, options):
+
+    row = layout.row()
+    row.prop(scene, 'NMV_RemoveSmallEdges', expand=True)
+    options.mesh.remove_small_edges = scene.NMV_RemoveSmallEdges
 
 
 ####################################################################################################
@@ -91,7 +101,7 @@ def draw_mesh_surface_roughness_option(layout, scene, options):
 def draw_mesh_connectivity_options(layout, scene, options):
 
     row = layout.row()
-    row.label(text='Mesh Objects')
+    row.label(text='Mesh Objects:')
     row.prop(scene, 'NMV_MeshObjectsConnection', expand=True)
     options.mesh.neuron_objects_connection = scene.NMV_MeshObjectsConnection
 
@@ -108,12 +118,33 @@ def draw_proxy_mesh_option(layout, scene, options):
 
 
 ####################################################################################################
+# @draw_proxy_mesh_option
+####################################################################################################
+def draw_tessellation_option(layout, scene, options):
+
+    tess_level_row = layout.row()
+    tess_level_row.prop(scene, 'NMV_TessellateMesh')
+    tess_level_column = tess_level_row.column()
+    tess_level_column.prop(scene, 'NMV_MeshTessellationLevel')
+
+    # Disable the tessellation
+    if not scene.NMV_TessellateMesh:
+        options.mesh.tessellate_mesh = False
+        options.mesh.tessellation_level = 1.0
+        tess_level_column.enabled = False
+    else:
+        options.mesh.tessellate_mesh = scene.NMV_TessellateMesh
+        options.mesh.tessellation_level = scene.NMV_MeshTessellationLevel
+
+
+####################################################################################################
 # @draw_piecewise_watertight_meshing_options
 ####################################################################################################
 def draw_piecewise_watertight_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
+    draw_tessellation_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -124,6 +155,7 @@ def draw_voxelization_meshing_options(layout, scene, options):
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_proxy_mesh_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
+    draw_small_edges_removal_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -135,6 +167,7 @@ def draw_skinning_meshing_options(layout, scene, options):
     draw_mesh_smoothing_option(layout=layout, scene=scene, options=options)
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
+    draw_tessellation_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -145,6 +178,7 @@ def draw_union_operators_meshing_options(layout, scene, options):
     draw_meta_soma_option(layout=layout, scene=scene, options=options)
     draw_mesh_smoothing_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
+    draw_tessellation_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -154,7 +188,8 @@ def draw_meta_objects_meshing_options(layout, scene, options):
 
     draw_meta_soma_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
-    draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
+    draw_small_edges_removal_option(layout=layout, scene=scene, options=options)
+    draw_tessellation_option(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################

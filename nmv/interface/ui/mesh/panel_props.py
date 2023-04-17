@@ -149,6 +149,13 @@ bpy.types.Scene.NMV_TessellateMesh = bpy.props.BoolProperty(
     description='Tessellate the reconstructed mesh to reduce the geometry complexity',
     default=False)
 
+# Removal of small edges flag
+bpy.types.Scene.NMV_RemoveSmallEdges = bpy.props.BoolProperty(
+    name='Remove Small Edges',
+    description='Removes the small edges in the mesh to improve its quality',
+    default=False)
+
+
 # Mesh tessellation level
 bpy.types.Scene.NMV_MeshTessellationLevel = bpy.props.FloatProperty(
     name='Factor',

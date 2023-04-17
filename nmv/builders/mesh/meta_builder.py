@@ -52,8 +52,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options,
-                 ignore_watertightness=False):
+                 options):
         """Constructor
 
         :param morphology:
@@ -64,9 +63,6 @@ class MetaBuilder(MeshBuilderBase):
 
         # Initialize the parent with the common parameters
         MeshBuilderBase.__init__(self, morphology, options, 'meta')
-
-        # Ignore watertightness
-        self.ignore_watertightness = ignore_watertightness
 
         # Meta object skeleton, used to build the skeleton of the morphology
         self.meta_skeleton = None
@@ -704,13 +700,13 @@ class MetaBuilder(MeshBuilderBase):
             nmv.mesh.ops.smooth_object(mesh_object=self.neuron_mesh, level=1)
 
     ################################################################################################
-    # @verify_watertightness_if_requested
+    # @clean_mesh
     ################################################################################################
-    def verify_watertightness_if_requested(self):
-        """Verifies if the mesh is watertight or not."""
+    def clean_mesh(self):
+        """Cleans the mesh by removing the small edges."""
 
         # Clean the mesh object and remove the non-manifold edges
-        if not self.ignore_watertightness:
+        if self.options.mesh.remove_small_edges:
             nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
             nmv.mesh.clean_mesh_object(self.neuron_mesh)
 
@@ -765,8 +761,8 @@ class MetaBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
-        # Watertightness
-        result, stats = self.PROFILE(self.verify_watertightness_if_requested)
+        # Mesh cleaning
+        result, stats = self.PROFILE(self.clean_mesh)
         self.profiling_statistics += stats
 
         # Report the statistics of this builder
