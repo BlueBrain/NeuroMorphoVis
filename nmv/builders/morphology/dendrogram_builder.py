@@ -53,65 +53,6 @@ class DendrogramBuilder(MorphologyBuilderBase):
         MorphologyBuilderBase.__init__(self, morphology, options)
 
     ################################################################################################
-    # @initialize_builder
-    ################################################################################################
-    def initialize_builder(self):
-        """Initializes the builder."""
-
-        # Create the bevel object
-        self.create_bevel_object()
-
-        # Create the skeleton materials, without illumination
-        self.create_morphology_skeleton_materials()
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-    ################################################################################################
-    # @create_per_arbor_material_list
-    ################################################################################################
-    def create_per_arbor_material_list(self):
-
-        nmv.logger.info('Creating materials')
-
-        # Clear already existing materials list
-        self.clear_materials()
-
-        # Apical materials
-        if self.morphology.has_apical_dendrites():
-            for arbor in self.morphology.apical_dendrites:
-                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
-                    name=arbor.tag,
-                    material_type=self.options.shading.morphology_material,
-                    color=arbor.color)
-                self.skeleton_materials.extend(arbor_materials)
-
-        # Basal materials
-        if self.morphology.has_basal_dendrites():
-            for arbor in self.morphology.basal_dendrites:
-                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
-                    name=arbor.tag,
-                    material_type=self.options.shading.morphology_material,
-                    color=arbor.color)
-                self.skeleton_materials.extend(arbor_materials)
-
-        # Axons materials
-        if self.morphology.has_axons():
-            for arbor in self.morphology.axons:
-                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
-                    name=arbor.tag,
-                    material_type=self.options.shading.morphology_material,
-                    color=arbor.color)
-                self.skeleton_materials.extend(arbor_materials)
-
-        # Soma materials
-        soma_materials = nmv.skeleton.ops.create_skeleton_materials(
-            name='soma_material',
-            material_type=self.options.shading.morphology_material,
-            color=self.morphology.soma_color)
-        self.skeleton_materials.extend(soma_materials)
-
-    ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self,
@@ -451,13 +392,56 @@ class DendrogramBuilder(MorphologyBuilderBase):
         return self.morphology_objects
 
     ################################################################################################
+    # @create_per_arbor_material_list
+    ################################################################################################
+    def create_per_arbor_material_list(self):
+
+        nmv.logger.info('Creating materials')
+
+        # Clear already existing materials list
+        self.clear_materials()
+
+        # Apical materials
+        if self.morphology.has_apical_dendrites():
+            for arbor in self.morphology.apical_dendrites:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Basal materials
+        if self.morphology.has_basal_dendrites():
+            for arbor in self.morphology.basal_dendrites:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Axons materials
+        if self.morphology.has_axons():
+            for arbor in self.morphology.axons:
+                arbor_materials = nmv.skeleton.ops.create_skeleton_materials(
+                    name=arbor.tag,
+                    material_type=self.options.shading.morphology_material,
+                    color=arbor.color)
+                self.skeleton_materials.extend(arbor_materials)
+
+        # Soma materials
+        soma_materials = nmv.skeleton.ops.create_skeleton_materials(
+            name='Soma Material',
+            material_type=self.options.shading.morphology_material,
+            color=self.morphology.soma_color)
+        self.skeleton_materials.extend(soma_materials)
+
+    ################################################################################################
     # @render_highlighted_arbors
     ################################################################################################
     def render_highlighted_arbors(self,
                                   dendrogram_type=nmv.enums.Dendrogram.Type.SIMPLIFIED,
                                   resolution=2048):
-        """Render the morphology with different colors per arbor for analysis.
-        """
+        """Render the morphology with different colors per arbor for analysis."""
 
         # NOTE: Readjust the parameters here to plot everything for the whole morphology
         self.options.morphology.adjust_to_analysis_mode()

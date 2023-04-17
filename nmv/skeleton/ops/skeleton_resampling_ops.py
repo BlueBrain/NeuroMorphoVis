@@ -264,26 +264,9 @@ def resample_section_adaptively(section):
         A given section to resample.
     """
 
-    # If the section has no samples, report this as an error and ignore this filter
-    if len(section.samples) == 0:
-        nmv.logger.error('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
+    # If the section has in general less than two samples, then there is nothing to be sampled.
+    if len(section.samples) < 2:
         return
-
-    # If the section has ONLY one sample, report this as an error and ignore this filter
-    elif len(section.samples) == 1:
-        nmv.logger.error('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
-        return
-
-    # If the section has ONLY two sample, report this as a warning
-    elif len(section.samples) == 2:
-
-        nmv.logger.error('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
-                         (section.get_type_string(), section.index))
-        return
-
-    # The section has more than two samples, can be resampled
     else:
 
         # Sample index
@@ -356,26 +339,10 @@ def resample_section_adaptively_relaxed(section):
         A given section to resample.
     """
 
-    # If the section has no samples, report this as an error and ignore this filter
-    if len(section.samples) == 0:
-        nmv.logger.warning('Section [%s: %d] has NO samples, cannot be re-sampled' %
-                           (section.get_type_string(), section.index))
+    # If the section has in general less than two samples, then there is nothing to be sampled.
+    if len(section.samples) < 2:
         return
 
-    # If the section has ONLY one sample, report this as an error and ignore this filter
-    elif len(section.samples) == 1:
-        nmv.logger.warning('Section [%s: %d] has only ONE sample, cannot be re-sampled' %
-                           (section.get_type_string(), section.index))
-        return
-
-    # If the section has ONLY two sample, report this as a warning
-    elif len(section.samples) == 2:
-
-        nmv.logger.warning('Section [%s: %d] has only TWO sample, cannot be re-sampled' %
-                           (section.get_type_string(), section.index))
-        return
-
-    # The section has more than two samples, can be resampled
     else:
 
         # Sample index

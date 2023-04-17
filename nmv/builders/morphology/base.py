@@ -103,7 +103,54 @@ class MorphologyBuilderBase:
     ################################################################################################
     def initialize_builder(self):
         """Initializes the builder."""
-        pass
+
+        # Creates the bevel object that is used to interpolate the morphology across its centerline
+        self.create_bevel_object()
+
+        # Pre-process and update the radii, based on the selected input from the user
+        self.update_sections_radii()
+
+        # Pre-process and update the branching, based on the selected input from the user
+        self.update_skeleton_branching()
+
+        # Pre-process and update the style of the arbors, based on the selected input from the user
+        self.update_skeleton_style()
+
+        # Resample the sections, based on the selected input from the user
+        self.resample_skeleton_sections()
+
+        # Create the materials that will be applied to the morphology.
+        self.create_morphology_skeleton_materials()
+
+        # Add the illumination
+        self.create_illumination()
+
+    ################################################################################################
+    # @update_sections_radii
+    ################################################################################################
+    def update_sections_radii(self):
+        """Updates the radii of each section in the morphology."""
+
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
+
+    ################################################################################################
+    # @update_skeleton_branching
+    ################################################################################################
+    def update_skeleton_branching(self):
+        """Updates the branching of the morphology, either based on angle or radius."""
+
+        nmv.skeleton.update_skeleton_branching(
+            morphology=self.morphology, branching_method=self.options.morphology.branching)
+
+    ################################################################################################
+    # @update_skeleton_style
+    ################################################################################################
+    def update_skeleton_style(self):
+        """Updates the style of the skeleton, mainly for artistic designs."""
+
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
     ################################################################################################
     # @pre_process_morphology

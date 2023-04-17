@@ -51,13 +51,6 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         # Initialize the parent with the common parameters
         MorphologyBuilderBase.__init__(self, morphology, options)
 
-    def initialize_builder(self):
-        """Initialization"""
-
-        nmv.logger.info('Initialization')
-
-        pass
-
     ################################################################################################
     # @construct_color_coded_polylines
     ################################################################################################
@@ -578,25 +571,11 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
 
         nmv.logger.header('Building Skeleton: DisconnectedSegmentsBuilder')
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        self.create_bevel_object()
+        # Initialize the builder
+        self.initialize_builder()
 
-        # Create the skeleton materials
-        self.create_morphology_skeleton_materials()
-
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        self.create_morphology_skeleton_materials()
-
+        # Draw the arbors
         self.draw_arbors()
-
-        # Draws each arbor in the morphology as a single object
-        # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
 
         # Draw the soma
         self.draw_soma()

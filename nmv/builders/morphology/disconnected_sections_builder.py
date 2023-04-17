@@ -65,15 +65,16 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     ################################################################################################
     def initialize_builder(self):
 
-        # Create the bevel object
+        # Creates the bevel object that is used to interpolate the morphology across its centerline
         self.create_bevel_object()
 
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+        # Pre-process and update the radii, based on the selected input from the user
+        self.update_sections_radii()
 
-        # Resample the sections of the morphology skeleton
+        # Resample the sections, based on the selected input from the user
         self.resample_skeleton_sections()
 
+        # Create the materials that will be applied to the morphology.
         self.create_morphology_skeleton_materials()
 
     ################################################################################################
@@ -648,9 +649,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Initialize the builder
         self.initialize_builder()
 
-        # Draw each arbor as a single object
+        # Draw the arbors
         # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
-
         self.draw_arbors()
 
         # For the articulated sections, draw the spheres
@@ -660,8 +660,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Draw the soma
         if self.force_meta_ball:
-
-            # In case of reloading morphology
             self.draw_meta_balls_soma()
         else:
             self.draw_soma()

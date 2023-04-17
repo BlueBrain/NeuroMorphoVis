@@ -59,24 +59,6 @@ class ProgressiveBuilder(MorphologyBuilderBase):
         self.articulations_spheres = list()
 
     ################################################################################################
-    # @initialize_builder
-    ################################################################################################
-    def initialize_builder(self):
-
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        self.create_bevel_object()
-
-        # Create the skeleton materials
-        self.create_morphology_skeleton_materials()
-
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-    ################################################################################################
     # @construct_arbors_poly_lines_list_at_branching_order
     ################################################################################################
     def construct_arbors_poly_lines_list_at_branching_order(self,
@@ -233,6 +215,7 @@ class ProgressiveBuilder(MorphologyBuilderBase):
         # Update the context
         self.context = context
 
+        # Initialize the builder
         self.initialize_builder()
 
         # Draw the arbors progressively

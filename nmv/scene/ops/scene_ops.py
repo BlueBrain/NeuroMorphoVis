@@ -365,10 +365,11 @@ def delete_material(material,
 ####################################################################################################
 # @clear_scene
 ####################################################################################################
-def clear_scene():
+def clear_scene(deep_delete=False):
     """Clear a scene and remove all the existing objects in it and unlink their references.
 
-    NOTE: This function targets clearing meshes, curve, objects and materials.
+    :param deep_delete:
+        If this flag is set, we enforce deleting meshes, curve and other objects/
     """
 
     for i_object in bpy.data.objects:
@@ -378,7 +379,7 @@ def clear_scene():
 
     # Select all the objects in the scene and delete them all at once
     bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete()
+    bpy.ops.object.delete(use_global=False, confirm=False)
 
     # Unlink all the objects in all the layers
     for scene in bpy.data.scenes:
@@ -387,29 +388,25 @@ def clear_scene():
             unlink_object_from_scene(scene_object)
             nmv.utilities.enable_std_output()
 
-    # Select all the meshes, unlink them and clear their data
-    for scene_mesh in bpy.data.meshes:
-        nmv.utilities.disable_std_output()
-        bpy.data.meshes.remove(scene_mesh, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
-    # Select all the curves, unlink them and clear their data
-    for scene_curve in bpy.data.curves:
-        nmv.utilities.disable_std_output()
-        bpy.data.curves.remove(scene_curve, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
-    # Select all the scene objects, unlink them and clear their data
-    for scene_object in bpy.data.objects:
-        nmv.utilities.disable_std_output()
-        bpy.data.objects.remove(scene_object, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
     # Select all the scene materials, unlink them and clear their data
     for scene_material in bpy.data.materials:
         nmv.utilities.disable_std_output()
         bpy.data.materials.remove(scene_material, do_unlink=True)
         nmv.utilities.enable_std_output()
+
+    if deep_delete:
+        for scene_mesh in bpy.data.meshes:
+            nmv.utilities.disable_std_output()
+            bpy.data.meshes.remove(scene_mesh, do_unlink=True)
+            nmv.utilities.enable_std_output()
+        for scene_curve in bpy.data.curves:
+            nmv.utilities.disable_std_output()
+            bpy.data.curves.remove(scene_curve, do_unlink=True)
+            nmv.utilities.enable_std_output()
+        for scene_object in bpy.data.objects:
+            nmv.utilities.disable_std_output()
+            bpy.data.objects.remove(scene_object, do_unlink=True)
+            nmv.utilities.enable_std_output()
 
     # Delete all the collections
     for scene_collection in bpy.data.collections:

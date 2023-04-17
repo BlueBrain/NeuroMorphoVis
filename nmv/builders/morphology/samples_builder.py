@@ -55,24 +55,6 @@ class SamplesBuilder(MorphologyBuilderBase):
         MorphologyBuilderBase.__init__(self, morphology, options)
 
     ################################################################################################
-    # @initialize_builder
-    ################################################################################################
-    def initialize_builder(self):
-        """Initializes the builder"""
-
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        # Create the skeleton materials
-        self.create_morphology_skeleton_materials()
-
-        # Creates the illumination of the scene based on the material
-        self.create_illumination()
-
-    ################################################################################################
     # @draw_sections_as_spheres
     ################################################################################################
     def draw_sections_as_spheres(self,
