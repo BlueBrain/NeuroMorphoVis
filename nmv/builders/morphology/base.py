@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -35,9 +35,7 @@ import nmv.scene
 # @MorphologyBuilderBase
 ####################################################################################################
 class MorphologyBuilderBase:
-    """Base class for all the morphology builders.
-    Any morphology builder should inherit from this class, otherwise it will raise an error.
-    """
+    """Base class for all the morphology builders."""
 
     ################################################################################################
     # @__init__
@@ -45,12 +43,12 @@ class MorphologyBuilderBase:
     def __init__(self,
                  morphology,
                  options):
-        """Constructor.
+        """Constructor
 
         :param morphology:
             A given morphology.
         :param options:
-            System options.
+            NeuroMorphoVis options
         """
 
         # Morphology, and we deepcopy the instance such in case we modify it
@@ -102,7 +100,7 @@ class MorphologyBuilderBase:
     # @initialize_builder
     ################################################################################################
     def initialize_builder(self):
-        """Initializes the builder."""
+        """Initializes the builder, default for all builders unless specified otherwise."""
 
         # Creates the bevel object that is used to interpolate the morphology across its centerline
         self.create_bevel_object()
@@ -153,13 +151,6 @@ class MorphologyBuilderBase:
             morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
 
     ################################################################################################
-    # @pre_process_morphology
-    ################################################################################################
-    def pre_process_morphology(self):
-        """Pre-processes the morphology before visualizing it."""
-        pass
-
-    ################################################################################################
     # @create_bevel_object
     ################################################################################################
     def create_bevel_object(self):
@@ -181,7 +172,7 @@ class MorphologyBuilderBase:
         """Clears existing morphology materials."""
 
         for material in bpy.data.materials:
-            if self.morphology.label in material.name:
+            if self.morphology.code in material.name:
                 nmv.scene.delete_material(material=material)
 
         # Clear the lists (the materials references)
@@ -204,7 +195,7 @@ class MorphologyBuilderBase:
         """
 
         soma_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Soma Material - Morphology [%s]' % self.morphology.label,
+            name='Soma Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_soma_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.soma_materials.extend(soma_materials)
@@ -221,7 +212,7 @@ class MorphologyBuilderBase:
         """
 
         axons_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Axons Material - Morphology [%s]' % self.morphology.label,
+            name='Axons Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_axons_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.axons_materials.extend(axons_materials)
@@ -237,7 +228,7 @@ class MorphologyBuilderBase:
            A list containing the created materials.
         """
         basal_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Basal Dendrites Material - Morphology [%s]' % self.morphology.label,
+            name='Basal Dendrites Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_basal_dendrites_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.basal_dendrites_materials.extend(basal_dendrites_materials)
@@ -253,7 +244,7 @@ class MorphologyBuilderBase:
            A list containing the created materials.
         """
         apical_dendrites_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Apical Dendrites Material - Morphology [%s]' % self.morphology.label,
+            name='Apical Dendrites Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_apical_dendrites_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.apical_dendrites_materials.extend(apical_dendrites_materials)
@@ -270,7 +261,7 @@ class MorphologyBuilderBase:
         """
 
         gray_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Gray Material - Morphology [%s]' % self.morphology.label,
+            name='Gray Morphology [%s]' % self.morphology.code,
             color=nmv.consts.Color.GREYSH,
             material_type=self.options.shading.morphology_material, number_elements=2)
         return gray_materials
@@ -285,7 +276,7 @@ class MorphologyBuilderBase:
            A list containing the created materials.
         """
         articulations_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Articulations Material - Morphology [%s]' % self.morphology.label,
+            name='Articulations Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_articulation_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.articulations_materials.extend(articulations_materials)
@@ -302,7 +293,7 @@ class MorphologyBuilderBase:
         """
 
         endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Endfeet Material - Morphology [%s]' % self.morphology.label,
+            name='Endfeet Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_endfeet_color,
             material_type=self.options.shading.morphology_material, number_elements=2)
         self.endfeet_materials.extend(endfeet_materials)
@@ -346,33 +337,33 @@ class MorphologyBuilderBase:
 
         # Apical dendrite
         self.apical_dendrites_materials.append(nmv.shading.create_material(
-            name='Apical Dendrites Morphology Material 1 [%s]' % self.morphology.label,
+            name='Apicals 1 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_1))
         self.apical_dendrites_materials.append(nmv.shading.create_material(
-            name='Apical Dendrites Morphology Material 2 [%s]' % self.morphology.label,
+            name='Apicals 2 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_2))
         self.skeleton_materials.extend(self.apical_dendrites_materials)
 
         # Basal dendrites
         self.basal_dendrites_materials.append(nmv.shading.create_material(
-            name='Basal Dendrites Morphology Material 1 [%s]' % self.morphology.label,
+            name='Basals 1 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_1))
         self.basal_dendrites_materials.append(nmv.shading.create_material(
-            name='Basal Dendrites Morphology Material 2 [%s]' % self.morphology.label,
+            name='Basals 2 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_2))
         self.skeleton_materials.extend(self.basal_dendrites_materials)
 
         # Axon
         self.axons_materials.append(nmv.shading.create_material(
-            name='Axons Morphology Material 1 [%s]' % self.morphology.label,
+            name='Axons 1 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_1))
         self.axons_materials.append(nmv.shading.create_material(
-            name='Axons Morphology Material 2 [%s]' % self.morphology.label,
+            name='Axons 2 [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color=self.options.shading.morphology_alternating_color_2))
         self.skeleton_materials.extend(self.axons_materials)
@@ -397,21 +388,21 @@ class MorphologyBuilderBase:
 
         # Axons
         self.axons_materials = nmv.skeleton.create_multiple_materials(
-            name='Axons Morphology Material [%s]' % self.morphology.label,
+            name='Axons [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color_list=self.options.shading.morphology_colormap_list)
         self.skeleton_materials.extend(self.axons_materials)
 
         # Basal dendrites
         self.basal_dendrites_materials = nmv.skeleton.create_multiple_materials(
-            name='Basal Dendrites Morphology Material [%s]' % self.morphology.label,
+            name='Basals [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color_list=self.options.shading.morphology_colormap_list)
         self.skeleton_materials.extend(self.basal_dendrites_materials)
 
         # Apical dendrites
         self.apical_dendrites_materials = nmv.skeleton.create_multiple_materials(
-            name='Apical Dendrites Morphology Material [%s]' % self.morphology.label,
+            name='Apicals [%s]' % self.morphology.code,
             material_type=self.options.shading.morphology_material,
             color_list=self.options.shading.morphology_colormap_list)
         self.skeleton_materials.extend(self.apical_dendrites_materials)
@@ -469,8 +460,8 @@ class MorphologyBuilderBase:
             self.options.shading.mesh_material)
 
         # Create a new collection from the created lights
-        nmv.utilities.create_collection_with_objects(name='Illumination',
-                                                     objects_list=self.lights)
+        nmv.utilities.create_collection_with_objects(
+            name='Illumination %s' % self.morphology.code, objects_list=self.lights)
 
     ################################################################################################
     # @resample_skeleton_sections

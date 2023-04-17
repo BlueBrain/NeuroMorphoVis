@@ -208,7 +208,7 @@ def read_morphology_from_circuit(options):
     NeuroMorphoVisOption.
 
     :param options:
-        System options.
+        NeuroMorphoVis options
     :type options:
         NeuroMorphoVisOption
     :return:

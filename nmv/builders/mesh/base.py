@@ -146,7 +146,7 @@ class MeshBuilderBase:
         """Clears existing morphology materials."""
 
         for material in bpy.data.materials:
-            if self.morphology.label in material.name:
+            if self.morphology.code in material.name:
                 nmv.scene.delete_material(material=material)
 
     ################################################################################################
@@ -157,7 +157,7 @@ class MeshBuilderBase:
 
         self.soma_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='Soma Mesh Material [%s]' % self.morphology.label,
+            name='Soma Mesh [%s]' % self.morphology.code,
             color=self.options.shading.mesh_soma_color)
 
     ################################################################################################
@@ -168,7 +168,7 @@ class MeshBuilderBase:
 
         self.axons_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='Axons Mesh Material [%s]' % self.morphology.label,
+            name='Axon Mesh [%s]' % self.morphology.code,
             color=self.options.shading.mesh_axons_color)
 
     ################################################################################################
@@ -179,7 +179,7 @@ class MeshBuilderBase:
 
         self.basal_dendrites_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='Basal Dendrites Mesh Material [%s]' % self.morphology.label,
+            name='Basal Dendrites Mesh [%s]' % self.morphology.code,
             color=self.options.shading.mesh_basal_dendrites_color)
 
     ################################################################################################
@@ -190,7 +190,7 @@ class MeshBuilderBase:
 
         self.apical_dendrites_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='Apical Dendrite Mesh Material [%s]' % self.morphology.label,
+            name='Apical Dendrites Mesh [%s]' % self.morphology.code,
             color=self.options.shading.mesh_apical_dendrites_color)
 
     ################################################################################################
@@ -201,7 +201,7 @@ class MeshBuilderBase:
 
         self.spines_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            name='Spines Material [%s]' % self.morphology.label,
+            name='Spines Mesh [%s]' % self.morphology.code,
             color=self.options.shading.mesh_spines_color)
 
     ################################################################################################
@@ -211,7 +211,7 @@ class MeshBuilderBase:
         """Creates the materials of the astrocytic endfeet."""
 
         self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Endfeet Material [%s]' % self.morphology.label,
+            name='Endfeet Mesh [%s]' % self.morphology.code,
             material_type=self.options.shading.mesh_material,
             color=self.options.shading.mesh_endfeet_color,
             number_elements=1)

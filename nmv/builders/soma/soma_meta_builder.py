@@ -54,7 +54,7 @@ class SomaMetaBuilder:
         :param morphology:
             A given morphology.
         :param options:
-            System options.
+            NeuroMorphoVis options
         """
 
         # Morphology

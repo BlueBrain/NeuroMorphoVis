@@ -106,6 +106,9 @@ class Morphology:
         if gid is not None:
             self.label = str(gid)
 
+        # The code is an 8-character string that is used to reference the morphology label
+        self.code = nmv.utilities.generate_random_string(length=8)
+
         # Morphology file format
         self.file_format = file_format
         if self.file_format is None:

@@ -49,7 +49,7 @@ def render_soma_two_dimensional_profile(morphology_object,
     :param morphology_object:
         A given morphology object.
     :param options:
-        System options.
+        NeuroMorphoVis options
     """
 
     # Clear the scene

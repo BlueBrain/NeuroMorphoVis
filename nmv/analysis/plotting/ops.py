@@ -42,7 +42,7 @@ def plot_analysis_results(morphology,
     :param morphology:
         The morphology skeleton.
     :param options:
-        System options.
+        NeuroMorphoVis options
     """
 
     # Create the color palette

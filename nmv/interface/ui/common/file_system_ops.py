@@ -34,7 +34,7 @@ def configure_output_directory(options,
     """Configures the output directory after loading the data.
 
     :param options:
-        System options.
+        NeuroMorphoVis options
     :param context:
         Context.
     """
