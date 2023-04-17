@@ -751,7 +751,7 @@ class MeshBuilderBase:
 
         # Join the spine objects into a single mesh, if required
         if join_spine_meshes:
-            spine_mesh_name = '%s_spines' % self.options.morphology.label
+            spine_mesh_name = 'Spines [%s]' % self.options.morphology.label
             nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
     ################################################################################################
