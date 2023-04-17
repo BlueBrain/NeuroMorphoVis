@@ -711,6 +711,8 @@ def remove_samples_within_extent(section,
 def resample_skeleton(morphology,
                       morphology_options):
     """Resamples the morphology skeleton based no the input of the user.
+    NOTE: This resampling process is performed on a per-section basis, so the first and last samples
+    of the section are left intact.
 
     :param morphology:
         The morphology object.

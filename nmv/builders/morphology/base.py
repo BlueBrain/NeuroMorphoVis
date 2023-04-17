@@ -429,32 +429,10 @@ class MorphologyBuilderBase:
     # @resample_skeleton_sections
     ################################################################################################
     def resample_skeleton_sections(self):
-        """Re-samples the sections of the morphology skeleton before drawing it.
+        """Re-samples the sections of the morphology skeleton before drawing it."""
 
-        NOTE: This resampling process is performed on a per-section basis, so the first and last
-        samples of the section are left intact.
-        """
-
-        nmv.logger.info('Resampling skeleton')
-
-        # The adaptive resampling is quite important to prevent breaking the structure
-        if self.options.morphology.resampling_method == \
-                nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
-            nmv.logger.detail('Relaxed Adaptive Resampling')
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
-        elif self.options.morphology.resampling_method == \
-                nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
-            nmv.logger.detail('Packed (or Overlapping) Adaptive Resampling')
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
-        elif self.options.morphology.resampling_method == \
-                nmv.enums.Skeleton.Resampling.FIXED_STEP:
-            nmv.logger.detail('Fixed Step Resampling with step of [%f] um' %
-                              self.options.morphology.resampling_step)
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
-                  self.options.morphology.resampling_step])
+        nmv.skeleton.resample_skeleton(
+            morphology=self.morphology, morphology_options=self.options.morphology)
 
     ################################################################################################
     # @shade_soma_mesh

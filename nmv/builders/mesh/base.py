@@ -250,34 +250,6 @@ class MeshBuilderBase:
         nmv.utilities.create_collection_with_objects(name='Illumination', objects_list=self.lights)
 
     ################################################################################################
-    # @resample_skeleton_adaptive_relaxed
-    ################################################################################################
-    def resample_skeleton_adaptive_relaxed(self):
-        """Resamples the morphology skeleton using the adaptive relaxed method."""
-
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
-
-    ################################################################################################
-    # @resample_skeleton_adaptive_relaxed
-    ################################################################################################
-    def resample_skeleton_adaptive_packed(self):
-        """Resamples the morphology skeleton using the adaptive packed method."""
-
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively])
-
-    ################################################################################################
-    # @resample_skeleton_adaptive_relaxed
-    ################################################################################################
-    def resample_skeleton_at_fixed_step(self):
-        """Resamples the morphology skeleton using the fixed step relaxed method."""
-
-        nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step,
-              self.options.morphology.resampling_step])
-
-    ################################################################################################
     # @resample_skeleton_sections
     ################################################################################################
     def resample_skeleton_sections(self):
@@ -286,14 +258,8 @@ class MeshBuilderBase:
         of the section are left intact.
         """
 
-        nmv.logger.info('Resampling skeleton')
-        method = self.options.morphology.resampling_method
-        if method == nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
-            self.resample_skeleton_adaptive_relaxed()
-        elif method == nmv.enums.Skeleton.Resampling.ADAPTIVE_PACKED:
-            self.resample_skeleton_adaptive_packed()
-        elif method == nmv.enums.Skeleton.Resampling.FIXED_STEP:
-            self.resample_skeleton_at_fixed_step()
+        nmv.skeleton.resample_skeleton(
+            morphology=self.morphology, morphology_options=self.options.morphology)
 
     ################################################################################################
     # @remove_arbors_samples_inside_soma
