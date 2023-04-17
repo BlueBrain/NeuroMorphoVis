@@ -754,8 +754,6 @@ class MeshBuilderBase:
             spine_mesh_name = '%s_spines' % self.options.morphology.label
             nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
 
-
-
     ################################################################################################
     # @modify_morphology_skeleton
     ################################################################################################
@@ -763,9 +761,6 @@ class MeshBuilderBase:
         """Modifies the morphology skeleton, if required. These modifications are generic and not
         specific to any builder. Specific modifications can be implemented as a function in the
         corresponding builder.
-
-        :param builder:
-            An object of the builder that is used to reconstruct the neuron mesh.
         """
 
         # Taper the sections if requested
