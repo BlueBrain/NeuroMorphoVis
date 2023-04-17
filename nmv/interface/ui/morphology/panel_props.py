@@ -111,19 +111,19 @@ bpy.types.Scene.NMV_PerSectionColorCodingBasis = bpy.props.EnumProperty(
 # The alternative color used to color every second object in the morphology
 bpy.types.Scene.NMV_MorphologyColor = bpy.props.FloatVectorProperty(
     name="Color",
-    subtype='COLOR', default=nmv.consts.Color.WHITE, min=0.0, max=1.0,
+    subtype='COLOR', default=nmv.consts.Color.LIGHT_RED, min=0.0, max=1.0,
     description="The color of the entire morphology surface")
 
 # The alternative color used to color every second object in the morphology
 bpy.types.Scene.NMV_MorphologyColor1 = bpy.props.FloatVectorProperty(
     name="Color 1",
-    subtype='COLOR', default=nmv.consts.Color.VERY_WHITE, min=0.0, max=1.0,
+    subtype='COLOR', default=nmv.consts.Color.LIGHT_RED, min=0.0, max=1.0,
     description="The first alternating color of the morphology")
 
 # The alternative color used to color every second object in the morphology
 bpy.types.Scene.NMV_MorphologyColor2 = bpy.props.FloatVectorProperty(
     name="Color 2",
-    subtype='COLOR', default=nmv.consts.Color.MATT_BLACK, min=0.0, max=1.0,
+    subtype='COLOR', default=nmv.consts.Color.SKY_BLUE, min=0.0, max=1.0,
     description="The second alternating color of the morphology")
 
 # Soma color

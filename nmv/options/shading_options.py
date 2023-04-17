@@ -56,10 +56,10 @@ class ShadingOptions:
         self.morphology_endfeet_color = nmv.enums.Color.ENDFEET
 
         # The first alternating color that will be used in the alternating pattern
-        self.morphology_alternating_color_1 = nmv.consts.Color.MATT_BLACK
+        self.morphology_alternating_color_1 = nmv.consts.Color.LIGHT_RED
 
         # The second alternating color that will be used in the alternating pattern
-        self.morphology_alternating_color_2 = nmv.consts.Color.VERY_WHITE
+        self.morphology_alternating_color_2 = nmv.consts.Color.SKY_BLUE
 
         # Morphology color coding scheme
         self.morphology_coloring_scheme = nmv.enums.ColorCoding.DEFAULT_SCHEME

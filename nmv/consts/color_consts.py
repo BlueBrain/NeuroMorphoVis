@@ -40,6 +40,12 @@ class Color:
     # Blue
     BLUE = Vector((0.0, 0.0, 1.0))
 
+    # Light red
+    LIGHT_RED = Vector((1.0, 0.338, 0.253))
+
+    # Sky blue
+    SKY_BLUE = Vector((0.167, 0.521, 1.0))
+
     # White
     WHITE = Vector((1.0, 1.0, 1.0))
 
