@@ -71,6 +71,15 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.result_is_single_object_mesh = True
 
     ################################################################################################
+    # @resample_skeleton_adaptive_relaxed
+    ################################################################################################
+    def resample_skeleton_adaptive_relaxed(self):
+        """Resamples the morphology skeleton using the adaptive relaxed method."""
+
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.resample_section_adaptively_relaxed])
+
+    ################################################################################################
     # @initialize_builder
     ################################################################################################
     def initialize_builder(self):
@@ -160,6 +169,8 @@ class VoxelizationBuilder(MeshBuilderBase):
     def apply_voxelization_modifier(self):
         """Apply the voxelization-based re-meshing modifier to create a new mesh."""
 
+        nmv.logger.info('Applying the voxelization finalization')
+
         # Apply the modifier
         nmv.mesh.apply_voxelization_remeshing_modifier(
             mesh_object=self.neuron_mesh, voxel_size=self.voxelization_resolution)
@@ -232,9 +243,6 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         result, stats = self.PROFILE(self.build_proxy_mesh)
-        self.profiling_statistics += stats
-
-        result, stats = self.PROFILE(self.build_endfeet)
         self.profiling_statistics += stats
 
         # Voxelization modifier

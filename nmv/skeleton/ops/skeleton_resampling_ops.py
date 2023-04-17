@@ -525,30 +525,8 @@ def remove_samples_inside_soma(section,
         The center of the soma.
     """
 
-    # If the section is not a root one, then ignore this filter and return
-    if section.has_parent():
-
-        # Not a root section, as it has a parent, then RETURN
-        return
-
-    # If the section has no samples, report this as an error and ignore this filter
-    if len(section.samples) == 0:
-
-        # Report the error
-        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has NO samples' %
-                       (section.get_type_string(), section.index))
-
-        # Return
-        return
-
-    # If the section has ONLY one sample, report this as an error and ignore this filter
-    elif len(section.samples) == 1:
-
-        # Report the error
-        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has only ONE sample' %
-              (section.get_type_string(), section.index))
-
-        # Return
+    # Cases where the section cannot be resampled
+    if section.has_parent() or len(section.samples) < 2:
         return
 
     # Handle the case when the section has only two samples
@@ -560,12 +538,6 @@ def remove_samples_inside_soma(section,
 
         # Compare the distances between the two samples and the origin
         if (sample_1.point - soma_center).length < (sample_0.point - soma_center).length:
-
-            # Report the repair
-            nmv.logger.log('\t\t* REPAIRING: Removing internal sample, section [%s: %d]' %
-                  (section.get_type_string(), section.index))
-
-            # Flip the samples
             section.samples[0] = sample_1
             section.samples[1] = sample_0
 
@@ -624,25 +596,9 @@ def remove_samples_within_extent(section,
         The number of samples removed during the application of this filter.
     """
 
-    # If the section has LESS THAN two samples, the section cannot be handled.
+    # If the section has LESS THAN two samples, the section cannot be resampled.
     if len(section.samples) < 2:
-
-        # Report the error
-        nmv.logger.log('\t\t* ERROR: Section [%s: %d] has less than THREE samples, not re-sampled' %
-              (section.get_type_string(), section.index))
-
-        # Return
-        return 0
-
-    # If the section has ONLY two samples, the section cannot be handled.
-    if len(section.samples) == 2:
-
-        # Report the error
-        nmv.logger.log('\t\t* WARNING: Section [%s: %d] has TWO samples, cannot be re-sampled' %
-              (section.get_type_string(), section.index))
-
-        # Return
-        return 0
+        return
 
     # Count the number of removed samples from the section
     number_of_removed_samples = 0
@@ -686,6 +642,7 @@ def resample_skeleton(morphology,
     :param morphology_options:
         The options of the morphology.
     """
+
     # The adaptive resampling is quite important to prevent breaking the structure
     if morphology_options.resampling_method == nmv.enums.Skeleton.Resampling.ADAPTIVE_RELAXED:
         nmv.skeleton.ops.apply_operation_to_morphology(
