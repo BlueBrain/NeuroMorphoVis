@@ -212,7 +212,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
 
         # Smooth vertices to remove any sphere-like shapes
-        nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=5)
+        nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=1)
 
         # Adjust the origin of the mesh
         self.adjust_origin_to_soma_center()

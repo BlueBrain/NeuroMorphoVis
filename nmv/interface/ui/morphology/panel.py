@@ -95,6 +95,15 @@ class NMV_MorphologyPanel(bpy.types.Panel):
     ################################################################################################
     def draw(self, context):
 
+        # Verify the presence of a reconstructed morphology in the scene
+        if len(nmv.interface.ui_reconstructed_skeleton) > 0:
+            if nmv.scene.verify_objects_list_in_scene(nmv.interface.ui_reconstructed_skeleton):
+                nmv.interface.ui_morphology_reconstructed = True
+            else:
+                nmv.interface.ui_morphology_reconstructed = False
+        else:
+            nmv.interface.ui_morphology_reconstructed = False
+
         draw_documentation_button(layout=self.layout)
         self.layout.separator()
 
@@ -130,7 +139,8 @@ class NMV_MorphologyPanel(bpy.types.Panel):
         self.layout.separator()
 
         # Export buttons
-        draw_export_options(layout=self.layout)
+        draw_morphology_export_options(panel=self)
+        self.layout.separator()
 
         # Enable or disable the layout
         nmv.interface.enable_or_disable_layout(self.layout)

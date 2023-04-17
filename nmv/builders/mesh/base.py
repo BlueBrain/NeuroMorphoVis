@@ -273,6 +273,33 @@ class MeshBuilderBase:
               self.morphology.soma.centroid])
 
     ################################################################################################
+    # @update_sections_radii
+    ################################################################################################
+    def update_sections_radii(self):
+        """Updates the radii of each section in the morphology before the mesh generation."""
+
+        nmv.skeleton.update_arbors_radii(
+            morphology=self.morphology, morphology_options=self.options.morphology)
+
+    ################################################################################################
+    # @update_skeleton_branching
+    ################################################################################################
+    def update_skeleton_branching(self):
+        """Updates the branching of the morphology, either based on angle or radius."""
+
+        nmv.skeleton.update_skeleton_branching(
+            morphology=self.morphology, branching_method=self.options.morphology.branching)
+
+    ################################################################################################
+    # @update_skeleton_style
+    ################################################################################################
+    def update_skeleton_style(self):
+        """Updates the style of the skeleton, mainly for artistic designs."""
+
+        nmv.skeleton.ops.update_arbors_style(
+            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+
+    ################################################################################################
     # @update_morphology_skeleton
     ################################################################################################
     def update_morphology_skeleton(self):
@@ -289,17 +316,14 @@ class MeshBuilderBase:
         # Resample the sections of the morphology skeleton
         self.resample_skeleton_sections()
 
-        # Radii
-        nmv.skeleton.update_arbors_radii(
-            morphology=self.morphology, morphology_options=self.options.morphology)
+        # Update the radii of the sections if necessary
+        self.update_sections_radii()
 
-        # Branching
-        nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
-                                               branching_method=self.options.morphology.branching)
+        # Update the branching of the morphology if necessary
+        self.update_skeleton_branching()
 
         # Update the style of the arbors
-        nmv.skeleton.ops.update_arbors_style(
-            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
+        self.update_skeleton_style()
 
     ################################################################################################
     # @reconstruct_meta_soma_mesh
@@ -409,19 +433,19 @@ class MeshBuilderBase:
             if self.morphology.soma is not None else 'Not Found \n'
         if self.morphology.apical_dendrites is not None:
             self.morphology_statistics += '\t* Apical Dendrites: %d \n' \
-                                             % len(self.morphology.apical_dendrites)
+                                          % len(self.morphology.apical_dendrites)
         else:
             self.morphology_statistics += '\t* Apical Dendrites: 0 \n'
 
         if self.morphology.basal_dendrites is not None:
             self.morphology_statistics += '\t* Basal Dendrites: %d \n' \
-                                             % len(self.morphology.basal_dendrites)
+                                          % len(self.morphology.basal_dendrites)
         else:
             self.morphology_statistics += '\t* Basal Dendrites: 0 \n'
 
         if self.morphology.axons is not None:
             self.morphology_statistics += '\t* Axons: %d \n' \
-                                             % len(self.morphology.axons)
+                                          % len(self.morphology.axons)
         else:
             self.morphology_statistics += '\t* Axons: 0 \n'
 
@@ -447,7 +471,7 @@ class MeshBuilderBase:
             total_polygons += polygons
 
             self.mesh_statistics += '\t' + neuron_mesh_object.name + \
-                                   ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
+                                    ': Polygons [%d], ' % polygons + 'Vertices [%d] \n' % vertices
 
         self.mesh_statistics += \
             '\tTotal : Polygons [%d], ' % total_polygons + 'Vertices [%d] \n' % total_vertices
@@ -485,70 +509,6 @@ class MeshBuilderBase:
 
         # Close the file
         stats_file.close()
-
-    ################################################################################################
-    # @transform_to_global_coordinates
-    ################################################################################################
-    def transform_to_global_coordinates(self):
-        """Transforms the neuron mesh to the global coordinates.
-
-        NOTE: Spine transformation is already implemented by the spine builder, and therefore
-        this function applies only to the arbors and the soma.
-        """
-
-        return
-
-        # Transform the arbors to the global coordinates if required for a circuit
-        if self.options.morphology.global_coordinates or not self.options.morphology.center_at_origin:
-
-            # Ignore if no information is given
-            if self.options.morphology.gid is None and self.morphology.original_center is None:
-                return
-
-            # Make sure that a GID is selected
-            if self.options.morphology.gid is not None:
-                nmv.logger.info('Transforming to global coordinates')
-
-                # Get neuron objects
-                neuron_mesh_objects = self.get_neuron_mesh_objects(exclude_spines=False)
-
-                # Do it mesh by mesh
-                for i, neuron_mesh_object in enumerate(neuron_mesh_objects):
-                    # Show the progress
-                    nmv.utilities.show_progress(
-                        '* Transforming to global coordinates', float(i),
-                        float(len(neuron_mesh_objects)))
-
-                    # Transforming to global coordinates
-                    nmv.skeleton.ops.transform_to_global_coordinates(
-                        mesh_object=neuron_mesh_object,
-                        blue_config=self.options.morphology.blue_config,
-                        gid=self.options.morphology.gid)
-
-                # Show the progress
-                nmv.utilities.show_progress('* Transforming to global coordinates', 0, 0,
-                                            done=True)
-
-                # Don't proceed
-                return
-
-            # If the original center is updated
-            if self.morphology.original_center is not None:
-                nmv.logger.info('Transforming to global coordinates')
-
-                # Get neuron objects
-                neuron_mesh_objects = self.get_neuron_mesh_objects(exclude_spines=False)
-
-                # Do it mesh by mesh
-                for i, mesh_object in enumerate(neuron_mesh_objects):
-                    # Progress
-                    nmv.utilities.show_progress('* Transforming to global coordinates',
-                                                float(i),
-                                                float(len(neuron_mesh_objects)))
-
-                    # Translate the object
-                    nmv.scene.translate_object(scene_object=mesh_object,
-                                               shift=self.morphology.original_center)
 
     ################################################################################################
     # @decimate_neuron_mesh
@@ -626,16 +586,6 @@ class MeshBuilderBase:
                     nmv.mesh.decimate_mesh_object(mesh_object=mesh_object, decimation_ratio=0.5)
                     # Smooth using Catmull-Clark subdivision
                     nmv.mesh.smooth_object(mesh_object=mesh_object, level=1)
-            else:
-                return
-        else:
-
-            # Get a list of all the meshes of the reconstructed arbors
-            mesh_objects = self.get_neuron_mesh_objects()
-
-            #if meshing_technique == nmv.enums.Meshing.Technique.UNION:
-            #    for mesh_object in mesh_objects:
-            #        clean_union_operator_reconstructed_surface(mesh_object=mesh_object)
 
     ################################################################################################
     # @adjust_origins_to_soma_center

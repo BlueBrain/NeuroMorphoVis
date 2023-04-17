@@ -622,8 +622,7 @@ class MetaBuilder(MeshBuilderBase):
     # @finalize_meta_object
     ################################################################################################
     def finalize_meta_object(self):
-        """Converts the meta object to a mesh and get it ready for export or visualization.
-        """
+        """Converts the meta object to a mesh and get it ready for export or visualization."""
 
         # Header
         nmv.logger.header('Meshing the Meta Object')
@@ -685,8 +684,7 @@ class MetaBuilder(MeshBuilderBase):
     # @add_surface_roughness
     ################################################################################################
     def add_surface_roughness(self):
-        """Adds roughness to the surface of the mesh, compatible with the MetaBuilder.
-        """
+        """Adds roughness to the surface of the mesh, compatible with the MetaBuilder."""
 
         # Ensure that the surface is rough
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
@@ -704,6 +702,17 @@ class MetaBuilder(MeshBuilderBase):
                                               decimation_ratio=0.25)
 
             nmv.mesh.ops.smooth_object(mesh_object=self.neuron_mesh, level=1)
+
+    ################################################################################################
+    # @verify_watertightness_if_requested
+    ################################################################################################
+    def verify_watertightness_if_requested(self):
+        """Verifies if the mesh is watertight or not."""
+
+        # Clean the mesh object and remove the non-manifold edges
+        if not self.ignore_watertightness:
+            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+            nmv.mesh.clean_mesh_object(self.neuron_mesh)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -754,12 +763,11 @@ class MetaBuilder(MeshBuilderBase):
 
         # Tessellation
         result, stats = self.PROFILE(self.decimate_neuron_mesh)
+        self.profiling_statistics += stats
 
-        # Clean the mesh object and remove the non-manifold edges
-        if not self.ignore_watertightness:
-            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
-            nmv.mesh.clean_mesh_object(self.neuron_mesh)
-            self.profiling_statistics += stats
+        # Watertightness
+        result, stats = self.PROFILE(self.verify_watertightness_if_requested)
+        self.profiling_statistics += stats
 
         # Report the statistics of this builder
         self.report_builder_statistics()

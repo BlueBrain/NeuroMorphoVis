@@ -15,7 +15,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .common import *
 from .meta_builder import *
 from .piecewise_builder import *
 from .union_builder import *

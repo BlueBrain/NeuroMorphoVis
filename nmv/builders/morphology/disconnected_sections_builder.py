@@ -61,23 +61,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.force_meta_ball = force_meta_ball_soma
 
     ################################################################################################
-    # @initialize_builder
-    ################################################################################################
-    def initialize_builder(self):
-
-        # Creates the bevel object that is used to interpolate the morphology across its centerline
-        self.create_bevel_object()
-
-        # Pre-process and update the radii, based on the selected input from the user
-        self.update_sections_radii()
-
-        # Resample the sections, based on the selected input from the user
-        self.resample_skeleton_sections()
-
-        # Create the materials that will be applied to the morphology.
-        self.create_morphology_skeleton_materials()
-
-    ################################################################################################
     # @construct_color_coded_polylines
     ################################################################################################
     def construct_color_coded_polylines(self,

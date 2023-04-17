@@ -18,6 +18,9 @@
 # Blender imports
 import bpy
 
+# Internal imports
+import nmv.interface
+
 
 ####################################################################################################
 # @draw_documentation_button
@@ -91,18 +94,22 @@ def draw_animated_morphology_rendering_buttons(panel, scene):
 
 
 ####################################################################################################
-# draw_export_options
+# draw_morphology_export_options
 ####################################################################################################
-def draw_export_options(layout):
+def draw_morphology_export_options(panel):
 
-    # Saving morphology options
-    row = layout.row()
-    row.label(text='Export Morphology', icon='MESH_UVSPHERE')
+    save_neuron_morphology_row = panel.layout.row()
+    save_neuron_morphology_row.label(text='Export Morphology', icon='MESH_UVSPHERE')
 
-    row = layout.column(align=True)
-    row.operator('nmv.save_morphology_blend', icon='MESH_MONKEY')
-    row.operator('nmv.save_morphology_swc', icon='GRAPH')
-    row.operator('nmv.save_morphology_segments', icon='NOCURVE')
-    row.enabled = True
+    save_neuron_morphology_buttons_column = panel.layout.column(align=True)
+    save_neuron_morphology_buttons_column.operator('nmv.export_mesh', icon='MESH_DATA')
 
+    save_neuron_morphology_buttons_column.operator('nmv.save_morphology_blend', icon='MESH_MONKEY')
+    save_neuron_morphology_buttons_column.operator('nmv.save_morphology_swc', icon='GRAPH')
+    save_neuron_morphology_buttons_column.operator('nmv.save_morphology_segments', icon='NOCURVE')
+
+    if nmv.interface.ui_morphology_reconstructed:
+        save_neuron_morphology_buttons_column.enabled = True
+    else:
+        save_neuron_morphology_buttons_column.enabled = False
 

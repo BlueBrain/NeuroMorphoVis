@@ -51,7 +51,7 @@ class NMV_ExportMorphologySWC(bpy.types.Operator):
         # NOTE: Since we don't have meshes, then the mesh_object argument will be set to None and
         # the exported blender file will contain all the morphology objects.
         nmv.file.write_morphology_to_swc_file(
-            nmv.interface.ui.globals.ui_morphology,
+            nmv.interface.ui_morphology,
             nmv.interface.ui_options.io.morphologies_directory)
 
         return {'FINISHED'}

@@ -56,36 +56,6 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)
 
     ################################################################################################
-    # @initialize_builder
-    ################################################################################################
-    def initialize_builder(self):
-
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        self.create_bevel_object()
-
-        # Update the radii
-        nmv.skeleton.update_arbors_radii(
-            morphology=self.morphology, morphology_options=self.options.morphology)
-
-        # Update the branching
-        nmv.skeleton.update_skeleton_branching(morphology=self.morphology,
-                                               branching_method=self.options.morphology.branching)
-
-        # Update the style of the arbors
-        nmv.skeleton.ops.update_arbors_style(
-            morphology=self.morphology, arbor_style=self.options.morphology.arbor_style)
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        # Create the skeleton materials
-        self.create_morphology_skeleton_materials()
-
-        # Illumination
-        self.create_illumination()
-
-    ################################################################################################
     # @create_arbor_component
     ################################################################################################
     def create_arbor_component(self,

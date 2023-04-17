@@ -80,7 +80,7 @@ def draw_mesh_rendering_buttons(panel, scene, show_stats=False):
 ####################################################################################################
 def draw_mesh_export_options(panel, scene, options):
 
-    # Saving meshes parameters
+    # Mesh export
     save_neuron_mesh_row = panel.layout.row()
     save_neuron_mesh_row.label(text='Export Mesh', icon='MESH_UVSPHERE')
 
