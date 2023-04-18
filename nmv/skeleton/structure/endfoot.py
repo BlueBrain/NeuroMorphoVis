@@ -70,14 +70,11 @@ class Endfoot:
     # @create_surface_patch
     ################################################################################################
     def create_surface_patch(self,
-                             material=None,
-                             collection_name="Endfeet"):
+                             material=None):
         """Creates a surface patch of the endfoot.
 
         :param material:
             The material that will be applied to the endfoot.
-        :param collection_name:
-            The name of the Blender collection.
         :return:
             A reference to the created patch mesh.
         """
@@ -86,9 +83,8 @@ class Endfoot:
         mesh = bpy.data.meshes.new(self.name)
         mesh_object = bpy.data.objects.new(mesh.name, mesh)
 
-        # Create the collection and link the mesh object to it
-        collection = nmv.utilities.create_new_collection(name=collection_name)
-        collection.objects.link(mesh_object)
+        # Link the mesh to the scene
+        bpy.context.collection.objects.link(mesh_object)
 
         # Update the data in the mesh
         bpy.context.view_layer.objects.active = mesh_object

@@ -650,21 +650,6 @@ class MetaBuilder(MeshBuilderBase):
         # Set the mesh to be the active one
         nmv.scene.set_active_object(self.neuron_mesh)
 
-        # Remove the islands (or small partitions from the mesh) and smooth it to look nice
-        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
-
-            # Remove the small partitions
-            nmv.logger.info('Removing Partitions')
-            nmv.mesh.remove_small_partitions(self.neuron_mesh)
-
-            # Decimate
-            nmv.logger.info('Decimating the Mesh')
-            nmv.mesh.decimate_mesh_object(self.neuron_mesh, decimation_ratio=0.25)
-
-            # Smooth vertices to remove any sphere-like shapes
-            nmv.logger.info('Smoothing the Mesh')
-            nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=5)
-
         # Update the center of the mesh to the soma
         nmv.mesh.set_mesh_origin(
             mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
@@ -680,24 +665,12 @@ class MetaBuilder(MeshBuilderBase):
     # @add_surface_roughness
     ################################################################################################
     def add_surface_roughness(self):
-        """Adds roughness to the surface of the mesh, compatible with the MetaBuilder."""
+        """Adds surface noise to the mesh to make it looking realistic as seen by microscopes."""
 
-        # Ensure that the surface is rough
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-
-            # Decimate the neuron according to the meta resolution
-            if self.meta_skeleton.resolution < 1.0:
-                nmv.mesh.ops.decimate_mesh_object(mesh_object=self.neuron_mesh,
-                                                  decimation_ratio=self.meta_skeleton.resolution)
-
-            # Add the surface distortion map
+            nmv.logger.info('Adding surface noise')
             nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.neuron_mesh, strength=1.0)
-
-            nmv.mesh.ops.decimate_mesh_object(mesh_object=self.neuron_mesh,
-                                              decimation_ratio=0.25)
-
-            nmv.mesh.ops.smooth_object(mesh_object=self.neuron_mesh, level=1)
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1, noise_depth=1)
 
     ################################################################################################
     # @clean_mesh

@@ -52,7 +52,7 @@ class NMV_ReconstructMorphologyOperator(bpy.types.Operator):
     def execute(self, context):
 
         # Clear the scene
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
 
         # If no morphology file is loaded, load the morphology file
         if nmv.interface.ui_morphology is None:

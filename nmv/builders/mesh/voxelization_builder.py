@@ -95,7 +95,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.remove_arbors_samples_inside_soma()
 
         # Resample the morphology skeleton using the adaptive relaxed method
-        self.resample_skeleton_adaptive_relaxed()
+        # self.resample_skeleton_adaptive_relaxed()
 
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
@@ -207,13 +207,6 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.create_soma_materials()
         self.assign_material_to_single_object_mesh()
 
-        # Remove doubles
-        if self.options.mesh.remove_small_edges:
-            nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
-
-        # Smooth vertices to remove any sphere-like shapes
-        nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=1)
-
         # Adjust the origin of the mesh
         self.adjust_origin_to_soma_center()
 
@@ -222,14 +215,28 @@ class VoxelizationBuilder(MeshBuilderBase):
             name='Mesh %s' % self.morphology.label, objects_list=self.neuron_meshes)
 
     ################################################################################################
-    # @add_surface_noise
+    # @clean_mesh
     ################################################################################################
-    def add_surface_noise(self):
+    def clean_mesh(self):
+        """Cleans the resulting mesh."""
+
+        # Remove doubles
+        if self.options.mesh.remove_small_edges:
+            nmv.mesh.remove_doubles(mesh_object=self.neuron_mesh, distance=0.01)
+
+        # Smooth vertices to remove any sphere-like shapes
+        nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=1)
+
+    ################################################################################################
+    # @add_surface_roughness
+    ################################################################################################
+    def add_surface_roughness(self):
+        """Adds surface noise to the mesh to make it looking realistic as seen by microscopes."""
 
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
             nmv.logger.info('Adding surface noise')
             nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=2, noise_depth=2)
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1, noise_depth=1)
 
     ################################################################################################
     # @reconstruct_mesh
@@ -254,7 +261,11 @@ class VoxelizationBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = self.PROFILE(self.add_surface_noise)
+        result, stats = self.PROFILE(self.add_surface_roughness)
+        self.profiling_statistics += stats
+
+        # Mesh cleaning
+        result, stats = self.PROFILE(self.clean_mesh)
         self.profiling_statistics += stats
 
         # Report the statistics of this builder

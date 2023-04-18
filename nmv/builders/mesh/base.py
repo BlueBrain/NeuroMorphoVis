@@ -210,11 +210,10 @@ class MeshBuilderBase:
     def create_endfeet_materials(self):
         """Creates the materials of the astrocytic endfeet."""
 
-        self.endfeet_materials = nmv.skeleton.create_multiple_materials_with_same_color(
-            name='Endfeet Mesh [%s]' % self.morphology.code,
+        self.endfeet_materials = nmv.shading.create_materials(
             material_type=self.options.shading.mesh_material,
-            color=self.options.shading.mesh_endfeet_color,
-            number_elements=1)
+            name='Endfeet Mesh [%s]' % self.morphology.code,
+            color=self.options.shading.mesh_endfeet_color)
 
     ################################################################################################
     # @create_skeleton_materials
@@ -873,14 +872,8 @@ class MeshBuilderBase:
 
         # Build the endfoot mesh
         for endfoot in self.morphology.endfeet:
-
-            # Append the resulting mesh to the resulting meshes
-            if self.endfeet_meshes:
-                endfoot_mesh = endfoot.create_geometry_with_metaballs(
-                    material=self.endfeet_materials[0])
-            else:
-                endfoot_mesh = endfoot.create_geometry_with_metaballs()
-
+            endfoot_mesh = endfoot.create_geometry_with_metaballs(
+                material=self.endfeet_materials[0])
             self.endfeet_meshes.append(endfoot_mesh)
             self.neuron_meshes.append(endfoot_mesh)
 
