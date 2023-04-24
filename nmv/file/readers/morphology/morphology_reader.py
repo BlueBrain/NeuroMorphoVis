@@ -219,15 +219,27 @@ def read_morphology_from_circuit(options):
     # Load the circuit from the circuit config, and get the path to the morphology
     circuit = nmv.bbp.BBPCircuit(circuit_config=options.morphology.blue_config)
     morphology_file_path = circuit.get_neuron_morphology_path(options.morphology.gid)
+    print(morphology_file_path)
 
     # Get the data from the circuit and update the necessary fields in NMV
     nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list()
     nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list()
     nmv.interface.ui_circuit = circuit
 
+    morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
+    if 'asc' in morphology_extension.lower():
+        morphology_format = nmv.enums.Morphology.Format.ASCII
+    elif 'swc' in morphology_extension.lower:
+        morphology_format = nmv.enums.Morphology.Format.SWC
+    elif 'h5' in morphology_extension.lower:
+        morphology_format = nmv.enums.Morphology.Format.H5
+    else:
+        return None
+
     # Load the morphology file into a NMV morphology object using MorphIO
     nmv_morphology_object = nmv.file.read_morphology_with_morphio(
         morphology_file_path=morphology_file_path,
+        morphology_format=morphology_format,
         center_at_origin=options.morphology.center_at_origin)
 
     # To identify the neuron in the scene, label the morphology object with the GID of the neuron
