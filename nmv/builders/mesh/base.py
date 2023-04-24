@@ -229,6 +229,7 @@ class MeshBuilderBase:
         self.create_axons_materials()
         self.create_basal_dendrites_materials()
         self.create_apical_dendrites_materials()
+        self.create_spines_materials()
         self.create_endfeet_materials()
 
     ################################################################################################
@@ -518,7 +519,7 @@ class MeshBuilderBase:
 
         # Ensure that the tessellation level is within range
         if 0.01 < self.options.mesh.tessellation_level < 1.0:
-            nmv.logger.info('Decimating Mesh')
+            nmv.logger.info('Decimating the reconstructed mesh')
 
             # Get neuron objects
             neuron_mesh_objects = self.get_neuron_mesh_objects(exclude_spines=True)
@@ -528,7 +529,7 @@ class MeshBuilderBase:
 
                 # Show the progress
                 nmv.utilities.show_progress(
-                    '* Decimating the mesh', float(i), float(len(neuron_mesh_objects)))
+                    '* Decimation ', float(i), float(len(neuron_mesh_objects)))
 
                 # Decimate each mesh object
                 nmv.mesh.ops.decimate_mesh_object(
@@ -674,8 +675,6 @@ class MeshBuilderBase:
         NOTE: The spines will just be added to the surface, but they will not get merged to the surface
         with any union operator.
 
-        :param builder:
-            An object of the builder that is used to reconstruct the neuron mesh.
         :param join_spine_meshes:
             Join all the spines meshes into a single mesh object for simplicity.
         """
@@ -686,6 +685,8 @@ class MeshBuilderBase:
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology, blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid, material=self.spines_materials[0])
+            self.spines_meshes.extend(spines_objects)
+            self.neuron_meshes.extend(spines_objects)
 
         # Just add some random spines for the look only
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
@@ -693,6 +694,8 @@ class MeshBuilderBase:
             spines_builder = nmv.builders.RandomSpineBuilder(
                 morphology=self.morphology, options=self.options)
             spines_objects = spines_builder.add_spines_to_morphology()
+            self.spines_meshes.extend(spines_objects)
+            self.neuron_meshes.extend(spines_objects)
 
         # Otherwise ignore spines
         else:
@@ -701,7 +704,10 @@ class MeshBuilderBase:
         # Join the spine objects into a single mesh, if required
         if join_spine_meshes:
             spine_mesh_name = 'Spines [%s]' % self.options.morphology.label
-            nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+            spine_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+            self.spines_meshes.append(spine_mesh)
+            self.neuron_meshes.append(spines_objects)
+
 
     ################################################################################################
     # @modify_morphology_skeleton
@@ -812,9 +818,6 @@ class MeshBuilderBase:
         connection point to the soma or not.
         If the arbor is 'logically' connected to the soma, this function returns immediately.
         The arbor is a Section object, see Section() @section.py.
-
-        :param builder:
-            An object of the builder that is used to reconstruct the neuron mesh.
         """
 
         # Determine the connection function
@@ -862,20 +865,20 @@ class MeshBuilderBase:
         self.adjust_texture_mapping_of_all_meshes()
 
     ################################################################################################
-    # @reconstruct_endfeet
+    # @build_endfeet_if_applicable
     ################################################################################################
-    def build_endfeet(self):
-        """Reconstructs the endfeet geometry"""
+    def build_endfeet_if_applicable(self):
+        """Builds the endfeet if applicable."""
 
-        # Header
-        nmv.logger.header('Reconstructing endfeet')
-
-        # Build the endfoot mesh
-        for endfoot in self.morphology.endfeet:
-            endfoot_mesh = endfoot.create_geometry_with_metaballs(
-                material=self.endfeet_materials[0])
-            self.endfeet_meshes.append(endfoot_mesh)
-            self.neuron_meshes.append(endfoot_mesh)
+        # Ensure that the endfeet are available to build their geometry
+        if self.morphology.endfeet:
+            nmv.logger.header('Reconstructing endfeet')
+            for i, endfoot in enumerate(self.morphology.endfeet):
+                nmv.logger.detail('Endfoot [%d]' % i)
+                endfoot_mesh = endfoot.create_geometry_with_metaballs(
+                    material=self.endfeet_materials[0])
+                self.endfeet_meshes.append(endfoot_mesh)
+                self.neuron_meshes.append(endfoot_mesh)
 
     ################################################################################################
     # @assign_material_to_single_object_mesh

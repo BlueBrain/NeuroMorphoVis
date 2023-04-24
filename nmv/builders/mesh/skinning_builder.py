@@ -534,6 +534,43 @@ class SkinningBuilder(MeshBuilderBase):
             self.update_samples_indices_per_arbor(child, index, max_branching_order)
 
     ################################################################################################
+    # @collect_performance_stats
+    ################################################################################################
+    def collect_performance_stats(self):
+        """Collects statistics about the performance of this skinning mesh builder."""
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('extrusion',
+                                                                   self.extrusion_time)
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('subdivision',
+                                                                   self.subdivision_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('skin_modifier',
+                                                                   self.skin_modifier_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('update_radii',
+                                                                   self.update_radii_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('mesh_conversion',
+                                                                   self.mesh_conversion_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('reindexing',
+                                                                   self.reindexing_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('smooth_shading',
+                                                                   self.smooth_shading_time)
+
+        # Details about the arbors building
+        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('creating_modifier',
+                                                                   self.creating_modifier_time)
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -568,39 +605,8 @@ class SkinningBuilder(MeshBuilderBase):
             self.profiling_statistics += stats
 
         # Build the endfeet
-        result, stats = self.PROFILE(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('extrusion',
-                                                                   self.extrusion_time)
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('subdivision',
-                                                                   self.subdivision_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('skin_modifier',
-                                                                   self.skin_modifier_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('update_radii',
-                                                                   self.update_radii_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('mesh_conversion',
-                                                                   self.mesh_conversion_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('reindexing',
-                                                                   self.reindexing_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('smooth_shading',
-                                                                   self.smooth_shading_time)
-
-        # Details about the arbors building
-        self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('creating_modifier',
-                                                                   self.creating_modifier_time)
 
         # Tessellation
         result, stats = self.PROFILE(self.decimate_neuron_mesh)
@@ -615,16 +621,18 @@ class SkinningBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Join all the objects into a single object
-        neuron_mesh, stats = self.PROFILE(
-            self.join_objects_and_adjust_origin)
+        neuron_mesh, stats = self.PROFILE(self.join_objects_and_adjust_origin)
         self.profiling_statistics += stats
+
+        # Collect the stats about the meshing
+        self.collect_performance_stats()
 
         # Report the statistics of this builder
         self.report_builder_statistics()
 
-        # Create a new collection from the created objects of the mesh
-        nmv.utilities.create_collection_with_objects(
-            name='Mesh %s' % self.morphology.label, objects_list=[neuron_mesh])
-
         # Return the list of the resulting mesh, either as a single object or multiple ones
-        return [self.neuron_mesh] if self.result_is_single_object_mesh else self.neuron_meshes
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            return [self.neuron_mesh]
+        else:
+            return self.neuron_meshes

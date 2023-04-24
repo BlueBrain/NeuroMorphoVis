@@ -151,7 +151,10 @@ class MorphIOLoader:
             self.reported_soma_radius = morphio_soma.diameters[0] * 0.5
         else:
             for i_point in morphio_soma.points:
-                x = i_point[0], y = i_point[1], z = i_point[2]
+                i_point = i_point.tolist()
+                x = float(i_point[0])
+                y = float(i_point[1])
+                z = float(i_point[2])
                 if numpy.abs(x) > 0 or numpy.abs(y) > 0 or numpy.abs(z) > 0:
                     self.soma_profile_points.append(Vector((x, y, z)))
 

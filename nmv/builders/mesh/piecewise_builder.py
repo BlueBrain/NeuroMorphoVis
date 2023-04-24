@@ -79,14 +79,9 @@ class PiecewiseBuilder(MeshBuilderBase):
         and other factors, therefore this function is re-implemented for every builder."""
 
         # If this is a proxy mesh, then it is a single mesh object, otherwise, it is user-defined
+        mesh_options = self.options.mesh
         if self.this_is_proxy_mesh:
-            self.result_is_single_object_mesh = True
-        else:
-            connection = self.options.mesh.neuron_objects_connection
-            if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
-                self.result_is_single_object_mesh = True
-            else:
-                self.result_is_single_object_mesh = False
+            mesh_options.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
 
     ################################################################################################
     # @initialize_builder
@@ -350,11 +345,11 @@ class PiecewiseBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Connect to the soma to the arbors, if required
-        result, stats = self.PROFILE(self.connect_arbors_to_soma)
-        self.profiling_statistics += stats
+        # result, stats = self.PROFILE(self.connect_arbors_to_soma)
+        # self.profiling_statistics += stats
 
         # Build the endfeet, if required
-        result, stats = self.PROFILE(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
 
         # Tessellation, if required
@@ -363,15 +358,11 @@ class PiecewiseBuilder(MeshBuilderBase):
             self.profiling_statistics += stats
 
         # Add the spines
-        if not self.this_is_proxy_mesh:
-            result, stats = self.PROFILE(self.add_spines_to_surface)
-            self.profiling_statistics += stats
+        result, stats = self.PROFILE(self.add_spines_to_surface)
+        self.profiling_statistics += stats
 
         # Aggregation and origin adjustments
-        if self.this_is_proxy_mesh:
-            result, stats = self.PROFILE(self.join_objects_and_adjust_origin)
-        else:
-            result, stats = self.PROFILE(self.create_joint_proxy_mesh)
+        result, stats = self.PROFILE(self.join_objects_and_adjust_origin)
         self.profiling_statistics += stats
 
         # Report the statistics of this builder
@@ -379,4 +370,8 @@ class PiecewiseBuilder(MeshBuilderBase):
             self.report_builder_statistics()
 
         # Return the list of the resulting mesh, either as a single object or multiple ones
-        return [self.neuron_mesh] if self.result_is_single_object_mesh else self.neuron_meshes
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            return [self.neuron_mesh]
+        else:
+            return self.neuron_meshes

@@ -98,7 +98,7 @@ def draw_spines_color_option(layout, scene, options, morphology):
     if options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
         row = layout.row()
         row.prop(scene, 'NMV_SpinesMeshColor')
-        rgb = scene.NMV_ApicalDendriteColor
+        rgb = scene.NMV_SpinesMeshColor
         options.shading.mesh_spines_color = Vector((rgb.r, rgb.g, rgb.b))
 
 

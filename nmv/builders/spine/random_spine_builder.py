@@ -172,7 +172,7 @@ class RandomSpineBuilder:
         spine_object = nmv.scene.ops.duplicate_object(spine_template, index)
 
         # Rename the spine
-        spine_object.name = '%s_spine_%d' % (self.options.morphology.label, index)
+        spine_object.name = 'Spine %d' % index
 
         # Scale the spine
         random_number = random.uniform(0.75, 1.5)

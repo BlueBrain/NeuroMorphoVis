@@ -72,7 +72,9 @@ def create_neuron_mesh(circuit,
 
     # Read the morphology and get its NMV object, and ensure that it is centered at the origin
     morphology = nmv.file.read_morphology_with_morphio(
-        morphology_file_path=morphology_path, center_at_origin=True)
+        morphology_file_path=morphology_path,
+        morphology_format=nmv.file.get_morphology_file_format(morphology_file_path=morphology_path),
+        center_at_origin=True)
 
     # Adjust the label to be set according to the GID not the morphology label
     morphology.label = str(gid)

@@ -16,11 +16,14 @@
 ####################################################################################################
 
 # System imports
-import sys, os, shutil
+import sys
+import os
+import shutil
 
 # Internal imports
 sys.path.append('%s/../../consts' % os.path.dirname(os.path.realpath(__file__)))
 from paths_consts import *
+import nmv.enums
 
 
 ####################################################################################################
@@ -247,3 +250,24 @@ def get_file_format_from_path(path):
     if '.' in file_name:
         return os.path.splitext(file_name)[1]
 
+
+####################################################################################################
+# @get_morphology_file_format
+####################################################################################################
+def get_morphology_file_format(morphology_file_path):
+    """Returns the file format of the morphology from its absolute path.
+
+    :param morphology_file_path:
+        The absolute path of the morphology.
+    :return:
+        The file format enumerator of the morphology, or None.
+    """
+    morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
+    if 'asc' in morphology_extension.lower():
+        return nmv.enums.Morphology.Format.ASCII
+    elif 'swc' in morphology_extension.lower:
+        return nmv.enums.Morphology.Format.SWC
+    elif 'h5' in morphology_extension.lower:
+        return nmv.enums.Morphology.Format.H5
+    else:
+        return None

@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
+import copy
 # System imports
 import sys
 import os
@@ -153,8 +153,9 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
 
         # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
         if int(options.synaptics.pre_synaptic_gid) == int(options.morphology.gid):
-            self.report({'ERROR'}, 'Please enter a valid pre-synaptic GID, that is different '
-                                       'from the post-synaptic one')
+            self.report({'ERROR'},
+                        'Please enter a valid pre-synaptic GID, that is different from the '
+                        'post-synaptic one')
             return {'FINISHED'}
 
         # Initially, try to get a list of synapses shared between the two cells
@@ -170,6 +171,10 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
             return {'FINISHED'}
 
         nmv.scene.clear_scene()
+
+        # Create local copies of the pre- and post-synaptic neurons
+        pre_synaptic_options = copy.deepcopy(options)
+        post_synaptic_options = copy.deepcopy(options)
 
         # Create the post-synaptic neuron AT ORIGIN - THIS IS THE FOCUS
         post_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
@@ -217,7 +222,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         # Ensure that the pre-synaptic and post-synaptic GIDs are not the same
         if int(options.synaptics.post_synaptic_gid) == int(options.morphology.gid):
             self.report({'ERROR'}, 'Please enter a valid post-synaptic GID, that is different '
-                                       'from the pre-synaptic one')
+                                   'from the pre-synaptic one')
             return {'FINISHED'}
 
         # Initially, try to get a list of synapses shared between the two cells

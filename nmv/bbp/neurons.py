@@ -44,7 +44,9 @@ def create_neuron_mesh_in_circuit(
 
     # Read the morphology and get its NMV object, and ensure that it is centered at the origin
     morphology = nmv.file.read_morphology_with_morphio(
-        morphology_file_path=morphology_path, center_at_origin=True)
+        morphology_file_path=morphology_path,
+        morphology_format=nmv.file.get_morphology_file_format(morphology_file_path=morphology_path),
+        center_at_origin=True)
 
     # Adjust the label to be set according to the GID not the morphology label
     morphology.label = str(gid)
@@ -62,76 +64,29 @@ def create_neuron_mesh_in_circuit(
     nmv_options.morphology.apical_dendrite_branch_order = apical_branching_order
     nmv_options.morphology.axon_branch_order = axon_branching_order
 
-    # Materials
+    # Morphology colors and materials
+    nmv_options.shading.morphology_soma_color = soma_color
+    nmv_options.shading.morphology_basal_dendrites_color = basal_dendrites_color
+    nmv_options.shading.morphology_apical_dendrites_color = apical_dendrites_color
+    nmv_options.shading.morphology_axons_color = axons_color
+    nmv_options.shading.morphology_material = material_type
+
+    # Mesh colors and materials
+    nmv_options.shading.mesh_soma_color = soma_color
+    nmv_options.shading.mesh_basal_dendrites_color = basal_dendrites_color
+    nmv_options.shading.mesh_apical_dendrites_color = apical_dendrites_color
+    nmv_options.shading.mesh_axons_color = axons_color
     nmv_options.shading.mesh_material = material_type
 
     # Soma
     nmv_options.mesh.soma_type = nmv.enums.Soma.Representation.META_BALLS
 
-    mesh_builder = nmv.builders.PiecewiseBuilder(morphology=morphology, options=nmv_options)
-    all_neuron_meshes = mesh_builder.reconstruct_mesh()
-
-    # Create four-lists to group the meshes
-    apical_meshes = list()
-    basal_meshes = list()
-    axon_meshes = list()
-    soma_meshes = list()
-
-    # Filter
-    for mesh in all_neuron_meshes:
-        if 'Apical' in mesh.name:
-            apical_meshes.append(mesh)
-        elif 'Basal' in mesh.name:
-            basal_meshes.append(mesh)
-        elif 'Axon' in mesh.name:
-            axon_meshes.append(mesh)
-        else:
-            soma_meshes.append(mesh)
-
-    # Join
-    apical_mesh = nmv.mesh.join_mesh_objects(mesh_list=apical_meshes, name='Apical Dendrites')
-    basal_mesh = nmv.mesh.join_mesh_objects(mesh_list=basal_meshes, name='Basal Dendrites')
-    axon_mesh = nmv.mesh.join_mesh_objects(mesh_list=axon_meshes, name='Axons')
-    soma_mesh = nmv.mesh.join_mesh_objects(mesh_list=soma_meshes, name='Soma')
-
-    # Add the material top the reconstructed mesh
-    if soma_mesh is not None:
-        soma_material = nmv.shading.create_material(
-            name='Soma [%s]' % morphology.label,
-            color=soma_color, material_type=material_type)
-        nmv.shading.set_material_to_object(mesh_object=soma_mesh, material_reference=soma_material)
-
-    if basal_mesh is not None:
-        basal_material = nmv.shading.create_material(
-            name='Basal Dendrites [%s]' % morphology.label,
-            color=basal_dendrites_color, material_type=material_type)
-        nmv.shading.set_material_to_object(mesh_object=basal_mesh, material_reference=basal_material)
-
-    if apical_mesh is not None:
-        apical_material = nmv.shading.create_material(
-            name='Apical Dendrites [%s]' % morphology.label,
-            color=apical_dendrites_color, material_type=material_type)
-        nmv.shading.set_material_to_object(mesh_object=apical_mesh, material_reference=apical_material)
-
-    if axon_mesh is not None:
-        axon_material = nmv.shading.create_material(
-            name='Axons [%s]' % morphology.label,
-            color=axons_color, material_type=material_type)
-        nmv.shading.set_material_to_object(mesh_object=axon_mesh, material_reference=axon_material)
-
-    # Ensure that you only add the meshes of the available components
-    mesh_list = list()
-    if apical_mesh is not None:
-        mesh_list.append(apical_mesh)
-    if basal_mesh is not None:
-        mesh_list.append(basal_mesh)
-    if axon_mesh is not None:
-        mesh_list.append(axon_mesh)
-    if soma_mesh is not None:
-        mesh_list.append(soma_mesh)
+    mesh_builder = nmv.builders.PiecewiseBuilder(morphology=morphology,
+                                                 options=nmv_options)
+    neuron_meshes = mesh_builder.reconstruct_mesh()
 
     # Join all the mesh objects into a single mesh object to represent the neuron
-    neuron_mesh = nmv.mesh.join_mesh_objects(mesh_list=mesh_list, name='Neuron')
+    neuron_mesh = nmv.mesh.join_mesh_objects(mesh_list=neuron_meshes, name='Neuron')
 
     # Return a reference to the neuron mesh
     return neuron_mesh
@@ -142,33 +97,44 @@ def create_neuron_mesh_in_circuit(
 ####################################################################################################
 def visualize_circuit_neuron_for_synaptics(circuit,
                                            gid,
-                                           options):
-
+                                           options,
+                                           this_is_pre_synaptic_neuron=True):
+    # Adjust the branching order of the dendrites
+    dendrites_branching_order = 0
     if options.synaptics.display_dendrites:
         dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
-    else:
-        dendrites_branching_order = 0
 
+    # Adjust the branching order of the axons
+    axons_branching_order = 0
     if options.synaptics.display_axons:
         axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
-    else:
-        axons_branching_order = 0
 
+    # If we ignore both, then return None
     if not (options.synaptics.display_dendrites or options.synaptics.display_axons):
         return None
 
+    # Adjust the coloring parameters based on the neuron order (pre- or post-synaptic neuron)
+    if this_is_pre_synaptic_neuron:
+        soma_color = options.synaptics.pre_synaptic_dendrites_color
+        dendrites_color = options.synaptics.pre_synaptic_dendrites_color
+        axons_color = options.synaptics.pre_synaptic_axons_color
+    else:
+        soma_color = options.synaptics.post_synaptic_dendrites_color
+        dendrites_color = options.synaptics.post_synaptic_dendrites_color
+        axons_color = options.synaptics.post_synaptic_axons_color
+
+    # Create the mesh and return a reference to it
     return create_neuron_mesh_in_circuit(circuit=circuit, gid=gid,
                                          unified_radius=options.synaptics.unify_branch_radii,
                                          branch_radius=options.synaptics.unified_radius,
                                          basal_branching_order=dendrites_branching_order,
                                          apical_branching_order=dendrites_branching_order,
                                          axon_branching_order=axons_branching_order,
-                                         soma_color=options.synaptics.dendrites_color,
-                                         basal_dendrites_color=options.synaptics.dendrites_color,
-                                         apical_dendrites_color=options.synaptics.dendrites_color,
-                                         axons_color=options.synaptics.axons_color,
+                                         soma_color=soma_color,
+                                         basal_dendrites_color=dendrites_color,
+                                         apical_dendrites_color=dendrites_color,
+                                         axons_color=axons_color,
                                          material_type=options.synaptics.shader)
-
 
 
 ####################################################################################################

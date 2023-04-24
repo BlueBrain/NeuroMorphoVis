@@ -118,7 +118,7 @@ def draw_proxy_mesh_option(layout, scene, options):
 
 
 ####################################################################################################
-# @draw_proxy_mesh_option
+# @draw_tessellation_option
 ####################################################################################################
 def draw_tessellation_option(layout, scene, options):
 
@@ -138,6 +138,54 @@ def draw_tessellation_option(layout, scene, options):
 
 
 ####################################################################################################
+# @draw_spine_options_header
+####################################################################################################
+def draw_spine_options_header(layout):
+
+    row = layout.row()
+    row.label(text='Spine Options', icon='MOD_WAVE')
+
+
+####################################################################################################
+# @draw_spines_source_option
+####################################################################################################
+def draw_spines_source_option(layout, scene, options):
+
+    # If the input neuron is from a circuit, show the circuit options, otherwise use random spines
+    row = layout.row()
+    row.label(text='Source:')
+
+    if scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
+        row.prop(scene, 'NMV_SpinesSourceCircuit', expand=True)
+        options.mesh.spines = scene.NMV_SpinesSourceCircuit
+    else:
+        row.prop(scene, 'NMV_SpinesSourceRandom', expand=True)
+        options.mesh.spines = scene.NMV_SpinesSourceRandom
+
+
+####################################################################################################
+# @draw_spines_percentage_option
+####################################################################################################
+def draw_spines_percentage_option(layout, scene, options):
+
+    if options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
+        row = layout.row()
+        row.label(text='Random Density:')
+        row.prop(scene, 'NMV_NumberSpinesPerMicron')
+        options.mesh.number_spines_per_micron = scene.NMV_NumberSpinesPerMicron
+
+
+####################################################################################################
+# @draw_spines_options
+####################################################################################################
+def draw_spines_options(layout, scene, options):
+
+    draw_spine_options_header(layout=layout)
+    draw_spines_source_option(layout=layout, scene=scene, options=options)
+    draw_spines_percentage_option(layout=layout, scene=scene, options=options)
+
+
+####################################################################################################
 # @draw_piecewise_watertight_meshing_options
 ####################################################################################################
 def draw_piecewise_watertight_meshing_options(layout, scene, options):
@@ -145,6 +193,7 @@ def draw_piecewise_watertight_meshing_options(layout, scene, options):
     draw_soma_type_option(layout=layout, scene=scene, options=options)
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
     draw_tessellation_option(layout=layout, scene=scene, options=options)
+    draw_spines_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -156,6 +205,7 @@ def draw_voxelization_meshing_options(layout, scene, options):
     draw_proxy_mesh_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_small_edges_removal_option(layout=layout, scene=scene, options=options)
+    draw_spines_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -167,6 +217,7 @@ def draw_skinning_meshing_options(layout, scene, options):
     draw_mesh_connectivity_options(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_tessellation_option(layout=layout, scene=scene, options=options)
+    draw_spines_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -178,6 +229,7 @@ def draw_union_operators_meshing_options(layout, scene, options):
     draw_mesh_edges_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_tessellation_option(layout=layout, scene=scene, options=options)
+    draw_spines_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################
@@ -189,6 +241,7 @@ def draw_meta_objects_meshing_options(layout, scene, options):
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_small_edges_removal_option(layout=layout, scene=scene, options=options)
     draw_tessellation_option(layout=layout, scene=scene, options=options)
+    draw_spines_options(layout=layout, scene=scene, options=options)
 
 
 ####################################################################################################

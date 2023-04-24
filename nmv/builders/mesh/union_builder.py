@@ -548,7 +548,7 @@ class UnionBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Build the endfeet
-        result, stats = self.PROFILE(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
 
         # Surface roughness

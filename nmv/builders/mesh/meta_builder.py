@@ -339,9 +339,9 @@ class MetaBuilder(MeshBuilderBase):
                         max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
-    # @build_endfeet
+    # @build_endfeet_if_applicable
     ################################################################################################
-    def build_endfeet(self):
+    def build_endfeet_if_applicable(self):
         """Builds the endfeet if the input morphology is an astrocyte."""
 
         # Construct the meta-object from the endfeet
@@ -715,7 +715,7 @@ class MetaBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
         
         # Building the endfeet 
-        result, stats = self.PROFILE(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
 
         # Building the spines from morphologies

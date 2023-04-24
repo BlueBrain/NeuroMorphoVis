@@ -236,7 +236,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
             nmv.logger.info('Adding surface noise')
             nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1, noise_depth=1)
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=2, noise_depth=2)
 
     ################################################################################################
     # @reconstruct_mesh
