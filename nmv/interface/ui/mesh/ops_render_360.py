@@ -124,7 +124,7 @@ class NMV_RenderMesh360(bpy.types.Operator):
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
 
             # Update the progress bar
-            context.scene.NMV_NeuronMeshRenderingProgress = int(100 * self.timer_limits / 360.0)
+            context.scene.NMV_MeshRenderingProgress = int(100 * self.timer_limits / 360.0)
 
             # Upgrade the timer limits
             self.timer_limits += 1

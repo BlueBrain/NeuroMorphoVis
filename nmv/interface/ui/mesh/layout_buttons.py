@@ -76,6 +76,24 @@ def draw_mesh_rendering_buttons(panel, scene, show_stats=False):
 
 
 ####################################################################################################
+# @draw_export_components_option
+####################################################################################################
+def draw_export_components_option(panel, scene, options):
+
+    # The objects must be disconnected
+    if options.mesh.neuron_objects_connection == nmv.enums.Meshing.ObjectsConnection.DISCONNECTED:
+
+        # It does work only with OBJ files
+        if scene.NMV_ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.OBJ:
+
+            # Only for the piecewise-watertight and skinning-based meshing
+            if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT or \
+               scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.SKINNING:
+                export_individual_row = panel.layout.row()
+                export_individual_row.prop(scene, 'NMV_ExportIndividuals')
+
+
+####################################################################################################
 # @draw_mesh_export_options
 ####################################################################################################
 def draw_mesh_export_options(panel, scene, options):
@@ -87,10 +105,8 @@ def draw_mesh_export_options(panel, scene, options):
     export_format_row = panel.layout.row()
     export_format_row.prop(scene, 'NMV_ExportedMeshFormat', icon='GROUP_VERTEX')
 
-    if not scene.NMV_ExportedMeshFormat == nmv.enums.Meshing.ExportFormat.BLEND:
-        if scene.NMV_MeshingTechnique == nmv.enums.Meshing.Technique.PIECEWISE_WATERTIGHT:
-            export_individual_row = panel.layout.row()
-            export_individual_row.prop(scene, 'NMV_ExportIndividuals')
+    # Display the export components option
+    draw_export_components_option(panel=panel, scene=scene, options=options)
 
     # Save button
     save_neuron_mesh_buttons_column = panel.layout.column(align=True)
