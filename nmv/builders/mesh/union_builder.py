@@ -442,6 +442,9 @@ class UnionBuilder(MeshBuilderBase):
         # Rename the resulting mesh with the neuron name
         self.soma_mesh.name = self.morphology.label
 
+        # Assign the reference to the neuron mesh
+        self.neuron_mesh = self.soma_mesh
+
     ################################################################################################
     # @add_spines_to_surface
     ################################################################################################
@@ -515,6 +518,17 @@ class UnionBuilder(MeshBuilderBase):
             nmv.mesh.smooth_object_vertices(mesh_object=self.soma_mesh, level=5)
 
     ################################################################################################
+    # @add_surface_roughness
+    ################################################################################################
+    def add_surface_roughness(self):
+        """Adds surface noise to the mesh to make it looking realistic as seen by microscopes."""
+
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+            nmv.logger.info('Adding surface noise')
+            nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=2, noise_depth=2)
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -552,7 +566,7 @@ class UnionBuilder(MeshBuilderBase):
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = self.PROFILE(self.add_surface_noise_to_arbor)
+        result, stats = self.PROFILE(self.add_surface_roughness)
         self.profiling_statistics += stats
 
         # Decimation

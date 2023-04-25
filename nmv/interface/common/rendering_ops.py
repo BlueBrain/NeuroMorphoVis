@@ -159,8 +159,10 @@ def render_meshes_relevant_image(options,
     if options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
             extent=options.rendering.close_up_dimensions)
-    else:
+    elif options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
         bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+    else:
+        bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(morphology=morphology)
 
     # Draw the morphology scale bar
     scale_bar = None
