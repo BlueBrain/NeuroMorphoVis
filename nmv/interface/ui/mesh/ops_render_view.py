@@ -15,11 +15,14 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
+# System imports
 import time
 
+# Blender imports
 import bpy
 
+# Internal imports
+import nmv.consts
 import nmv.enums
 import nmv.interface
 
@@ -37,32 +40,20 @@ class NMV_RenderMeshFront(bpy.types.Operator):
     ################################################################################################
     # @execute
     ################################################################################################
-    def execute(self,
-                context):
-        """Execute the operator
+    def execute(self, context):
 
-        :param context:
-            Rendering Context.
-        :return:
-            'FINISHED'
-        """
-
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.FRONT,
-            image_format=nmv.interface.ui_options.rendering.image_format)
-
-        # Stats.
+        nmv.interface.render_meshes_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.FRONT,
+            image_suffix=nmv.consts.Suffix.MESH_FRONT)
         rendering_time = time.time()
+
+        # Update the UI
         nmv.interface.ui_mesh_rendered = True
         context.scene.NMV_MeshRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MeshRenderingTime)
-
-        # Confirm operation done
         return {'FINISHED'}
 
 
@@ -88,22 +79,18 @@ class NMV_RenderMeshSide(bpy.types.Operator):
             'FINISHED'
         """
 
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.SIDE,
-            image_format=nmv.interface.ui_options.rendering.image_format)
-
-        # Stats.
+        nmv.interface.render_meshes_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.SIDE,
+            image_suffix=nmv.consts.Suffix.MESH_SIDE)
         rendering_time = time.time()
+
+        # Update the UI
         nmv.interface.ui_mesh_rendered = True
         context.scene.NMV_MeshRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MeshRenderingTime)
-
-        # Confirm operation done
         return {'FINISHED'}
 
 
@@ -121,29 +108,18 @@ class NMV_RenderMeshTop(bpy.types.Operator):
     # @execute
     ################################################################################################
     def execute(self, context):
-        """Execute the operator
 
-        :param context:
-            Rendering context.
-        :return:
-            'FINISHED'.
-        """
-
-        # Timer
+        # Render the frame
         start_time = time.time()
-
-        # Render the image
-        nmv.interface.ui.render_mesh_image(
-            self, context_scene=context.scene, view=nmv.enums.Camera.View.TOP,
-            image_format=nmv.interface.ui_options.rendering.image_format)
-
-        # Stats.
+        nmv.interface.render_meshes_relevant_image(
+            options=nmv.interface.ui_options,
+            morphology=nmv.interface.ui_morphology,
+            camera_view=nmv.enums.Camera.View.TOP,
+            image_suffix=nmv.consts.Suffix.MESH_TOP)
         rendering_time = time.time()
+
+        # Update the UI
         nmv.interface.ui_mesh_rendered = True
         context.scene.NMV_MeshRenderingTime = rendering_time - start_time
-        nmv.logger.statistics('Morphology rendered in [%f] seconds' %
-                              context.scene.NMV_MeshRenderingTime)
-
-        # Confirm operation done
         return {'FINISHED'}
 
