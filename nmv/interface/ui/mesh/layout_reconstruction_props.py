@@ -89,13 +89,19 @@ def draw_small_edges_removal_option(layout, scene, options):
 ####################################################################################################
 def draw_mesh_surface_roughness_option(layout, scene, options):
 
-    if options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+    if options.mesh.meshing_technique == nmv.enums.Meshing.Technique.UNION:
+        if options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
+            row = layout.row()
+            row.label(text='Surface:')
+            row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
+            options.mesh.surface = scene.NMV_SurfaceRoughness
+        else:
+            options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
+    else:
         row = layout.row()
         row.label(text='Surface:')
         row.prop(scene, 'NMV_SurfaceRoughness', expand=True)
         options.mesh.surface = scene.NMV_SurfaceRoughness
-    else:
-        options.mesh.surface = nmv.enums.Meshing.Surface.SMOOTH
 
 
 ####################################################################################################

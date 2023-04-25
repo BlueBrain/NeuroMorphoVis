@@ -575,7 +575,7 @@ def resample_poly_line_adaptively_relaxed(poly_line):
 
         # Get the extent of the sample, where no other samples should be located
         extent = get_sample_radius(poly_line.samples[i]) + \
-                 get_sample_radius(poly_line.samples[i + 1])
+            get_sample_radius(poly_line.samples[i + 1])
 
         # If the next sample is located within the extent of this sample, then remove it
         if distance < extent:
