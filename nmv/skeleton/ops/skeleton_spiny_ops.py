@@ -350,7 +350,7 @@ def get_random_spines_on_section_recursively(max_branching_order,
     section_length = nmv.skeleton.compute_section_length(section=section)
 
     # Get the total number of spines along the section
-    total_number_of_spines = section_length * number_spines_per_micron
+    total_number_of_spines = section_length * number_spines_per_micron * 0.25
 
     if 0.0 < total_number_of_spines < 1.0:
         total_number_of_spines = 1.0

@@ -40,3 +40,6 @@ class Messages:
     # Spaces
     SPACES = '                                                                                     '
 
+    # tqdm bar format
+    TQDM_FORMAT = '{desc:<8}{l_bar}{bar:25}{r_bar}{bar:-25b}'
+

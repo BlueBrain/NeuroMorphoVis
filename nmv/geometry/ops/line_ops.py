@@ -213,7 +213,7 @@ def draw_line(point1=Vector((0, 0, 0)),
         if color is not None:
 
             # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 
@@ -284,7 +284,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
         line_data.bevel_object = bevel_object
 
     # Create a new material (color) and assign it to the line
-    line_material = bpy.data.materials.new('color.%s' % name)
+    line_material = bpy.data.materials.new(name)
     line_material.diffuse_color = color
     line_data.materials.append(line_material)
 
@@ -385,7 +385,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
         # Create a material from a given color
         if color is not None:
             # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 

@@ -356,8 +356,7 @@ class UnionBuilder(MeshBuilderBase):
         """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
         """
         # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, resolution=2, name='Cross Section')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=2, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -432,9 +431,6 @@ class UnionBuilder(MeshBuilderBase):
                     nmv.logger.detail(arbor.label)
                     arbors_meshes.append(arbor.mesh)
 
-        # Joint all the meshes into a single mesh
-        # arbors_mesh = nmv.mesh.ops.join_mesh_objects(mesh_list=arbors_meshes, name='arbors')
-
         for arbor_mesh in arbors_meshes:
             self.soma_mesh = nmv.skeleton.ops.connect_arbors_to_meta_ball_soma(
                 soma_mesh=self.soma_mesh, arbors_mesh=arbor_mesh)
@@ -449,8 +445,7 @@ class UnionBuilder(MeshBuilderBase):
     # @add_spines_to_surface
     ################################################################################################
     def add_spines_to_surface(self):
-        """Adds spines to the surface of the mesh.
-        """
+        """Adds spines to the surface of the mesh."""
 
         # Build spines from a BBP circuit
         if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
@@ -491,8 +486,7 @@ class UnionBuilder(MeshBuilderBase):
     # @smooth_edges
     ################################################################################################
     def smooth_edges(self):
-        """The function cleans the surface and smooths the edges of the mesh.
-        """
+        """The function cleans the surface and smooths the edges of the mesh."""
 
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
 
@@ -532,8 +526,7 @@ class UnionBuilder(MeshBuilderBase):
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the mesh.
-        """
+        """Reconstructs the mesh."""
 
         nmv.logger.header('Building Mesh: UnionBuilder')
 

@@ -215,7 +215,7 @@ def draw_poly_line(poly_line_data,
             line_data.bevel_object = bevel_object
             line_data.use_fill_caps = caps
 
-    # Setup the spatial data of a SIMPLE line
+    # Set up the spatial data of a SIMPLE line
     else:
 
         # The thickness of medium line can be set to 0.1
@@ -232,9 +232,7 @@ def draw_poly_line(poly_line_data,
 
         # Create a material from a given color
         if color is not None:
-
-            # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 

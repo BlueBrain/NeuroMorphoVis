@@ -390,7 +390,7 @@ class MeshBuilderBase:
 
                 # Exclude the spines
                 if not exclude_spines:
-                    if 'spine' in scene_object.name:
+                    if 'Spine' in scene_object.name:
                         neuron_mesh_objects.append(scene_object)
 
                 if 'Apical' in scene_object.name or \
@@ -681,7 +681,7 @@ class MeshBuilderBase:
 
         # Build spines from a BBP circuit
         if self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.CIRCUIT:
-            nmv.logger.info('Adding Spines from a BBP Circuit')
+            nmv.logger.header('Adding Spines from a BBP Circuit')
             spines_objects = nmv.builders.build_circuit_spines(
                 morphology=self.morphology, blue_config=self.options.morphology.blue_config,
                 gid=self.options.morphology.gid, material=self.spines_materials[0])
@@ -690,7 +690,7 @@ class MeshBuilderBase:
 
         # Just add some random spines for the look only
         elif self.options.mesh.spines == nmv.enums.Meshing.Spines.Source.RANDOM:
-            nmv.logger.info('Adding Random Spines')
+            nmv.logger.header('Adding Random Spines')
             spines_builder = nmv.builders.RandomSpineBuilder(
                 morphology=self.morphology, options=self.options)
             spines_objects = spines_builder.add_spines_to_morphology()
@@ -701,13 +701,15 @@ class MeshBuilderBase:
         else:
             return
 
+        # Apply the shader
+        for spine_object in spines_objects:
+            nmv.shading.set_material_to_object(spine_object, self.spines_materials[0])
+
         # Join the spine objects into a single mesh, if required
         if join_spine_meshes:
-            spine_mesh_name = 'Spines [%s]' % self.options.morphology.label
-            spine_mesh = nmv.mesh.join_mesh_objects(spines_objects, spine_mesh_name)
+            spine_mesh = nmv.mesh.join_mesh_objects(spines_objects, 'Spines')
             self.spines_meshes.append(spine_mesh)
             self.neuron_meshes.append(spines_objects)
-
 
     ################################################################################################
     # @modify_morphology_skeleton
