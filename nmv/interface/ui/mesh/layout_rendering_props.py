@@ -51,7 +51,7 @@ def draw_still_frame_rendering_options(panel, scene, options, show_stats=False):
     nmv.interface.ui.common.draw_scale_bar_option(
         layout=panel.layout, scene=scene, options=options)
 
-    draw_mesh_rendering_buttons(panel=panel, scene=scene)
+    draw_mesh_rendering_buttons(panel=panel)
 
     if show_stats:
         row = panel.layout.row()

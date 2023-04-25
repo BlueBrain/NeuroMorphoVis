@@ -36,29 +36,24 @@ def draw_documentation_button(layout):
 ####################################################################################################
 def draw_mesh_reconstruction_button(panel, scene):
 
-    # Get a reference to the layout of the panel
-    layout = panel.layout
-
     # Mesh quick reconstruction options
-    quick_reconstruction_row = layout.row()
-    quick_reconstruction_row.label(text='Quick Reconstruction', icon='PARTICLE_POINT')
+    row = panel.layout.row()
+    row.label(text='Quick Reconstruction', icon='PARTICLE_POINT')
 
     # Mesh reconstruction options
-    mesh_reconstruction_row = layout.row()
-    mesh_reconstruction_row.operator('nmv.reconstruct_mesh', icon='MESH_DATA')
+    row = panel.layout.row()
+    row.operator('nmv.reconstruct_mesh', icon='MESH_DATA')
 
     if nmv.interface.ui_mesh_reconstructed:
-        morphology_stats_row = panel.layout.row()
-        morphology_stats_row.label(text='Stats:', icon='RECOVER_LAST')
-        reconstruction_time_row = panel.layout.row()
-        reconstruction_time_row.prop(scene, 'NMV_MeshReconstructionTime')
-        reconstruction_time_row.enabled = False
+        row = panel.layout.row()
+        row.prop(scene, 'NMV_MeshReconstructionTime')
+        row.enabled = False
 
 
 ####################################################################################################
 # @draw_mesh_rendering_buttons
 ####################################################################################################
-def draw_mesh_rendering_buttons(panel, scene, show_stats=False):
+def draw_mesh_rendering_buttons(panel):
 
     view_row = panel.layout.row()
     view_row.label(text='Render View', icon='RESTRICT_RENDER_OFF')
