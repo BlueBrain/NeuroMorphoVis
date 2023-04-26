@@ -125,14 +125,16 @@ class UnionBuilder(MeshBuilderBase):
         # after applying the vertex smoothing filter. The re-sampling filter for the moment
         # re-samples the morphology sections at 2.5 microns, however this can be improved later
         # by adding an algorithm that re-samples the section based on its radii.
+        '''
         if self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
 
             # Apply the re-sampling filter on the whole morphology skeleton
             nmv.skeleton.ops.apply_operation_to_morphology(
                 *[self.morphology, nmv.skeleton.ops.resample_section_at_fixed_step])
         else:
-            nmv.skeleton.ops.apply_operation_to_morphology(
-                *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
+        '''
+        nmv.skeleton.ops.apply_operation_to_morphology(
+            *[self.morphology, nmv.skeleton.ops.resample_section_adaptively_relaxed])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
@@ -228,8 +230,8 @@ class UnionBuilder(MeshBuilderBase):
 
         # Indicate the curve style
         curve_style = 'POLY'
-        if soft:
-            curve_style = 'NURBS'
+        # if soft:
+        #    curve_style = 'NURBS'
 
         # For each poly-line in the list, draw it
         for i, poly_line in enumerate(arbor_poly_lines):
@@ -546,10 +548,6 @@ class UnionBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.weld_arbors_to_soma)
         self.profiling_statistics += stats
 
-        # Add the spines
-        result, stats = self.PROFILE(self.add_spines_to_surface)
-        self.profiling_statistics += stats
-
         # Cleaning mesh
         result, stats = self.PROFILE(self.smooth_edges)
         self.profiling_statistics += stats
@@ -560,6 +558,10 @@ class UnionBuilder(MeshBuilderBase):
 
         # Surface roughness
         result, stats = self.PROFILE(self.add_surface_roughness)
+        self.profiling_statistics += stats
+
+        # Add the spines
+        result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
         # Decimation
