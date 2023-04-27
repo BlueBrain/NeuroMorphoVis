@@ -506,7 +506,7 @@ class BBPCircuit(Circuit):
         return inhibitory_synapses
 
     ################################################################################################
-    # @get_excitatory_synapses_ids
+    # @get_excitatory_and_inhibitory_synapses_ids
     ################################################################################################
     def get_excitatory_and_inhibitory_synapses_ids(self,
                                                    gid):

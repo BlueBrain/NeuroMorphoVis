@@ -15,18 +15,23 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Blender imports
+from mathutils import Vector
 
 
+####################################################################################################
+# @get_spines
+####################################################################################################
+def get_spines(circuit,
+               post_gid):
+    """Get a list of all the spines on a post synaptic neuron.
 
-
-
-
-
-
-
-
-
-def get_spines(circuit, post_gid):
+    :param circuit:
+        BBP circuit.
+    :param post_gid:
+        The GID of the post-synaptic neuron.
+    :return:
+    """
 
     import bluepy
     # Get the IDs of the afferent synapses of a given GID
@@ -51,8 +56,6 @@ def get_spines(circuit, post_gid):
     spines = list()
     for i in range(len(pre_gids)):
 
-        #if random.uniform(0, 1) > 0.25: continue
-
         # Synapse position is the mid-way between the pre- and post-synaptic centers
         post_synaptic_center_position = Vector((post_synaptic_center_positions[i][0],
                                          post_synaptic_center_positions[i][1],
@@ -74,21 +77,32 @@ def get_spines(circuit, post_gid):
 
         # To determine the spine size
         spine.size = (pre_synaptic_contour_position - post_synaptic_center_position).length
-        print(spine.size)
         spines.append(spine)
 
+    # Return the spines list
     return spines
 
 
-
-
-
-
+####################################################################################################
+# @get_spines_for_synaptic_pair
+####################################################################################################
 def get_spines_for_synaptic_pair(circuit,
-                                      pre_gid,
-                                      post_gid):
+                                 pre_gid,
+                                 post_gid):
+    """Gets the spines for a synaptic pair.
+
+    :param circuit:
+        BBP circuit.
+    :param pre_gid:
+        The GID of the pre-synaptic neuron.
+    :param post_gid:
+        The GID of the post-synaptic neuron.
+    :return:
+        A list of the resulting synapses.
+    """
 
     import bluepy
+
     # Get the IDs of the afferent synapses of a given GID
     afferent_synapses_ids = circuit.connectome.afferent_synapses(post_gid)
 
@@ -127,4 +141,5 @@ def get_spines_for_synaptic_pair(circuit,
 
             spines.append(spine)
 
+    # Return the spines list
     return spines

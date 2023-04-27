@@ -29,12 +29,18 @@ import nmv.utilities
 # @Circuit
 ####################################################################################################
 class Circuit:
+    """Base class for the Circuit."""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
                  circuit_config):
+        """Constructor
+
+        :param circuit_config:
+            Circuit configuration file.
+        """
 
         # Configuration file
         self.circuit_config = circuit_config

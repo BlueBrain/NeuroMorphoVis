@@ -364,7 +364,6 @@ def get_pre_mtype_synapses_mtype_coded_dict(circuit,
         synapses_ids_list = synapses_mtype_coded_dict[color]
         synapses_ids_list.append(synapse_id)
 
-
     for key in color_coded_mtype_dict:
         mtype = key
         color = color_coded_mtype_dict[key]

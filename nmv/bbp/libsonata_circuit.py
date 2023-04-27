@@ -42,5 +42,4 @@ class libSonataCircuit(Circuit):
         # Propagate to the base
         Circuit.__init__(self, circuit_config=circuit_config)
 
-        # Load the circuit
-        self.circuit = self.load_circuit()
+        # TODO: Implement this class
