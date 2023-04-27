@@ -18,13 +18,14 @@
 
 # System imports
 import random
+import tqdm
 
 # Blender imports
-import bpy
 from mathutils import Vector
 
 # Internal imports
 import nmv.consts
+import nmv.bbp
 import nmv.mesh
 import nmv.shading
 import nmv.skeleton
@@ -165,8 +166,6 @@ class CircuitSpineBuilder:
         # Return a reference to the spine
         return spine_object
 
-
-
     ################################################################################################
     # @add_spines_to_morphology
     ################################################################################################
@@ -177,69 +176,29 @@ class CircuitSpineBuilder:
             A joint mesh of the reconstructed spines.
         """
 
-        # Keep a list of all the spines objects
-        spines_objects = []
-
-        # Keep a list of all the protrusion objects
-        protrusion_objects = []
-
         # To load the circuit, 'brain' must be imported
         try:
             import bluepy
         except ImportError:
-            raise ImportError('ERROR: Cannot import \'blurpy\'')
+            raise ImportError('ERROR: Cannot import \'bluepy\'')
 
         # Load the template spine meshes
         self.load_spine_meshes()
-
-        import nmv.bbp
-        #spines = nmv.bbp.get_spines_for_synaptic_pair(circuit=circuit, post_gid=post_gid, pre_gid=pre_gid)
         spines = nmv.bbp.get_spines(circuit=circuit, post_gid=post_gid)
+
         # Load the synapses from the file
-        number_spines = len(spines)
-        for i, spine in enumerate(spines):
-
-            # Show progress
-            nmv.utilities.time_line.show_iteration_progress('\t Spines', i, number_spines)
-
-            # Emanate a spine
-            spine_object = self.emanate_spine(spine, i)
-
-            # Create a protrusion object
-            # protrusion_object = self.emanate_protrusion(spine, i)
-
-            # Add the objects to the lists
-            spines_objects.append(spine_object)
-            #protrusion_objects.append(protrusion_object)
-
-        # Done
-        nmv.utilities.time_line.show_iteration_progress(
-            '\t Spines', number_spines, number_spines, done=True)
+        spine_meshes = list()
+        for i, spine in enumerate(
+                tqdm.tqdm(spines, bar_format=nmv.consts.Messages.TQDM_FORMAT)):
+            spine_meshes.append(self.emanate_spine(spine, i))
 
         # Link the spines to the scene in a single step
         nmv.logger.info('Linking spines to the scene')
-        for spine_object in spines_objects:
+        for spine_object in spine_meshes:
             nmv.scene.link_object_to_scene(spine_object)
-
-        # Link the protrusions to the scene in a single step
-        #nmv.logger.info('Linking protrusions to the scene')
-        #for protrusion_object in protrusion_objects:
-        #    bpy.context.scene.objects.link(protrusion_object)
-
-        # TODO: adjust
-        return spines_objects, spines
-
-        # Merging spines into a single object
-        nmv.logger.info('Grouping spines to a single mesh')
-        spine_mesh_name = '%s_spines' % self.options.morphology.label
-        spines_mesh = nmv.mesh.ops.join_mesh_objects(spines_objects, spine_mesh_name)
-
-        # Report the time
-        building_timer.end()
-        nmv.logger.info('Spines: [%f] seconds' % building_timer.duration())
 
         # Delete the template spines
         nmv.scene.ops.delete_list_objects(self.spine_meshes)
 
-        # Return the spines objects list
-        return spines_mesh
+        # Return the spine meshes list
+        return spine_meshes

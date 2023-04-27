@@ -18,6 +18,7 @@
 from .bbp_circuit import *
 from .circuits import *
 from .neurons import *
+from .spines import *
 from .synapses import *
 from .synapse_group import *
 from .synapses_color_coding import *

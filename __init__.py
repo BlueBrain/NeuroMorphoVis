@@ -42,7 +42,7 @@ bl_info = {
     # The author of this add-on
     "author": "Marwan Abdellah",
     # A tuple, containing the add-on version
-    "version": (1, 6, 0),
+    "version": (2, 0, 0),
     # The earliest Blender version this add-on will work with. If you're not sure what versions of
     # Blender this add-on is compatible with, use the version of Blender you're developing
     # the add-on with.
@@ -99,7 +99,6 @@ def register():
     nmv.interface.ui.synaptics.register_panel()
     nmv.interface.ui.mesh.register_panel()
     nmv.interface.ui.about.register_panel()
-
     nmv.logger.info_done('NeuroMorphoVis Loaded! Enjoy')
 
 
