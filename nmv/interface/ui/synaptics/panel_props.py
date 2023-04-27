@@ -165,21 +165,25 @@ bpy.types.Scene.NMV_PostSynapticGID = bpy.props.StringProperty(
     default=nmv.consts.Strings.POST_GID, maxlen=1024)
 
 # Single neuron properties #########################################################################
+# Display the dendrites
 bpy.types.Scene.NMV_DisplayDendrites = bpy.props.BoolProperty(
     name='Dendrites',
     description='',
     default=True)
 
+# Display the axons
 bpy.types.Scene.NMV_DisplayAxons = bpy.props.BoolProperty(
     name='Axons',
     description='',
     default=True)
 
+# Dendrites color
 bpy.types.Scene.NMV_SynapticsDendritesColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.BASAL_DENDRITES, min=0.0, max=1.0,
     description='')
 
+# Axons color
 bpy.types.Scene.NMV_SynapticsAxonsColor = bpy.props.FloatVectorProperty(
     name='',
     subtype='COLOR', default=nmv.enums.Color.AXONS, min=0.0, max=1.0,

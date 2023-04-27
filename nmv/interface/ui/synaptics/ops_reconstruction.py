@@ -46,7 +46,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_afferent(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_afferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options, context=context)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
@@ -61,7 +61,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_efferent(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_efferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options, context=context)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
@@ -76,7 +76,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_afferent_and_efferent(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_afferent_and_efferent_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
             visualize_afferent=True, visualize_efferent=True)
@@ -94,7 +94,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_excitatory(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=options.morphology.gid, options=options,
             visualize_excitatory=True, visualize_inhibitory=False)
@@ -110,7 +110,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_inhibitory(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=False, visualize_inhibitory=True, options=options)
@@ -126,7 +126,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_excitatory_and_inhibitory(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_excitatory_and_inhibitory_synapses(
             circuit=circuit, gid=nmv.interface.ui_options.morphology.gid,
             visualize_excitatory=True, visualize_inhibitory=True, options=options)
@@ -170,19 +170,17 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
                                str(options.morphology.gid)))
             return {'FINISHED'}
 
-        nmv.scene.clear_scene()
-
-        # Create local copies of the pre- and post-synaptic neurons
-        pre_synaptic_options = copy.deepcopy(options)
-        post_synaptic_options = copy.deepcopy(options)
+        nmv.scene.clear_scene(deep_delete=True)
 
         # Create the post-synaptic neuron AT ORIGIN - THIS IS THE FOCUS
         post_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
-            circuit=circuit, gid=options.morphology.gid, options=options)
+            circuit=circuit, gid=options.morphology.gid, options=options,
+            which_neuron=nmv.enums.Synaptics.WhichNeuron.POST_SYNAPTIC)
 
         # Create the pre-synaptic neuron AT ORIGIN
         pre_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
-            circuit=circuit, gid=options.synaptics.pre_synaptic_gid, options=options)
+            circuit=circuit, gid=options.synaptics.pre_synaptic_gid, options=options,
+            which_neuron=nmv.enums.Synaptics.WhichNeuron.PRE_SYNAPTIC)
 
         # Get the transformations of the pre- and post-synaptic neurons
         pre_synaptic_transformation = circuit.get_neuron_transformation_matrix(
@@ -192,9 +190,10 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
 
         # Since the focus is given to the post-synaptic neuron; it is the originally loaded one,
         # transform the pre-synaptic neuron w.r.t to the post synaptic one
-        pre_synaptic_neuron_mesh.matrix_world = pre_synaptic_transformation
-        pre_synaptic_neuron_mesh.matrix_world = \
-            post_synaptic_transformation.inverted() @ pre_synaptic_neuron_mesh.matrix_world
+        if pre_synaptic_neuron_mesh is not None:
+            pre_synaptic_neuron_mesh.matrix_world = pre_synaptic_transformation
+            pre_synaptic_neuron_mesh.matrix_world = \
+                post_synaptic_transformation.inverted() @ pre_synaptic_neuron_mesh.matrix_world
 
         # Transform the synapses to be loaded on the post-synaptic neuron
         nmv.bbp.visualize_shared_synapses_between_two_neurons(
@@ -237,15 +236,17 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
                                str(options.synaptics.post_synaptic_gid)))
             return {'FINISHED'}
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
 
         # Create the pre-synaptic neuron AT ORIGIN - THIS IS THE FOCUS
         pre_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
-            circuit=circuit, gid=options.morphology.gid, options=options)
+            circuit=circuit, gid=options.morphology.gid, options=options,
+            which_neuron=nmv.enums.Synaptics.WhichNeuron.PRE_SYNAPTIC)
 
         # Create the post-synaptic neuron AT ORIGIN
         post_synaptic_neuron_mesh = nmv.bbp.visualize_circuit_neuron_for_synaptics(
-            circuit=circuit, gid=options.synaptics.post_synaptic_gid, options=options)
+            circuit=circuit, gid=options.synaptics.post_synaptic_gid, options=options,
+            which_neuron=nmv.enums.Synaptics.WhichNeuron.POST_SYNAPTIC)
 
         # Get the transformations of the pre- and post-synaptic neurons
         pre_synaptic_transformation = circuit.get_neuron_transformation_matrix(
@@ -255,9 +256,10 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
 
         # Since the focus is given to the pre-synaptic neuron; it is the originally loaded one,
         # transform the post-synaptic neuron w.r.t to the pre synaptic one
-        post_synaptic_neuron_mesh.matrix_world = post_synaptic_transformation
-        post_synaptic_neuron_mesh.matrix_world = \
-            pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
+        if post_synaptic_neuron_mesh is not None:
+            post_synaptic_neuron_mesh.matrix_world = post_synaptic_transformation
+            post_synaptic_neuron_mesh.matrix_world = \
+                pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
 
         nmv.bbp.visualize_shared_synapses_between_two_neurons(
             circuit=circuit,
@@ -274,7 +276,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
     ################################################################################################
     def reconstruct_afferent_synapses_for_projection(self, context, circuit, options):
 
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         synapse_groups = nmv.bbp.visualize_afferent_synapses_for_projection(
             circuit=circuit, gid=options.morphology.gid, options=options, context=context)
         nmv.bbp.visualize_circuit_neuron_for_synaptics(
@@ -325,7 +327,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
                         description="The number of the synapses of the %s group" % group.name,))
 
         # Visualize the synapses and the neuron
-        nmv.scene.clear_scene()
+        nmv.scene.clear_scene(deep_delete=True)
         nmv.bbp.visualize_synapse_groups(
             circuit=circuit, synapse_groups=options.synaptics.customized_synaptics_group,
             gid=options.morphology.gid, options=options)

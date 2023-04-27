@@ -157,7 +157,7 @@ if __name__ == "__main__":
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
     transformation = nmv.bbp.get_neuron_transformation_matrix(circuit=circuit, gid=int(args.gid))
-    synapses_mesh = nmv.bbp.create_color_coded_synapses_particle_system(
+    nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
         synapses_percentage=args.synapse_percentage,

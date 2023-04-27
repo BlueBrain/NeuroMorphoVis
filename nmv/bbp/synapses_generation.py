@@ -87,6 +87,6 @@ def create_color_coded_synapses_particle_system(circuit,
         nmv.shading.set_material_to_object(mesh_object=vertices_mesh, material_reference=material)
 
         # Create the particle system
-        return nmv.geometry.create_particle_system_for_vertices(
+        particle_system = nmv.geometry.create_particle_system_for_vertices(
             mesh_object=vertices_mesh, name=synapse_group.name, vertex_radius=synapse_radius,
             material=material)

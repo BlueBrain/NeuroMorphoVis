@@ -100,3 +100,25 @@ class Synaptics:
         # Color-code the synapses based on the etype of the pre- or the post-synaptic neurons
         ETYPE_COLOR_CODED = 'SYNAPSE_ETYPE_COLOR_CODED'
 
+    ################################################################################################
+    # @WhichNeuron
+    ################################################################################################
+    class WhichNeuron:
+        """Is it a individual neuron, or a pre-synaptic or a post-synaptic neuron"""
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            """Constructor"""
+            pass
+
+        # This is an individual neuron
+        INDIVIDUAL = 'SYNAPTICS_INDIVIDUAL_NEURON'
+
+        # Pre-synaptic neuron
+        PRE_SYNAPTIC = 'SYNAPTICS_PRE_NEURON'
+
+        # Post-synaptic neuron
+        POST_SYNAPTIC = 'SYNAPTICS_POST_NEURON'
+

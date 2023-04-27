@@ -167,9 +167,8 @@ def draw_neuron_pair_options(layout, scene, options):
     draw_neuron_options_header(layout=layout)
 
     draw_pre_synaptic_dendrites_options(layout=layout, scene=scene, options=options)
-
+    draw_pre_synaptic_axons_options(layout=layout, scene=scene, options=options)
     draw_post_synaptic_dendrites_options(layout=layout, scene=scene, options=options)
-
     draw_post_synaptic_axons_options(layout=layout, scene=scene, options=options)
 
     draw_neuron_radius_option(layout, scene, options)

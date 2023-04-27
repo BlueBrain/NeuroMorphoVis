@@ -583,6 +583,31 @@ def get_image_suffix_for_synaptics(view):
     return nmv.consts.Suffix.SYNAPTICS_FRONT
 
 
+####################################################################################################
+# @get_use_case_suffix_for_synaptics
+####################################################################################################
+def get_use_case_suffix_for_synaptics(options):
+
+    if options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT:
+        return '%s_afferent' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EFFERENT:
+        return '%s_efferent' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.AFFERENT_AND_EFFERENT:
+        return '%s_afferent_efferent' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY:
+        return '%s_excitatory' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.INHIBITORY:
+        return '%s_inhibitory' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.EXCITATORY_AND_INHIBITORY:
+        return '%s_excitatory_inhibitory' % str(options.morphology.gid)
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_PRE_SYNAPTIC:
+        return '%s_%s_pre_pathway' % (str(options.synaptics.post_synaptic_gid),
+                                      str(options.morphology.gid))
+    elif options.synaptics.use_case == nmv.enums.Synaptics.UseCase.PATHWAY_POST_SYNAPTIC:
+        return '%s_%s_post_pathway' % (str(options.morphology.gid),
+                                       str(options.synaptics.post_synaptic_gid))
+    else:
+        return ''
 
 
 ####################################################################################################
@@ -604,9 +629,6 @@ def render_synaptics_image(panel,
     # Compute the bounding box, depending on the shot
     bounding_box = compute_scene_bounding_box_for_meshes_based_on_view(options=options)
 
-    # Get the image suffix
-    suffix = get_image_suffix_for_synaptics(view)
-
     # Draw the morphology scale bar
     scale_bar = None
     if options.rendering.render_scale_bar:
@@ -615,13 +637,18 @@ def render_synaptics_image(panel,
             material_type=options.synaptics.shader,
             view=view)
 
+    # Get the image label suffixes
+    view_suffix = get_image_suffix_for_synaptics(view)
+    use_case_suffix = get_use_case_suffix_for_synaptics(options=options)
+    image_name = '%s%s' % (use_case_suffix, view_suffix)
+
     # Render at a specific resolution
     if options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
         nmv.rendering.render(
             bounding_box=bounding_box,
             camera_view=view,
             image_resolution=options.rendering.frame_resolution,
-            image_name='%s%s' % (options.morphology.label, suffix),
+            image_name=image_name,
             image_format=options.rendering.image_format,
             image_directory=options.io.images_directory)
 
@@ -633,7 +660,7 @@ def render_synaptics_image(panel,
             bounding_box=bounding_box,
             camera_view=view,
             image_scale_factor=options.rendering.resolution_scale_factor,
-            image_name='%s%s' % (options.morphology.label, suffix),
+            image_name=image_name,
             image_format=options.rendering.image_format,
             image_directory=options.io.images_directory)
 

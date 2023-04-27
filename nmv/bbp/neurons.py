@@ -93,35 +93,50 @@ def create_neuron_mesh_in_circuit(
 
 
 ####################################################################################################
-# @create_neuron_mesh_in_circuit
+# @visualize_circuit_neuron_for_synaptics
 ####################################################################################################
 def visualize_circuit_neuron_for_synaptics(circuit,
                                            gid,
                                            options,
-                                           this_is_pre_synaptic_neuron=True):
-    # Adjust the branching order of the dendrites
+                                           which_neuron=nmv.enums.Synaptics.WhichNeuron.INDIVIDUAL):
+
+    # Adjust the branching order of the dendrites and axons
     dendrites_branching_order = 0
-    if options.synaptics.display_dendrites:
-        dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
-
-    # Adjust the branching order of the axons
     axons_branching_order = 0
-    if options.synaptics.display_axons:
-        axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
-
-    # If we ignore both, then return None
-    if not (options.synaptics.display_dendrites or options.synaptics.display_axons):
-        return None
 
     # Adjust the coloring parameters based on the neuron order (pre- or post-synaptic neuron)
-    if this_is_pre_synaptic_neuron:
+    if which_neuron == nmv.enums.Synaptics.WhichNeuron.PRE_SYNAPTIC:
         soma_color = options.synaptics.pre_synaptic_dendrites_color
         dendrites_color = options.synaptics.pre_synaptic_dendrites_color
         axons_color = options.synaptics.pre_synaptic_axons_color
-    else:
+
+        if options.synaptics.display_pre_synaptic_dendrites:
+            dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+        if options.synaptics.display_pre_synaptic_axons:
+            axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+
+    elif which_neuron == nmv.enums.Synaptics.WhichNeuron.POST_SYNAPTIC:
         soma_color = options.synaptics.post_synaptic_dendrites_color
         dendrites_color = options.synaptics.post_synaptic_dendrites_color
         axons_color = options.synaptics.post_synaptic_axons_color
+
+        if options.synaptics.display_post_synaptic_dendrites:
+            dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+        if options.synaptics.display_post_synaptic_axons:
+            axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+    else:
+        soma_color = options.synaptics.dendrites_color
+        dendrites_color = options.synaptics.dendrites_color
+        axons_color = options.synaptics.axons_color
+
+        if options.synaptics.display_dendrites:
+            dendrites_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+        if options.synaptics.display_axons:
+            axons_branching_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
+
+    # If we ignore both, then return None
+    if dendrites_branching_order == 0 and axons_branching_order == 0:
+        return None
 
     # Create the mesh and return a reference to it
     return create_neuron_mesh_in_circuit(circuit=circuit, gid=gid,
