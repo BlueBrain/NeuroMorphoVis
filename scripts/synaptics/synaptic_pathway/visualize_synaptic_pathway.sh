@@ -29,8 +29,8 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/Circuit
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 
 # The GID of the pre- and post-synaptic neurons
-PRE_SYNAPTIC_NEURON_GID='77808'
-POST_SYNAPTIC_NEURON_GID='3638969'
+PRE_SYNAPTIC_NEURON_GID='38749'
+POST_SYNAPTIC_NEURON_GID='3642408'
 
 # If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
 UNIFY_BRANCHES_RADII='yes'
@@ -40,13 +40,13 @@ UNIFY_BRANCHES_RADII='yes'
 UNIFIED_NEURON_RADIUS='1.0'
 
 # The colors of the pre- and post-synaptic neurons
-PRE_SYNAPTIC_DENDRITES_COLOR='#c23bd4' # 194, 59, 212
-PRE_SYNAPTIC_AXONS_COLOR='#3b76d4' # 59, 118, 212
-POST_SYNAPTIC_DENDRITES_COLOR='#00ffaa' # 194, 59, 212
-POST_SYNAPTIC_AXONS_COLOR='#ff00aa' # 212, 59, 79
+PRE_SYNAPTIC_DENDRITES_COLOR='#E02F61' # 194, 59, 212
+PRE_SYNAPTIC_AXONS_COLOR='#EB0038' # 59, 118, 212
+POST_SYNAPTIC_DENDRITES_COLOR='#68A8E0' # 194, 59, 212
+POST_SYNAPTIC_AXONS_COLOR='#68A8E0' # 212, 59, 79
 
-# The color of the shared synapses
-SYNAPSES_COLOR='#ff00aa'
+# The color of the shaed synapses
+SYNAPSES_COLOR='#2D2C7F'
 
 # A given fixed radius for the synapses, it is represented as a symbolic sphere
 SYNAPSE_RADIUS='3.0'

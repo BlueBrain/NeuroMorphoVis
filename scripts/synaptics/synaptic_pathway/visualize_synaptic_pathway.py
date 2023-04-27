@@ -123,7 +123,7 @@ if __name__ == "__main__":
     nmv.logger.info('Cleaning Scene')
     nmv.scene.clear_scene(deep_delete=True)
 
-    material_type = nmv.enums.Shader.LAMBERT_WARD
+    material_type = nmv.enums.Shader.FLAT
 
     # Read the circuit
     nmv.logger.info('Loading circuit')
@@ -170,12 +170,12 @@ if __name__ == "__main__":
     post_synaptic_transformation = circuit.get_neuron_transformation_matrix(
         gid=args.post_gid)
 
-    # Transform back the pair to the origin based on the inverse transformation of the
-    # post-synaptic neuron
-    pre_synaptic_neuron_mesh.matrix_world = \
-        pre_synaptic_transformation.inverted() @ pre_synaptic_neuron_mesh.matrix_world
-    post_synaptic_neuron_mesh.matrix_world = \
-        pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
+    # Since the focus is given to the pre-synaptic neuron; it is the originally loaded one,
+    # transform the post-synaptic neuron w.r.t to the pre synaptic one
+    if post_synaptic_neuron_mesh is not None:
+        post_synaptic_neuron_mesh.matrix_world = post_synaptic_transformation
+        post_synaptic_neuron_mesh.matrix_world = \
+            pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
 
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
@@ -195,7 +195,7 @@ if __name__ == "__main__":
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
         synapses_percentage=100,
-        inverted_transformation=post_synaptic_transformation.inverted(),
+        inverted_transformation=pre_synaptic_transformation.inverted(),
         material_type=material_type)
 
     # Render the image
