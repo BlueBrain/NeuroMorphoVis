@@ -166,8 +166,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         # If that list is Zero, then report the error and exit
         if len(shared_synapses_ids) == 0:
             self.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
-                            % (str(options.synaptics.pre_synaptic_gid),
-                               str(options.morphology.gid)))
+                        % (str(options.synaptics.pre_synaptic_gid), str(options.morphology.gid)))
             return {'FINISHED'}
 
         nmv.scene.clear_scene(deep_delete=True)
@@ -232,8 +231,7 @@ class NMV_ReconstructSynaptics(bpy.types.Operator):
         # If that list is Zero, then report the error and exit
         if len(shared_synapses_ids) == 0:
             self.report({'ERROR'}, 'No shared synapses between the given neurons [%s - %s]'
-                            % (str(options.morphology.gid),
-                               str(options.synaptics.post_synaptic_gid)))
+                        % (str(options.morphology.gid), str(options.synaptics.post_synaptic_gid)))
             return {'FINISHED'}
 
         nmv.scene.clear_scene(deep_delete=True)

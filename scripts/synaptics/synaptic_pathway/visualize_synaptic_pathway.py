@@ -121,16 +121,16 @@ if __name__ == "__main__":
 
     # Clear the scene
     nmv.logger.info('Cleaning Scene')
-    nmv.scene.clear_scene()
+    nmv.scene.clear_scene(deep_delete=True)
 
     material_type = nmv.enums.Shader.LAMBERT_WARD
 
     # Read the circuit
     nmv.logger.info('Loading circuit')
-    circuit = Circuit(args.circuit_config)
+    bluepy_circuit = Circuit(args.circuit_config)
 
-    inverse_transformation = nmv.bbp.get_neuron_inverse_transformation_matrix(
-        circuit=circuit, gid=args.post_gid)
+    # Make a NMV circuit
+    circuit = nmv.bbp.BBPCircuit(circuit_config=args.circuit_config)
 
     # Create the mesh of the pre-synaptic neuron at the global coordinates
     nmv.logger.info('Creating the pre-synaptic neuron mesh')
@@ -148,10 +148,6 @@ if __name__ == "__main__":
         axons_color=pre_synaptic_axons_color,
         material_type=material_type)
 
-    # Transform the pre-synaptic neuron to its circuit coordinates
-    nmv.bbp.transform_neuron_mesh_to_global_coordinates(
-        circuit=circuit, gid=args.pre_gid, neuron_mesh=pre_synaptic_neuron_mesh)
-
     nmv.logger.info('Creating the post-synaptic neuron mesh')
     post_synaptic_dendrites_color = nmv.utilities.confirm_rgb_color_from_color_string(
         args.post_synaptic_dendrites_color)
@@ -168,24 +164,38 @@ if __name__ == "__main__":
         axons_color=post_synaptic_axons_color,
         material_type=material_type)
 
-    # Transform the post-synaptic neuron to its circuit coordinates
-    nmv.bbp.transform_neuron_mesh_to_global_coordinates(
-        circuit=circuit, gid=args.post_gid, neuron_mesh=post_synaptic_neuron_mesh)
+    # Get the transformations of the pre- and post-synaptic neurons
+    pre_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+        gid=args.pre_gid)
+    post_synaptic_transformation = circuit.get_neuron_transformation_matrix(
+        gid=args.post_gid)
 
     # Transform back the pair to the origin based on the inverse transformation of the
     # post-synaptic neuron
     pre_synaptic_neuron_mesh.matrix_world = \
-        inverse_transformation @ pre_synaptic_neuron_mesh.matrix_world
+        pre_synaptic_transformation.inverted() @ pre_synaptic_neuron_mesh.matrix_world
     post_synaptic_neuron_mesh.matrix_world = \
-        inverse_transformation @ post_synaptic_neuron_mesh.matrix_world
+        pre_synaptic_transformation.inverted() @ post_synaptic_neuron_mesh.matrix_world
 
     # Create the synapses mesh
     nmv.logger.info('Creating the synapse mesh')
-    synapse_groups = nmv.bbp.create_shared_synapse_group(circuit, args.pre_gid, args.post_gid)
-    synapses_mesh = nmv.bbp.create_color_coded_synapses_particle_system(
+    # Initially, try to get a list of synapses shared between the two cells
+    shared_synapses_ids = circuit.get_shared_synapses_ids_between_two_neurons(
+        pre_gid=args.pre_gid, post_gid=args.post_gid)
+
+    # Create the shared group
+    synapse_groups = list()
+    synapse_groups.append(
+        nmv.bbp.get_shared_synapses_group_between_two_neurons(
+            circuit=circuit, pre_gid=args.pre_gid, post_gid=args.post_gid,
+            color=args.synapses_color))
+
+    nmv.logger.info('Adding synapses to the scene')
+    nmv.bbp.create_color_coded_synapses_particle_system(
         circuit=circuit, synapse_groups=synapse_groups,
         synapse_radius=args.synapse_radius,
-        inverted_transformation=inverse_transformation,
+        synapses_percentage=100,
+        inverted_transformation=post_synaptic_transformation.inverted(),
         material_type=material_type)
 
     # Render the image
@@ -194,7 +204,7 @@ if __name__ == "__main__":
         camera_view=nmv.enums.Camera.View.FRONT,
         bounding_box=nmv.bbox.compute_scene_bounding_box_for_meshes(),
         image_resolution=args.image_resolution,
-        image_name='%s-%s' % (str(args.pre_gid), args.pre_gid),
+        image_name='synaptic_pathways_%s-%s' % (str(args.pre_gid), args.pre_gid),
         image_directory=args.output_directory)
 
     # Export the scene into a blender file for interactive visualization

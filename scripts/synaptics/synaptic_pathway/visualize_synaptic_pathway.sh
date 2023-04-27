@@ -26,13 +26,14 @@ OUTPUT_DIRECTORY='/abdellah2/scratch/spines'
 # BBP circuit config
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig_h5'
+CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/CircuitConfig'
 
 # The GID of the pre- and post-synaptic neurons
-PRE_SYNAPTIC_NEURON_GID='961928'
-POST_SYNAPTIC_NEURON_GID='3793945'
+PRE_SYNAPTIC_NEURON_GID='77808'
+POST_SYNAPTIC_NEURON_GID='3638969'
 
 # If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
-UNIFY_BRANCHES_RADII='no'
+UNIFY_BRANCHES_RADII='yes'
 
 # A constant value for the radius of the neuron branches. This value will be ignore if
 # UNIFY_BRANCHES_RADII is set to yes
@@ -48,7 +49,7 @@ POST_SYNAPTIC_AXONS_COLOR='#ff00aa' # 212, 59, 79
 SYNAPSES_COLOR='#ff00aa'
 
 # A given fixed radius for the synapses, it is represented as a symbolic sphere
-SYNAPSE_RADIUS='2.0'
+SYNAPSE_RADIUS='3.0'
 
 # Base resolution of the rendered image
 IMAGE_RESOLUTION='5000'
