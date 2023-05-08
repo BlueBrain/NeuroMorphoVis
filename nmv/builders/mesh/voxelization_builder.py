@@ -112,6 +112,11 @@ class VoxelizationBuilder(MeshBuilderBase):
             self.voxelization_resolution = 0.1 * 0.85
         else:
             self.voxelization_resolution = smallest_radius * 0.85
+
+        # If the spines are loaded, use resolution 0.05
+        if self.options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:
+            self.voxelization_resolution = 0.05
+
         nmv.logger.info('Voxelization Resolution [%f]' % self.voxelization_resolution)
 
         # Optimized meta-ball soma resolution for the voxelization modifier

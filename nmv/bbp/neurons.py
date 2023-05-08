@@ -29,7 +29,8 @@ import nmv.shading
 ####################################################################################################
 def create_neuron_mesh_in_circuit(
         circuit, gid,
-        unified_radius=True, branch_radius=1.0,
+        branch_radius_type=nmv.enums.Skeleton.Radii.ORIGINAL,
+        branch_radius=1.0, branch_radius_scale_factor=1.0,
         basal_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         apical_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
         axon_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER,
@@ -55,9 +56,15 @@ def create_neuron_mesh_in_circuit(
     nmv_options = nmv.options.NeuroMorphoVisOptions()
 
     # Radii
-    if unified_radius:
-        nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+    nmv_options.morphology.arbors_radii = branch_radius_type
+    if branch_radius_type == nmv.enums.Skeleton.Radii.ORIGINAL:
+        pass
+    elif branch_radius_type == nmv.enums.Skeleton.Radii.UNIFIED:
         nmv_options.morphology.samples_unified_radii_value = branch_radius
+    elif branch_radius_type == nmv.enums.Skeleton.Radii.SCALED:
+        nmv_options.morphology.sections_radii_scale = branch_radius_scale_factor
+    else:
+        pass
 
     # Branching orders
     nmv_options.morphology.basal_dendrites_branch_order = basal_branching_order
@@ -138,9 +145,14 @@ def visualize_circuit_neuron_for_synaptics(circuit,
     if dendrites_branching_order == 0 and axons_branching_order == 0:
         return None
 
+    if options.synaptics.unify_branch_radii:
+        branches_radii_type = nmv.enums.Skeleton.Radii.UNIFIED
+    else:
+        branches_radii_type = nmv.enums.Skeleton.Radii.ORIGINAL
+
     # Create the mesh and return a reference to it
     return create_neuron_mesh_in_circuit(circuit=circuit, gid=gid,
-                                         unified_radius=options.synaptics.unify_branch_radii,
+                                         branch_radius_type=branches_radii_type,
                                          branch_radius=options.synaptics.unified_radius,
                                          basal_branching_order=dendrites_branching_order,
                                          apical_branching_order=dendrites_branching_order,

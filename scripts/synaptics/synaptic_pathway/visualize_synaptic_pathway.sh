@@ -32,12 +32,15 @@ CIRCUIT_CONFIG='/gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/Circuit
 PRE_SYNAPTIC_NEURON_GID='38749'
 POST_SYNAPTIC_NEURON_GID='3642408'
 
-# If this variable is set to yes, we will use the UNIFIED_NEURON_RADIUS value for all the branches
-UNIFY_BRANCHES_RADII='yes'
+# Options: 'original', 'unified', or 'scaled'
+BRANCHES_RADII_TYPE='original'
 
 # A constant value for the radius of the neuron branches. This value will be ignore if
 # UNIFY_BRANCHES_RADII is set to yes
 UNIFIED_NEURON_RADIUS='1.0'
+
+# Scale factor for the radii
+RADII_SCALE_FACTOR='3.0'
 
 # The colors of the pre- and post-synaptic neurons
 PRE_SYNAPTIC_DENDRITES_COLOR='#E02F61' # 194, 59, 212
@@ -61,8 +64,6 @@ SAVE_TO_BLEND_FILE='yes'
 BOOL_ARGS=''
 if [ "$SAVE_TO_BLEND_FILE" == "yes" ];
     then BOOL_ARGS+=' --save-blend-file '; fi
-if [ "$UNIFY_BRANCHES_RADII" == "yes" ];
-    then BOOL_ARGS+=' --unify-branches-radii '; fi
 
 ####################################################################################################
 $BLENDER -b --verbose 0 --python visualize_synaptic_pathway.py --                                   \
@@ -74,7 +75,9 @@ $BLENDER -b --verbose 0 --python visualize_synaptic_pathway.py --               
     --pre-synaptic-axons-color=$PRE_SYNAPTIC_AXONS_COLOR                                            \
     --post-synaptic-dendrites-color=$POST_SYNAPTIC_DENDRITES_COLOR                                  \
     --post-synaptic-axons-color=$POST_SYNAPTIC_AXONS_COLOR                                          \
+    --branches-radii-type=$BRANCHES_RADII_TYPE                                                      \
     --unified-branches-radius=$UNIFIED_NEURON_RADIUS                                                \
+    --branches-radius-scale=$RADII_SCALE_FACTOR                                                     \
     --synapses-color=$SYNAPSES_COLOR                                                                \
     --synapse-radius=$SYNAPSE_RADIUS                                                                \
     --image-resolution=$IMAGE_RESOLUTION                                                            \

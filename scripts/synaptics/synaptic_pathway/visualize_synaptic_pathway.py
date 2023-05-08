@@ -63,14 +63,17 @@ def parse_command_line_arguments():
     parser.add_argument('--post-synaptic-neuron-gid',
                         action='store', dest='post_gid', type=int, help=arg_help)
 
-    arg_help = 'A flag to set the radii of all the branches to a unified value'
-    parser.add_argument('--unify-branches-radii',
-                        dest='unify_branches_radii', action='store_true', default=False,
-                        help=arg_help)
+    arg_help = 'The type of the radii of the neuronal branches'
+    parser.add_argument('--branches-radii-type',
+                        action='store', dest='branches_radii_type', help=arg_help)
 
     arg_help = 'The value of the unified radius of the branches (in um)'
     parser.add_argument('--unified-branches-radius',
                         action='store', dest='unified_branches_radius', type=float, help=arg_help)
+
+    arg_help = 'A scale factor for the radii'
+    parser.add_argument('--branches-radius-scale',
+                        action='store', dest='branches_radius_scale', type=float, help=arg_help)
 
     arg_help = 'The color of the dendrites of the pre-synaptic neuron.'
     parser.add_argument('--pre-synaptic-dendrites-color',
@@ -110,6 +113,28 @@ def parse_command_line_arguments():
 
 
 ####################################################################################################
+# @get_branch_radius_type
+####################################################################################################
+def get_branch_radius_type(in_type):
+    """Gets the type of the radii of the branches of the neuron.
+
+    :param in_type:
+        The input string that defines the type from the interface.
+    :return:
+        The corresponding enumerator.
+    """
+
+    if 'original' in in_type.lower():
+        return nmv.enums.Skeleton.Radii.ORIGINAL
+    elif 'scaled' in in_type.lower():
+        return nmv.enums.Skeleton.Radii.SCALED
+    elif 'unified' in in_type.lower():
+        return nmv.enums.Skeleton.Radii.UNIFIED
+    else:
+        return nmv.enums.Skeleton.Radii.ORIGINAL
+
+
+####################################################################################################
 # @ Main
 ####################################################################################################
 if __name__ == "__main__":
@@ -132,6 +157,9 @@ if __name__ == "__main__":
     # Make a NMV circuit
     circuit = nmv.bbp.BBPCircuit(circuit_config=args.circuit_config)
 
+    # Get the radii of the branches
+    branches_radii_type = get_branch_radius_type(in_type=args.branches_radii_type)
+
     # Create the mesh of the pre-synaptic neuron at the global coordinates
     nmv.logger.info('Creating the pre-synaptic neuron mesh')
     pre_synaptic_dendrites_color = nmv.utilities.confirm_rgb_color_from_color_string(
@@ -140,8 +168,9 @@ if __name__ == "__main__":
         args.pre_synaptic_axons_color)
     pre_synaptic_neuron_mesh = nmv.bbp.nmv.bbp.create_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.pre_gid,
-        unified_radius=args.unify_branches_radii,
+        branch_radius_type=branches_radii_type,
         branch_radius=args.unified_branches_radius,
+        branch_radius_scale_factor=args.branches_radius_scale,
         soma_color=pre_synaptic_dendrites_color,
         basal_dendrites_color=pre_synaptic_dendrites_color,
         apical_dendrites_color=pre_synaptic_dendrites_color,
@@ -155,8 +184,9 @@ if __name__ == "__main__":
         args.post_synaptic_axons_color)
     post_synaptic_neuron_mesh = nmv.bbp.create_neuron_mesh_in_circuit(
         circuit=circuit, gid=args.post_gid,
-        unified_radius=args.unify_branches_radii,
+        branch_radius_type=branches_radii_type,
         branch_radius=args.unified_branches_radius,
+        branch_radius_scale_factor=args.branches_radius_scale,
         axon_branching_order=1,
         soma_color=post_synaptic_dendrites_color,
         basal_dendrites_color=post_synaptic_dendrites_color,
