@@ -203,7 +203,8 @@ Copyright (c) 2016-2023 Blue Brain Project/EPFL
 For more information on _NeuroMorphoVis_, comments or suggestions, please contact:
 
 __Marwan Abdellah__  
-Scientific Visualiation Engineer  
+Scientific Visualiation Expert  
+Visualization Team, Computing Division
 Blue Brain Project  
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch) 
 
