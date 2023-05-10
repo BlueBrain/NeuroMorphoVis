@@ -11,12 +11,14 @@
 + Sketching and building three-dimensional representations of the morphology skeletons using various methods for visual analytics. 
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata. This approach uses the physics engine of Blender based on Hooke's law and mass spring models.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al., 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4).
-+ High fidelity mesh reconstruction based on Skin modifiers as presented by [Abdellah et al., 2019](https://diglib.eg.org/xmlui/handle/10.2312/cgvc20191257). 
-+ Fast mesh reconstruction based on union operators for rendering transparent meshes. 
-+ Accurate mesh reconstruction with meta balls to create watertight meshes for reaction-diffusion simulations.
++ Accurate mesh reconstruction with metaballs to handle morphologies with irregular and small branching angles.
++ Watertight mesh reconstruction using [voxelization based remeshing](https://docs.blender.org/manual/en/latest/sculpt_paint/sculpting/tool_settings/remesh.html) (in Blender 3.0 onwards) for reaction-diffusion simulations.
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
++ High fidelity mesh reconstruction based on Skin modifiers as presented by [Abdellah et al., 2019](https://diglib.eg.org/xmlui/handle/10.2312/cgvc20191257).
++ Robust mesh reconstruction of synthetic astroglial cells using Metaballs and implicit geometries [Abdellah et al., 2021](https://academic.oup.com/bioinformatics/article/37/Supplement_1/i426/6319688)
++ Fast mesh reconstruction of spiny neuronal morohologies based on union operators for rendering transparent meshes [Abdellah et al., 2022](https://diglib.eg.org/handle/10.2312/cgvc20221168).
 + Multiple interfaces: user-friendly graphical user interface, a rich command line interface, editable configuration files and a high level python API for python scripting.
-+ Importing morphologies in multiple file formats including [SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html), [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html) or even from a [BBP circuit](https://portal.bluebrain.epfl.ch/resources/models/microcircuits-2/) using GIDs and cell targets. 
++ Importing morphologies in multiple file formats including [SWC](http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html), [H5](https://developer.humanbrainproject.eu/docs/projects/morphology-documentation/0.0.2/index.html), [Neurolucida ASCII format ](https://docs.arbor-sim.org/en/stable/fileformat/asc.html) or even from a [BBP circuit](https://portal.bluebrain.epfl.ch/resources/models/microcircuits-2/) using GIDs and cell targets. 
 + Exporting the reconstructed meshes in several file formats including [PLY](https://en.wikipedia.org/wiki/PLY_(file_format)), [OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file), [STL](https://en.wikipedia.org/wiki/STL_(file_format)) and also as a Blender file ([.blend](https://en.wikipedia.org/wiki/Blender_(software)#File_format)).
 + Parallel batch processing on multi-node visualization clusters using [SLURM workload manager](https://slurm.schedmd.com/). 
 
