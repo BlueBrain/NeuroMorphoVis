@@ -206,10 +206,6 @@ __Marwan Abdellah__
 Scientific Visualiation Engineer  
 Blue Brain Project  
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch) 
- 
-__Felix Schürmann__  
-Co-director of the Blue Brain Project    
-[felix.schuermann@epfl.ch](felix.schuermann@epfl.ch)
 
 # Navigation 
 
