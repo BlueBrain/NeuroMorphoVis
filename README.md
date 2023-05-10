@@ -218,10 +218,10 @@ For more information on _NeuroMorphoVis_, comments or suggestions, please contac
 
 __Marwan Abdellah__  
 Scientific Visualiation Expert  
-Visualization Team, Computing Division
-Blue Brain Project 
+Visualization Team, Computing Division  
+Blue Brain Project  
 [marwan.abdellah@epfl.ch](marwan.abdellah@epfl.ch)  
-[marwan-abdellah.com](http://marwan-abdellah.com)
+[marwan-abdellah.com](http://marwan-abdellah.com)  
 
 # Navigation 
 
