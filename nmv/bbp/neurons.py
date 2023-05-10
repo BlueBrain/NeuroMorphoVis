@@ -66,6 +66,9 @@ def create_neuron_mesh_in_circuit(
     else:
         pass
 
+    # TODO: Remove me please, this is just a hack
+    nmv_options.morphology.arbor_style = nmv.enums.Skeleton.Style.TAPERED_ZIGZAG
+
     # Branching orders
     nmv_options.morphology.basal_dendrites_branch_order = basal_branching_order
     nmv_options.morphology.apical_dendrite_branch_order = apical_branching_order

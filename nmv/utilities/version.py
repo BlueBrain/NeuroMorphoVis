@@ -32,7 +32,6 @@ def get_nmv_version():
     # Load the version from the version file
     version_file_path = '%s/../../__init__.py' % os.path.dirname(os.path.realpath(__file__))
     version_file = open(version_file_path, 'r')
-    version_string = ''
     for line in version_file:
         if '"version":' in line:
             string = line.split('\"version\": (')[1].split(')')[0].split(', ')

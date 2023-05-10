@@ -234,13 +234,13 @@ if __name__ == "__main__":
         camera_view=nmv.enums.Camera.View.FRONT,
         bounding_box=nmv.bbox.compute_scene_bounding_box_for_meshes(),
         image_resolution=args.image_resolution,
-        image_name='synaptic_pathways_%s-%s' % (str(args.pre_gid), args.pre_gid),
+        image_name='synaptic_pathways_%s-%s' % (str(args.pre_gid), args.post_gid),
         image_directory=args.output_directory)
 
     # Export the scene into a blender file for interactive visualization
     if args.save_blend_file:
         nmv.logger.info('Saving into a .BLEND file [%s/%s-%s.blend]' %
-                        (args.output_directory, str(args.pre_gid), args.pre_gid))
+                        (args.output_directory, str(args.pre_gid), args.post_gid))
         nmv.file.export_scene_to_blend_file(
             output_directory=args.output_directory,
-            output_file_name='%s-%s' % (str(args.pre_gid), args.pre_gid))
+            output_file_name='%s-%s' % (str(args.pre_gid), args.post_gid))
