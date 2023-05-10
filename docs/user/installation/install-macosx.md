@@ -1,1 +1,0 @@
-# Installing NeuroMorphoVis on maxOSX
