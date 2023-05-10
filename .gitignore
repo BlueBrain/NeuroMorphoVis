@@ -59,6 +59,9 @@ coverage.xml
 .media/
 local_settings.py
 
+# Blender
+*.blend1
+
 # Flask stuff:
 instance/
 .webassets-cache
