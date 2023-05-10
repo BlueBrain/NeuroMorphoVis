@@ -29,7 +29,7 @@
 # News 
 + 05.2025: Release 1.9.0
 + 04.2023: Implementation of the Voxelization-based remeshing to create watertight mesh models of neurons and astrocytes.
-+ 03.2023: Adding the Synaptics panel to _NeuroMorphoVis_. 
++ 03.2023: Adding the [Synaptics panel](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Synaptics) to _NeuroMorphoVis_. 
 + 09.2022: [Paper](https://www.researchgate.net/profile/Marwan-Abdellah/publication/363538092_Meshing_of_Spiny_Neuronal_Morphologies_using_Union_Operators/links/637b320d2f4bca7fd07b7f13/Meshing-of-Spiny-Neuronal-Morphologies-using-Union-Operators.pdf), Generating high fidelity surface meshes of neocortical neurons using skin modifiers
 , in EG Computer Graphics and Visual Computing (CGVC) 2022, [more information](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Papers).
 + 04.2020: Release [1.4.5](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.4.5)
