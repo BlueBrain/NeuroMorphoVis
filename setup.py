@@ -467,6 +467,8 @@ if __name__ == "__main__":
         log_header('Blender 2.90')
     elif args.blender_version == '3.1':
         log_header('Blender 3.1')
+    elif args.blender_version == '3.5':
+        log_header('Blender 3.5')
     else:
         log_header('NeuroMorphoVis is ONLY available for Blender versions '
                    '2.79, 2.80, 2.81, 2.82, 2.83, 2.90, 3.1. Recommended version: 3.1')
