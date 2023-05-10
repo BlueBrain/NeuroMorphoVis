@@ -168,7 +168,7 @@ The applications of _NeuroMorhoVis_ are deomnstrated in the thesis [In silico Br
 
 # Publications that use or mention NeuroMorphoVis
 
-An exhaustive list of all the publications that use or mention NeuroMorphoVis is available in this Wiki page: [Citing Publications](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Publications-Citing-NeuroMorphoVis).
+An exhaustive list of all the publications that use or mention NeuroMorphoVis is available in this [Wiki page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Publications-Citing-NeuroMorphoVis).
 
 # Acknowledgement & Funding
 _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Project](https://bluebrain.epfl.ch/page-52063.html), [Ecole Polytechnique Federale de Lausanne (EPFL)](https://www.epfl.ch/) as part of [Marwan Abdellah's](http://marwan-abdellah.com/) [PhD (In silico Brain Imaging: Physically-plausible Methods for Visualizing Neocortical Microcircuitry)](https://infoscience.epfl.ch/record/232444?ln=en). Financial support was provided by funding to the [Blue Brain Project](https://bluebrain.epfl.ch/), a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology, and by competitive research funding from [King Abdullah University of Science and Technology (KAUST)](https://www.kaust.edu.sa/en).
