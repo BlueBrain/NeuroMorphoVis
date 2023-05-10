@@ -210,7 +210,6 @@ Copyright (c) 2016-2023 Blue Brain Project/EPFL
 
 * The table of contents for all the user documentation pages are generated with [markdown-toc](http://ecotrust-canada.github.io/markdown-toc/).
 
- 
 
 # Contact
 
@@ -239,8 +238,10 @@ Blue Brain Project
   + [Morphology Editing](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Editing)
   + [Soma Reconstruction](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Soma-Reconstruction)
   + [Morphology Reconstruction](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Morphology-Reconstruction)
+  + [Synaptics](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Synaptics)
   + [Mesh Reconstruction](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Mesh-Reconstruction)
   + [About NeuroMorphoVis](https://github.com/BlueBrain/NeuroMorphoVis/wiki/About)
+
 
 + Other Links 
 
