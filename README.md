@@ -24,6 +24,18 @@
 + Exporting the reconstructed meshes in several file formats including [PLY](https://en.wikipedia.org/wiki/PLY_(file_format)), [OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file), [STL](https://en.wikipedia.org/wiki/STL_(file_format)) and also as a Blender file ([.blend](https://en.wikipedia.org/wiki/Blender_(software)#File_format)).
 + Parallel batch processing on multi-node visualization clusters using [SLURM workload manager](https://slurm.schedmd.com/). 
 
+# News 
++ 05.2025: Release 1.9
++ 04.2023: Implementation of the Voxelization-based remeshing to create watertight mesh models of neurons and astrocytes.
++ 03.2023: Adding the Synaptics panel to _NeuroMorphoVis_. 
++ 09.2022: [Paper](https://www.researchgate.net/profile/Marwan-Abdellah/publication/363538092_Meshing_of_Spiny_Neuronal_Morphologies_using_Union_Operators/links/637b320d2f4bca7fd07b7f13/Meshing-of-Spiny-Neuronal-Morphologies-using-Union-Operators.pdf), Generating high fidelity surface meshes of neocortical neurons using skin modifiers
+, in EG Computer Graphics and Visual Computing (CGVC) 2022.
++ 04.2020: Release [1.4.5](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.4.5)
++ 09.2019: [Paper](https://diglib.eg.org/handle/10.2312/cgvc20191257): Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers, in EG Computer Graphics and Visual Computing (CGVC) 2019.
++ 05.2019: Release [1.3.1](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.3.1)
++ 03.2019: Release [1.3.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.3.0)
++ 10.2018: Release [1.0.0](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.0.0)
++ 07.2018: The core paper of NeuroMorphoVis is published in [Oxford Bioinformatics](https://academic.oup.com/bioinformatics/article/34/13/i574/5045775?login=true). 
 # Package Details 
 
 _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from [Blender.org](http://download.blender.org/release/). Blender is released under the GNU General Public License ([GPL](https://www.blender.org/about/license/), or “free software”).
@@ -31,8 +43,6 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 + [Blender 2.80](http://download.blender.org/release/Blender2.80/)
-
-
 + [Blender 3.1](http://download.blender.org/release/Blender3.1/)
 + [Blender 3.5](http://download.blender.org/release/Blender3.5/)
 
