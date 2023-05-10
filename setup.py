@@ -19,10 +19,34 @@
 # System imports
 import os
 import sys
+import platform
 import subprocess
 import argparse
 import shutil
 import shlex
+
+
+####################################################################################################
+# @get_pip_wheels
+####################################################################################################
+def get_pip_wheels():
+    """Returns a lit of the required wheels that should be installed to be able to run NMV.
+
+    :return:
+        A list of lists, where each item in the list is composed of two strings. The first string
+        is the name of the pip package, and the second string is the recommended version.
+        If the second version if empty, the latest version will be installed.
+    :rtype:
+    """
+
+    return [['numpy', ''],
+            ['h5py', ''],
+            ['matplotlib', ''],
+            ['seaborn', ''],
+            ['pandas', ''],
+            ['Pillow', ''],
+            ['webbrowser', ''],
+            ['morphio', '']]
 
 
 ####################################################################################################
@@ -38,15 +62,15 @@ def parse_command_line_arguments(arguments=None):
     """
 
     # add all the options
-    description = 'Installing NeuroMorphoVis from scratch. Simple, easy and awesome! ' \
+    description = 'Installing NeuroMorphoVis simple, easy and awesome! ' \
                   'This script is valid for *nix-based operating systems including macOSX and ' \
-                  'Linux distributions. For windows, you can download a zip package from the ' \
+                  'Linux distributions. For windows, you can download a .zip package from the ' \
                   'release page. \n' \
-                  'NOTE: git, wget or curl must be installed to run this script.'
+                  'NOTE: python, git, wget or curl must be installed to run this script.'
     parser = argparse.ArgumentParser(description=description)
 
-    arg_help = 'Blender version. 2.79, 2.80, or 2.81, 2.82, 2.90 and 3.1. ' \
-               'By default it is 3.1. It is recommended to avoid 2.79.'
+    arg_help = 'Blender version. 2.79, 2.80, 3.1 and 3.5; default (3.5)' \
+               'It is recommended to avoid all preceding versions as much as possible.'
     parser.add_argument('--blender-version',
                         action='store', dest='blender_version', default='3.1', help=arg_help)
 
@@ -142,28 +166,16 @@ def install_for_linux(directory, blender_version, verbose=False):
         python_version = '3.7'
         package_name = 'blender-2.80-linux-glibc217-x86_64'
         extension = 'tar.bz2'
-    elif blender_version == '2.81':
-        python_version = '3.7'
-        package_name = 'blender-2.81-linux-glibc217-x86_64'
-        extension = 'tar.bz2'
-    elif blender_version == '2.82':
-        python_version = '3.7'
-        package_name = 'blender-2.82a-linux64'
-        extension = 'tar.xz'
-    elif blender_version == '2.83':
-        python_version = '3.7'
-        package_name = 'blender-2.83.9-linux64'
-        extension = 'tar.xz'
-    elif blender_version == '2.90':
-        python_version = '3.7'
-        package_name = 'blender-2.90.1-linux64'
-        extension = 'tar.xz'
     elif blender_version == '3.1':
         python_version = '3.10'
         package_name = 'blender-3.1.0-linux-x64'
         extension = 'tar.xz'
+    elif blender_version == '3.5':
+        python_version = '3.10'
+        package_name = 'blender-3.5.0-linux-x64'
+        extension = 'tar.xz'
     else:
-        print('ERROR: Wrong Blender version [%s]' % blender_version)
+        print('ERROR: Unsupported Blender version [%s]' % blender_version)
         exit(0)
 
     # Blender url
@@ -183,23 +195,20 @@ def install_for_linux(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Moving to blender
-    blender_directory = '%s/blender-neuromorphovis' % directory
+    blender_directory = '%s/blender-bbp' % directory
     shell_command = 'mv %s/%s %s' % (directory, package_name, blender_directory)
     if os.path.exists(blender_directory):
         os.rmdir(blender_directory)
     run_command(shell_command, verbose)
 
     # Clone NeuroMorphoVis into the 'addons' directory
-    addons_directory = '%s/blender-neuromorphovis/%s/scripts/addons/' % (directory, blender_version)
+    addons_directory = '%s/blender-bbp/%s/scripts/addons/' % (directory, blender_version)
     neuromorphovis_url = 'https://github.com/BlueBrain/NeuroMorphoVis.git'
     shell_command = 'git clone %s %s/neuromorphovis' % (neuromorphovis_url, addons_directory)
     run_command(shell_command, verbose)
 
-    # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
-
     # Removing the site-packages directory
-    blender_python_wheels = '%s/blender-neuromorphovis/%s/python/lib/python%s/site-packages/' % \
+    blender_python_wheels = '%s/blender-bbp/%s/python/lib/python%s/site-packages/' % \
                             (directory, blender_version, python_version)
     shell_command = 'rm -rf %s/numpy' % blender_python_wheels
     run_command(shell_command, verbose)
@@ -207,10 +216,10 @@ def install_for_linux(directory, blender_version, verbose=False):
     # Blender python
     blender_python_prefix = '%s/%s/python/bin/' % (blender_directory, blender_version)
 
-    if blender_version == '3.1':
-        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
-    else:
+    if float(blender_version) < 3.1:
         blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
+    else:
+        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
 
     # Pip installation
     get_pip_script_url = 'https://bootstrap.pypa.io/get-pip.py'
@@ -228,9 +237,12 @@ def install_for_linux(directory, blender_version, verbose=False):
     # Pip executable
     pip_executable = '%s/pip' % blender_python_prefix
 
+    # Installing dependencies
+    pip_wheels = get_pip_wheels()
+
     # packages
     for i, wheel in enumerate(pip_wheels):
-        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
+        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel[0])
         print('INSTALL: %s' % shell_command)
         run_command(shell_command, verbose)
 
@@ -260,13 +272,15 @@ def install_for_linux(directory, blender_version, verbose=False):
 ####################################################################################################
 # @install_for_mac
 ####################################################################################################
-def install_for_mac(directory, blender_version, verbose=False):
+def install_for_mac(directory, blender_version, arch, verbose=False):
     """Install NeuroMorphoVis on macOSX operating system.
 
     :param directory:
         Installation directory.
     :param blender_version
         The version of Blender.
+    :param arch:
+        Hardware architecture.
     :param verbose:
         Verbose.
     """
@@ -281,21 +295,18 @@ def install_for_mac(directory, blender_version, verbose=False):
     elif blender_version == '2.80':
         python_version = '3.7'
         package_name = 'blender-2.80rc3-macOS.dmg'
-    elif blender_version == '2.81':
-        python_version = '3.7'
-        package_name = 'blender-2.81-macOS.dmg'
-    elif blender_version == '2.82':
-        python_version = '3.7'
-        package_name = 'blender-2.82a-macOS.dmg'
-    elif blender_version == '2.83':
-        python_version = '3.7'
-        package_name = 'blender-2.83.1-macOS.dmg'
-    elif blender_version == '2.90':
-        python_version = '3.7'
-        package_name = 'blender-2.90.1-macOS.dmg'
     elif blender_version == '3.1':
         python_version = '3.10'
         package_name = 'blender-3.1.0-macos-x64.dmg'
+    elif blender_version == '3.5':
+        python_version = '3.10'
+        if 'x86' in arch:
+            package_name = 'blender-3.5.0-macos-x64.dmg'
+        elif 'arm' in arch:
+            package_name = 'blender-3.5.0-macos-arm64.dmg'
+        else:
+            print('ERROR: Unsupported architecture [%s]' % arch)
+            exit(0)
     else:
         print('ERROR: Wrong Blender version [%s]' % blender_version)
         exit(0)
@@ -339,10 +350,10 @@ def install_for_mac(directory, blender_version, verbose=False):
     # Blender python
     blender_python_prefix = '%s/Contents/Resources/%s/python/bin/' % (blender_app_directory,
                                                                       blender_version)
-    if blender_version == '3.1':
-        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
-    else:
+    if float(blender_version) < 3.1:
         blender_python = '%s/python%sm' % (blender_python_prefix, python_version)
+    else:
+        blender_python = '%s/python%s' % (blender_python_prefix, python_version)
 
     # Pip installation
     log_process('Installing Dependencies')
@@ -368,11 +379,10 @@ def install_for_mac(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
-
+    pip_wheels = get_pip_wheels()
     for wheel in pip_wheels:
         log_detail('Installing: %s' % wheel)
-        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel)
+        shell_command = '%s install --ignore-installed %s' % (pip_executable, wheel[0])
         run_command(shell_command, verbose)
 
     # h5py specific version
@@ -414,24 +424,22 @@ def install_neuromorphovis(directory, blender_version, verbose=False):
         Verbose.
     """
 
+    # Get the platform details
+    platform_uname = platform.uname()
+
     # Header
-    log_header('Installing Blender for %s' % sys.platform)
+    log_header('Installing Blender for %s' % platform_uname.system)
     log_process('Installation Directory: %s' % directory)
 
-    # Linux
-    if sys.platform == "linux" or sys.platform == "linux2":
+    # Verify the OS
+    if "linux" in platform_uname.system.lower():
         install_for_linux(directory, blender_version, verbose)
-
-    # OS X
-    elif sys.platform == "darwin":
-        install_for_mac(directory, blender_version, verbose)
-
-    # Windows
+    elif "darwin" in platform_uname.system.lower():
+        install_for_mac(directory, blender_version, platform_uname.processor, verbose)
     elif sys.platform == "win32":
         print('This script is only valid for *nix-based operating systems. '
               'For windows, you can download a zip package from the release page.')
         exit(0)
-
     else:
         print('ERROR: Unrecognized operating system %s' % sys.platform)
         exit(0)
@@ -457,31 +465,24 @@ if __name__ == "__main__":
         log_header('Blender 2.79')
     elif args.blender_version == '2.80':
         log_header('Blender 2.80')
-    elif args.blender_version == '2.81':
-        log_header('Blender 2.81')
-    elif args.blender_version == '2.82':
-        log_header('Blender 2.82')
-    elif args.blender_version == '2.83':
-        log_header('Blender 2.83')
-    elif args.blender_version == '2.90':
-        log_header('Blender 2.90')
     elif args.blender_version == '3.1':
         log_header('Blender 3.1')
     elif args.blender_version == '3.5':
         log_header('Blender 3.5')
     else:
-        log_header('NeuroMorphoVis is ONLY available for Blender versions '
-                   '2.79, 2.80, 2.81, 2.82, 2.83, 2.90, 3.1. Recommended version: 3.1')
+        log_header('NeuroMorphoVis is ONLY available for the following Blender versions '
+                   '2.79, 2.80, 3.1 and 3.5. Recommended version: 3.5')
         exit(0)
 
     # Installation directory
-    installation_directory = '%s/bluebrain-blender-%s' % (args.install_prefix, args.blender_version)
+    installation_directory = '%s/bbp-blender-%s' % (args.install_prefix, args.blender_version)
 
     # Verify the installation directory
+    if not os.path.exists(args.install_prefix):
+        os.mkdir(args.install_prefix)
     if not os.path.exists(installation_directory):
         os.mkdir(installation_directory)
     else:
-        pass
         shutil.rmtree(installation_directory)
         os.mkdir(installation_directory)
 
