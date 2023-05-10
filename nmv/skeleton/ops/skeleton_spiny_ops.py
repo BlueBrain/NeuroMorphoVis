@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -21,7 +21,6 @@ import random
 
 # Blender imports
 from mathutils import Vector, Matrix
-import bpy
 
 # Internal modules
 import nmv.builders
@@ -139,8 +138,8 @@ def get_random_spines_across_section(section,
         section_polyline_data = nmv.skeleton.ops.get_section_poly_line(section=section)
 
         # Construct a proxy poly-line
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16,
-                                                     name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16,
+                                                     name='Cross Section')
         proxy_section_polyline = nmv.geometry.draw_poly_line(
             poly_line_data=section_polyline_data, bevel_object=bevel_object, caps=False)
 
@@ -246,7 +245,7 @@ def construct_polyline_mesh(polyline_data,
     """
 
     # Proxy bevel object
-    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name='proxy_arbor')
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name='proxy_arbor')
 
     # Polyline from polyline data
     proxy_polyline = nmv.geometry.draw_poly_line(
@@ -351,7 +350,7 @@ def get_random_spines_on_section_recursively(max_branching_order,
     section_length = nmv.skeleton.compute_section_length(section=section)
 
     # Get the total number of spines along the section
-    total_number_of_spines = section_length * number_spines_per_micron
+    total_number_of_spines = section_length * number_spines_per_micron * 0.25
 
     if 0.0 < total_number_of_spines < 1.0:
         total_number_of_spines = 1.0

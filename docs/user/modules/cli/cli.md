@@ -60,9 +60,9 @@ usage: neuromorphovis.py [-h] [--blender BLENDER] [--input INPUT]
                          [--render-neuron-mesh] [--render-neuron-mesh-360]
                          [--render-to-scale] [--rendering-view RENDERING_VIEW]
                          [--camera-view CAMERA_VIEW]
-                         [--close-up-dimensions CLOSE_UP_DIMENSIONS]
+                         [--close-up-dimensions CLOSEUP_DIMENSIONS]
                          [--full-view-resolution FULL_VIEW_RESOLUTION]
-                         [--close-up-resolution CLOSE_UP_RESOLUTION]
+                         [--close-up-resolution CLOSEUP_RESOLUTION]
                          [--resolution-scale-factor RESOLUTION_SCALE_FACTOR]
                          [--execution-node EXECUTION_NODE]
                          [--number-cores NUMBER_CORES]
@@ -277,14 +277,14 @@ Rendering:
   --camera-view CAMERA_VIEW
                         The camera direction.
                         Options: ['(front)', 'side', 'top']
-  --close-up-dimensions CLOSE_UP_DIMENSIONS
+  --close-up-dimensions CLOSEUP_DIMENSIONS
                         Close up dimensions (the view around the soma in microns).
                         Valid only when the --rendering-view = close-up.
                         Default 20.
   --full-view-resolution FULL_VIEW_RESOLUTION
                         Base resolution of full view images (wide-shot or mid-shot).
                         Default 1024.
-  --close-up-resolution CLOSE_UP_RESOLUTION
+  --close-up-resolution CLOSEUP_RESOLUTION
                         Base resolution of close-up images.
                         Valid only when the --rendering-view = close-up.
                         Default 512.

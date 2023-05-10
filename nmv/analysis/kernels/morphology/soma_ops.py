@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -14,9 +14,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
-# Internal imports
-import nmv.analysis
 
 
 ####################################################################################################
@@ -82,7 +79,7 @@ def kernel_soma_get_average_surface_area(morphology):
 
 
 ####################################################################################################
-# @kernel_global_get_soma_volume
+# @kernel_soma_get_average_volume
 ####################################################################################################
 def kernel_soma_get_average_volume(morphology):
     """Get the volume of the soma based on its mean radius as reported in the morphology.
@@ -98,7 +95,7 @@ def kernel_soma_get_average_volume(morphology):
 
 
 ####################################################################################################
-# @kernel_soma_get_reported_mean_radius
+# @kernel_soma_count_profile_points
 ####################################################################################################
 def kernel_soma_count_profile_points(morphology):
     """Count the profile points of the soma as reported in the morphology file.

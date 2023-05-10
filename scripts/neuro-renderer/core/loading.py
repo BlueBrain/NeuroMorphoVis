@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -136,7 +136,7 @@ def load_object_from_blend_file(input_directory,
     for i_object in data_dst.objects:
         if i_object is not None:
 
-            if not ('soma' in i_object.name or 'cs' in i_object.name):
+            if not ('Soma' in i_object.name or 'cs' in i_object.name):
 
                 # Adjust the texture UV mapping
                 # i_object.data.texspace_size[0] = 10.0

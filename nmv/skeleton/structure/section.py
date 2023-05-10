@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -27,7 +27,7 @@ import nmv.analysis
 # Section
 ####################################################################################################
 class Section:
-    """ A morphological section represents a series of morphological samples. """
+    """A morphological section represents a series of morphological samples."""
 
     ################################################################################################
     # @__init__
@@ -97,7 +97,7 @@ class Section:
         self.branching_order = 0
 
         # Is the 'root' section of any branch connected to the soma or not ?!
-        # By default for all the sections, this options is set to False, however, for the root
+        # By default, for all the sections, this options is set to False, however, for the root
         # sections, the branch is checked if it is connected to the soma or not. If True, then we
         # keep a reference to the face that will be used to extrude or connect that branch to soma.
         # This parameter is mainly used for the SoftBody soma reconstruction. 
@@ -124,9 +124,9 @@ class Section:
         # NOTE: This variable is only set to the root sections.
         self.soma_face_centroid = None
 
-        # This parameters defines whether this section is a continuation for a parent section or
-        # not. By default it is set to False, however, during the morphology pre-processing, it must
-        # be updated if the section is determined to be a continuous one.
+        # This parameter defines whether this section is a continuation for a parent section or
+        # not. By default, it is set to False, however, during the morphology pre-processing, it
+        # must be updated if the section is determined to be a continuous one.
         self.is_primary = False
 
         # Initial value for the maximum branching level
@@ -259,7 +259,7 @@ class Section:
         return False
 
     ################################################################################################
-    # @is_basal_dendrite
+    # @is_apical_dendrite
     ################################################################################################
     def is_apical_dendrite(self):
         """Check if this section belongs to an apical dendrite or not.

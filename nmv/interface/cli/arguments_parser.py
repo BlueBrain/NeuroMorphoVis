@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -72,14 +72,14 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Cell GID, requires a circuit configuration
-    arg_help = 'Morphology file (.H5 or .SWC)'
+    arg_help = 'Morphology file: supported formats H5, SWC and ASCII)'
     input_args.add_argument(
         Args.MORPHOLOGY_FILE,
         action='store', default=None,
         help=arg_help)
 
     # Cell GID, requires a circuit configuration
-    arg_help = 'Morphology directory containing (.H5 or .SWC) files'
+    arg_help = 'Morphology directory containing morphologies: supported formats H5, SWC and ASCII)'
     input_args.add_argument(
         Args.MORPHOLOGY_DIRECTORY,
         action='store', default=None,
@@ -699,7 +699,7 @@ def parse_command_line_arguments():
                'Valid only when the --rendering-view = close-up. \n' \
                'Default 20.'
     rendering_args.add_argument(
-        Args.CLOSE_UP_DIMENSIONS,
+        Args.CLOSEUP_DIMENSIONS,
         action='store', type=int, default=20,
         help=arg_help)
 

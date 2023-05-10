@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Soma
 ####################################################################################################
 class Soma:
-    """Soma enumerators
-    """
+    """Soma enumerators"""
 
     ################################################################################################
     # @__init__
@@ -110,6 +109,16 @@ class Soma:
              'This method takes few seconds to reconstruct a soma mesh')
         ]
 
+        # Soma types for meshing
+        META_SOMA_FOR_MESHING = [
+
+            (META_BALLS,
+             'MetaBalls',
+             'Reconstruct a rough shape of the soma using MetaBalls. '
+             'This approach is real-time and can reconstruct good shapes for the somata, but '
+             'more accurate profiles could be reconstructed with the Soft Body option'),
+        ]
+
     ################################################################################################
     # @Profile
     ################################################################################################
@@ -159,3 +168,4 @@ class Soma:
             # Arbors only by default
             else:
                 return Soma.Profile.ARBORS_ONLY
+            

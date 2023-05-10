@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,6 +17,7 @@
 
 # Blender imports
 import bmesh
+from mathutils import Vector
 
 # Internal imports
 import nmv.utilities
@@ -42,6 +43,47 @@ def create_vertex(location=(0, 0, 0)):
 
     # Return a reference to the bmesh
     return bmesh_vertex
+
+
+####################################################################################################
+# @create_vertices
+####################################################################################################
+def create_vertices(locations):
+    """Create a list of vertices from a list of XYZ locations (point cloud).
+
+    :param locations:
+        An XYZ list of a point cloud.
+    :return:
+        A bmesh object.
+    """
+
+    # Create a new bmesh object
+    bmesh_object = bmesh.new()
+
+    for loc in locations:
+        bmesh_object.verts.new(Vector((loc[0], loc[1], loc[2])))
+
+    bmesh_object.verts.index_update()
+    bmesh_object.verts.ensure_lookup_table()
+
+    return bmesh_object
+
+
+####################################################################################################
+# @create_vertices
+####################################################################################################
+def create_vertices(locations):
+
+    # Create a new bmesh object
+    bmesh_object = bmesh.new()
+
+    for loc in locations:
+        bmesh_object.verts.new(Vector((loc[0], loc[1], loc[2])))
+
+    bmesh_object.verts.index_update()
+    bmesh_object.verts.ensure_lookup_table()
+
+    return bmesh_object
 
 
 ####################################################################################################

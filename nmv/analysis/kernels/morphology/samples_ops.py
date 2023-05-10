@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
 
 # Internal imports
 import nmv.consts
@@ -457,7 +456,7 @@ def compute_distribution_number_of_samples_of_morphology(morphology):
 
 
 ####################################################################################################
-# @compute_distribution_segments_length_of_morphology
+# @compute_distribution_samples_radii_of_morphology
 ####################################################################################################
 def compute_distribution_samples_radii_of_morphology(morphology):
 

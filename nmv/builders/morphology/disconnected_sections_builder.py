@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2019, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# System imports
-import copy
-
+# Blender imports
 from mathutils import Vector
 
 # Internal imports
@@ -38,8 +36,7 @@ import nmv.utilities
 # @DisconnectedSectionsBuilder
 ####################################################################################################
 class DisconnectedSectionsBuilder(MorphologyBuilderBase):
-    """Builds and draws the morphology as a series of disconnected sections.
-    """
+    """Builds and draws the morphology as a series of disconnected sections."""
 
     ################################################################################################
     # @__init__
@@ -57,46 +54,11 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Initialize the parent with the common parameters
         MorphologyBuilderBase.__init__(self, morphology, options)
 
-        # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
+        # A list of all the articulation spheres
         self.articulations_spheres = list()
 
         # Force using the MetaBalls soma in case loading a new morphology
         self.force_meta_ball = force_meta_ball_soma
-
-    ################################################################################################
-    # @create_single_skeleton_materials_list
-    ################################################################################################
-    def create_single_skeleton_materials_list(self):
-        """Creates a list of all the materials required for coloring the skeleton.
-
-        NOTE: Before drawing the skeleton, create the materials, once and for all, to improve the
-        performance since this is way better than creating a new material per section or segment
-        or any individual object.
-        """
-        nmv.logger.info('Creating materials')
-
-        # Clear teh materials list
-        self.skeleton_materials.clear()
-
-        # Create the default material list
-        self.create_skeleton_materials_and_illumination()
-
-        # Index: 0 - 1
-        self.skeleton_materials.extend(self.soma_materials)
-
-        # Index: 2 - 3
-        self.skeleton_materials.extend(self.apical_dendrites_materials)
-
-        # Index: 4 - 5
-        self.skeleton_materials.extend(self.basal_dendrites_materials)
-
-        # Index: 6 - 7
-        self.skeleton_materials.extend(self.axons_materials)
-
-        # Index 8 for the gray color
-        self.skeleton_materials.extend(nmv.skeleton.ops.create_skeleton_materials(
-            name='gray', material_type=self.options.shading.morphology_material,
-            color=Vector((0.5, 0.5, 0.5))))
 
     ################################################################################################
     # @construct_color_coded_polylines
@@ -192,11 +154,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         elif scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:
             minimum_value = 0
             maximum_value = 100
-
-            if root.index % 2 == 0:
-                material_index = 0
-            else:
-                material_index = 1
+            material_index = 0 if root.index % 2 == 0 else 1
 
         # Else, just add 0 and 100 for a placeholder in the color map
         else:
@@ -271,7 +229,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         if highlight:
             material_index = material_start_index + (branching_order % 2)
         else:
-            material_index = nmv.enums.Color.GRAY_MATERIAL_INDEX
+            material_index = nmv.enums.Color.GRAY_MATERIAL_START_INDEX
 
         # Construct the poly-line
         poly_line = nmv.geometry.PolyLine(
@@ -338,8 +296,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             sphere_radius = self.options.morphology.samples_unified_radii_value
 
         # Create the sphere based on the largest radius
-        section_terminal_sphere = nmv.bmeshi.create_ico_sphere(
-            sphere_radius * 1.025, location=point, subdivisions=3)
+        section_terminal_sphere = nmv.skeleton.draw_articulation_sphere(
+            radius=sphere_radius, point=point)
 
         # Add the created bmesh sphere to the list
         self.articulations_spheres.append(section_terminal_sphere)
@@ -369,8 +327,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
             return
 
         # Draw the root sample as a sphere
-        self.articulations_spheres.append(nmv.bmeshi.create_ico_sphere(
-            root.samples[0].radius * 1.025, location=root.samples[0].point, subdivisions=3))
+        self.articulations_spheres.append(nmv.skeleton.draw_articulation_sphere(
+            radius=root.samples[0].radius, point=root.samples[0].point))
 
         # Increment the branching level
         branching_order += 1
@@ -451,134 +409,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         self.link_and_shade_articulation_spheres()
 
     ################################################################################################
-    # @draw_arbors_as_single_object
-    ################################################################################################
-    def draw_arbors_as_single_object(self,
-                                     bevel_object):
-        """Draws all the arbors as a single object.
-
-        :param bevel_object:
-            Bevel object used to interpolate the polylines.
-        """
-
-        # A list of all the skeleton poly-lines
-        skeleton_poly_lines = list()
-
-        # Apical dendrite
-        nmv.logger.info('Reconstructing arbors')
-        if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.has_apical_dendrites():
-                for arbor in self.morphology.apical_dendrites:
-                    nmv.logger.detail(arbor.label)
-                    self.construct_tree_poly_lines(
-                        root=arbor, poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
-                        material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
-
-        # Axon
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                for arbor in self.morphology.axons:
-                    nmv.logger.detail(arbor.label)
-                    self.construct_tree_poly_lines(
-                        root=arbor,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.axon_branch_order,
-                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
-                        material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
-
-        # Basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.has_basal_dendrites():
-                for arbor in self.morphology.basal_dendrites:
-                    nmv.logger.detail(arbor.label)
-                    self.construct_tree_poly_lines(
-                        root=arbor,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
-                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
-
-        # Draw the poly-lines as a single object
-        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-            poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
-            edges=self.options.morphology.edges, bevel_object=bevel_object,
-            materials=self.skeleton_materials)
-
-        # Append it to the morphology objects
-        self.morphology_objects.append(morphology_object)
-
-    ################################################################################################
-    # @draw_arbors
-    ################################################################################################
-    def draw_arbors(self,
-                    bevel_object):
-
-        # Apical dendrite
-        nmv.logger.info('Reconstructing arbors')
-        if not self.options.morphology.ignore_apical_dendrites:
-            if self.morphology.has_apical_dendrites():
-                for arbor in self.morphology.apical_dendrites:
-                    nmv.logger.detail(arbor.label)
-                    skeleton_poly_lines = list()
-                    self.construct_color_coded_polylines(
-                        root=arbor, poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
-                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX)
-
-                    # Draw the poly-lines as a single object
-                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
-                        materials=self.apical_dendrites_materials)
-
-                    # Append it to the morphology objects
-                    self.morphology_objects.append(morphology_object)
-
-        # Basal dendrites
-        if not self.options.morphology.ignore_basal_dendrites:
-            if self.morphology.has_basal_dendrites():
-                for arbor in self.morphology.basal_dendrites:
-                    nmv.logger.detail(arbor.label)
-                    skeleton_poly_lines = list()
-                    self.construct_color_coded_polylines(
-                        root=arbor,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
-                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX)
-
-                    # Draw the poly-lines as a single object
-                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
-                        materials=self.basal_dendrites_materials)
-
-                    # Append it to the morphology objects
-                    self.morphology_objects.append(morphology_object)
-
-        # Axon
-        if not self.options.morphology.ignore_axons:
-            if self.morphology.has_axons():
-                for arbor in self.morphology.axons:
-                    nmv.logger.detail(arbor.label)
-                    skeleton_poly_lines = list()
-                    self.construct_color_coded_polylines(
-                        root=arbor,
-                        poly_lines_list=skeleton_poly_lines,
-                        max_branching_order=self.options.morphology.axon_branch_order,
-                        prefix=nmv.consts.Skeleton.AXON_PREFIX)
-
-                    # Draw the poly-lines as a single object
-                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
-                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
-                        edges=self.options.morphology.edges, bevel_object=bevel_object,
-                        materials=self.axons_materials)
-
-                    # Append it to the morphology objects
-                    self.morphology_objects.append(morphology_object)
-
-    ################################################################################################
     # @draw_each_arbor_as_single_object
     ################################################################################################
     def draw_each_arbor_as_single_object(self,
@@ -656,6 +486,134 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
                     self.morphology_objects.append(morphology_object)
 
     ################################################################################################
+    # @draw_arbors_as_single_object
+    ################################################################################################
+    def draw_arbors_as_single_object(self,
+                                     bevel_object):
+        """Draws all the arbors as a single object.
+
+        :param bevel_object:
+            Bevel object used to interpolate the polylines.
+        """
+
+        # A list of all the skeleton poly-lines
+        skeleton_poly_lines = list()
+
+        # Apical dendrite
+        nmv.logger.info('Reconstructing arbors')
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor, poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.APICAL_DENDRITE_MATERIAL_START_INDEX)
+
+        # Axon
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX,
+                        material_start_index=nmv.enums.Color.AXON_MATERIAL_START_INDEX)
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    self.construct_tree_poly_lines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX,
+                        material_start_index=nmv.enums.Color.BASAL_DENDRITES_MATERIAL_START_INDEX)
+
+        # Draw the poly-lines as a single object
+        morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+            poly_lines=skeleton_poly_lines, object_name=self.morphology.label,
+            edges=self.options.morphology.edges, bevel_object=bevel_object,
+            materials=self.skeleton_materials)
+
+        # Append it to the morphology objects
+        self.morphology_objects.append(morphology_object)
+
+    ################################################################################################
+    # @draw_arbors
+    ################################################################################################
+    def draw_arbors(self):
+        """Draws the arbors of the morphology."""
+
+        # Apical dendrite
+        nmv.logger.info('Reconstructing arbors')
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for arbor in self.morphology.apical_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    skeleton_poly_lines = list()
+                    self.construct_color_coded_polylines(
+                        root=arbor, poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        prefix=nmv.consts.Skeleton.APICAL_DENDRITES_PREFIX)
+
+                    # Draw the poly-lines as a single object
+                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
+                        materials=self.apical_dendrites_materials)
+
+                    # Append it to the morphology objects
+                    self.morphology_objects.append(morphology_object)
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for arbor in self.morphology.basal_dendrites:
+                    nmv.logger.detail(arbor.label)
+                    skeleton_poly_lines = list()
+                    self.construct_color_coded_polylines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        prefix=nmv.consts.Skeleton.BASAL_DENDRITES_PREFIX)
+
+                    # Draw the poly-lines as a single object
+                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
+                        materials=self.basal_dendrites_materials)
+
+                    # Append it to the morphology objects
+                    self.morphology_objects.append(morphology_object)
+
+        # Axon
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for arbor in self.morphology.axons:
+                    nmv.logger.detail(arbor.label)
+                    skeleton_poly_lines = list()
+                    self.construct_color_coded_polylines(
+                        root=arbor,
+                        poly_lines_list=skeleton_poly_lines,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        prefix=nmv.consts.Skeleton.AXON_PREFIX)
+
+                    # Draw the poly-lines as a single object
+                    morphology_object = nmv.geometry.draw_poly_lines_in_single_object(
+                        poly_lines=skeleton_poly_lines, object_name=arbor.label,
+                        edges=self.options.morphology.edges, bevel_object=self.bevel_object,
+                        materials=self.axons_materials)
+
+                    # Append it to the morphology objects
+                    self.morphology_objects.append(morphology_object)
+
+    ################################################################################################
     # @draw_morphology_skeleton
     ################################################################################################
     def draw_morphology_skeleton(self,
@@ -671,29 +629,12 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         nmv.logger.header('Building skeleton using DisconnectedSectionsBuilder')
 
-        # Updating radii
-        nmv.skeleton.update_arbors_radii(self.morphology, self.options.morphology)
+        # Initialize the builder
+        self.initialize_builder()
 
-        # Create a static bevel object that you can use to scale the samples along the arbors
-        # of the morphology and then hide it
-        bevel_object = self.create_bevel_object()
-
-        # Add the bevel object to the morphology objects because if this bevel is lost we will
-        # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
-
-        # Create the skeleton materials
-        self.create_single_skeleton_materials_list()
-
-        # Resample the sections of the morphology skeleton
-        self.resample_skeleton_sections()
-
-        self.create_base_skeleton_materials()
-
-        # Draw each arbor as a single object
+        # Draw the arbors
         # self.draw_each_arbor_as_single_object(bevel_object=bevel_object)
-
-        self.draw_arbors(bevel_object=bevel_object)
+        self.draw_arbors()
 
         # For the articulated sections, draw the spheres
         if self.options.morphology.reconstruction_method == \
@@ -702,19 +643,15 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
 
         # Draw the soma
         if self.force_meta_ball:
-
-            # In case of reloading morphology
             self.draw_meta_balls_soma()
         else:
             self.draw_soma()
 
-        # Draw every endfoot in the list and append the resulting mesh to the collector
-        for endfoot in self.morphology.endfeet:
-            self.morphology_objects.append(endfoot.create_surface_patch(
-                material=self.endfeet_materials[0]))
+        # Draw the endfeet, if applicable
+        self.draw_endfeet_if_applicable()
 
-        # Transforming to global coordinates
-        self.transform_to_global_coordinates()
+        # Add the morphology objects to a collection
+        self.collection_morphology_objects_in_collection()
 
         # Return the list of the drawn morphology objects
         return self.morphology_objects
@@ -738,11 +675,11 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Do NOT create the skeleton materials list and instead create the colors on the fly
         # self.create_single_skeleton_materials_list()
@@ -840,9 +777,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Draw the soma
         self.draw_soma()
 
-        # Transforming to global coordinates
-        self.transform_to_global_coordinates()
-
         # Return the list of the drawn morphology objects
         return self.morphology_objects
 
@@ -865,11 +799,11 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Create a static bevel object that you can use to scale the samples along the arbors
         # of the morphology and then hide it
         bevel_object = nmv.mesh.create_bezier_circle(
-            radius=1.0, vertices=self.options.morphology.bevel_object_sides, name='bevel')
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # Add the bevel object to the morphology objects because if this bevel is lost we will
         # lose the rounded structure of the arbors
-        self.morphology_objects.append(bevel_object)
+        # self.morphology_objects.append(bevel_object)
 
         # Do NOT create the skeleton materials list and instead creat the colors on the fly
         # self.create_single_skeleton_materials_list()
@@ -982,9 +916,6 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         # Draw the soma
         self.draw_soma()
 
-        # Transforming to global coordinates
-        self.transform_to_global_coordinates()
-
         # Return the list of the drawn morphology objects
         return self.morphology_objects
 
@@ -994,6 +925,9 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     def render_highlighted_arbors(self,
                                   image_resolution=3000):
         """Render the morphology with different colors per arbor for analysis.
+
+        @param image_resolution:
+            The rendering resolution of the resulting images. Default 3000 pixels.
         """
 
         # NOTE: Readjust the parameters here to plot everything for the whole morphology

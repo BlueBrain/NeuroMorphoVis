@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -213,7 +213,7 @@ def draw_line(point1=Vector((0, 0, 0)),
         if color is not None:
 
             # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 
@@ -235,7 +235,7 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
                    color=(1, 1, 1, 1),
                    name='line',
                    fill_caps=True,
-                   sides=8,
+                   sides=16,
                    bevel_object=None,
                    smoothness_factor=1):
     """Draw a cone line between two points, with different radii at the beginning and the end of
@@ -277,12 +277,14 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
     line_data.use_fill_caps = fill_caps
 
     if bevel_object is None:
-        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=sides, name=name)
+        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name=name)
+        line_data.bevel_mode = 'OBJECT'
     else:
+        line_data.bevel_mode = 'OBJECT'
         line_data.bevel_object = bevel_object
 
     # Create a new material (color) and assign it to the line
-    line_material = bpy.data.materials.new('color.%s' % name)
+    line_material = bpy.data.materials.new(name)
     line_material.diffuse_color = color
     line_data.materials.append(line_material)
 
@@ -361,6 +363,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
 
         # If a bevel object is given, use it for scaling the diameter of the poly-line
         if bevel_object is not None:
+            line_data.bevel_mode = 'OBJECT'
             line_data.bevel_object = bevel_object
             line_data.use_fill_caps = caps
 
@@ -382,7 +385,7 @@ def draw_poly_lines_as_single_object(poly_lines_data,
         # Create a material from a given color
         if color is not None:
             # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 

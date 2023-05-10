@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -28,3 +28,5 @@ from .rendering_enums import *
 from .shading_enums import *
 from .skeleton_enums import *
 from .soma_enums import *
+from .synaptics_enums import *
+from .morphology_enums import *

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -100,7 +100,7 @@ def draw_scale_bar_segment():
     """
 
     # Create a bevel object to build the segments, and delete it later
-    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='scale_bar_bevel')
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16, name='scale_bar_bevel')
 
     # Vertical segment
     p0 = Vector((0, 0, 0))

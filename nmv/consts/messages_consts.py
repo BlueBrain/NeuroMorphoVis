@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Messages
 ####################################################################################################
 class Messages:
-    """Messages
-    """
+    """Messages"""
 
     ################################################################################################
     # @__init__
@@ -40,4 +39,7 @@ class Messages:
 
     # Spaces
     SPACES = '                                                                                     '
+
+    # tqdm bar format
+    TQDM_FORMAT = '{desc:<8}{l_bar}{bar:25}{r_bar}{bar:-25b}'
 

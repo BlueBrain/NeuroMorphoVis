@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # System imports
 import math
+import random
+import string
 
 # Internal imports
 import nmv.consts
@@ -61,3 +62,20 @@ def get_index(value,
 
     # Return The index of the color map
     return math.ceil((value - minimum_value) / (1.0 * delta)) - 1
+
+
+####################################################################################################
+# @generate_random_string
+####################################################################################################
+def generate_random_string(length):
+    """Generates and returns a random string with a specific length.
+
+    :param length:
+        The length of the string.
+    :return:
+        A randomly created string with specified length.
+    """
+
+    # Create a return the random string
+    resulting_string = ''.join(random.choice(string.ascii_lowercase) for i in range(length))
+    return resulting_string

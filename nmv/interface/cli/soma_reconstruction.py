@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -49,7 +49,7 @@ def render_soma_two_dimensional_profile(morphology_object,
     :param morphology_object:
         A given morphology object.
     :param options:
-        System options.
+        NeuroMorphoVis options
     """
 
     # Clear the scene

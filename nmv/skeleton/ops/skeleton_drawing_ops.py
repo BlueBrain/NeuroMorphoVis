@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -21,10 +21,9 @@ import sys
 import copy
 
 # Blender imports
-import bpy
 from mathutils import Vector, Matrix
 
-# Append the internal modules into the system paths
+# TODO: Append the internal modules into the system paths
 sys.path.append("%s/../modules" % os.path.dirname(os.path.realpath(__file__)))
 
 # Internal imports
@@ -124,7 +123,7 @@ def extrude_section_from_poly_line_data(data,
 
 
 ####################################################################################################
-# @draw_connected_sections
+# @extrude_connected_sections
 ####################################################################################################
 def extrude_connected_sections(section,
                                name,
@@ -396,7 +395,9 @@ def draw_connected_sections_poly_lines(arbor,
 ####################################################################################################
 # @draw_connected_sections
 ####################################################################################################
-def draw_connected_sections(section, name,
+def draw_connected_sections(section,
+                            soma_center,
+                            name,
                             poly_line_data=[],
                             sections_objects=[],
                             secondary_sections=[],
@@ -417,6 +418,8 @@ def draw_connected_sections(section, name,
 
     :param section:
         Section root.
+    :param soma_center:
+        The center of the soma.
     :param poly_line_data:
         A list of lists containing the data of the poly-line format.
     :param sections_objects:
@@ -474,6 +477,7 @@ def draw_connected_sections(section, name,
     # Get a list of all the poly-line that corresponds to the given section
     section_data = nmv.skeleton.ops.get_connected_sections_poly_line(
         section=section,
+        soma_center=soma_center,
         roots_connection=roots_connection,
         is_continuous=is_continuous,
         is_last_section=is_last_section,
@@ -489,11 +493,12 @@ def draw_connected_sections(section, name,
 
         # Section material
         section_material = None
-        if material_list is not None:
-            if section.index % 2 == 0:
-                section_material = material_list[0]
-            else:
-                section_material = material_list[1]
+        if len(material_list) >= 2:
+            if material_list is not None:
+                if section.index % 2 == 0:
+                    section_material = material_list[0]
+                else:
+                    section_material = material_list[1]
 
         # Section name
         section_name = '%s_%d' % (name, section.index)
@@ -517,7 +522,7 @@ def draw_connected_sections(section, name,
 
         # Draw the children sections
         draw_connected_sections(
-            section=child, name=name, poly_line_data=poly_line_data,
+            section=child, soma_center=soma_center, name=name, poly_line_data=poly_line_data,
             sections_objects=sections_objects, secondary_sections=secondary_sections,
             branching_order=branching_order, max_branching_order=max_branching_order,
             material_list=material_list, bevel_object=bevel_object, fixed_radius=fixed_radius,
@@ -527,7 +532,7 @@ def draw_connected_sections(section, name,
 
 
 ####################################################################################################
-# @draw_disconnected_sections
+# @draw_disconnected_skeleton_sections
 ####################################################################################################
 def draw_disconnected_skeleton_sections(section,
                                         name,
@@ -684,7 +689,7 @@ def draw_disconnected_skeleton_sections(section,
 
 
 ####################################################################################################
-# @draw_section_as_disconnected_segments
+# @draw_disconnected_segments
 ####################################################################################################
 def draw_disconnected_segments(section,
                                name,
@@ -805,11 +810,14 @@ def visualize_extrusion_connection(point,
 ####################################################################################################
 # @draw_section_samples_as_spheres
 ####################################################################################################
-def draw_section_samples_as_spheres(section):
+def draw_section_samples_as_spheres(section,
+                                    optimize_based_on_radius=False):
     """Draw the section samples as a set of spheres.
 
     :param section:
         A given section to draw.
+    :param optimize_based_on_radius:
+        Draw the smaller spheres with lower subdivisions to improve the performance.
     :return:
         List of spheres of the section.
     """
@@ -821,9 +829,47 @@ def draw_section_samples_as_spheres(section):
     for sample in section.samples:
 
         # Construct a sphere and append it to the list
-        sphere = nmv.bmeshi.create_ico_sphere(
-            radius=sample.radius, location=sample.point, subdivisions=3)
+        if optimize_based_on_radius:
+            if 0.1 < sample.radius <= 0.2:
+                subdivisions = 1
+            elif 0.2 < sample.radius <= 0.3:
+                subdivisions = 2
+            else:
+                subdivisions = 3
+            sphere = nmv.bmeshi.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=subdivisions)
+        else:
+            sphere = nmv.bmeshi.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=3)
         output.append(sphere)
 
         # Return the resulting list that contains all the spheres
     return output
+
+
+####################################################################################################
+# @draw_articulation_sphere
+####################################################################################################
+def draw_articulation_sphere(point,
+                             radius,
+                             use_uv_spheres=False):
+    """Draws the articulation spheres with different resolutions to improve performance.
+
+    :param point:
+        The center of the sphere.
+    :param radius:
+        The radius of the sphere.
+    :param use_uv_spheres:
+        If this flag is set, UV-spheres will be used, otherwise, ico-spheres.
+    :return:
+        A reference to the created sphere.
+    """
+
+    if use_uv_spheres:
+        subdivisions = 5 if radius > 0.5 else 3
+        return nmv.bmeshi.create_ico_sphere(
+            radius=radius, location=point, subdivisions=subdivisions)
+    else:
+        subdivisions = 32 if radius > 0.5 else 16
+        return nmv.bmeshi.create_uv_sphere(
+            radius=radius, location=point, subdivisions=subdivisions)

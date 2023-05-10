@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Input
 ####################################################################################################
 class Input:
-    """Input enumerators
-    """
+    """Input enumerators"""
 
     ############################################################################################
     # @__init__
@@ -29,10 +28,10 @@ class Input:
     def __init__(self):
         pass
 
-    # Load a single .H5 or .SWC file
-    H5_SWC_FILE = 'INPUT_H5_SWC_FILE'
+    # Load a single morphology file, supported formats: SWC, H5 and ASCII
+    MORPHOLOGY_FILE = 'MORPHOLOGY_FILE'
 
-    # Load an entire directory of .H5 or .SWC files
+    # Load an entire directory of morphology files, supported formats: SWC, H5 and ASCII
     H5_SWC_DIRECTORY = 'INPUT_H5_SWC_DIRECTORY'
 
     # Load a neuron from a given circuit using its GID

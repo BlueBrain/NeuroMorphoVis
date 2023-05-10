@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -16,14 +16,7 @@
 # MA 02110-1301 USA.
 ####################################################################################################
 
-# System imports
-import random
-import copy
-
-# Blender imports
-import bpy
-from mathutils import Vector
-
+# Internal imports
 import nmv.consts
 import nmv.shading
 import nmv.skeleton
@@ -68,9 +61,8 @@ class RandomSpineBuilderFromMorphology:
         self.spine_template_structures = list()
 
         # Construct a bevel object that will be used to build the spines
-        self.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0,
-                                                          vertices=8,
-                                                          name='spines_bevel')
+        self.bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, resolution=8, name='Spines Cross Section')
 
         # Build the spine template structures
         self.build_spines_template_structures()
@@ -78,7 +70,16 @@ class RandomSpineBuilderFromMorphology:
     ################################################################################################
     # @build_spine_structure
     ################################################################################################
-    def build_spine_structure(self, spine_morphology):
+    def build_spine_structure(self,
+                              spine_morphology):
+        """Builds the spine geometry structure from a given template morphology.
+
+        :param spine_morphology:
+            A given spine morphology to be used to build the structure of the spine.
+        :return:
+            A mesh describing the geometry of the structure of the spine.
+        :rtype:
+        """
 
         # A list of poly-lines
         spine_poly_lines = list()
@@ -99,6 +100,7 @@ class RandomSpineBuilderFromMorphology:
     # @build_spines_template_structures
     ################################################################################################
     def build_spines_template_structures(self):
+        """Builds the template structure from the loaded spine files."""
 
         # Load the template spines
         template_spines_morphologies = nmv.file.load_spine_morphologies_from_data_files(
@@ -116,6 +118,18 @@ class RandomSpineBuilderFromMorphology:
                                          arbor,
                                          number_spines_per_micron,
                                          max_branching_order):
+        """Returns a list of morphologies that will be used to build the geometry of the spines
+        along the given arbor.
+
+        :param arbor:
+            The given arbor, either apical or basal dendrite.
+        :param number_spines_per_micron:
+            Number of spines per micron along the arbor.
+        :param max_branching_order:
+            The maximum branching order of the given arbor.
+        :return:
+            A list of morphologies that will be used to build the geometry of the spines.
+        """
 
         spine_morphologies = list()
 
@@ -137,6 +151,7 @@ class RandomSpineBuilderFromMorphology:
     # @clean_unwanted_data
     ################################################################################################
     def clean_unwanted_data(self):
+        """Cleans the proxy data that are used to build the spines."""
 
         nmv.scene.delete_list_objects(self.spine_template_structures)
         nmv.scene.delete_object_in_scene(self.bevel_object)

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # System imports
-import os
+import numpy
 
 # Blender imports
 from mathutils import Vector
@@ -25,6 +24,7 @@ from mathutils import Vector
 # Internal imports
 import nmv
 import nmv.bbox
+import nmv.enums
 import nmv.consts
 import nmv.file
 import nmv.skeleton
@@ -32,43 +32,61 @@ import nmv.utilities
 
 
 ####################################################################################################
-# @H5Reader
+# @MorphIOLoader
 ####################################################################################################
 class MorphIOLoader:
-    """Morphology reader based on the MorphIO library.
+    """A powerful morphology reader that uses the MorphIO library to load the neuronal morphologies.
+    MorphIO is an open source project developed by the Blue Brain Project at EPFL. The code is
+    available on GitHub: https://github.com/BlueBrain/MorphIO.
+    Note that we use MorphIO to load morphologies in .ASC, .SWC and .H5 formats. The structure is
+    then mapped to the NMV one.
     """
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self,
-                 morphology_file):
+                 morphology_file,
+                 morphology_format,
+                 center_morphology=True):
         """Constructor
 
         :param morphology_file:
-            A given .H5 morphology file.
+            A given path to the morphology file.
+        :param center_morphology:
+            If this flag is set to True, the morphology will be centered at the origin, i.e. the
+            soma will be located at the origin.
         """
 
         # Set the path to the given morphology file irrespective to its extension
         self.morphology_file = morphology_file
 
-        # A list of sections that are extracted from the file for processing
-        self.sections_list = list()
+        # The file format of the morphology
+        self.morphology_format = morphology_format
+
+        # If this flag is set, the soma of the neuron must be located at the origin
+        self.center_morphology = center_morphology
 
         # A list of all the points in the morphology file, for bounding box computations
         self.points_list = list()
 
-        # A list of the profile points of the soma, based on the arbors
-        self.soma_profile_points = list()
+        # A list of sections that are extracted from the file for processing
+        self.sections_list = list()
 
-        # Final soma centroid, it could be the same as the original if the morphology is centered
+        # The radius of the soma as reported in the original morphology
+        self.reported_soma_radius = None
+
+        # The centroid of the soma as reported in the original morphology
+        self.reported_soma_centroid = None
+
+        # The final or actual radius of the soma after implementing the NMV logic
+        self.soma_radius = None
+
+        # The final centroid of the soma that is given to NMV.
         self.soma_centroid = None
 
-        # The average radius of the soma based on the arbors
-        self.soma_mean_radius = None
-
-        # Centering the morphology at the origin
-        self.center_morphology = True# center_morphology
+        # A list of the soma profile points computed based on the initial segments of the arbors
+        self.soma_profile_points = list()
 
     ################################################################################################
     # @build_soma
@@ -77,10 +95,10 @@ class MorphIOLoader:
                    axons_trees=None,
                    basal_dendrites_trees=None,
                    apical_dendrite_tree=None):
-        """Builds the soma and returns a reference to it.
+        """Builds the soma object and returns a reference to it.
 
         :param axons_trees:
-            The reconstructed tree of the axon.
+            The reconstructed trees of the axons.
         :param basal_dendrites_trees:
             The reconstructed trees of the basal dendrites.
         :param apical_dendrite_tree:
@@ -89,10 +107,10 @@ class MorphIOLoader:
             A reference to the soma object.
         """
 
-        # Compute the profile points from the arbors
+        # Collect the profile points from all the arbors
         arbors_profile_points = list()
 
-        # Axon profile point
+        # Axons profile points
         if axons_trees is not None:
             arbors_profile_points.extend(
                 nmv.file.readers.morphology.common.get_arbors_profile_points(axons_trees))
@@ -107,186 +125,175 @@ class MorphIOLoader:
             arbors_profile_points.extend(
                 nmv.file.readers.morphology.common.get_arbors_profile_points(apical_dendrite_tree))
 
-        # Compute the mean radius of the soma
-        # soma_mean_radius = self.soma_mean_radius
-        # for point in self.soma_profile_points:
-        #     soma_mean_radius += (point - self.soma_centroid).length
-        # soma_mean_radius = soma_mean_radius / len(self.soma_profile_points)
-
-
-
-
         nmv_soma = nmv.skeleton.Soma(
-            centroid=self.soma_centroid, mean_radius=self.soma_mean_radius,
-            profile_points=self.soma_profile_points, arbors_profile_points=arbors_profile_points)
+            centroid=self.soma_centroid,
+            mean_radius=self.soma_radius,
+            reported_centroid=self.reported_soma_centroid,
+            reported_mean_radius=self.reported_soma_radius,
+            profile_points=self.soma_profile_points,
+            arbors_profile_points=arbors_profile_points)
 
-        # Return a reference to the soma object
+        # Return a reference to the NMV soma object
         return nmv_soma
+
+    ################################################################################################
+    # @read_soma_data
+    ################################################################################################
+    def read_soma_data(self, morphio_soma):
+
+        # Get the soma centroid, valid for all cases
+        self.reported_soma_centroid = Vector((morphio_soma.center[0],
+                                              morphio_soma.center[1],
+                                              morphio_soma.center[2]))
+
+        # Detect the soma radius
+        if self.morphology_format == nmv.enums.Morphology.Format.SWC:
+            self.reported_soma_radius = morphio_soma.diameters[0] * 0.5
+        else:
+            for i_point in morphio_soma.points:
+                i_point = i_point.tolist()
+                x = float(i_point[0])
+                y = float(i_point[1])
+                z = float(i_point[2])
+                if numpy.abs(x) > 0 or numpy.abs(y) > 0 or numpy.abs(z) > 0:
+                    self.soma_profile_points.append(Vector((x, y, z)))
+
+            # Compute the average soma radius from the profile points
+            if len(self.soma_profile_points) > 0:
+                self.reported_soma_radius = 0
+                for i_point in self.soma_profile_points:
+                    self.reported_soma_radius += (i_point - self.reported_soma_centroid).length
+                self.reported_soma_radius /= len(self.soma_profile_points)
 
     ################################################################################################
     # @read_data_from_file
     ################################################################################################
-    def read_data_from_file(self,
-                            center_at_origin=False):
+    def read_data_from_file(self):
         """Loads the data from the given file in the constructor.
 
-        :param: center_at_origin:
-            Centers the morphology at the origin.
+        This function returns None if the reading operation was unsuccessful.
         """
 
         # Import the required module
         import morphio
         from morphio import Morphology
 
-        # Ignore the console warning and output
-        # nmv.utilities.disable_std_output()
-
         # Load the morphology data using MorphIO
-        morphology_data = None
+        morphio_morphology = None
         try:
-            morphology_data = Morphology(self.morphology_file)
-        except FileNotFoundError:
+            morphio_morphology = Morphology(self.morphology_file)
+            nmv.logger.log("The morphology file [%s] is loaded successfully" % self.morphology_file)
+        except IOError:
             nmv.logger.error("Cannot load morphology file! [%s]" % self.morphology_file)
-            return morphology_data
+            return None
 
-        # Soma mean radius from MorphIO
-        self.soma_mean_radius = morphology_data.soma.diameters[0] * 0.5
-        self.soma_centroid = Vector((0, 0, 0))
-        self.soma_centroid[0] = morphology_data.soma.center[0]
-        self.soma_centroid[1] = morphology_data.soma.center[1]
-        self.soma_centroid[2] = morphology_data.soma.center[2]
+        # Get the soma parameters reported in the morphology file
+        self.read_soma_data(morphio_soma=morphio_morphology.soma)
 
-        print(self.soma_mean_radius)
-        print(self.soma_centroid)
+        # Determine the translation vector if it is required to center the morphology
+        if self.center_morphology:
+            translation_vector = self.reported_soma_centroid
+            self.soma_centroid = nmv.consts.Math.ORIGIN
+        else:
+            translation_vector = nmv.consts.Math.ORIGIN
+            self.soma_centroid = self.reported_soma_centroid
 
-        # Get a list of points in the morphology
-        for s in morphology_data.sections:
-            for p in s.points:
+        self.soma_radius = self.reported_soma_radius
 
-                # Construct a point in the Vector format
-                v_point = Vector((p[0], p[1], p[2]))
-                self.points_list.append(v_point)
+        # Build the points list
+        for i_section in morphio_morphology.sections:
+            for i_point in i_section.points:
+                self.points_list.append(
+                    Vector((i_point[0], i_point[1], i_point[2])) - translation_vector)
 
-        # A linear list of the sections of the axons
+        # Linear lists of the sections for the axons, basal dendrites and apical dendrites
         axons_sections = list()
-
-        # A linear list of basal dendrites sections
         basal_dendrites_sections = list()
-
-        # A linear list of the apical dendrites sections
         apical_dendrites_sections = list()
 
+        # A linear list of all the sections, in NeuroMorphoVis format
         nmv_sections = list()
+        for i_section in morphio_morphology.sections:
 
-        for s in morphology_data.sections:
+            # Get the section index and its parent section index
+            section_id = i_section.id
+            section_parent_id = None if i_section.is_root else i_section.parent.id
 
-            # Get the section ID
-            section_id = s.id
-
-            # Get the parent section ID
-            if s.is_root:
-                section_parent_id = None
-            else:
-                section_parent_id = s.parent.id
-
-            # Children IDs
+            # Get the children sections
             section_children_ids = list()
-            if len(s.children) > 0:
-                for child in s.children:
+            if len(i_section.children) > 0:
+                for child in i_section.children:
                     section_children_ids.append(child.id)
 
-            if s.type == morphio.SectionType.axon:
-                section_type = 2
-
-            elif s.type == morphio.SectionType.basal_dendrite:
-                section_type = 3
-
-            elif s.type == morphio.SectionType.apical_dendrite:
-                section_type = 4
-
-            # Consider all other sections as basal dendrites
+            # Get the section type
+            if i_section.type == morphio.SectionType.axon:
+                section_type = nmv.consts.Skeleton.NMV_AXON_SECTION_TYPE
+            elif i_section.type == morphio.SectionType.basal_dendrite:
+                section_type = nmv.consts.Skeleton.NMV_BASAL_DENDRITE_SECTION_TYPE
+            elif i_section.type == morphio.SectionType.apical_dendrite:
+                section_type = nmv.consts.Skeleton.NMV_APICAL_SECTION_TYPE
             else:
-                nmv.logger.warning("This section is not a standard section!")
-                section_type = 3
+                # If this is not a standard section, draw it as a basal dendrite
+                section_type = nmv.consts.Skeleton.NMV_BASAL_DENDRITE_SECTION_TYPE
 
             # Section samples
             section_samples = list()
-            for i in range(len(s.points)):
+            for i in range(len(i_section.points)):
 
                 # Sample point
-                sample_point = Vector((s.points[i][0], s.points[i][1], s.points[i][2]))
+                sample_point = Vector((i_section.points[i][0] - translation_vector[0],
+                                       i_section.points[i][1] - translation_vector[1],
+                                       i_section.points[i][2] - translation_vector[2]))
 
                 # Sample radius
-                sample_radius = s.diameters[i] * 0.5
+                sample_radius = i_section.diameters[i] * 0.5
 
-                # Get the sample type from the section type
+                # Sample type, is the same as the section type
                 sample_type = section_type
 
-                # Sample ID, simply let it be the operator
-                sample_id = i
+                # Sample index, simply the index in the list
+                sample_index = i
 
                 # Parent ID, simply let it the current -1
-                parent_sample_id = i + 1
+                parent_sample_index = i + 1
 
-                # Construct a nmv sample object
-                nmv_sample = nmv.skeleton.Sample(
-                    point=sample_point, radius=sample_radius, index=sample_id, morphology_id=0,
-                    type=sample_type, parent_index=parent_sample_id)
-
+                # Construct a NMV sample object and append it to the samples list of the section
+                nmv_sample = nmv.skeleton.Sample(point=sample_point,
+                                                 radius=sample_radius,
+                                                 index=sample_index,
+                                                 morphology_id=0,
+                                                 type=sample_type,
+                                                 parent_index=parent_sample_index)
                 section_samples.append(nmv_sample)
 
-            # Construct a skeleton section
-            nmv_section = nmv.skeleton.Section(
-                index=section_id, parent_index=section_parent_id, children_ids=section_children_ids,
-                samples=section_samples, type=section_type)
-
-            # Append the section to the sections list
+            # Construct a NMV section object and append it to the sections list of the morphology
+            nmv_section = nmv.skeleton.Section(index=section_id,
+                                               parent_index=section_parent_id,
+                                               children_ids=section_children_ids,
+                                               samples=section_samples,
+                                               type=section_type)
             self.sections_list.append(nmv_sections)
 
-            # Axon
-            if s.type == morphio.SectionType.axon:
-
-                # Add the section to the axons list
+            # Filter the sections based on their type
+            if i_section.type == morphio.SectionType.axon:
                 axons_sections.append(nmv_section)
-
-            # Basal dendrite
-            elif s.type == morphio.SectionType.basal_dendrite:
-
-                # Add the section to the basal dendrites list
+            elif i_section.type == morphio.SectionType.basal_dendrite:
                 basal_dendrites_sections.append(nmv_section)
-
-            # Apical dendrite
-            elif s.type == morphio.SectionType.apical_dendrite:
-
-                # Add the section to the apical dendrites list
+            elif i_section.type == morphio.SectionType.apical_dendrite:
                 apical_dendrites_sections.append(nmv_section)
-
-            # Undefined section type
             else:
-
-                # Report an error
-                nmv.logger.warning('ERROR: Unknown section type [%s] !' % str(section_type))
-
-                # Add the section to the basal dendrites list
+                # Add this UNKNOWN section type to the basal dendrites list
                 basal_dendrites_sections.append(nmv_section)
 
-        # Build the axon tree
+        # Build the axons, basal dendrites and apical dendrites trees, i.e. assert parents-children
         nmv.file.readers.morphology.common.build_tree(axons_sections)
-
-        # Build the basal tree
         nmv.file.readers.morphology.common.build_tree(basal_dendrites_sections)
-
-        # Build the apical tree
         nmv.file.readers.morphology.common.build_tree(apical_dendrites_sections)
 
-        # Apical dendrites
-        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
-
-        # Basal dendrites
-        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
-
-        # Axons
+        # Get the root sections of axons, basal dendrites and apical dendrites
         axons = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
+        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
+        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
 
         # Labeling and tagging the apical dendrites
         if apical_dendrites is not None:
@@ -318,30 +325,22 @@ class MorphIOLoader:
                     axons[i].label = 'Axon %d' % (i + 1)
                     axons[i].tag = 'Axon%d' % (i + 1)
 
-        # Build the soma
+        # Build the soma, taking into consideration the arbors
         soma = self.build_soma(axons_trees=axons,
                                basal_dendrites_trees=basal_dendrites,
                                apical_dendrite_tree=apical_dendrites)
 
-        # Update the morphology label
-        label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
-
-        # Get the morphology file format
-        file_format = nmv.file.ops.get_file_format_from_path(self.morphology_file)
-
-        # Construct the morphology skeleton
-        nmv_morphology = nmv.skeleton.Morphology(soma=soma,
-                                                 axons=axons,
-                                                 basal_dendrites=basal_dendrites,
-                                                 apical_dendrites=apical_dendrites,
-                                                 label=label,
-                                                 file_format=file_format)
+        # Construct the NMV morphology object
+        nmv_morphology = nmv.skeleton.Morphology(
+            soma=soma,
+            axons=axons,
+            basal_dendrites=basal_dendrites,
+            apical_dendrites=apical_dendrites,
+            label=nmv.file.ops.get_file_name_from_path(self.morphology_file),
+            file_format=nmv.file.ops.get_file_format_from_path(self.morphology_file))
 
         # Update the centroid
-        nmv_morphology.original_center = Vector((0, 0, 0)) # self.soma_centroid
+        nmv_morphology.original_center = self.reported_soma_centroid
 
-        # Enable the std_output again
-        nmv.utilities.enable_std_output()
-
-        # Return a reference to the reconstructed morphology skeleton
+        # Return a reference to the NMV morphology object
         return nmv_morphology

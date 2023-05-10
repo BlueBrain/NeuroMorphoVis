@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # Internal imports
-import nmv
 import nmv.analysis
 import nmv.skeleton
 
@@ -112,7 +111,7 @@ def compute_maximum_section_volume(arbor):
 
 
 ####################################################################################################
-# @compute_arbor_total_volume
+# @compute_average_section_volume
 ####################################################################################################
 def compute_average_section_volume(arbor):
     """Computes the average section volume of the given arbor.
@@ -154,7 +153,7 @@ def compute_average_section_volume(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_section_volume
+# @compute_minimum_segment_volume
 ####################################################################################################
 def compute_minimum_segment_volume(arbor):
     """Computes the minimum section volume of the given arbor.
@@ -182,7 +181,7 @@ def compute_minimum_segment_volume(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_section_volume
+# @compute_maximum_segment_volume
 ####################################################################################################
 def compute_maximum_segment_volume(arbor):
     """Computes the minimum section volume of the given arbor.
@@ -210,7 +209,7 @@ def compute_maximum_segment_volume(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_section_volume
+# @compute_average_segment_volume
 ####################################################################################################
 def compute_average_segment_volume(arbor):
     """Computes the minimum section volume of the given arbor.

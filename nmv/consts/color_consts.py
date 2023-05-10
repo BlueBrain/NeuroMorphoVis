@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -23,8 +23,7 @@ from mathutils import Vector
 # @Color
 ####################################################################################################
 class Color:
-    """Color constants
-    """
+    """Color constants"""
 
     ################################################################################################
     # @__init__
@@ -40,6 +39,12 @@ class Color:
 
     # Blue
     BLUE = Vector((0.0, 0.0, 1.0))
+
+    # Light red
+    LIGHT_RED = Vector((1.0, 0.338, 0.253))
+
+    # Sky blue
+    SKY_BLUE = Vector((0.167, 0.521, 1.0))
 
     # White
     WHITE = Vector((1.0, 1.0, 1.0))
@@ -58,6 +63,9 @@ class Color:
 
     # Black
     BLACK = Vector((0.0, 0.0, 0.0))
+
+    # Default number of materials
+    NUMBER_MATERIALS = 2
 
     # The number of color elements in the color map
     COLORMAP_RESOLUTION = 16

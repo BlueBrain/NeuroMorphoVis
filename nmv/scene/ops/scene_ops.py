@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -344,26 +344,42 @@ def clear_default_scene():
 
 
 ####################################################################################################
-# @clear_scene
+# @delete_material
 ####################################################################################################
-def clear_scene():
-    """Clear a scene and remove all the existing objects in it and unlink their references.
+def delete_material(material,
+                    unlink_from_scene=True):
+    """Deletes a material from the scene.
 
-    NOTE: This function targets clearing meshes, curve, objects and materials.
+    :param material:
+        A reference to the material that must be deleted.
+    :param unlink_from_scene:
+        Unlink this material from the scene, by default True.
     """
 
-    # Adjust the clipping planes in case of perspective projection
-    # bpy.context.space_data.clip_start = 0.01
-    # bpy.context.space_data.clip_end = 10000
-
-    # Select each object in the scene
-    for scene_object in bpy.context.scene.objects:
-        select_object(scene_object)
-
-    # Delete the object
+    # Remove the materials
     nmv.utilities.disable_std_output()
-    bpy.ops.object.delete()
+    bpy.data.materials.remove(material, do_unlink=unlink_from_scene)
     nmv.utilities.enable_std_output()
+
+
+####################################################################################################
+# @clear_scene
+####################################################################################################
+def clear_scene(deep_delete=False):
+    """Clear a scene and remove all the existing objects in it and unlink their references.
+
+    :param deep_delete:
+        If this flag is set, we enforce deleting meshes, curve and other objects/
+    """
+
+    for i_object in bpy.data.objects:
+        i_object.hide_set(False)
+        i_object.hide_select = False
+        i_object.hide_viewport = False
+
+    # Select all the objects in the scene and delete them all at once
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False, confirm=False)
 
     # Unlink all the objects in all the layers
     for scene in bpy.data.scenes:
@@ -372,28 +388,30 @@ def clear_scene():
             unlink_object_from_scene(scene_object)
             nmv.utilities.enable_std_output()
 
-    # Select all the meshes, unlink them and clear their data
-    for scene_mesh in bpy.data.meshes:
-        nmv.utilities.disable_std_output()
-        bpy.data.meshes.remove(scene_mesh, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
-    # Select all the curves, unlink them and clear their data
-    for scene_curve in bpy.data.curves:
-        nmv.utilities.disable_std_output()
-        bpy.data.curves.remove(scene_curve, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
-    # Select all the scene objects, unlink them and clear their data
-    for scene_object in bpy.data.objects:
-        nmv.utilities.disable_std_output()
-        bpy.data.objects.remove(scene_object, do_unlink=True)
-        nmv.utilities.enable_std_output()
-
     # Select all the scene materials, unlink them and clear their data
     for scene_material in bpy.data.materials:
         nmv.utilities.disable_std_output()
         bpy.data.materials.remove(scene_material, do_unlink=True)
+        nmv.utilities.enable_std_output()
+
+    if deep_delete:
+        for scene_mesh in bpy.data.meshes:
+            nmv.utilities.disable_std_output()
+            bpy.data.meshes.remove(scene_mesh, do_unlink=True)
+            nmv.utilities.enable_std_output()
+        for scene_curve in bpy.data.curves:
+            nmv.utilities.disable_std_output()
+            bpy.data.curves.remove(scene_curve, do_unlink=True)
+            nmv.utilities.enable_std_output()
+        for scene_object in bpy.data.objects:
+            nmv.utilities.disable_std_output()
+            bpy.data.objects.remove(scene_object, do_unlink=True)
+            nmv.utilities.enable_std_output()
+
+    # Delete all the collections
+    for scene_collection in bpy.data.collections:
+        nmv.utilities.disable_std_output()
+        bpy.data.collections.remove(scene_collection)
         nmv.utilities.enable_std_output()
 
 
@@ -428,23 +446,6 @@ def clear_lights():
             nmv.utilities.disable_std_output()
             bpy.data.lamps.remove(scene_lamp, do_unlink=True)
             nmv.utilities.enable_std_output()
-
-
-####################################################################################################
-# @reset_scene
-####################################################################################################
-def reset_scene():
-    """Resets the scene and does several operations that are needed to avoid any errors.
-    """
-
-    # Set all the objects in the scene to visible
-    for scene_object in bpy.context.scene.objects:
-        return
-        # Switch to the object mode to avoid any errors if by default the editing mode was active
-        #bpy.ops.object.mode_set(mode='OBJECT')
-
-        # Un-hide any object in the scene to be able to delete all the objects
-        #unhide_object(scene_object=scene_object)
 
 
 ####################################################################################################
@@ -1189,6 +1190,52 @@ def clone_mesh_objects_into_joint_mesh(mesh_objects):
 
     # Return the clones mesh
     return joint_mesh_object
+
+
+####################################################################################################
+# @verify_object_in_scene
+####################################################################################################
+def verify_object_in_scene(scene_object):
+    """Verifies if the given reference to an object exists in the scene or not.
+
+    :param scene_object:
+        A reference to the scene object.
+    :return:
+        True if the object still exists in the scene, otherwise False.
+    """
+
+    # If the given object is None, then it cannot be in the scene
+    if scene_object is None:
+        return False
+
+    # Use exception handling to verify the existence of the object in the scene
+    try:
+        scene_object.name
+    except:
+        return False
+
+    # If no exception raised, the object exists in the scene
+    return True
+
+
+####################################################################################################
+# @verify_objects_list_in_scene
+####################################################################################################
+def verify_objects_list_in_scene(scene_objects_list):
+    """Verifies if the given references to a list of objects exist in the scene or not.
+
+    :param scene_objects_list:
+        A list of scene objects.
+    :return:
+        True if all the objects still exist in the scene, otherwise False.
+    """
+
+    for scene_object in scene_objects_list:
+        if verify_object_in_scene(scene_object=scene_object):
+            continue
+        else:
+            return False
+    return True
 
 
 ####################################################################################################

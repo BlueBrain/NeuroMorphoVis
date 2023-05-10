@@ -23,8 +23,7 @@ from mathutils import Vector
 # @Color
 ####################################################################################################
 class Color:
-    """Color enumerator
-    """
+    """Color enumerator"""
 
     ################################################################################################
     # @__init__
@@ -32,6 +31,7 @@ class Color:
     def __init__(self):
         pass
 
+    # COLORS #######################################################################################
     # Soma color
     SOMA = Vector((1.0, 0.8, 0.15))
 
@@ -53,9 +53,25 @@ class Color:
     # Spines color
     SPINES = Vector((0.1, 0.75, 0.45))
 
+    # Synapses color
+    SYNAPSES = Vector((0.1, 0.75, 0.45))
+
+    # Excitatory synapses color
+    EXCITATORY_SYNAPSES = Vector((1.0, 0.0, 0.0))
+
+    # Inhibitory synapses color
+    INHIBITORY_SYNAPSES = Vector((0.0, 0.0, 1.0))
+
+    # Afferent synapses color
+    AFFERENT_SYNAPSES = Vector((1.0, 1.0, 0.0))
+
+    # Efferent synapses color
+    EFFERENT_SYNAPSES = Vector((1.0, 0.0, 1.0))
+
     # Nuclei color
     NUCLEI = Vector((0.75, 0.41, 0.77))
 
+    # MATERIALS INDICES ############################################################################
     # The soma materials are found at the indices 0 and 1
     SOMA_MATERIAL_START_INDEX = 0
 
@@ -68,5 +84,14 @@ class Color:
     # The axon materials are found at the indices 6 and 7
     AXON_MATERIAL_START_INDEX = 6
 
-    # The gray materials are found at the indices 9
-    GRAY_MATERIAL_INDEX = 8
+    # The gray (shaded or non-highlighted) materials are found at the indices 8 and 9
+    GRAY_MATERIAL_START_INDEX = 8
+
+    # The articulation materials are found at the indices 10 and 11
+    ARTICULATION_MATERIAL_START_INDEX = 10
+
+    # The endfeet materials are found at the indices 12 and 13
+    ENDFEET_MATERIAL_START_INDEX = 12
+
+
+

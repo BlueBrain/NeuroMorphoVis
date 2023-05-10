@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
 
 # Internal modules
 from .base import MeshBuilderBase
@@ -39,8 +38,7 @@ class PiecewiseBuilder(MeshBuilderBase):
     NOTES:
         - The meshes produced by this builder are not guaranteed to be watertight.
         - This is the fastest mesh builder amongst all the other builders in the Meshing Toolbox.
-        - You can still color-code each arbor type in the morphology, unlike the MetaBuilder.
-        - The resulting mehes can be used with Ultraliser to create optimized and watertight ones.
+        - You can still color-code each arbor type in the morphology.
     """
 
     ################################################################################################
@@ -48,38 +46,61 @@ class PiecewiseBuilder(MeshBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 this_is_proxy_mesh=False):
         """Constructor
 
         :param morphology:
-            A given morphology skeleton to create the mesh for.
+            A given morphology skeleton to create a mesh for.
         :param options:
             Loaded options from NeuroMorphoVis.
+        :param this_is_proxy_mesh:
+            A flag to indicate that the resulting mesh from this builder is a proxy mesh or not.
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
+        MeshBuilderBase.__init__(self, morphology, options, 'piecewise')
 
-        # A reference to the reconstructed soma mesh
-        self.soma_mesh = None
-
-        # A list of the reconstructed meshes of the apical dendrites
-        self.apical_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the basal dendrites
-        self.basal_dendrites_meshes = list()
-
-        # A list of the reconstructed meshes of the axon
-        self.axons_meshes = list()
-
-        # A list of the endfeet meshes, if exist
-        self.endfeet_meshes = list()
+        # A flag to indicate that the resulting mesh is a proxy mesh
+        self.this_is_proxy_mesh = this_is_proxy_mesh
 
         # Statistics
         self.profiling_statistics = 'PiecewiseBuilder Profiling Stats.: \n'
 
         # Stats. about the mesh
         self.mesh_statistics = 'PiecewiseBuilder Mesh: \n'
+
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """Confirms if the generated mesh from this builder is joint in a single mesh object or
+        multiple ones. The result depends on the selection of the user and the nature of the builder
+        and other factors, therefore this function is re-implemented for every builder."""
+
+        # If this is a proxy mesh, then it is a single mesh object, otherwise, it is user-defined
+        mesh_options = self.options.mesh
+        if self.this_is_proxy_mesh:
+            mesh_options.neuron_objects_connection = nmv.enums.Meshing.ObjectsConnection.CONNECTED
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Create the materials of the morphology skeleton
+        self.create_skeleton_materials()
+
+        # Create illumination only if this is not a proxy mesh
+        if not self.this_is_proxy_mesh:
+            self.create_illumination()
+
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
 
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
@@ -122,6 +143,7 @@ class PiecewiseBuilder(MeshBuilderBase):
 
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.apical_dendrite_branch_order,
                         name=arbor.label,
                         material_list=self.apical_dendrites_materials,
@@ -146,6 +168,12 @@ class PiecewiseBuilder(MeshBuilderBase):
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
+
         # Basal dendrites
         if not self.options.morphology.ignore_basal_dendrites:
             if self.morphology.has_basal_dendrites():
@@ -158,6 +186,7 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Draw the basal dendrites as a set connected sections
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.basal_dendrites_branch_order,
                         name=arbor.label,
                         material_list=self.basal_dendrites_materials,
@@ -182,6 +211,12 @@ class PiecewiseBuilder(MeshBuilderBase):
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
+
         # Axons
         if not self.options.morphology.ignore_axons:
             if self.morphology.has_axons():
@@ -194,6 +229,7 @@ class PiecewiseBuilder(MeshBuilderBase):
                     # Draw the axon as a set connected sections
                     nmv.skeleton.ops.draw_connected_sections(
                         section=arbor,
+                        soma_center=self.morphology.soma.centroid,
                         max_branching_order=self.options.morphology.axon_branch_order,
                         name=arbor.label,
                         material_list=self.axons_materials,
@@ -218,15 +254,21 @@ class PiecewiseBuilder(MeshBuilderBase):
                         # Convert the section object (tubes) into meshes
                         nmv.scene.ops.convert_object_to_mesh(arbor_object)
 
+                        # Rename the arbor object
+                        arbor_object.name = arbor.label
+
+                        # Append the resulting mesh to the meshes list
+                        self.neuron_meshes.append(arbor_object)
+
     ################################################################################################
     # @build_hard_edges_arbors
     ################################################################################################
     def build_hard_edges_arbors(self):
-        """Reconstruct the meshes of the arbors of the neuron with HARD edges.
-        """
+        """Reconstruct the meshes of the arbors of the neuron with HARD edges."""
 
         # Create a bevel object that will be used to create the mesh
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
+        bevel_object = nmv.mesh.create_bezier_circle(
+            radius=1.0, resolution=self.options.morphology.bevel_object_sides, name='Cross Section')
 
         # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
         #  soma origin, otherwise extend the arbors to the origin
@@ -240,9 +282,6 @@ class PiecewiseBuilder(MeshBuilderBase):
 
         # Create the arbors using this 16-side bevel object and CLOSED caps (no smoothing required)
         self.build_arbors(bevel_object=bevel_object, caps=True, roots_connection=roots_connection)
-
-        # Close caps
-        nmv.logger.detail('Closing caps')
 
         # Close the caps of the apical dendrites meshes
         for arbor_object in self.apical_dendrites_meshes:
@@ -260,146 +299,79 @@ class PiecewiseBuilder(MeshBuilderBase):
         nmv.scene.ops.delete_object_in_scene(bevel_object)
 
     ################################################################################################
-    # @build_soft_edges_arbors
-    ################################################################################################
-    def build_soft_edges_arbors(self):
-        """Reconstruct the meshes of the arbors of the neuron with SOFT edges.
-        """
-        # Create a bevel object that will be used to create the mesh with 4 sides only
-        bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=8, name='arbors_bevel')
-
-        # If the meshes of the arbors are 'welded' into the soma, then do NOT connect them to the
-        #  soma origin, otherwise extend the arbors to the origin
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_SOMA
-        else:
-            roots_connection = nmv.enums.Skeleton.Roots.CONNECT_CONNECTED_TO_ORIGIN
-
-        # Create the arbors using this 4-side bevel object and OPEN caps (for smoothing)
-        self.build_arbors(bevel_object=bevel_object, caps=False, roots_connection=roots_connection)
-
-        # Smooth and close the faces of the apical dendrites meshes
-        for mesh in self.apical_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the basal dendrites meshes
-        for mesh in self.basal_dendrites_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Smooth and close the faces of the axon meshes
-        for mesh in self.axons_meshes:
-            nmv.mesh.ops.smooth_object_vertices(mesh_object=mesh, level=2)
-
-        # Delete the bevel object
-        nmv.scene.ops.delete_object_in_scene(bevel_object)
-
-    ################################################################################################
     # @reconstruct_arbors_meshes
     ################################################################################################
     def reconstruct_arbors_meshes(self):
-        """Reconstruct the arbors.
-
-        There are two techniques for reconstructing the mesh. The first uses sharp edges without
-        any smoothing, and in this case, we will use a bevel object having 16 or 32 vertices.
-        The other method creates a smoothed mesh with soft edges. In this method, we will use a
-        simplified bevel object with only 'four' vertices and smooth it later using vertices
-        smoothing to make 'sexy curves' for the mesh that reflect realistic arbors.
-        """
+        """Reconstruct the arbors."""
 
         nmv.logger.header('Reconstructing arbors')
 
         # Hard edges (less samples per branch)
-        if self.options.mesh.edges == nmv.enums.Meshing.Edges.HARD:
-            self.build_hard_edges_arbors()
-
-        # Smooth edges (more samples per branch)
-        elif self.options.mesh.edges == nmv.enums.Meshing.Edges.SMOOTH:
-            self.build_soft_edges_arbors()
-
-        else:
-            nmv.logger.log('ERROR')
+        self.build_hard_edges_arbors()
 
     ################################################################################################
-    # @build_endfeet
+    # @create_joint_proxy_mesh
     ################################################################################################
-    def build_endfeet(self):
-        """Builds the endfeet in case of loading astrocytic morphologies.
-        """
+    def create_joint_proxy_mesh(self):
 
-        self.endfeet_meshes.extend(self.reconstruct_endfeet())
+        # Join all the mesh objects into a single one
+        self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes, self.morphology.label)
+
+        # Clear all the lists that contain references to the meshes, they are not valid anymore
+        self.clear_meshes_lists()
+
+        # Adjust the origin of the resulting mesh
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
 
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh as a set of piecewise-watertight meshes.
-
-        The meshes are logically connected, but the different branches are intersecting,
-        so they can be used perfectly for voxelization purposes, but they cannot be used for
-        surface rendering with 'transparency'. For this purpose, we recommend to use the skinning
-        builder.
-        """
+        """Reconstructs the mesh."""
 
         nmv.logger.header('Building Mesh: PiecewiseBuilder')
 
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
-
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
-        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
-
-        # Build the soma, with the default parameters
-        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
+        # Build the soma
+        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
         # Build the arbors
-        result, stats = nmv.utilities.profile_function(self.reconstruct_arbors_meshes)
+        result, stats = self.PROFILE(self.reconstruct_arbors_meshes)
         self.profiling_statistics += stats
 
-        # Connect to the soma
-        result, stats = nmv.utilities.profile_function(self.connect_arbors_to_soma)
+        # Connect to the soma to the arbors, if required
+        # result, stats = self.PROFILE(self.connect_arbors_to_soma)
+        # self.profiling_statistics += stats
+
+        # Build the endfeet, if required
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
 
-        # Build the endfeet
-        result, stats = nmv.utilities.profile_function(self.build_endfeet)
-        self.profiling_statistics += stats
-
-        # Tessellation
-        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
-        self.profiling_statistics += stats
-
-        # Surface roughness
-        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
-        self.profiling_statistics += stats
+        # Tessellation, if required
+        if not self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.decimate_neuron_mesh)
+            self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
+        result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
-        # Join all the objects into a single object
-        result, stats = nmv.utilities.profile_function(self.join_mesh_object_into_single_object)
+        # Aggregation and origin adjustments
+        result, stats = self.PROFILE(self.join_objects_and_adjust_origin)
         self.profiling_statistics += stats
 
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
-        self.profiling_statistics += stats
+        # Report the statistics of this builder
+        if not self.this_is_proxy_mesh:
+            self.report_builder_statistics()
 
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
-        self.profiling_statistics += stats
-
-        # Report
-        nmv.logger.statistics(self.profiling_statistics)
-
-        # Write the stats to file
-        self.write_statistics_to_file(tag='piecewise')
-
-        # Return a list of all the mesh objects in the scene
-        mesh_objects = self.get_neuron_mesh_objects()
-        return mesh_objects
+        # Return the list of the resulting mesh, either as a single object or multiple ones
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            return [self.neuron_mesh]
+        else:
+            return self.neuron_meshes

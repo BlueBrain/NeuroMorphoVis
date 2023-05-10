@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -24,28 +24,25 @@ import nmv.enums
 ####################################################################################################
 def update_skeleton_branching(morphology,
                               branching_method):
-    """Update the skeleton branching into primary and secondary sections based on a selected method.
+    """Labels the child sections in the morphology into primary and secondary sections based on a
+    selected branching method defined by the user.
 
     :param morphology:
-        A given morphology skeleton.
+        The morphology object.
     :param branching_method:
-        A selected branching method.
+        The selected branching method, either based on angles or based on radii.
         * nmv.enums.Skeleton.Branching.ANGLES: based on angles.
         * nmv.enums.Skeleton.Branching.RADII: based on radii.
     """
 
-    # Primary and secondary branching
+    # Label the sections either based on angles or radii
     if branching_method == nmv.enums.Skeleton.Branching.ANGLES:
-
-        # Label the primary and secondary sections based on angles
-        nmv.skeleton.ops.apply_operation_to_morphology(
+        nmv.skeleton.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_angles])
     else:
-
-        # Label the primary and secondary sections based on radii
-        nmv.skeleton.ops.apply_operation_to_morphology(
+        nmv.skeleton.apply_operation_to_morphology(
             *[morphology, nmv.skeleton.ops.label_primary_and_secondary_sections_based_on_radii])
 
     # Update the branching orders
-    nmv.skeleton.ops.apply_operation_to_morphology(
+    nmv.skeleton.apply_operation_to_morphology(
         *[morphology, nmv.skeleton.ops.update_branching_order_section])

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .ui_globals import *
+from .globals import *
 from .common import *
-from .data import *
 from .about import *
 from .edit import *
 from .io import *
@@ -25,3 +24,4 @@ from .soma import *
 from .analysis import *
 from .mesh import *
 from .morphology import *
+from .synaptics import *

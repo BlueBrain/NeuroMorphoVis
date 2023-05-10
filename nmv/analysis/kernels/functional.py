@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import nmv
+# Internal imports
 import nmv.analysis
 
 
@@ -67,7 +67,7 @@ def apply_analysis_operation_to_arbor(*args):
 
 
 ####################################################################################################
-# @apply_analysis_operation_to_morphology
+# @apply_kernel_to_morphology_to_collect_distributions
 ####################################################################################################
 def apply_kernel_to_morphology_to_collect_distributions(*args):
 

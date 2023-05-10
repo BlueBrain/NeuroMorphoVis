@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # System imports
-import random, copy
+import random
 
 # Blender imports
 from mathutils import Vector, Matrix
@@ -32,8 +32,7 @@ import nmv.skeleton
 def compute_section_bounding_box(section,
                                  p_min,
                                  p_max):
-    """
-    Computes the bounding box of a morphological section.
+    """Computes the bounding box of a morphological section.
 
     :param section:
         A given morphological section to compute the bounding box for. The result is stored in the
@@ -73,8 +72,7 @@ def compute_section_bounding_box(section,
 def compute_sections_bounding_box(arbor,
                                   p_min,
                                   p_max):
-    """
-    Computes the bounding box of a morphological section and its children.
+    """Computes the bounding box of a morphological section and its children.
 
     :param arbor:
         A given arbor to compute the bounding box for.
@@ -98,8 +96,7 @@ def compute_sections_bounding_box(arbor,
 # @compute_arbor_bounding_box
 ####################################################################################################
 def compute_arbor_bounding_box(arbor):
-    """
-    Computes the bounding box of a given arbor.
+    """Computes the bounding box of a given arbor.
 
     :param arbor:
         A given morphological arbor to compute the bounding box for.
@@ -151,8 +148,7 @@ def compute_sections_list_bounding_box(sections_list):
 # @compute_full_morphology_bounding_box
 ####################################################################################################
 def compute_full_morphology_bounding_box(morphology):
-    """
-    Computes the bounding box of the entire morphology including all the existing arbors.
+    """Computes the bounding box of the entire morphology including all the existing arbors.
 
     :param morphology:
         A given morphology to compute the bounding box for.
@@ -281,7 +277,7 @@ def transform_to_local_coordinates(mesh_object,
 
 
 ####################################################################################################
-# @transform_to_global
+# @transform_to_global_coordinates
 ####################################################################################################
 def transform_to_global_coordinates(mesh_object,
                                     blue_config,
@@ -462,7 +458,7 @@ def zigzag_section(section,
 
 
 ####################################################################################################
-# @project_to_plane
+# @project_to_xy_plane
 ####################################################################################################
 def project_to_xy_plane(section):
     """Project the section to XY plane.
@@ -613,6 +609,25 @@ def set_section_radii_between_given_range(section,
 
 
 ####################################################################################################
+# @verify_smallest_radius_to_value
+####################################################################################################
+def verify_smallest_radius_to_value(section,
+                                    smallest_radius):
+    """Ensures that the section has no samples with radii smaller than the given value
+
+    :param section:
+         A given section to filter.
+    :param smallest_radius:
+        The value of the radius of the smallest sample in the section.
+    """
+
+    # Iterate over all the samples in the section, verify the radius and update if necessary
+    for i_sample in section.samples:
+        if i_sample.radius < smallest_radius:
+            i_sample.radius = smallest_radius
+
+
+####################################################################################################
 # @update_branching_order_section
 ####################################################################################################
 def update_branching_order_section(section,
@@ -726,3 +741,65 @@ def find_section_radius_near_point(section,
 
     # Return the final radius
     return radius
+
+
+####################################################################################################
+# @get_section_radii
+####################################################################################################
+def get_section_radii(max_branching_order,
+                      section,
+                      radii_list=[]):
+    """Appends to the input radii list the radii of all the samples of the section.
+
+    :param max_branching_order:
+        Maximum branching order specified by the user.
+    :param section:
+        A given section to get its radii.
+    :param radii_list:
+        A given list to collect the radii of the section.
+    """
+
+    # If the current branching level is greater than the maximum one, exit
+    if section.branching_order > max_branching_order:
+        return
+
+    for i_sample in section.samples:
+        radii_list.append(i_sample.radius)
+
+
+####################################################################################################
+# @get_smallest_sample_radius_of_trimmed_morphology
+####################################################################################################
+def get_smallest_sample_radius_of_trimmed_morphology(morphology,
+                                                     axon_branch_order,
+                                                     basal_dendrites_branch_order,
+                                                     apical_dendrite_branch_order):
+    """Returns the smallest radius in the morphology for a specific branching order.
+
+    :param morphology:
+        The input morphology.
+    :param axon_branch_order:
+        The maximum branching order along the axons.
+    :param basal_dendrites_branch_order:
+        The maximum branching order along the basal dendrites.
+    :param apical_dendrite_branch_order:
+        The maximum branching order along the apical dendrites.
+    :return:
+        The smallest radius in the morphology for a specific branching order.
+    """
+
+    # A list that will collect all the radii of the sections in the morphology until the
+    # requested branching orders
+    radii = list()
+
+    # Apply the operation recursively on the trimmed morphology
+    nmv.skeleton.ops.apply_operation_to_trimmed_morphology(
+        *[morphology,
+          axon_branch_order,
+          basal_dendrites_branch_order,
+          apical_dendrite_branch_order,
+          nmv.skeleton.ops.get_section_radii,
+          radii])
+
+    # Return the minimum radius
+    return min(radii)

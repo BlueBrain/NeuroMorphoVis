@@ -1,5 +1,5 @@
 ###################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Suffix
 ####################################################################################################
 class Suffix:
-    """Suffix constants
-    """
+    """Suffix constants"""
 
     ################################################################################################
     # @__init__
@@ -79,3 +78,12 @@ class Suffix:
 
     # Rendered with a fixed radius
     FIXED_RADIUS = '_fixed_radius'
+
+    # Dendrogram
+    DENDROGRAM = '_dendrogram'
+
+    # Synaptics
+    SYNAPTICS_FRONT = "_synaptics_front"
+    SYNAPTICS_SIDE = "_synaptics_side"
+    SYNAPTICS_TOP = "_synaptics_top"
+

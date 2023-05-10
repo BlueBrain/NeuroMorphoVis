@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -27,15 +27,13 @@ import nmv.utilities as nmvu
 # @NeuroMorphoVisOptions
 ####################################################################################################
 class NeuroMorphoVisOptions:
-    """Workflow options all combined in a single structure.
-    """
+    """Workflow options all combined in a single structure."""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # Morphology options
         self.morphology = nmv.options.MorphologyOptions()
@@ -54,6 +52,9 @@ class NeuroMorphoVisOptions:
 
         # Shading options
         self.shading = nmv.options.ShadingOptions()
+
+        # Synaptics options
+        self.synaptics = nmv.options.SynapticsOptions()
 
     ################################################################################################
     # @consume_arguments

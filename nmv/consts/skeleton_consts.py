@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Skeleton
 ####################################################################################################
 class Skeleton:
-    """Skeleton constants
-    """
+    """Skeleton constants"""
 
     ################################################################################################
     # @__init__
@@ -50,6 +49,15 @@ class Skeleton:
     # Apical dendrites prefix
     APICAL_DENDRITES_PREFIX = 'ApicalDendrite'
 
+    # The identifier of a section of type axon defined in NeuroMorphoVis
+    NMV_AXON_SECTION_TYPE = 2
+
+    # The identifier of a section of type basal dendrite defined in NeuroMorphoVis
+    NMV_BASAL_DENDRITE_SECTION_TYPE = 3
+
+    # The identifier of a section of type apical dendrite defined in NeuroMorphoVis
+    NMV_APICAL_SECTION_TYPE = 4
+
     # A little distance before p0 on the root section from the soma side (for nice connection)
     SOMA_EXTRUSION_DELTA = 0.7
 
@@ -62,7 +70,7 @@ class Skeleton:
     # The index of the sample index in an SWC file
     SWC_SAMPLE_INDEX_IDX = 0
 
-    # The index of the type of a sample in an SWC file
+    # The index of the type of samples in an SWC file
     SWC_SAMPLE_TYPE_IDX = 1
 
     # The index of the x-coordinates of a sample in an SWC file

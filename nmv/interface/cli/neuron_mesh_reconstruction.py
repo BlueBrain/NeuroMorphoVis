@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -167,7 +167,7 @@ def render_neuron_mesh_to_static_frame(cli_morphology,
         nmv.file.ops.clean_and_create_directory(cli_options.io.images_directory)
 
     # Compute the bounding box for a close up view
-    if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
+    if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
 
         # Compute the bounding box for a close up view
         bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
@@ -247,7 +247,7 @@ def render_neuron_mesh_360(cli_options,
     if cli_options.rendering.render_360:
 
         # Compute the bounding box for a close up view
-        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSE_UP:
+        if cli_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
 
             # Compute the bounding box for a close up view
             bounding_box = nmv.bbox.compute_unified_extent_bounding_box(

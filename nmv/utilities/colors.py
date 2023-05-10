@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -108,6 +108,34 @@ def hex_to_rgb(hex_color):
 
     # Return the Vector for mathutils compatibility
     return Vector((rgb[0] / 256.0, rgb[1] / 256.0, rgb[2] / 256.0))
+
+
+####################################################################################################
+# @confirm_rgb_color_from_color_string
+####################################################################################################
+def confirm_rgb_color_from_color_string(color_string):
+    """Ensures that the given color string is an RGB float vector.
+
+    :param color_string:
+        A given color string in any format.
+    :return:
+        An RGB color vector with a float precision.
+    """
+
+    # This is a hex color
+    if '#' in color_string:
+        return hex_to_rgb(hex_color=color_string.replace('#', ''))
+
+    if '_' in color_string:
+        rgb_list = color_string.split('_')
+        r = int(rgb_list[0])
+        g = int(rgb_list[1])
+        b = int(rgb_list[2])
+
+        if r > 1.0 and g > 1.0 and b > 1.0:
+            return Vector((r / 256.0, g / 256.0, b / 256.0))
+        else:
+            return Vector((r, g, b))
 
 
 ####################################################################################################

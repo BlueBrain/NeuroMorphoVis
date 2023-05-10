@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -24,22 +24,26 @@ import nmv.enums
 # @MorphologyOptions
 ####################################################################################################
 class MorphologyOptions:
-    """Configuration options for reconstructing a morphology skeleton.
-    """
+    """The morphology options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # INPUT SOURCE OPTIONS #####################################################################
         # The GID of a given neuron in a given circuit using a blue config
         self.gid = None
 
-        # The circuit
+        # The circuit configuration file
         self.blue_config = None
+
+        # The circuit, where the given neuron is loaded from. In fact, we keep a reference of the
+        # circuit within the morphology options to avoid the delays from loading the circuit data
+        # from a remote file system. This parameter will be automatically filled after loading a
+        # neuron morphology from a circuit
+        # self.circuit = None
 
         # Morphology file path (if read from .H5 or .SWC file)
         self.morphology_file_path = None
@@ -253,4 +257,3 @@ class MorphologyOptions:
         # Number of sides of the bevel object used to scale the sections
         # This parameter controls the quality of the reconstructed morphology
         self.bevel_object_sides = nmv.consts.Meshing.BEVEL_OBJECT_SIDES
-

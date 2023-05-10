@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -145,7 +145,7 @@ echo -e "\nRUNNING ... NeuroMorphoVis \n"
     --rendering-view=$RENDERING_VIEW                                                                \
     --frame-resolution=$FRAME_RESOLUTION                                                            \
     --resolution-scale-factor=$RESOLUTION_SCALE_FACTOR                                              \
-    --close-up-dimensions=$CLOSE_UP_VIEW_DIMENSIONS                                                 \
+    --close-up-dimensions=$CLOSEUP_VIEW_DIMENSIONS                                                 \
     --image-file-format=$IMAGE_FILE_FORMAT                                                          \
     --shader=$SHADER                                                                                \
     --execution-node=$EXECUTION_NODE                                                                \

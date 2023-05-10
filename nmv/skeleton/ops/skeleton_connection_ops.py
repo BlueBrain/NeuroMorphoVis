@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,7 +17,6 @@
 
 # System imports
 import random
-import time
 
 # Blender imports
 import bpy
@@ -469,7 +468,7 @@ def verify_arbor_proximity_to_soma(arbor,
                                    soma):
     """Validates the proximity of a given arbor to the given soma. If the arbor is too far, then
     probably, it is NOT connected to the soma, otherwise it is.
-    This function simply updates the self.far_from_soma  flag of the given arbor
+    This function simply updates the self.far_from_soma  flag of the given a0rbor
 
     :param arbor:
         A given arbor of the morphology to check.
@@ -478,9 +477,10 @@ def verify_arbor_proximity_to_soma(arbor,
     """
 
     # TODO: Fix this based on some algorithm -> nmv.consts.Skeleton.MAXIMUM_SOMA_RADIUS_REPORTED
-    # We must find a convenient algorithm to handle this issue
-    if (arbor.samples[0].point - soma.centroid).length < soma.largest_radius * 4:
+    if (arbor.samples[0].point - soma.centroid).length < soma.mean_radius * 4:
         arbor.far_from_soma = False
+    else:
+        arbor.far_from_soma = True
 
 
 ####################################################################################################
@@ -593,7 +593,7 @@ def connect_arbor_to_meta_ball_soma(soma_mesh,
 
 
 ####################################################################################################
-# @connect_arbor_to_meta_ball_soma
+# @connect_arbors_to_meta_ball_soma
 ####################################################################################################
 def connect_arbors_to_meta_ball_soma(soma_mesh,
                                      arbors_mesh):
@@ -803,7 +803,7 @@ def get_soma_to_root_section_connection_extent(section):
 
 
 ####################################################################################################
-# @get_connection_extents
+# @get_soma_to_root_sections_connection_extent
 ####################################################################################################
 def get_soma_to_root_sections_connection_extent(morphology):
     """Return the extents (or regions where the root sections are connected to the soma).
@@ -854,7 +854,7 @@ def get_soma_to_root_sections_connection_extent(morphology):
 
 
 ####################################################################################################
-# @get_stable_soma_extent
+# @get_stable_soma_extent_for_morphology
 ####################################################################################################
 def get_stable_soma_extent_for_morphology(morphology):
     """
@@ -919,7 +919,7 @@ def get_stable_soma_extent_for_morphology(morphology):
 
 
 ####################################################################################################
-# @get_stable_soma_extent
+# @get_stable_soma_extent_for_connected_arbors
 ####################################################################################################
 def get_stable_soma_extent_for_connected_arbors(arbors):
     """
@@ -1120,7 +1120,7 @@ def bridge_arbor_poly_line_to_skeleton_mesh(arbor_poly_line,
 
 
 ####################################################################################################
-# @bridge_mesh_objects_in_list
+# @bridge_arbors_to_skeleton_mesh
 ####################################################################################################
 def bridge_arbors_to_skeleton_mesh(arbors_poly_line_list,
                                    connecting_points_list):

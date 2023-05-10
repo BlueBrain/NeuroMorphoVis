@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2022, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -30,8 +30,7 @@ import nmv.scene
 # @Endfoot
 ####################################################################################################
 class Endfoot:
-    """Astrocyte endfoot
-    """
+    """Astrocyte endfoot"""
 
     ################################################################################################
     # @__init__
@@ -71,14 +70,11 @@ class Endfoot:
     # @create_surface_patch
     ################################################################################################
     def create_surface_patch(self,
-                             material=None,
-                             collection_name="Collection"):
+                             material=None):
         """Creates a surface patch of the endfoot.
 
         :param material:
             The material that will be applied to the endfoot.
-        :param collection_name:
-            The name of the Blender collection.
         :return:
             A reference to the created patch mesh.
         """
@@ -88,8 +84,7 @@ class Endfoot:
         mesh_object = bpy.data.objects.new(mesh.name, mesh)
 
         # Link the mesh to the scene
-        collection = bpy.data.collections.get(collection_name)
-        collection.objects.link(mesh_object)
+        bpy.context.collection.objects.link(mesh_object)
 
         # Update the data in the mesh
         bpy.context.view_layer.objects.active = mesh_object
@@ -97,7 +92,8 @@ class Endfoot:
 
         # Assign the material to the endfeet
         if material is not None:
-            nmv.shading.set_material_to_object(mesh_object=mesh_object, material_reference=material)
+            nmv.shading.set_material_to_object(
+                mesh_object=mesh_object, material_reference=material)
 
         # Smooth the surface for the shading
         nmv.mesh.shade_smooth_object(mesh_object=mesh_object)
@@ -239,7 +235,6 @@ class Endfoot:
         meta_skeleton.resolution = smallest_radius
         nmv.logger.detail('Endfeet [%s], Meta Resolution [%f]' % (self.name,
                                                                   meta_skeleton.resolution))
-
         # Select the mesh
         for scene_object in bpy.context.scene.objects:
             if endfoot_geometry_name in scene_object:

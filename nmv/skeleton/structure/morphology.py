@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -89,10 +89,10 @@ class Morphology:
         # A copy of the original apical dendrites list, needed for comparison
         self.origin_apical_dendrites = copy.deepcopy(apical_dendrites)
 
-        # Morphology GID
+        # Morphology GID, if loaded from a circuit
         self.gid = gid
 
-        # Morphology type
+        # Morphology type, if loaded from a circuit
         self.mtype = mtype
 
         # The original center of the morphology
@@ -105,6 +105,9 @@ class Morphology:
         self.label = label
         if gid is not None:
             self.label = str(gid)
+
+        # The code is an 8-character string that is used to reference the morphology label
+        self.code = nmv.utilities.generate_random_string(length=8)
 
         # Morphology file format
         self.file_format = file_format
@@ -129,6 +132,9 @@ class Morphology:
         # Maximum branching order
         self.maximum_branching_order = 1000
 
+        # The color of the soma, see @create_morphology_color_palette
+        self.soma_color = None
+
         # The color of the apical dendrites, see @create_morphology_color_palette
         self.apical_dendrites_colors = None
 
@@ -137,9 +143,6 @@ class Morphology:
 
         # The color of the axons, see @create_morphology_color_palette
         self.axons_colors = None
-
-        # The color of the soma, see @create_morphology_color_palette
-        self.soma_color = None
 
         # Statistical analysis data of the morphology
         self.stats = nmv.analysis.MorphologyStats()

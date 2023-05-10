@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -21,10 +21,11 @@ import nmv.scene
 
 
 ####################################################################################################
-# @branches_intersect
+# @arbors_intersect
 ####################################################################################################
 def arbors_intersect(branch_1,
                      branch_2,
+                     soma_center,
                      soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
     Since the two branches would not be exactly located at the given soma radius, therefore, a good
@@ -50,8 +51,8 @@ def arbors_intersect(branch_1,
     is_radius_2 = branch_2.samples[0].radius
 
     # Get the directions of the initial segments of the two branches
-    is_direction_1 = is_point_1.normalized()
-    is_direction_2 = is_point_2.normalized()
+    is_direction_1 = (is_point_1 - soma_center).normalized()
+    is_direction_2 = (is_point_2 - soma_center).normalized()
 
     # Compute the mapping radii (i.e. the scale required to connect the branch to the soma radius)
     scaled_point_1 = is_direction_1 * soma_radius
@@ -79,6 +80,7 @@ def arbors_intersect(branch_1,
 ####################################################################################################
 def arbors_intersect_with_bvh(branch_1,
                               branch_2,
+                              soma_center,
                               soma_radius):
     """Check if the given branches intersect at their connections with the soma or not.
     Since the two branches would not be exactly located at the given soma radius, therefore, a good
@@ -104,8 +106,8 @@ def arbors_intersect_with_bvh(branch_1,
     is_radius_2 = branch_2.samples[0].radius
 
     # Get the directions of the initial segments of the two branches
-    is_direction_1 = is_point_1.normalized()
-    is_direction_2 = is_point_2.normalized()
+    is_direction_1 = (is_point_1 - soma_center).normalized()
+    is_direction_2 = (is_point_2 - soma_center).normalized()
 
     # Compute the mapping radii (i.e. the scale required to connect the branch to the soma radius)
     scaled_point_1 = is_direction_1 * soma_radius
@@ -129,7 +131,6 @@ def arbors_intersect_with_bvh(branch_1,
 
     # Return the value
     return value
-
 
 
 ####################################################################################################
@@ -195,8 +196,7 @@ def profile_point_intersect_other_point(profile_point,
                                         profile_point_index,
                                         profile_points,
                                         soma_radius):
-    """
-    This function checks if the profile point intersects any other profile point or not.
+    """This function checks if the profile point intersects any other profile point or not.
 
     :param profile_point:
         A given primary profile point.
@@ -234,8 +234,7 @@ def point_branch_intersect(point,
                            branch,
                            soma_radius,
                            profile_point_radius=2.5):
-    """
-    This function checks if the given point intersects with the given branch at the soma or not.
+    """This function checks if the given point intersects with the given branch at the soma or not.
 
     :param point:
         A given profile point of the soma.
@@ -288,8 +287,7 @@ def point_branch_intersect(point,
 def axon_intersects_dendrites(axon,
                               dendrites,
                               soma_radius):
-    """
-    This function checks if the axon intersects with any basal dendrite or not.
+    """This function checks if the axon intersects with any basal dendrite or not.
 
     :param axon:
         The axon of the neuron.
@@ -321,8 +319,7 @@ def axon_intersects_dendrites(axon,
 def axon_intersects_apical_dendrite(axon,
                                     apical_dendrite,
                                     soma_radius):
-    """
-    This function checks if a given axon intersects with the apical dendrite, if exists.
+    """This function checks if a given axon intersects with the apical dendrite, if exists.
 
     :param axon:
         The given axon of the neuron.
@@ -350,8 +347,7 @@ def axon_intersects_apical_dendrite(axon,
 def dendrite_intersects_apical_dendrite(dendrite,
                                         apical_dendrite,
                                         soma_radius):
-    """
-    This function checks if a given basal dendrite intersects with the apical dendrite, if exists.
+    """This function checks if a given basal dendrite intersects with the apical dendrite, if exists.
 
     :param dendrite:
         The given basal dendrite of the neuron.
@@ -379,8 +375,7 @@ def dendrite_intersects_apical_dendrite(dendrite,
 def basal_dendrite_intersects_basal_dendrite(dendrite,
                                              dendrites,
                                              soma_radius):
-    """
-    Checks if a given 'or primary' dendrite intersects with a thicker one.
+    """Checks if a given 'or primary' dendrite intersects with a thicker one.
 
     :param dendrite:
         A given primary dendrite.
@@ -417,5 +412,3 @@ def basal_dendrite_intersects_basal_dendrite(dendrite,
 
     # No intersection
     return False
-
-

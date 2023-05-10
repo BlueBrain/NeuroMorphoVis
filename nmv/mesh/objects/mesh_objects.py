@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -184,14 +184,14 @@ def create_circle(radius=1,
 # @create_bezier_circle
 ####################################################################################################
 def create_bezier_circle(radius=1,
-                         vertices=4,
+                         resolution=16,
                          location=(0, 0, 0),
                          name='bezier_circle'):
     """Create a BEZIER circle mesh object that is linked to the scene and return a reference to it.
 
     :param radius:
         The radius of the circle.
-    :param vertices:
+    :param resolution:
         Number of vertices composing the circle, by default 4.
     :param location:
         The XYZ-coordinates of the center of the circle, by default the origin.
@@ -208,7 +208,7 @@ def create_bezier_circle(radius=1,
     bpy.ops.curve.primitive_bezier_circle_add(location=location)
 
     # Get a reference to it
-    bpy.context.object.data.resolution_u = vertices
+    bpy.context.object.data.resolution_u = resolution
     circle_mesh = nmv.scene.get_active_object()
 
     # Set the radius

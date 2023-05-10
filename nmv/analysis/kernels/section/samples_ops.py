@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -124,7 +124,7 @@ def compute_average_sampling_distance_per_section(section,
 
 
 ####################################################################################################
-# @compute_number_of_samples_per_section_distributions
+# @compute_number_of_samples_per_micron_per_section_distributions
 ####################################################################################################
 def compute_number_of_samples_per_micron_per_section_distributions(section,
                                                                    analysis_data):
@@ -144,7 +144,7 @@ def compute_number_of_samples_per_micron_per_section_distributions(section,
 
 
 ####################################################################################################
-# @analyze_number_of_samples_per_section
+# @analyze_number_of_samples_per_micron_per_section
 ####################################################################################################
 def analyze_number_of_samples_per_micron_per_section(section,
                                                      analysis_data):
@@ -205,7 +205,7 @@ def analyze_number_of_segments_per_section(section,
 
 
 ####################################################################################################
-# @compute_number_of_segments_per_section
+# @compute_number_of_zero_radius_samples_per_section
 ####################################################################################################
 def compute_number_of_zero_radius_samples_per_section(section,
                                                       analysis_data):
@@ -738,7 +738,7 @@ def compute_daughter_ratio(section,
 
 
 ####################################################################################################
-# @compute_parent_daughter_ratio
+# @compute_parent_daughter_ratios
 ####################################################################################################
 def compute_parent_daughter_ratios(section,
                                    analysis_data):
@@ -779,7 +779,7 @@ def compute_parent_daughter_ratios(section,
 
 
 ####################################################################################################
-# @get_maximum_path_distance
+# @get_samples_radii_data_of_section
 ####################################################################################################
 def get_samples_radii_data_of_section(section,
                                       analysis_data):
@@ -892,5 +892,3 @@ def compute_distribution_samples_radii_per_section(section,
 
     # Add to the collecting list
     analysis_data.append(data)
-
-

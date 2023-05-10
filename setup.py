@@ -1,6 +1,6 @@
 #!/usr/bin/python
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -196,7 +196,7 @@ def install_for_linux(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'morphio']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
 
     # Removing the site-packages directory
     blender_python_wheels = '%s/blender-neuromorphovis/%s/python/lib/python%s/site-packages/' % \
@@ -248,8 +248,6 @@ def install_for_linux(directory, blender_version, verbose=False):
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
 
-        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
-        run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
 
@@ -370,7 +368,7 @@ def install_for_mac(directory, blender_version, verbose=False):
     run_command(shell_command, verbose)
 
     # Installing dependencies
-    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'morphio']
+    pip_wheels = ['numpy', 'matplotlib', 'seaborn', 'pandas', 'Pillow', 'webbrowser', 'morphio']
 
     for wheel in pip_wheels:
         log_detail('Installing: %s' % wheel)
@@ -391,12 +389,10 @@ def install_for_mac(directory, blender_version, verbose=False):
         shell_command = '%s install -i %s bluepy_configfile' % (pip_executable, bbp_devpi)
         run_command(shell_command, verbose)
 
-        shell_command = '%s install -i %s bluepy_snap' % (pip_executable, bbp_devpi)
-        run_command(shell_command, verbose)
     except ImportError:
         print('The BBP dependencies were not installed. Can NOT use BluePy or load circuits!')
 
-    # Copying the perf file to loade NMV directly
+    # Copying the perf file to load NMV directly
 
     # Remove the .dmg file
     log_process('Cleaning')

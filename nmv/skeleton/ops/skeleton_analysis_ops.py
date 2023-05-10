@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -18,16 +18,13 @@
 # System imports
 import math
 
-# Internal imports
-import nmv.skeleton
-
 
 ####################################################################################################
 # @compute_segment_radius
 ####################################################################################################
 def compute_segment_radius(sample_1,
                            sample_2):
-    """Computes the average radius of the segment.
+    """Computes the average radius of the segment in microns.
 
     :param sample_1:
         The first sample of the segment.
@@ -45,7 +42,7 @@ def compute_segment_radius(sample_1,
 ####################################################################################################
 def compute_segment_length(sample_1,
                            sample_2):
-    """Computes the segment length.
+    """Computes the segment length in microns.
 
     :param sample_1:
         First sample of the segment.
@@ -386,8 +383,7 @@ def compute_number_of_samples_per_section(section):
 ####################################################################################################
 def compute_number_of_segments_per_section(section):
 
-    """
-    Computes the number of segments per section in a certain arbor.
+    """Computes the number of segments per section in a certain arbor.
     NOTE: The number of segments is computed from the number of samples.
 
     :param section:
@@ -438,7 +434,7 @@ def analyze_number_of_segments_per_section(section,
 
 
 ####################################################################################################
-# @analyze_number_of_children
+# @analyze_number_of_children_per_section
 ####################################################################################################
 def analyze_number_of_children_per_section(section,
                                            analysis_data_list):

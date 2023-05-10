@@ -44,7 +44,7 @@ BLENDER_EXECUTABLE={/usr/bin/blender} # You cannot use curly brackets.
 The full structure of a default _NeuroMorphoVis_ configuration file is as follows: 
 ```
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -349,10 +349,10 @@ FULL_VIEW_FRAME_RESOLUTION=2048
 FULL_VIEW_SCALE_FACTOR=10.0
 
 # Close up frame resolution
-CLOSE_UP_FRAME_RESOLUTION=1024
+CLOSEUP_FRAME_RESOLUTION=1024
 
 # Close up view dimensions (in microns)
-CLOSE_UP_VIEW_DIMENSIONS=25
+CLOSEUP_VIEW_DIMENSIONS=25
 
 # Camera view
 # Use ['front'] for the front view

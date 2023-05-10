@@ -66,7 +66,7 @@ def draw_colormap(position,
 
     # Draw the segments of the colormap
     segments = list()
-    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, vertices=16, name='color_bevel')
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=16, name='color_bevel')
     for i in range(resolution):
 
         # Construct the segment

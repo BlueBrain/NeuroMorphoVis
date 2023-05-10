@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import nmv
+# Internal imports
 import nmv.analysis
 import nmv.skeleton
 
@@ -89,17 +89,8 @@ def compute_number_of_samples_of_arbor_distributions(arbor):
     return aggregate_analysis_data
 
 
-
-
-
-
-
-
-
-
-
 ####################################################################################################
-# @compute_number_of_samples_of_arbor
+# @compute_total_number_of_zero_radii_samples_of_arbor
 ####################################################################################################
 def compute_total_number_of_zero_radii_samples_of_arbor(arbor):
     """Computes the total number of samples that have zero-radii along the given arbor.
@@ -161,7 +152,7 @@ def compute_minimum_samples_count_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_minimum_samples_count_of_arbor
+# @compute_first_sample_distance_to_soma
 ####################################################################################################
 def compute_first_sample_distance_to_soma(arbor):
     """Computes the distance from the first sample along the arbor to the soma origin.
@@ -752,7 +743,7 @@ def get_number_of_samples_per_section_of_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_distribution_number_of_samples_per_section
+# @compute_distribution_number_of_samples_per_arbor
 ####################################################################################################
 def compute_distribution_number_of_samples_per_arbor(arbor):
 
@@ -770,7 +761,7 @@ def compute_distribution_number_of_samples_per_arbor(arbor):
 
 
 ####################################################################################################
-# @compute_distribution_segments_length_per_arbor
+# @compute_distribution_samples_radii_per_arbor
 ####################################################################################################
 def compute_distribution_samples_radii_per_arbor(arbor):
 
@@ -785,4 +776,3 @@ def compute_distribution_samples_radii_per_arbor(arbor):
 
     # Return a reference to the analysis data list
     return analysis_data
-

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -32,3 +32,4 @@ from .skeleton_style_ops import *
 from .skeleton_verification_ops import *
 from .skeleton_soma_ops import *
 from .skeleton_spiny_ops import *
+from .skeleton_radius_alternation_ops import *

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -52,8 +52,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options,
-                 ignore_watertightness=False):
+                 options):
         """Constructor
 
         :param morphology:
@@ -63,10 +62,7 @@ class MetaBuilder(MeshBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
-
-        # Ignore watertightness
-        self.ignore_watertightness = ignore_watertightness
+        MeshBuilderBase.__init__(self, morphology, options, 'meta')
 
         # Meta object skeleton, used to build the skeleton of the morphology
         self.meta_skeleton = None
@@ -100,18 +96,50 @@ class MetaBuilder(MeshBuilderBase):
         # A temporary label for the mesh
         self.label = 'meta_mesh'
 
+        # Create the skeleton materials
+        self.create_skeleton_materials()
+
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """The resulting mesh from this builder is always contained in a single object."""
+
+        self.result_is_single_object_mesh = True
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Create the soma materials only
+        self.create_soma_materials()
+
+        # Create the illumination
+        self.create_illumination()
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
+
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
     ################################################################################################
     # @update_morphology_skeleton
     ################################################################################################
     def update_morphology_skeleton(self):
-        """Verifies and repairs the morphology if the contain any artifacts that would potentially
-        affect the reconstruction quality of the mesh.
-        """
+        """Verifies and repairs the morphology if they contain any artifacts that would potentially
+        affect the reconstruction quality of the mesh."""
 
         # Remove the internal samples, or the samples that intersect the soma at the first
         # section and each arbor
         nmv.skeleton.ops.apply_operation_to_morphology(
-            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma])
+            *[self.morphology, nmv.skeleton.ops.remove_samples_inside_soma,
+              self.morphology.soma.centroid])
 
         # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
         # for example, an axon that is emanating from a dendrite or two intersecting dendrites
@@ -278,8 +306,7 @@ class MetaBuilder(MeshBuilderBase):
     def build_arbors(self):
         """Builds the arbors of the neuron as tubes and AT THE END converts them into meshes.
         If you convert them during the building, the scene is getting crowded and the process is
-        getting exponentially slower.
-        """
+        getting exponentially slower."""
 
         # Header
         nmv.logger.info('Building arbors')
@@ -312,9 +339,10 @@ class MetaBuilder(MeshBuilderBase):
                         max_branching_order=self.options.morphology.axon_branch_order)
 
     ################################################################################################
-    # @build_endfeet
+    # @build_endfeet_if_applicable
     ################################################################################################
-    def build_endfeet(self):
+    def build_endfeet_if_applicable(self):
+        """Builds the endfeet if the input morphology is an astrocyte."""
 
         # Construct the meta-object from the endfeet
         for endfoot in self.morphology.endfeet:
@@ -357,7 +385,7 @@ class MetaBuilder(MeshBuilderBase):
         """Constructs and initialize a new meta object that will be the basis of the mesh.
 
         :param name:
-            Meta-object name.
+            The name of the meta object.
         """
 
         # Header
@@ -419,8 +447,7 @@ class MetaBuilder(MeshBuilderBase):
     # @build_soma_from_meta_objects
     ################################################################################################
     def build_soma_from_meta_objects(self):
-        """Builds the soma from meta-objects ONLY.
-        """
+        """Builds the soma from meta-objects ONLY."""
 
         # Header
         nmv.logger.info('Building soma from Meta Objects')
@@ -430,7 +457,8 @@ class MetaBuilder(MeshBuilderBase):
 
         # Get a list of valid arbors where we can pull the sphere towards without being intersecting
         valid_arbors = nmv.skeleton.get_connected_arbors_to_soma_after_verification(
-            morphology=self.morphology, soma_radius=self.morphology.soma.smallest_radius)
+            morphology=self.morphology, soma_center=self.morphology.soma.centroid,
+            soma_radius=self.morphology.soma.smallest_radius)
 
         # Re-classify the arbors to be able to deal with the selectivity
         valid_apical_dendrites = list()
@@ -471,8 +499,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def build_soma_from_soft_body_mesh(self):
         """Builds the soma profile in the meta skeleton based on a soma that is reconstructed with
-        the with soft-body algorithm.
-        """
+        the with soft-body algorithm."""
 
         # Use the SomaSoftBodyBuilder to reconstruct the soma
         soft_body_soma_builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology,
@@ -534,8 +561,7 @@ class MetaBuilder(MeshBuilderBase):
     ################################################################################################
     def build_random_spines(self):
         """Builds integrated spines into the neuron meta-object that will be meshed and will be
-        part of the neuron mesh.
-        """
+        part of the neuron mesh."""
 
         # Header
         nmv.logger.info('Integrating spines')
@@ -592,8 +618,7 @@ class MetaBuilder(MeshBuilderBase):
     # @finalize_meta_object
     ################################################################################################
     def finalize_meta_object(self):
-        """Converts the meta object to a mesh and get it ready for export or visualization.
-        """
+        """Converts the meta object to a mesh and get it ready for export or visualization."""
 
         # Header
         nmv.logger.header('Meshing the Meta Object')
@@ -606,166 +631,116 @@ class MetaBuilder(MeshBuilderBase):
         nmv.logger.info('Meta Resolution [%f]' % self.meta_skeleton.resolution)
 
         # Select the mesh
-        self.meta_mesh = bpy.context.scene.objects[self.label]
+        self.neuron_mesh = bpy.context.scene.objects[self.label]
 
         # Set the mesh to be the active one
-        nmv.scene.set_active_object(self.meta_mesh)
+        nmv.scene.set_active_object(self.neuron_mesh)
 
         # Convert it to a mesh from meta-balls
         nmv.logger.info('Converting the Meta-object to a Mesh (Patience Please!)')
         bpy.ops.object.convert(target='MESH')
 
         # Update the label of the reconstructed mesh
-        self.meta_mesh = bpy.context.scene.objects[0]
-        self.meta_mesh.name = self.morphology.label
+        self.neuron_mesh = nmv.scene.get_object_by_name(object_name='meta_mesh.001')
+        self.neuron_mesh.name = self.morphology.label
 
         # Re-select it again to be able to perform post-processing operations in it
-        nmv.scene.select_object(self.meta_mesh)
+        nmv.scene.select_object(self.neuron_mesh)
 
         # Set the mesh to be the active one
-        nmv.scene.set_active_object(self.meta_mesh)
+        nmv.scene.set_active_object(self.neuron_mesh)
 
-        # Clean the mesh object and remove the non-manifold edges
-        if not self.ignore_watertightness:
-            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
-            nmv.mesh.clean_mesh_object(self.meta_mesh)
+        # Update the center of the mesh to the soma
+        nmv.mesh.set_mesh_origin(
+            mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
 
-        # Remove the islands (or small partitions from the mesh) and smooth it to look nice
-        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+        # Assign the material to the mesh
+        self.assign_material_to_single_object_mesh()
 
-            # Remove the small partitions
-            nmv.logger.info('Removing Partitions')
-            nmv.mesh.remove_small_partitions(self.meta_mesh)
-
-            # Decimate
-            nmv.logger.info('Decimating the Mesh')
-            nmv.mesh.decimate_mesh_object(self.meta_mesh, decimation_ratio=0.25)
-
-            # Smooth vertices to remove any sphere-like shapes
-            nmv.logger.info('Smoothing the Mesh')
-            nmv.mesh.smooth_object_vertices(self.meta_mesh, level=5)
+        # Create a new collection from the created objects of the mesh
+        nmv.utilities.create_collection_with_objects(
+            name='Mesh %s' % self.morphology.label, objects_list=[self.neuron_mesh])
 
     ################################################################################################
     # @add_surface_roughness
     ################################################################################################
     def add_surface_roughness(self):
-        """Adds roughness to the surface of the mesh, compatible with the MetaBuilder.
-        """
+        """Adds surface noise to the mesh to make it looking realistic as seen by microscopes."""
 
-        # Ensure that the surface is rough
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-
-            # Decimate the neuron according to the meta resolution
-            if self.meta_skeleton.resolution < 1.0:
-                nmv.mesh.ops.decimate_mesh_object(mesh_object=self.meta_mesh,
-                                                  decimation_ratio=self.meta_skeleton.resolution)
-
-            # Add the surface distortion map
+            nmv.logger.info('Adding surface noise')
             nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.meta_mesh, strength=1.0)
-
-            nmv.mesh.ops.decimate_mesh_object(mesh_object=self.meta_mesh,
-                                              decimation_ratio=0.25)
-
-            nmv.mesh.ops.smooth_object(mesh_object=self.meta_mesh, level=1)
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1, noise_depth=1)
 
     ################################################################################################
-    # @assign_material_to_mesh
+    # @clean_mesh
     ################################################################################################
-    def assign_material_to_mesh(self):
+    def clean_mesh(self):
+        """Cleans the mesh by removing the small edges."""
 
-        # Deselect all objects
-        nmv.scene.ops.deselect_all()
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.meta_mesh)
-
-        # Assign the material to the selected mesh
-        nmv.shading.set_material_to_object(self.meta_mesh, self.soma_materials[0])
-
-        # Update the UV mapping
-        nmv.shading.adjust_material_uv(self.meta_mesh)
-
-        # Activate the mesh object
-        nmv.scene.set_active_object(self.meta_mesh)
+        # Clean the mesh object and remove the non-manifold edges
+        if self.options.mesh.remove_small_edges:
+            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
+            nmv.mesh.clean_mesh_object(self.neuron_mesh)
 
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh using meta objects.
-        """
+        """Reconstructs a high fidelity surface mesh of the input morphology."""
 
         nmv.logger.header('Building Mesh: MetaBuilder')
 
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
+        self.profiling_statistics += stats
+
         # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
+        result, stats = self.PROFILE(self.update_morphology_skeleton)
         self.profiling_statistics += stats
 
-        # Initialize the meta object
-        # Note that self.label should be replaced by self.options.morphology.label
-        result, stats = nmv.utilities.profile_function(
-            self.initialize_meta_object, self.label)
+        # Initialization of the meta object
+        result, stats = self.PROFILE(self.initialize_meta_object, self.label)
         self.profiling_statistics += stats
-
-        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
-            soma_building_function = self.build_soma_from_soft_body_mesh
-        else:
-            soma_building_function = self.build_soma_from_meta_objects
 
         # Build the soma
-        result, stats = nmv.utilities.profile_function(soma_building_function)
+        if self.options.mesh.soma_type == nmv.enums.Soma.Representation.SOFT_BODY:
+            result, stats = self.PROFILE(self.build_soma_from_soft_body_mesh)
+        else:
+            result, stats = self.PROFILE(self.build_soma_from_meta_objects)
         self.profiling_statistics += stats
 
         # Build the arbors
-        result, stats = nmv.utilities.profile_function(self.build_arbors)
+        result, stats = self.PROFILE(self.build_arbors)
         self.profiling_statistics += stats
         
         # Building the endfeet 
-        result, stats = nmv.utilities.profile_function(self.build_endfeet)
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
         self.profiling_statistics += stats
 
         # Building the spines from morphologies
-        result, stats = nmv.utilities.profile_function(self.build_spines)
+        result, stats = self.PROFILE(self.build_spines)
         self.profiling_statistics += stats
 
         # Finalize the meta object and construct a solid object
-        result, stats = nmv.utilities.profile_function(self.finalize_meta_object)
+        result, stats = self.PROFILE(self.finalize_meta_object)
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(self.add_surface_roughness)
+        result, stats = self.PROFILE(self.add_surface_roughness)
         self.profiling_statistics += stats
 
         # Tessellation
-        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
-
-        # Clean the mesh object and remove the non-manifold edges
-        if not self.ignore_watertightness:
-            nmv.logger.info('Cleaning Mesh Non-manifold Edges & Vertices')
-            nmv.mesh.clean_mesh_object(self.meta_mesh)
-            self.profiling_statistics += stats
-
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
-
-        # Assign the material to the mesh
-        self.assign_material_to_mesh()
-
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
+        result, stats = self.PROFILE(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
+        # Mesh cleaning
+        result, stats = self.PROFILE(self.clean_mesh)
         self.profiling_statistics += stats
 
-        # Report
-        nmv.logger.statistics_overall(self.profiling_statistics)
+        # Report the statistics of this builder
+        self.report_builder_statistics()
 
-        # Write the stats to file
-        self.write_statistics_to_file(tag='meta')
+        # This builder creates a single mesh object
+        return [self.neuron_mesh]
 
-        # Return a reference to the reconstructed mesh
-        return self.meta_mesh

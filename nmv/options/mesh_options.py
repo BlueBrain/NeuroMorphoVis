@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -24,15 +24,13 @@ import nmv.enums
 # @MeshOptions
 ####################################################################################################
 class MeshOptions:
-    """Mesh options
-    """
+    """Mesh options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # MESHING OPTIONS ##########################################################################
         # Tessellate the mesh after the reconstruction
@@ -53,6 +51,9 @@ class MeshOptions:
         # Export in circuit coordinates, by default no unless there is a circuit file given
         self.global_coordinates = False
 
+        # Which proxy meshing method will be within the voxelization re-meshing
+        self.proxy_mesh_method = nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS
+
         # Soma connection to the arbors, connected or disconnected
         self.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
 
@@ -65,8 +66,8 @@ class MeshOptions:
         # Edges of the meshes, either hard or smooth
         self.edges = nmv.enums.Meshing.Edges.HARD
 
-        # The shape of the skeleton that is used in the union meshing algorithm
-        self.skeleton_shape = nmv.enums.Meshing.UnionMeshing.QUAD_SKELETON
+        # Remove the small edges that might cause the mesh to be non-watertight
+        self.remove_small_edges = False
 
         # SPINES OPTIONS ###########################################################################
         # The source where the spines will be loaded from, by default ignore the spines

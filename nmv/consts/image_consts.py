@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Image
 ####################################################################################################
 class Image:
-    """Image constants
-    """
+    """Image constants"""
 
     ################################################################################################
     # @__init__
@@ -39,10 +38,10 @@ class Image:
     FULL_VIEW_RESOLUTION = 1024
 
     # Default close up view resolution
-    CLOSE_UP_RESOLUTION = 1024
+    CLOSEUP_RESOLUTION = 1024
 
     # Default close up dimensions (in microns)
-    CLOSE_UP_DIMENSIONS = 20
+    CLOSEUP_DIMENSIONS = 20
 
     # The bounding box increment that will clean the edges around the images
     GAP_DELTA = 5.0

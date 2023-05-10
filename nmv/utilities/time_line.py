@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -46,12 +46,8 @@ def show_progress(message,
     """
 
     if done:
-
-        # Done message
         sys.stdout.write('\t%s: [100 %%]%s\n' % (message, nmv.consts.Messages.SPACES))
     else:
-
-        # In progress message
         progress = 100.0 * (float(current) / float(total))
         sys.stdout.write('\t%s: [%2.2f %%]\r' % (message, progress))
 
@@ -76,13 +72,8 @@ def show_iteration_progress(message,
     """
 
     if done:
-
-        # Done message
         sys.stdout.write('%s: [%d/%d]\n' % (message, current, total))
-
     else:
-
-        # In progress message
         sys.stdout.write('%s: [%d/%d]\r' % (message, current, total))
 
 
@@ -116,3 +107,13 @@ def play_simulation(first_frame_index=1,
 
     # Display the simulation time
     nmv.logger.log('Simulation time [%f] seconds' % simulation_timer.duration())
+
+
+####################################################################################################
+# @reset_time_line_to_first_frame
+####################################################################################################
+def reset_time_line_to_first_frame():
+    """Resets the time-line to the first frame.
+    """
+
+    bpy.context.scene.frame_set(1)

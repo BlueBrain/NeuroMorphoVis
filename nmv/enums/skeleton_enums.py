@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Skeleton
 ####################################################################################################
 class Skeleton:
-    """Skeleton enumerators
-    """
+    """Skeleton enumerators"""
 
     ############################################################################################
     # @__init__
@@ -121,9 +120,6 @@ class Skeleton:
         # Create a zigzagged morphology skeleton
         ZIGZAG = 'SKELETON_STYLE_ZIGZAG'
 
-        # Project the skeleton to XY plane and make it zigzag
-        PLANAR_ZIGZAG = 'SKELETON_STYLE_PLANAR_ZIGZAG'
-
         # Create a zigzagged and tapered morphology skeleton
         TAPERED_ZIGZAG = 'SKELETON_STYLE_TAPERED_ZIGZAG'
 
@@ -161,9 +157,6 @@ class Skeleton:
             elif argument == 'tapered-zigzag':
                 return Skeleton.Style.TAPERED_ZIGZAG
 
-            elif argument == 'planar-zigzag':
-                return Skeleton.Style.PLANAR_ZIGZAG
-
             # Tapered zigzag
             elif argument == 'simplified':
                 return Skeleton.Style.STRAIGHT
@@ -196,10 +189,6 @@ class Skeleton:
             (TAPERED_ZIGZAG,
              'Tapered-Zigzag',
              'Draw the sections as tapered and wiggled zigzag tubes (artistic)'),
-
-            (PLANAR_ZIGZAG,
-             'Planar Zigzag',
-             'The samples will be projected along the XY plane wiggled zigzag tubes (artistic)'),
 
             (STRAIGHT,
              'Straight',

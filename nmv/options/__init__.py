@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -21,4 +21,5 @@ from .morphology_options import *
 from .soma_options import *
 from .rendering_options import *
 from .shading_options import *
+from .synaptics_options import *
 from .neuromorphovis_options import *

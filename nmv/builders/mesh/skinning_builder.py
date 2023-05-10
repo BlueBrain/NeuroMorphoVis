@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -58,7 +58,7 @@ class SkinningBuilder(MeshBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MeshBuilderBase.__init__(self, morphology, options)
+        MeshBuilderBase.__init__(self, morphology, options, 'skinning')
 
         # A reference to the reconstructed soma mesh
         self.soma_mesh = None
@@ -105,6 +105,45 @@ class SkinningBuilder(MeshBuilderBase):
         # Verify the connectivity of the arbors to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
 
+        # Create the skeleton materials
+        self.create_skeleton_materials()
+
+    ################################################################################################
+    # @confirm_single_or_multiple_mesh_objects
+    ################################################################################################
+    def confirm_single_or_multiple_mesh_objects(self):
+        """Confirms if the generated mesh from this builder is joint in a single mesh object or
+        multiple ones. The result depends on the selection of the user and the nature of the builder
+        and other factors, therefore this function is re-implemented for every builder."""
+
+        # If this is a proxy mesh, then it is a single mesh object, otherwise, it is user-defined
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            self.result_is_single_object_mesh = True
+        else:
+            self.result_is_single_object_mesh = False
+
+    ################################################################################################
+    # @initialize_builder
+    ################################################################################################
+    def initialize_builder(self):
+        """Initializes the different parameters/options of the builder required for building."""
+
+        # Create the materials of the morphology skeleton
+        self.create_skeleton_materials()
+
+        # Create the illumination
+        self.create_illumination()
+
+        # Is it a single object or multiple objects
+        self.confirm_single_or_multiple_mesh_objects()
+
+        # Verify and repair the morphology, if required
+        self.update_morphology_skeleton()
+
+        # Verify the connectivity of the arbors to the soma
+        nmv.skeleton.verify_arbors_connectivity_to_soma(morphology=self.morphology)
+
     ################################################################################################
     # @update_section_samples_radii
     ################################################################################################
@@ -120,10 +159,7 @@ class SkinningBuilder(MeshBuilderBase):
         """
 
         # Make sure to include the first sample of the root section
-        if section.is_root():
-            starting_index = 0
-        else:
-            starting_index = 1
+        starting_index = 0 if section.is_root() else 1
 
         # Sample by sample along the section
         for i in range(starting_index, len(section.samples)):
@@ -252,7 +288,8 @@ class SkinningBuilder(MeshBuilderBase):
                 arbor, samples_global_arbor_index, max_branching_order)
 
             # Add an auxiliary sample just before the arbor starts
-            auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[0].point.normalized()
+            auxiliary_point = arbor.samples[0].point - 0.01 * \
+                              (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
 
             # Create the initial vertex of the arbor skeleton at the auxiliary point
             arbor_bmesh_object = nmv.bmeshi.create_vertex(location=auxiliary_point)
@@ -275,12 +312,11 @@ class SkinningBuilder(MeshBuilderBase):
 
             # If the arbor is not far from soma, then connect it to the origin
             if not arbor.far_from_soma:
-                arbor_bmesh_object = nmv.bmeshi.create_vertex()
+                arbor_bmesh_object = nmv.bmeshi.create_vertex(location=self.morphology.soma.centroid)
 
                 # Add an auxiliary sample just before the arbor starts
-                auxiliary_point = arbor.samples[0].point - 0.01 * arbor.samples[
-                    0].point.normalized()
-
+                auxiliary_point = arbor.samples[0].point - 0.01 * \
+                (arbor.samples[0].point - self.morphology.soma.centroid).normalized()
             else:
                 arbor_bmesh_object = nmv.bmeshi.create_vertex(location=arbor.samples[0].point)
 
@@ -498,59 +534,10 @@ class SkinningBuilder(MeshBuilderBase):
             self.update_samples_indices_per_arbor(child, index, max_branching_order)
 
     ################################################################################################
-    # @build_endfeet
+    # @collect_performance_stats
     ################################################################################################
-    def build_endfeet(self):
-        """Builds the endfeet in case of loading astrocytic morphologies.
-        """
-
-        self.neuron_meshes.append(self.reconstruct_endfeet())
-
-    ################################################################################################
-    # @reconstruct_mesh
-    ################################################################################################
-    def reconstruct_mesh(self):
-        """Reconstructs the neuronal mesh using the skinning modifiers in Blender.
-        """
-
-        nmv.logger.header('Building Mesh: SkinningBuilder')
-
-        # NOTE: Before drawing the skeleton, create the materials once and for all to improve the
-        # performance since this is way better than creating a new material per section or segment
-        self.create_skeleton_materials()
-
-        # Verify and repair the morphology, if required
-        result, stats = nmv.utilities.profile_function(self.update_morphology_skeleton)
-        self.profiling_statistics += stats
-
-        # Verify the connectivity of the arbors to the soma to filter the disconnected arbors,
-        # for example, an axon that is emanating from a dendrite or two intersecting dendrites
-        nmv.skeleton.ops.verify_arbors_connectivity_to_soma(self.morphology)
-
-        # Build the soma, with the default parameters
-        result, stats = nmv.utilities.profile_function(self.reconstruct_soma_mesh)
-        self.profiling_statistics += stats
-
-        # Build the arbors and connect them to the soma
-        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
-
-            # Build the arbors
-            result, stats = nmv.utilities.profile_function(self.build_arbors, True)
-            self.profiling_statistics += stats
-
-            # Connect to the soma
-            result, stats = nmv.utilities.profile_function(self.connect_arbors_to_soma)
-            self.profiling_statistics += stats
-
-        # Build the arbors only without any connection to the soma
-        else:
-            # Build the arbors
-            result, stats = nmv.utilities.profile_function(self.build_arbors, False)
-            self.profiling_statistics += stats
-
-        # Build the endfeet
-        result, stats = nmv.utilities.profile_function(self.build_endfeet)
-        self.profiling_statistics += stats
+    def collect_performance_stats(self):
+        """Collects statistics about the performance of this skinning mesh builder."""
 
         # Details about the arbors building
         self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('extrusion',
@@ -583,36 +570,69 @@ class SkinningBuilder(MeshBuilderBase):
         self.profiling_statistics += '\t* Stats. @%s: [%.3f]\n' % ('creating_modifier',
                                                                    self.creating_modifier_time)
 
+    ################################################################################################
+    # @reconstruct_mesh
+    ################################################################################################
+    def reconstruct_mesh(self):
+        """Reconstructs the neuronal mesh using the skinning modifiers in Blender.
+        """
+
+        nmv.logger.header('Building Mesh: SkinningBuilder')
+
+        # Initialization
+        result, stats = self.PROFILE(self.initialize_builder)
+        self.profiling_statistics += stats
+
+        # Build the soma, with the default parameters
+        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
+        self.profiling_statistics += stats
+
+        # Build the arbors and connect them to the soma
+        if self.options.mesh.soma_connection == nmv.enums.Meshing.SomaConnection.CONNECTED:
+
+            # Build the arbors
+            result, stats = self.PROFILE(self.build_arbors, True)
+            self.profiling_statistics += stats
+
+            # Connect to the soma
+            result, stats = self.PROFILE(self.connect_arbors_to_soma)
+            self.profiling_statistics += stats
+
+        # Build the arbors only without any connection to the soma
+        else:
+            # Build the arbors
+            result, stats = self.PROFILE(self.build_arbors, False)
+            self.profiling_statistics += stats
+
+        # Build the endfeet
+        result, stats = self.PROFILE(self.build_endfeet_if_applicable)
+        self.profiling_statistics += stats
+
         # Tessellation
-        result, stats = nmv.utilities.profile_function(self.decimate_neuron_mesh)
+        result, stats = self.PROFILE(self.decimate_neuron_mesh)
         self.profiling_statistics += stats
 
         # Surface roughness
-        result, stats = nmv.utilities.profile_function(self.add_surface_noise_to_arbor)
+        result, stats = self.PROFILE(self.add_surface_noise_to_arbor)
         self.profiling_statistics += stats
 
         # Add the spines
-        result, stats = nmv.utilities.profile_function(self.add_spines_to_surface)
+        result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
         # Join all the objects into a single object
-        neuron_mesh, stats = nmv.utilities.profile_function(
-            self.join_mesh_object_into_single_object)
+        neuron_mesh, stats = self.PROFILE(self.join_objects_and_adjust_origin)
         self.profiling_statistics += stats
 
-        # Transform to the global coordinates, if required
-        result, stats = nmv.utilities.profile_function(self.transform_to_global_coordinates)
-        self.profiling_statistics += stats
+        # Collect the stats about the meshing
+        self.collect_performance_stats()
 
-        # Collect the stats. of the mesh
-        result, stats = nmv.utilities.profile_function(self.collect_mesh_stats)
-        self.profiling_statistics += stats
+        # Report the statistics of this builder
+        self.report_builder_statistics()
 
-        # Done
-        nmv.logger.statistics(self.profiling_statistics)
-
-        # Write the stats to file
-        self.write_statistics_to_file(tag='skinning')
-
-        # Return a reference to the neuron mesh if joint
-        return neuron_mesh
+        # Return the list of the resulting mesh, either as a single object or multiple ones
+        connection = self.options.mesh.neuron_objects_connection
+        if connection == nmv.enums.Meshing.ObjectsConnection.CONNECTED:
+            return [self.neuron_mesh]
+        else:
+            return self.neuron_meshes

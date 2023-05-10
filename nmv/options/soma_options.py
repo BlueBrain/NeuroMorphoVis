@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -24,15 +24,13 @@ import nmv.enums
 # @SomaOptions
 ####################################################################################################
 class SomaOptions:
-    """Soma options
-    """
+    """Soma options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # RECONSTRUCTION OPTIONS ###################################################################
         # Reconstruction method
@@ -55,6 +53,9 @@ class SomaOptions:
 
         # Simulation steps
         self.simulation_steps = nmv.consts.SoftBody.SIMULATION_STEPS_DEFAULT
+
+        # Reconstruction profile 2D/3D
+        self.profile = nmv.enums.Soma.Profile.COMBINED
 
         # MESH EXPORT OPTIONS ######################################################################
         # Export soma mesh in .ply format

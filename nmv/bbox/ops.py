@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -104,8 +104,12 @@ def confirm_object_bounding_box(scene_object):
     """
 
     # Initialize the min and max points
-    p_min = Vector((10000000, 10000000, 10000000))
-    p_max = Vector((-10000000, -10000000, -10000000))
+    p_min = Vector((nmv.consts.Math.INFINITY,
+                    nmv.consts.Math.INFINITY,
+                    nmv.consts.Math.INFINITY))
+    p_max = Vector((nmv.consts.Math.MINUS_INFINITY,
+                    nmv.consts.Math.MINUS_INFINITY,
+                    nmv.consts.Math.MINUS_INFINITY))
 
     # Compute the bounding box of the object from the vertices
     box = scene_object.bound_box
@@ -113,35 +117,35 @@ def confirm_object_bounding_box(scene_object):
     # Compute the bounding box from the vertices of the object
     verts = list()
     v0 = Vector((box[0][0], box[0][1], box[0][2]))
-    #v0 = scene_object.matrix_world @ v0
+    v0 = scene_object.matrix_world @ v0
     verts.append(v0)
 
     v1 = Vector((box[1][0], box[1][1], box[1][2]))
-    #v1 = scene_object.matrix_world @ v1
+    v1 = scene_object.matrix_world @ v1
     verts.append(v1)
 
     v2 = Vector((box[2][0], box[2][1], box[2][2]))
-    #v2 = scene_object.matrix_world @ v2
+    v2 = scene_object.matrix_world @ v2
     verts.append(v2)
 
     v3 = Vector((box[3][0], box[3][1], box[3][2]))
-    #v3 = scene_object.matrix_world @ v3
+    v3 = scene_object.matrix_world @ v3
     verts.append(v3)
 
     v4 = Vector((box[4][0], box[4][1], box[4][2]))
-    #v4 = scene_object.matrix_world @ v4
+    v4 = scene_object.matrix_world @ v4
     verts.append(v4)
 
     v5 = Vector((box[5][0], box[5][1], box[5][2]))
-    #v5 = scene_object.matrix_world @ v5
+    v5 = scene_object.matrix_world @ v5
     verts.append(v5)
 
     v6 = Vector((box[6][0], box[6][1], box[6][2]))
-    #v6 = scene_object.matrix_world @ v6
+    v6 = scene_object.matrix_world @ v6
     verts.append(v6)
 
     v7 = Vector((box[7][0], box[7][1], box[7][2]))
-    #v7 = scene_object.matrix_world @ v7
+    v7 = scene_object.matrix_world @ v7
     verts.append(v7)
 
     for point in range(0, len(verts)):
@@ -266,7 +270,7 @@ def compute_scene_bounding_box_for_curves_and_meshes():
 
 
 ####################################################################################################
-# @get_scene_bounding_box
+# @compute_scene_bounding_box
 ####################################################################################################
 def compute_scene_bounding_box():
     """Get the bounding box of all the objects in the scene.

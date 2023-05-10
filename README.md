@@ -27,13 +27,12 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 + [Blender 2.80](http://download.blender.org/release/Blender2.80/)
-+ [Blender 2.81](http://download.blender.org/release/Blender2.81/)
-+ [Blender 2.82](http://download.blender.org/release/Blender2.82/)
-+ [Blender 2.82](http://download.blender.org/release/Blender2.82/)
-+ [Blender 2.91](http://download.blender.org/release/Blender2.91/)
-+ [Blender 3.1](http://download.blender.org/release/Blender2.1/)
 
-Nevertheless, it is recommended to avoid version 2.79 and use version 3.1. 
+
++ [Blender 3.1](http://download.blender.org/release/Blender3.1/)
++ [Blender 3.5](http://download.blender.org/release/Blender3.5/)
+
+Nevertheless, it is recommended to avoid version 2.79 and use version 3.5. 
 
 _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender__ that can be easily extracted and used [out-of-the-box](https://en.wikipedia.org/wiki/Out_of_the_box_(feature)). The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective platform. This package (released every minor version update of the software) is recommended for __Windows users__ or those who cannot use the [__Terminal__](https://en.wikipedia.org/wiki/Unix_shell). Otherwise, users can just download an installation script that will automatically install the entire package to a user-specified directory. This script __does not__ require __sudo__ permissions. 
 
@@ -172,7 +171,7 @@ _NeuroMorphoVis_ is developed by the Visualization team at the [Blue Brain Proje
 # License 
 _NeuroMorphoVis_ is available to download and use under the GNU General Public License ([GPL](https://www.gnu.org/licenses/gpl.html), or “free software”). The code is open sourced with approval from the open sourcing committee and principal coordinators of the Blue Brain Project in December 2019. 
 
-Copyright (c) 2016-2022 Blue Brain Project/EPFL
+Copyright (c) 2016-2023 Blue Brain Project/EPFL
 
 # Attributions 
 
@@ -203,14 +202,7 @@ Blue Brain Project
  
 __Felix Schürmann__  
 Co-director of the Blue Brain Project    
-[felix.schuermann@epfl.ch](felix.schuermann@epfl.ch) 
-
-Should you have any questions concerning press enquiriries, please contact:
-
-__Kate Mullins__  
-Communications  
-Blue Brain Project  
-[kate.mullins@epfl.ch](kate.mullins@epfl.ch)
+[felix.schuermann@epfl.ch](felix.schuermann@epfl.ch)
 
 # Navigation 
 

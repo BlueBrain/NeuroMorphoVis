@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,8 +20,7 @@
 # @Meshing
 ####################################################################################################
 class Meshing:
-    """Meshing enumerators
-    """
+    """Meshing enumerators"""
 
     ############################################################################################
     # @__init__
@@ -38,6 +37,9 @@ class Meshing:
 
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
+
+        # Using voxelization-based re-meshing
+        VOXELIZATION = 'MESHING_TECHNIQUE_VOXELIZATION'
 
         # Union meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
@@ -60,23 +62,16 @@ class Meshing:
         @staticmethod
         def get_enum(argument):
 
-            # Piecewise-watertight
             if argument == 'piecewise-watertight':
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
-
-            # Union
+            elif argument == 'voxelization':
+                return Meshing.Technique.VOXELIZATION
             elif argument == 'union':
                 return Meshing.Technique.UNION
-
-            # Skinning
             elif argument == 'skinning':
                 return Meshing.Technique.SKINNING
-
-            # Meta objects
             elif argument == 'meta-balls':
                 return Meshing.Technique.META_OBJECTS
-
-            # By default use piecewise-watertight
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
@@ -88,6 +83,10 @@ class Meshing:
              'This approach (Abdellah et al., 2017) creates a piecewise watertight mesh that is '
              'composed of multiple mesh objects, where each object is a watertight component. '
              'This method is used to reconstruct high fidelity volumes from the generated meshes'),
+
+            (VOXELIZATION,
+             'Voxelization',
+             'This approach creates a watertight mesh'),
 
             (SKINNING,
              'Skinning',
@@ -108,6 +107,56 @@ class Meshing:
              'Creates watertight mesh models using MetaBalls. This approach is extremely slow if '
              'the axons are included in the meshing process, so it is always recommended to use '
              'first order branching for the axons when using this technique')
+        ]
+
+    ################################################################################################
+    # @Proxy
+    ################################################################################################
+    class Proxy:
+        """The method used to create the proxy meshes for the voxelization-based re-meshing"""
+
+        # Use the articulated sections morphology builder
+        ARTICULATED_SECTIONS = 'PROXY_ARTICULATED_SECTIONS'
+
+        # Use the connected sections morphology builder
+        CONNECTED_SECTIONS = 'PROXY_CONNECTED_SECTIONS'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            if argument == 'articulated-sections':
+                return Meshing.Proxy.ARTICULATED_SECTIONS
+            elif argument == 'connected-sections':
+                return Meshing.Proxy.CONNECTED_SECTIONS
+            else:
+                return Meshing.Proxy.ARTICULATED_SECTIONS
+
+        # All the methods list
+        PROXY_MESHES_METHODS = [
+
+            (ARTICULATED_SECTIONS,
+             'Articulated Sections',
+             'Use the articulated sections morphology builder to build the proxy mesh that is '
+             'used later to construct the final mesh. The articulated sections builder builds '
+             'every section in the morphology independently and then adds spheres at the terminal '
+             'points of every section to make a continuation of the path from the parent sections '
+             'to the child ones.'),
+
+            (CONNECTED_SECTIONS,
+             'Connected Sections',
+             'Use the connected sections morphology building style to build the proxy mesh that is '
+             'used later to construct the final mesh. This method constructs a single mesh for a '
+             'full path from a root node to a leaf one. This method is more robust than the '
+             'Articulated Sections.')
         ]
 
     ################################################################################################
@@ -180,7 +229,7 @@ class Meshing:
             elif argument == 'disconnected':
                 return Meshing.SomaConnection.DISCONNECTED
 
-            # By default use the soma disconnected mode
+            # By default, use the soma disconnected mode
             else:
                 return Meshing.SomaConnection.DISCONNECTED
 

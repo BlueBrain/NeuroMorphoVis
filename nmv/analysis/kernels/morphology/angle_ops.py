@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -74,7 +74,7 @@ def kernel_average_local_bifurcation_angle(morphology):
 
 
 ####################################################################################################
-# @kernel_minimum_local_bifurcation_angle
+# @kernel_minimum_global_bifurcation_angle
 ####################################################################################################
 def kernel_minimum_global_bifurcation_angle(morphology):
     """Compute the minimum global bifurcation angles of the given morphology.

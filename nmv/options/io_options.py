@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -20,18 +20,22 @@
 # @IOOptions
 ####################################################################################################
 class IOOptions:
-    """Input / Output options.
-    """
+    """Input / Output options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
+
+        # The input source of the morphology
+        self.input_source = None
 
         # The root output directory where the results will be generated
         self.output_directory = None
+
+        # Use the default paths while creating the subdirectory tree
+        self.use_default_path_for_artifacts = False
 
         # Images directory, where the images will be rendered
         self.images_directory = None

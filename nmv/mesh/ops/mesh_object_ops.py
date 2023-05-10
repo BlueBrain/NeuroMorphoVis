@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,10 +15,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-# Blender imports
+# System imports
 import random
 
-import bpy, bmesh
+# Blender imports
+import bpy
+import bmesh
+from mathutils import Matrix
 
 # Internal imports
 import nmv.scene
@@ -183,7 +186,7 @@ def smooth_object_vertices(mesh_object,
     :param mesh_object:
         A given mesh object.
     :param level:
-        Smoothing or subdivision level, by default 1.
+        Smoothing or subdivision level or number of iterations, by default 1.
     """
 
     # Deselect all the objects in the scene
@@ -192,18 +195,14 @@ def smooth_object_vertices(mesh_object,
     # Activate the selected object
     nmv.scene.ops.set_active_object(mesh_object)
 
-    # Toggle from the object mode to edit mode
-    bpy.ops.object.editmode_toggle()
+    # Select the SMOOTH modifier
+    bpy.ops.object.modifier_add(type='SMOOTH')
 
-    # Select all the vertices of the mesh
-    bpy.ops.mesh.select_all(action='TOGGLE')
+    # Update the number of iterations
+    bpy.context.object.modifiers["Smooth"].iterations = level
 
-    # Smooth
-    for i in range(level):
-        bpy.ops.mesh.vertices_smooth(factor=0.5)
-
-    # Toggle from the edit mode to the object mode
-    bpy.ops.object.editmode_toggle()
+    # Apply the modifier
+    bpy.ops.object.modifier_apply(modifier="Smooth")
 
 
 ####################################################################################################
@@ -723,7 +722,9 @@ def subdivide_mesh(mesh_object,
 # @add_surface_noise_to_mesh_using_displacement_modifier
 ####################################################################################################
 def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
-                                                          strength=1.0):
+                                                          strength=1.0,
+                                                          noise_scale=2.0,
+                                                          noise_depth=2):
 
     # Deselect everything in the scene
     nmv.scene.ops.deselect_all()
@@ -736,13 +737,15 @@ def add_surface_noise_to_mesh_using_displacement_modifier(mesh_object,
 
     # Add a new texture for the modifier
     displacement_modifier.texture = bpy.data.textures.new(
-        name='SurfaceNoise%s' % mesh_object.name, type='CLOUDS')
+        name='Surface Noise [%s]' % mesh_object.name, type='CLOUDS')
 
-    # Update the noise range
+    # Select a PERLIN noise
+    displacement_modifier.texture.noise_basis = 'ORIGINAL_PERLIN'
+
+    # Update the noise parameters
     displacement_modifier.strength = strength
-
-    # Update the noise range
-    displacement_modifier.texture.noise_scale = 1.5
+    displacement_modifier.texture.noise_scale = noise_scale
+    displacement_modifier.texture.noise_depth = int(noise_depth)
 
     # Apply the modifiers
     if nmv.utilities.is_blender_290():
@@ -993,3 +996,69 @@ def create_wire_frame(mesh_object,
 
     # Return a reference to the wireframe object
     return duplicated_mesh
+
+
+####################################################################################################
+# @set_mesh_origin
+####################################################################################################
+def set_mesh_origin(mesh_object,
+                    coordinate):
+    """Sets the origin of the given mesh object to a specific coordinate.
+
+    :param mesh_object:
+        The given mesh object.
+    :param coordinate:
+        The coordinates of the new origin in mathutils::Vector format
+    """
+
+    # Compute the transform that accounts for the difference
+    transform = Matrix.Translation(coordinate - mesh_object.location)
+
+    # Update the location to the given coordinate
+    mesh_object.location = coordinate
+
+    # Apply the transform
+    mesh_object.data.transform(transform.inverted())
+
+    # Update the mesh object
+    mesh_object.data.update()
+
+
+####################################################################################################
+# @apply_voxelization_remeshing_modifier
+####################################################################################################
+def apply_voxelization_remeshing_modifier(mesh_object,
+                                          voxel_size=0.1):
+    """Apply the voxelization-based remeshing algorithm to the given mesh object to create a
+    connected mesh.
+
+    :param mesh_object:
+        A given mesh object to remesh.
+    :param voxel_size:
+        The size of the voxel represents the resolution of the grid. It should be set to the
+        radius of the smallest element - or edge - in the mesh object
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.ops.deselect_all()
+
+    # Activate the selected object
+    nmv.scene.ops.set_active_object(mesh_object)
+
+    # Add the REMESH modifier to the scene
+    bpy.ops.object.modifier_add(type='REMESH')
+
+    # Ensure that it is the voxelization-based one
+    bpy.context.object.modifiers["Remesh"].mode = 'VOXEL'
+
+    # Update the voxel size
+    bpy.context.object.modifiers["Remesh"].voxel_size = voxel_size
+
+    # Use smooth shading 
+    bpy.context.object.modifiers["Remesh"].use_smooth_shade = True
+
+    # Apply the modifier
+    bpy.ops.object.modifier_apply(modifier="Remesh")
+
+
+

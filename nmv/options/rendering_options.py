@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -24,15 +24,13 @@ import nmv.enums
 # @RenderingOptions
 ####################################################################################################
 class RenderingOptions:
-    """Rendering options.
-    """
+    """Rendering options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # Render a static frame of the morphology
         self.render_morphology_static_frame = False
@@ -71,10 +69,10 @@ class RenderingOptions:
         self.frame_resolution = nmv.consts.Image.FULL_VIEW_RESOLUTION
 
         # Close up image resolution
-        self.close_up_resolution = nmv.consts.Image.CLOSE_UP_RESOLUTION
+        self.close_up_resolution = nmv.consts.Image.CLOSEUP_RESOLUTION
 
         # Close up view dimensions
-        self.close_up_dimensions = nmv.consts.Image.CLOSE_UP_DIMENSIONS
+        self.close_up_dimensions = nmv.consts.Image.CLOSEUP_DIMENSIONS
 
         # The scale factor used to scale the frame, default 1.0
         self.resolution_scale_factor = nmv.consts.Image.DEFAULT_IMAGE_SCALE_FACTOR

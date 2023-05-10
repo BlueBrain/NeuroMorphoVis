@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # Load the morphology file
     loading_flag, morphology_object = \
-        nmv.file.readers.read_morphology_from_file_naively(args.morphology)
+        nmv.file.readers.read_morphology_from_file(args.morphology)
 
     # Verify the loading operation
     if not loading_flag:

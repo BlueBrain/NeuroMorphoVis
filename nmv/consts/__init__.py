@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,6 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+from .circuit_consts import *
 from .geometry_conts import *
 from .analysis_consts import *
 from .skeleton_consts import *
@@ -33,3 +34,5 @@ from .soft_body_consts import *
 from .spines_consts import *
 from .suffix_consts import *
 from .meta_ball_consts import *
+from .synaptics_consts import *
+from .string_consts import *

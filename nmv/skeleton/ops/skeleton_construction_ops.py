@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,9 +15,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
 # System imports
 import copy
+import math
 
 # Internal imports
 import nmv.consts
@@ -126,7 +126,7 @@ def build_arbors_from_sections(sections_list):
 
 
 ####################################################################################################
-# @draw_connected_sections
+# @build_arbor_as_single_object
 ####################################################################################################
 def build_arbor_as_single_object(section, name,
                                  poly_line_data=[],
@@ -216,7 +216,7 @@ def build_arbor_as_single_object(section, name,
 
 
 ####################################################################################################
-# @get_color_coded_section_poly_line_based_on_length
+# @get_section_polyline_color_index_based_on_length
 ####################################################################################################
 def get_section_polyline_color_index_based_on_length(
         section, morphology, colormap_resolution=nmv.consts.Color.COLORMAP_RESOLUTION):
@@ -227,5 +227,4 @@ def get_section_polyline_color_index_based_on_length(
     # The maximum value is the maximum section length in the morphology
     maximum = morphology.stats.maximum_section_length
 
-    import math
     return math.ceil(colormap_resolution * section.stats.length / (maximum - minimum)) - 1

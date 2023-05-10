@@ -211,10 +211,11 @@ def draw_poly_line(poly_line_data,
 
         # If a bevel object is given, use it for scaling the diameter of the poly-line
         if bevel_object is not None:
+            line_data.bevel_mode = 'OBJECT'
             line_data.bevel_object = bevel_object
             line_data.use_fill_caps = caps
 
-    # Setup the spatial data of a SIMPLE line
+    # Set up the spatial data of a SIMPLE line
     else:
 
         # The thickness of medium line can be set to 0.1
@@ -231,8 +232,7 @@ def draw_poly_line(poly_line_data,
 
         # Create a material from a given color
         if color is not None:
-            # Create a new material (color) and assign it to the line
-            line_material = bpy.data.materials.new('color.%s' % name)
+            line_material = bpy.data.materials.new(name)
             line_material.diffuse_color = color
             line_data.materials.append(line_material)
 
@@ -294,7 +294,7 @@ def draw_poly_lines_in_single_object(poly_lines,
     :param texture_size:
         For UV mapping.
     :return:
-        A reference to the drawn poly-lines object.
+        A reference to the drawn poly-lines object./home/abdellah/Downloads/pycharm-community-2022.3.2/bin
     """
 
     # Create the object as a new curve
@@ -322,6 +322,7 @@ def draw_poly_lines_in_single_object(poly_lines,
 
     # If a bevel object is given, use it for scaling the diameter of the poly-line
     if bevel_object is not None:
+        poly_lines_object.bevel_mode = 'OBJECT'
         poly_lines_object.bevel_object = bevel_object
 
     # If a list of materials is given, then append it to the skeleton object
@@ -574,7 +575,7 @@ def resample_poly_line_adaptively_relaxed(poly_line):
 
         # Get the extent of the sample, where no other samples should be located
         extent = get_sample_radius(poly_line.samples[i]) + \
-                 get_sample_radius(poly_line.samples[i + 1])
+            get_sample_radius(poly_line.samples[i + 1])
 
         # If the next sample is located within the extent of this sample, then remove it
         if distance < extent:

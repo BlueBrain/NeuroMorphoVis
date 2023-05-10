@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2021, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -25,15 +25,13 @@ import nmv.utilities
 # @ShadingOptions
 ####################################################################################################
 class ShadingOptions:
-    """Shading options.
-    """
+    """Shading options"""
 
     ################################################################################################
     # @__init__
     ################################################################################################
     def __init__(self):
-        """Constructor
-        """
+        """Constructor"""
 
         # Morphology Shading Options ###############################################################
         # Soma color for the soma toolbox
@@ -58,10 +56,10 @@ class ShadingOptions:
         self.morphology_endfeet_color = nmv.enums.Color.ENDFEET
 
         # The first alternating color that will be used in the alternating pattern
-        self.morphology_alternating_color_1 = nmv.consts.Color.MATT_BLACK
+        self.morphology_alternating_color_1 = nmv.consts.Color.LIGHT_RED
 
         # The second alternating color that will be used in the alternating pattern
-        self.morphology_alternating_color_2 = nmv.consts.Color.VERY_WHITE
+        self.morphology_alternating_color_2 = nmv.consts.Color.SKY_BLUE
 
         # Morphology color coding scheme
         self.morphology_coloring_scheme = nmv.enums.ColorCoding.DEFAULT_SCHEME

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2020, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
 #               Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,7 +15,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-
+# Internal imports
 import nmv.consts
 import nmv.enums
 import nmv.utilities
@@ -38,7 +38,7 @@ def plot_per_arbor_result(analysis_results,
     :param morphology:
         A given morphology file.
     :param options:
-        System options.
+        NeuroMorphoVis options
     :param figure_name:
         The prefix of the figure image.
     :param figure_title:
@@ -217,7 +217,7 @@ def plot_per_arbor_range(minimum_results,
     :param morphology:
         A given morphology file.
     :param options:
-        System options.
+        NeuroMorphoVis options
     :param figure_name:
         The prefix of the figure image.
     :param figure_title:
