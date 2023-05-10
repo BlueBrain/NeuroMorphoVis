@@ -435,7 +435,7 @@ def install_neuromorphovis(directory, blender_version, verbose=False):
     if "linux" in platform_uname.system.lower():
         install_for_linux(directory, blender_version, verbose)
     elif "darwin" in platform_uname.system.lower():
-        install_for_mac(directory, blender_version, platform_uname.processor, verbose)
+        install_for_mac(directory, blender_version, platform_uname.machine, verbose)
     elif sys.platform == "win32":
         print('This script is only valid for *nix-based operating systems. '
               'For windows, you can download a zip package from the release page.')
