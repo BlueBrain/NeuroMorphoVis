@@ -28,10 +28,10 @@
 
 # News 
 + 05.2023: Release 1.9.0
++ 05.2023: Blender 2.79 and 2.8 are no longer supported by _NeuroMorphoVis_.
 + 04.2023: Implementation of the Voxelization-based remeshing to create watertight mesh models of neurons and astrocytes.
 + 03.2023: Adding the [Synaptics panel](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Synaptics) to _NeuroMorphoVis_. 
-+ 09.2022: [Paper](https://www.researchgate.net/profile/Marwan-Abdellah/publication/363538092_Meshing_of_Spiny_Neuronal_Morphologies_using_Union_Operators/links/637b320d2f4bca7fd07b7f13/Meshing-of-Spiny-Neuronal-Morphologies-using-Union-Operators.pdf), Generating high fidelity surface meshes of neocortical neurons using skin modifiers
-, in EG Computer Graphics and Visual Computing (CGVC) 2022, [more information](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Papers).
++ 09.2022: [Paper](https://www.researchgate.net/profile/Marwan-Abdellah/publication/363538092_Meshing_of_Spiny_Neuronal_Morphologies_using_Union_Operators/links/637b320d2f4bca7fd07b7f13/Meshing-of-Spiny-Neuronal-Morphologies-using-Union-Operators.pdf), Generating high fidelity surface meshes of neocortical neurons using skin modifiers, in EG Computer Graphics and Visual Computing (CGVC) 2022, [more information](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Papers).
 + 04.2020: Release [1.4.5](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.4.5)
 + 09.2019: [Paper](https://diglib.eg.org/handle/10.2312/cgvc20191257): Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers, in EG Computer Graphics and Visual Computing (CGVC) 2019, [more information](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Papers).
 + 05.2019: Release [1.3.1](https://github.com/BlueBrain/NeuroMorphoVis/releases/tag/v1.3.1)
@@ -45,7 +45,7 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 
 + [Blender 2.79](http://download.blender.org/release/Blender2.79/)
 + [Blender 2.80](http://download.blender.org/release/Blender2.80/)
-+ [Blender 3.1](http://download.blender.org/release/Blender3.1/)
++ [Blender 3.0](http://download.blender.org/release/Blender3.0/)
 + [Blender 3.5](http://download.blender.org/release/Blender3.5/)
 
 Nevertheless, it is recommended to avoid version 2.79 and use version 3.5. 
