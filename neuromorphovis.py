@@ -38,8 +38,6 @@ for import_path in import_paths:
     
 # Internal imports
 import arguments_parser
-import file_ops
-import slurm
 
 
 ####################################################################################################
@@ -248,6 +246,9 @@ def run_local_neuromorphovis(arguments):
     # Load a directory morphology files (.H5 or .SWC)
     elif arguments.input == 'directory':
 
+        import file_ops
+        import slurm
+
         # Get all the morphology files in this directory
         morphology_files = file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
         morphology_files.extend(file_ops.get_files_in_directory(
@@ -310,6 +311,9 @@ def run_cluster_neuromorphovis(arguments):
 
         from bluepy import Circuit
 
+        import file_ops
+        import slurm
+
         # Loading a circuit
         circuit = Circuit(arguments.blue_config)
 
@@ -329,11 +333,17 @@ def run_cluster_neuromorphovis(arguments):
             print('ERROR: Empty circuit configuration file or GID')
             exit(0)
 
+        import file_ops
+        import slurm
+
         # Run the jobs on the cluster
         slurm.run_gid_jobs_on_cluster(arguments=arguments, gids=[str(arguments.gid)])
 
     # Use the morphology file (.H5 or .SWC)
     elif arguments.input == 'file':
+
+        import file_ops
+        import slurm
 
         # Get the arguments string list
         arguments_string = arguments_parser.get_arguments_string(arguments=arguments)
@@ -344,6 +354,9 @@ def run_cluster_neuromorphovis(arguments):
 
     # Operate on a directory
     elif arguments.input == 'directory':
+
+        import file_ops
+        import slurm
 
         # Get all the morphology files in this directory
         morphology_files = file_ops.get_files_in_directory(arguments.morphology_directory, '.h5')
@@ -364,6 +377,9 @@ if __name__ == "__main__":
 
     # Parse the command line arguments
     arguments = arguments_parser.parse_command_line_arguments()
+
+    import file_ops
+    import slurm
 
     # Verify the output directory before screwing things !
     if not file_ops.path_exists(arguments.output_directory):

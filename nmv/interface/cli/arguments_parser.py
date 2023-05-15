@@ -464,6 +464,14 @@ def parse_command_line_arguments():
         action='store', default='piecewise-watertight',
         help=arg_help)
 
+    arg_options = ['(connected-sections)', 'articulated-sections']
+    arg_help = 'The approach used to reconstruct the proxy mesh for the voxelization builder. \n' \
+               'Options: %s' % arg_options
+    meshing_args.add_argument(
+        Args.PROXY_MESHES,
+        action='store', default='connected-sections',
+        help=arg_help)
+
     # The edges of the reconstructed meshes
     arg_options = ['smooth', '(hard)']
     arg_help = 'Arbors edges. \n' \

@@ -63,10 +63,15 @@ def reconstruct_neuron_mesh(cli_morphology,
         nmv.logger.log('Builder: Union')
         neuron_mesh_builder = nmv.builders.UnionBuilder(cli_morphology, cli_options)
 
-    # BridgingBuilder
+    # Metaballs
     elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.META_OBJECTS:
-        nmv.logger.log('Builder: Meta')
+        nmv.logger.log('Builder: MetaBalls')
         neuron_mesh_builder = nmv.builders.MetaBuilder(cli_morphology, cli_options)
+
+    # Voxelization
+    elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.VOXELIZATION:
+        nmv.logger.log('Builder: Voxelization')
+        neuron_mesh_builder = nmv.builders.VoxelizationBuilder(cli_morphology, cli_options)
 
     # BridgingBuilder
     elif cli_options.mesh.meshing_technique == nmv.enums.Meshing.Technique.SKINNING:
