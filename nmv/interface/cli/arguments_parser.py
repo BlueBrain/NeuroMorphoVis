@@ -456,7 +456,7 @@ def parse_command_line_arguments():
         help=arg_help)
 
     # Meshing algorithm
-    arg_options = ['(piecewise-watertight)', 'union', 'skinning', 'meta-balls']
+    arg_options = ['(piecewise-watertight)', 'union', 'skinning', 'meta-balls', 'voxelization']
     arg_help = 'Meshing algorithm. \n' \
                'Options: %s' % arg_options
     meshing_args.add_argument(

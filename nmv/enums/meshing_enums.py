@@ -86,7 +86,8 @@ class Meshing:
 
             (VOXELIZATION,
              'Voxelization',
-             'This approach creates a watertight mesh'),
+             'This approach creates a watertight mesh using voxelization-based remeshing in '
+             'Blender 3.0 and later'),
 
             (SKINNING,
              'Skinning',
@@ -100,7 +101,7 @@ class Meshing:
              'Union',
              'This method uses the union boolean operator to join the different branches together '
              'in a single mesh. It is not guaranteed to generate a watertight or even a valid '
-             'mesh, although it works in 90% of the cases'),
+             'mesh, although it works in 90% of the cases, (Abdellah et al., 2022)'),
 
             (META_OBJECTS,
              'MetaBalls',

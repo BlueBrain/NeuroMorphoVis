@@ -366,6 +366,18 @@ class MeshBuilderBase:
         nmv.shading.set_material_to_object(self.soma_mesh, self.soma_materials[0])
 
     ################################################################################################
+    # @improve_somatic_mesh_quality
+    ################################################################################################
+    def improve_somatic_mesh_quality(self):
+        """Improves the fidelity and visual quality of the somatic mesh."""
+
+        # Decimate by 25%
+        nmv.mesh.decimate_mesh_object(mesh_object=self.soma_mesh, decimation_ratio=0.25)
+
+        # Apply Catmull-clark subdivision on two iterations
+        nmv.mesh.smooth_object(mesh_object=self.soma_mesh, level=2)
+
+    ################################################################################################
     # @get_neuron_mesh_objects
     ################################################################################################
     def get_neuron_mesh_objects(self,

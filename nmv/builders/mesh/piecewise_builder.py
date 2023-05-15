@@ -340,6 +340,11 @@ class PiecewiseBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
 
+        # Improve the quality of the somatic mesh
+        if self.this_is_proxy_mesh:
+            result, stats = self.PROFILE(self.improve_somatic_mesh_quality)
+            self.profiling_statistics += stats
+
         # Build the arbors
         result, stats = self.PROFILE(self.reconstruct_arbors_meshes)
         self.profiling_statistics += stats
