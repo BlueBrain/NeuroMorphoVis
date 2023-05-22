@@ -229,9 +229,9 @@ def read_morphology_from_circuit(options):
     morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
     if 'asc' in morphology_extension.lower():
         morphology_format = nmv.enums.Morphology.Format.ASCII
-    elif 'swc' in morphology_extension.lower:
+    elif 'swc' in morphology_extension.lower():
         morphology_format = nmv.enums.Morphology.Format.SWC
-    elif 'h5' in morphology_extension.lower:
+    elif 'h5' in morphology_extension.lower():
         morphology_format = nmv.enums.Morphology.Format.H5
     else:
         return None
