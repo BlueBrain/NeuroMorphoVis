@@ -219,7 +219,6 @@ def read_morphology_from_circuit(options):
     # Load the circuit from the circuit config, and get the path to the morphology
     circuit = nmv.bbp.BBPCircuit(circuit_config=options.morphology.blue_config)
     morphology_file_path = circuit.get_neuron_morphology_path(options.morphology.gid)
-    print(morphology_file_path)
 
     # Get the data from the circuit and update the necessary fields in NMV
     nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list()

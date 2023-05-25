@@ -217,9 +217,9 @@ if __name__ == "__main__":
     elif arguments.input == 'file':
 
         # Read the morphology file
-        loading_flag, cli_morphology = nmv.file.read_morphology_from_file(options=cli_options)
+        cli_morphology = nmv.file.read_morphology_from_file(options=cli_options)
 
-        if not loading_flag:
+        if cli_morphology is None:
             nmv.logger.log('ERROR: Cannot load the morphology file [%s]' %
                            str(cli_options.morphology.morphology_file_path))
             exit(0)

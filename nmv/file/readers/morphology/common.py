@@ -15,6 +15,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
+# Internal imports
+import nmv.enums
+
+
 ####################################################################################################
 # @build_tree
 ####################################################################################################
@@ -81,3 +85,25 @@ def get_arbors_profile_points(arbors):
 
     # Return the list
     return arbor_profile_points
+
+
+####################################################################################################
+# @get_morphology_file_format
+####################################################################################################
+def get_morphology_file_format(morphology_file_path):
+    """Returns the file format of the morphology from its absolute path.
+
+    :param morphology_file_path:
+        The absolute path of the morphology.
+    :return:
+        The file format enumerator of the morphology, or None.
+    """
+    morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
+    if 'asc' in morphology_extension.lower():
+        return nmv.enums.Morphology.Format.ASCII
+    elif 'swc' in morphology_extension.lower():
+        return nmv.enums.Morphology.Format.SWC
+    elif 'h5' in morphology_extension.lower():
+        return nmv.enums.Morphology.Format.H5
+    else:
+        return None

@@ -70,10 +70,10 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Load the morphology file 
-    loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(args.morphology)
+    morphology_object = nmv.file.readers.read_morphology_from_file(args.morphology)
 
     # Verify the loading operation
-    if not loading_flag:
+    if morphology_object is None:
         print({'ERROR'}, 'Invalid Morphology File')
         exit(0)
 

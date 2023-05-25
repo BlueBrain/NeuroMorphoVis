@@ -103,7 +103,7 @@ if [ "$ANALYZE_MORPHOLOGY_SKELETON" == "yes" ];
 ####################################################################################################
 # echo 'FLAGS:' $BOOL_ARGS
 echo -e "\nRUNNING ... NeuroMorphoVis \n"
-    ../../../python/bin/python3.7m neuromorphovis.py                                                \
+    ../../../python/bin/python3.10 neuromorphovis.py                                                \
     --blender=$BLENDER_EXECUTABLE                                                                   \
     --input=$INPUT                                                                                  \
     --blue-config=$BLUE_CONFIG                                                                      \

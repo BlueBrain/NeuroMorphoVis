@@ -113,9 +113,9 @@ if __name__ == "__main__":
     elif arguments.input == 'file':
 
         # Read the morphology file
-        loading_flag, input_morphology = nmv.file.read_morphology_from_file(options=input_options)
+        input_morphology = nmv.file.read_morphology_from_file(options=input_options)
 
-        if not loading_flag:
+        if input_morphology is None:
             nmv.logger.log('ERROR: Cannot load the morphology file [%s]' %
                            str(input_options.morphology.morphology_file_path))
             exit(0)
@@ -126,6 +126,6 @@ if __name__ == "__main__":
 
     # Morphology analysis
     analyze_morphology_skeleton(cli_morphology=input_morphology, cli_options=input_options)
-    nmv.logger.log('Analysis done')
+    nmv.logger.log('NMV Analysis done')
 
 

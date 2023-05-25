@@ -137,11 +137,10 @@ def load_morphology(panel_object,
 
                 # Load the morphology file
                 # Load the morphology from the file
-                loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
-                    options=options)
+                morphology_object = nmv.file.readers.read_morphology_from_file(options=options)
 
                 # Verify the loading operation
-                if loading_flag:
+                if morphology_object:
 
                     # Update the morphology
                     nmv.interface.ui_morphology = morphology_object
@@ -179,11 +178,11 @@ def load_morphology(panel_object,
                         nmv.file.ops.get_file_name_from_path(context_scene.NMV_MorphologyFile)
 
                     # Load the morphology from file
-                    loading_flag, morphology_object = nmv.file.readers.read_morphology_from_file(
+                    morphology_object = nmv.file.readers.read_morphology_from_file(
                         options=nmv.interface.ui_options)
 
                     # Verify the loading operation
-                    if loading_flag:
+                    if morphology_object:
 
                         # Update the morphology
                         nmv.interface.ui_morphology = morphology_object

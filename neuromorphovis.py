@@ -273,8 +273,9 @@ def run_local_neuromorphovis(arguments):
             shell_commands.extend(
                 create_shell_commands_for_local_execution(arguments, arguments_string))
 
-        # execute_commands(shell_commands=shell_commands)
-        execute_commands_parallel(shell_commands=shell_commands)
+        execute_commands(shell_commands=shell_commands)
+        exit(0)
+        # execute_commands_parallel(shell_commands=shell_commands)
 
     else:
         print('ERROR: Input data source, use \'file, gid, target or directory\'')

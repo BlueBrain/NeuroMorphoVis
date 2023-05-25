@@ -177,7 +177,7 @@ class Args:
     NEURON_MESHING_ALGORITHM = '--meshing-algorithm'
 
     # Proxy meshes for the voxelization builder
-    PROXY_MESHES = '--proxy-meshes'
+    PROXY_MESHES = '--proxy-mesh-method'
 
     # Mesh edges
     MESH_EDGES = '--edges'
