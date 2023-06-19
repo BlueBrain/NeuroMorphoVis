@@ -3,7 +3,7 @@
 # Introduction 
 
 <p align="center">
-  <img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/logos/nmv-banner.jpeg" width=700>
+  <img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/logos/nmv-banner.jpeg" width=800>
 </p>
 
 ## Features
