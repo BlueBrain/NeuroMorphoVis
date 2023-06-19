@@ -26,6 +26,7 @@
 + Parallel batch processing on multi-node visualization clusters using [SLURM workload manager](https://slurm.schedmd.com/). 
 
 # News 
++ 06.2023: New logo release. 
 + 05.2023: Release 1.9.0
 + 05.2023: Blender 2.79 and 2.8 are no longer supported by _NeuroMorphoVis_.
 + 04.2023: Implementation of the Voxelization-based remeshing to create watertight mesh models of neurons and astrocytes.
