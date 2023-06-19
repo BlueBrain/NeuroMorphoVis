@@ -1,11 +1,10 @@
 [![DOI](https://zenodo.org/badge/DOI/10.1093/bib.bty231.svg)](https://doi.org/10.1093/bioinformatics/bty231)
 
-# Introduction 
-
 <p align="center">
   <img src="https://github.com/BlueBrain/NeuroMorphoVis/wiki/images/logos/nmv-banner.jpeg" width=800>
 </p>
 
+# Introduction
 ## Features
 
 + Automated analysis of neuronal morphology skeletons that are digitally reconstructed from optical microscopy stacks. 
