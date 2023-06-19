@@ -1,7 +1,7 @@
 #!/usr/bin/python
 ####################################################################################################
 # Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
-#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Author: Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -72,7 +72,7 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Blender version. 2.79, 2.80, 3.1 and 3.5; default (3.5)' \
                'It is recommended to avoid all preceding versions as much as possible.'
     parser.add_argument('--blender-version',
-                        action='store', dest='blender_version', default='3.1', help=arg_help)
+                        action='store', dest='blender_version', default='3.5', help=arg_help)
 
     arg_help = 'Installation directory.'
     parser.add_argument('--prefix',

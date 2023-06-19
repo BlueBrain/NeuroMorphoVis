@@ -1,6 +1,6 @@
 ####################################################################################################
 #  Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
-#               Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Author: Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -264,12 +264,12 @@ def get_indices_of_faces_intersecting_volume(sphere_object,
     vertices = sphere_object.data.vertices
     faces_list = []
     for polygon in polygons:
-        distance = (selection_location, polygon.center).lengths
+        distance = Vector((selection_location, polygon.center)).lengths
         if distance < selection_radius: 
             faces_list.append(polygon.index)
             
         for vertex in polygon.vertices[:]:
-            distance = (selection_location, vertices[vertex].co).length
+            distance = Vector((selection_location, vertices[vertex].co)).length
             if distance < selection_radius:
                 faces_list.append(polygon.index)
                 break
@@ -310,7 +310,7 @@ def get_indices_of_points_of_faces_intersecting_volume(sphere_object,
     # Iterate over all the polygons of the sphere objects
     for polygon in polygons:
         for vertex in polygon.vertices[:]:
-            distance = (selection_location, vertices[vertex].co).length
+            distance = Vector((selection_location, vertices[vertex].co)).length
             if distance < selection_radius:
                 faces_list.append(polygon)
                 break
