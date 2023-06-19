@@ -2,7 +2,7 @@
 
 ####################################################################################################
 # Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
-# Author: Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
