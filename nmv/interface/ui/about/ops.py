@@ -47,7 +47,7 @@ class NMV_Update(bpy.types.Operator):
             return {'FINISHED'}
 
         if 'posix' in os.name:
-            nmv.logger('Updating NeuroMorphoVis on a unix-based OS')
+            nmv.logger.log('Updating NeuroMorphoVis on a unix-based OS')
         else:
             self.report({'ERROR'}, 'Cannot update NeuroMorphoVis on Windows! '
                                    'Please download the latest version from the GitHub '
