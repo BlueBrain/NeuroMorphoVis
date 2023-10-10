@@ -24,7 +24,6 @@
 # System imports
 import sys
 import os
-import imp
 
 __author__      = "Marwan Abdellah"
 __copyright__   = "Copyright (c) 2016 - 2023, Blue Brain Project / EPFL"
@@ -83,6 +82,8 @@ def register():
     # Import the modules
     import nmv.interface
     import nmv.utilities
+
+    sys.setrecursionlimit(5000)
 
     nmv.logger.header('Loading NeuroMorphoVis')
     nmv.logger.info('Version %s' % str(nmv.utilities.get_nmv_version()))

@@ -853,7 +853,7 @@ class SomaSoftBodyBuilder:
         soma_mesh = nmv.scene.ops.convert_object_to_mesh(soft_body_object)
 
         # Delete the vertex group (physics)
-        soma_mesh.vertex_groups.remove(self.vertex_group)
+        # soma_mesh.vertex_groups.remove(self.vertex_group)
 
         # Delete the hooks (physics)
         nmv.scene.ops.delete_list_objects(self.hooks_list)

@@ -23,6 +23,7 @@ import nmv.builders
 import nmv.consts
 import nmv.enums
 import nmv.interface
+import nmv.rendering
 import nmv.scene
 import nmv.utilities
 
@@ -82,17 +83,17 @@ class NMV_RenderSomaProgressive(bpy.types.Operator):
             nmv.rendering.SomaRenderer.render_at_angle(
                 soma_mesh=self.soma_sphere_object,
                 angle=0.0,
-                view_extent=scene.NMV_ViewDimensions,
+                view_extent=context.scene.NMV_ViewDimensions,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=scene.NMV_SomaFrameResolution,
+                image_resolution=context.scene.NMV_SomaFrameResolution,
                 image_name=image_name)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering',
-                                        self.timer_limits, scene.NMV_SimulationSteps)
+                                        self.timer_limits, context.scene.NMV_SimulationSteps)
 
             # Update the progress bar
-            scene.NMV_SomaRenderingProgress = self.timer_limits
+            context.scene.NMV_SomaRenderingProgress = self.timer_limits
 
             # Upgrade the timer limits
             self.timer_limits += 1

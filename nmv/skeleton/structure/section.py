@@ -365,6 +365,23 @@ class Section:
         return self.length
 
     ################################################################################################
+    # @compute_average_radius
+    ################################################################################################
+    def compute_average_radius(self):
+        """Computes the average radius of the section.
+
+        :return:
+            Returns the average radius of the section.
+        """
+
+        average_radius = 0.0
+        for sample in self.samples:
+            average_radius += sample.radius
+        average_radius /= len(self.samples)
+
+        return average_radius
+
+    ################################################################################################
     # @compute_parents_path_length
     ################################################################################################
     def compute_parents_path_length(self):
@@ -413,4 +430,12 @@ class Section:
 
         # Return the result
         return self.path_length
+
+    ################################################################################################
+    # @is_terminal
+    ################################################################################################
+    def is_terminal(self):
+        """Checks if the section is a terminal one or not."""
+
+        return True if len(self.children) == 0 else False
 
