@@ -78,6 +78,7 @@ def draw_soma_animation_rendering_progress(layout, scene):
     row.prop(scene, 'NMV_SomaRenderingProgress')
     row.enabled = False
 
+
 ####################################################################################################
 # @draw_soma_rendering_time
 ####################################################################################################
@@ -87,6 +88,7 @@ def draw_soma_rendering_time(layout, scene):
     row.prop(scene, 'NMV_SomaRenderingTime')
     row.enabled = False
 
+
 ####################################################################################################
 # draw_soma_frame_rendering_options
 ####################################################################################################
@@ -95,10 +97,7 @@ def draw_soma_frame_rendering_options(panel, scene, options):
     nmv.interface.ui.common.draw_rendering_header(
         layout=panel.layout, scene=scene, options=options)
 
-    nmv.interface.ui.common.draw_resolution_basis_option(
-        layout=panel.layout, scene=scene, options=options)
-
-    nmv.interface.ui.common.draw_resolution_options(
+    nmv.interface.ui.common.draw_frame_resolution_basis_options(
         layout=panel.layout, scene=scene, options=options)
 
     nmv.interface.ui.common.draw_image_format_option(

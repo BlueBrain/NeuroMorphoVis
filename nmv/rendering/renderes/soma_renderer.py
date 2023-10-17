@@ -108,7 +108,7 @@ class SomaRenderer:
             then the prefix is included in @image_name.
         """
 
-        # Rotate the soma mesh around the y axis
+        # Rotate the soma mesh around the Y-axis
         soma_mesh.rotation_euler[1] = angle * 2 * 3.14 / 360.0
 
         # Render a frame while the soma mesh is at this specific angle

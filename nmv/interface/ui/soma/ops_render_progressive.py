@@ -85,7 +85,7 @@ class NMV_RenderSomaProgressive(bpy.types.Operator):
                 angle=0.0,
                 view_extent=context.scene.NMV_ViewDimensions,
                 camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_SomaFrameResolution,
+                image_resolution=context.scene.NMV_FrameResolution,
                 image_name=image_name)
 
             # Update the progress shell
