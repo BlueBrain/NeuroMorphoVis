@@ -142,6 +142,9 @@ def render_at_angle(scene_objects,
     # Rotate all the objects as if they are a single object
     for scene_object in scene_objects:
 
+        if 'scale_bar_legend' in scene_object.name:
+            continue
+
         # Rotate the mesh object around the y axis
         scene_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0
 
@@ -153,7 +156,7 @@ def render_at_angle(scene_objects,
 ################################################################################################
 # @render_at_angle_to_scale
 ################################################################################################
-def render_at_angle_to_scale(scene_object,
+def render_at_angle_to_scale(scene_objects,
                              angle,
                              bounding_box,
                              camera_view=nmv.enums.Camera.View.FRONT_360,
@@ -161,8 +164,8 @@ def render_at_angle_to_scale(scene_object,
                              image_name='image',
                              image_directory=None):
     """Render the mesh to a .PNG image at a specific angle.
-    :param mesh_objects:
-        A list of all the objects that belong to the reconstructed mesh.
+    :param scene_objects:
+        A list of all the objects in the scene.
     :param angle:
         The angle the frame will be rendered at.
     :param bounding_box:
@@ -179,7 +182,10 @@ def render_at_angle_to_scale(scene_object,
     """
 
     # Rotate all the objects as if they are a single object
-    for scene_object in scene_object:
+    for scene_object in scene_objects:
+
+        if 'scale_bar_legend' in scene_object.name:
+            continue
 
         # Rotate the mesh object around the y axis
         scene_object.rotation_euler[1] = angle * 2 * 3.14 / 360.0

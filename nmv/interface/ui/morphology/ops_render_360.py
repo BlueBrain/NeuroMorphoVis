@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
 # System imports
 import time
+import copy
 
 # Blender imports
 import bpy
@@ -50,6 +50,10 @@ class NMV_RenderMorphology360(bpy.types.Operator):
     # Output data
     output_directory = None
 
+    # The bounding box snap keep a copy of the bounding box at the first frame only to preserve
+    # it during the entire sequence
+    bounding_box_snap = None
+
     ################################################################################################
     # @modal
     ################################################################################################
@@ -81,43 +85,14 @@ class NMV_RenderMorphology360(bpy.types.Operator):
             # Set the frame name
             image_name = '%s/%s' % (self.output_directory, '{0:05d}'.format(self.timer_limits))
 
-            # Compute the bounding box for a close up view
-            if context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.CLOSEUP:
-
-                rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
-                    extent=context.scene.NMV_MorphologyCloseUpDimensions)
-
-            # Compute the bounding box for a mid-shot view
-            elif context.scene.NMV_MorphologyRenderingView == \
-                    nmv.enums.Rendering.View.MID_SHOT:
-
-                # Compute the bounding box for the available meshes only
-                rendering_bbox = nmv.bbox.compute_scene_bounding_box_for_curves()
-
-            # Compute the bounding box for the wide-shot view that corresponds to the whole
-            # morphology
-            else:
-
-                # Compute the full morphology bounding box
-                rendering_bbox = nmv.skeleton.compute_full_morphology_bounding_box(
-                    morphology=nmv.interface.ui_morphology)
-
-            # Compute a 360 bounding box to fit the arbors
-            bounding_box_360 = nmv.bbox.compute_360_bounding_box(
-                rendering_bbox, nmv.interface.ui_morphology.soma.centroid)
-
-            # Stretch the bounding box by few microns
-            bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
-
-            # Render a frame
-            nmv.rendering.renderer.render_at_angle(
-                scene_objects=nmv.interface.ui_reconstructed_skeleton,
+            nmv.interface.render_morphology_relevant_image_at_angle(
+                options=nmv.interface.ui_options,
+                morphology=nmv.interface.ui_morphology,
+                bounding_box=self.bounding_box_snap,
                 angle=self.timer_limits,
-                bounding_box=bounding_box_360,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_MorphologyFrameResolution,
-                image_name=image_name)
+                image_name=image_name,
+                scene_objects=nmv.interface.ui_reconstructed_skeleton,
+                panel=self)
 
             # Update the progress shell
             nmv.utilities.show_progress('Rendering', self.timer_limits, 360)
@@ -162,6 +137,26 @@ class NMV_RenderMorphology360(bpy.types.Operator):
                                  nmv.interface.ui_options.morphology.label,
                                  nmv.consts.Suffix.MORPHOLOGY_360)
         nmv.file.ops.clean_and_create_directory(self.output_directory)
+
+        # Bounding box computation
+        if nmv.interface.ui_options.rendering.rendering_view == nmv.enums.Rendering.View.CLOSEUP:
+            bounding_box = nmv.bbox.compute_unified_extent_bounding_box(
+                extent=nmv.interface.ui_options.rendering.close_up_dimensions)
+        elif nmv.interface.ui_options.rendering.rendering_view == nmv.enums.Rendering.View.MID_SHOT:
+            bounding_box = nmv.bbox.compute_scene_bounding_box_for_curves_and_meshes()
+        else:
+            bounding_box = nmv.skeleton.compute_full_morphology_bounding_box(
+                morphology=nmv.interface.ui_options.morphology)
+
+        # Compute a 360 bounding box to fit the arbors
+        bounding_box_360 = nmv.bbox.compute_360_bounding_box(
+            bounding_box, nmv.interface.ui_morphology.soma.centroid)
+
+        # Stretch the bounding box by few microns
+        bounding_box_360.extend_bbox_uniformly(delta=nmv.consts.Image.GAP_DELTA)
+	
+	# Make a snap of the bounding box 
+        self.bounding_box_snap = copy.deepcopy(bounding_box_360)
 
         # Use the event timer to update the UI during the soma building
         wm = context.window_manager

@@ -133,6 +133,61 @@ def render_morphology_relevant_image(options,
 
 
 ####################################################################################################
+# @render_morphology_relevant_image_at_angle
+####################################################################################################
+def render_morphology_relevant_image_at_angle(options,
+                                              morphology,
+                                              bounding_box,
+                                              angle,
+                                              image_name,
+                                              scene_objects,
+                                              panel=None):
+    # Profile the rendering
+    start_time = time.time()
+
+    # Report the process starting in the UI
+    if panel is not None:
+        panel.report({'INFO'}, 'Rendering mesh ... Wait')
+
+    # Draw the morphology scale bar
+    scale_bar = None
+    if options.rendering.render_scale_bar:
+        scale_bar = nmv.interface.draw_scale_bar(
+            bounding_box=bounding_box,
+            material_type=options.shading.mesh_material,
+            view=nmv.enums.Camera.View.FRONT)
+
+    if options.rendering.resolution_basis == nmv.enums.Rendering.Resolution.FIXED:
+
+        nmv.rendering.render_at_angle(
+            scene_objects=scene_objects,
+            angle=angle,
+            bounding_box=bounding_box,
+            camera_view=nmv.enums.Camera.View.FRONT,
+            image_resolution=options.rendering.frame_resolution,
+            image_name=image_name)
+
+    else:
+        nmv.rendering.render_at_angle_to_scale(
+            scene_objects=scene_objects,
+            angle=angle,
+            bounding_box=bounding_box,
+            camera_view=nmv.enums.Camera.View.FRONT,
+            image_scale_factor=options.rendering.resolution_scale_factor,
+            image_name=image_name)
+
+    # Delete the morphology scale bar, if rendered
+    if scale_bar is not None:
+        nmv.scene.delete_object_in_scene(scene_object=scale_bar)
+
+    nmv.logger.statistics('Image rendered in [%f] seconds' % (time.time() - start_time))
+
+    # Report the process termination in the UI
+    if panel is not None:
+        panel.report({'INFO'}, 'Rendering Done')
+
+
+####################################################################################################
 # @render_meshes_relevant_image
 ####################################################################################################
 def render_meshes_relevant_image(options,

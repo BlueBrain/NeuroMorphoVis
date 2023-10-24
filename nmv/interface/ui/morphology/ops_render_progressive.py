@@ -92,16 +92,39 @@ class NMV_RenderMorphologyProgressive(bpy.types.Operator):
             # Set the frame name
             image_name = '%s' % '{0:05d}'.format(self.timer_limits)
 
-            # Render a frame
-            nmv.rendering.renderer.render(
-                bounding_box=self.morphology_bounding_box,
-                camera_view=nmv.enums.Camera.View.FRONT,
-                image_resolution=context.scene.NMV_MorphologyFrameResolution,
-                image_name=image_name,
-                image_directory=self.output_directory)
+            # Draw the morphology scale bar
+            scale_bar = None
+            if nmv.interface.ui_options.rendering.render_scale_bar:
+                scale_bar = nmv.interface.draw_scale_bar(
+                    bounding_box=self.morphology_bounding_box,
+                    material_type=nmv.interface.ui_options.shading.morphology_material,
+                    view=nmv.enums.Camera.View.FRONT)
+
+            # Resolution basis
+            if nmv.interface.ui_options.rendering.resolution_basis == \
+                    nmv.enums.Rendering.Resolution.FIXED:
+                nmv.rendering.render(
+                    bounding_box=self.morphology_bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT,
+                    image_resolution=nmv.interface.ui_options.rendering.frame_resolution,
+                    image_name=image_name,
+                    image_directory=self.output_directory)
+            else:
+                nmv.rendering.render_to_scale(
+                    bounding_box=self.morphology_bounding_box,
+                    camera_view=nmv.enums.Camera.View.FRONT,
+                    image_scale_factor=nmv.interface.ui_options.rendering.resolution_scale_factor,
+                    image_name=image_name,
+                    image_format=nmv.interface.ui_options.rendering.image_format,
+                    image_directory=self.output_directory)
+
+            # Delete the morphology scale bar, if rendered
+            if scale_bar is not None:
+                nmv.scene.delete_object_in_scene(scene_object=scale_bar)
 
             # Update the progress shell
-            nmv.utilities.show_progress('Rendering', self.timer_limits, bpy.context.scene.frame_end)
+            nmv.utilities.show_progress('Rendering',
+                                        self.timer_limits, bpy.context.scene.frame_end)
 
             # Update the progress bar
             context.scene.NMV_MorphologyRenderingProgress = \

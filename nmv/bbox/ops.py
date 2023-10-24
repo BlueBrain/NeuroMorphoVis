@@ -249,7 +249,7 @@ def compute_scene_bounding_box_for_meshes():
 # @compute_scene_bounding_box_for_curves_and_meshes
 ####################################################################################################
 def compute_scene_bounding_box_for_curves_and_meshes():
-    """Compute the bounding box of all the 'curves' and 'meshes'in the scene.
+    """Compute the bounding box of all the 'curves' and 'meshes' in the scene.
     NOTE: This function considers only 'CURVE' and 'MESH' types and ignores the cameras for example.
 
     :return:
