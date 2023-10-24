@@ -133,6 +133,13 @@ def read_morphology_from_file(options,
     # Get the extension from the file path
     morphology_prefix, morphology_extension = os.path.splitext(morphology_file_path)
 
+    # Ensure that morphio is available or not
+    try:
+        import morphio
+        morphio_available = True
+    except ImportError:
+        morphio_available = False
+
     # If it is a .h5 file, use the H5Reader to be able to load astrocytes with endfeet
     # TODO: This option is made until further notice, when we are able to load endfeet from circuits
     if '.h5' in morphology_extension.lower():
@@ -150,12 +157,13 @@ def read_morphology_from_file(options,
     # NOTE: We load the SWC files with MorphIO for performance reasons. If this fails, for whatever
     # reason, we drop the native SWCReader
     elif '.swc' in morphology_extension.lower():
-        try:
+
+        if morphio_available:
             morphology_object = read_morphology_with_morphio(
                 morphology_file_path=morphology_file_path,
                 morphology_format=nmv.enums.Morphology.Format.SWC,
                 center_at_origin=options.morphology.center_at_origin)
-        except IOError:
+        else:
             try:
                 morphology_object = read_swc_morphology_natively(
                     swc_file=morphology_file_path,
@@ -170,12 +178,12 @@ def read_morphology_from_file(options,
 
     # NOTE: We will always use MorphIO to load .acc morphology files
     elif '.asc' in morphology_extension.lower():
-        try:
+        if morphio_available:
             morphology_object = read_morphology_with_morphio(
                 morphology_file_path=morphology_file_path,
                 morphology_format=nmv.enums.Morphology.Format.ASCII,
                 center_at_origin=options.morphology.center_at_origin)
-        except IOError:
+        else:
             if panel is not None:
                 panel.report({'ERROR'}, 'Cannot load this ASC file, please verify its structure')
                 return None

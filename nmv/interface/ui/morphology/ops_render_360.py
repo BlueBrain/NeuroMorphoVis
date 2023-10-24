@@ -84,7 +84,7 @@ class NMV_RenderMorphology360(bpy.types.Operator):
             # Compute the bounding box for a close up view
             if context.scene.NMV_MorphologyRenderingView == \
                     nmv.enums.Rendering.View.CLOSEUP:
-                
+
                 rendering_bbox = nmv.bbox.compute_unified_extent_bounding_box(
                     extent=context.scene.NMV_MorphologyCloseUpDimensions)
 
@@ -138,7 +138,7 @@ class NMV_RenderMorphology360(bpy.types.Operator):
 
         # If this is a dendrogram rendering, handle it in a very specific way.
         if nmv.interface.ui_options.morphology.reconstruction_method == \
-            nmv.enums.Skeleton.Method.DENDROGRAM:
+                nmv.enums.Skeleton.Method.DENDROGRAM:
 
             # Cannot render a 360 of the dendrogram
             self.report({'INFO'}, 'Cannot render a 360 of the dendrogram')
