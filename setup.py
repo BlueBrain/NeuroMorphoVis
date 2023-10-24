@@ -46,6 +46,7 @@ def get_pip_wheels():
             ['pandas', ''],
             ['Pillow', ''],
             ['webbrowser', ''],
+            ['tqdm', ''],
             ['morphio', '']]
 
 
