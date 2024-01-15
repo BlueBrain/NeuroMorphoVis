@@ -44,7 +44,12 @@ sys.path.append(('%s/../../' % (os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/core' % (os.path.dirname(os.path.realpath(__file__)))))
 
 # Blender imports
-import plotting
+sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append(('%s/../../' % (os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append(('%s/utilities' % (os.path.dirname(os.path.realpath(__file__)))))
+
+# Blender imports
+import plotting_utils as putils
 
 
 ####################################################################################################
@@ -161,7 +166,7 @@ def create_mesh_fact_sheet_with_distribution(mesh_object,
     stats_image_height = stats_image.size[1]
 
     # Create the fac-sheet image
-    fact_sheet_image_path = plotting.create_mesh_fact_sheet(
+    fact_sheet_image_path = putils.create_mesh_fact_sheet(
             mesh_object=mesh_object, mesh_name=mesh_name, output_image_path=panels_directory,
             image_resolution=stats_image_height, mesh_scale=mesh_scale)
 
@@ -351,7 +356,7 @@ def process_mesh(arguments,
                         quality_checker_executable=arguments.quality_checker_executable,
                         output_directory=stats_output_directory)
 
-    vertical_stats_image, horizontal_stats_image = plotting.plot_mesh_stats(
+    vertical_stats_image, horizontal_stats_image = putils.plot_mesh_stats(
         name=mesh_name,
         distributions_directory=stats_output_directory,
         output_directory=panels_directory,

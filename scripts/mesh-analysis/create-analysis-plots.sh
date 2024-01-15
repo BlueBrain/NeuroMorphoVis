@@ -34,8 +34,8 @@ INPUT_DIRECTORY='/ssd2/ultraliser-stats-figures/astrocytes/output/meshes'
 #INPUT_DIRECTORY='/ssd2/ultraliser-stats-figures/axons/output-factors/watertight'
 
 
-INPUT_DIRECTORY='/ssd2/2021.10.29-eyewire-h5-meshes/pyramidal-part-2/meshes'
-OUTPUT_DIRECTORY='/ssd2/2021.10.29-eyewire-h5-meshes/pyramidal-part-2/stats'
+INPUT_DIRECTORY='/home/abdellah/display-meshes'
+OUTPUT_DIRECTORY='/home/abdellah/display-meshes/output'
 
 # Render artistic image, yes or no
 RENDER_ARTISTIC='no'

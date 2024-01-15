@@ -180,7 +180,7 @@ def plot_back2back_histograms(dists_directory,
                       title=title, plot_titles=True, color=color_1, invert=invert)
 
     # Compute the ranges
-    min_value = min(min(data_left), min(data_right))
+    min_value = 0 # min(min(data_left), min(data_right))
     max_value = max(max(data_left), max(data_right))
 
     # Clear figure, getting ready for a new figure
@@ -290,7 +290,7 @@ def plot_back2back_histograms_normalized(dists_directory,
                           title=title, plot_titles=True, color=color_1, invert=invert)
 
     # Compute the ranges
-    min_value = min(min(data_left), min(data_right))
+    min_value = 0 # min(min(data_left), min(data_right))
     max_value = max(max(data_left), max(data_right))
 
     # Clear figure, getting ready for a new figure
@@ -436,8 +436,8 @@ def create_distributions_image(mesh_name,
         dists_pngs.append(plot_back2back_histograms_normalized(
             dists_directory=dists_directory,
             output_directory=intermediate_directory,
-            hist_left=futils.search_for_dist(dists, 'input', string[0]),
-            hist_right=futils.search_for_dist(dists, 'watertight', string[0]),
+            hist_left=futils.search_for_dist(dists, 'original', string[0]),
+            hist_right=futils.search_for_dist(dists, 'optimized', string[0]),
             output_prefix='%s-%s' % (mesh_name, string[0]),
             invert=string[2],
             title=string[1],
@@ -456,7 +456,7 @@ def create_distributions_image(mesh_name,
 # @create_fact_sheet_image
 ####################################################################################################
 def create_fact_sheet_image(input_mesh_path,
-                            watertight_mesh_path,
+                            optimized_mesh_path,
                             output_directory,
                             scenes_directory,
                             reference_name,
@@ -498,13 +498,13 @@ def create_fact_sheet_image(input_mesh_path,
     nmv.scene.clear_scene()
 
     # Load the watertight mesh
-    watertight_mesh_object = nmv.file.import_mesh(watertight_mesh_path)
+    optimized_mesh_object = nmv.file.import_mesh(optimized_mesh_path)
 
     # Rotate the mesh object to adjust the orientation in front of the camera
-    nmv.scene.rotate_object(watertight_mesh_object, 0, 0, 0)
+    nmv.scene.rotate_object(optimized_mesh_object, 0, 0, 0)
 
     # Compute the mesh stats
-    wt_stats, wt_aabb, wt_wtc = mesh_analysis.compute_mesh_stats(watertight_mesh_object)
+    wt_stats, wt_aabb, wt_wtc = mesh_analysis.compute_mesh_stats(optimized_mesh_object)
 
     # Draws the scale bar
     nmv.interface.draw_scale_bar(
@@ -512,31 +512,31 @@ def create_fact_sheet_image(input_mesh_path,
         view=nmv.enums.Camera.View.FRONT, material_type=nmv.enums.Shader.LAMBERT_WARD)
 
     # Render the meshes
-    watertight_mesh_image = None
+    optimized_mesh_image = None
     if render_meshes:
-        watertight_mesh_image = '%s/%s-watertight.png' % (output_directory, reference_name)
+        optimized_mesh_image = '%s/%s-optimized.png' % (output_directory, reference_name)
         rutils.render_mesh_object(
-            mesh_object=watertight_mesh_object, mesh_name='%s-watertight' % reference_name,
+            mesh_object=optimized_mesh_object, mesh_name='%s-optimized' % reference_name,
             output_directory=output_directory, mesh_color=palette[0])
 
     # Export it to a blender file
     nmv.file.export_scene_to_blend_file(
-        output_directory=scenes_directory, output_file_name='%s-watertight' % reference_name)
+        output_directory=scenes_directory, output_file_name='%s-optimized' % reference_name)
 
     # Combine the mesh images if they are not None
     combined_renderings_image = None
-    if input_mesh_image is not None and watertight_mesh_image is not None:
+    if input_mesh_image is not None and optimized_mesh_image is not None:
 
         # Switch direction based on resolution s
         width, height = imutils.get_image_dimensions(input_mesh_image)
         if width > 1.5 * height:
             combined_renderings_image = imutils.montage_list_images_with_same_dimensions_vertically(
-                list_images=[input_mesh_image, watertight_mesh_image],
+                list_images=[input_mesh_image, optimized_mesh_image],
                 output_directory=output_directory, montage_name='%s-renderings' % reference_name)
         else:
             combined_renderings_image = \
                 imutils.montage_list_images_with_same_dimensions_horizontally(
-                    list_images=[input_mesh_image, watertight_mesh_image],
+                    list_images=[input_mesh_image, optimized_mesh_image],
                     output_directory=output_directory,
                     montage_name='%s-renderings' % reference_name)
 
@@ -553,36 +553,30 @@ def create_fact_sheet_image(input_mesh_path,
 
 
 ####################################################################################################
-# @create_watertight_mesh
+# @run_quality_checker
 ####################################################################################################
-def create_watertight_mesh(arguments,
-                           input_mesh,
-                           output_directory):
+def run_quality_checker(mesh_path,
+                        quality_checker_executable,
+                        output_directory,
+                        prefix):
+    """Runs the quality checker to create stats. about the mesh.
 
-    # Create the shell command
-    shell_command = '%s ' % arguments.ultraMesh2Mesh
-    shell_command += ' --mesh %s ' % input_mesh
-    shell_command += ' --output-directory %s ' % output_directory
-    shell_command += ' --scaled-resolution --voxels-per-micron %s ' % str(arguments.voxels_per_micron)
-    shell_command += ' --solid '
-    shell_command += ' --adaptive-optimization '
-    shell_command += ' --optimization-iterations 1'
-    shell_command += ' --optimize-mesh '
-    shell_command += ' --preserve-partitions '
-    shell_command += ' --ignore-marching-cubes-mesh '
-    shell_command += ' --ignore-laplacian-mesh --ignore-optimized-mesh '
-    shell_command += ' --voxelization-axis xyz '
-    shell_command += ' --export-obj-mesh '
-    shell_command += ' --stats --dists '
+    :param mesh_path:
+        The path to the mesh file.
+    :param quality_checker_executable:
+        The executable of Ultraliser checker.
+    :param output_directory:
+        The root output directory
+    """
 
-    # Execute the shell command
-    print(shell_command)
-    subprocess.call(shell_command, shell=True)
+    # Make sure that this directory exists
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
 
-    # Return a reference to the watertight mesh
-    return '%s/meshes/%s-watertight.obj' % (output_directory,
-                                            os.path.splitext(os.path.basename(input_mesh))[0])
-
+    # Construct the command
+    command = '%s --mesh %s --output-directory %s --prefix %s' % \
+              (quality_checker_executable, mesh_path, output_directory, prefix)
+    subprocess.call(command, shell=True)
 
 ####################################################################################################
 # @create_comparative_mesh_analysis
@@ -597,19 +591,17 @@ def create_comparative_mesh_analysis(arguments,
     dutils.verify_plotting_packages()
 
     # Full path
-    input_mesh_path = '%s/%s' % (arguments.input_directory, mesh_file)
+    input_mesh_path = '%s/original/%s' % (arguments.input_directory, mesh_file)
 
     # Mesh name
     mesh_name = os.path.splitext(os.path.basename(input_mesh_path))[0]
 
+    run_quality_checker(mesh_path=input_mesh_path, quality_checker_executable=arguments.quality_checker_executable, output_directory=arguments.output_directory, prefix='%s_original' % mesh_name)
+
     # Create the watertight mesh, and the stats if the stats are not created
-    if not arguments.stats_ready:
-        watertight_mesh_path = create_watertight_mesh(
-            arguments=arguments, input_mesh=input_mesh_path,
-            output_directory=arguments.output_directory)
-    else:
-        watertight_mesh_path = '%s/meshes/%s-watertight.obj' % (arguments.output_directory,
-                                                                mesh_name)
+    optimized_mesh_path = '%s/optimized/%s' % (arguments.input_directory, mesh_file)
+
+    run_quality_checker(mesh_path=optimized_mesh_path, quality_checker_executable=arguments.quality_checker_executable, output_directory=arguments.output_directory, prefix='%s_optimized' % mesh_name)
 
     # Create the color palette
     palette = seaborn.color_palette("flare", n_colors=10)
@@ -621,7 +613,7 @@ def create_comparative_mesh_analysis(arguments,
 
     # Create the fact sheet image and the combined rendering image
     fact_sheet_image, combined_renderings_image = create_fact_sheet_image(
-        input_mesh_path=input_mesh_path, watertight_mesh_path=watertight_mesh_path,
+        input_mesh_path=input_mesh_path, optimized_mesh_path=optimized_mesh_path,
         output_directory=intermediate_directory, scenes_directory=scenes_directory,
         reference_name=mesh_name, fact_sheet_resolution=1500, render_meshes=True)
 

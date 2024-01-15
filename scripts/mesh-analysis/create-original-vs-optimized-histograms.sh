@@ -19,34 +19,11 @@
 # Blender executable
 BLENDER=$PWD/../../../../../../blender
 
-# Input directory
-INPUT_DIRECTORY='/ssd2/ultraliser/2021.10.29-eyewire-h5-meshes/pyramidals/meshes/scaled'
-INPUT_DIRECTORY='/ssd2/microns/janelia-flyem-hemibrain/large'
-INPUT_DIRECTORY='/ssd2/microns/h01-data/l3_neuron_spiny_stellate/scaled'
-INPUT_DIRECTORY='/ssd2/ultraliser/kaust/astrocyte-4'
-INPUT_DIRECTORY='/ssd2/ultraliser/kaust/selected-meshes-for-analysis/astrocytes-er'
-INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er'
-#INPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/input'
+INPUT_DIRECTORY='/home/abdellah/display-meshes'
+OUTPUT_DIRECTORY='/home/abdellah/display-meshes/output'
 
-# Output directory
-OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/astrocytes-er/output-10'
-#OUTPUT_DIRECTORY='/ssd2/ultraliser-figures/kaust-ngv-datasets/selected-meshes-for-analysis/mitochondria/output-10'
-
-INPUT_DIRECTORY='/home/abdellah/display-meshes/original'
-OUTPUT_DIRECTORY='/home/abdellah/display-meshes/output-2'
-
-
-# ultraMes2Mesh executable
-ULTRA_MESH2MESH='ultraMesh2Mesh'
-
-# Voxel resolution
-VOXELS_PER_MICRON=5
-
-# Mesh scale
-MESH_SCALE=1
-
-# Statistics are ready
-STATS_READY='no'
+# ultraQualityChecker executable
+QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker'
 
 #####################################################################################################
 BOOL_ARGS=''
@@ -55,13 +32,10 @@ if [ "$STATS_READY" == "yes" ];
 
 ####################################################################################################
 echo 'RUNNING ...'
-$BLENDER -b --verbose 0 --python create-input-vs-watertight-histograms.py --                        \
+$BLENDER -b --verbose 0 --python create-original-vs-optimized-histograms.py --                        \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --ultraMesh2Mesh=$ULTRA_MESH2MESH                                                               \
-    --mesh-scale=$MESH_SCALE                                                                        \
-    --voxels-per-micron=$VOXELS_PER_MICRON                                                          \
-    $BOOL_ARGS
+    --quality-checker-executable=$QUALITY_CHECKER_EXECUTABLE
 
 echo 'DONE ...'
 
