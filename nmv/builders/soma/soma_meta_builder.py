@@ -209,18 +209,10 @@ class SomaMetaBuilder:
 
         nmv.logger.info('Adding random noise')
 
-        # Decimation
-        nmv.mesh.decimate_mesh_object(mesh_object=self.meta_mesh, decimation_ratio=0.5)
+        nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
+            mesh_object=self.meta_mesh)
 
-        # Adding perturbations
-        for i in range(len(self.meta_mesh.data.vertices)):
-            vertex = self.meta_mesh.data.vertices[i]
-            vertex.select = True
-            vertex.co = vertex.co + (vertex.normal * random.uniform(-delta / 2.0, delta / 2.0))
-            vertex.select = False
-
-        # Smoothing
-        nmv.mesh.smooth_object(mesh_object=self.meta_mesh, level=2)
+        nmv.mesh.smooth_object(mesh_object=self.meta_mesh, level=1)
 
     ################################################################################################
     # @create_meta_segment
@@ -377,7 +369,7 @@ class SomaMetaBuilder:
     ################################################################################################
     def reconstruct_soma_mesh(self,
                               apply_shader=True,
-                              add_noise_to_surface=False):
+                              add_noise_to_surface=True):
         """Reconstructs the mesh of the soma of the neuron in a single step.
 
         :param apply_shader:

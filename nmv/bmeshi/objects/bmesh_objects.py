@@ -70,23 +70,6 @@ def create_vertices(locations):
 
 
 ####################################################################################################
-# @create_vertices
-####################################################################################################
-def create_vertices(locations):
-
-    # Create a new bmesh object
-    bmesh_object = bmesh.new()
-
-    for loc in locations:
-        bmesh_object.verts.new(Vector((loc[0], loc[1], loc[2])))
-
-    bmesh_object.verts.index_update()
-    bmesh_object.verts.ensure_lookup_table()
-
-    return bmesh_object
-
-
-####################################################################################################
 # @create_uv_sphere
 ####################################################################################################
 def create_uv_sphere(radius=1,

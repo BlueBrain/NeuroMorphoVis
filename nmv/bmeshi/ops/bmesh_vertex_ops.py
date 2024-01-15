@@ -245,3 +245,24 @@ def bvh_snap(bvh, vertices):
         # Finally, if the final position is computed, then update the vertex position
         if final_position:
             vertex.co = final_position
+
+####################################################################################################
+# @remove_vertices
+####################################################################################################
+def remove_vertices(bmesh_object,
+                    vertices_indices):
+    """Removes the vertices of a given bmesh object, given a list of their indices.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param vertices_indices:
+        A list of the indices of the vertices that must be removed.
+    @return:
+    """
+
+    # Construct the vertex list
+    for v_index in vertices_indices:
+        bmesh_object.verts.remove(bmesh_object.verts[v_index])
+        bmesh_object.verts.ensure_lookup_table()
+    bmesh_object.edges.ensure_lookup_table()
+

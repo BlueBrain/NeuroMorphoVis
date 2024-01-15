@@ -21,11 +21,13 @@ import random
 # Blender imports
 import bpy
 import bmesh
+import mathutils
 from mathutils import Matrix
 
 # Internal imports
 import nmv.scene
 import nmv.mesh
+import nmv.bmeshi
 import nmv.utilities
 
 
@@ -1061,4 +1063,140 @@ def apply_voxelization_remeshing_modifier(mesh_object,
     bpy.ops.object.modifier_apply(modifier="Remesh")
 
 
+####################################################################################################
+# @check_self_intersections_of_mesh_object
+####################################################################################################
+def check_self_intersections_of_mesh_object(mesh_object):
+    """Checks if the given mesh object has self-intersecting faces or not.
 
+    :param mesh_object:
+        AN input mesh object.
+    :return:
+        A list containing the indices of the self-intersecting faces. If this list is empty, then
+        the mesh has no self-intersections.
+    """
+
+    # If the input object does not contain any polygons, return an empty list
+    if not mesh_object.data.polygons:
+        return []
+
+    # Create the bmesh object
+    bmesh_object = nmv.bmeshi.create_bmesh_copy_from_mesh_object(
+        mesh_object=mesh_object, transform=False, triangulate=False)
+
+    # Construct the BVHTree from the bmesh object
+    tree = mathutils.bvhtree.BVHTree.FromBMesh(bmesh_object, epsilon=0.00001)
+
+    # Check if any overlaps exist
+    overlap = tree.overlap(tree)
+
+    # Obtain a list of self-intersecting faces
+    faces_error = {i for i_pair in overlap for i in i_pair}
+    faces_error = list(faces_error)
+
+    # Delete the bmesh object
+    nmv.bmeshi.delete_bmesh(bmesh_object=bmesh_object)
+
+    # Return a list of the indices of the self intersecting faces
+    return faces_error
+
+
+####################################################################################################
+# @remove_loose
+####################################################################################################
+def remove_loose(mesh_object):
+    """Remove the loose objects from a given mesh object.
+
+    :param mesh_object:
+        An input mesh object.
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.deselect_all()
+
+    # Select the object
+    nmv.scene.select_object(mesh_object)
+    nmv.scene.set_active_object(mesh_object)
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    # Select all vertices
+    bpy.ops.mesh.select_mode(type="VERT")
+    bpy.ops.mesh.select_all(action='SELECT')
+
+    # Delete the loose objects in the mesh
+    bpy.ops.mesh.delete_loose()
+
+    # Deselect
+    bpy.ops.mesh.select_all(action='DESELECT')
+
+    # Switch to edit mode to be able to implement the bridging operator
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+
+####################################################################################################
+# @detect_non_manifold_vertices_of_mesh_object
+####################################################################################################
+def detect_non_manifold_vertices_of_mesh_object(mesh_object):
+    """Detects non-manifold vertices of a mesh object.
+
+    :param mesh_object:
+        An input mesh object.
+    """
+
+    # Create a bmesh object from the given mesh object
+    bmesh_object = nmv.bmeshi.create_bmesh_copy_from_mesh_object(
+        mesh_object, transform=False, triangulate=False)
+
+    # Create a list of the non-manifold vertices in the mesh
+    vertices_non_manifold = [ele for i, ele in enumerate(bmesh_object.verts) if not ele.is_manifold]
+
+    # Return the resulting list
+    return vertices_non_manifold
+
+
+####################################################################################################
+# @get_partitions
+####################################################################################################
+def get_partitions(mesh_object):
+    """Detects the number of partitions (or islands) in the mesh object.
+
+    :param mesh_object:
+        A given mesh object to process.
+    """
+
+    # Get the paths along the edges of the mesh
+    paths = {v.index: set() for v in mesh_object.data.vertices}
+    for e in mesh_object.data.edges:
+        paths[e.vertices[0]].add(e.vertices[1])
+        paths[e.vertices[1]].add(e.vertices[0])
+
+    # A list that will contain the different partitions in the mesh. Each partition will be
+    # represented by a list of indices of the vertices of that partition.
+    partitions_vertices_indices = list()
+
+    # Search
+    while True:
+
+        # Get the next path
+        try:
+            iterator = next(iter(paths.keys()))
+        except StopIteration:
+            break
+        partition = {iterator}
+        current = {iterator}
+        while True:
+            eligible = {sc for sc in current if sc in paths}
+            if not eligible:
+                break
+            current = {ve for sc in eligible for ve in paths[sc]}
+            partition.update(current)
+            for key in eligible:
+                paths.pop(key)
+
+        # Add
+        partitions_vertices_indices.append(partition)
+
+    # Convert the set to a list
+    return list(partitions_vertices_indices)

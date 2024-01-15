@@ -18,8 +18,60 @@
 # Blender modules
 import bpy
 import bmesh
+import mathutils
 
+# Internal imports
 import nmv.scene
+
+
+####################################################################################################
+# @create_bmesh_copy_from_mesh_object
+####################################################################################################
+def create_bmesh_copy_from_mesh_object(mesh_object,
+                                       transform=True,
+                                       triangulate=False):
+    """Creates a bmesh copy from an input mesh object.
+
+    :param mesh_object:
+        An input mesh object.
+    :param transform:
+        Transform to the actual coordinates.
+    :param triangulate:
+        Triangulate the resulting bmesh.
+    :return:
+        A bmesh object.
+    """
+    # If the given object is not mesh, assert
+    assert mesh_object.type == 'MESH'
+
+    # Get access to the mesh data
+    mesh_data = mesh_object.data
+
+    # If the mesh is in the edit mode
+    if mesh_object.mode == 'EDIT':
+        bm_orig = bmesh.from_edit_mesh(mesh_data)
+        bmesh_object = bm_orig.copy()
+    else:
+        bmesh_object = bmesh.new()
+        bmesh_object.from_mesh(mesh_data)
+
+    # If we need to consider the transformation
+    if transform:
+        matrix = mesh_object.matrix_world.copy()
+        if not matrix.is_identity:
+            bmesh_object.transform(matrix)
+
+            # Update normals if the matrix has no rotation.
+            matrix.translation.zero()
+            if not matrix.is_identity:
+                bmesh_object.normal_update()
+
+    # If we need to triangulate the bmesh
+    if triangulate:
+        bmesh.ops.triangulate(bmesh_object, faces=bmesh_object.faces)
+
+    # Return a reference to the bmesh object
+    return bmesh_object
 
 
 ####################################################################################################
@@ -194,6 +246,31 @@ def convert_bmesh_to_mesh(bmesh_object,
     """
 
     return link_to_new_object_in_scene(bmesh_object=bmesh_object, name=name)
+
+
+####################################################################################################
+# @check_self_intersections_of_bmesh_object
+####################################################################################################
+def check_self_intersections_of_bmesh_object(bmesh_object):
+    """Checks if the given bmesh object has self-intersecting faces.
+
+    :param bmesh_object:
+        A given bmesh object to delete.
+    :return:
+        A list of the self-intersecting faces.
+    """
+    # Construct the BVHTree from the bmesh object
+    tree = mathutils.bvhtree.BVHTree.FromBMesh(bmesh_object, epsilon=0.00001)
+
+    # Check if any overlaps exist
+    overlap = tree.overlap(tree)
+
+    # Obtain a list of self-intersecting faces
+    faces_error = {i for i_pair in overlap for i in i_pair}
+    faces_error = list(faces_error)
+
+    # Return a list of faces
+    return faces_error
 
 
 ####################################################################################################

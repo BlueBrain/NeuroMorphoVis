@@ -50,6 +50,67 @@ def get_face_from_index(bmesh_object,
 
 
 ####################################################################################################
+# @get_vertices_indices_from_face_index
+####################################################################################################
+def get_vertices_indices_from_face_index(bmesh_object,
+                                         face_index):
+    """Gets a list of the indices of the vertices of a given bmesh object.
+
+    :param bmesh_object:
+        A given bmesh object.
+    :param face_index:
+        The index of a given face in the bmesh object.
+    @return:
+        A list of indices of the vertices of the given face.
+    """
+
+    # Update the bmesh
+    bmesh_object.verts.ensure_lookup_table()
+    bmesh_object.faces.ensure_lookup_table()
+
+    # Get the face corresponding to the given face index
+    face = bmesh_object.faces[face_index]
+
+    # Construct the vertices indices list
+    v_indices = list()
+    for v in face.verts:
+        v_indices.append(v.index)
+    return v_indices
+
+
+####################################################################################################
+# @get_vertices_indices_from_face_index
+####################################################################################################
+def get_vertices_indices_from_faces_indices(bmesh_object,
+                                            faces_indices):
+    """Returns a list of indices of all the vertices of a list of faces of a bmesh object.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param faces_indices:
+        Indices of the faces of the bmesh object.
+    @return:
+        A list of the indices of all the vertices.
+    """
+
+    # Update the bmesh
+    bmesh_object.verts.ensure_lookup_table()
+    bmesh_object.faces.ensure_lookup_table()
+
+    # Loop over all the faces and construct the list of vertices
+    v_indices = list()
+    for f_index in faces_indices:
+        v_indices.extend(get_vertices_indices_from_face_index(
+            bmesh_object=bmesh_object, face_index=f_index))
+
+    # Convert the list to a set to remove the duplicates
+    v_indices = list(set(v_indices))
+
+    # Return the resulting list
+    return v_indices
+
+
+####################################################################################################
 # @get_nearest_face_index
 ####################################################################################################
 def get_nearest_face_index(bmesh_object,
@@ -82,6 +143,27 @@ def get_nearest_face_index(bmesh_object,
 
     # Return the index of the nearest face to the point
     return nearest_face_index
+
+
+####################################################################################################
+# @remove_faces
+####################################################################################################
+def remove_faces(bmesh_object,
+                 faces_indices):
+    """Removes the faces of a given bmesh object, given a list of their indices.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param faces_indices:
+        A list of the indices of the faces that must be removed.
+    @return:
+    """
+
+    # Construct the vertex list
+    for f_index in faces_indices:
+        bmesh_object.faces.ensure_lookup_table()
+        bmesh_object.faces.remove(bmesh_object.faces[f_index])
+    bmesh_object.edges.ensure_lookup_table()
 
 
 ####################################################################################################
