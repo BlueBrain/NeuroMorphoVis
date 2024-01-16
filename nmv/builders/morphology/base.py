@@ -511,6 +511,9 @@ class MorphologyBuilderBase:
         builder = nmv.builders.SomaMetaBuilder(morphology=self.morphology, options=self.options)
         self.soma_mesh = builder.reconstruct_soma_mesh(apply_shader=False)
 
+        # Update the somatic profile in the morphology object itself
+        self.update_soma_profile_in_morphology_object()
+
         # Add the soma mesh to the morphology objects
         self.morphology_objects.append(self.soma_mesh)
 
@@ -526,6 +529,9 @@ class MorphologyBuilderBase:
         nmv.logger.detail('Soft-body Soma')
         builder = nmv.builders.SomaSoftBodyBuilder(morphology=self.morphology, options=self.options)
         self.soma_mesh = builder.reconstruct_soma_mesh(apply_shader=False)
+
+        # Update the somatic profile in the morphology object itself
+        self.update_soma_profile_in_morphology_object()
 
         # Add the soma mesh to the morphology objects
         self.morphology_objects.append(self.soma_mesh)
@@ -573,3 +579,29 @@ class MorphologyBuilderBase:
 
         nmv.utilities.create_collection_with_objects(
             name='%s %s' % (name, self.morphology.label), objects_list=self.morphology_objects)
+
+    ################################################################################################
+    # @update_soma_profile_in_morphology_object
+    ################################################################################################
+    def update_soma_profile_in_morphology_object(self):
+        """Updates the somatic profile in the morphology object itself."""
+
+        # The soma object is contained in the self.mesh, so triangulate it
+        nmv.mesh.triangulate_mesh(mesh_object=self.soma_mesh)
+
+        # Get a list of faces (triangles) and their corresponding vertices
+        triangles = self.soma_mesh.data.polygons
+
+        # Create the list of vertices in the profile_3d data
+        for triangle in triangles:
+            v1 = self.soma_mesh.data.vertices[triangle.vertices[0]]
+            profile_v1 = [v1.co.x, v1.co.y, v1.co.z]
+            self.morphology.soma.profile_3d.append(profile_v1)
+
+            v2 = self.soma_mesh.data.vertices[triangle.vertices[1]]
+            profile_v2 = [v2.co.x, v2.co.y, v2.co.z]
+            self.morphology.soma.profile_3d.append(profile_v2)
+
+            v3 = self.soma_mesh.data.vertices[triangle.vertices[2]]
+            profile_v3 = [v3.co.x, v3.co.y, v3.co.z]
+            self.morphology.soma.profile_3d.append(profile_v3)

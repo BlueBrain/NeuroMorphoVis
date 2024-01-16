@@ -117,13 +117,16 @@ def construct_swc_samples_list_from_arbor(arbor,
 # @construct_swc_samples_list_from_soma
 ####################################################################################################
 def construct_swc_samples_list_from_soma(soma,
-                                         samples_list):
+                                         samples_list,
+                                         include_realistic_soma=False):
     """Constructs a list of samples retrieved from the soma, compliant with SWC format.
 
     :param soma:
         The soma of a given morphology.
     :param samples_list:
         The container where the samples will get appended to.
+    :param include_realistic_soma:
+        If this flag is set, a 3d somatic profile will be added.
     """
 
     # Soma centroid and radius
@@ -133,25 +136,36 @@ def construct_swc_samples_list_from_soma(soma,
                                             soma.smallest_radius)
     samples_list.append(sample_string)
 
-    # Soma profile points
-    for i, profile_point in enumerate(soma.profile_points):
-        sample_string = '%d 1 %f %f %f %f 1' % (i + 2,
-                                                profile_point[0],
-                                                profile_point[1],
-                                                profile_point[2],
-                                                1.0)
-        samples_list.append(sample_string)
+    if include_realistic_soma:
+        for i, profile_point in enumerate(soma.profile_3d):
+            sample_string = '%d 1 %f %f %f %f 1' % (i + 2,
+                                                    profile_point[0],
+                                                    profile_point[1],
+                                                    profile_point[2],
+                                                    0.0)
+            samples_list.append(sample_string)
+    else:
+        for i, profile_point in enumerate(soma.profile_points):
+            sample_string = '%d 1 %f %f %f %f 1' % (i + 2,
+                                                    profile_point[0],
+                                                    profile_point[1],
+                                                    profile_point[2],
+                                                    1.0)
+            samples_list.append(sample_string)
 
 
 ####################################################################################################
 # @construct_swc_samples_list_from_morphology_tree
 ####################################################################################################
-def construct_swc_samples_list_from_morphology_tree(morphology_object):
+def construct_swc_samples_list_from_morphology_tree(morphology_object,
+                                                    include_realistic_soma=False):
     """Constructs a list of samples retrieved from the given morphology skeleton compliant with
     SWC format.
 
     :param morphology_object:
         A given morphology object.
+    :param include_realistic_soma:
+        If this flag is set, we will add the realistic soma profile to the SWC list.
     :return:
         A list of samples compliant with the SWC format.
     """
@@ -161,7 +175,9 @@ def construct_swc_samples_list_from_morphology_tree(morphology_object):
 
     # Soma
     if morphology_object.soma is not None:
-        construct_swc_samples_list_from_soma(morphology_object.soma, swc_samples_list)
+        construct_swc_samples_list_from_soma(morphology_object.soma,
+                                             swc_samples_list,
+                                             include_realistic_soma=include_realistic_soma)
 
     # Apical dendrite
     if morphology_object.apical_dendrites is not None:
@@ -215,3 +231,43 @@ def write_morphology_to_swc_file(morphology_object,
     # Write the list to a file labeled with the same name of the morphology
     nmv.file.write_list_string_to_file(
         swc_samples_list, '%s/%s.swc' % (file_path, morphology_object.label))
+
+
+####################################################################################################
+# @write_morphology_to_extended_swc_file
+####################################################################################################
+def write_morphology_to_extended_swc_file(morphology_object,
+                                          file_path):
+    """Write the morphology skeleton to an SWC file.
+
+    :param morphology_object:
+        A given morphology object to be written to SWC file.
+    :param file_path:
+        The path where to write the file to.
+    """
+
+    # Before writing, we must update the indices of the samples along the entire morphology
+    number_soma_samples = 0
+
+    # Make sure that the morphology has a some object
+    if morphology_object.soma is not None:
+
+        # At least a single soma profile is there
+        number_soma_samples = 1
+
+        # Make sure that the morphology has a 3D profile
+        if len(morphology_object.soma.profile_3d) > 0:
+            number_soma_samples += len(morphology_object.soma.profile_3d)
+
+    # Update the global indices of the samples of the arbors then
+    nmv.skeleton.ops.update_samples_indices_per_morphology(
+        morphology_object, number_soma_samples + 1)
+
+    # Build the samples list
+    swc_samples_list = construct_swc_samples_list_from_morphology_tree(
+        morphology_object, include_realistic_soma=True)
+
+    # Write the list to a file labeled with the same name of the morphology
+    nmv.file.write_list_string_to_file(
+        swc_samples_list, '%s/%s.swc' % (file_path, morphology_object.label))
+

@@ -34,6 +34,7 @@ def register_panel():
     from .ops_render_360 import NMV_RenderMorphology360
     from .ops_render_progressive import NMV_RenderMorphologyProgressive
     from .ops_exports import NMV_ExportMorphologySWC
+    from .ops_exports import NMV_ExportMorphologyExtendedSWC
     from .ops_exports import NMV_ExportMorphologySegments
     from .ops_exports import NMV_ExportMorphologyBLEND
 
@@ -49,6 +50,7 @@ def register_panel():
     bpy.utils.register_class(NMV_RenderMorphology360)
     bpy.utils.register_class(NMV_RenderMorphologyProgressive)
     bpy.utils.register_class(NMV_ExportMorphologySWC)
+    bpy.utils.register_class(NMV_ExportMorphologyExtendedSWC)
     bpy.utils.register_class(NMV_ExportMorphologySegments)
     bpy.utils.register_class(NMV_ExportMorphologyBLEND)
 
@@ -68,6 +70,7 @@ def unregister_panel():
     from .ops_render_360 import NMV_RenderMorphology360
     from .ops_render_progressive import NMV_RenderMorphologyProgressive
     from .ops_exports import NMV_ExportMorphologySWC
+    from .ops_exports import NMV_ExportMorphologyExtendedSWC
     from .ops_exports import NMV_ExportMorphologySegments
     from .ops_exports import NMV_ExportMorphologyBLEND
 
@@ -83,6 +86,7 @@ def unregister_panel():
     bpy.utils.unregister_class(NMV_RenderMorphology360)
     bpy.utils.unregister_class(NMV_RenderMorphologyProgressive)
     bpy.utils.unregister_class(NMV_ExportMorphologySWC)
+    bpy.utils.unregister_class(NMV_ExportMorphologyExtendedSWC)
     bpy.utils.unregister_class(NMV_ExportMorphologySegments)
     bpy.utils.unregister_class(NMV_ExportMorphologyBLEND)
 

@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -16,7 +16,6 @@
 ####################################################################################################
 
 # System imports
-import random
 import copy
 
 # Blender imports
@@ -369,7 +368,8 @@ class SomaMetaBuilder:
     ################################################################################################
     def reconstruct_soma_mesh(self,
                               apply_shader=True,
-                              add_noise_to_surface=True):
+                              add_noise_to_surface=False,
+                              soma_name=nmv.consts.Skeleton.SOMA_PREFIX):
         """Reconstructs the mesh of the soma of the neuron in a single step.
 
         :param apply_shader:
@@ -378,6 +378,8 @@ class SomaMetaBuilder:
             mesh builder.
         :param add_noise_to_surface:
             Adds noise to the surface of the soma to make it much more realistic.
+        :param soma_name:
+            The name of the soma object.
         :return:
             A reference to the reconstructed mesh of the soma.
         """
@@ -386,13 +388,13 @@ class SomaMetaBuilder:
         nmv.logger.header('Soma reconstruction with MetaBalls')
 
         # Initialize the MetaObject before emanating towards the branches
-        self.initialize_meta_object(name=nmv.consts.Skeleton.SOMA_PREFIX)
+        self.initialize_meta_object(name=soma_name)
 
         # Emanate the basic sphere towards the branches
         self.emanate_towards_the_branches()
 
         # Update the meta object and convert it to a mesh
-        self.finalize_meta_object(name=nmv.consts.Skeleton.SOMA_PREFIX)
+        self.finalize_meta_object(name=soma_name)
 
         # Assign the material to the reconstructed mesh
         if apply_shader:

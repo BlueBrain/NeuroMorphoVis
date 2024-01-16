@@ -106,3 +106,6 @@ class Soma:
         else:
             self.smallest_radius = actual_mean_radius
             self.largest_radius = actual_mean_radius
+
+        # A list of points representing the 3d profile of the soma
+        self.profile_3d = list()

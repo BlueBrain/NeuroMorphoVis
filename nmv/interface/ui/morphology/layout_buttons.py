@@ -106,6 +106,7 @@ def draw_morphology_export_options(panel):
 
     save_neuron_morphology_buttons_column.operator('nmv.save_morphology_blend', icon='MESH_MONKEY')
     save_neuron_morphology_buttons_column.operator('nmv.save_morphology_swc', icon='GRAPH')
+    save_neuron_morphology_buttons_column.operator('nmv.save_morphology_eswc', icon='GRAPH')
     save_neuron_morphology_buttons_column.operator('nmv.save_morphology_segments', icon='NOCURVE')
 
     if nmv.interface.ui_morphology_reconstructed:
