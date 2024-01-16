@@ -19,6 +19,7 @@ import omesh
 def create_bmesh_copy_from_mesh_object(mesh_object,
                                        transform=True,
                                        triangulate=False):
+
     # If the given object is not mesh, assert
     assert mesh_object.type == 'MESH'
 
@@ -56,6 +57,7 @@ def create_bmesh_copy_from_mesh_object(mesh_object,
 # @check_self_intersections_of_mesh_object
 ####################################################################################################
 def check_self_intersections_of_mesh_object(mesh_object):
+
     # If the input object does not contain any polygons, return an empty list
     if not mesh_object.data.polygons:
         return []
@@ -81,6 +83,7 @@ def check_self_intersections_of_mesh_object(mesh_object):
 # @count_self_intersections
 ####################################################################################################
 def count_self_intersections(mesh_object, n_iterations):
+
     vertices = list()
     for v in mesh_object.data.vertices:
         vertices.append([v.co[0], v.co[1], v.co[2]])
