@@ -75,6 +75,48 @@ def create_bmesh_copy_from_mesh_object(mesh_object,
 
 
 ####################################################################################################
+# @create_bmesh_copy_from_mesh_object
+####################################################################################################
+def create_bmesh_copy_from_vertices_and_faces(vertex_data,
+                                              face_data,
+                                              triangulate=False):
+    """Creates a bmesh object from list of vertices and faces.
+
+    @param vertex_data:
+        A list of numpy data of vertices.
+    @param face_data:
+        A list of numpy data of faces.
+    @param triangulate:
+        If this flag is set, the created bmesh will be triangulated.
+    @return:
+        A reference to the created bmesh object.
+    """
+
+    # Create a new bmesh object
+    bmesh_object = bmesh.new()
+
+    # Add the vertices and update the lookup table
+    for vertex in vertex_data:
+        bmesh_object.verts.new(vertex)
+    bmesh_object.verts.ensure_lookup_table()
+
+    # Add the faces and update the lookup table
+    for face in face_data:
+        v0 = bmesh_object.verts[face[0]]
+        v1 = bmesh_object.verts[face[1]]
+        v2 = bmesh_object.verts[face[2]]
+        bmesh_object.faces.new((v0, v1, v2))
+    bmesh_object.faces.ensure_lookup_table()
+
+    # If we need to triangulate the bmesh
+    if triangulate:
+        bmesh.ops.triangulate(bmesh_object, faces=bmesh_object.faces)
+
+    # Return a reference to the bmesh object
+    return bmesh_object
+
+
+####################################################################################################
 # @convert_to_mesh_object
 ####################################################################################################
 def convert_to_mesh_object(bmesh_object,
@@ -182,6 +224,32 @@ def convert_from_mesh_object(mesh_object):
 
     # Return a reference to the bmesh created from the object.
     return bmesh.from_edit_mesh(mesh_object.data)
+
+####################################################################################################
+# @create_bmesh_copy_from_mesh_object
+####################################################################################################
+def create_mesh_copy_from_bmesh_object(bmesh_object,
+                                       name):
+    """Creates a mesh object from a given bmesh object.
+
+    @param bmesh_object:
+        A give bmesh object to create a mesh object from.
+    @param name:
+        The name of the created mesh object.
+    @return:
+        The reference of the created mesh object.
+    """
+
+    # Create a new mesh object and convert the bmesh object to it
+    mesh = bpy.data.meshes.new(name)
+    bmesh_object.to_mesh(mesh)
+
+    # Create a blender object, link it to the scene
+    mesh_object = bpy.data.objects.new(name, mesh)
+    nmv.scene.link_object_to_scene(mesh_object)
+
+    # Return a reference of the created mesh object.
+    return mesh_object
 
 
 ####################################################################################################
@@ -297,3 +365,221 @@ def delete_bmesh_list(bmesh_list):
 
     for bmesh_object in bmesh_list:
         delete_bmesh(bmesh_object)
+
+
+####################################################################################################
+# @get_partitions_of_bmesh_object
+####################################################################################################
+def get_partitions_of_bmesh_object(bmesh_object):
+    """Detects the number of partitions (or islands) in the given bmesh object.
+
+    :param bmesh_object:
+        A given bmesh object to process.
+    """
+
+    # Get the paths along the edges of the mesh
+    paths = {v.index: set() for v in bmesh_object.verts}
+    for e in bmesh_object.edges:
+        paths[e.verts[0].index].add(e.verts[1].index)
+        paths[e.verts[1].index].add(e.verts[0].index)
+
+    # A list that will contain the different partitions in the mesh. Each partition will be
+    # represented by a list of indices of the vertices of that partition.
+    partitions_vertices_indices = list()
+
+    # Search
+    while True:
+
+        # Get the next path
+        try:
+            iterator = next(iter(paths.keys()))
+        except StopIteration:
+            break
+        partition = {iterator}
+        current = {iterator}
+        while True:
+            eligible = {sc for sc in current if sc in paths}
+            if not eligible:
+                break
+            current = {ve for sc in eligible for ve in paths[sc]}
+            partition.update(current)
+            for key in eligible:
+                paths.pop(key)
+
+        # Add
+        partitions_vertices_indices.append(partition)
+
+    # Convert the set to a list
+    return list(partitions_vertices_indices)
+
+
+####################################################################################################
+# @remove_small_partitions_of_bmesh_object
+####################################################################################################
+def remove_small_partitions_of_bmesh_object(bmesh_object):
+    """Removes any small partitions of a given bmesh object to yield a single partition.
+
+    @param bmesh_object:
+        A given bmesh object.
+    """
+
+    # Get the partitions of the mesh object
+    partitions = get_partitions_of_bmesh_object(bmesh_object)
+
+    # There is only a single partition in th e mesh
+    if len(partitions) == 1:
+        return
+
+    # Remove the small floating partitions
+    largest_partition = 0
+    largest_partition_number_vertices = len(partitions[0])
+
+    for i in range(1, len(partitions)):
+        num_vertices = len(partitions[i])
+        if num_vertices > largest_partition_number_vertices:
+            largest_partition_number_vertices = num_vertices
+            largest_partition = i
+
+    removed_vertices_indices = list()
+    for i in range(0, len(partitions)):
+        if i == largest_partition: continue
+        removed_vertices_indices.extend(partitions[i])
+    removed_vertices_indices = list(set(removed_vertices_indices))
+
+    # Remove all the vertices of the small partitions from the mesh object
+    nmv.bmeshi.remove_vertices(bmesh_object=bmesh_object, vertices_indices=removed_vertices_indices)
+
+####################################################################################################
+# @remove_non_manifold_vertices_of_bmesh_object
+####################################################################################################
+def remove_non_manifold_vertices_of_bmesh_object(bmesh_object):
+    """Removes non-manifold vertices of a given bmesh object
+
+    @param bmesh_object:
+        A given bmesh object.
+    """
+
+    # Create a list of the non-manifold vertices in the mesh
+    vertices_non_manifold = [ele.index for i, ele in enumerate(bmesh_object.verts) if
+                             not ele.is_manifold]
+
+    # Remove all the non-manifold vertices
+    nmv.bmeshi.remove_vertices(bmesh_object=bmesh_object, vertices_indices=vertices_non_manifold)
+
+
+####################################################################################################
+# @remove_self_intersecting_faces_of_bmesh_object
+####################################################################################################
+def remove_self_intersecting_faces_of_bmesh_object(bmesh_object,
+                                                   self_intersecting_faces):
+    """Removes self-intersecting faces of a bmesh object.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param self_intersecting_faces:
+        A list of all self-intersecting faces in the given bmesh object.
+    """
+
+    # Get the vertices of the faces selected and remove the duplicates
+    vertices_of_self_intersecting_faces = nmv.bmeshi.get_vertices_indices_from_faces_indices(
+        bmesh_object, self_intersecting_faces)
+
+    # Remove the duplicate vertices by making a set and then a list again
+    vertices_of_self_intersecting_faces = list(set(vertices_of_self_intersecting_faces))
+
+    # Remove the vertices
+    nmv.bmeshi.remove_vertices(bmesh_object, vertices_of_self_intersecting_faces)
+
+
+####################################################################################################
+# @repair_non_manifold_edges_of_bmesh_object
+####################################################################################################
+def repair_non_manifold_edges_of_bmesh_object(bmesh_object):
+    """Repairs the non-manifold edges of a given bmesh object to yield a watertight mesh.
+
+    @param bmesh_object:
+        A given bmesh object.
+    """
+
+    # Get the non-manifold edges
+    edges_non_manifold = [ele for i, ele in enumerate(bmesh_object.edges) if not ele.is_manifold]
+
+    # Fill the given non-manifold edges using the triangle_fill function
+    bmesh.ops.triangle_fill(bmesh_object,
+                            use_beauty=True,
+                            use_dissolve=False,
+                            edges=edges_non_manifold)
+
+
+####################################################################################################
+# @is_bmesh_object_watertight
+####################################################################################################
+def is_bmesh_object_watertight(bmesh_object):
+
+    # Create a list of the non-manifold vertices in the mesh
+    non_manifold_vertices_list = [ele.index for i, ele in enumerate(bmesh_object.verts) if
+                             not ele.is_manifold]
+
+    # Get the non-manifold edges
+    non_manifold_edges_list = [ele for i, ele in enumerate(bmesh_object.edges) if not ele.is_manifold]
+
+    # Self intersections
+    self_intersecting_faces_list = check_self_intersections_of_bmesh_object(bmesh_object)
+
+    number_non_manifold_vertices = len(non_manifold_vertices_list)
+    number_non_manifold_edges = len(non_manifold_edges_list)
+    number_self_intersecting_faces = len(self_intersecting_faces_list)
+
+    if number_non_manifold_vertices > 0 or \
+       number_non_manifold_edges > 0 or \
+       number_self_intersecting_faces > 0:
+        return False, non_manifold_vertices_list, non_manifold_edges_list, self_intersecting_faces_list
+    else:
+        return True, non_manifold_vertices_list, non_manifold_edges_list, self_intersecting_faces_list
+
+####################################################################################################
+# @is_bmesh_object_watertight
+####################################################################################################
+def try_to_make_bmesh_object_watertight(bmesh_object):
+    """Tries to make the given bmesh object watertight.
+
+    @param bmesh_object:
+        A given bmesh object.
+    """
+
+    # Verify if the mesh is watertight or not
+    is_watertight, non_manifold_vertices, non_manifold_edges, self_intersecting_faces = \
+        is_bmesh_object_watertight(bmesh_object)
+
+    # If the input mesh is already watertight, then proceed
+    if is_watertight:
+        return
+
+    iteration = 1
+    while True:
+        print('WATERTIGHTNESS\t\t Iteration %d' % iteration)
+
+        # Remove the self-intersecting faces from the mesh object
+        nmv.bmeshi.remove_self_intersecting_faces_of_bmesh_object(bmesh_object, self_intersecting_faces)
+
+        # Remove the small partitions of the mesh object
+        nmv.bmeshi.remove_small_partitions_of_bmesh_object(bmesh_object)
+
+        # Remove the non-manifold vertices
+        nmv.bmeshi.remove_non_manifold_vertices_of_bmesh_object(bmesh_object)
+
+        # Repair the non-manifold edges
+        nmv.bmeshi.repair_non_manifold_edges_of_bmesh_object(bmesh_object)
+
+        is_watertight, non_manifold_vertices, non_manifold_edges, self_intersecting_faces = \
+            is_bmesh_object_watertight(bmesh_object)
+
+        # If the mesh is watertight, the return
+        if is_watertight:
+            print('WATERTIGHTNESS\t\t OK!')
+            return
+
+        # Otherwise, make another iteration
+        else:
+            iteration += 1
+

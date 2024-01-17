@@ -246,6 +246,7 @@ def bvh_snap(bvh, vertices):
         if final_position:
             vertex.co = final_position
 
+
 ####################################################################################################
 # @remove_vertices
 ####################################################################################################
@@ -260,9 +261,13 @@ def remove_vertices(bmesh_object,
     @return:
     """
 
-    # Construct the vertex list
-    for v_index in vertices_indices:
-        bmesh_object.verts.remove(bmesh_object.verts[v_index])
-        bmesh_object.verts.ensure_lookup_table()
-    bmesh_object.edges.ensure_lookup_table()
+    # Ensure that the bmesh object is up to date
+    bmesh_object.verts.ensure_lookup_table()
 
+    # Construct a list of vertices from the bmesh object
+    vertices = list()
+    for v_index in vertices_indices:
+        vertices.append(bmesh_object.verts[v_index])
+
+        # Delete the vertices in the bmesh object all at once
+    bmesh.ops.delete(bmesh_object, geom=vertices, context="VERTS")

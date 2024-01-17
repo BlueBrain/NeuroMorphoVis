@@ -52,6 +52,9 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'The input directory that contains all the meshes'
     parser.add_argument('--input-directory', action='store', help=arg_help)
 
+    arg_help = 'The input mesh name'
+    parser.add_argument('--input-mesh', action='store', help=arg_help)
+
     arg_help = 'Output directory, where the final image/movies and scene will be stored'
     parser.add_argument('--output-directory', action='store', help=arg_help)
 
@@ -75,29 +78,13 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Create the output hierarchy
-    if not os.path.exists(args.output_directory):
-        os.makedirs(args.output_directory)
     intermediate_directory = '%s/intermediate-images' % args.output_directory
-    if not os.path.exists(intermediate_directory):
-        os.makedirs(intermediate_directory)
     images_directory = '%s/images' % args.output_directory
-    if not os.path.exists(images_directory):
-        os.makedirs(images_directory)
     scenes_directory = '%s/scenes' % args.output_directory
-    if not os.path.exists(scenes_directory):
-        os.makedirs(scenes_directory)
 
-    original_meshes_directory = '%s/original' % args.input_directory
-
-    # Get all the meshes in the path, either obj or ply
-    list_meshes = nmv.file.get_files_in_directory(original_meshes_directory, file_extension='.obj')
-    list_meshes.extend(nmv.file.get_files_in_directory(original_meshes_directory, file_extension='.ply'))
-
-    # For every mesh in the list
-    for mesh_file in list_meshes:
-        analysis_input_vs_optimized.create_comparative_mesh_analysis(
-            arguments=args, mesh_file=mesh_file, intermediate_directory=intermediate_directory,
-            images_directory=images_directory, scenes_directory=scenes_directory)
+    analysis_input_vs_optimized.create_comparative_mesh_analysis(
+        arguments=args, mesh_file=args.input_mesh, intermediate_directory=intermediate_directory,
+        images_directory=images_directory, scenes_directory=scenes_directory)
 
 
 

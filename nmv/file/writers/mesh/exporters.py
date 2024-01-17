@@ -114,7 +114,7 @@ def export_mesh_object_to_file(mesh_object,
     elif file_format == nmv.enums.Meshing.ExportFormat.STL:
         bpy.ops.export_mesh.stl(
             filepath=output_file_path, use_selection=True, check_existing=True, axis_forward='Y',
-            axis_up='Z', ascii=False)
+            axis_up='Z', ascii=True)
 
     else:
         nmv.logger.log('Error: Unknown mesh format')

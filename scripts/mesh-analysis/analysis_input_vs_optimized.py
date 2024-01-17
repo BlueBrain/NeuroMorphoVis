@@ -437,7 +437,7 @@ def create_distributions_image(mesh_name,
             dists_directory=dists_directory,
             output_directory=intermediate_directory,
             hist_left=futils.search_for_dist(dists, 'original', string[0]),
-            hist_right=futils.search_for_dist(dists, 'optimized', string[0]),
+            hist_right=futils.search_for_dist(dists, 'watertight', string[0]),
             output_prefix='%s-%s' % (mesh_name, string[0]),
             invert=string[2],
             title=string[1],
@@ -460,7 +460,7 @@ def create_fact_sheet_image(input_mesh_path,
                             output_directory,
                             scenes_directory,
                             reference_name,
-                            render_meshes=True,
+                            render_meshes=False,
                             mesh_resolution=1500,
                             fact_sheet_resolution=1500,
                             palette=seaborn.color_palette("flare", n_colors=10)):
@@ -483,8 +483,8 @@ def create_fact_sheet_image(input_mesh_path,
         view=nmv.enums.Camera.View.FRONT, material_type=nmv.enums.Shader.LAMBERT_WARD)
 
     # Export it to a blender file
-    nmv.file.export_scene_to_blend_file(
-        output_directory=scenes_directory, output_file_name='%s-input' % reference_name)
+    # nmv.file.export_scene_to_blend_file(
+    #    output_directory=scenes_directory, output_file_name='%s-input' % reference_name)
 
     # Render the meshes
     input_mesh_image = None
@@ -520,8 +520,8 @@ def create_fact_sheet_image(input_mesh_path,
             output_directory=output_directory, mesh_color=palette[0])
 
     # Export it to a blender file
-    nmv.file.export_scene_to_blend_file(
-        output_directory=scenes_directory, output_file_name='%s-optimized' % reference_name)
+    # nmv.file.export_scene_to_blend_file(
+    #    output_directory=scenes_directory, output_file_name='%s-optimized' % reference_name)
 
     # Combine the mesh images if they are not None
     combined_renderings_image = None
@@ -591,17 +591,24 @@ def create_comparative_mesh_analysis(arguments,
     dutils.verify_plotting_packages()
 
     # Full path
-    input_mesh_path = '%s/original/%s' % (arguments.input_directory, mesh_file)
+    input_mesh_path = '%s/meshes/%s' % (arguments.input_directory, mesh_file)
 
     # Mesh name
     mesh_name = os.path.splitext(os.path.basename(input_mesh_path))[0]
 
-    run_quality_checker(mesh_path=input_mesh_path, quality_checker_executable=arguments.quality_checker_executable, output_directory=arguments.output_directory, prefix='%s_original' % mesh_name)
+    run_quality_checker(mesh_path=input_mesh_path,
+                        quality_checker_executable=arguments.quality_checker_executable,
+                        output_directory=arguments.output_directory,
+                        prefix='%s_original' % mesh_name)
 
     # Create the watertight mesh, and the stats if the stats are not created
-    optimized_mesh_path = '%s/optimized/%s' % (arguments.input_directory, mesh_file)
+    optimized_mesh_path = '%s/watertight-meshes/%s' % (arguments.input_directory,
+                                                       mesh_file.replace('.obj', '_watertight.stl'))
 
-    run_quality_checker(mesh_path=optimized_mesh_path, quality_checker_executable=arguments.quality_checker_executable, output_directory=arguments.output_directory, prefix='%s_optimized' % mesh_name)
+    run_quality_checker(mesh_path=optimized_mesh_path,
+                        quality_checker_executable=arguments.quality_checker_executable,
+                        output_directory=arguments.output_directory,
+                        prefix='%s_watertight' % mesh_name)
 
     # Create the color palette
     palette = seaborn.color_palette("flare", n_colors=10)

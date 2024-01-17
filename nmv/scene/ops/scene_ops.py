@@ -709,7 +709,7 @@ def delete_object_in_scene(scene_object):
 
     # Delete the selected object
     nmv.utilities.disable_std_output()
-    bpy.ops.object.delete(use_global=False)
+    bpy.ops.object.delete(use_global=True)
     nmv.utilities.enable_std_output()
 
 

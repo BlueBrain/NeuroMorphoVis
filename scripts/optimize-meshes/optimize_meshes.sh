@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ####################################################################################################
-# Copyright (c) 2021, EPFL / Blue Brain Project
+# Copyright (c) 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -19,23 +19,28 @@
 # Blender executable
 BLENDER=$PWD/../../../../../../blender
 
-INPUT_DIRECTORY='/home/abdellah/display-meshes'
-OUTPUT_DIRECTORY='/home/abdellah/display-meshes/output'
+# Input directory
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/meshes'
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny/meshes/stl'
 
-# ultraQualityChecker executable
-QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker'
+# Output directory
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/optimization-script'
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny/watertight-meshes'
+
+# The numer of parallel cores used to run the script
+NUM_CORES=6
 
 #####################################################################################################
-BOOL_ARGS=''
-if [ "$STATS_READY" == "yes" ];
-    then BOOL_ARGS+=' --stats-ready '; fi
+BOOL_ARGS=' '
 
 ####################################################################################################
 echo 'RUNNING ...'
-$BLENDER -b --verbose 0 --python create-original-vs-optimized-histograms.py --                        \
+$BLENDER -b --verbose 0 --python optimize_meshes.py --                                              \
+    --blender-executable=$BLENDER                                                                   \
     --input-directory=$INPUT_DIRECTORY                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --quality-checker-executable=$QUALITY_CHECKER_EXECUTABLE
+    --num-cores=$NUM_CORES                                                                          \
+    $BOOL_ARGS
 
 echo 'DONE ...'
 
