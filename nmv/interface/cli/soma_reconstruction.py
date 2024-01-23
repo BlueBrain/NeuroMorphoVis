@@ -232,8 +232,7 @@ if __name__ == "__main__":
     # render_soma_two_dimensional_profile(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Soma mesh reconstruction and visualization
-    # reconstruct_soma_three_dimensional_profile_mesh(cli_morphology=cli_morphology,
-    #                                                cli_options=cli_options)
+    reconstruct_soma_three_dimensional_profile_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
     nmv.logger.log('NMV Done')
 
 

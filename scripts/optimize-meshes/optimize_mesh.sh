@@ -21,11 +21,16 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input directory
 INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/meshes'
-
-INPUT_MESH='3039549.obj'
+INPUT_MESH='3512410.obj'
 
 # Output directory
 OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/watertight_meshes'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/verify/'
+
+
+INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/mtypes/L23_LBC/'
+INPUT_MESH='L23_LBC.stl'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/mtypes/L23_LBC/'
 
 #####################################################################################################
 BOOL_ARGS=' '

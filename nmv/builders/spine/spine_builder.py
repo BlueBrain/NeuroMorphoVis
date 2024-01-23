@@ -110,7 +110,7 @@ def emanate_a_spine(spines_list,
     """
 
     # Select a random spine from the spines list
-    spine_template = spines_list[0] # random.choice(spines_list)
+    spine_template = random.choice(spines_list)
 
     # Get a copy of the template and update it
     spine_object = nmv.scene.ops.duplicate_object(spine_template, identifier, link_to_scene=False)
@@ -204,7 +204,7 @@ def build_circuit_spines(morphology,
     transformation_matrix[3][3] = 1.0
 
     # Load all the template spines and ignore the verbose messages of loading
-    templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
+    templates_spines_list = load_spines(nmv.consts.Paths.SPINES_MESHES_HQ_DIRECTORY)
 
     # Invert the transformation matrix
     transformation_matrix = transformation_matrix.inverted()

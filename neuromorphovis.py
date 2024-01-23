@@ -92,8 +92,10 @@ def create_shell_commands_for_local_execution(arguments,
        arguments.export_morphology_blend:
 
         # Add this command to the list
-        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
-                              (arguments.blender, cli_morphology_reconstruction, arguments_string))
+        shell_command = '%s -b --verbose 0 --python %s -- %s' % (arguments.blender,
+                                                           cli_morphology_reconstruction,
+                                                           arguments_string)
+        shell_commands.append(shell_command)
 
     # Soma-related task: call the @cli_soma_reconstruction interface
     if arguments.render_soma_mesh or                        \
@@ -105,8 +107,11 @@ def create_shell_commands_for_local_execution(arguments,
        arguments.export_soma_mesh_blend:
 
         # Add this command to the list
-        shell_commands.append('%s -b --verbose 0 --python %s -- %s' %
-                              (arguments.blender, cli_soma_reconstruction, arguments_string))
+        shell_command = '%s -b --verbose 0 --python %s -- %s' % (arguments.blender,
+                                                                 cli_soma_reconstruction,
+                                                                 arguments_string)
+        print(shell_command)
+        shell_commands.append(shell_command)
 
     # Neuron mesh reconstruction related task: call the @cli_mesh_reconstruction interface
     if arguments.render_neuron_mesh or                      \

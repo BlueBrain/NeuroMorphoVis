@@ -441,7 +441,9 @@ def create_distributions_image(mesh_name,
             output_prefix='%s-%s' % (mesh_name, string[0]),
             invert=string[2],
             title=string[1],
-            color_1=palette[5], color_2=palette[0], axvline_color=palette[9]))
+            color_1=(70/255.0, 130/255.0, 180/255.0), #palette[5],
+            color_2=(255/255.0, 127/255.0, 127/255.0), # palette[0],
+            axvline_color=palette[9]))
 
     # Statistic image with all the distributions
     distributions_image = imutils.montage_distributions_horizontally(
@@ -617,6 +619,12 @@ def create_comparative_mesh_analysis(arguments,
     distributions_image = create_distributions_image(
         mesh_name=mesh_name, dists_directory='%s/distributions' % arguments.output_directory,
         intermediate_directory=intermediate_directory, palette=palette)
+
+    # Delete the quality checker files
+    for file in os.listdir(arguments.output_directory):
+        if file.endswith(".dist"):
+            if mesh_name in file:
+                os.remove('%s/%s' % (arguments.output_directory, file))
 
     # Create the fact sheet image and the combined rendering image
     fact_sheet_image, combined_renderings_image = create_fact_sheet_image(

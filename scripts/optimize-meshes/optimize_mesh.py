@@ -73,6 +73,10 @@ def optimize_mesh(mesh_object,
         A reference to the created mesh object.
     """
 
+    import time
+
+    start = time.time()
+
     # If the given object is not mesh, assert
     assert mesh_object.type == 'MESH'
 
@@ -85,8 +89,14 @@ def optimize_mesh(mesh_object,
     # Optimize the mesh and reduce the number of faces
     optimization_mesh.coarse_flat(0.05, 5, True)
 
+    # Smooth normals
+    optimization_mesh.smooth_normals(15, 150, True)
+
     # Initially smooth by 15 iterations
     optimization_mesh.smooth(15, 150, 25, False, True)
+
+    # Smooth normals
+    optimization_mesh.smooth_normals(15, 150, True)
 
     # Get a copy to the vertex and face data
     vertices = optimization_mesh.get_vertex_data()
@@ -96,12 +106,19 @@ def optimize_mesh(mesh_object,
     optimized_bmesh_object = nmv.bmeshi.create_bmesh_copy_from_vertices_and_faces(vertices, faces)
 
     # Verify if the mesh is watertight or not
-    is_watertight, non_manifold_vertices, non_manifold_edges, self_intersecting_faces = \
-        nmv.bmeshi.is_bmesh_object_watertight(optimized_bmesh_object)
+    watertightness_check = nmv.bmeshi.is_bmesh_object_watertight(optimized_bmesh_object)
+
+    opt_file = '/hdd1/biovis-24-zenodo/optimization-time/%s' % mesh_object.name
 
     # If it is watertight, then create the mesh object
-    if is_watertight:
+    if watertightness_check.is_watertight():
         print('WATERTIGHNTESS\t OK!')
+
+        end = time.time()
+        print('OPTIMIZATION TIME: %f' % (end - start))
+        f = open(opt_file, 'w')
+        f.write(str(end - start))
+        f.close()
 
         # Free the optimized mesh
         optimized_bmesh_object.free()
@@ -126,11 +143,17 @@ def optimize_mesh(mesh_object,
         return watertight_mesh_object
 
     else:
-        print('WATERTIGHNTESS\t NMV: %d, NME: %d, SI: %d' %
-              (len(non_manifold_vertices), len(non_manifold_edges), len(self_intersecting_faces)))
+        # Print the watertightness check
+        watertightness_check.print_status()
 
         # Try to make a watertight bmesh object
         nmv.bmeshi.try_to_make_bmesh_object_watertight(optimized_bmesh_object)
+
+        end = time.time()
+        print('OPTIMIZATION TIME: %f' % (end - start))
+        f = open(opt_file, 'w')
+        f.write(str(end - start))
+        f.close()
 
         # Create the corresponding watertight mesh object
         watertight_mesh_object = nmv.bmeshi.convert_bmesh_to_mesh(
@@ -193,6 +216,7 @@ if __name__ == "__main__":
     # Load the mesh object
     if '.obj' in args.input_mesh:
         mesh = nmv.file.import_obj_file(args.input_directory, args.input_mesh)
+
     elif '.stl' in args.input_mesh:
         mesh = nmv.file.import_stl_file(args.input_directory, args.input_mesh)
     else:

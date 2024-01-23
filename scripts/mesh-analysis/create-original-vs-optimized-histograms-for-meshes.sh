@@ -26,7 +26,13 @@ OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/analysis'
 QUALITY_CHECKER_EXECUTABLE='ultraMeshQualityChecker'
 
 # The numer of parallel cores used to run the script
-NUM_CORES=6
+NUM_CORES=5
+
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/sample'
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/sample/analysis'
+
+INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/analysis/'
 
 #####################################################################################################
 BOOL_ARGS=''

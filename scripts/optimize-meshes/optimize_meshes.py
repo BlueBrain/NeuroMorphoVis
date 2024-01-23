@@ -31,7 +31,7 @@ def construct_per_mesh_command(args, input_mesh):
     command += ' -b --verbose 0 --python optimize_mesh.py -- '
     command += ' --input-directory %s ' % args.input_directory
     command += ' --input-mesh %s ' % input_mesh
-    command += ' --output-directory %s ' % args.output_directory
+    command += ' --output-directory %s>%s/%s.txt' % (args.output_directory, args.output_directory, input_mesh)
     return command
 
 

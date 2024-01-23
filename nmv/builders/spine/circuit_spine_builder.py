@@ -76,7 +76,7 @@ class CircuitSpineBuilder:
 
         # Load all the template spines and ignore the verbose messages of loading
         nmv.utilities.disable_std_output()
-        self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_LQ_DIRECTORY)
+        self.spine_meshes = nmv.file.load_spines(nmv.consts.Paths.SPINES_MESHES_HQ_DIRECTORY)
         nmv.utilities.enable_std_output()
 
         self.protrusion_mesh = \

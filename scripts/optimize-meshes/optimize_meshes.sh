@@ -21,14 +21,29 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input directory
 INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/meshes'
-INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny/meshes/stl'
+# INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/watertight/others'
+# INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/verify'
 
 # Output directory
-OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-aspiny/optimization-script'
-OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny/watertight-meshes'
+# OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/watertight'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/optimization-time'
+
+
+#INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny/meshes'
+#OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/watertight-spiny'
+
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-output-spiny-new/meshes'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/watertight-spiny'
+
+INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/meshes'
+OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/watertight-meshes'
+
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/meshes'
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/watertight-meshes'
+
 
 # The numer of parallel cores used to run the script
-NUM_CORES=6
+NUM_CORES=5
 
 #####################################################################################################
 BOOL_ARGS=' '

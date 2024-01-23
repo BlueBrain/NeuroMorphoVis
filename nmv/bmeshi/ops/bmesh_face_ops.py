@@ -111,6 +111,29 @@ def get_vertices_indices_from_faces_indices(bmesh_object,
 
 
 ####################################################################################################
+# @get_vertices_indices_from_edges_indices
+####################################################################################################
+def get_vertices_indices_from_edges_indices(bmesh_object,
+                                            edges_indices):
+    # Update the bmesh
+    bmesh_object.verts.ensure_lookup_table()
+    bmesh_object.edges.ensure_lookup_table()
+    bmesh_object.faces.ensure_lookup_table()
+
+    vertices_indices = list()
+    for edge_index in edges_indices:
+        edge = bmesh_object.edges[edge_index]
+        vertices_indices.append(edge.verts[0].index)
+        vertices_indices.append(edge.verts[1].index)
+
+    # Remove the duplicates
+    vertices_indices = list(set(vertices_indices))
+
+    # Return the list
+    return vertices_indices
+
+
+####################################################################################################
 # @get_nearest_face_index
 ####################################################################################################
 def get_nearest_face_index(bmesh_object,

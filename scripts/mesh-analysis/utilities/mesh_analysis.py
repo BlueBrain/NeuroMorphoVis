@@ -158,7 +158,7 @@ def check_watertightness(bm,
     check.non_manifold_vertices = non_manifold_vertices
     check.non_contiguous_edge = non_contiguous_edge
 
-    if non_manifold_edges > 0 or non_contiguous_edge > 0 or non_manifold_vertices > 0:
+    if non_manifold_edges > 0 or non_manifold_vertices > 0:
         check.watertight = False
     else:
         if check.self_intersections > 0:

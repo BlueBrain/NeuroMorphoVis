@@ -328,17 +328,17 @@ def check_self_intersections_of_bmesh_object(bmesh_object):
         A list of the self-intersecting faces.
     """
     # Construct the BVHTree from the bmesh object
-    tree = mathutils.bvhtree.BVHTree.FromBMesh(bmesh_object, epsilon=0.00001)
+    tree = mathutils.bvhtree.BVHTree.FromBMesh(bmesh_object, epsilon=0.000001)
 
     # Check if any overlaps exist
     overlap = tree.overlap(tree)
 
     # Obtain a list of self-intersecting faces
-    faces_error = {i for i_pair in overlap for i in i_pair}
-    faces_error = list(faces_error)
+    self_intersecting_faces = {i for i_pair in overlap for i in i_pair}
+    self_intersecting_faces = list(self_intersecting_faces)
 
     # Return a list of faces
-    return faces_error
+    return self_intersecting_faces
 
 
 ####################################################################################################
@@ -460,11 +460,26 @@ def remove_non_manifold_vertices_of_bmesh_object(bmesh_object):
     """
 
     # Create a list of the non-manifold vertices in the mesh
-    vertices_non_manifold = [ele.index for i, ele in enumerate(bmesh_object.verts) if
-                             not ele.is_manifold]
+    vertices_non_manifold = [ele.index for ele in bmesh_object.verts if not ele.is_manifold]
 
     # Remove all the non-manifold vertices
     nmv.bmeshi.remove_vertices(bmesh_object=bmesh_object, vertices_indices=vertices_non_manifold)
+
+
+####################################################################################################
+# @remove_non_continuous_edges_of_bmesh_object
+####################################################################################################
+def remove_non_continuous_edges_of_bmesh_object(bmesh_object):
+
+    # Get the non-manifold edges
+    edges_non_contiguous = [ele.index for ele in bmesh_object.edges if not ele.is_contiguous]
+
+    # Get the vertices of the edges selected and remove the duplicates
+    vertices_of_non_contiguous_edges = nmv.bmeshi.get_vertices_indices_from_edges_indices(
+        bmesh_object, edges_non_contiguous)
+
+    # Remove the vertices
+    nmv.bmeshi.remove_vertices(bmesh_object, vertices_of_non_contiguous_edges)
 
 
 ####################################################################################################
@@ -492,6 +507,33 @@ def remove_self_intersecting_faces_of_bmesh_object(bmesh_object,
 
 
 ####################################################################################################
+# @remove_thin_faces_and_edges_of_bmesh_object
+####################################################################################################
+def remove_thin_faces_and_edges_of_bmesh_object(bmesh_object,
+                                                threshold=10e-05):
+
+    # Get the zero faces
+    zero_faces = [ele.index for ele in bmesh_object.faces if ele.calc_area() <= threshold]
+
+    # Get the vertices of the faces selected and remove the duplicates
+    vertices_of_zero_faces = nmv.bmeshi.get_vertices_indices_from_faces_indices(
+        bmesh_object, zero_faces)
+
+    # Remove the vertices
+    nmv.bmeshi.remove_vertices(bmesh_object, vertices_of_zero_faces)
+
+    # get the zero edges
+    zero_edges = [ele.index for ele in bmesh_object.edges if ele.calc_length() <= threshold]
+
+    # Get the corresponding vertices
+    vertices_of_zero_edges = nmv.bmeshi.get_vertices_indices_from_edges_indices(
+        bmesh_object, zero_edges)
+
+    # Remove the vertices
+    nmv.bmeshi.remove_vertices(bmesh_object, vertices_of_zero_edges)
+
+
+####################################################################################################
 # @repair_non_manifold_edges_of_bmesh_object
 ####################################################################################################
 def repair_non_manifold_edges_of_bmesh_object(bmesh_object):
@@ -502,7 +544,7 @@ def repair_non_manifold_edges_of_bmesh_object(bmesh_object):
     """
 
     # Get the non-manifold edges
-    edges_non_manifold = [ele for i, ele in enumerate(bmesh_object.edges) if not ele.is_manifold]
+    edges_non_manifold = [ele for ele in bmesh_object.edges if not ele.is_manifold]
 
     # Fill the given non-manifold edges using the triangle_fill function
     bmesh.ops.triangle_fill(bmesh_object,
@@ -510,35 +552,50 @@ def repair_non_manifold_edges_of_bmesh_object(bmesh_object):
                             use_dissolve=False,
                             edges=edges_non_manifold)
 
+    bmesh_object.verts.ensure_lookup_table()
+    bmesh_object.edges.ensure_lookup_table()
+    bmesh_object.faces.ensure_lookup_table()
+
 
 ####################################################################################################
 # @is_bmesh_object_watertight
 ####################################################################################################
-def is_bmesh_object_watertight(bmesh_object):
+def is_bmesh_object_watertight(bmesh_object,
+                               zero_threshold=10e-05):
 
-    # Create a list of the non-manifold vertices in the mesh
-    non_manifold_vertices_list = [ele.index for i, ele in enumerate(bmesh_object.verts) if
-                             not ele.is_manifold]
+    watertightness_check = nmv.bmeshi.WatertightCheck()
 
-    # Get the non-manifold edges
-    non_manifold_edges_list = [ele for i, ele in enumerate(bmesh_object.edges) if not ele.is_manifold]
+    # Non-manifold vertices
+    non_manifold_vertices = [ele.index for ele in bmesh_object.verts if not ele.is_manifold]
+    watertightness_check.non_manifold_vertices = non_manifold_vertices
+    watertightness_check.non_manifold_vertices_count = len(non_manifold_vertices)
 
-    # Self intersections
-    self_intersecting_faces_list = check_self_intersections_of_bmesh_object(bmesh_object)
+    # Non-manifold edges
+    non_manifold_edges = [ele for ele in bmesh_object.edges if not ele.is_manifold]
+    watertightness_check.non_manifold_edges = non_manifold_edges
+    watertightness_check.non_manifold_edges_count = len(non_manifold_edges)
 
-    number_non_manifold_vertices = len(non_manifold_vertices_list)
-    number_non_manifold_edges = len(non_manifold_edges_list)
-    number_self_intersecting_faces = len(self_intersecting_faces_list)
+    # Non-contiguous edges
+    non_contiguous_edges = [ele.index for ele in bmesh_object.edges if not ele.is_contiguous]
+    watertightness_check.non_contiguous_edges = non_contiguous_edges
+    watertightness_check.non_contiguous_edge_count = len(non_contiguous_edges)
 
-    if number_non_manifold_vertices > 0 or \
-       number_non_manifold_edges > 0 or \
-       number_self_intersecting_faces > 0:
-        return False, non_manifold_vertices_list, non_manifold_edges_list, self_intersecting_faces_list
-    else:
-        return True, non_manifold_vertices_list, non_manifold_edges_list, self_intersecting_faces_list
+    # Zero-faces
+    zero_faces = [ele.index for ele in bmesh_object.faces if ele.calc_area() <= zero_threshold]
+    watertightness_check.zero_faces = zero_faces
+    watertightness_check.zero_faces_count = len(zero_faces)
+
+    # Self-intersecting faces
+    self_intersecting_faces = check_self_intersections_of_bmesh_object(bmesh_object)
+    watertightness_check.self_intersecting_faces = self_intersecting_faces
+    watertightness_check.self_intersecting_faces_count = len(self_intersecting_faces)
+
+    # Return the watertightness check
+    return watertightness_check
+
 
 ####################################################################################################
-# @is_bmesh_object_watertight
+# @try_to_make_bmesh_object_watertight
 ####################################################################################################
 def try_to_make_bmesh_object_watertight(bmesh_object):
     """Tries to make the given bmesh object watertight.
@@ -548,19 +605,25 @@ def try_to_make_bmesh_object_watertight(bmesh_object):
     """
 
     # Verify if the mesh is watertight or not
-    is_watertight, non_manifold_vertices, non_manifold_edges, self_intersecting_faces = \
-        is_bmesh_object_watertight(bmesh_object)
+    watertightness_check = is_bmesh_object_watertight(bmesh_object)
 
     # If the input mesh is already watertight, then proceed
-    if is_watertight:
+    if watertightness_check.is_watertight():
         return
 
     iteration = 1
     while True:
-        print('WATERTIGHTNESS\t\t Iteration %d' % iteration)
+        print('WATERTIGHTNESS\t Iteration %d' % iteration)
 
-        # Remove the self-intersecting faces from the mesh object
-        nmv.bmeshi.remove_self_intersecting_faces_of_bmesh_object(bmesh_object, self_intersecting_faces)
+        # Remove the self-intersecting faces from the bmesh object
+        nmv.bmeshi.remove_self_intersecting_faces_of_bmesh_object(
+            bmesh_object, watertightness_check.self_intersecting_faces)
+
+        # Remove the zero faces
+        nmv.bmeshi.remove_thin_faces_and_edges_of_bmesh_object(bmesh_object)
+
+        # Remove the non-contiguous edges from the bmesh object
+        # nmv.bmeshi.remove_non_continuous_edges_of_bmesh_object(bmesh_object)
 
         # Remove the small partitions of the mesh object
         nmv.bmeshi.remove_small_partitions_of_bmesh_object(bmesh_object)
@@ -571,15 +634,27 @@ def try_to_make_bmesh_object_watertight(bmesh_object):
         # Repair the non-manifold edges
         nmv.bmeshi.repair_non_manifold_edges_of_bmesh_object(bmesh_object)
 
-        is_watertight, non_manifold_vertices, non_manifold_edges, self_intersecting_faces = \
-            is_bmesh_object_watertight(bmesh_object)
+        # Recalculate the normals and check ....
+        bmesh.ops.recalc_face_normals(bmesh_object, faces=bmesh_object.faces)
+
+        # Verify the watertightness check again
+        watertightness_check = is_bmesh_object_watertight(bmesh_object)
+
 
         # If the mesh is watertight, the return
-        if is_watertight:
-            print('WATERTIGHTNESS\t\t OK!')
+        if watertightness_check.is_watertight():
+            print('WATERTIGHTNESS\t OK!')
+
+            bmesh_object.verts.ensure_lookup_table()
+            bmesh_object.edges.ensure_lookup_table()
+            bmesh_object.faces.ensure_lookup_table()
+
+            watertightness_check = is_bmesh_object_watertight(bmesh_object)
+            watertightness_check.print_status()
             return
 
         # Otherwise, make another iteration
         else:
+            watertightness_check.print_status()
             iteration += 1
 
