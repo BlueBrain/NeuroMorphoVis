@@ -32,6 +32,10 @@ INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/mtypes/L23_LBC/'
 INPUT_MESH='L23_LBC.stl'
 OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/mtypes/L23_LBC/'
 
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/meshes'
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/watertight-meshes'
+INPUT_MESH='3794149.obj'
+
 #####################################################################################################
 BOOL_ARGS=' '
 

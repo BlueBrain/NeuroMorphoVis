@@ -441,8 +441,8 @@ def create_distributions_image(mesh_name,
             output_prefix='%s-%s' % (mesh_name, string[0]),
             invert=string[2],
             title=string[1],
-            color_1=(70/255.0, 130/255.0, 180/255.0), #palette[5],
-            color_2=(255/255.0, 127/255.0, 127/255.0), # palette[0],
+            color_1=palette[5], # (70/255.0, 130/255.0, 180/255.0), #palette[5],
+            color_2=palette[0], # (255/255.0, 127/255.0, 127/255.0), # palette[0],
             axvline_color=palette[9]))
 
     # Statistic image with all the distributions

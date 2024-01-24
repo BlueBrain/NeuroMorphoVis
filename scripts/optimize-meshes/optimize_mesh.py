@@ -89,9 +89,6 @@ def optimize_mesh(mesh_object,
     # Optimize the mesh and reduce the number of faces
     optimization_mesh.coarse_flat(0.05, 5, True)
 
-    # Smooth normals
-    optimization_mesh.smooth_normals(15, 150, True)
-
     # Initially smooth by 15 iterations
     optimization_mesh.smooth(15, 150, 25, False, True)
 

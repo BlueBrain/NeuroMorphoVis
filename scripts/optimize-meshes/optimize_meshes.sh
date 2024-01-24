@@ -38,12 +38,12 @@ OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/watertight-spiny'
 INPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/meshes'
 OUTPUT_DIRECTORY='/hdd1/biovis-24-zenodo/astrocyte/watertight-meshes'
 
-INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/meshes'
-OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/watertight-meshes'
+INPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/meshes/stage2/meshes'
+OUTPUT_DIRECTORY='/ssd2/biovis2024-data/nmv-spiny/meshes/stage2/watertight-meshes'
 
 
 # The numer of parallel cores used to run the script
-NUM_CORES=5
+NUM_CORES=4
 
 #####################################################################################################
 BOOL_ARGS=' '
