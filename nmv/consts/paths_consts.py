@@ -93,4 +93,4 @@ class Paths:
     IMAGES_PATH = '%s/../../data/images' % current_directory
 
     # The directory where the libraries and shared objects are installed
-    LIBS_PATH = '%s/../../libs' % current_directory
+    LIBS_PATH = '%s/../../deps/lib' % current_directory
