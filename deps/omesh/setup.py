@@ -62,17 +62,18 @@ def create_ext_modules():
         include_dirs.append('/usr/local/include')
 
     extra_compile_args = list()
-    if sys.platform == 'unix':
+    if sys.platform == 'darwin':
         extra_compile_args.append('-fopenmp')
-    elif sys.platform == 'darwin':
+    else:
         extra_compile_args.append('-fopenmp')
 
-    extra_link_args = list()
-    if sys.platform == 'unix':
-        extra_link_args.append('-lgomp')
-    elif sys.platform == 'darwin':
+    extra_link_args = list()    
+    if sys.platform == 'darwin':
         extra_link_args.append('-L/usr/local/lib')
         extra_link_args.append('-lomp')
+    else:
+        # extra_link_args.append('-L/lib/x86_64-linux-gnu/')
+        extra_link_args.append('-lgomp')
 
     # Extra modules for the compilation
     ext_modules = [
