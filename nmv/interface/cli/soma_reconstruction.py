@@ -96,7 +96,7 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
         blend=cli_options.soma.export_blend)
 
     # Render a static frame of the reconstructed soma mesh
-    if cli_options.soma.render_soma_mesh:
+    if cli_options.rendering.render_soma_static_frame:
 
         # Image name (for a front view only)
         image_name = 'SOMA_MESH_%s_%s' % (nmv.enums.Camera.View.FRONT, cli_options.morphology.label)
@@ -110,7 +110,7 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
             image_directory=cli_options.io.images_directory)
 
     # Render a 360 sequence of the soma mesh
-    if cli_options.soma.render_soma_mesh_360:
+    if cli_options.rendering.render_soma_360:
 
         # Create the sequences directory if it does not exist
         if not nmv.file.ops.path_exists(cli_options.io.sequences_directory):
@@ -137,7 +137,7 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
                 image_name=image_name)
 
     # Render a progressive reconstruction of the soma
-    if cli_options.soma.render_soma_mesh_progressive:
+    if cli_options.rendering.render_soma_progressive:
 
         # Clear the scene to do the reconstruction again while rendering the frames
         nmv.scene.ops.clear_scene()

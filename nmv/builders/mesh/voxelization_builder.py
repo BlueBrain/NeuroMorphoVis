@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -34,6 +34,7 @@ class VoxelizationBuilder(MeshBuilderBase):
     Notes:
         - This builder works with Blender 3.0 and beyond.
         - The meshes produced by this builder are watertight.
+        - If the mesh optimization library (omesh) is available, the final mesh will be optimized.
     """
 
     ################################################################################################
@@ -244,6 +245,16 @@ class VoxelizationBuilder(MeshBuilderBase):
                 mesh_object=self.neuron_mesh, strength=1.5, noise_scale=2, noise_depth=2)
 
     ################################################################################################
+    # @optimize_mesh
+    ################################################################################################
+    def optimize_mesh(self):
+        """Optimizes the mesh surface using the OMesh (optimization mesh) library."""
+        print('****************************** Optimization ******************************')
+        self.neuron_mesh = nmv.mesh.optimize_mesh(
+            mesh_object=self.neuron_mesh, delete_input_mesh=True)
+        print('****************************** Optimization ******************************')
+
+    ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
     def reconstruct_mesh(self):
@@ -261,16 +272,20 @@ class VoxelizationBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.apply_voxelization_modifier)
         self.profiling_statistics += stats
 
-        # Adjust the origin of the mesh
-        result, stats = self.PROFILE(self.finalize_mesh)
-        self.profiling_statistics += stats
-
         # Surface roughness
         result, stats = self.PROFILE(self.add_surface_roughness)
         self.profiling_statistics += stats
 
         # Mesh cleaning
         result, stats = self.PROFILE(self.clean_mesh)
+        self.profiling_statistics += stats
+
+        # Mesh optimization
+        result, stats = self.PROFILE(self.optimize_mesh)
+        self.profiling_statistics += stats
+
+        # Adjust the origin of the mesh
+        result, stats = self.PROFILE(self.finalize_mesh)
         self.profiling_statistics += stats
 
         # Report the statistics of this builder
