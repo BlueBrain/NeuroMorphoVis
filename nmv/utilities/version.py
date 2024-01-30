@@ -156,4 +156,3 @@ def is_blender_300():
         return True
     return False
 
-

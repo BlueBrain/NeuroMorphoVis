@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -19,3 +19,4 @@ from .mesh_cleaning_ops import *
 from .mesh_face_ops import *
 from .mesh_object_ops import *
 from .mesh_vertex_ops import *
+from .mesh_optimization import *
