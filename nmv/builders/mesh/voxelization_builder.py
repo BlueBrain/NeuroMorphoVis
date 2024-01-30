@@ -110,9 +110,9 @@ class VoxelizationBuilder(MeshBuilderBase):
 
         # Get the voxelization resolution
         if smallest_radius < 0.1:
-            self.voxelization_resolution = 0.1 * 0.85
+            self.voxelization_resolution = 0.1 * 0.75
         else:
-            self.voxelization_resolution = smallest_radius * 0.85
+            self.voxelization_resolution = smallest_radius * 0.75
 
         # If the spines are loaded, use resolution 0.05
         if self.options.mesh.spines != nmv.enums.Meshing.Spines.Source.IGNORE:

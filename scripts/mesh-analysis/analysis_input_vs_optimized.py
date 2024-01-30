@@ -423,7 +423,7 @@ def create_distributions_image(mesh_name,
         if '.dist' in f and mesh_name in f:
             dists.append(f)
 
-    # Search strings
+    # Search stringsWATERTIGHTNESS
     strings = [['radius-ratio', 'Radius Ratio', True],
                ['edge-ratio', 'Edge Ratio', True],
                ['radius-to-edge-ratio', 'Radius to Edge Ratio', True],
