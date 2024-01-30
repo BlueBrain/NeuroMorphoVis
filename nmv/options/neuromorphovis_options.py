@@ -254,6 +254,10 @@ class NeuroMorphoVisOptions:
         # Which proxy meshing method will be within the voxelization re-meshing
         self.mesh.proxy_mesh_method = nmv.enums.Meshing.Proxy.get_enum(arguments.proxy_mesh_method)
 
+        # Topology re-tessellation for the Voxel remesher
+        self.mesh.topology_tessellation = nmv.enums.Meshing.TopologyTessellation.get_enum(
+            arguments.topology_tessellation)
+
         # Spines (source)
         self.mesh.spines = nmv.enums.Meshing.Spines.Source.get_enum(arguments.spines)
 

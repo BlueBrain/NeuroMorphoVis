@@ -1030,7 +1030,8 @@ def set_mesh_origin(mesh_object,
 # @apply_voxelization_remeshing_modifier
 ####################################################################################################
 def apply_voxelization_remeshing_modifier(mesh_object,
-                                          voxel_size=0.1):
+                                          voxel_size=0.1,
+                                          adaptivity=0.0):
     """Apply the voxelization-based remeshing algorithm to the given mesh object to create a
     connected mesh.
 
@@ -1038,7 +1039,9 @@ def apply_voxelization_remeshing_modifier(mesh_object,
         A given mesh object to remesh.
     :param voxel_size:
         The size of the voxel represents the resolution of the grid. It should be set to the
-        radius of the smallest element - or edge - in the mesh object
+        radius of the smallest element - or edge - in the mesh object.
+    :@param adaptivity:
+        The value to control the
     """
 
     # Deselect all the objects in the scene
@@ -1056,7 +1059,10 @@ def apply_voxelization_remeshing_modifier(mesh_object,
     # Update the voxel size
     bpy.context.object.modifiers["Remesh"].voxel_size = voxel_size
 
-    # Use smooth shading 
+    # Update the
+    bpy.context.object.modifiers["Remesh"].adaptivity = adaptivity
+
+    # Use smooth shading
     bpy.context.object.modifiers["Remesh"].use_smooth_shade = True
 
     # Apply the modifier

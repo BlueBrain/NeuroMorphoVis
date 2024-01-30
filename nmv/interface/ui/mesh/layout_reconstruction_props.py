@@ -127,6 +127,17 @@ def draw_proxy_mesh_option(layout, scene, options):
 
 
 ####################################################################################################
+# @draw_topology_tessellation_option
+####################################################################################################
+def draw_topology_tessellation_option(layout, scene, options):
+
+    row = layout.row()
+    row.label(text='Topology Tessellation')
+    row.prop(scene, 'NMV_TopologyTessellation')
+    options.mesh.topology_tessellation = scene.NMV_TopologyTessellation
+
+
+####################################################################################################
 # @draw_tessellation_option
 ####################################################################################################
 def draw_tessellation_option(layout, scene, options):
@@ -211,6 +222,7 @@ def draw_piecewise_watertight_meshing_options(layout, scene, options):
 def draw_voxelization_meshing_options(layout, scene, options):
 
     draw_soma_type_option(layout=layout, scene=scene, options=options)
+    draw_topology_tessellation_option(layout=layout, scene=scene, options=options)
     draw_proxy_mesh_option(layout=layout, scene=scene, options=options)
     draw_mesh_surface_roughness_option(layout=layout, scene=scene, options=options)
     draw_small_edges_removal_option(layout=layout, scene=scene, options=options)

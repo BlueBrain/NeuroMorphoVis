@@ -111,6 +111,58 @@ class Meshing:
         ]
 
     ################################################################################################
+    # @TopologyTessellation
+    ################################################################################################
+    class TopologyTessellation:
+
+        # Use the re-tessellation of the voxel remesher
+        VOXEL_REMESHER = 'TOPOLOGY_TESSELLATION_VOXEL_REMESHER'
+
+        # Use the tessellation of the omesh, if available
+        OMESH_TESSELLATION = 'TOPOLOGY_TESSELLATION_OMESH'
+
+        # None
+        NO_TESSELLATION = 'TOPOLOGY_TESSELLATION_NONE'
+
+        ############################################################################################
+        # @__init__
+        ############################################################################################
+        def __init__(self):
+            pass
+
+        ############################################################################################
+        # @get_enum
+        ############################################################################################
+        @staticmethod
+        def get_enum(argument):
+
+            if argument == 'voxel-remesher':
+                return Meshing.TopologyTessellation.VOXEL_REMESHER
+            elif argument == 'omesh':
+                return Meshing.TopologyTessellation.OMESH_TESSELLATION
+            elif argument == 'none':
+                return Meshing.TopologyTessellation.NO_TESSELLATION
+            else:
+                return Meshing.TopologyTessellation.NO_TESSELLATION
+
+        # All the items that will appear in the UI
+        TOPOLOGY_TESSELLATION_ITEMS = [
+
+            (VOXEL_REMESHER,
+             'Voxel Remesher Tessellation',
+             'This approach  uses the adaptive meshing of the Voxel remesh modifier. It is '
+             'relatively faster than than the omesh'),
+
+            (OMESH_TESSELLATION,
+             'OMesh Tessellation',
+             'This approach uses the OMesh library to re-tessellate the mesh.'),
+
+            (NO_TESSELLATION,
+             'Ignore',
+             'Ignore re-tessellating the mesh.')
+        ]
+
+    ################################################################################################
     # @Proxy
     ################################################################################################
     class Proxy:

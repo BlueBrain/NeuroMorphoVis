@@ -54,6 +54,9 @@ class MeshOptions:
         # Which proxy meshing method will be within the voxelization re-meshing
         self.proxy_mesh_method = nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS
 
+        # Topology re-tessellation
+        self.topology_tessellation = nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER
+
         # Soma connection to the arbors, connected or disconnected
         self.soma_connection = nmv.enums.Meshing.SomaConnection.DISCONNECTED
 

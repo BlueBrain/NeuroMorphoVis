@@ -175,11 +175,20 @@ class VoxelizationBuilder(MeshBuilderBase):
     def apply_voxelization_modifier(self):
         """Apply the voxelization-based re-meshing modifier to create a new mesh."""
 
-        nmv.logger.info('Applying the voxelization finalization')
+        # Consider the adaptivity
+        topology = self.options.mesh.topology_tessellation
+        if topology == nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER:
+            adaptivity = 0.5
+        else:
+            adaptivity = 0.0
+
+        nmv.logger.info('Applying the voxelization finalization [Resolution: %f, Adaptivity %f]'
+                        % (self.voxelization_resolution, adaptivity))
 
         # Apply the modifier
         nmv.mesh.apply_voxelization_remeshing_modifier(
-            mesh_object=self.neuron_mesh, voxel_size=self.voxelization_resolution)
+            mesh_object=self.neuron_mesh, voxel_size=self.voxelization_resolution,
+            adaptivity=adaptivity)
 
     ################################################################################################
     # @adjust_origin_to_soma_center
@@ -249,10 +258,20 @@ class VoxelizationBuilder(MeshBuilderBase):
     ################################################################################################
     def optimize_mesh(self):
         """Optimizes the mesh surface using the OMesh (optimization mesh) library."""
-        print('****************************** Optimization ******************************')
-        self.neuron_mesh = nmv.mesh.optimize_mesh(
-            mesh_object=self.neuron_mesh, delete_input_mesh=True)
-        print('****************************** Optimization ******************************')
+
+        nmv.logger.info('Optimization')
+
+        topology = self.options.mesh.topology_tessellation
+        if topology == nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER:
+            self.neuron_mesh = nmv.mesh.optimize_mesh(
+                mesh_object=self.neuron_mesh, coarse=False, smooth=True, delete_input_mesh=True)
+            self.neuron_mesh = nmv.mesh.optimize_mesh(
+                mesh_object=self.neuron_mesh, coarse=True, smooth=True, delete_input_mesh=True)
+        elif topology == nmv.enums.Meshing.TopologyTessellation.OMESH_TESSELLATION:
+            self.neuron_mesh = nmv.mesh.optimize_mesh(
+                mesh_object=self.neuron_mesh, coarse=True, smooth=True, delete_input_mesh=True)
+        else:
+            pass
 
     ################################################################################################
     # @reconstruct_mesh

@@ -49,6 +49,13 @@ bpy.types.Scene.NMV_ProxyMeshes = bpy.props.EnumProperty(
     name='Proxy Meshes',
     default=nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS)
 
+# The topology re-tessellation method
+bpy.types.Scene.NMV_TopologyTessellation = bpy.props.EnumProperty(
+    items=nmv.enums.Meshing.TopologyTessellation.TOPOLOGY_TESSELLATION_ITEMS,
+    name='',
+    default=nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER)
+
+
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,
