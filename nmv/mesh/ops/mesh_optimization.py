@@ -92,11 +92,17 @@ def create_optimization_mesh(mesh_object):
 # @optimize_mesh
 ####################################################################################################
 def optimize_mesh(mesh_object,
+                  coarse=True,
+                  smooth=True,
                   delete_input_mesh=False):
     """Optimizes the given mesh object and create a watertight output.
 
     @param mesh_object:
         A given mesh object to get optimized.
+    @param coarse:
+        If this flag is set to True, the mesh surface will be re-tessellated.
+    @param smooth:
+        If this flag is set to True, the mesh surface will be smoothed.
     @param delete_input_mesh:
         Deletes the input mesh from the scene to save memory.
     @return:
@@ -118,16 +124,18 @@ def optimize_mesh(mesh_object,
     optimization_mesh = create_optimization_mesh(mesh_object)
 
     # Optimize the mesh and reduce the number of faces
-    optimization_mesh.coarse_flat(0.05, 5, True)
+    if coarse:
+        optimization_mesh.coarse_flat(0.05, 5, True)
 
-    # Smooth normals
-    optimization_mesh.smooth_normals(15, 150, True)
+    if smooth:
+        # Smooth normals
+        optimization_mesh.smooth_normals(15, 150, True)
 
-    # Initially smooth by 15 iterations
-    optimization_mesh.smooth(15, 150, 25, False, True)
+        # Initially smooth by 15 iterations
+        optimization_mesh.smooth(15, 150, 25, False, True)
 
-    # Smooth normals
-    optimization_mesh.smooth_normals(15, 150, True)
+        # Smooth normals
+        optimization_mesh.smooth_normals(15, 150, True)
 
     # Get a copy to the vertex and face data
     vertices = optimization_mesh.get_vertex_data()
