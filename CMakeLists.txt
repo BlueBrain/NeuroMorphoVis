@@ -37,8 +37,16 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     -Wunused-but-set-variable \
     -Wunused-but-set-variable")
 
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    message(STATUS ${OpenMP_CXX_FLAGS})
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
 # Create the library from the source file
-add_library(omesh
+add_library(omesh SHARED
     src/Common.hh
     src/Vertex.hpp
     src/Triangle.hpp
