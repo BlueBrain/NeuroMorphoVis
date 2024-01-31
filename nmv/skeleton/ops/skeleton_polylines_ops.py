@@ -916,7 +916,7 @@ def skin_section_into_mesh(section, smoothing_level=1):
         A mesh object reconstructed from skinning the given section.
     """
 
-    copy.deepcopy(section)
+    # copy.deepcopy(section)
 
     # Create the initial vertex of the section skeleton at the section starting point
     section_bmesh_object = nmv.bmeshi.create_vertex(location=section.samples[0].point)

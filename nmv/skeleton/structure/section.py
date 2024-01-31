@@ -438,4 +438,3 @@ class Section:
         """Checks if the section is a terminal one or not."""
 
         return True if len(self.children) == 0 else False
-

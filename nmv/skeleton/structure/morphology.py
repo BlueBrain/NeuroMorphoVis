@@ -431,6 +431,29 @@ class Morphology:
                                   palette[color_index][2]))
 
 
+    def append_children_sections(self,
+                                 root_section,
+                                 sections_list=[]):
+        for i_child_section in root_section.children:
+            sections_list.append(i_child_section)
+            self.append_children_sections(root_section=i_child_section, sections_list=sections_list)
+
+
+
+
+
+    def get_basal_dendrites_sections_list(self):
+
+        sections = list()
+        for i_basal_dendrite in self.basal_dendrites:
+            sections.append(i_basal_dendrite)
+            self.append_children_sections(i_basal_dendrite, sections)
+        return sections
+
+
+
+
+
 
 
 

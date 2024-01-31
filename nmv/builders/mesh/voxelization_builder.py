@@ -86,6 +86,9 @@ class VoxelizationBuilder(MeshBuilderBase):
     def initialize_builder(self):
         """Initializes the different parameters/options of the builder required for building."""
 
+        # Create the materials of the morphology skeleton
+        self.create_skeleton_materials()
+
         # Is it a single object or multiple objects
         self.confirm_single_or_multiple_mesh_objects()
 
@@ -178,7 +181,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Consider the adaptivity
         topology = self.options.mesh.topology_tessellation
         if topology == nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER:
-            adaptivity = 0.5
+            adaptivity = 0.25
         else:
             adaptivity = 0.0
 
@@ -251,7 +254,7 @@ class VoxelizationBuilder(MeshBuilderBase):
         if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
             nmv.logger.info('Adding surface noise')
             nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=2, noise_depth=2)
+                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1.5, noise_depth=2)
 
     ################################################################################################
     # @optimize_mesh
@@ -273,6 +276,51 @@ class VoxelizationBuilder(MeshBuilderBase):
         else:
             pass
 
+
+    def draw_sections(self):
+
+        basal_dendrites_sections = self.morphology.get_basal_dendrites_sections_list()
+
+        threshold = 0.4
+
+        # Retrieve the 'safe' sections, which have minimum radius greater than the threshold
+        thick_sections = list()
+        thin_sections = list()
+        for i_section in basal_dendrites_sections:
+            if nmv.skeleton.compute_section_minimum_radius(section=i_section) > threshold:
+                thick_sections.append(i_section)
+            else:
+                if nmv.skeleton.compute_section_average_radius(section=i_section) > threshold:
+                    nmv.skeleton.adjust_section_radii_to_threshold(section=i_section, threshold=threshold)
+                    thick_sections.append(i_section)
+                else:
+                    thin_sections.append(i_section)
+
+        thick_geometry = list()
+        for i_section in thick_sections:
+            nmv.skeleton.resample_section_adaptively(section=i_section)
+            skinned_mesh = nmv.skeleton.skin_section_into_mesh(section=i_section, smoothing_level=2)
+            thick_geometry.append(skinned_mesh)
+            articulations = nmv.skeleton.draw_articulation_samples(section=i_section)
+            thick_geometry.extend(articulations)
+
+        thick_mesh = nmv.mesh.join_mesh_objects(mesh_list=thick_geometry, name='ThickSections')
+        nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(mesh_object=thick_mesh, noise_scale=1.5)
+
+        thin_geometry = list()
+        for i_section in thin_sections:
+            nmv.skeleton.resample_section_adaptively(section=i_section)
+            skinned_mesh = nmv.skeleton.skin_section_into_mesh(section=i_section, smoothing_level=2)
+            thin_geometry.append(skinned_mesh)
+            articulations = nmv.skeleton.draw_articulation_samples(section=i_section)
+            thin_geometry.extend(articulations)
+
+        thin_mesh = nmv.mesh.join_mesh_objects(mesh_list=thin_geometry, name='ThinSections')
+
+        self.neuron_meshes.append(thick_mesh)
+        self.neuron_meshes.append(thin_mesh)
+
+
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -284,8 +332,20 @@ class VoxelizationBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        result, stats = self.PROFILE(self.build_proxy_mesh)
+        # Build the soma
+        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
         self.profiling_statistics += stats
+
+        self.draw_sections()
+
+        # Add the spines
+        result, stats = self.PROFILE(self.add_spines_to_surface)
+        self.profiling_statistics += stats
+
+        self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes)
+
+        #result, stats = self.PROFILE(self.build_proxy_mesh)
+        #self.profiling_statistics += stats
 
         # Voxelization modifier
         result, stats = self.PROFILE(self.apply_voxelization_modifier)
@@ -302,6 +362,8 @@ class VoxelizationBuilder(MeshBuilderBase):
         # Mesh optimization
         result, stats = self.PROFILE(self.optimize_mesh)
         self.profiling_statistics += stats
+
+        self.neuron_meshes = [self.neuron_mesh]
 
         # Adjust the origin of the mesh
         result, stats = self.PROFILE(self.finalize_mesh)

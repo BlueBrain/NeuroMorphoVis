@@ -61,9 +61,13 @@ class NMV_MeshPanel(bpy.types.Panel):
     def draw(self, context):
 
         # Verify the presence of a reconstructed mesh in the scene
-        if len(nmv.interface.ui_reconstructed_mesh) > 0:
-            if nmv.scene.verify_objects_list_in_scene(nmv.interface.ui_reconstructed_mesh):
-                nmv.interface.ui_mesh_reconstructed = True
+
+        if nmv.interface.ui_reconstructed_mesh is not None:
+            if len(nmv.interface.ui_reconstructed_mesh) > 0:
+                if nmv.scene.verify_objects_list_in_scene(nmv.interface.ui_reconstructed_mesh):
+                    nmv.interface.ui_mesh_reconstructed = True
+                else:
+                    nmv.interface.ui_mesh_reconstructed = False
             else:
                 nmv.interface.ui_mesh_reconstructed = False
         else:

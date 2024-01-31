@@ -873,3 +873,47 @@ def draw_articulation_sphere(point,
         subdivisions = 32 if radius > 0.5 else 16
         return nmv.bmeshi.create_uv_sphere(
             radius=radius, location=point, subdivisions=subdivisions)
+
+
+def draw_articulation_samples(section,
+                              use_uv_spheres=False):
+
+    samples = [section.samples[0], section.samples[-1]]
+
+    articulations = list()
+    for sample in samples:
+        if use_uv_spheres:
+            subdivisions = 5 if sample.radius > 0.5 else 3
+            articulations.append(nmv.mesh.create_ico_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=subdivisions))
+        else:
+            subdivisions = 32 if sample.radius > 0.5 else 16
+            articulations.append(nmv.mesh.create_uv_sphere(
+                radius=sample.radius, location=sample.point, subdivisions=subdivisions))
+    return articulations
+
+
+
+
+def compute_section_average_radius(section):
+
+    average_radius = 0
+    for i_sample in section.samples:
+        average_radius += i_sample.radius
+    average_radius /= len(section.samples)
+    return average_radius
+
+
+def compute_section_minimum_radius(section):
+
+    minimum_radius = 1e32
+    for i_samples in section.samples:
+        if i_samples.radius < minimum_radius:
+            minimum_radius = i_samples.radius
+    return minimum_radius
+
+def adjust_section_radii_to_threshold(section,
+                                      threshold):
+    for i_sample in section.samples:
+        if i_sample.radius < threshold:
+            i_sample.radius = threshold
