@@ -228,3 +228,79 @@ def get_section_polyline_color_index_based_on_length(
     maximum = morphology.stats.maximum_section_length
 
     return math.ceil(colormap_resolution * section.stats.length / (maximum - minimum)) - 1
+
+
+####################################################################################################
+# @filter_thin_and_thick_sections
+####################################################################################################
+def filter_thin_and_thick_sections(sections_list,
+                                   radius_threshold,
+                                   max_branching_order=nmv.consts.Skeleton.MAX_BRANCHING_ORDER):
+    """Given a linear list of sections, this function filters those sections into two lists based
+    on the radii of the samples in every section.
+
+    :param sections_list:
+        A given list of sections to be split into two lists based on the threshold radius
+    :param radius_threshold:
+        The threshold where think and thin sections are evaluated.
+    :param max_branching_order:
+        The maximum branching order, with which we can consider the sections.
+    :return:
+        Returns two lists, the first list is the thick sections and the other one is the thin ones.
+    """
+
+    # Two lists to contain the filtered sections
+    thick_sections = list()
+    thin_sections = list()
+    for i_section in sections_list:
+        # If the minimum sample radius is greater than the threshold, then this section is thick
+        if nmv.skeleton.compute_section_minimum_radius(section=i_section) > radius_threshold:
+            if i_section.branching_order <= max_branching_order:
+                thick_sections.append(i_section)
+        else:
+            # If the average radius of the samples is greate than the threshold, then adjust the
+            # outlier samples
+            if nmv.skeleton.compute_section_average_radius(section=i_section) > radius_threshold:
+                # Adjust the small samples of the section
+                nmv.skeleton.adjust_section_radii_to_threshold(
+                    section=i_section, threshold=radius_threshold)
+
+                # Add the section to the thick list, it is safe
+                if i_section.branching_order <= max_branching_order:
+                    thick_sections.append(i_section)
+            else:
+                # Otherwise, the section must be added to the thin sections list
+                if i_section.branching_order <= max_branching_order:
+                    thin_sections.append(i_section)
+
+    # Return the thick and thin sections
+    return thick_sections, thin_sections
+
+
+####################################################################################################
+# @filter_thin_and_thick_sections
+####################################################################################################
+def append_child_sections_to_sections_list(root_section,
+                                           sections_list=[]):
+    """
+
+    :param root_section:
+    :param sections_list:
+    :return:
+    """
+
+    for i_child_section in root_section.children:
+        sections_list.append(i_child_section)
+        append_child_sections_to_sections_list(
+            root_section=i_child_section, sections_list=sections_list)
+
+
+####################################################################################################
+# @filter_thin_and_thick_sections
+####################################################################################################
+def get_sections_list(root_section):
+
+    sections = list()
+    sections.append(root_section)
+    append_child_sections_to_sections_list(root_section, sections)
+    return sections

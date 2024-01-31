@@ -430,24 +430,49 @@ class Morphology:
                                   palette[color_index][1],
                                   palette[color_index][2]))
 
+    ################################################################################################
+    # @append_child_sections_to_sections_list
+    ################################################################################################
+    def append_child_sections_to_sections_list(self,
+                                               root_section,
+                                               sections_list=[]):
 
-    def append_children_sections(self,
-                                 root_section,
-                                 sections_list=[]):
         for i_child_section in root_section.children:
             sections_list.append(i_child_section)
-            self.append_children_sections(root_section=i_child_section, sections_list=sections_list)
+            self.append_child_sections_to_sections_list(
+                root_section=i_child_section, sections_list=sections_list)
 
+    ################################################################################################
+    # @get_axons_sections_list
+    ################################################################################################
+    def get_axons_sections_list(self):
 
+        sections = list()
+        for i_axons in self.axons:
+            sections.append(i_axons)
+            self.append_child_sections_to_sections_list(i_axons, sections)
+        return sections
 
-
-
+    ################################################################################################
+    # @get_basal_dendrites_sections_list
+    ################################################################################################
     def get_basal_dendrites_sections_list(self):
 
         sections = list()
         for i_basal_dendrite in self.basal_dendrites:
             sections.append(i_basal_dendrite)
-            self.append_children_sections(i_basal_dendrite, sections)
+            self.append_child_sections_to_sections_list(i_basal_dendrite, sections)
+        return sections
+
+    ################################################################################################
+    # @get_apical_dendrites_sections_list
+    ################################################################################################
+    def get_apical_dendrites_sections_list(self):
+
+        sections = list()
+        for i_apical_dendrite in self.apical_dendrites:
+            sections.append(i_apical_dendrite)
+            self.append_child_sections_to_sections_list(i_apical_dendrite, sections)
         return sections
 
 

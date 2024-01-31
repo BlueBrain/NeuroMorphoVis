@@ -201,17 +201,140 @@ class VoxelizationBuilder(MeshBuilderBase):
             mesh_object=self.neuron_mesh, coordinate=self.morphology.soma.centroid)
 
     ################################################################################################
+    # @construct_rough_proxy_geometry
+    ################################################################################################
+    @staticmethod
+    def construct_rough_proxy_geometry(sections_list,
+                                       add_surface_noise=False,
+                                       name='Proxy Geometry'):
+
+        # Construct a list of proxy geometries from the sections
+        proxy_geometry = list()
+        for i_section in sections_list:
+            # Resample the sections adaptively to reduce the artifacts
+            nmv.skeleton.resample_section_adaptively(section=i_section)
+
+            # Convert the section into a cross-sectional geometry and append the result to the
+            # proxy geometry list
+            proxy_geometry.append(nmv.skeleton.skin_section_into_mesh(
+                section=i_section, smoothing_level=2))
+
+            # Add the articulations, or the terminal samples of the sections
+            # TODO: Add the largest sample only to improve the performance
+            articulations = nmv.skeleton.draw_articulation_samples(section=i_section)
+            proxy_geometry.extend(articulations)
+
+        # Join all the proxy geometry meshes into single mesh
+        proxy_geometry_mesh = nmv.mesh.join_mesh_objects(mesh_list=proxy_geometry, name=name)
+
+        # Add the surface noise if requested
+        if add_surface_noise:
+            nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
+                mesh_object=proxy_geometry_mesh, noise_scale=1.5)
+
+        # Return a reference to the proxy geometry
+        return proxy_geometry_mesh
+
+    ################################################################################################
+    # @construct_proxy_arbor_mesh
+    ################################################################################################
+    def construct_rough_proxy_arbor_mesh(self,
+                                         arbor,
+                                         max_branching_order,
+                                         name,
+                                         radius_threshold=0.4):
+
+        # Get the linear sections list of the given arbor
+        sections = nmv.skeleton.get_sections_list(arbor)
+
+        # Filter the sections into thick and thin sections and remove those that have higher
+        # branching order
+        thick_sections, thin_sections = nmv.skeleton.filter_thin_and_thick_sections(
+            sections_list=sections, radius_threshold=radius_threshold,
+            max_branching_order=max_branching_order)
+
+        # Generate the proxy geometry of the thick sections, add noise
+        thick_proxy_geometry = self.construct_rough_proxy_geometry(
+            sections_list=thick_sections, add_surface_noise=True,
+            name='Thick Proxy %s' % name)
+
+        # Generate the proxy geometry of the thin sections, do not add noise
+        thin_proxy_geometry = self.construct_rough_proxy_geometry(
+            sections_list=thin_sections, add_surface_noise=False,
+            name='Thin Proxy %s' % name)
+
+        # Add the proxy geometries to the mesh list of the neuron
+        self.neuron_meshes.append(thick_proxy_geometry)
+        self.neuron_meshes.append(thin_proxy_geometry)
+
+    ################################################################################################
+    # @construct_rough_proxy_arbors
+    ################################################################################################
+    def construct_rough_proxy_arbors(self):
+
+        # Header
+        nmv.logger.info('Constructing proxy arbors')
+
+        # Apical dendrites
+        if not self.options.morphology.ignore_apical_dendrites:
+            if self.morphology.has_apical_dendrites():
+                for i, arbor in enumerate(self.morphology.apical_dendrites):
+                    # Create the mesh
+                    nmv.logger.detail(arbor.label)
+                    self.construct_rough_proxy_arbor_mesh(
+                        arbor=arbor,
+                        max_branching_order=self.options.morphology.apical_dendrite_branch_order,
+                        name=arbor.label)
+
+        # Basal dendrites
+        if not self.options.morphology.ignore_basal_dendrites:
+            if self.morphology.has_basal_dendrites():
+                for i, arbor in enumerate(self.morphology.basal_dendrites):
+                    # Create the mesh
+                    nmv.logger.detail(arbor.label)
+                    self.construct_rough_proxy_arbor_mesh(
+                        arbor=arbor,
+                        max_branching_order=self.options.morphology.basal_dendrites_branch_order,
+                        name=arbor.label)
+
+        # Axons
+        if not self.options.morphology.ignore_axons:
+            if self.morphology.has_axons():
+                for i, arbor in enumerate(self.morphology.axons):
+                    # Create the axon mesh
+                    nmv.logger.detail(arbor.label)
+                    self.construct_rough_proxy_arbor_mesh(
+                        arbor=arbor,
+                        max_branching_order=self.options.morphology.axon_branch_order,
+                        name=arbor.label)
+
+    ################################################################################################
     # @build_proxy_mesh
     ################################################################################################
     def build_proxy_mesh(self):
         """Builds the proxy mesh that will be used for the voxelization"""
 
-        # Ensure that we use a high quality cross-sectional bevel
-        self.options.morphology.bevel_object_sides = 16
-        if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
-            return self.build_proxy_mesh_using_connected_sections_builder()
+        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
+
+            # Build the soma
+            result, stats = self.PROFILE(self.reconstruct_soma_mesh)
+            self.profiling_statistics += stats
+
+            nmv.logger.info('Rough arbors')
+            self.construct_rough_proxy_arbors()
+
+            # Join all the mesh objects
+            self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes)
+
         else:
-            return self.build_proxy_mesh_using_articulated_sections_builder()
+
+            nmv.logger.info('Smooth arbors')
+            # Ensure that we use a high quality cross-sectional bevel
+            self.options.morphology.bevel_object_sides = 16
+            if self.options.mesh.proxy_mesh_method == nmv.enums.Meshing.Proxy.CONNECTED_SECTIONS:
+                self.build_proxy_mesh_using_connected_sections_builder()
+            else:
+                self.build_proxy_mesh_using_articulated_sections_builder()
 
     ################################################################################################
     # @finalize_mesh
@@ -246,17 +369,6 @@ class VoxelizationBuilder(MeshBuilderBase):
         nmv.mesh.smooth_object_vertices(self.neuron_mesh, level=1)
 
     ################################################################################################
-    # @add_surface_roughness
-    ################################################################################################
-    def add_surface_roughness(self):
-        """Adds surface noise to the mesh to make it looking realistic as seen by microscopes."""
-
-        if self.options.mesh.surface == nmv.enums.Meshing.Surface.ROUGH:
-            nmv.logger.info('Adding surface noise')
-            nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(
-                mesh_object=self.neuron_mesh, strength=1.5, noise_scale=1.5, noise_depth=2)
-
-    ################################################################################################
     # @optimize_mesh
     ################################################################################################
     def optimize_mesh(self):
@@ -276,51 +388,6 @@ class VoxelizationBuilder(MeshBuilderBase):
         else:
             pass
 
-
-    def draw_sections(self):
-
-        basal_dendrites_sections = self.morphology.get_basal_dendrites_sections_list()
-
-        threshold = 0.4
-
-        # Retrieve the 'safe' sections, which have minimum radius greater than the threshold
-        thick_sections = list()
-        thin_sections = list()
-        for i_section in basal_dendrites_sections:
-            if nmv.skeleton.compute_section_minimum_radius(section=i_section) > threshold:
-                thick_sections.append(i_section)
-            else:
-                if nmv.skeleton.compute_section_average_radius(section=i_section) > threshold:
-                    nmv.skeleton.adjust_section_radii_to_threshold(section=i_section, threshold=threshold)
-                    thick_sections.append(i_section)
-                else:
-                    thin_sections.append(i_section)
-
-        thick_geometry = list()
-        for i_section in thick_sections:
-            nmv.skeleton.resample_section_adaptively(section=i_section)
-            skinned_mesh = nmv.skeleton.skin_section_into_mesh(section=i_section, smoothing_level=2)
-            thick_geometry.append(skinned_mesh)
-            articulations = nmv.skeleton.draw_articulation_samples(section=i_section)
-            thick_geometry.extend(articulations)
-
-        thick_mesh = nmv.mesh.join_mesh_objects(mesh_list=thick_geometry, name='ThickSections')
-        nmv.mesh.add_surface_noise_to_mesh_using_displacement_modifier(mesh_object=thick_mesh, noise_scale=1.5)
-
-        thin_geometry = list()
-        for i_section in thin_sections:
-            nmv.skeleton.resample_section_adaptively(section=i_section)
-            skinned_mesh = nmv.skeleton.skin_section_into_mesh(section=i_section, smoothing_level=2)
-            thin_geometry.append(skinned_mesh)
-            articulations = nmv.skeleton.draw_articulation_samples(section=i_section)
-            thin_geometry.extend(articulations)
-
-        thin_mesh = nmv.mesh.join_mesh_objects(mesh_list=thin_geometry, name='ThinSections')
-
-        self.neuron_meshes.append(thick_mesh)
-        self.neuron_meshes.append(thin_mesh)
-
-
     ################################################################################################
     # @reconstruct_mesh
     ################################################################################################
@@ -332,27 +399,15 @@ class VoxelizationBuilder(MeshBuilderBase):
         result, stats = self.PROFILE(self.initialize_builder)
         self.profiling_statistics += stats
 
-        # Build the soma
-        result, stats = self.PROFILE(self.reconstruct_soma_mesh)
-        self.profiling_statistics += stats
-
-        self.draw_sections()
-
         # Add the spines
         result, stats = self.PROFILE(self.add_spines_to_surface)
         self.profiling_statistics += stats
 
-        self.neuron_mesh = nmv.mesh.join_mesh_objects(self.neuron_meshes)
-
-        #result, stats = self.PROFILE(self.build_proxy_mesh)
-        #self.profiling_statistics += stats
+        result, stats = self.PROFILE(self.build_proxy_mesh)
+        self.profiling_statistics += stats
 
         # Voxelization modifier
         result, stats = self.PROFILE(self.apply_voxelization_modifier)
-        self.profiling_statistics += stats
-
-        # Surface roughness
-        result, stats = self.PROFILE(self.add_surface_roughness)
         self.profiling_statistics += stats
 
         # Mesh cleaning
