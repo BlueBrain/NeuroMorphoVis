@@ -18,7 +18,6 @@
 
 # System imports
 import random
-import tqdm
 
 # Blender imports
 from mathutils import Vector
@@ -186,6 +185,8 @@ class CircuitSpineBuilder:
         self.load_spine_meshes()
         spines = nmv.bbp.get_spines(circuit=circuit, post_gid=post_gid)
 
+        import tqdm
+        
         # Load the synapses from the file
         spine_meshes = list()
         for i, spine in enumerate(

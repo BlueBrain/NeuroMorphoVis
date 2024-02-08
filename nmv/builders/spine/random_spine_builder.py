@@ -18,7 +18,6 @@
 
 # System imports
 import random
-import tqdm
 
 # Blender imports
 from mathutils import Vector
@@ -142,6 +141,7 @@ class RandomSpineBuilder:
         # Load all the template spines and ignore the verbose messages of loading
         self.load_spine_meshes()
 
+        import tqdm
         nmv.logger.detail('Cloning and integrating spines')
         spine_meshes = list()
         for i, spine in enumerate(
