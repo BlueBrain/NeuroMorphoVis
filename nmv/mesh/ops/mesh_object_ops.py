@@ -1206,3 +1206,51 @@ def get_partitions(mesh_object):
 
     # Convert the set to a list
     return list(partitions_vertices_indices)
+
+
+####################################################################################################
+# @split_partitions_into_multiple_mesh_objects
+####################################################################################################
+def split_partitions_into_multiple_mesh_objects(mesh_object):
+    """Splits the partitions of a given mesh into multiple mesh objects.
+
+    :param mesh_object:
+        A given mesh object.
+    :return:
+        List of mesh partitions. 
+    """
+
+    # Deselect all the objects in the scene
+    nmv.scene.deselect_all()
+
+    # Set the given mesh to bet the active object
+    nmv.scene.select_object(mesh_object)
+    nmv.scene.set_active_object(mesh_object)
+
+    # Save the original name of the mesh
+    original_name = mesh_object.name
+
+    # Assign a unique name to this mesh
+    mesh_object.name = 'PARTITION'
+
+    # Split the mesh into partitions if any
+    bpy.ops.mesh.separate(type='LOOSE')
+
+    # Collect all the partitions with the new name
+    partitions_list = nmv.scene.get_list_objects_containing_string('PARTITION')
+
+    # Update the names
+    if len(partitions_list) == 0:
+        return None
+
+    elif len(partitions_list) == 1:
+        partitions_list[0].name = original_name
+
+    else:
+        for i, partition in enumerate(partitions_list):
+            partition.name = original_name + '_%d' % i
+
+    # Return the partitions
+    return partitions_list
+
+
