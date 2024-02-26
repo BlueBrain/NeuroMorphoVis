@@ -455,9 +455,9 @@ class MorphologyBuilderBase:
         if self.lights is not None:
             nmv.scene.delete_list_objects(object_list=self.lights)
 
-        # Create an illumination specific for the given material
+        # Create an illumination specific for the given material at the soma location
         self.lights = nmv.shading.create_material_specific_illumination(
-            self.options.shading.mesh_material)
+            self.options.shading.mesh_material, location=self.morphology.soma.centroid)
 
         # Create a new collection from the created lights
         nmv.utilities.create_collection_with_objects(

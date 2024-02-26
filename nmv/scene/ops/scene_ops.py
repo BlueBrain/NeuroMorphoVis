@@ -536,6 +536,24 @@ def select_object_containing_string(search_string):
 
 
 ####################################################################################################
+# @get_list_objects_containing_string
+####################################################################################################
+def get_list_objects_containing_string(search_string):
+    """Gets a list of objects in the scene that contain the given search string.
+
+    :param search_string:
+        The string that can be contained in the name of the object.
+    """
+
+    # Select the objects
+    objects_list = list()
+    for scene_object in bpy.context.scene.objects:
+        if search_string in scene_object.name:
+            objects_list.append(scene_object)
+    return objects_list
+
+
+####################################################################################################
 # @deselect_object_by_name
 ####################################################################################################
 def deselect_object_by_name(object_name):

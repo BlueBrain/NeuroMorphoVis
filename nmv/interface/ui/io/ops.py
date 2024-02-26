@@ -83,7 +83,7 @@ class NMV_LoadMorphology(bpy.types.Operator):
         if nmv.interface.ui_morphology.is_astrocyte:
             options.morphology.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
         else:
-            options.morphology.axon_branch_order = 2
+            options.morphology.axon_branch_order = nmv.consts.Skeleton.MAX_BRANCHING_ORDER
 
         # Create the builder
         builder = nmv.builders.DisconnectedSectionsBuilder(
