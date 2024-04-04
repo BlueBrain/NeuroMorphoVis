@@ -33,7 +33,7 @@ import nmv.rendering
 def render_scene(images_directory,
                  image_name,
                  edge_gap_percentage=0.1,
-                 resolution_scale_factor=10,
+                 resolution_scale_factor=20,
                  material=nmv.enums.Shader.LAMBERT_WARD,
                  render_scale_bar=False,
                  delete_scale_bar=True):

@@ -21,6 +21,7 @@ import sys
 import argparse
 
 # Internal imports
+import nmv.mesh
 import nmv.scene
 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
@@ -29,7 +30,7 @@ import mesh_exporters
 import mesh_partitioning
 import mesh_bounding_box
 import mesh_rendering
-
+import mesh_analysis
 
 
 ####################################################################################################
@@ -99,8 +100,15 @@ if __name__ == "__main__":
     mesh_object.scale[1] = args.y_scale
     mesh_object.scale[2] = args.z_scale
 
+    # Ensure that the mesh is triangulated, i.e. with only triangular faces
+    nmv.mesh.triangulate_mesh(mesh_object=mesh_object)
+
     # Decompose the mesh into multiple partitions
     mesh_partitions = mesh_partitioning.split_mesh_object_into_partitions(mesh_object=mesh_object)
+
+    # Write the analysis results of the resulting partitions
+    mesh_analysis.write_mesh_analysis_results(
+        output_directory=args.output_directory, partitions=mesh_partitions)
 
     # Create the bounding box
     mesh_bounding_box = mesh_bounding_box.draw_wireframe_meshes_bounding_boxes(

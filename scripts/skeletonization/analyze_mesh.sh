@@ -21,9 +21,10 @@ BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
 INPUT_MESH='/abdellah2/microns-explorer/testing-scripts/input/864691136422909743.obj'
+INPUT_MESH='/ssd2/skeletonization-project/sample-meshes-1/864691134832191490.obj'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/abdellah2/microns-explorer/testing-scripts/'
+OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results'
 
 # Scale factors
 X_SCALE=0.001

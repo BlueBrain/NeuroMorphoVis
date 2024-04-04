@@ -426,7 +426,7 @@ def group_results(input_directory,
     image_files.append(get_image(os.listdir(output_directory), 'z-distances'))
     image_files.append(get_image(os.listdir(output_directory), 'z-ratios'))
     montage_images_to_one_image(output_directory, output_directory, image_files, 1, 7,
-                                'z-group')
+                                morphology_name)
 
 
 ####################################################################################################

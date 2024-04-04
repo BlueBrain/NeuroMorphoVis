@@ -26,6 +26,16 @@ import nmv.shading
 ####################################################################################################
 def split_mesh_object_into_partitions(mesh_object,
                                       color_partitions=True):
+    """Splits the input mesh object into multiple partitions and color each partition with a
+    random color.
+
+    @param mesh_object:
+        A given mesh object.
+    @param color_partitions:
+        If this flag is set, each partition will be randomly colored.
+    @return:
+        A list containing references to each partition as a single mesh object.
+    """
 
     # Get all the partitions
     partitions = nmv.mesh.split_partitions_into_multiple_mesh_objects(mesh_object)
