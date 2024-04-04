@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
+# Copyright (c) 2020 - 2021, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -15,10 +15,23 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-from .mesh_cleaning_ops import *
-from .mesh_face_ops import *
-from .mesh_object_ops import *
-from .mesh_vertex_ops import *
-from .mesh_optimization import *
-from .mesh_bounding_box import *
-from .mesh_analysis import *
+# Blender imports
+import bpy
+
+
+####################################################################################################
+# @save_blend_file
+####################################################################################################
+def save_blend_file(output_directory,
+                    file_name):
+    """Saves the current scene to a Blender file.
+
+    :param output_directory:
+        The path where the file will be saved.
+    :param file_name:
+        The file name of the .blend file.
+    """
+
+    absolute_path = "%s/%s.blend" % (output_directory, file_name)
+    bpy.ops.wm.save_mainfile(filepath=absolute_path)
+    print("Blender file saved successfully to:", absolute_path)

@@ -22,7 +22,7 @@ from mathutils import Vector
 # Internal imports
 import nmv.bbox
 import nmv.scene
-import nmv.camera
+import nmv.rendering
 
 
 ####################################################################################################

@@ -306,6 +306,83 @@ def draw_cone_line(point1=Vector((0, 0, 0)),
 
 
 ####################################################################################################
+# @draw_cone_line
+####################################################################################################
+def draw_cone(point1=Vector((0, 0, 0)),
+              point2=Vector((1, 1, 1)),
+              point1_radius=0.0,
+              point2_radius=1.0,
+              material=None,
+              name='line',
+              fill_caps=True,
+              sides=16,
+              bevel_object=None):
+    """Draw a cone line between two points, with different radii at the beginning and the end of
+    the line.
+
+    :param point1:
+        Starting point of the line.
+    :param point2:
+        End point of the line.
+    :param point1_radius:
+        The radius of the line at the starting point.
+    :param point2_radius:
+        The radius of the line at the end point.
+    :param material:
+        The material of the line.
+    :param name:
+        The name of the line.
+
+    :return:
+        A reference to the created line.
+    """
+
+    # Setup line data
+    # Create a curve object
+    line_data = bpy.data.curves.new(name=name, type='CURVE')
+
+    # The line is drawn in 3D
+    line_data.dimensions = '3D'
+
+    # Fill the line
+    line_data.fill_mode = 'FULL'
+
+    # The thickness of the line should be by default set to 1.0. This value will be scaled later
+    # at the two points of the line.
+    line_data.bevel_depth = 1.0
+
+    # For a thick line, the caps are always filled in contrast to the thin line
+    line_data.use_fill_caps = fill_caps
+
+    if bevel_object is None:
+        line_data.bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=sides, name=name)
+        line_data.bevel_mode = 'OBJECT'
+    else:
+        line_data.bevel_mode = 'OBJECT'
+        line_data.bevel_object = bevel_object
+
+    # Create a new material (color) and assign it to the line
+    if material is not None:
+        line_data.materials.append(material)
+
+    # Create a line object and link it to the scene
+    line_object = bpy.data.objects.new(str(name), line_data)
+    nmv.scene.link_object_to_scene(line_object)
+
+    # Add the two points to the line object and scale their radii
+    line_strip = line_data.splines.new('NURBS')
+    line_strip.points.add(1)
+    line_strip.points[0].co = (point1[0], point1[1], point1[2]) + (1.0,)
+    line_strip.points[1].co = (point2[0], point2[1], point2[2]) + (1.0,)
+    line_strip.points[0].radius = point1_radius
+    line_strip.points[1].radius = point2_radius
+    line_strip.order_u = 1
+
+    # Return a reference to the line object
+    return line_object
+
+
+####################################################################################################
 # @draw_poly_lines_as_single_object
 ####################################################################################################
 def draw_poly_lines_as_single_object(poly_lines_data,
