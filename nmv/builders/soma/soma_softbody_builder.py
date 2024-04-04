@@ -827,7 +827,7 @@ class SomaSoftBodyBuilder:
 
             # Create an illumination specific for the given material
             nmv.shading.create_material_specific_illumination(
-                self.options.shading.soma_material)
+                self.options.shading.soma_material, location=self.morphology.soma.centroid)
 
         # Return a reference to the reconstructed soma
         return soma_sphere_object
