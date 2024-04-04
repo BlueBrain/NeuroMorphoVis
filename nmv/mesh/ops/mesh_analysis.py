@@ -36,7 +36,7 @@ def compute_number_of_vertices_of_mesh(mesh_object):
     if mesh_object.type == 'MESH':
         return len(mesh_object.data.vertices)
     else:
-        print('The object [%s] is NOT a mesh object' % mesh_object.name)
+        print('The object [%s] is NOT a mesh object!' % mesh_object.name)
         return 0.0
 
 
@@ -71,7 +71,7 @@ def compute_surface_area_of_mesh(mesh_object):
             total_surface_area += face_area
         return total_surface_area
     else:
-        print('The object [%s] is NOT a mesh object' % mesh_object.name)
+        print('The object [%s] is NOT a mesh object!' % mesh_object.name)
         return 0.0
 
 
@@ -102,5 +102,5 @@ def compute_bounding_box_diagonal_of_mesh(mesh_object):
         # Calculate the diagonal distance
         return math.sqrt((max_x - min_x) ** 2 + (max_y - min_y) ** 2 + (max_z - min_z) ** 2)
     else:
-        print('The object [%s] is NOT a mesh object' % mesh_object.name)
+        print('The object [%s] is NOT a mesh object!' % mesh_object.name)
         return 0.0
