@@ -31,6 +31,8 @@ import nmv.rendering
 # @enable_transparency
 ####################################################################################################
 def enable_transparency(alpha=0.5):
+
+    bpy.context.scene.display.shading.light = 'FLAT'
     bpy.context.scene.display.shading.show_xray = True
     bpy.context.scene.display.shading.xray_alpha = alpha
 
