@@ -26,26 +26,27 @@ import nmv.scene
 import nmv.interface
 import nmv.rendering
 
-
 ####################################################################################################
 # @render_scene
 ####################################################################################################
 def render_scene(images_directory,
                  image_name,
+                 bounding_box=None,
                  edge_gap_percentage=0.1,
-                 resolution_scale_factor=20,
+                 resolution_scale_factor=10,
                  material=nmv.enums.Shader.LAMBERT_WARD,
                  render_scale_bar=False,
                  delete_scale_bar=True):
 
     # Compute the scene bounding box
-    bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+    if bounding_box is None:
+        bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
-    # Add a slight space to be able to see the largest bounding box
-    delta = bounding_box.p_max - bounding_box.p_min
-    bounding_box.p_min = bounding_box.p_min - 0.5 * edge_gap_percentage * delta
-    bounding_box.p_max = bounding_box.p_max + 0.5 * edge_gap_percentage * delta
-    bounding_box.bounds = bounding_box.bounds + edge_gap_percentage * delta
+        # Add a slight space to be able to see the largest bounding box
+        delta = bounding_box.p_max - bounding_box.p_min
+        bounding_box.p_min = bounding_box.p_min - 0.5 * edge_gap_percentage * delta
+        bounding_box.p_max = bounding_box.p_max + 0.5 * edge_gap_percentage * delta
+        bounding_box.bounds = bounding_box.bounds + edge_gap_percentage * delta
 
     # Draw the morphology scale bar
     scale_bar = None

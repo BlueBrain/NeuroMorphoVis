@@ -24,7 +24,7 @@ import nmv.mesh
 ####################################################################################################
 def plot_data_in_ascending_order(data, output_directory, file_name,
                                  xlabel, ylabel, title,
-                                 log_scale=True):
+                                 log_scale=False):
 
     data.sort()
     x_axis = [x for x in range(len(data))]
@@ -136,6 +136,33 @@ def write_surface_area_per_partition(output_directory,
 ####################################################################################################
 #
 ####################################################################################################
+def write_bounding_box_diagonal_per_partition(output_directory,
+                                              file_name,
+                                              partitions):
+    # Write the result to a text file
+    file_path = '%s/%s' % (output_directory, file_name)
+    data = list()
+    with open(file_path, "w") as file:
+        for i, partition in enumerate(partitions):
+            value = nmv.mesh.compute_bounding_box_diagonal_of_mesh(partition)
+            data.append(value)
+            line = '%d %f\n' % (i, value)
+            file.write(line)
+
+    # Plot the histogram
+    plot_histogram(data=data, output_directory=output_directory, file_name=file_name + "_hist",
+                   xlabel='Size (Bounds Diagonal)', ylabel='Count', title='Partitions Size',
+                   nbins=50)
+
+    # Plot the data
+    plot_data_in_ascending_order(data=data, output_directory=output_directory, file_name=file_name,
+                                 xlabel='Partition', ylabel='Size',
+                                 title='Partitions Size')
+
+
+####################################################################################################
+#
+####################################################################################################
 def write_mesh_analysis_results(output_directory,
                                 partitions):
 
@@ -153,3 +180,7 @@ def write_mesh_analysis_results(output_directory,
     write_surface_area_per_partition(output_directory=output_directory,
                                      file_name='surface_area_per_partition',
                                      partitions=partitions)
+
+    write_bounding_box_diagonal_per_partition(output_directory=output_directory,
+                                              file_name='size_per_partition',
+                                              partitions=partitions)

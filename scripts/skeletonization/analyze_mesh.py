@@ -20,7 +20,11 @@ import os
 import sys
 import argparse
 
+# Blender imports
+import bpy
+
 # Internal imports
+import nmv.file
 import nmv.mesh
 import nmv.scene
 
@@ -93,12 +97,12 @@ if __name__ == "__main__":
     nmv.scene.clear_scene()
 
     # Import the input mesh
-    mesh_object = mesh_importers.import_mesh(args.mesh)
+    mesh_object = nmv.file.import_mesh(args.mesh)
 
     # Scale the mesh
-    mesh_object.scale[0] = args.x_scale
-    mesh_object.scale[1] = args.y_scale
-    mesh_object.scale[2] = args.z_scale
+    mesh_object.delta_scale[0] = args.x_scale
+    mesh_object.delta_scale[1] = args.y_scale
+    mesh_object.delta_scale[2] = args.z_scale
 
     # Ensure that the mesh is triangulated, i.e. with only triangular faces
     nmv.mesh.triangulate_mesh(mesh_object=mesh_object)
@@ -110,11 +114,26 @@ if __name__ == "__main__":
     mesh_analysis.write_mesh_analysis_results(
         output_directory=args.output_directory, partitions=mesh_partitions)
 
+    # Compute the unified bounding box
+    bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
+
+    # Render the image without bounding box
+    mesh_rendering.render_scene(args.output_directory, image_name=mesh_name,
+                                bounding_box=bounding_box, render_scale_bar=True)
+
     # Create the bounding box
     mesh_bounding_box = mesh_bounding_box.draw_wireframe_meshes_bounding_boxes(
         meshes_list=mesh_partitions)
 
-    mesh_rendering.render_scene(args.output_directory, image_name=mesh_name, render_scale_bar=True)
+    # Render with the bounding box
+    mesh_rendering.render_scene(args.output_directory, image_name=mesh_name + "_bbox",
+                                bounding_box=bounding_box, render_scale_bar=False)
+
+    # Render with the bounding box, and transparent
+    bpy.context.scene.display.shading.show_xray = True
+    bpy.context.scene.display.shading.xray_alpha = 0.25
+    mesh_rendering.render_scene(args.output_directory, image_name=mesh_name + "_bbox_transparent",
+                                bounding_box=bounding_box, render_scale_bar=False)
 
     # Save the result into a Blender file
     if args.export_blend_file:

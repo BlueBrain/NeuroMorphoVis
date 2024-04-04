@@ -18,6 +18,9 @@
 # System imports
 import math
 
+# Blender imports
+from mathutils import Vector
+
 
 ####################################################################################################
 # @compute_number_of_vertices_of_mesh
@@ -61,7 +64,7 @@ def compute_surface_area_of_mesh(mesh_object):
         for face in mesh_object.data.polygons:
 
             # Calculate the area of the face
-            face_vertices = [mesh_object.data.vertices[vertex_index].co
+            face_vertices = [mesh_object.matrix_world @ mesh_object.data.vertices[vertex_index].co
                              for vertex_index in face.vertices]
             edge1 = face_vertices[1] - face_vertices[0]
             edge2 = face_vertices[2] - face_vertices[0]
@@ -92,12 +95,14 @@ def compute_bounding_box_diagonal_of_mesh(mesh_object):
     if mesh_object.type == 'MESH':
 
         # Get the bounding box dimensions
-        min_x = min([v.co.x for v in mesh_object.data.vertices])
-        max_x = max([v.co.x for v in mesh_object.data.vertices])
-        min_y = min([v.co.y for v in mesh_object.data.vertices])
-        max_y = max([v.co.y for v in mesh_object.data.vertices])
-        min_z = min([v.co.z for v in mesh_object.data.vertices])
-        max_z = max([v.co.z for v in mesh_object.data.vertices])
+        # Get object's bounding box dimensions
+        bbox = [mesh_object.matrix_world @ Vector(corner) for corner in mesh_object.bound_box]
+        min_x = min(bbox, key=lambda x: x[0])[0]
+        max_x = max(bbox, key=lambda x: x[0])[0]
+        min_y = min(bbox, key=lambda x: x[1])[1]
+        max_y = max(bbox, key=lambda x: x[1])[1]
+        min_z = min(bbox, key=lambda x: x[2])[2]
+        max_z = max(bbox, key=lambda x: x[2])[2]
 
         # Calculate the diagonal distance
         return math.sqrt((max_x - min_x) ** 2 + (max_y - min_y) ** 2 + (max_z - min_z) ** 2)

@@ -16,9 +16,26 @@
 ####################################################################################################
 
 # Internal imports
+import nmv.bbox
 import nmv.mesh
 import nmv.consts
 import nmv.shading
+
+
+####################################################################################################
+# @draw_wireframe_meshes_bounding_boxes
+####################################################################################################
+def compute_bounding_box(edge_gap_percentage=0.1):
+
+    # Compute the bounding box
+    bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
+
+    # Add a slight space to be able to see the largest bounding box
+    delta = bounding_box.p_max - bounding_box.p_min
+    bounding_box.p_min = bounding_box.p_min - 0.5 * edge_gap_percentage * delta
+    bounding_box.p_max = bounding_box.p_max + 0.5 * edge_gap_percentage * delta
+    bounding_box.bounds = bounding_box.bounds + edge_gap_percentage * delta
+    return bounding_box
 
 
 ####################################################################################################
