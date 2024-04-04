@@ -42,7 +42,7 @@ if [ "$EXPORT_BLENDER_SCENE" == "yes" ];
 
 ####################################################################################################
 echo 'RENDER MESH ...'
-$BLENDER -b --verbose 0 --python analyze_mesh.py --                                                 \
+$BLENDER -b --verbose 0 --python analyze_input_mesh.py --                                           \
     --mesh=$INPUT_MESH                                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --x-scale=$X_SCALE --y-scale=$Y_SCALE --z-scale=$Z_SCALE                                        \

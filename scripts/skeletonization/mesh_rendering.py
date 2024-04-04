@@ -16,7 +16,7 @@
 ####################################################################################################
 
 # Blender imports
-from mathutils import Vector
+import bpy
 
 # Internal imports
 import nmv.bbox
@@ -25,6 +25,22 @@ import nmv.consts
 import nmv.scene
 import nmv.interface
 import nmv.rendering
+
+
+####################################################################################################
+# @enable_transparency
+####################################################################################################
+def enable_transparency(alpha=0.5):
+    bpy.context.scene.display.shading.show_xray = True
+    bpy.context.scene.display.shading.xray_alpha = alpha
+
+
+####################################################################################################
+# @disable_transparency
+####################################################################################################
+def disable_transparency():
+    bpy.context.scene.display.shading.show_xray = False
+
 
 ####################################################################################################
 # @render_scene

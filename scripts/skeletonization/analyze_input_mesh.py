@@ -20,9 +20,6 @@ import os
 import sys
 import argparse
 
-# Blender imports
-import bpy
-
 # Internal imports
 import nmv.file
 import nmv.mesh
@@ -130,10 +127,10 @@ if __name__ == "__main__":
                                 bounding_box=bounding_box, render_scale_bar=False)
 
     # Render with the bounding box, and transparent
-    bpy.context.scene.display.shading.show_xray = True
-    bpy.context.scene.display.shading.xray_alpha = 0.25
+    mesh_rendering.enable_transparency(alpha=0.25)
     mesh_rendering.render_scene(args.output_directory, image_name=mesh_name + "_bbox_transparent",
                                 bounding_box=bounding_box, render_scale_bar=False)
+    mesh_rendering.disable_transparency()
 
     # Save the result into a Blender file
     if args.export_blend_file:
