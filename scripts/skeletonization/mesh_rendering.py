@@ -22,30 +22,40 @@ from mathutils import Vector
 import nmv.bbox
 import nmv.enums
 import nmv.consts
+import nmv.scene
 import nmv.interface
 import nmv.rendering
 
 
+####################################################################################################
+# @render_scene
+####################################################################################################
 def render_scene(images_directory,
                  image_name,
+                 edge_gap_percentage=0.1,
                  resolution_scale_factor=10,
+                 material=nmv.enums.Shader.LAMBERT_WARD,
                  render_scale_bar=False,
-                 material=nmv.enums.Shader.FLAT):
+                 delete_scale_bar=True):
 
+    # Compute the scene bounding box
     bounding_box = nmv.bbox.compute_scene_bounding_box_for_meshes()
 
+    # Add a slight space to be able to see the largest bounding box
     delta = bounding_box.p_max - bounding_box.p_min
-    bounding_box.p_min = bounding_box.p_min - 0.05 * delta
-    bounding_box.p_max = bounding_box.p_max + 0.05 * delta
-    bounding_box.bounds = bounding_box.bounds + 0.1 * delta
+    bounding_box.p_min = bounding_box.p_min - 0.5 * edge_gap_percentage * delta
+    bounding_box.p_max = bounding_box.p_max + 0.5 * edge_gap_percentage * delta
+    bounding_box.bounds = bounding_box.bounds + edge_gap_percentage * delta
 
     # Draw the morphology scale bar
+    scale_bar = None
     if render_scale_bar:
-        nmv.interface.draw_scale_bar(
+        scale_bar = nmv.interface.draw_scale_bar(
             bounding_box=bounding_box,
             material_type=material,
             view=nmv.enums.Camera.View.FRONT)
 
+    # Render to scale
     nmv.rendering.render_to_scale(
         bounding_box=bounding_box,
         camera_view=nmv.enums.Camera.View.FRONT,
@@ -54,3 +64,6 @@ def render_scene(images_directory,
         image_directory=images_directory,
         keep_camera_in_scene=False)
 
+    # Delete the scale bar, if rendered
+    if scale_bar is not None and delete_scale_bar:
+        nmv.scene.delete_object_in_scene(scene_object=scale_bar)
