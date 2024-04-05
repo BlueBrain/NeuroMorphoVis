@@ -29,7 +29,7 @@ SPINES_TERMINALS_FILE='/ssd2/skeletonization-project/spine-extraction/output/dir
 CENTER_LINES_FILE='/ssd2/skeletonization-project/spine-extraction/output/dir-9/skeletonization-debugging/864691134832191490/864691134832191490.branches'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results'
+OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results/artifacts'
 
 # Scale factors
 X_SCALE=0.001

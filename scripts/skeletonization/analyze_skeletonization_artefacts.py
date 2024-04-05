@@ -86,6 +86,62 @@ def parse_command_line_arguments():
 
 
 ####################################################################################################
+# @compute_number_of_vertices_of_mesh
+####################################################################################################
+def draw_center_lines(center_lines_file,
+                      output_directory):
+
+    # Load and draw the center lines
+    center_lines_mesh = branching_artefacts.import_center_lines_and_draw(
+        file_path=center_lines_file, radius=0.1)
+
+    # Compute the unified bounding box
+    bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
+
+    # Render the neuron with transparency to show the spine terminals
+    mesh_rendering.enable_transparency(alpha=0.25)
+    mesh_rendering.render_scene(output_directory,
+                                image_name=mesh_name + "_center_lines",
+                                bounding_box=bounding_box, render_scale_bar=False)
+
+    mesh_exporters.save_blend_file(output_directory=output_directory,
+                                   file_name=mesh_name + "_center_lines")
+
+    # Delete the center-lines mesh
+    nmv.scene.delete_object_in_scene(center_lines_mesh)
+
+
+####################################################################################################
+# @compute_number_of_vertices_of_mesh
+####################################################################################################
+def draw_center_lines_and_spine_terminals(center_lines_file,
+                                          spines_terminals_file,
+                                          output_directory):
+    # Load and draw the spine terminals
+    spine_terminals_mesh_object = spine_artifacts.import_and_draw_spines_terminals(
+        file_path=spines_terminals_file, radius=0.3)
+
+    # Load and draw the center lines
+    center_lines_mesh = branching_artefacts.import_center_lines_and_draw(
+        file_path=center_lines_file, radius=0.1)
+
+    # Compute the unified bounding box
+    bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
+
+    # Render the neuron with transparency to show the spine terminals
+    mesh_rendering.enable_transparency(alpha=0.25)
+    mesh_rendering.render_scene(output_directory,
+                                image_name=mesh_name + "_spine_terminals",
+                                bounding_box=bounding_box, render_scale_bar=False)
+
+    mesh_exporters.save_blend_file(output_directory=output_directory,
+                                   file_name=mesh_name + "_spine_terminals")
+
+    # Delete the center-lines and spine terminals meshes
+    nmv.scene.delete_list_objects([spine_terminals_mesh_object, center_lines_mesh])
+
+
+####################################################################################################
 # @ Run the main function if invoked from the command line.
 ####################################################################################################
 if __name__ == "__main__":
@@ -114,23 +170,48 @@ if __name__ == "__main__":
     # Decompose the mesh into multiple partitions
     mesh_partitions = mesh_partitioning.split_mesh_object_into_partitions(mesh_object=mesh_object)
 
-    # Load and draw the spine terminals
-    spine_artifacts.import_and_draw_spines_terminals(
-        file_path=args.spines_terminals_file, radius=0.3)
+    draw_center_lines(center_lines_file=args.center_lines_file,
+                      output_directory=args.output_directory)
 
-    # Load and draw the branches
-    branching_artefacts.import_center_lines_and_draw(file_path=args.center_lines_file, radius=0.1)
+    draw_center_lines_and_spine_terminals(center_lines_file=args.center_lines_file,
+                                          spines_terminals_file=args.spines_terminals_file,
+                                          output_directory=args.output_directory)
 
-    # Compute the unified bounding box
-    bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
 
-    # Render the neuron with transparency to show the spine terminals
-    mesh_rendering.enable_transparency(alpha=0.25)
-    mesh_rendering.render_scene(args.output_directory,
-                                image_name=mesh_name + "_spine_terminals",
-                                bounding_box=bounding_box, render_scale_bar=False)
 
     # Save the result into a Blender file
-    if args.export_blend_file:
+    if False: # args.export_blend_file:
+        import bpy
+
+        bpy.context.view_layer.objects.active = spine_terminals_mesh_object
+        nmv.scene.select_all_meshes_in_scene()
+
+        for a in bpy.context.screen.areas:
+            if a.type == 'VIEW_3D':
+                for s in a.spaces:
+                    if s.type == 'VIEW_3D':
+                        s.clip_end = 1e5
+
+        # Ensure there's an active 3D Viewport
+        found_3d_viewport = False
+        for area in bpy.context.screen.areas:
+            if area.type == 'VIEW_3D':
+                ctx = bpy.context.copy()
+                ctx['area'] = area
+                ctx['region'] = area.regions[-1]
+                bpy.ops.view3d.view_selected(ctx)
+
+        area_type = 'VIEW_3D'
+        areas = [area for area in bpy.context.window.screen.areas if area.type == area_type]
+
+        with bpy.context.temp_override(
+                window=bpy.context.window,
+                area=areas[0],
+                region=[region for region in areas[0].regions if region.type == 'WINDOW'][0],
+                screen=bpy.context.window.screen
+        ):
+            bpy.ops.view3d.view_axis(type='TOP', align_active=True)
+
+
         mesh_exporters.save_blend_file(output_directory=args.output_directory,
                                        file_name=mesh_name + "_spine_terminals")

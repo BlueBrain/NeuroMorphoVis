@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
-
+import copy
 
 import nmv.mesh
 import nmv.consts
@@ -31,41 +31,40 @@ def import_center_lines_and_draw(file_path,
                                  radius=0.1,
                                  color=nmv.consts.Color.BLACK):
 
-    # Create the bevel object
-    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=1, name='Bevel')
-
     # Create a list of center-lines
-    center_lines = list()
-    center_lines_meshes = list()
+    edges = list()
+    polylines_data = list()
 
     f = open(file_path, 'r')
     branch_index = 0
     for i, line in enumerate(f):
         if 'start' in line:
-            center_lines.clear()
+            edges.clear()
             line = line.strip('\n')
             line = line.split(' ')
             branch_index = int(line[1])
             continue
         elif 'end' in line:
-            polyline = nmv.geometry.draw_poly_line(
-                poly_line_data=center_lines, bevel_object=bevel_object, caps=True)
-            mesh = nmv.scene.convert_object_to_mesh(polyline)
-            mesh.name = 'Branch %d' % branch_index
-            center_lines_meshes.append(mesh)
+            polylines_data.append(copy.deepcopy(edges))
             continue
         else:
             line = line.strip('\n')
             line = line.split(' ')
             p = Vector((float(line[0]), float(line[1]), float(line[2]), 1))
-            center_lines.append([p, radius])
+            edges.append([p, radius])
     f.close()
 
-    # Collect all the center-lines into a single mesh
-    center_lines_mesh = nmv.mesh.join_mesh_objects(center_lines_meshes)
+    # Draw the polylines of the center-line edges
+    bevel_object = nmv.mesh.create_bezier_circle(radius=1.0, resolution=1, name='Bevel')
+    polylines = nmv.geometry.draw_poly_lines_as_single_object(
+        polylines_data, bevel_object=bevel_object)
+
+    # Create the center-lines edges mesh
+    center_lines_mesh = nmv.scene.convert_object_to_mesh(scene_object=polylines)
+    center_lines_mesh.name = 'Center-lines'
 
     # Assign the material
-    material = nmv.shading.create_flat_material(name='Spines Material', color=color)
+    material = nmv.shading.create_flat_material(name='Center-lines Material', color=color)
     nmv.shading.set_material_to_object(center_lines_mesh, material)
 
     # Return the resul
