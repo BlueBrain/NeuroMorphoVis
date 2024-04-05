@@ -45,6 +45,108 @@ def disable_transparency():
 
 
 ####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_rendering_mode(mode):
+
+    if mode == 'FLAT':
+        bpy.context.scene.display.shading.light = 'FLAT'
+    else:
+        if mode == 'DEFAULT':
+            bpy.context.scene.display.shading.light = 'STUDIO'
+        else:
+            bpy.context.scene.display.shading.light = 'MATCAP'
+            if mode == 'TOON':
+                bpy.context.scene.display.shading.studio_light = 'toon.exr'
+            elif mode == 'CERAMIC':
+                bpy.context.scene.display.shading.studio_light = 'ceramic_lightbulb.exr'
+            elif mode == 'NORMALS':
+                bpy.context.scene.display.shading.studio_light = 'check_normal+y.exr'
+            elif mode == 'PEARL':
+                bpy.context.scene.display.shading.studio_light = 'pearl.exr'
+            elif mode == 'SHADED':
+                bpy.context.scene.shading.studio_light = 'check_rim_dark.exr'
+            else:
+                bpy.context.scene.display.shading.light = 'STUDIO'
+
+
+####################################################################################################
+# @center_scene
+####################################################################################################
+def center_scene(view='TOP'):
+
+    # Select all the meshes in the scene
+    nmv.scene.select_all_meshes_in_scene()
+
+    # Adjust the clipping plane
+    for a in bpy.context.screen.areas:
+        if a.type == 'VIEW_3D':
+            for s in a.spaces:
+                if s.type == 'VIEW_3D':
+                    s.clip_end = 1e5
+
+    # Ensure there's an active 3D Viewport
+    for area in bpy.context.screen.areas:
+        if area.type == 'VIEW_3D':
+            context = bpy.context.copy()
+            context['area'] = area
+            context['region'] = area.regions[-1]
+            bpy.ops.view3d.view_selected(context)
+
+    # Center the scene
+    area_type = 'VIEW_3D'
+    areas = [area for area in bpy.context.window.screen.areas if area.type == area_type]
+    with bpy.context.temp_override(
+            window=bpy.context.window,
+            area=areas[0],
+            region=[region for region in areas[0].regions if region.type == 'WINDOW'][0],
+            screen=bpy.context.window.screen):
+        bpy.ops.view3d.view_axis(type=view, align_active=True)
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_flat_rendering_mode():
+    set_rendering_mode(mode='FLAT')
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_toon_rendering_mode():
+    set_rendering_mode(mode='TOON')
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_ceramic_rendering_mode():
+    set_rendering_mode(mode='CERAMIC')
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_normals_rendering_mode():
+    set_rendering_mode(mode='NORMALS')
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_pearl_rendering_mode():
+    set_rendering_mode(mode='PEARL')
+
+
+####################################################################################################
+# @set_rendering_mode
+####################################################################################################
+def set_shaded_rendering_mode():
+    set_rendering_mode(mode='SHADED')
+
+
+####################################################################################################
 # @render_scene
 ####################################################################################################
 def render_scene(images_directory,

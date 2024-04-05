@@ -1090,3 +1090,22 @@ def create_materials(material_type,
 
     # Return the materials list
     return materials_list
+
+
+####################################################################################################
+# @create_random_materials
+####################################################################################################
+def create_random_materials(number_materials,
+                            material_type=nmv.enums.Shader.LAMBERT_WARD,
+                            name='Material'):
+    import random
+    materials = list()
+    for i in range(number_materials):
+        red = random.randint(0, 255) / 255.0
+        green = random.randint(0, 255) / 255.0
+        blue = random.randint(0, 255) / 255.0
+        color = (red, green, blue)
+        material = nmv.shading.create_material(
+            name='%s %d' % (name, i), color=color, material_type=material_type)
+        materials.append(material)
+    return materials

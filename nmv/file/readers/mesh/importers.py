@@ -24,19 +24,23 @@ import bpy
 # Internal imports
 import nmv.scene
 import nmv.mesh
+import nmv.utilities
 
 
 ####################################################################################################
 # @import_obj_file
 ####################################################################################################
 def import_obj_file(input_directory,
-                    input_file_name):
+                    input_file_name,
+                    verbose=True):
     """Import an .OBJ file into the scene, and return a reference to it.
 
     :param input_directory:
         The directory that is supposed to have the mesh.
     :param input_file_name:
         The name of the mesh file.
+    :param verbose:
+        Enable or disable the loading output.
     :return:
         A reference to the loaded mesh in Blender.
     """
@@ -51,8 +55,12 @@ def import_obj_file(input_directory,
     # Deselect all the objects in the scene
     nmv.scene.ops.deselect_all()
 
-    nmv.logger.log('Loading [%s]' % file_path)
+    if verbose:
+        nmv.logger.log('Loading [%s]' % file_path)
+
+    nmv.utilities.disable_std_output()
     bpy.ops.import_scene.obj(filepath=file_path)
+    nmv.utilities.enable_std_output()
 
     # Change the name of the loaded object
     # The object will be renamed based on the file name

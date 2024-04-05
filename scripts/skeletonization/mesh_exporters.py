@@ -18,6 +18,9 @@
 # Blender imports
 import bpy
 
+# Internal imports
+import mesh_rendering
+
 
 ####################################################################################################
 # @save_blend_file
@@ -32,6 +35,10 @@ def save_blend_file(output_directory,
         The file name of the .blend file.
     """
 
+    # Center the scene
+    mesh_rendering.center_scene()
+
+    # Save the file
     absolute_path = "%s/%s.blend" % (output_directory, file_name)
     bpy.ops.wm.save_mainfile(filepath=absolute_path)
     print("Blender file saved successfully to:", absolute_path)

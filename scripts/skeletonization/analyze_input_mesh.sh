@@ -28,9 +28,9 @@ INPUT_MESH='/ssd2/skeletonization-project/sample-meshes-1/864691134832191490.obj
 OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results'
 
 # Scale factors
-X_SCALE=0.001
-Y_SCALE=0.001
-Z_SCALE=0.001
+NEURON_MESH_X_SCALE=0.001
+NEURON_MESH_Y_SCALE=0.001
+NEURON_MESH_Z_SCALE=0.001
 
 # Export Blender scenes
 EXPORT_BLENDER_SCENE='yes'
@@ -45,7 +45,7 @@ echo 'RENDER MESH ...'
 $BLENDER -b --verbose 0 --python analyze_input_mesh.py --                                           \
     --mesh=$INPUT_MESH                                                                              \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
-    --x-scale=$X_SCALE --y-scale=$Y_SCALE --z-scale=$Z_SCALE                                        \
+    --x-scale=$NEURON_MESH_X_SCALE --y-scale=$NEURON_MESH_Y_SCALE --z-scale=$NEURON_MESH_Z_SCALE    \
     $BOOL_ARGS
 
 echo 'DONE ...'

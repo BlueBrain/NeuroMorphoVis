@@ -61,6 +61,10 @@ def parse_command_line_arguments():
     arg_help = 'The absolute path to the center lines file'
     parser.add_argument('--center-lines-file', action='store', help=arg_help)
 
+    # Path to spines bounds
+    arg_help = 'The absolute path to the center lines file'
+    parser.add_argument('--spines-bounds-file', action='store', help=arg_help)
+
     # Path to output directory
     arg_help = 'The absolute path to the output directory'
     parser.add_argument('--output-directory', action='store', help=arg_help)
@@ -142,6 +146,40 @@ def draw_center_lines_and_spine_terminals(center_lines_file,
 
 
 ####################################################################################################
+# @draw_spine_bounds
+####################################################################################################
+def draw_spine_bounds(spines_bounds_file,
+                      output_directory):
+
+    # Create the bounds cubes
+    spines_bounds_meshes = spine_artifacts.import_and_draw_spines_bounds(
+        file_path=spines_bounds_file)
+
+    # Create the wireframe bounds
+    spines_bounds_mesh = mesh_bounding_box.draw_wireframe_meshes_bounding_boxes(
+        meshes_list=spines_bounds_meshes, wireframe_thickness=0.1)
+
+    # Delete the input cubes
+    nmv.scene.delete_list_objects(object_list=spines_bounds_meshes)
+
+    # Compute the unified bounding box
+    bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
+
+    # Render the neuron with transparency to show the spine terminals
+    mesh_rendering.disable_transparency()
+    mesh_rendering.set_pearl_rendering_mode()
+    mesh_rendering.render_scene(output_directory,
+                                image_name=mesh_name + "_spine_bounds",
+                                bounding_box=bounding_box, render_scale_bar=False)
+
+    mesh_exporters.save_blend_file(output_directory=output_directory,
+                                   file_name=mesh_name + "_spine_bounds")
+
+    # Delete the bounds mesh
+    nmv.scene.delete_object_in_scene(spines_bounds_mesh)
+
+
+####################################################################################################
 # @ Run the main function if invoked from the command line.
 ####################################################################################################
 if __name__ == "__main__":
@@ -177,41 +215,5 @@ if __name__ == "__main__":
                                           spines_terminals_file=args.spines_terminals_file,
                                           output_directory=args.output_directory)
 
-
-
-    # Save the result into a Blender file
-    if False: # args.export_blend_file:
-        import bpy
-
-        bpy.context.view_layer.objects.active = spine_terminals_mesh_object
-        nmv.scene.select_all_meshes_in_scene()
-
-        for a in bpy.context.screen.areas:
-            if a.type == 'VIEW_3D':
-                for s in a.spaces:
-                    if s.type == 'VIEW_3D':
-                        s.clip_end = 1e5
-
-        # Ensure there's an active 3D Viewport
-        found_3d_viewport = False
-        for area in bpy.context.screen.areas:
-            if area.type == 'VIEW_3D':
-                ctx = bpy.context.copy()
-                ctx['area'] = area
-                ctx['region'] = area.regions[-1]
-                bpy.ops.view3d.view_selected(ctx)
-
-        area_type = 'VIEW_3D'
-        areas = [area for area in bpy.context.window.screen.areas if area.type == area_type]
-
-        with bpy.context.temp_override(
-                window=bpy.context.window,
-                area=areas[0],
-                region=[region for region in areas[0].regions if region.type == 'WINDOW'][0],
-                screen=bpy.context.window.screen
-        ):
-            bpy.ops.view3d.view_axis(type='TOP', align_active=True)
-
-
-        mesh_exporters.save_blend_file(output_directory=args.output_directory,
-                                       file_name=mesh_name + "_spine_terminals")
+    draw_spine_bounds(spines_bounds_file=args.spines_bounds_file,
+                      output_directory=args.output_directory)

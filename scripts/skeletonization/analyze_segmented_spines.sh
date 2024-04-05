@@ -19,16 +19,11 @@
 # Blender executable
 BLENDER=$PWD/../../../../../../blender
 
-# Input mesh
-INPUT_MESH='/abdellah2/microns-explorer/testing-scripts/input/864691136422909743.obj'
-INPUT_MESH='/ssd2/skeletonization-project/sample-meshes-1/864691134832191490.obj'
+# Input morphology
+MORPHOLOGY='/ssd2/skeletonization-project/spine-extraction/output/dir-9/morphologies/864691134832191490.swc'
 
-# The file that contains the terminals of the spines
-SPINES_TERMINALS_FILE='/ssd2/skeletonization-project/spine-extraction/output/dir-9/skeletonization-debugging/864691134832191490/864691134832191490-spine-terminals.nodes'
-
-CENTER_LINES_FILE='/ssd2/skeletonization-project/spine-extraction/output/dir-9/skeletonization-debugging/864691134832191490/864691134832191490.branches'
-
-SPINES_BOUNDS_FILE='/ssd2/skeletonization-project/spine-extraction/output/dir-9/skeletonization-debugging/864691134832191490/864691134832191490-spine-extents.nodes'
+# The directory of the meshes of the spines
+SPINES_MESHES_DIRECTORY='/ssd2/skeletonization-project/spine-extraction/output/dir-9/spine-meshes/864691134832191490'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results/artifacts'
@@ -48,13 +43,11 @@ if [ "$EXPORT_BLENDER_SCENE" == "yes" ];
 
 ####################################################################################################
 echo 'RENDER MESH ...'
-$BLENDER -b --verbose 0 --python analyze_skeletonization_artefacts.py --                            \
-    --mesh=$INPUT_MESH                                                                              \
+$BLENDER -b --verbose 0 --python analyze_segmented_spines.py --                                     \
+    --morphology=$MORPHOLOGY                                                                        \
+    --spine-meshes-directory=$SPINES_MESHES_DIRECTORY                                               \
     --output-directory=$OUTPUT_DIRECTORY                                                            \
     --x-scale=$NEURON_MESH_X_SCALE --y-scale=$NEURON_MESH_Y_SCALE --z-scale=$NEURON_MESH_Z_SCALE    \
-    --spines-terminals-file=$SPINES_TERMINALS_FILE                                                  \
-    --center-lines-file=$CENTER_LINES_FILE                                                          \
-    --spines-bounds-file=$SPINES_BOUNDS_FILE                                                         \
     $BOOL_ARGS
 
 echo 'DONE ...'

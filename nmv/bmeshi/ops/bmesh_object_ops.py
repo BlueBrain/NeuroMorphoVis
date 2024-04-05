@@ -25,6 +25,70 @@ import nmv.scene
 
 
 ####################################################################################################
+# @scale_bmesh_uniformly
+####################################################################################################
+def scale_uniformly(bmesh_object,
+                    scale_factor):
+    """Scales the given bmesh object uniformly.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param scale_factor:
+        The uniform scale factor used to scale the bmesh object.
+    """
+
+    # Calculate the center of the bmesh
+    center = sum((v.co for v in bmesh_object.verts), mathutils.Vector()) / len(bmesh_object.verts)
+
+    # Translate vertices to origin
+    for v in bmesh_object.verts:
+        v.co -= center
+
+    # Scale vertices
+    for v in bmesh_object.verts:
+        v.co *= scale_factor
+
+    # Translate vertices back to original positions
+    for v in bmesh_object.verts:
+        v.co += center
+
+
+####################################################################################################
+# @scale_bmesh_uniformly
+####################################################################################################
+def scale(bmesh_object,
+          x_scale_factor, y_scale_factor, z_scale_factor):
+    """Scales a given bmesh object.
+
+    @param bmesh_object:
+        A given bmesh object.
+    @param x_scale_factor:
+        X scale factor.
+    @param y_scale_factor:
+        Y scale factor.
+    @param z_scale_factor:
+        Z scale factor
+    """
+
+    # Calculate the center of the bmesh
+    center = sum((v.co for v in bmesh_object.verts), mathutils.Vector()) / len(bmesh_object.verts)
+
+    # Translate vertices to origin
+    for v in bmesh_object.verts:
+        v.co -= center
+
+    # Scale vertices
+    for v in bmesh_object.verts:
+        v.co[0] *= x_scale_factor
+        v.co[1] *= y_scale_factor
+        v.co[2] *= z_scale_factor
+
+    # Translate vertices back to original positions
+    for v in bmesh_object.verts:
+        v.co += center
+
+
+####################################################################################################
 # @create_bmesh_copy_from_mesh_object
 ####################################################################################################
 def create_bmesh_copy_from_mesh_object(mesh_object,
