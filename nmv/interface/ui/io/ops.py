@@ -46,6 +46,9 @@ class NMV_LoadMorphology(bpy.types.Operator):
         import nmv.interface
         import nmv.builders
 
+        # Get ready to draw the morphology to the scene, therefore clear the scene
+        nmv.scene.clear_scene()
+
         # Load the morphology
         start_time = time.time()
         loading_result = nmv.interface.ui.load_morphology(panel=self, scene=context.scene)
@@ -62,9 +65,6 @@ class NMV_LoadMorphology(bpy.types.Operator):
         nmv.logger.info('Morphology: %s' % nmv.interface.ui_morphology.label)
         nmv.logger.info('Morphology loaded in [%f] seconds' %
                         context.scene.NMV_MorphologyLoadingTime)
-
-        # Get ready to draw the morphology to the scene, therefore clear the scene
-        nmv.scene.clear_scene()
 
         # By default, set the background to transparent
         nmv.scene.set_transparent_background()

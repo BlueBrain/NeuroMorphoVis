@@ -20,10 +20,10 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input morphology
-MORPHOLOGY='/ssd2/skeletonization-project/spine-extraction/output/dir-9/morphologies/864691134832191490.swc'
+MORPHOLOGY='/ssd2/skeletonization-project/spine-extraction/output/orientation/morphologies/864691134832191490.swc'
 
 # The directory of the meshes of the spines
-SPINES_MESHES_DIRECTORY='/ssd2/skeletonization-project/spine-extraction/output/dir-9/spine-meshes/864691134832191490'
+SPINES_MESHES_DIRECTORY='/ssd2/skeletonization-project/spine-extraction/output/orientation/spine-meshes/864691134832191490'
 
 # The output directory where the scene and images will be generated
 OUTPUT_DIRECTORY='/ssd2/skeletonization-project/sample-1-results/artifacts'

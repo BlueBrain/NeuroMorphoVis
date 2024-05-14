@@ -29,6 +29,9 @@ import nmv.consts
 import nmv.file
 import nmv.skeleton
 import nmv.utilities
+import nmv.geometry
+import nmv.mesh
+import nmv.scene
 
 
 ####################################################################################################
@@ -137,33 +140,165 @@ class MorphIOLoader:
         return nmv_soma
 
     ################################################################################################
-    # @read_soma_data
+    # @read_single_point_soma
     ################################################################################################
-    def read_soma_data(self, morphio_soma):
+    def read_single_point_soma(self,
+                               morphio_soma):
+        """Reads and gets the data for a single point soma.
 
-        # Get the soma centroid, valid for all cases
-        self.reported_soma_centroid = Vector((morphio_soma.center[0],
-                                              morphio_soma.center[1],
-                                              morphio_soma.center[2]))
+        @param morphio_soma:
+            The soma object of MorphIO
+        """
+
+        # Get the centroid
+        center = morphio_soma.center
+        self.reported_soma_centroid = Vector((center[0], center[1], center[2]))
+        self.reported_soma_radius = morphio_soma.diameters[0] * 0.5
+
+    ################################################################################################
+    # @read_neuromorpho_three_point_cylinders_soma
+    ################################################################################################
+    def read_neuromorpho_three_point_cylinders_soma(self,
+                                                    morphio_soma):
+        """Reads and gets the data for a 3-point cylinder soma.
+
+        @param morphio_soma:
+            The soma object of MorphIO
+        """
+
+        self.read_soma_cylinders(morphio_soma=morphio_soma)
+
+    ################################################################################################
+    # @read_soma_cylinders
+    ################################################################################################
+    def read_soma_cylinders(self,
+                            morphio_soma):
+        """Reads and gets the data for a cylinders-based soma.
+
+        @param morphio_soma:
+            The soma object of MorphIO
+        """
+
+        # Get the centroid
+        center = morphio_soma.center
+        self.reported_soma_centroid = Vector((center[0], center[1], center[2]))
 
         # Detect the soma radius
-        if self.morphology_format == nmv.enums.Morphology.Format.SWC:
-            self.reported_soma_radius = morphio_soma.diameters[0] * 0.5
-        else:
-            for i_point in morphio_soma.points:
-                i_point = i_point.tolist()
-                x = float(i_point[0])
-                y = float(i_point[1])
-                z = float(i_point[2])
-                if numpy.abs(x) > 0 or numpy.abs(y) > 0 or numpy.abs(z) > 0:
-                    self.soma_profile_points.append(Vector((x, y, z)))
+        proxy_soma = list()
+        for i, _point in enumerate(morphio_soma.points):
 
-            # Compute the average soma radius from the profile points
-            if len(self.soma_profile_points) > 0:
-                self.reported_soma_radius = 0
-                for i_point in self.soma_profile_points:
-                    self.reported_soma_radius += (i_point - self.reported_soma_centroid).length
-                self.reported_soma_radius /= len(self.soma_profile_points)
+            # Construct a point vector and get the radius of the point
+            _point = _point.tolist()
+            x = float(_point[0])
+            y = float(_point[1])
+            z = float(_point[2])
+            point = Vector((x, y, z))
+            r = float(morphio_soma.diameters[i] * 0.5)
+
+            # Create an ico sphere and add it to a proxy object
+            proxy_soma.append(nmv.geometry.create_ico_sphere(radius=r, location=point, subdivisions=2))
+
+        # Construct an outer shell of the proxy soma
+        proxy_soma = nmv.mesh.join_mesh_objects(proxy_soma, name='proxy')
+        nmv.mesh.apply_voxelization_remeshing_modifier(
+            mesh_object=proxy_soma, voxel_size=1.0, adaptivity=False)
+
+        # Gather the points of the proxy soma that make the profile points
+        for _point in proxy_soma.data.vertices:
+            self.soma_profile_points.append(proxy_soma.matrix_world @ _point.co)
+
+        # Delete the proxy soma, not needed any further
+        nmv.scene.delete_object_in_scene(scene_object=proxy_soma)
+
+        # Compute the average soma radius from the profile points
+        if len(self.soma_profile_points) > 0:
+            self.reported_soma_radius = 0
+            for _point in self.soma_profile_points:
+                self.reported_soma_radius += (_point - self.reported_soma_centroid).length
+            self.reported_soma_radius /= len(self.soma_profile_points)
+
+    ################################################################################################
+    # @read_simple_contour_soma
+    ################################################################################################
+    def read_simple_contour_soma(self,
+                                 morphio_soma):
+        """Reads and gets the data for contour-based soma.
+
+        @param morphio_soma:
+            The soma object of MorphIO
+        """
+
+        # Get the centroid
+        center = morphio_soma.center
+        self.reported_soma_centroid = Vector((center[0], center[1], center[2]))
+
+        # Detect the soma radius
+        for _point in morphio_soma.points:
+            _point = _point.tolist()
+            x = float(_point[0])
+            y = float(_point[1])
+            z = float(_point[2])
+            self.soma_profile_points.append(Vector((x, y, z)))
+
+        # Compute the average soma radius from the profile points
+        if len(self.soma_profile_points) > 0:
+            self.reported_soma_radius = 0
+            for _point in self.soma_profile_points:
+                self.reported_soma_radius += (_point - self.reported_soma_centroid).length
+            self.reported_soma_radius /= len(self.soma_profile_points)
+
+    ################################################################################################
+    # @read_soma_data
+    ################################################################################################
+    def read_soma_data(self,
+                       morphio_soma):
+        """Reads the soma data.
+
+        @param morphio_soma:
+            The soma object of MorphIO
+        @note https://neuromorpho.org/SomaFormat.html
+        """
+
+        import morphio
+
+        # Just a single point
+        if morphio_soma.type == morphio.SomaType.SOMA_SINGLE_POINT:
+            self.read_single_point_soma(morphio_soma=morphio_soma)
+
+        # NeuroMorpho.Org format
+        elif morphio_soma.type == morphio.SomaType.SOMA_NEUROMORPHO_THREE_POINT_CYLINDERS:
+            self.read_neuromorpho_three_point_cylinders_soma(morphio_soma=morphio_soma)
+
+        # The cylinders description
+        elif morphio_soma.type == morphio.SomaType.SOMA_CYLINDERS:
+            self.read_soma_cylinders(morphio_soma=morphio_soma)
+
+        # The contour used in H5 and ASCII
+        elif morphio_soma.type == morphio.SomaType.SOMA_SIMPLE_CONTOUR:
+            self.read_simple_contour_soma(morphio_soma=morphio_soma)
+
+
+        else:
+            self.reported_soma_radius = 3
+
+
+        return
+        # Detect the soma radius
+        for i_point in morphio_soma.points:
+            i_point = i_point.tolist()
+            x = float(i_point[0])
+            y = float(i_point[1])
+            z = float(i_point[2])
+            self.soma_profile_points.append(Vector((x, y, z)))
+
+        # Compute the average soma radius from the profile points
+        if len(self.soma_profile_points) > 0:
+            self.reported_soma_radius = 0
+            for i_point in self.soma_profile_points:
+                nmv.geometry.create_uv_sphere(radius=0.5, location=i_point)
+                nmv.geometry.draw_line(i_point,  self.reported_soma_centroid)
+                self.reported_soma_radius += (i_point - self.reported_soma_centroid).length
+            self.reported_soma_radius /= len(self.soma_profile_points)
 
     ################################################################################################
     # @read_data_from_file
