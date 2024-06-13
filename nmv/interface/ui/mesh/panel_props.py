@@ -55,7 +55,6 @@ bpy.types.Scene.NMV_TopologyTessellation = bpy.props.EnumProperty(
     name='',
     default=nmv.enums.Meshing.TopologyTessellation.VOXEL_REMESHER)
 
-
 # Is the soma connected to the first order branches or not !
 bpy.types.Scene.NMV_SomaArborsConnection = bpy.props.EnumProperty(
     items=[(nmv.enums.Meshing.SomaConnection.CONNECTED,

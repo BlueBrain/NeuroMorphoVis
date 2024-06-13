@@ -207,7 +207,7 @@ def parse_command_line_arguments():
         action='store_true', default=False,
         help=arg_help)
 
-    # Axon branching branching order
+    # Axon branching order
     arg_help = 'Maximum branching order for the axon (1, infinity). \n' \
                'Default 5.'
     skeletonization_args.add_argument(
@@ -470,6 +470,14 @@ def parse_command_line_arguments():
     meshing_args.add_argument(
         Args.PROXY_MESHES,
         action='store', default='connected-sections',
+        help=arg_help)
+
+    arg_options = ['(voxel-remesher)', 'omesh-tessellation', 'no-tessellation']
+    arg_help = 'Use the re-tessellation of the voxelization builder. \n' \
+               'Options: %s' % arg_options
+    meshing_args.add_argument(
+        Args.TOPOLOGY_TESSELLATION,
+        action='store', default='voxel-remesher',
         help=arg_help)
 
     # The edges of the reconstructed meshes

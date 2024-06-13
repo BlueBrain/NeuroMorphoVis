@@ -39,30 +39,10 @@ import nmv.scene
 
 
 ####################################################################################################
-# @render_soma_two_dimensional_profile
+# @reconstruct_soma_mesh
 ####################################################################################################
-def render_soma_two_dimensional_profile(morphology_object,
-                                        options):
-    """Reconstruct the skeleton of the two-dimensional soma profile and render it.
-    TODO: Implement this function.
-
-    :param morphology_object:
-        A given morphology object.
-    :param options:
-        NeuroMorphoVis options
-    """
-
-    # Clear the scene
-    nmv.scene.ops.clear_scene()
-
-    # TODO: Implement this function
-
-
-####################################################################################################
-# @reconstruct_soma_three_dimensional_profile_mesh
-####################################################################################################
-def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
-                                                    cli_options):
+def reconstruct_soma_mesh(cli_morphology,
+                          cli_options):
     """Reconstructs a three-dimensional profile of the soma and renders it.
 
     :param cli_morphology:
@@ -77,7 +57,10 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
     nmv.scene.ops.clear_scene()
 
     # Create a soma builder object
-    soma_builder = nmv.builders.SomaSoftBodyBuilder(cli_morphology, cli_options)
+    if cli_options.soma.method == nmv.enums.Soma.Representation.SOFT_BODY:
+        soma_builder = nmv.builders.SomaSoftBodyBuilder(cli_morphology, cli_options)
+    else:
+        soma_builder = nmv.builders.SomaMetaBuilder(cli_morphology, cli_options)
 
     # Reconstruct the three-dimensional profile of the soma mesh
     soma_mesh = soma_builder.reconstruct_soma_mesh()
@@ -103,9 +86,9 @@ def reconstruct_soma_three_dimensional_profile_mesh(cli_morphology,
 
         # Render the image
         nmv.rendering.SomaRenderer.render(
-            view_extent=cli_options.soma.rendering_extent,
-            camera_view=cli_options.soma.camera_view,
-            image_resolution=cli_options.soma.rendering_resolution,
+            view_extent=cli_options.rendering.close_up_dimensions,
+            camera_view=cli_options.rendering.camera_view,
+            image_resolution=cli_options.rendering.close_up_resolution,
             image_name=image_name,
             image_directory=cli_options.io.images_directory)
 
@@ -232,7 +215,7 @@ if __name__ == "__main__":
     # render_soma_two_dimensional_profile(cli_morphology=cli_morphology, cli_options=cli_options)
 
     # Soma mesh reconstruction and visualization
-    reconstruct_soma_three_dimensional_profile_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
+    reconstruct_soma_mesh(cli_morphology=cli_morphology, cli_options=cli_options)
     nmv.logger.log('NMV Done')
 
 

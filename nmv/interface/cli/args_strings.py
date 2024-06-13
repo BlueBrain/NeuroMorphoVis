@@ -179,6 +179,9 @@ class Args:
     # Proxy meshes for the voxelization builder
     PROXY_MESHES = '--proxy-mesh-method'
 
+    # Topology tessellation
+    TOPOLOGY_TESSELLATION = '--topology-tessellation'
+
     # Mesh edges
     MESH_EDGES = '--edges'
 
