@@ -53,7 +53,8 @@ def draw_wireframe_meshes_bounding_boxes(meshes_list,
         bounding_boxes.append(bounding_box)
 
     # Create and assign the material to the bounding boxes mesh
-    material = nmv.shading.create_flat_material(name='Partitions BB Material', color=color)
+    material = nmv.shading.create_flat_material_cycles(name='Partitions BB Material', color=color,
+                                                       transparent=False)
 
     # Create a wireframe bounding box mesh and assign the color to it
     mesh_bounding_box = nmv.mesh.draw_wireframe_bounding_boxes_mesh_from_solid_ones(

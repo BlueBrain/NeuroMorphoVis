@@ -54,3 +54,6 @@ class Image:
 
     # Default samples per pixels
     DEFAULT_SPP = 8
+
+    # Flat samples per pixels
+    FLAT_SPP = 2

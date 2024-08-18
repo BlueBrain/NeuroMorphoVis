@@ -31,6 +31,12 @@ class Shader:
     # Flat or 'shade-less' shader
     FLAT = 'FLAT_SHADER'
 
+    # Flat CYCLES
+    FLAT_CYCLES = 'FLAT_CYCLES'
+
+    # Flat CYCLES Transparent
+    FLAT_CYCLES_TRANSPARENT = 'FLAT_CYCLES_TRANSPARENT'
+
     # Free-style shader
     FREE_STYLE = 'FREE_STYLE_SHADER'
 
@@ -90,6 +96,10 @@ class Shader:
         """
         if shader_type == 'flat':
             return Shader.FLAT
+        elif shader_type == 'flat-cycles':
+            return Shader.FLAT_CYCLES
+        elif shader_type == 'flat-transparent-cycles':
+            return Shader.FLAT_CYCLES_TRANSPARENT
         elif shader_type == 'free-style':
             return Shader.FREE_STYLE
         elif shader_type == 'electron-light':
@@ -130,6 +140,16 @@ class Shader:
          'Flat',
          "Use Flat shader. This shader is used to create high resolution images in few seconds. "
          "The rendering quality of this shader is not the best"),
+
+        (FLAT_CYCLES,
+         'Flat (Cycles)',
+         "Use Flat shader with CPU rendering. This shader is used to create high resolution images "
+         "in few seconds using CYCLES"),
+
+        (FLAT_CYCLES_TRANSPARENT,
+         'Flat (Cycles) - Transparent',
+         "Use Flat shader with CPU rendering and transparency. This shader is used to create high "
+         "resolution images in few seconds using CYCLES including transparency"),
 
         (TOON,
          'Toon',

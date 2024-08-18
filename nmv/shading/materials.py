@@ -302,6 +302,106 @@ def create_flat_material(name,
 
 
 ####################################################################################################
+# @create_flat_material_cycles
+####################################################################################################
+def create_flat_material_cycles(name,
+                                color=nmv.consts.Color.WHITE,
+                                transparent=False):
+    """Creates a flat shader based on CYCLES.
+
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :param transparent:
+        If this flag is set to True, the material will be transparent.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    current_scene.render.engine = 'CYCLES'
+    try:
+        bpy.context.scene.cycles.use_denoising = False
+    except:
+        print('Cannot handle denoising')
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.DEFAULT_SPP
+
+    # Import the material from the library
+    if transparent:
+        material_reference = import_shader(shader_name='flat-transparent-material')
+    else:
+        material_reference = import_shader(shader_name='flat-material')
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    # Update the color gradient
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    # Switch the view port shading
+    nmv.scene.switch_scene_shading('MATERIAL')
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
+# @duplicate_flat_material_cycles
+####################################################################################################
+def duplicate_flat_material_cycles(input_material,
+                                   name,
+                                   color=nmv.consts.Color.WHITE):
+    """Creates a flat shader based on CYCLES.
+
+    :param input_material:
+        The input material.
+    :param name:
+        Material name
+    :param color:
+        Material color.
+    :return:
+        A reference to the material.
+    """
+
+    # Get active scene
+    current_scene = bpy.context.scene
+
+    # Switch the rendering engine to cycles to be able to create the material
+    current_scene.render.engine = 'CYCLES'
+
+    # Use only 2 samples
+    bpy.context.scene.cycles.samples = nmv.consts.Image.FLAT_SPP
+
+    # Copy the input material
+    material_reference = input_material.copy()
+
+    # Rename the material
+    material_reference.name = str(name)
+
+    # Update the color gradient
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[0].color[2] = color[2]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[0] = color[0]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[1] = color[1]
+    material_reference.node_tree.nodes['ColorRamp'].color_ramp.elements[1].color[2] = color[2]
+
+    # Return a reference to the material
+    return material_reference
+
+
+####################################################################################################
 # @create_transparent_material
 ####################################################################################################
 def create_transparent_material(name,
@@ -980,6 +1080,14 @@ def create_material(name,
         # Always set the colors to raw when using the flat material
         nmv.scene.set_colors_to_raw()
         return create_flat_material(name='%s' % name, color=color)
+
+    # Flat Cycles
+    elif material_type == nmv.enums.Shader.FLAT_CYCLES:
+        return create_flat_material_cycles(name='%s' % name, color=color, transparent=False)
+
+    # Flat Cycles with transparency
+    elif material_type == nmv.enums.Shader.FLAT_CYCLES_TRANSPARENT:
+        return create_flat_material_cycles(name='%s' % name, color=color, transparent=True)
 
     # Toon
     elif material_type == nmv.enums.Shader.TOON:

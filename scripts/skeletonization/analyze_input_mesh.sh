@@ -20,12 +20,10 @@
 BLENDER=$PWD/../../../../../../blender
 
 # Input mesh
-INPUT_MESH='/abdellah2/microns-explorer/testing-scripts/input/864691136422909743.obj'
-INPUT_MESH='/ssd2/skeletonization-project/sample-meshes-1/864691134832191490.obj'
-INPUT_MESH='/ssd2/skeletonization-donwload-scripts/h01/meshes/data/823395680.obj'
+INPUT_MESH='/ssd2/skeletonization-donwload-scripts/h01/meshes/data/1115430292.obj'
 
 # The output directory where the scene and images will be generated
-OUTPUT_DIRECTORY='/ssd2/skeletonization-donwload-scripts/h01/meshes/data/analysis'
+OUTPUT_DIRECTORY='/ssd2/skeletonization-donwload-scripts/h01/meshes/data/analysis-3'
 
 # Scale factors
 NEURON_MESH_X_SCALE=0.001

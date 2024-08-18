@@ -24,6 +24,7 @@ import argparse
 import nmv.file
 import nmv.mesh
 import nmv.scene
+import nmv.enums
 
 sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 import mesh_importers
@@ -94,6 +95,7 @@ if __name__ == "__main__":
     nmv.scene.clear_scene()
 
     # Import the input mesh
+    print('Loading Mesh')
     mesh_object = nmv.file.import_mesh(args.mesh)
 
     # Scale the mesh
@@ -102,35 +104,55 @@ if __name__ == "__main__":
     mesh_object.delta_scale[2] = args.z_scale
 
     # Ensure that the mesh is triangulated, i.e. with only triangular faces
+    print('Triangulating Mesh')
     nmv.mesh.triangulate_mesh(mesh_object=mesh_object)
 
     # Decompose the mesh into multiple partitions
+    print('Splitting Mesh into Partitions')
     mesh_partitions = mesh_partitioning.split_mesh_object_into_partitions(mesh_object=mesh_object)
 
     # Write the analysis results of the resulting partitions
+    print('Analysing Mesh')
     mesh_analysis.write_mesh_analysis_results(
         output_directory=args.output_directory, partitions=mesh_partitions)
 
     # Compute the unified bounding box
     bounding_box = mesh_bounding_box.compute_bounding_box(edge_gap_percentage=0.1)
 
+    # Create the partitions materials
+    materials = mesh_partitioning.create_partitions_materials(number_materials=100)
+
+    # Assign the opaque materials
+    mesh_partitioning.assign_materials_to_partitions(mesh_partitions,
+                                   materials, assign_transparent=False)
+
     # Render the image without bounding box
+    print('Rendering Partitions')
     mesh_rendering.render_scene(args.output_directory, image_name=mesh_name,
-                                bounding_box=bounding_box, render_scale_bar=True)
+                                material=nmv.enums.Shader.FLAT_CYCLES,
+                                bounding_box=bounding_box, render_scale_bar=False)
 
     # Create the bounding box
+    print('Drawing the BBoxes')
     mesh_bounding_box = mesh_bounding_box.draw_wireframe_meshes_bounding_boxes(
         meshes_list=mesh_partitions)
 
     # Render with the bounding box
+    print('Rendering BBoxes')
     mesh_rendering.render_scene(args.output_directory, image_name=mesh_name + "_bbox",
+                                material=nmv.enums.Shader.FLAT_CYCLES,
                                 bounding_box=bounding_box, render_scale_bar=False)
 
+    # Assign the transparent materials
+    mesh_partitioning.assign_materials_to_partitions(mesh_partitions,
+                                                   materials, assign_transparent=True)
+
     # Render with the bounding box, and transparent
-    mesh_rendering.enable_transparency(alpha=0.25)
-    mesh_rendering.render_scene(args.output_directory, image_name=mesh_name + "_bbox_transparent",
+    print('Rendering BBoxes Transparent')
+    mesh_rendering.render_scene(args.output_directory,
+                                image_name=mesh_name + "_bbox_transparent",
+                                material=nmv.enums.Shader.FLAT_CYCLES,
                                 bounding_box=bounding_box, render_scale_bar=False)
-    mesh_rendering.disable_transparency()
 
     # Save the result into a Blender file
     if args.export_blend_file:
