@@ -18,6 +18,9 @@
 
 ####################################################################################################
 # @Morphology types
+# These morphologial types are used to select the morphologies from a given circuit. This list is 
+# relatively old and should be updated with the latest morphology types. For further details, please
+# refer to the documentation on the NMC portal at https://bbp.epfl.ch/nmc-portal/welcome.html.
 ####################################################################################################
 MTYPES = ['L1_DAC',             ### Layer 1
           'L1_NGC-DA',
