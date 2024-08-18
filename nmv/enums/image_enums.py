@@ -32,8 +32,7 @@ class Image:
     # @Extension
     ################################################################################################
     class Extension:
-        """Extension edges
-        """
+        """Image extension or format enumerators"""
 
         ############################################################################################
         # @__init__
@@ -91,6 +90,13 @@ class Image:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the image extension or format enumerator from a string
+
+            :param argument:
+                The string to get the image extension or format from.
+            :return:
+                The image extension or format enumerator.
+            """
 
             # PNG
             if 'png' in argument:
@@ -109,7 +115,7 @@ class Image:
                 return Image.Extension.PNG
 
         ############################################################################################
-        # A list of all the available image formats in NeuroMorphoVis
+        # A list of all the available image formats in NeuroMorphoVis to be displayed in the UI
         ############################################################################################
         IMAGE_EXTENSION_ITEMS = [
 

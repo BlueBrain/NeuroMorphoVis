@@ -32,8 +32,7 @@ class Meshing:
     # @Technique
     ################################################################################################
     class Technique:
-        """Meshing techniques
-        """
+        """Meshing techniques enumerators"""
 
         # Piecewise watertight meshing
         PIECEWISE_WATERTIGHT = 'MESHING_TECHNIQUE_PIECEWISE_WATERTIGHT'
@@ -41,10 +40,10 @@ class Meshing:
         # Using voxelization-based re-meshing
         VOXELIZATION = 'MESHING_TECHNIQUE_VOXELIZATION'
 
-        # Union meshing
+        # Union-operator based meshing
         UNION = 'MESHING_TECHNIQUE_UNION'
 
-        # Skinning
+        # Skinning modifier-based meshing
         SKINNING = 'MESHING_TECHNIQUE_SKINNING'
 
         # Meta objects-based meshing
@@ -61,6 +60,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the meshing technique enumerator from a string
+            :param argument:
+                The string to get the meshing technique from.
+            :return:
+                The meshing technique enumerator.
+            """
 
             if argument == 'piecewise-watertight':
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
@@ -75,7 +80,9 @@ class Meshing:
             else:
                 return Meshing.Technique.PIECEWISE_WATERTIGHT
 
-        # All the items that will appear in the UI
+        ############################################################################################
+        # A list of all the available meshing techniques in NeuroMorphoVis to be displayed in the UI
+        ############################################################################################
         MESHING_TECHNIQUE_ITEMS = [
 
             (PIECEWISE_WATERTIGHT,
@@ -114,6 +121,7 @@ class Meshing:
     # @TopologyTessellation
     ################################################################################################
     class TopologyTessellation:
+        """The topology tessellation method."""
 
         # Use the re-tessellation of the voxel remesher
         VOXEL_REMESHER = 'TOPOLOGY_TESSELLATION_VOXEL_REMESHER'
@@ -135,6 +143,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the topology tessellation enumerator from a string
+            :param argument:
+                The string to get the topology tessellation from.
+            :return:
+                The topology tessellation enumerator.
+            """
 
             if argument == 'voxel-remesher':
                 return Meshing.TopologyTessellation.VOXEL_REMESHER
@@ -145,7 +159,9 @@ class Meshing:
             else:
                 return Meshing.TopologyTessellation.NO_TESSELLATION
 
-        # All the items that will appear in the UI
+        ############################################################################################
+        # A list of all the available tessellation options in NeuroMorphoVis to be displayed in the UI
+        ############################################################################################
         TOPOLOGY_TESSELLATION_ITEMS = [
 
             (VOXEL_REMESHER,
@@ -166,7 +182,7 @@ class Meshing:
     # @Proxy
     ################################################################################################
     class Proxy:
-        """The method used to create the proxy meshes for the voxelization-based re-meshing"""
+        """The method used to create the proxy meshes for the voxelization-based re-meshing."""
 
         # Use the articulated sections morphology builder
         ARTICULATED_SECTIONS = 'PROXY_ARTICULATED_SECTIONS'
@@ -185,6 +201,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the proxy meshes method enumerator from a string
+            :param argument:
+                The string to get the proxy meshes method from.
+            :return:
+                The proxy meshes method enumerator.
+            """
 
             if argument == 'articulated-sections':
                 return Meshing.Proxy.ARTICULATED_SECTIONS
@@ -193,7 +215,9 @@ class Meshing:
             else:
                 return Meshing.Proxy.ARTICULATED_SECTIONS
 
-        # All the methods list
+        ############################################################################################
+        # A list of all the available proxy options in NeuroMorphoVis to be displayed in the UI
+        ############################################################################################
         PROXY_MESHES_METHODS = [
 
             (ARTICULATED_SECTIONS,
@@ -216,8 +240,7 @@ class Meshing:
     # @PiecewiseFilling
     ################################################################################################
     class PiecewiseFilling:
-        """The filling of the piecewise meshing.
-        """
+        """The filling of the piecewise meshing."""
 
         # Fill the skeleton using one mesh per path from a root to a leaf section
         PATHS = 'PIECEWISE_FILLING_PATHS'
@@ -236,6 +259,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the piecewise filling enumerator from a string
+            :param argument:
+                The string to get the piecewise filling from.
+            :return:
+                The piecewise filling enumerator.
+            """
 
             # Paths
             if argument == 'paths':
@@ -253,8 +282,7 @@ class Meshing:
     # @Technique
     ################################################################################################
     class SomaConnection:
-        """Soma connection to the arbors
-        """
+        """Soma connection to the arbors."""
 
         # Connected
         CONNECTED = 'SOMA_CONNECTED_TO_ARBORS'
@@ -273,6 +301,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the soma connection enumerator from a string
+            :param argument:
+                The string to get the soma connection from.
+            :return:
+                The soma connection enumerator.
+            """
 
             # Soma is connected to the arbors
             if argument == 'connected':
@@ -290,8 +324,7 @@ class Meshing:
     # @ArborsConnection
     ################################################################################################
     class ObjectsConnection:
-        """Objects connected to each others via joint operation
-        """
+        """Objects connected to each others via joint operation"""
 
         # Connected
         CONNECTED = 'CONNECTED_OBJECTS'
@@ -310,6 +343,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the objects connection enumerator from a string
+            :param argument:
+                The string to get the objects connection from.
+            :return:
+                The objects connection enumerator.
+            """
 
             # All the objects are connected to a single mesh object
             if argument == 'connected':
@@ -327,8 +366,7 @@ class Meshing:
     # @Edges
     ################################################################################################
     class Edges:
-        """Arbors edges
-        """
+        """Arbors edges enumerators"""
 
         # Smooth edges
         SMOOTH = 'ARBORS_SMOOTH_EDGES'
@@ -364,8 +402,7 @@ class Meshing:
     # @Model
     ################################################################################################
     class Surface:
-        """Reconstructed model quality, is it realistic quality or beauty
-        """
+        """Reconstructed model quality, is it realistic quality or beauty."""
 
         # Smooth surface
         SMOOTH = 'SURFACE_SMOOTH'
@@ -384,6 +421,12 @@ class Meshing:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the surface quality enumerator from a string
+            :param argument:
+                The string to get the surface quality from.
+            :return:
+                The surface quality enumerator.
+            """ 
 
             # Rough surface
             if argument == 'rough':
@@ -401,8 +444,7 @@ class Meshing:
     # @UnionMeshing
     ################################################################################################
     class UnionMeshing:
-        """Union meshing technique options
-        """
+        """Union meshing technique options."""
 
         # Quad skeleton
         QUAD_SKELETON = 'UNION_QUAD_SKELETON'
@@ -420,8 +462,7 @@ class Meshing:
     # @Spines
     ################################################################################################
     class Spines:
-        """Spines options
-        """
+        """Spines options."""
 
         ############################################################################################
         # @__init__
@@ -433,8 +474,7 @@ class Meshing:
         # @Source
         ############################################################################################
         class Source:
-            """Spines source
-            """
+            """Spines source."""
 
             # Ignore spines
             IGNORE = 'IGNORE_SPINES'
@@ -473,8 +513,7 @@ class Meshing:
         # @__init__
         ############################################################################################
         class Quality:
-            """Spines quality
-            """
+            """Spines quality."""
 
             # High quality
             HQ = 'SPINES_HQ'
@@ -493,6 +532,12 @@ class Meshing:
             ########################################################################################
             @staticmethod
             def get_enum(argument):
+                """Get the spines quality enumerator from a string
+                :param argument:
+                    The string to get the spines quality from.
+                :return:
+                    The spines quality enumerator.
+                """
 
                 # High quality
                 if argument == 'hq':
@@ -506,8 +551,7 @@ class Meshing:
     # @Nucleus
     ################################################################################################
     class Nucleus:
-        """Nucleus options
-        """
+        """Nucleus options."""
 
         # Ignore
         IGNORE = 'IGNORE_NUCLEUS'
@@ -525,8 +569,7 @@ class Meshing:
         # @__init__
         ############################################################################################
         class Quality:
-            """Nucleus mesh quality
-            """
+            """Nucleus mesh quality"""
 
             # High quality
             HQ = 'NUCLEUS_HQ'
@@ -545,6 +588,12 @@ class Meshing:
             ########################################################################################
             @staticmethod
             def get_enum(argument):
+                """Get the nucleus quality enumerator from a string
+                :param argument:
+                    The string to get the nucleus quality from.
+                :return:
+                    The nucleus quality enumerator.
+                """
 
                 # High quality
                 if argument == 'hq':
@@ -558,8 +607,7 @@ class Meshing:
     # @ExportFormat
     ################################################################################################
     class ExportFormat:
-        """The file format of the exported meshes
-        """
+        """The file format of the exported meshes."""
 
         # .ply
         PLY = 'EXPORT_FORMAT_PLY'
@@ -582,7 +630,9 @@ class Meshing:
         def __init__(self):
             pass
 
-        # Mesh export formats
+        ############################################################################################
+        # A list of all the export formats to be displayed in the UI
+        ############################################################################################
         FORMATS_ITEMS = [
 
             # PLY format

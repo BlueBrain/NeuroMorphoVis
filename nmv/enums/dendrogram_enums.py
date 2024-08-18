@@ -32,6 +32,7 @@ class Dendrogram:
     # @Type
     ################################################################################################
     class Type:
+        """Dendrogram type enumerators"""
 
         # Draw a simplified dendrogram with a fixed radius at all the samples
         SIMPLIFIED = 'DENDROGRAM_SIMPLIFIED'
@@ -50,6 +51,13 @@ class Dendrogram:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the dendrogram type enumerator from a string
+
+            :param argument:
+                The string to get the dendrogram type from.
+            :return:
+                The dendrogram type enumerator.
+            """ 
 
             # Fixed radius
             if argument == 'simplified':

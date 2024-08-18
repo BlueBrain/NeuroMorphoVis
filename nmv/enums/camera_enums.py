@@ -32,8 +32,7 @@ class Camera:
     # @View
     ################################################################################################
     class View:
-        """Camera view enumerator
-        """
+        """Camera view enumerator"""
 
         ############################################################################################
         # @__init__
@@ -81,7 +80,7 @@ class Camera:
             elif argument == 'top':
                 return Camera.View.TOP
 
-            # All views
+            # All views, i.e render all views one-by-one
             elif argument == 'all':
                 return Camera.View.ALL_VIEWS
 
@@ -97,8 +96,7 @@ class Camera:
     # @Projection
     ################################################################################################
     class Projection:
-        """Camera projection enumerator
-        """
+        """Camera projection enumerator"""
 
         ############################################################################################
         # @__init__

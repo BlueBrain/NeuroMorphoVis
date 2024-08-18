@@ -32,8 +32,7 @@ class Rendering:
     # @View
     ################################################################################################
     class View:
-        """Rendering view options
-        """
+        """Rendering view options"""
 
         # Closeup view
         CLOSEUP = 'RENDERING_CLOSEUP_VIEW'
@@ -55,6 +54,12 @@ class Rendering:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the view enumerator from a string
+            :param argument:
+                The string to get the view from.
+            :return:
+                The view enumerator.
+            """ 
 
             # Close up view
             if argument == 'close-up':
@@ -76,8 +81,7 @@ class Rendering:
     # @Resolution
     ################################################################################################
     class Resolution:
-        """Rendering resolution options
-        """
+        """Rendering resolution options"""
 
         # Rendering to scale (for figures)
         TO_SCALE = 'RENDER_TO_SCALE'
@@ -96,6 +100,12 @@ class Rendering:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the resolution enumerator from a string
+            :param argument:
+                The string to get the resolution from.
+            :return:
+                The resolution enumerator.
+            """
 
             # To scale
             if argument == 'to-scale':

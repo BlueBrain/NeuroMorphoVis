@@ -32,16 +32,15 @@ class Soma:
     # @Representation
     ################################################################################################
     class Representation:
-        """Soma representation enumerators
-        """
+        """Soma representation enumerators"""
 
-        # Ignore the representation of the soma
+        # Ignore the representation of the soma, i.e. do not show it 
         IGNORE = 'SOMA_IGNORE_REPRESENTATION'
 
-        # Use a symbolic representation, sphere
+        # Use a symbolic representation, basically a sphere
         SPHERE = 'SOMA_SYMBOLIC_SPHERE'
 
-        # Generate soma with MetaBalls
+        # Generate an approximate representation of the soma using implicit surfaces or MetaBalls
         META_BALLS = 'SOMA_META_BALLS_MESH'
 
         # Reconstruct a realistic mesh to reflect the three-dimensional contour of the soma
@@ -90,11 +89,11 @@ class Soma:
             elif argument == 'hybrid':
                 return Soma.Representation.HYBRID
 
-            # MetaBalls representation
+            # MetaBalls representation, by default
             else:
                 return Soma.Representation.META_BALLS
 
-        # Soma types for meshing, only metaballs and softbody
+        # Soma types for meshing, only metaballs and softbody to gain a realistic mesh
         SOME_TYPES_FOR_MESHING = [
 
             (META_BALLS,
@@ -123,8 +122,7 @@ class Soma:
     # @Profile
     ################################################################################################
     class Profile:
-        """Profile enumerators
-        """
+        """Soma profile enumerators"""
 
         # Use the profile points only
         PROFILE_POINTS_ONLY = 'SOMA_PROFILE_BASED_ON_PROFILE_POINTS_ONLY'

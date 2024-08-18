@@ -32,6 +32,7 @@ class Skeleton:
     # @Method
     ################################################################################################
     class Method:
+        """Skeleton method"""
 
         # Connect the original sections without repairing any artifacts in the morphology
         CONNECTED_SECTIONS = 'SKELETON_CONNECTED_SECTION'
@@ -68,6 +69,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton method enumerator from a string
+            :param argument:
+                The string to get the skeleton method from.
+            :return:
+                The skeleton method enumerator.
+            """
 
             # Disconnected segments
             if argument == 'disconnected-segments':
@@ -105,8 +112,7 @@ class Skeleton:
     # @Style
     ################################################################################################
     class Style:
-        """The style of the skeleton enumerators
-        """
+        """The style of the skeleton enumerators"""
 
         # Use the original morphology skeleton
         ORIGINAL = 'SKELETON_STYLE_ORIGINAL'
@@ -137,6 +143,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton style enumerator from a string
+            :param argument:
+                The string to get the skeleton style from.
+            :return:
+                The skeleton style enumerator.
+            """ 
 
             # Original
             if argument == 'original':
@@ -199,8 +211,7 @@ class Skeleton:
     # @Branching
     ################################################################################################
     class Branching:
-        """Branching method
-        """
+        """Branching method"""
 
         # Make the branching based on the angles between the branches
         ANGLES = 'ANGLE_BASED_BRANCHING'
@@ -219,6 +230,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton branching enumerator from a string
+            :param argument:
+                The string to get the skeleton branching from.
+            :return:
+                The skeleton branching enumerator.
+            """
 
             # Angles
             if argument == 'angles':
@@ -236,8 +253,7 @@ class Skeleton:
     # @Resampling
     ################################################################################################
     class Resampling:
-        """Resampling method
-        """
+        """Resampling method"""
 
         # Do not resample the section
         NONE = 'RESAMPLING_NONE'
@@ -262,6 +278,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton resampling enumerator from a string
+            :param argument:
+                The string to get the skeleton resampling from.
+            :return:
+                The skeleton resampling enumerator.
+            """
 
             # None
             if argument == 'none':
@@ -287,8 +309,7 @@ class Skeleton:
     # @Radii
     ################################################################################################
     class Radii:
-        """Radii of the samples along the arbors
-        """
+        """Radii of the samples along the arbors"""
 
         # Use the original radii that were reported in the morphology file
         ORIGINAL = 'ARBORS_RADII_ORIGINAL'
@@ -316,6 +337,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton radii enumerator from a string
+            :param argument:
+                The string to get the skeleton radii from.
+            :return:
+                The skeleton radii enumerator.
+            """
 
             # As specified in the morphology file
             if argument == 'default':
@@ -345,8 +372,7 @@ class Skeleton:
     # @Edges
     ################################################################################################
     class Edges:
-        """Arbors edges
-        """
+        """Arbors edges"""
 
         ############################################################################################
         # @__init__
@@ -365,6 +391,12 @@ class Skeleton:
         ############################################################################################
         @staticmethod
         def get_enum(argument):
+            """Get the skeleton edges enumerator from a string
+            :param argument:
+                The string to get the skeleton edges from.
+            :return:
+                The skeleton edges enumerator.
+            """
 
             # Sharp edges
             if argument == 'sharp':
@@ -382,8 +414,7 @@ class Skeleton:
     # @Roots
     ################################################################################################
     class Roots:
-        """The status of the roots of the arbors
-        """
+        """The status of the roots of the arbors"""
 
         ############################################################################################
         # @__init__

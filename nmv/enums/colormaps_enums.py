@@ -147,6 +147,13 @@ class ColorMaps:
     ################################################################################################
     @staticmethod
     def get_hex_color_list(color_map_enum):
+        """Return the list of hex color codes for a given color-map.
+
+        :param color_map_enum:
+            The color-map enumerator.
+        :return:
+            The list of hex color codes.
+        """
 
         if color_map_enum == ColorMaps.GNU_PLOT:
             return ['000000', '5f00c5', '8805f8', 'a61370', 'c02f00', 'd75c00', 'eca100', 'ffff00']
@@ -200,39 +207,55 @@ class ColorMaps:
             return ['000000', '5f00c5', '8805f8', 'a61370', 'c02f00', 'd75c00', 'eca100', 'ffff00']
 
     ################################################################################################
-    # A list of all the available color-maps in NeuroMorphoVis
+    # A list of all the available color-maps in NeuroMorphoVis that will be displayed in the UI
     ################################################################################################
     COLOR_MAPS = [
 
+        # GNU_PLOT
         (GNU_PLOT, 'GNU Plot', 'GNU Plot (gnuplot) color map'),
 
+        # GNU_PLOT_2
         (GNU_PLOT_2, 'GNU Plot 2', 'GNU Plot 2 (gnuplot2) color map'),
 
+        # RAINBOW
         (RAINBOW, 'Rainbow', 'Rainbow (rainbow) color map'),
 
+        # JET
         (JET, 'Jet', 'Jet (jet) color map'),
 
+        # TURBO
         (TURBO, 'Turbo', 'Turbo (turbo) color map'),
 
+        # MAGMA
         (MAGMA, 'Magma', 'Magma (magma) color map'),
 
+        # VIRIDIS
         (VIRIDIS, 'Viridis', 'Viridis color map'),
 
+        # PLASMA
         (PLASMA, 'Plasma', 'Plasma color map'),
 
+        # BLUES
         (BLUES, 'Blues', 'Blues color map'),
 
+        # REDS
         (REDS, 'Reds', 'Reds color map'),
-
+        
+        # GREENS
         (GREENS, 'Greens', 'Greens color map'),
 
+        # SPECTRAL
         (SPECTRAL, 'Spectral', 'Spectral color map'),
 
+        # TERRAIN
         (TERRAIN, 'Terrain', 'Terrain (terrain) color map'),
 
+        # TAB_10
         (TAB_10, 'Tab 10', 'Tab 10 (tab10) color map'),
 
+        # DARK_2
         (DARK_2, 'Dark 2', 'Dark 2 (Dark2) color map'),
 
+        # GRAY_SCALE
         (GRAY_SCALE, 'Gray Scale', 'Gray-scale color map'),
     ]
