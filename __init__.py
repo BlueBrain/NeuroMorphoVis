@@ -1,5 +1,5 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # Credits:      Ahmedt Bilgili
@@ -26,7 +26,7 @@ import sys
 import os
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2023, Blue Brain Project / EPFL"
+__copyright__   = "Copyright (c) 2016 - 2024, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann", "Nadir Roman"]
 __maintainer__  = "Marwan Abdellah"
 __email__       = "marwan.abdellah@epfl.ch"
@@ -87,7 +87,7 @@ def register():
 
     nmv.logger.header('Loading NeuroMorphoVis')
     nmv.logger.info('Version %s' % str(nmv.utilities.get_nmv_version()))
-    nmv.logger.info('Copyrights (c) Blue Brain Project (BBP) / (EPFL) - 2023')
+    nmv.logger.info('Copyrights (c) Blue Brain Project (BBP) / (EPFL) - 2024')
     nmv.logger.info('Principal Author: Marwan Abdellah')
 
     # Register panels

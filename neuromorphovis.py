@@ -1,6 +1,6 @@
 #!/usr/bin/python
 ####################################################################################################
-# Copyright (c) 2016 - 2023, EPFL / Blue Brain Project
+# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
@@ -17,7 +17,7 @@
 ####################################################################################################
 
 __author__      = "Marwan Abdellah"
-__copyright__   = "Copyright (c) 2016 - 2023, Blue Brain Project / EPFL"
+__copyright__   = "Copyright (c) 2016 - 2024, Blue Brain Project / EPFL"
 __credits__     = ["Ahmet Bilgili", "Juan Hernando", "Stefan Eilemann"]
 __version__     = "1.9.0"
 __maintainer__  = "Marwan Abdellah"
