@@ -1,0 +1,9 @@
+numpy
+matplotlib
+pandas
+seaborn
+h5py
+Pillow
+tqdm
+morphio
+webbrowser
