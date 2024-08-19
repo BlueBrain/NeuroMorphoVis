@@ -25,7 +25,9 @@
 + Exporting the reconstructed meshes in several file formats including [PLY](https://en.wikipedia.org/wiki/PLY_(file_format)), [OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file), [STL](https://en.wikipedia.org/wiki/STL_(file_format)) and also as a Blender file ([.blend](https://en.wikipedia.org/wiki/Blender_(software)#File_format)).
 + Parallel batch processing on multi-node visualization clusters using [SLURM workload manager](https://slurm.schedmd.com/). 
 
-# News 
+# News
++ 09.2024: The [voxelization-based remeshing algorithm](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/remesh.html) is now published in Oxford [Briefing in Bioinformatics](https://academic.oup.com/bib/article/25/5/bbae393/7731493).  
++ 08.2024: Adding support to run on [Windows 10 and Windows 11](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation#installation-on-windows-operating-systems).
 + 06.2023: New logo release. 
 + 05.2023: Release 1.9.0
 + 05.2023: Blender 2.79 and 2.8 are no longer supported by _NeuroMorphoVis_.
@@ -43,10 +45,12 @@
 _NeuroMorphoVis_ is mainly based on [Blender](https://www.blender.org/). Blender is a free software and can be downloaded from [Blender.org](http://download.blender.org/release/). Blender is released under the GNU General Public License ([GPL](https://www.blender.org/about/license/), or “free software”).
 The current version of _NeuroMorphoVis_ is compatible with the following Blender versions:
 
-+ [Blender 2.79](http://download.blender.org/release/Blender2.79/)
-+ [Blender 2.80](http://download.blender.org/release/Blender2.80/)
 + [Blender 3.0](http://download.blender.org/release/Blender3.0/)
 + [Blender 3.5](http://download.blender.org/release/Blender3.5/)
++ [Blender 4.0](http://download.blender.org/release/Blender4.0/)
++ [Blender 4.2](http://download.blender.org/release/Blender4.2/)
+
+
 
 Nevertheless, it is recommended to avoid version 2.79 and use version 3.5. 
 
