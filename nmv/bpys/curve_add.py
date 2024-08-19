@@ -15,31 +15,21 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import sys 
-import os 
-import unittest
+# Blender imports
+import bpy
 
-sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
 
-# Import all the tests here 
-#from tests.bmeshi import *
-#from consts import *
-#from geometry import *
-#from mesh import *
-from bpys import *
+# Internal imports
+import nmv.consts
+
 
 ####################################################################################################
-# @__main__
+# @add_bezier_circle
 ####################################################################################################
-if __name__ == '__main__':
+def add_bezier_circle(location=nmv.consts.Maths.ORIGIN):
+    """Add a bezier circle to the scene.
+    :param location:
+        The location of the bezier circle, by default it is at the origin.
+    """
 
-    # Verify the args
-    sys.argv = [__file__] + (sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-
-    # Clear the scene to get ready for the testing
-    import nmv.scene
-    nmv.scene.clear_scene()
-
-    # Run all the unit tests 
-    print('\n\n* Running All NeuroMorphoVis Tests')
-    unittest.main(verbosity=2)
+    bpy.ops.curve.primitive_bezier_circle_add(location=location)

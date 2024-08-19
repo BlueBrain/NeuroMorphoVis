@@ -15,31 +15,4 @@
 # If not, see <http://www.gnu.org/licenses/>.
 ####################################################################################################
 
-import sys 
-import os 
-import unittest
-
-sys.path.append(('%s/.' % (os.path.dirname(os.path.realpath(__file__)))))
-
-# Import all the tests here 
-#from tests.bmeshi import *
-#from consts import *
-#from geometry import *
-#from mesh import *
-from bpys import *
-
-####################################################################################################
-# @__main__
-####################################################################################################
-if __name__ == '__main__':
-
-    # Verify the args
-    sys.argv = [__file__] + (sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-
-    # Clear the scene to get ready for the testing
-    import nmv.scene
-    nmv.scene.clear_scene()
-
-    # Run all the unit tests 
-    print('\n\n* Running All NeuroMorphoVis Tests')
-    unittest.main(verbosity=2)
+../../../../../blender -b --python run_nmv_tests.py -- --verbose
