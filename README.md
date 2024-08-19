@@ -51,16 +51,12 @@ The current version of _NeuroMorphoVis_ is compatible with the following Blender
 + [Blender 4.0](http://download.blender.org/release/Blender4.0/)
 + [Blender 4.2](http://download.blender.org/release/Blender4.2/)
 
-
-
 Nevertheless, it is recommended to avoid version 2.79 and use version 3.5. 
 
 _NeuroMorphoVis_ can be downloaded as a __binary archive bundled within Blender__ that can be easily extracted and used [out-of-the-box](https://en.wikipedia.org/wiki/Out_of_the_box_(feature)). The optional dependencies are already shiped within this archive using [pip](https://pypi.org/project/pip/) on each respective platform. This package (released every minor version update of the software) is recommended for __Windows users__ or those who cannot use the [__Terminal__](https://en.wikipedia.org/wiki/Unix_shell). Otherwise, users can just download an installation script that will automatically install the entire package to a user-specified directory. This script __does not__ require __sudo__ permissions. 
 
-
 ## Installation 
 _NeuroMorphoVis_ can be installed to a user-specified directory from a Unix (Linux or macOSX) terminal. Installation procedures are available in this [page](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation).   
-
 
 ## Downloading Package 
 
@@ -160,7 +156,7 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 The mesh generation algorithm with skin modifiers is described in this paper [Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers](https://diglib.eg.org/xmlui/handle/10.2312/cgvc20191257)
 
 ```
-@inproceedings{abdellah2019generating,
+@journal{abdellah2019generating,
   booktitle={Computer Graphics and Visual Computing (CGVC)},
   editor={Vidal, Franck P. and Tam, Gary K. L. and Roberts, Jonathan C.},
   title={Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers},
@@ -169,6 +165,21 @@ The mesh generation algorithm with skin modifiers is described in this paper [Ge
   publisher={The Eurographics Association},
   isbn={978-3-03868-096-3},
   doi={10.2312/cgvc.20191257}
+}
+```
+
+The mesh generation algorithm with using the Voxel remesher (for creating models needed for running reaction-diffusion simulations) is described in this paper [Synthesis of geometrically realistic and watertight neuronal ultrastructure manifolds for in silico modeling](https://academic.oup.com/bib/article/25/5/bbae393/7731493)
+
+```
+@article{abdellah2024synthesis,
+  title={Synthesis of geometrically realistic and watertight neuronal ultrastructure manifolds for in silico modeling},
+  author={Marwan Abdellah, Alessandro Foni, Juan José García Cantero, Nadir Román Guerrero, Elvis Boci, Adrien Fleury, Jay S Coggan, Daniel Keller, Judit Planas, Jean-Denis Courcol, Georges Khazen},
+  journal={Briefings in Bioinformatics},
+  volume={25},
+  number={5},
+  pages={393},
+  year={2024},
+  publisher={Oxford}
 }
 ```
 
