@@ -26,7 +26,7 @@
 + Parallel batch processing on multi-node visualization clusters using [SLURM workload manager](https://slurm.schedmd.com/). 
 
 # News
-+ 09.2024: The [voxelization-based remeshing algorithm](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/remesh.html) is now published in Oxford [Briefing in Bioinformatics](https://academic.oup.com/bib/article/25/5/bbae393/7731493).  
++ 09.2024: [Paper](https://academic.oup.com/bib/article/25/5/bbae393/7731493): The [voxelization-based remeshing algorithm](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/remesh.html) is now published in Oxford Briefing in Bioinformatics, [more information](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Papers).  
 + 08.2024: Adding support to run on [Windows 10 and Windows 11](https://github.com/BlueBrain/NeuroMorphoVis/wiki/Installation#installation-on-windows-operating-systems).
 + 06.2023: New logo release. 
 + 05.2023: Release 1.9.0
