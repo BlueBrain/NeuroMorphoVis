@@ -15,7 +15,7 @@
 + Automated reconstruction of accurate three-dimensional somata profiles, even with classical morphology skeletons that do not have any three-dimensional data of their somata. This approach uses the physics engine of Blender based on Hooke's law and mass spring models.
 + Automated reconstruction of polygonal mesh models that represent the membranes of the neuronal morphologies based on the piecewise meshing method presented by [Abdellah et al., 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1788-4).
 + Accurate mesh reconstruction with metaballs to handle morphologies with irregular and small branching angles.
-+ Watertight mesh reconstruction using [voxelization based remeshing](https://docs.blender.org/manual/en/latest/sculpt_paint/sculpting/tool_settings/remesh.html) (in Blender 3.0 onwards) for reaction-diffusion simulations.
++ Watertight mesh reconstruction using [voxelization based remeshing](https://docs.blender.org/manual/en/latest/sculpt_paint/sculpting/tool_settings/remesh.html) (in Blender 3.0 onwards) for reaction-diffusion simulations [Abdellah et al., 2024](https://academic.oup.com/bib/article/25/5/bbae393/7731493).
 + Automated generation of high quality media for scientific documents and publications using different shading styles and materials. 
 + High fidelity mesh reconstruction based on Skin modifiers as presented by [Abdellah et al., 2019](https://diglib.eg.org/xmlui/handle/10.2312/cgvc20191257).
 + Robust mesh reconstruction of synthetic astroglial cells using Metaballs and implicit geometries [Abdellah et al., 2021](https://academic.oup.com/bioinformatics/article/37/Supplement_1/i426/6319688)
