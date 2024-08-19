@@ -141,8 +141,8 @@ The core algorithms of the soma and mesh reconstruction modules are described in
 
 ```
 @article{abdellah2017reconstruction,
-  title={Reconstruction and visualization of large-scale volumetric models of neocortical circuits 
-  for physically-plausible in silico optical studies},
+  title={Reconstruction and visualization of large-scale volumetric models of neocortical 
+  circuits for physically-plausible in silico optical studies},
   author={Abdellah, Marwan and Hernando, Juan and Antille, Nicolas and Eilemann, Stefan and 
   Markram, Henry and Sch{\"u}rmann, Felix},
   journal={BMC bioinformatics},
@@ -160,8 +160,10 @@ The mesh generation algorithm with skin modifiers is described in this paper [Ge
 @journal{abdellah2019generating,
   booktitle={Computer Graphics and Visual Computing (CGVC)},
   editor={Vidal, Franck P. and Tam, Gary K. L. and Roberts, Jonathan C.},
-  title={Generating High Fidelity Surface Meshes of Neocortical Neurons using Skin Modifiers},
-  author={Abdellah, Marwan and Favreau, Cyrille and Hernando, Juan and Lapere, Samuel and Schürmann, Felix},
+  title={Generating High Fidelity Surface Meshes of Neocortical Neurons using 
+  Skin Modifiers},
+  author={Abdellah, Marwan and Favreau, Cyrille and Hernando, Juan and Lapere, Samuel 
+  and Schürmann, Felix},
   year={2019},
   publisher={The Eurographics Association},
   isbn={978-3-03868-096-3},
@@ -173,8 +175,11 @@ The mesh generation algorithm with using the Voxel remesher (for creating models
 
 ```
 @article{abdellah2024synthesis,
-  title={Synthesis of geometrically realistic and watertight neuronal ultrastructure manifolds for in silico modeling},
-  author={Marwan Abdellah, Alessandro Foni, Juan José García Cantero, Nadir Román Guerrero, Elvis Boci, Adrien Fleury, Jay S Coggan, Daniel Keller, Judit Planas, Jean-Denis Courcol, Georges Khazen},
+  title={Synthesis of geometrically realistic and watertight neuronal ultrastructure 
+  manifolds for in silico modeling},
+  author={Marwan Abdellah, Alessandro Foni, Juan José García Cantero, 
+  Nadir Román Guerrero, Elvis Boci, Adrien Fleury, Jay S Coggan, Daniel Keller, 
+  Judit Planas, Jean-Denis Courcol, Georges Khazen},
   journal={Briefings in Bioinformatics},
   volume={25},
   number={5},
