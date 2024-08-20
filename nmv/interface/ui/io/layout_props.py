@@ -136,6 +136,7 @@ def draw_input_data_options(panel, scene, options):
     elif options.io.input_source == nmv.enums.Input.LIBSONATA_CIRCUIT:
         draw_libsonata_circuit_option(panel=panel, scene=scene, options=options)
         draw_libsonata_population_option(panel=panel, scene=scene, options=options)
+        draw_morphology_gid_option(panel=panel, scene=scene, options=options)
 
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')

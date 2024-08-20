@@ -147,7 +147,27 @@ def load_morphology_from_circuit(panel,
         return 'VALID_MORPHOLOGY'
 
 def load_morphology_from_libsonata_circuit(panel, scene, options):
-    # Validate the input later
+    # In case users do not select a circuit file or give a wrong circuit file, handle the error
+    if nmv.consts.Strings.SELECT_CIRCUIT_FILE in options.morphology.libsonata_config or \
+            not os.path.isfile(options.morphology.libsonata_config):
+        panel.report({'ERROR'}, 'Please select a valid circuit or simulation config')
+        return None
+
+    if nmv.consts.Strings.SELECT_POPULATION in options.morphology.libsonata_population:
+        panel.report({'ERROR'}, 'Please select a valid population name')
+        return None
+
+    # In case a non-valid GID is provided
+    if nmv.consts.Strings.ADD_GID in str(options.morphology.gid):
+        panel.report({'ERROR'}, 'Please provide a valid GID')
+        return None
+
+    # If the given GID contains non-integer characters
+    try:
+        int(options.morphology.gid)
+    except ArithmeticError:
+        panel.report({'ERROR'}, 'The provided GID must be an integer')
+        return None
 
     # Load the morphology from the circuit
     morphology_object = nmv.file.readers.read_morphology_from_libsonata_circuit(

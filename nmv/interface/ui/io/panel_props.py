@@ -76,8 +76,7 @@ bpy.types.Scene.NMV_CircuitFile = bpy.props.StringProperty(
     description="Select a circuit file.",
     default=nmv.consts.Strings.SELECT_CIRCUIT_FILE,
     maxlen=2048,
-    subtype="FILE_PATH",
-)
+    subtype="FILE_PATH")
 
 # A circuit configuration file
 bpy.types.Scene.NMV_LibsonataConfigFile = bpy.props.StringProperty(
@@ -85,16 +84,14 @@ bpy.types.Scene.NMV_LibsonataConfigFile = bpy.props.StringProperty(
     description="Select a libsonata config file",
     default=nmv.consts.Strings.SELECT_CIRCUIT_FILE,
     maxlen=2048,
-    subtype="FILE_PATH",
-)
+    subtype="FILE_PATH")
 
 # libsonata Population
 bpy.types.Scene.NMV_LibsonataPopulation = bpy.props.StringProperty(
     name="libsonata Population",
     description="Select a libsonata population",
     default=nmv.consts.Strings.SELECT_POPULATION,
-    maxlen=2048,
-)
+    maxlen=2048)
 
 # Circuit target
 bpy.types.Scene.NMV_Target = bpy.props.StringProperty(
