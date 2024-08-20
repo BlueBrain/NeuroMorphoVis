@@ -146,6 +146,23 @@ def load_morphology_from_circuit(panel,
         nmv.interface.ui_morphology = morphology_object
         return 'VALID_MORPHOLOGY'
 
+def load_morphology_from_libsonata_circuit(panel, scene, options):
+    # Validate the input later
+
+    # Load the morphology from the circuit
+    morphology_object = nmv.file.readers.read_morphology_from_libsonata_circuit(
+        options=nmv.interface.ui_options
+    )
+
+    # If the loaded morphology object is not None, update the global references
+    if morphology_object is None:
+        panel.report({"ERROR"}, "The selected morphology cannot be loaded!")
+        return None
+    else:
+        options.morphology.label = str(scene.NMV_Gid)
+        nmv.interface.ui_morphology = morphology_object
+        return "VALID_MORPHOLOGY"
+
 
 ####################################################################################################
 # @disable_circuit_options
@@ -183,6 +200,11 @@ def load_morphology(panel,
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
         return load_morphology_from_circuit(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
+
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.LIBSONATA_CIRCUIT:
+        return load_morphology_from_libsonata_circuit(
+            panel=panel, scene=scene, options=nmv.interface.ui_options)
+
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')
         return None

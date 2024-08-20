@@ -80,6 +80,23 @@ def draw_circuit_file_path_option(panel, scene, options):
     row.prop(scene, 'NMV_CircuitFile')
     options.morphology.blue_config = scene.NMV_CircuitFile
 
+####################################################################################################
+# @draw_libsonata_circuit_option
+####################################################################################################
+def draw_libsonata_circuit_option(panel, scene, options):
+    row = panel.layout.row()
+    row.prop(scene, 'NMV_LibsonataConfigFile')
+    options.morphology.libsonata_config = scene.NMV_LibsonataConfigFile
+
+
+####################################################################################################
+# @draw_libsonata_population_option
+####################################################################################################
+def draw_libsonata_population_option(panel, scene, options):
+    row = panel.layout.row()
+    row.prop(scene, 'NMV_LibsonataPopulation')
+    options.morphology.libsonata_population = scene.NMV_LibsonataPopulation
+
 
 ####################################################################################################
 # @draw_morphology_gid_option
@@ -115,6 +132,10 @@ def draw_input_data_options(panel, scene, options):
     elif options.io.input_source == nmv.enums.Input.CIRCUIT_GID:
         draw_circuit_file_path_option(panel=panel, scene=scene, options=options)
         draw_morphology_gid_option(panel=panel, scene=scene, options=options)
+
+    elif options.io.input_source == nmv.enums.Input.LIBSONATA_CIRCUIT:
+        draw_libsonata_circuit_option(panel=panel, scene=scene, options=options)
+        draw_libsonata_population_option(panel=panel, scene=scene, options=options)
 
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')

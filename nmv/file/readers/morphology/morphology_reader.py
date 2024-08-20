@@ -248,11 +248,8 @@ def read_morphology_from_circuit(options):
     return nmv_morphology_object
 
 
+def read_morphology_from_libsonata_circuit(options):
+    # get the data from libsonata using the gid and the populuation
+    # use morphio to load the file same like upper
 
-
-
-
-
-
-
-
+    pass
