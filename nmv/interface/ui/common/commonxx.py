@@ -146,6 +146,43 @@ def load_morphology_from_circuit(panel,
         nmv.interface.ui_morphology = morphology_object
         return 'VALID_MORPHOLOGY'
 
+def load_morphology_from_libsonata_circuit(panel, scene, options):
+    # In case users do not select a circuit file or give a wrong circuit file, handle the error
+    if nmv.consts.Strings.SELECT_CIRCUIT_FILE in options.morphology.libsonata_config or \
+            not os.path.isfile(options.morphology.libsonata_config):
+        panel.report({'ERROR'}, 'Please select a valid circuit or simulation config')
+        return None
+
+    if nmv.consts.Strings.SELECT_POPULATION in options.morphology.libsonata_population:
+        panel.report({'ERROR'}, 'Please select a valid population name')
+        return None
+
+    # In case a non-valid GID is provided
+    if nmv.consts.Strings.ADD_GID in str(options.morphology.gid):
+        panel.report({'ERROR'}, 'Please provide a valid GID')
+        return None
+
+    # If the given GID contains non-integer characters
+    try:
+        int(options.morphology.gid)
+    except ArithmeticError:
+        panel.report({'ERROR'}, 'The provided GID must be an integer')
+        return None
+
+    # Load the morphology from the circuit
+    morphology_object = nmv.file.readers.read_morphology_from_libsonata_circuit(
+        options=nmv.interface.ui_options
+    )
+
+    # If the loaded morphology object is not None, update the global references
+    if morphology_object is None:
+        panel.report({"ERROR"}, "The selected morphology cannot be loaded!")
+        return None
+    else:
+        options.morphology.label = str(scene.NMV_Gid)
+        nmv.interface.ui_morphology = morphology_object
+        return "VALID_MORPHOLOGY"
+
 
 ####################################################################################################
 # @disable_circuit_options
@@ -183,6 +220,11 @@ def load_morphology(panel,
     elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
         return load_morphology_from_circuit(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
+
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.LIBSONATA_CIRCUIT:
+        return load_morphology_from_libsonata_circuit(
+            panel=panel, scene=scene, options=nmv.interface.ui_options)
+
     else:
         panel.report({'ERROR'}, 'Invalid Input Source')
         return None
