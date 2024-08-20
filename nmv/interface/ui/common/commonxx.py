@@ -1,7 +1,7 @@
 ####################################################################################################
 # Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
 # Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
-#
+#            Adrien Fleury <adrien.fleury@epfl.ch>
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the

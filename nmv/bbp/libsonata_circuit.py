@@ -1,6 +1,7 @@
 ####################################################################################################
 # Copyright (c) 2023, EPFL / Blue Brain Project
 # Author(s): Nadir Roman <nadir.roman@epfl.ch>
+#            Adrien Fleury <adrien.fleury@epfl.ch>
 #            Marwan Abdellah <marwan.abdellah@epfl.ch>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
