@@ -175,7 +175,7 @@ def draw_spines_source_option(layout, scene, options):
     row = layout.row()
     row.label(text='Source:')
 
-    if scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
+    if scene.NMV_InputSource == nmv.enums.Input.BBP_CIRCUIT_GID:
         row.prop(scene, 'NMV_SpinesSourceCircuit', expand=True)
         options.mesh.spines = scene.NMV_SpinesSourceCircuit
     else:

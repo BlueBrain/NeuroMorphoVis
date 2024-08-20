@@ -211,7 +211,7 @@ def load_morphology(panel_object,
             return None
 
     # Read the data from a specific gid in a given circuit
-    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.BBP_CIRCUIT_GID:
 
         # Pass options from UI to system
         nmv.interface.ui_options.morphology.blue_config = context_scene.NMV_CircuitFile

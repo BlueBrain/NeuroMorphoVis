@@ -27,26 +27,21 @@ import nmv.enums
 # Input options (what is the input source)
 bpy.types.Scene.NMV_InputSource = bpy.props.EnumProperty(
     items=[
-        (
-            nmv.enums.Input.MORPHOLOGY_FILE,
-            ".SWC, .ASC or .H5 File",
-            "Load individual .SWC, .ASC or .H5 morphology file of a neuron or an astrocyte. "
-            "For the astrocyte file format in H5 files, please refer to the paper by "
-            "Abdellah et al. 2021",
-        ),
-        (
-            nmv.enums.Input.CIRCUIT_GID,
-            "Circuit (GID)",
-            "Load the morphology of either a neuron or an astrocyte with a specific GID from "
-            "a digitally reconstructed circuit using a circuit configuration file. The current "
-            "version of NeuroMorphoVis supports loading libSonata circuits. For details, please "
-            "refer to the software suits at https://github.com/BlueBrain",
-        ),
-        (
-            nmv.enums.Input.LIBSONATA_CIRCUIT,
-            "libSonata Circuit ",
-            "Load a specific GID within a population from a libSonata config",
-        ),
+        (nmv.enums.Input.MORPHOLOGY_FILE,
+         ".SWC, .ASC or .H5 File",
+         "Load individual .SWC, .ASC or .H5 morphology file of a neuron or an astrocyte. "
+         "For the astrocyte file format in H5 files, please refer to the paper by "
+         "Abdellah et al. 2021"),
+        (nmv.enums.Input.BBP_CIRCUIT_GID,
+         "BBP Circuit",
+         "Load the morphology of either a neuron or an astrocyte with a specific GID from "
+         "a digitally reconstructed circuit using a circuit configuration file. The current "
+         "version of NeuroMorphoVis supports loading libSonata circuits. For details, please "
+         "refer to the software suits at https://github.com/BlueBrain"),
+        (nmv.enums.Input.LIBSONATA_CIRCUIT,
+         "libsonata Circuit ",
+         "Load a specific GID within a population from a libsonata-based circuit using its "
+         "configuration",)
     ],
     name="Input Source",
     default=nmv.enums.Input.MORPHOLOGY_FILE)
@@ -71,25 +66,25 @@ bpy.types.Scene.NMV_MorphologyDirectory = bpy.props.StringProperty(
     description="Select a directory to that contains multiple morphology files in it",
     default=nmv.consts.Strings.SELECT_DIRECTORY, maxlen=2048, subtype='DIR_PATH')
 
-# A circuit configuration file
+# A BBP circuit configuration file
 bpy.types.Scene.NMV_CircuitFile = bpy.props.StringProperty(
-    name="BBP Circuit Config",
+    name="BBP Config",
     description="Select a circuit file.",
     default=nmv.consts.Strings.SELECT_CIRCUIT_FILE,
     maxlen=2048,
     subtype="FILE_PATH")
 
-# A circuit configuration file
+# A libsonata circuit configuration file
 bpy.types.Scene.NMV_LibsonataConfigFile = bpy.props.StringProperty(
-    name="libsonata Config",
+    name="Config",
     description="Select a libsonata config file",
     default=nmv.consts.Strings.SELECT_CIRCUIT_FILE,
     maxlen=2048,
     subtype="FILE_PATH")
 
-# libsonata Population
+# libsonata population
 bpy.types.Scene.NMV_LibsonataPopulation = bpy.props.StringProperty(
-    name="libsonata Population",
+    name="Population",
     description="Select a libsonata population",
     default=nmv.consts.Strings.SELECT_POPULATION,
     maxlen=2048)

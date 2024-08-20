@@ -34,8 +34,8 @@ class Input:
     # Load an entire directory of morphology files, supported formats: SWC, H5 and ASCII
     H5_SWC_DIRECTORY = 'INPUT_H5_SWC_DIRECTORY'
 
-    # Load a neuron from a given circuit using its GID
-    CIRCUIT_GID = 'INPUT_CIRCUIT_GID'
+    # Load a neuron from a given BBP circuit using its GID
+    BBP_CIRCUIT_GID = 'INPUT_BBP_CIRCUIT_GID'
 
     LIBSONATA_CIRCUIT = 'INPUT_LIBSONATA_CIRCUIT'
 

@@ -35,8 +35,6 @@ import nmv.geometry
 import nmv.interface
 
 
-
-
 ####################################################################################################
 # @enable_or_disable_layout
 ####################################################################################################
@@ -217,7 +215,7 @@ def load_morphology(panel,
         return load_morphology_from_file(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
 
-    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.CIRCUIT_GID:
+    elif bpy.context.scene.NMV_InputSource == nmv.enums.Input.BBP_CIRCUIT_GID:
         return load_morphology_from_circuit(
             panel=panel, scene=scene, options=nmv.interface.ui_options)
 

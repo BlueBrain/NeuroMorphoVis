@@ -127,7 +127,7 @@ def draw_input_data_options(panel, scene, options):
     if options.io.input_source == nmv.enums.Input.MORPHOLOGY_FILE:
         draw_morphology_file_path_option(panel=panel, scene=scene, options=options)
 
-    elif options.io.input_source == nmv.enums.Input.CIRCUIT_GID:
+    elif options.io.input_source == nmv.enums.Input.BBP_CIRCUIT_GID:
         draw_circuit_file_path_option(panel=panel, scene=scene, options=options)
         draw_morphology_gid_option(panel=panel, scene=scene, options=options)
 
