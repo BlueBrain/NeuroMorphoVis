@@ -37,5 +37,7 @@ class Input:
     # Load a neuron from a given circuit using its GID
     CIRCUIT_GID = 'INPUT_CIRCUIT_GID'
 
+    LIBSONATA_CIRCUIT = 'INPUT_LIBSONATA_CIRCUIT'
+
     # Load a full target from a given circuit
     CIRCUIT_TARGET = 'INPUT_TARGET'

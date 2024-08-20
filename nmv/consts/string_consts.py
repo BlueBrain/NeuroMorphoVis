@@ -37,6 +37,9 @@ class Strings:
     # The default message in the select circuit file field
     SELECT_CIRCUIT_FILE = "Select Circuit File"
 
+    # The default message in the select population field
+    SELECT_POPULATION = "Select Population"
+
     # The default message in the add target field
     ADD_TARGET = "Add Target"
 

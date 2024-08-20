@@ -39,6 +39,10 @@ class MorphologyOptions:
         # The circuit configuration file
         self.blue_config = None
 
+        # Sonata configuration file
+        self.libsonata_config = None
+        self.libsonata_population = None
+
         # The circuit, where the given neuron is loaded from. In fact, we keep a reference of the
         # circuit within the morphology options to avoid the delays from loading the circuit data
         # from a remote file system. This parameter will be automatically filled after loading a

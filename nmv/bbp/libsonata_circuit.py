@@ -61,7 +61,7 @@ class libSonataCircuit(Circuit):
         type = None
 
         properties = self.circuit.node_population_properties(population)
-        if Path(properties.morphologies_dir).exists():
+        if properties.morphologies_dir and Path(properties.morphologies_dir).exists():
             folder = properties.morphologies_dir
             type = "swc"
         else:
