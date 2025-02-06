@@ -38,7 +38,7 @@ set "blender_zip_file=%CD%\%reference%.zip"
 
 REM Download the file using bitsadmin
 echo Downloading ZIP file "%blender_url% ...
-:: bitsadmin /transfer myDownloadJob /download /priority normal "%blender_url%" "%blender_zip_file%"
+bitsadmin /transfer myDownloadJob /download /priority normal "%blender_url%" "%blender_zip_file%"
 
 REM Check if the Blender download was successful
 echo Verifying the Blender archive .....
@@ -55,7 +55,7 @@ set "destination=%CD%"
 
 REM Unzip the Blender Zip file using PowerShell
 echo Extracting the Blender archive .....
-:: powershell -command "Expand-Archive -Path '%blender_zip_file%' -DestinationPath '%destination%'"
+powershell -command "Expand-Archive -Path '%blender_zip_file%' -DestinationPath '%destination%'"
 
 REM Check if the extraction was successful
 if exist "%destination%\%reference%" (
@@ -86,14 +86,14 @@ set "neuromorphovis_zip_file=%CD%\NeuroMorphoVis-master.zip"
 
 REM Download the ZIP file
 echo Downloading NeuroMorphoVis .....
-:: curl -L -o "%neuromorphovis_zip_file%" "%repoURL%"
+curl -L -o "%neuromorphovis_zip_file%" "%repoURL%"
 
 REM Destination folder where the contents will be extracted
 set "add_on_path=%CD%\%reference%\4.2\scripts\addons_core"
 
 REM Unzip the file using PowerShell
 echo Integrating NeuroMorphoVis to Blender [%reference%]...
-:: powershell -command "Expand-Archive -Path '%neuromorphovis_zip_file%' -DestinationPath '%add_on_path%'"
+powershell -command "Expand-Archive -Path '%neuromorphovis_zip_file%' -DestinationPath '%add_on_path%'"
 
 REM Check if the extraction was successful
 if exist "%add_on_path%\NeuroMorphoVis-master" (
