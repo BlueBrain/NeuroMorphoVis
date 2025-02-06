@@ -37,7 +37,7 @@ REM Path to save the downloaded Blender Zip file
 set "blender_zip_file=%CD%\%reference%.zip"
 
 REM Download the file using bitsadmin
-echo Downloading ZIP file "%blender_url% ... 
+echo Downloading ZIP file "%blender_url%
 bitsadmin /transfer myDownloadJob /download /priority normal "%blender_url%" "%blender_zip_file%"
 
 REM Check if the Blender download was successful
