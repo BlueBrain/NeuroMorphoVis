@@ -44,7 +44,8 @@ class SamplesBuilder(MorphologyBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options, 
+                 disable_illumination=False):
         """Constructor.
 
         :param morphology:
@@ -52,7 +53,7 @@ class SamplesBuilder(MorphologyBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MorphologyBuilderBase.__init__(self, morphology, options)
+        MorphologyBuilderBase.__init__(self, morphology, options, disable_illumination)
 
     ################################################################################################
     # @draw_sections_as_spheres

@@ -42,7 +42,8 @@ class MorphologyBuilderBase:
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 disable_illumination=False):
         """Constructor
 
         :param morphology:
@@ -95,6 +96,9 @@ class MorphologyBuilderBase:
 
         # The bevel object used to interpolate the lines
         self.bevel_object = None
+        
+        # Disable the illumination if the user requested it
+        self.disable_illumination = disable_illumination
 
     ################################################################################################
     # @initialize_builder
@@ -121,7 +125,7 @@ class MorphologyBuilderBase:
         self.create_morphology_skeleton_materials()
 
         # Add the illumination
-        self.create_illumination()
+        self.create_illumination() if not self.disable_illumination else None
 
     ################################################################################################
     # @update_sections_radii
@@ -210,7 +214,6 @@ class MorphologyBuilderBase:
         :return:
            A list containing the created materials.
         """
-
         axons_materials = nmv.skeleton.create_multiple_materials_with_same_color(
             name='Axons Morphology [%s]' % self.morphology.code,
             color=self.options.shading.morphology_axons_color,
@@ -325,6 +328,39 @@ class MorphologyBuilderBase:
 
         # Endfeet, if applicable, Indices 12 and 13 in @self.skeleton_materials
         self.skeleton_materials.extend(self.create_endfeet_materials())
+        
+    ################################################################################################
+    # @create_default_coloring_scheme_materials
+    ################################################################################################
+    def create_homogeneous_color_scheme_materials(self):
+        """Creates the materials for the default coloring scheme."""
+
+        # Soma, Indices 0 and 1 in @self.skeleton_materials
+        soma_materials = self.create_soma_materials()
+        self.skeleton_materials.extend(soma_materials)
+
+        # Apical dendrites, Indices 2 and 3 in @self.skeleton_materials
+        self.apical_dendrites_materials.extend(soma_materials)
+        self.skeleton_materials.extend(soma_materials)
+
+        # Basals dendrites, Indices 4 and 5 in @self.skeleton_materials
+        self.basal_dendrites_materials.extend(soma_materials)
+        self.skeleton_materials.extend(soma_materials)
+
+        # Axons, Indices 6 and 7 in @self.skeleton_materials
+        self.axons_materials.extend(soma_materials)
+        self.skeleton_materials.extend(soma_materials)
+
+        # Gray material, Indices 8 and 9 in @self.skeleton_materials
+        self.skeleton_materials.extend(soma_materials)
+
+        # Articulations, Indices 10 and 11 in @self.skeleton_materials
+        self.articulations_materials.extend(soma_materials)
+        self.skeleton_materials.extend(soma_materials)
+
+        # Endfeet, if applicable, Indices 12 and 13 in @self.skeleton_materials
+        self.endfeet_materials.extend(soma_materials)
+        self.skeleton_materials.extend(soma_materials)
 
     ################################################################################################
     # @create_alternating_materials
@@ -435,7 +471,7 @@ class MorphologyBuilderBase:
         # All the components have the same color (homogeneous coloring)
         # NOTE: The homogeneous coloring is done during obtaining the values from the interface
         elif scheme == nmv.enums.ColorCoding.HOMOGENEOUS_COLOR:
-            self.create_default_coloring_scheme_materials()
+            self.create_homogeneous_color_scheme_materials()
 
         # Alternating colors, for the arbors, but same for the soma, articulations and endfeet
         elif scheme == nmv.enums.ColorCoding.ALTERNATING_COLORS:

@@ -39,7 +39,8 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options, 
+                 disable_illumination=False):
         """Constructor.
 
         :param morphology:
@@ -47,7 +48,7 @@ class ConnectedSectionsBuilder(MorphologyBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MorphologyBuilderBase.__init__(self, morphology, options)
+        MorphologyBuilderBase.__init__(self, morphology, options, disable_illumination)
 
         # Validate the arbors connectivity to the soma
         nmv.skeleton.verify_arbors_connectivity_to_soma(self.morphology)

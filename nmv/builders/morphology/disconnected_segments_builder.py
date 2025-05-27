@@ -41,7 +41,8 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 disable_illumination=False):
         """Constructor.
 
         :param morphology:
@@ -49,7 +50,7 @@ class DisconnectedSegmentsBuilder(MorphologyBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MorphologyBuilderBase.__init__(self, morphology, options)
+        MorphologyBuilderBase.__init__(self, morphology, options, disable_illumination)
 
     ################################################################################################
     # @construct_color_coded_polylines

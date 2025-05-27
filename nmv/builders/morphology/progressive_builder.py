@@ -43,7 +43,8 @@ class ProgressiveBuilder(MorphologyBuilderBase):
     ################################################################################################
     def __init__(self,
                  morphology,
-                 options):
+                 options,
+                 disable_illumination=False):
         """Constructor.
 
         :param morphology:
@@ -53,7 +54,7 @@ class ProgressiveBuilder(MorphologyBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MorphologyBuilderBase.__init__(self, morphology, options)
+        MorphologyBuilderBase.__init__(self, morphology, options, disable_illumination)
 
         # A list of all the articulation spheres - to be converted from bmesh to mesh to save time
         self.articulations_spheres = list()

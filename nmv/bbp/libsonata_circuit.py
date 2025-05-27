@@ -51,6 +51,14 @@ class libSonataCircuit(Circuit):
     ################################################################################################
     def get_circuit_config(self):
         return self.circuit_config
+    
+    ################################################################################################
+    # @get_circuit_config
+    ################################################################################################   
+    def get_number_cells_in_population(self,
+                                       population):
+        nodes = self.circuit.node_population(population)
+        return nodes.size
 
     ################################################################################################
     # @get_neuron_morphology_path
@@ -110,6 +118,7 @@ class libSonataCircuit(Circuit):
         nodes = self.circuit.node_population(population)
         m_types = nodes.get_attribute("mtype", nodes.select_all())
         return sorted(set(m_types))
+        
 
     ################################################################################################
     # @get_circuit_mtype_strings_list

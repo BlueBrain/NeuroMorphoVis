@@ -44,7 +44,8 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
     def __init__(self,
                  morphology,
                  options,
-                 force_meta_ball_soma=False):
+                 force_meta_ball_soma=False, 
+                 disable_illumination=False):
         """Constructor.
 
         :param morphology:
@@ -52,7 +53,7 @@ class DisconnectedSectionsBuilder(MorphologyBuilderBase):
         """
 
         # Initialize the parent with the common parameters
-        MorphologyBuilderBase.__init__(self, morphology, options)
+        MorphologyBuilderBase.__init__(self, morphology, options, disable_illumination)
 
         # A list of all the articulation spheres
         self.articulations_spheres = list()

@@ -143,7 +143,7 @@ class SomaMetaBuilder:
         # Note the conversion from the meta-object to the mesh object adds automatically '.001'
         # to the object name, therefore we must rename it
         self.meta_mesh = bpy.context.scene.objects['%s.001' % name]
-        self.meta_mesh.name = name
+        self.meta_mesh.name = name + f"_{self.morphology.label}"
 
         # Re-select it again to be able to perform post-processing operations in it
         nmv.scene.select_object(self.meta_mesh)
