@@ -286,6 +286,7 @@ def read_morphology_from_libsonata_circuit(options):
         The loaded morphology object.
     """
     
+    import time 
     # Load the circuit from the libSonata config, and get the path to the morphology
     morphology = options.morphology
     path = morphology.libsonata_config
@@ -301,14 +302,15 @@ def read_morphology_from_libsonata_circuit(options):
     nmv.interface.ui_circuit = circuit
 
     # Get the MorphIO morphology object 
+    start = time.time()
     morphio_morphology = circuit.get_morphio_morphology(gid, population)
-    
-    _, morphology_label, _ = circuit.get_neuron_morphology_attributes(gid, population)
+    end = time.time()
+    nmv.logger.log(f"The morphology imported in {end - start} seconds")
     
     # Construct the MorphIO reader 
     loader = nmv.file.readers.MorphIOLoader(center_morphology=options.morphology.center_at_origin)
     
     # Get a NMV morphology object from the MorphIO morphology
     return loader.read_data_from_morphio_morphology(
-        morphio_morphology=morphio_morphology, morphology_label=morphology_label)
+        morphio_morphology=morphio_morphology, morphology_label=str(morphology.gid))
  
