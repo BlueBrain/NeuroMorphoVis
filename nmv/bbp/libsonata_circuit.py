@@ -124,10 +124,7 @@ class libSonataCircuit(Circuit):
         nodes = self.circuit.node_population(population)
         m_types = nodes.get_attribute("mtype", nodes.select_all())
         return sorted(set(m_types))
-<<<<<<< HEAD
         
-=======
-    
     ################################################################################################
     # @get_layers
     ################################################################################################
@@ -140,7 +137,6 @@ class libSonataCircuit(Circuit):
         nodes = self.circuit.node_population(population)
         layers = nodes.get_attribute("layer", nodes.select_all())
         return layers
->>>>>>> 1d4b7982 (Fixing the libSonata transformations.)
 
     ################################################################################################
     # @get_circuit_mtype_strings_list
