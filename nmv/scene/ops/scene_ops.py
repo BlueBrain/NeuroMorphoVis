@@ -1413,6 +1413,16 @@ def switch_scene_shading(shading_type='SOLID'):
 
 
 ####################################################################################################
+# @delete_all_materials_in_object
+####################################################################################################
+def delete_all_materials_in_object(obj):
+    if not obj or not hasattr(obj, "material_slots"):
+        return
+
+    # Unlink all materials
+    obj.data.materials.clear()
+    
+####################################################################################################
 # @switch_interface_to_edit_mode
 ####################################################################################################
 def switch_interface_to_edit_mode():

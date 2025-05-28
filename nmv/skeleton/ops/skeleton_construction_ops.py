@@ -74,55 +74,30 @@ def update_section_parenting(section,
 # @build_arbors_from_sections
 ####################################################################################################
 def build_arbors_from_sections(sections_list):
-    """Returns a list of nodes where we can access the different sections of a single arbor as a
-    tree.
+    """Returns a list of root sections representing the starting points of arbors in a morphology.
 
     :param sections_list:
-        A linear list of sections.
+        A linear list of sections (NMV Sections).
     :return:
-        A list containing references to the root nodes of the different arbors in the sections list.
+        A list of root sections (sections with no parent). Returns an empty list if no roots are found
+        or if the input is invalid (None or empty).
     """
-
-    # If the sections list is None
+    # Check for invalid input (None or empty list)
     if sections_list is None:
-
-        # This is an issue
         nmv.logger.log('ERROR: Invalid sections list')
-
-        # Return None
+        return None
+    
+    if not sections_list:
         return None
 
-    # If the sections list is empty
-    if len(sections_list) == 0:
+    # Find root sections (sections with no parent) using list comprehension
+    roots = [section for section in sections_list if section.parent is None]
 
-        # Then return None
-        return None
+    # Log a warning if no roots are found
+    if not roots:
+        nmv.logger.log('WARNING: No root sections found in the sections list')
 
-    # A list of roots
-    roots = list()
-
-    # Iterate over the sections and get the root ones
-    for section in sections_list:
-
-        # If the section has no parent, it is a root then
-        if section.parent is None:
-
-            # Append this root to the list
-            roots.append(section)
-
-    # If the list does not contain any roots, then return None, otherwise return the entire list
-    if len(roots) == 0:
-
-        # This might be an issue
-        nmv.logger.log('WARNING: No roots found in the sections list')
-
-        # Return None
-        return None
-
-    else:
-
-        # Return the root list
-        return roots
+    return roots
 
 
 ####################################################################################################

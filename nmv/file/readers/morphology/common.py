@@ -27,37 +27,38 @@ import nmv.enums
 # @build_tree
 ####################################################################################################
 def build_tree(sections_list):
-    """Builds the tree of the morphology by linking the parent node and the children ones.
+    """Builds the tree of the morphology by linking the parent and children nodes.
 
     :param sections_list:
         A linear list of sections (NMV Sections) of a specific type to be converted to a tree.
     """
+    # Create a dictionary for O(1) lookup of sections by index
+    section_map = {section.index: section for section in sections_list}
 
-    # For each section, get the IDs of the children nodes, then find and append them to the
-    # children lists.
-    # Also find the ID of the parent node and update the parent accordingly.
-    for i_section in sections_list:
+    # Single pass to set parent and children relationships
+    for section in sections_list:
+        # Clear existing children to avoid duplicates (in case function is called multiple times)
+        section.children = []
 
-        # First round
-        for child_id in i_section.children_ids:
+        # Assign children
+        for child_id in section.children_ids:
+            child_section = section_map.get(child_id)
+            if child_section:
+                section.children.append(child_section)
+            else:
+                # Optional: Log a warning for invalid child_id
+                pass  # Could add logging or error handling if needed
 
-            # For each section
-            for j_section in sections_list:
-
-                # Is it a child
-                if child_id == j_section.index:
-
-                    # Append it to the list
-                    i_section.children.append(j_section)
-
-        # Second round
-        for k_section in sections_list:
-
-            # Is it parent
-            if i_section.parent_index == k_section.index:
-
-                # Set it to be a parent
-                i_section.parent = k_section
+        # Assign parent
+        if section.parent_index is not None:
+            parent_section = section_map.get(section.parent_index)
+            if parent_section:
+                section.parent = parent_section
+            else:
+                # Optional: Log a warning for invalid parent_index
+                section.parent = None  # Ensure parent is None if not found
+        else:
+            section.parent = None
 
 
 ####################################################################################################

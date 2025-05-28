@@ -339,6 +339,131 @@ class MorphIOLoader:
     ################################################################################################
     # @read_data_from_morphio_morphology
     ################################################################################################
+    def read_data_from_morphio_morphology_object(self, morphio_morphology):
+        
+        import morphio
+        import numpy as np
+        from mathutils import Vector
+        import nmv.consts
+        import nmv.skeleton
+        import nmv.file.readers.morphology.common
+        
+        # Read soma data
+        self.read_soma_data(morphio_soma=morphio_morphology.soma)
+        self.soma_radius = self.reported_soma_radius
+
+        # Determine translation vector for centering
+        translation_vector = self.reported_soma_centroid if self.center_morphology else nmv.consts.Math.ORIGIN
+        self.soma_centroid = nmv.consts.Math.ORIGIN if self.center_morphology else self.reported_soma_centroid
+
+        # Initialize lists
+        points_list = []
+        nmv_sections = []
+        axons_sections = []
+        basal_dendrites_sections = []
+        apical_dendrites_sections = []
+
+        # Map morphio section types to NMV section types
+        section_type_map = {
+            morphio.SectionType.axon: nmv.consts.Skeleton.NMV_AXON_SECTION_TYPE,
+            morphio.SectionType.basal_dendrite: nmv.consts.Skeleton.NMV_BASAL_DENDRITE_SECTION_TYPE,
+            morphio.SectionType.apical_dendrite: nmv.consts.Skeleton.NMV_APICAL_SECTION_TYPE
+        }
+
+        # Process sections in a single pass
+        for section in morphio_morphology.sections:
+            # Get section properties
+            section_id = section.id
+            section_parent_id = None if section.is_root else section.parent.id
+            section_children_ids = [child.id for child in section.children]
+
+            # Determine section type (default to basal dendrite for unknown types)
+            section_type = section_type_map.get(section.type, nmv.consts.Skeleton.NMV_BASAL_DENDRITE_SECTION_TYPE)
+
+            # Vectorize point translation
+            points = np.array(section.points) - np.array(translation_vector)
+            points_list.extend([Vector((p[0], p[1], p[2])) for p in points])
+
+            # Create section samples
+            section_samples = [
+                nmv.skeleton.Sample(
+                    point=Vector((points[i][0], points[i][1], points[i][2])),
+                    radius=section.diameters[i] * 0.5,
+                    index=i,
+                    morphology_id=0,
+                    type=section_type,
+                    parent_index=i + 1
+                ) for i in range(len(points))
+            ]
+
+            # Create NMV section
+            nmv_section = nmv.skeleton.Section(
+                index=section_id,
+                parent_index=section_parent_id,
+                children_ids=section_children_ids,
+                samples=section_samples,
+                type=section_type
+            )
+            nmv_sections.append(nmv_section)
+
+            # Filter sections by type
+            if section_type == nmv.consts.Skeleton.NMV_AXON_SECTION_TYPE:
+                axons_sections.append(nmv_section)
+            elif section_type == nmv.consts.Skeleton.NMV_APICAL_SECTION_TYPE:
+                apical_dendrites_sections.append(nmv_section)
+            else:
+                basal_dendrites_sections.append(nmv_section)
+
+        # Update instance points_list
+        self.points_list = points_list
+        self.sections_list = nmv_sections
+
+        # Build arbor trees
+        nmv.file.readers.morphology.common.build_tree(axons_sections)
+        nmv.file.readers.morphology.common.build_tree(basal_dendrites_sections)
+        nmv.file.readers.morphology.common.build_tree(apical_dendrites_sections)
+
+        # Build arbors
+        axons = nmv.skeleton.ops.build_arbors_from_sections(axons_sections)
+        basal_dendrites = nmv.skeleton.ops.build_arbors_from_sections(basal_dendrites_sections)
+        apical_dendrites = nmv.skeleton.ops.build_arbors_from_sections(apical_dendrites_sections)
+
+        # Helper function for labeling and tagging
+        def label_arbors(arbors, base_label, base_tag):
+            if arbors:
+                if len(arbors) == 1:
+                    arbors[0].label = base_label
+                    arbors[0].tag = base_tag
+                else:
+                    for i, arbor in enumerate(arbors, 1):
+                        arbor.label = f"{base_label} {i}"
+                        arbor.tag = f"{base_tag}{i}"
+
+        # Label arbors
+        label_arbors(apical_dendrites, "Apical Dendrite", "ApicalDendrite")
+        label_arbors(basal_dendrites, "Basal Dendrite", "BasalDendrite")
+        label_arbors(axons, "Axon", "Axon")
+
+        # Build soma
+        soma = self.build_soma(
+            axons_trees=axons,
+            basal_dendrites_trees=basal_dendrites,
+            apical_dendrite_tree=apical_dendrites
+        )
+
+        # Construct NMV morphology
+        nmv_morphology = nmv.skeleton.Morphology(
+            soma=soma,
+            axons=axons,
+            basal_dendrites=basal_dendrites,
+            apical_dendrites=apical_dendrites,
+            label=self.morphology_label,
+            file_format=self.morpholog_file_format
+        )
+        nmv_morphology.original_center = self.reported_soma_centroid
+
+        return nmv_morphology
+    '''
     def read_data_from_morphio_morphology_object(self,
                                                  morphio_morphology):
         
@@ -502,6 +627,7 @@ class MorphIOLoader:
 
         # Return a reference to the NMV morphology object
         return nmv_morphology
+    '''
     
     ################################################################################################
     # @read_data_from_file
