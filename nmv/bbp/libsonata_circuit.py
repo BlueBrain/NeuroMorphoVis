@@ -111,6 +111,12 @@ class libSonataCircuit(Circuit):
             f"Cannot parse SONATA configuration {self.circuit_config}")
 
     ################################################################################################
+    # @get_number_cells_in_population
+    ################################################################################################
+    def get_number_cells_in_population(self, population):
+         return self.circuit.node_population(population).size
+
+    ################################################################################################
     # @get_mtype_strings_set
     ################################################################################################
     def get_mtype_strings_set(self,
@@ -118,7 +124,23 @@ class libSonataCircuit(Circuit):
         nodes = self.circuit.node_population(population)
         m_types = nodes.get_attribute("mtype", nodes.select_all())
         return sorted(set(m_types))
+<<<<<<< HEAD
         
+=======
+    
+    ################################################################################################
+    # @get_layers
+    ################################################################################################
+    def get_layers(self, population):
+        """
+        Get the layers of the circuit for a given population.
+        :param population: The population to get the layers for.
+        :return: A list of layers.
+        """
+        nodes = self.circuit.node_population(population)
+        layers = nodes.get_attribute("layer", nodes.select_all())
+        return layers
+>>>>>>> 1d4b7982 (Fixing the libSonata transformations.)
 
     ################################################################################################
     # @get_circuit_mtype_strings_list
@@ -142,6 +164,62 @@ class libSonataCircuit(Circuit):
     def get_etype_strings_list(self,
                                population):
         return list(self.get_etype_strings_set(population))
+    
+    ################################################################################################
+    # @get_translations
+    ################################################################################################
+    def get_translations(self,
+                         population):
+        """
+        Get the translations of the nodes in a given population.
+        :param population: The population to get the translations for.
+        :return: A list of translations as Vector objects.
+        """
+        nodes = self.circuit.node_population(population)
+        xs = nodes.get_attribute("x", nodes.select_all())
+        ys = nodes.get_attribute("y", nodes.select_all())
+        zs = nodes.get_attribute("z", nodes.select_all())
+        return [Vector((x, y, z)) for x, y, z in zip(xs, ys, zs)]
+    
+    ################################################################################################
+    # @get_orientations
+    ################################################################################################
+    def get_orientations(self,
+                         population):
+        """
+        Get the orientations of the nodes in a given population.
+        :param population: The population to get the orientations for.
+        :return: A list of orientations as Quaternion objects.
+        """
+        nodes = self.circuit.node_population(population)
+        qx = nodes.get_attribute("orientation_x", nodes.select_all())
+        qy = nodes.get_attribute("orientation_y", nodes.select_all())
+        qz = nodes.get_attribute("orientation_z", nodes.select_all())
+        qw = nodes.get_attribute("orientation_w", nodes.select_all())
+        return [Quaternion((qw[i], qx[i], qy[i], qz[i])).normalized() for i in range(len(qx))]
+    
+    ################################################################################################
+    # @get_transformations
+    ################################################################################################
+    def get_transformations(self,
+                            population):
+        """
+        Get the transformation matrices of the nodes in a given population.
+        :param population: The population to get the transformations for.
+        :return: A list of transformation matrices as 4x4 Matrix objects.
+        """
+        translations = self.get_translations(population)
+        orientations = self.get_orientations(population)
+
+        transformations = []
+        for i in range(len(translations)):
+            matrix = orientations[i].to_matrix().to_4x4()
+            matrix[0][3] = translations[i][0]
+            matrix[1][3] = translations[i][1]
+            matrix[2][3] = translations[i][2]
+            transformations.append(matrix)
+        
+        return transformations
 
     ################################################################################################
     # @get_neuron_translation_vector
@@ -180,8 +258,10 @@ class libSonataCircuit(Circuit):
             gid=gid, population=population)
 
         # Get the orientation and update the translation elements in the orientation matrix
-        matrix = self.get_neuron_orientation_matrix(
-            gid=gid, population=population)
+        matrix = self.get_neuron_orientation_matrix(gid=gid, population=population)
+        matrix = matrix.to_4x4()  # Convert to a 4x4 matrix
+        
+        # Set the translation vector in the last column of the matrix
         matrix[0][3] = translation_vector[0]
         matrix[1][3] = translation_vector[1]
         matrix[2][3] = translation_vector[2]
