@@ -90,7 +90,43 @@ class MorphIOLoader:
 
         # A list of the soma profile points computed based on the initial segments of the arbors
         self.soma_profile_points = list()
+        
+        # The morphology label of the neuron 
+        self.morphology_label = None
+        
+        # The morphology file format, this is used to determine the file format of the morphology
+        self.morpholog_file_format = None
+    
+    ################################################################################################
+    # @__init__
+    ################################################################################################
+    def __init__(self, 
+                 center_morphology=True):
+        
+        # If this flag is set, the soma of the neuron must be located at the origin
+        self.center_morphology = center_morphology
+        
+        # A list of all the points in the morphology file, for bounding box computations
+        self.points_list = list()
 
+        # A list of sections that are extracted from the file for processing
+        self.sections_list = list()
+
+        # The radius of the soma as reported in the original morphology
+        self.reported_soma_radius = None
+
+        # The centroid of the soma as reported in the original morphology
+        self.reported_soma_centroid = None
+
+        # The final or actual radius of the soma after implementing the NMV logic
+        self.soma_radius = None
+
+        # The final centroid of the soma that is given to NMV.
+        self.soma_centroid = None
+
+        # A list of the soma profile points computed based on the initial segments of the arbors
+        self.soma_profile_points = list()
+        
     ################################################################################################
     # @build_soma
     ################################################################################################
@@ -301,27 +337,14 @@ class MorphIOLoader:
             self.reported_soma_radius /= len(self.soma_profile_points)
 
     ################################################################################################
-    # @read_data_from_file
+    # @read_data_from_morphio_morphology
     ################################################################################################
-    def read_data_from_file(self):
-        """Loads the data from the given file in the constructor.
-
-        This function returns None if the reading operation was unsuccessful.
-        """
-
+    def read_data_from_morphio_morphology_object(self,
+                                                 morphio_morphology):
+        
         # Import the required module
         import morphio
-        from morphio import Morphology
-
-        # Load the morphology data using MorphIO
-        morphio_morphology = None
-        try:
-            morphio_morphology = Morphology(self.morphology_file)
-            nmv.logger.log("The morphology file [%s] is loaded successfully" % self.morphology_file)
-        except IOError:
-            nmv.logger.error("Cannot load morphology file! [%s]" % self.morphology_file)
-            return None
-
+        
         # Get the soma parameters reported in the morphology file
         self.read_soma_data(morphio_soma=morphio_morphology.soma)
 
@@ -471,11 +494,59 @@ class MorphIOLoader:
             axons=axons,
             basal_dendrites=basal_dendrites,
             apical_dendrites=apical_dendrites,
-            label=nmv.file.ops.get_file_name_from_path(self.morphology_file),
-            file_format=nmv.file.ops.get_file_format_from_path(self.morphology_file))
+            label=self.morphology_label,
+            file_format=self.morpholog_file_format)
 
         # Update the centroid
         nmv_morphology.original_center = self.reported_soma_centroid
 
         # Return a reference to the NMV morphology object
         return nmv_morphology
+    
+    ################################################################################################
+    # @read_data_from_file
+    ################################################################################################
+    def read_data_from_file(self):
+        """Loads the data from the given file in the constructor.
+
+        This function returns None if the reading operation was unsuccessful.
+        """
+
+        # Import the required module
+        from morphio import Morphology
+
+        # Load the morphology data using MorphIO
+        try:
+            morphio_morphology = Morphology(self.morphology_file)
+            
+            # Updating the morphology label 
+            self.morphology_label = nmv.file.ops.get_file_name_from_path(self.morphology_file)
+            
+            # Updating the file format 
+            self.morpholog_file_format = nmv.file.ops.get_file_format_from_path(self.morphology_file)
+            
+            nmv.logger.log("The morphology file [%s] is loaded successfully" % self.morphology_file)
+            return self.read_data_from_morphio_morphology_object(morphio_morphology=morphio_morphology)
+        except IOError:
+            nmv.logger.error("Cannot load morphology file! [%s]" % self.morphology_file)
+            return None
+        
+    ################################################################################################
+    # @read_data_from_morphio_morphology
+    ################################################################################################
+    def read_data_from_morphio_morphology(self, morphio_morphology, morphology_label):
+        """Reads the data from a MorphIO morphology object.
+
+        :param morphio_morphology:
+            The MorphIO morphology object.
+        :return:
+            An NMV morphology object.
+        """
+        
+        # Updating the morphology label 
+        self.morphology_label = morphology_label
+        
+        # Set the file format tp Container 
+        self.morpholog_file_format = "Container"
+        
+        return self.read_data_from_morphio_morphology_object(morphio_morphology=morphio_morphology)

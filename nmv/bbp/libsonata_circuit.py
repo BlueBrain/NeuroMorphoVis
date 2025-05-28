@@ -53,19 +53,42 @@ class libSonataCircuit(Circuit):
         return self.circuit_config
     
     ################################################################################################
-    # @get_circuit_config
+    # @get_number_cells_in_population
     ################################################################################################   
     def get_number_cells_in_population(self,
                                        population):
         nodes = self.circuit.node_population(population)
         return nodes.size
-
+    
     ################################################################################################
-    # @get_neuron_morphology_path
+    # @get_number_cells_in_population
+    ################################################################################################ 
+    def get_morphio_morphology(self, gid, population):
+        """
+        Get the morphology of a neuron in MorphIO format.
+        :param gid: The global ID of the neuron.
+        :param population: The population to which the neuron belongs.
+        :return: A MorphIO morphology object.
+        """
+        from morphio import Morphology, Collection
+        import os 
+        
+        # Let's contruct a file path for the morphology and try to load it 
+        folder, morphology, type = self.get_neuron_morphology_attributes(gid=gid, population=population)
+        morpholoyg_file_path = f"{folder}/{morphology}.{type}"
+        if os.path.exists(morpholoyg_file_path):
+            return Morphology(morpholoyg_file_path)
+        else:
+            # Use a collection to read the morphology from the circuit    
+            collection = Collection(folder)
+            return collection.load(morphology)
+        
     ################################################################################################
-    def get_neuron_morphology_path(self,
-                                   gid,
-                                   population):
+    # @get_neuron_morphology_attributes
+    ################################################################################################ 
+    def get_neuron_morphology_attributes(self,
+                                         gid,
+                                         population):
         folder = None
         type = None
 
@@ -90,6 +113,18 @@ class libSonataCircuit(Circuit):
 
         nodes = self.circuit.node_population(population)
         morphology = nodes.get_attribute("morphology", gid)
+        return (folder, morphology, type)
+        
+    ################################################################################################
+    # @get_neuron_morphology_path
+    ################################################################################################
+    def get_neuron_morphology_path(self,
+                                   gid,
+                                   population):
+        folder = None
+        type = None
+        type, folder, morphology = self.get_neuron_morphology_attributes(
+            gid=gid, population=population)
         return f"{folder}/{morphology}.{type}"
 
     ################################################################################################
@@ -124,6 +159,23 @@ class libSonataCircuit(Circuit):
         nodes = self.circuit.node_population(population)
         m_types = nodes.get_attribute("mtype", nodes.select_all())
         return sorted(set(m_types))
+    
+    ################################################################################################
+    # @get_mtype_strings_set
+    ################################################################################################
+    def get_morphologies(self,
+                         population):
+        nodes = self.circuit.node_population(population)
+        return nodes.get_attribute("morphology", nodes.select_all())
+    
+    ################################################################################################
+    # @get_morphology
+    ################################################################################################
+    def get_morphology(self,
+                       gid,
+                       population):
+        nodes = self.circuit.node_population(population)
+        return nodes.get_attribute("morphology", gid)
         
     ################################################################################################
     # @get_layers

@@ -210,6 +210,9 @@ def read_morphology_from_file(options,
     return morphology_object
 
 
+####################################################################################################
+# @read_morphology_from_file
+####################################################################################################
 def parse_morphology(options, path):
     morphology_prefix, morphology_extension = os.path.splitext(path)
     if 'asc' in morphology_extension.lower():
@@ -226,6 +229,10 @@ def parse_morphology(options, path):
         morphology_file_path=path,
         morphology_format=morphology_format,
         center_at_origin=options.morphology.center_at_origin)
+    
+    if (nmv_morphology_object is None):
+        nmv.logger.log('ERROR: The morphology [%s] could NOT be loaded with MorphIO.' % path)
+        return None
 
     # To identify the neuron in the scene, label the morphology object with the GID of the neuron
     nmv_morphology_object.label = str(options.morphology.gid)
@@ -262,19 +269,46 @@ def read_morphology_from_circuit(options):
     return parse_morphology(options, morphology_file_path)
 
 
+####################################################################################################
+# @read_morphology_from_libsonata_circuit
+####################################################################################################
 def read_morphology_from_libsonata_circuit(options):
+    """
+    Reads a morphology file from a given libSonata circuit using the circuit configuration file
+    and a GID of the neuron and construct a morphology object.
+    NOTE: All the input parameters are part of the given @options argument, which is a type of
+    NeuroMorphoVisOption.
+    :param options:
+        NeuroMorphoVis options
+    :type options:
+        NeuroMorphoVisOption
+    :return:
+        The loaded morphology object.
+    """
+    
+    # Load the circuit from the libSonata config, and get the path to the morphology
     morphology = options.morphology
     path = morphology.libsonata_config
     population = morphology.libsonata_population
     gid = int(morphology.gid)
-
+    
+    # Construct the circuit 
     circuit = libSonataCircuit(path)
-
-    morphology_file_path = circuit.get_neuron_morphology_path(gid, population)
-
+        
     # Get the data from the circuit and update the necessary fields in NMV
     nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list(population)
     nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list(population)
     nmv.interface.ui_circuit = circuit
 
-    return parse_morphology(options, morphology_file_path)
+    # Get the MorphIO morphology object 
+    morphio_morphology = circuit.get_morphio_morphology(gid, population)
+    
+    _, morphology_label, _ = circuit.get_neuron_morphology_attributes(gid, population)
+    
+    # Construct the MorphIO reader 
+    loader = nmv.file.readers.MorphIOLoader(center_morphology=options.morphology.center_at_origin)
+    
+    # Get a NMV morphology object from the MorphIO morphology
+    return loader.read_data_from_morphio_morphology(
+        morphio_morphology=morphio_morphology, morphology_label=morphology_label)
+ 
