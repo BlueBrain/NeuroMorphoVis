@@ -25,13 +25,13 @@ CIRCUIT_CONFIG='/data/circuits/cns-circuit/v2/N_10__selection1__swc/circuit_conf
 # Population name
 POPULATION='S1nonbarrel_neurons'
 
-# Colormap to use for the rendering, options are 'tab10', 'tab20', 'viridis', 'plasma', 'inferno', 'magma', 'cividis'
+# Colormap to use for the rendering, options are: 
+# 'tab10', 'tab20', 'viridis', 'plasma', 'inferno', 'magma', 'cividis'
 # If you want to use a custom colormap, set COLORMAP_FILE to the path of the colormap file
 # and set COLORMAP to 'custom'
 COLORMAP='tab10'
 
-# Colormap file
-# (optional, if not provided, the default colormaps will be used)
+# Colormap file (optional, if not provided, the default colormaps will be used)
 COLORMAP_FILE='None'
 
 # Image resolution 
@@ -48,6 +48,9 @@ RENDER_SHADOWS='no'
 
 # If you want to render transparent images, set this to 'yes'
 TRANSPARENT_BACKGROUND='no'
+
+# If you want to render square aspect ratio images, set this to 'yes'
+SQUARE_ASPECT_RATIO='true'
 
 # Output directory 
 OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
@@ -87,6 +90,8 @@ if [ "$RENDER_OUTLINE" == 'yes' ];
 if [ "$TRANSPARENT_IMAGE" == 'yes' ];
     then BOOL_ARGS+=' --transparent-background '; fi
 
+if [ "$SQUARE_ASPECT_RATIO" == 'yes' ];
+    then BOOL_ARGS+=' --square-aspect-ratio '; fi
 
 ####################################################################################################
 # NOTE: This is the command line and you can run it directly in a terminal. 

@@ -302,10 +302,7 @@ def read_morphology_from_libsonata_circuit(options):
     nmv.interface.ui_circuit = circuit
 
     # Get the MorphIO morphology object 
-    start = time.time()
     morphio_morphology = circuit.get_morphio_morphology(gid, population)
-    end = time.time()
-    nmv.logger.log(f"The morphology imported in {end - start} seconds")
     
     # Construct the MorphIO reader 
     loader = nmv.file.readers.MorphIOLoader(

@@ -20,7 +20,7 @@ import sys, os
 sys.path.append(('%s/../../' %(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/core' %(os.path.dirname(os.path.realpath(__file__)))))
 
-from mathutils import Matrix
+from mathutils import Vector, Matrix
 
 # System imports
 import argparse
@@ -33,6 +33,9 @@ import morphology
 # @run_rendering_tasks
 ####################################################################################################
 def run_rendering_tasks(options):
+    
+    # Scen prefix
+    prefix = f'{options.output_directory}/{options.population}'
     
     # Clearing the scene 
     utilities.clear_scene()
@@ -69,7 +72,6 @@ def run_rendering_tasks(options):
         # In case needed for any processing
         position = sonata.get_position(nodes, gid)
         soma_positions.append(position)
-        rotation = sonata.get_orientation(nodes, gid)
         
         # Get the neuron transformation 
         transformation =  Matrix(sonata.get_transformation(nodes, gid).tolist())
@@ -81,40 +83,45 @@ def run_rendering_tasks(options):
         if options.orient_circuit_upwards:
             neuron_object.matrix_world = global_orientation_matrix @ neuron_object.matrix_world
     
-    # Default rendering 
-    rendering.create_camera(resolution=options.image_resolution, square_resolution=True, camera_name='Main Camera')
+    # Create the default camera 
+    rendering.create_camera(
+        resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
+        camera_name='Main Camera')
     
-    rendering.render_scene_to_png(f'{options.output_directory}/{options.population}.png', 
-                               add_white_background=options.transparent_background, add_shadow=False,
-                               add_outline=False)
+    # Render the full scene 
+    rendering.render_scene_to_png(
+        f'{prefix}.png', add_white_background=options.transparent_background, 
+        add_shadow=False, add_outline=False) # Do not use any effects for the main image
     
+    # Only for close up rendering
     if options.render_closeup:
+        
+        # If the circuit is oriented upwards, we need to apply the global orientation matrix
+        if options.orient_circuit_upwards:
+            soma_positions = [global_orientation_matrix @ Vector(pos) for pos in soma_positions]
         
         # From the soma positions, get the bounds 
         pmin, pmax = utilities.compute_bounds_from_positions(positions=soma_positions)
         
-        if options.orient_circuit_upwards:
-            pmin = global_orientation_matrix @ pmin
-            pmax = global_orientation_matrix @ pmax
-        
-        # Add an extra margin to the bounds
+        # Add an extra margin to the bounds to capture all the somata 
         bounds = pmax - pmin
         margin = 0.75 * bounds
         pmin -= margin
         pmax += margin
-        
-        # Create the new camera 
+                
+        # Create the close-up camera 
         rendering.create_camera(
-            resolution=options.image_resolution, square_resolution=True, camera_name='CloseUp Camera', 
-            pmin=pmin, pmax=pmax)
+            resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
+            camera_name='CloseUp Camera', pmin=pmin, pmax=pmax)
         
-        rendering.render_scene_to_png(f'{options.output_directory}/{options.population}_closeup.png', 
-                               add_white_background=options.transparent_background, add_shadow=options.render_shadows,
-                               add_outline=options.render_outlines)
-        
+        # Render the close-up image
+        rendering.render_scene_to_png(f'{prefix}_closeup.png', 
+            add_white_background=options.transparent_background, add_shadow=options.render_shadows,
+            add_outline=options.render_outlines)
+    
+    # Save the scene as a Blender file
     if options.save_blender_scene:
-        # Save the scene as a Blender file
-        blend_file_path = f'{options.output_directory}/{options.population}.blend'
+        blend_file_path = f'{prefix}.blend'
         utilities.save_scene_as_blend_file(blend_file_path)
         print(f'Saved Blender scene to {blend_file_path}')
     
@@ -197,6 +204,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Render the circuit with a transparent background'
     parser.add_argument('--transparent-background',
                         action='store_true', dest='transparent_background', 
+                        default=False, help=arg_help)
+    
+    arg_help = 'Use a square aspect ratio for the rendered images'
+    parser.add_argument('--square-aspect-ratio',
+                        action='store_true', dest='square_aspect_ratio', 
                         default=False, help=arg_help)
                         
     # Parse the arguments
