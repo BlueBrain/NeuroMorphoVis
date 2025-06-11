@@ -96,36 +96,6 @@ class MorphIOLoader:
         
         # The morphology file format, this is used to determine the file format of the morphology
         self.morpholog_file_format = None
-    
-    ################################################################################################
-    # @__init__
-    ################################################################################################
-    def __init__(self, 
-                 center_morphology=True):
-        
-        # If this flag is set, the soma of the neuron must be located at the origin
-        self.center_morphology = center_morphology
-        
-        # A list of all the points in the morphology file, for bounding box computations
-        self.points_list = list()
-
-        # A list of sections that are extracted from the file for processing
-        self.sections_list = list()
-
-        # The radius of the soma as reported in the original morphology
-        self.reported_soma_radius = None
-
-        # The centroid of the soma as reported in the original morphology
-        self.reported_soma_centroid = None
-
-        # The final or actual radius of the soma after implementing the NMV logic
-        self.soma_radius = None
-
-        # The final centroid of the soma that is given to NMV.
-        self.soma_centroid = None
-
-        # A list of the soma profile points computed based on the initial segments of the arbors
-        self.soma_profile_points = list()
         
     ################################################################################################
     # @build_soma
