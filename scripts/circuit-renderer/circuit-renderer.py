@@ -26,21 +26,19 @@ from mathutils import Matrix
 import argparse
 import sonata
 import utilities
-import camera
+import rendering
 import morphology
 
 ####################################################################################################
-# @run_rendering_taks
+# @run_rendering_tasks
 ####################################################################################################
-def run_rendering_taks(options):
+def run_rendering_tasks(options):
     
     # Clearing the scene 
     utilities.clear_scene()
-
-    # Path to config 
-    print(f'The circuit config is {options.circuit_config}')
-
+    
     # Loaded circuit 
+    print(f'The circuit config is {options.circuit_config}')
     circuit = sonata.import_circuit(options.circuit_config)
 
     # Population 
@@ -55,9 +53,13 @@ def run_rendering_taks(options):
     nodes = circuit.node_population(population)
     
     # TODO: Add a check for the colormap file
-    colors = utilities.get_colors()
+    colors = utilities.get_neurons_colors(options, n_cells)
     
-    soma_positions = []
+    # Global triansformation for the orienation of the circuit
+    global_orientation_matrix = sonata.get_global_inverse_transformation(nodes)
+    
+    # The positions of the somata are required to calculate the bounds for the close-up rendering
+    soma_positions = list()
     
     # Draw the gids and get the neuron objects 
     for gid in gids:
@@ -75,26 +77,46 @@ def run_rendering_taks(options):
         # Apply the transformation 
         neuron_object.matrix_world = transformation @ neuron_object.matrix_world
         
-        # neuron_object.matrix_world = gloabl_inverse_transformation @ neuron_object.matrix_world
+        # If the circuit is oriented upwards, we need to rotate the neuron object
+        if options.orient_circuit_upwards:
+            neuron_object.matrix_world = global_orientation_matrix @ neuron_object.matrix_world
     
     # Default rendering 
-    camera.create_camera(resolution=options.image_resolution, square_resolution=True, camera_name='Main Camera')
+    rendering.create_camera(resolution=options.image_resolution, square_resolution=True, camera_name='Main Camera')
     
-    camera.render_scene_to_png(f'{options.output_directory}/{options.population}.png', 
-                               add_white_background=True, add_shadow=False)
+    rendering.render_scene_to_png(f'{options.output_directory}/{options.population}.png', 
+                               add_white_background=options.transparent_background, add_shadow=False,
+                               add_outline=False)
     
     if options.render_closeup:
         
         # From the soma positions, get the bounds 
         pmin, pmax = utilities.compute_bounds_from_positions(positions=soma_positions)
         
+        if options.orient_circuit_upwards:
+            pmin = global_orientation_matrix @ pmin
+            pmax = global_orientation_matrix @ pmax
+        
+        # Add an extra margin to the bounds
+        bounds = pmax - pmin
+        margin = 0.75 * bounds
+        pmin -= margin
+        pmax += margin
+        
         # Create the new camera 
-        camera.create_camera(
+        rendering.create_camera(
             resolution=options.image_resolution, square_resolution=True, camera_name='CloseUp Camera', 
             pmin=pmin, pmax=pmax)
         
-        camera.render_scene_to_png(f'{options.output_directory}/{options.population}_closeup.png', 
-                               add_white_background=True, add_shadow=False)
+        rendering.render_scene_to_png(f'{options.output_directory}/{options.population}_closeup.png', 
+                               add_white_background=options.transparent_background, add_shadow=options.render_shadows,
+                               add_outline=options.render_outlines)
+        
+    if options.save_blender_scene:
+        # Save the scene as a Blender file
+        blend_file_path = f'{options.output_directory}/{options.population}.blend'
+        utilities.save_scene_as_blend_file(blend_file_path)
+        print(f'Saved Blender scene to {blend_file_path}')
     
 
 ####################################################################################################
@@ -125,6 +147,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--colormap-file',
                         action='store', dest='colormap_file', help=arg_help)
     
+    args_help = 'The RGBA color map to use for the circuit (e.g., "tab10", "viridis")'
+    parser.add_argument('--colormap-palette',
+                        action='store', dest='colormap_palette', default='tab10', help=args_help)
+    
     arg_help = 'Image resolution for the circuit rendering (for the shortest side of the image)'
     parser.add_argument('--image-resolution',
                         action='store', dest='image_resolution', type=int, help=arg_help)
@@ -139,19 +165,39 @@ def parse_command_line_arguments(arguments=None):
     
     arg_help = 'Save the circuit as a Blender file'
     parser.add_argument('--save-blender-scene',
-                        action='store_true', dest='save_blender_scene', default=False, help=arg_help)
+                        action='store_true', dest='save_blender_scene', 
+                        default=False, help=arg_help)
     
     arg_help = 'Render close-up images of the circuit based on the somata positions'
     parser.add_argument('--render-closeup',
-                        action='store_true', dest='render_closeup', default=False, help=arg_help)
+                        action='store_true', dest='render_closeup', 
+                        default=False, help=arg_help)
     
     arg_help = 'Use a unified radius for the branches of the morphology'
     parser.add_argument('--unify-branch-radii',
-                        action='store_true', dest='unify_branch_radii', default=False, help=arg_help)
+                        action='store_true', dest='unify_branch_radii', 
+                        default=False, help=arg_help)
     
     arg_help = 'Orient the circuit upwards'
     parser.add_argument('--orient-circuit-upwards',
-                        action='store_true', dest='orient_circuit_upwards', default=False, help=arg_help)
+                        action='store_true', dest='orient_circuit_upwards', 
+                        default=False, help=arg_help)
+    
+    arg_help = 'Render the circuit with shadows'
+    parser.add_argument('--render-shadows',
+                        action='store_true', dest='render_shadows', 
+                        default=False, help=arg_help)
+    
+    arg_help = 'Render the circuit with an outline'
+    parser.add_argument('--render-outlines',
+                        action='store_true', dest='render_outlines', 
+                        default=False, help=arg_help)
+    
+    # Transparent background
+    arg_help = 'Render the circuit with a transparent background'
+    parser.add_argument('--transparent-background',
+                        action='store_true', dest='transparent_background', 
+                        default=False, help=arg_help)
                         
     # Parse the arguments
     return parser.parse_args()
@@ -170,4 +216,4 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
     
     # Run the rendering task
-    run_rendering_taks(options=args)    
+    run_rendering_tasks(options=args)    

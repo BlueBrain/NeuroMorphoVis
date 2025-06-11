@@ -25,8 +25,13 @@ CIRCUIT_CONFIG='/data/circuits/cns-circuit/v2/N_10__selection1__swc/circuit_conf
 # Population name
 POPULATION='S1nonbarrel_neurons'
 
+# Colormap to use for the rendering, options are 'tab10', 'tab20', 'viridis', 'plasma', 'inferno', 'magma', 'cividis'
+# If you want to use a custom colormap, set COLORMAP_FILE to the path of the colormap file
+# and set COLORMAP to 'custom'
+COLORMAP='tab10'
+
 # Colormap file
-# (optional, if not provided, the default colormap will be used)
+# (optional, if not provided, the default colormaps will be used)
 COLORMAP_FILE='None'
 
 # Image resolution 
@@ -35,6 +40,15 @@ IMAGE_RESOLUTION=2048
 # Rendering view, options are 'front', 'side', 'top', and 'all' 
 RENDERING_VIEW='front'
 
+# Render an outline for each cell to hilight it 
+RENDER_OUTLINE='yes'
+
+# Render shadows for better visualization
+RENDER_SHADOWS='no'
+
+# If you want to render transparent images, set this to 'yes'
+TRANSPARENT_BACKGROUND='no'
+
 # Output directory 
 OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
 
@@ -42,7 +56,7 @@ OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
 ORIENT_CIRCUIT_UPWARDS='yes'
 
 # Unify branch radii, 'yes' or 'no'
-UNIFY_BRANCH_RADII='yes'
+UNIFY_BRANCH_RADII='no'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
 RENDER_CLOSEUP='yes'
@@ -64,6 +78,15 @@ if [ "$UNIFY_BRANCH_RADII" == 'yes' ];
 if [ "$ORIENT_CIRCUIT_UPWARDS" == 'yes' ];
     then BOOL_ARGS+=' --orient-circuit-upwards '; fi
 
+if [ "$RENDER_SHADOWS" == 'yes' ];
+    then BOOL_ARGS+=' --render-shadows '; fi
+
+if [ "$RENDER_OUTLINE" == 'yes' ];
+    then BOOL_ARGS+=' --render-outlines '; fi
+
+if [ "$TRANSPARENT_IMAGE" == 'yes' ];
+    then BOOL_ARGS+=' --transparent-background '; fi
+
 
 ####################################################################################################
 # NOTE: This is the command line and you can run it directly in a terminal. 
@@ -74,6 +97,7 @@ $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
     --image-resolution="$IMAGE_RESOLUTION" \
     --rendering-view="$RENDERING_VIEW" \
     --colormap-file="$COLORMAP_FILE" \
+    --colormap-palette="$COLORMAP" \
     $BOOL_ARGS
 ####################################################################################################
 

@@ -114,17 +114,14 @@ def get_all_meshes_in_scene():
     return [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
 
 ####################################################################################################
-# @get_colors
+# @get_colors_from_palette
 ####################################################################################################
-def get_colors(palette='tab10'):
+def get_colors_from_palette(palette, number_colors=10):
     
     # Get tab10 colormap
-    tab10 = plt.get_cmap(palette)
-
-    # Sample first 10 colors (tab10 has 10 discrete colors)
-    colors = np.array([tab10(i)[:3] for i in range(10)])  # RGB only, drop alpha
-    return colors
-
+    rgb_colors = plt.get_cmap(palette)
+    return rgb_colors(np.linspace(0, 1, number_colors))
+    
 ####################################################################################################
 # @compute_bounds_from_positions
 ####################################################################################################
@@ -148,3 +145,70 @@ def compute_bounds_from_positions(positions):
     pmax = Vector(max_coords)
     
     return pmin, pmax
+
+####################################################################################################
+# @parse_colormap_file
+####################################################################################################
+def parse_colormap_file(file_path):
+    """
+    Parses a colormap file and returns a list of RGBA colors.
+    
+    :param file_path: Path to the colormap file.
+    :return: List of RGBA colors.
+    """
+    try:
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+        
+        colors = []
+        for line in lines:
+            if line.strip() and not line.startswith('#'):  # Ignore empty lines and comments
+                rgba = tuple(map(float, line.strip().split(',')))
+                if len(rgba) == 4:  # Ensure it has 4 components (R, G, B, A)
+                    colors.append(rgba)
+        
+        return colors
+    except Exception as e:
+        raise ValueError(f"Failed to parse colormap file: {e}")
+
+####################################################################################################
+# @compute_bounds_from_positions
+####################################################################################################
+def save_scene_as_blend_file(file_path):
+    """
+    Saves the current Blender scene to a .blend file.
+    
+    :param file_path: Path where the .blend file will be saved.
+    """
+    if not file_path.endswith('.blend'):
+        raise ValueError("File path must end with '.blend'")
+    
+    bpy.ops.wm.save_as_mainfile(filepath=file_path)
+    print(f"Scene saved as {file_path}")
+    
+####################################################################################################
+# @get_neurons_colors
+####################################################################################################
+def get_neurons_colors(options, number_neurons):
+    """
+    Returns a list of colors based on the options provided.
+    
+    :param options: Options object containing color settings.
+    :return: List of colors.
+    """
+     
+    if "custom" in options.colormap_palette:
+        # If a custom colormap is specified, load it from the file
+        if options.colormap_file is None:
+            raise ValueError("Custom colormap specified but no file provided.")
+        else:
+            # Parse the colormap file
+            colormap = parse_colormap_file(file_path=options.colormap_file)
+            if len(colormap) < number_neurons:
+                raise ValueError(f"Custom colormap file must contain at least {number_neurons} colors.")
+    else:
+        try:
+            # Load the colormap from the specified file
+            return get_colors_from_palette(palette=options.colormap_palette, number_colors=number_neurons)
+        except Exception as e:
+            raise ValueError(f"Failed to load colormap from file: {e}")

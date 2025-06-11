@@ -20,7 +20,52 @@ import mathutils
 import numpy as np 
 import os 
 
+####################################################################################################
+# @enable_effects
+####################################################################################################
+def enable_effects(shadows=True, outline=True):
     
+    # Set the render engine to Workbench
+    scene = bpy.context.scene
+    scene.render.engine = 'BLENDER_WORKBENCH'
+    print("Render engine set to Workbench.")
+
+    # Configure Workbench shadow settings
+    scene.display.shading.show_shadows = shadows
+    scene.display.shading.shadow_intensity = 0.5  # Adjust shadow strength (0.0 to 1.0)
+    
+    # Configure Workbench outline settings
+    scene.display.shading.show_object_outline = outline
+    scene.display.shading.object_outline_color = (0.0, 0.0, 0.0)  # Black outline (RGB, 0.0 to 1.0)
+    
+    # Access the 3D Viewport's space data and enable shadows
+    viewport_found = False
+    for area in bpy.context.screen.areas:
+        if area.type == 'VIEW_3D':
+            space = area.spaces.active
+            space.shading.show_shadows = shadows
+            space.shading.show_object_outline = outline
+            space.shading.object_outline_color = (0.0, 0.0, 0.0)  # Black outline
+
+            space.shading.type = 'RENDERED'  # Ensure viewport uses Workbench rendering
+            viewport_found = True
+            print("Shadows enabled in 3D Viewport shading settings.")
+            break
+
+    if not viewport_found:
+        print("Error: No 3D Viewport found in the current screen layout.")
+
+    # Force viewport redraw to update the scene
+    for area in bpy.context.screen.areas:
+        if area.type == 'VIEW_3D':
+            area.tag_redraw()
+            print("Viewport redrawn.")
+
+    # Ensure a light source exists for shadows
+    if not any(obj.type == 'LIGHT' for obj in scene.objects):
+        bpy.ops.object.light_add(type='SUN')
+        print("Added a Sun light to enable shadows.")
+        
 ####################################################################################################
 # @create_camera
 ####################################################################################################
@@ -96,7 +141,7 @@ def create_camera(resolution=1024,
 ####################################################################################################
 # @render_scene_to_png
 ####################################################################################################
-def render_scene_to_png(filepath, add_white_background=False, add_shadow=False):
+def render_scene_to_png(filepath, add_white_background=False, add_shadow=False, add_outline=False):
     
     # Ensure correct file format and transparency settings
     scene = bpy.context.scene
@@ -117,15 +162,9 @@ def render_scene_to_png(filepath, add_white_background=False, add_shadow=False):
         
         scene.render.film_transparent = True  # Needed for transparent background
 
-        # Optional: turn off overlays and set shading to render mode
-        for area in bpy.context.screen.areas:
-            if area.type == 'VIEW_3D':
-                for space in area.spaces:
-                    if space.type == 'VIEW_3D':
-                        space.shading.type = 'RENDERED'
-                        space.shading.show_shadows = False  # or False
-                break
-
+    # Enable effects if specified
+    enable_effects(shadows=add_shadow, outline=add_outline)
+    
     # Set output filepath (ensure absolute path)
     filepath = os.path.abspath(filepath)
     scene.render.filepath = filepath
