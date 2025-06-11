@@ -90,7 +90,7 @@ def run_rendering_tasks(options):
     
     # Render the full scene 
     rendering.render_scene_to_png(
-        f'{prefix}.png', add_white_background=options.transparent_background, 
+        f'{prefix}.png', add_white_background=not options.transparent_background, 
         add_shadow=False, add_outline=False) # Do not use any effects for the main image
     
     # Only for close up rendering
@@ -116,7 +116,7 @@ def run_rendering_tasks(options):
         
         # Render the close-up image
         rendering.render_scene_to_png(f'{prefix}_closeup.png', 
-            add_white_background=options.transparent_background, add_shadow=options.render_shadows,
+            add_white_background=not options.transparent_background, add_shadow=options.render_shadows,
             add_outline=options.render_outlines)
     
     # Save the scene as a Blender file

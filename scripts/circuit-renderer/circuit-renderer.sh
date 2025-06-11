@@ -35,7 +35,7 @@ COLORMAP='tab10'
 COLORMAP_FILE='None'
 
 # Image resolution 
-IMAGE_RESOLUTION=2048
+IMAGE_RESOLUTION=3000
 
 # Rendering view, options are 'front', 'side', 'top', and 'all' 
 RENDERING_VIEW='front'
@@ -50,7 +50,7 @@ RENDER_SHADOWS='no'
 TRANSPARENT_BACKGROUND='no'
 
 # If you want to render square aspect ratio images, set this to 'yes'
-SQUARE_ASPECT_RATIO='true'
+SQUARE_ASPECT_RATIO='no'
 
 # Output directory 
 OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
@@ -87,7 +87,7 @@ if [ "$RENDER_SHADOWS" == 'yes' ];
 if [ "$RENDER_OUTLINE" == 'yes' ];
     then BOOL_ARGS+=' --render-outlines '; fi
 
-if [ "$TRANSPARENT_IMAGE" == 'yes' ];
+if [ "$TRANSPARENT_BACKGROUND" == 'yes' ];
     then BOOL_ARGS+=' --transparent-background '; fi
 
 if [ "$SQUARE_ASPECT_RATIO" == 'yes' ];
