@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ####################################################################################################
-# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
-# Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Copyright (c) 2025, Open Brain Institute
+# Author(s): Marwan Abdellah <marwan.abdellah@openbraininstitute.org>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -20,14 +20,14 @@
 BLENDER=$PWD/../../../../../../blender
 
 # libSonata Circuit file 
-CIRCUIT=''
+CIRCUIT_CONFIG='/data/circuits/cns-circuit/v2/N_10__selection1__swc/circuit_config.json'
 
 # Population name
-POPULATION=''
+POPULATION='S1nonbarrel_neurons'
 
 # Colormap file
 # (optional, if not provided, the default colormap will be used)
-COLORMAP_FILE=''
+COLORMAP_FILE='None'
 
 # Image resolution 
 IMAGE_RESOLUTION=2048
@@ -36,7 +36,7 @@ IMAGE_RESOLUTION=2048
 RENDERING_VIEW='front'
 
 # Output directory 
-OUTPUT_DIRECTORY='/home/abdellah/neuromorphovis-output/analysis-glia/resampled'
+OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
 
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
 SAVE_BLENDER_SCENE='yes'
@@ -48,8 +48,9 @@ if [ "$SAVE_BLENDER_SCENE" == 'yes' ];
 
 
 ####################################################################################################
+# NOTE: This is the command line and you can run it directly in a terminal. 
 $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
-    --circuit="$CIRCUIT" \
+    --circuit-config="$CIRCUIT_CONFIG" \
     --population="$POPULATION" \
     --output-directory="$OUTPUT_DIRECTORY" \
     --image-resolution="$IMAGE_RESOLUTION" \

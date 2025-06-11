@@ -1,6 +1,6 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
-# Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Copyright (c) 2025, Open Brain Institute
+# Author(s): Marwan Abdellah <marwan.abdellah@openbraininstitute.org>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -16,18 +16,69 @@
 ####################################################################################################
 
 # System imports
-import sys, os, bpy
-
+import sys, os
 sys.path.append(('%s/../../' %(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(('%s/core' %(os.path.dirname(os.path.realpath(__file__)))))
 
+from mathutils import Matrix
+
 # System imports
 import argparse
+import sonata
+import utilities
+import camera
+import morphology
 
-# NeuroMorphoVis imports
-import nmv.file
-import nmv.skeleton
+####################################################################################################
+# @run_rendering_taks
+####################################################################################################
+def run_rendering_taks(options):
+    
+    # Clearing the scene 
+    utilities.clear_scene()
 
+    # Path to config 
+    print(f'The circuit config is {options.circuit_config}')
+
+    # Loaded circuit 
+    circuit = sonata.import_circuit(options.circuit_config)
+
+    # Population 
+    population = options.population
+
+    # Get number of cells in population 
+    n_cells = circuit.node_population(population).size
+    gids = range(n_cells)
+    print(f'The circuit has {n_cells} neurons')
+
+    # Getting the nodes to directly access the data 
+    nodes = circuit.node_population(population)
+    
+    # TODO: Add a check for the colormap file
+    colors = utilities.get_colors()
+    
+    # Draw the gids and get the neuron objects 
+    for gid in gids:
+        neuron_object = morphology.draw_morphology_in_position(
+            options.circuit_config, gid, population, color=colors[gid])
+        
+        # In case needed for any processing
+        position = sonata.get_position(nodes, gid)
+        rotation = sonata.get_orientation(nodes, gid)
+        
+        # Get the neuron transformation 
+        transformation =  Matrix(sonata.get_transformation(nodes, gid).tolist())
+        
+        # Apply the transformation 
+        neuron_object.matrix_world = transformation @ neuron_object.matrix_world
+        
+        # neuron_object.matrix_world = gloabl_inverse_transformation @ neuron_object.matrix_world
+    
+    
+    camera.create_camera(resolution=options.image_resolution, square_resolution=True)
+    
+    camera.render_scene_to_png(f'{options.output_directory}/{options.population}.png', 
+                               add_white_background=True, add_shadow=False)
 
 ####################################################################################################
 # @parse_command_line_arguments
@@ -46,8 +97,8 @@ def parse_command_line_arguments(arguments=None):
     parser = argparse.ArgumentParser(description=description)
     
     arg_help = 'A circuit in sonata format'
-    parser.add_argument('--circuit',
-                        action='store', dest='circuit', help=arg_help)
+    parser.add_argument('--circuit-config',
+                        action='store', dest='circuit_config', help=arg_help)
     
     arg_help = 'The population name'
     parser.add_argument('--population',
@@ -89,9 +140,6 @@ if __name__ == "__main__":
 
     # Parse the command line arguments
     args = parse_command_line_arguments()
-    print(args)
-
-    # ERROR HANDLING
     
-    
-    print('Thanks')
+    # Run the rendering task
+    run_rendering_taks(options=args)    
