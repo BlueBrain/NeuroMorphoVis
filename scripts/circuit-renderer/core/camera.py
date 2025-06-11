@@ -20,32 +20,39 @@ import mathutils
 import numpy as np 
 import os 
 
+    
 ####################################################################################################
 # @create_camera
 ####################################################################################################
-def create_camera(resolution=1024, 
-                  camera_name="OrthoCamera", 
+def create_camera(resolution=1024,
+                  pmin=None, pmax=None, 
+                  camera_name="Camera", 
                   square_resolution=False):
     # Delete existing camera with the same name
     if camera_name in bpy.data.objects:
         bpy.data.objects.remove(bpy.data.objects[camera_name], do_unlink=True)
 
-    # Get all mesh objects
-    mesh_objects = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
+    if pmin is None and pmax is None:
+        # Get all mesh objects
+        mesh_objects = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
 
-    if not mesh_objects:
-        print("No mesh objects in the scene.")
-        return None
+        if not mesh_objects:
+            print("No mesh objects in the scene.")
+            return None
 
-    # Compute global bounding box
-    min_corner = mathutils.Vector((float('inf'),) * 3)
-    max_corner = mathutils.Vector((float('-inf'),) * 3)
+        # Compute global bounding box
+        min_corner = mathutils.Vector((float('inf'),) * 3)
+        max_corner = mathutils.Vector((float('-inf'),) * 3)
 
-    for obj in mesh_objects:
-        for corner in obj.bound_box:
-            world_corner = obj.matrix_world @ mathutils.Vector(corner)
-            min_corner = mathutils.Vector(map(min, min_corner, world_corner))
-            max_corner = mathutils.Vector(map(max, max_corner, world_corner))
+        for obj in mesh_objects:
+            for corner in obj.bound_box:
+                world_corner = obj.matrix_world @ mathutils.Vector(corner)
+                min_corner = mathutils.Vector(map(min, min_corner, world_corner))
+                max_corner = mathutils.Vector(map(max, max_corner, world_corner))
+    else:
+        # Use provided bounding box corners
+        min_corner = mathutils.Vector(pmin)
+        max_corner = mathutils.Vector(pmax)
 
     center = (min_corner + max_corner) * 0.5
     size = max_corner - min_corner
@@ -64,9 +71,7 @@ def create_camera(resolution=1024,
     # Position the camera above the center and look down -Z (top-down)
     cam_height = size.z + 1.0  # 1 unit above the bounding box
     cam_obj.location = (center.x, center.y, max_corner.z + cam_height)
-    cam_obj.data.clip_end = 100000
-
-
+    cam_obj.data.clip_end = 1e5 # Set a large clip end for visibility
     
     # Set this camera as active
     bpy.context.scene.camera = cam_obj

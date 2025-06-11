@@ -16,6 +16,8 @@
 ####################################################################################################
 
 import bpy 
+from mathutils import Vector
+
 import random 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -122,3 +124,27 @@ def get_colors(palette='tab10'):
     # Sample first 10 colors (tab10 has 10 discrete colors)
     colors = np.array([tab10(i)[:3] for i in range(10)])  # RGB only, drop alpha
     return colors
+
+####################################################################################################
+# @compute_bounds_from_positions
+####################################################################################################
+def compute_bounds_from_positions(positions):
+    """
+    Computes the bounding box from a list of positions.
+    
+    :param positions: List of (x, y, z) tuples representing positions.
+    :return: Tuple of (min_x, min_y, min_z, max_x, max_y, max_z).
+    """
+    if not positions:
+        pmin = Vector((0, 0, 0))
+        pmax = Vector((0, 0, 0))  
+        return pmin, pmax
+
+    positions = np.array(positions)
+    min_coords = np.min(positions, axis=0)
+    max_coords = np.max(positions, axis=0)
+
+    pmin = Vector(min_coords)
+    pmax = Vector(max_coords)
+    
+    return pmin, pmax

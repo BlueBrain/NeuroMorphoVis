@@ -1,6 +1,6 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
-# Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Copyright (c) 2025, Open Brain Institute
+# Author(s): Marwan Abdellah <marwan.abdellah@openbraininstitute.org>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #

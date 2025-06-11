@@ -1,6 +1,6 @@
 ####################################################################################################
-# Copyright (c) 2016 - 2024, EPFL / Blue Brain Project
-# Author(s): Marwan Abdellah <marwan.abdellah@epfl.ch>
+# Copyright (c) 2025, Open Brain Institute
+# Author(s): Marwan Abdellah <marwan.abdellah@openbraininstitute.org>
 #
 # This file is part of NeuroMorphoVis <https://github.com/BlueBrain/NeuroMorphoVis>
 #
@@ -35,7 +35,7 @@ def draw_morphology_in_position(circuit_config, gid, population, color=(0, 0, 0)
     nmv_options.morphology.resampling_method = nmv.enums.Skeleton.Resampling.FIXED_STEP
     nmv_options.morphology.resampling_step = 1.0
     nmv_options.morphology.arbor_style = nmv.enums.Skeleton.Style.TAPERED
-    nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+    # nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
     nmv_options.morphology.sections_radii_scale = 1.15
     nmv_options.morphology.samples_unified_radii_value = 1.0
     nmv_options.shading.morphology_material = nmv.enums.Shader.FLAT

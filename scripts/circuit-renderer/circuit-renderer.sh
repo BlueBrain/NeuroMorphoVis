@@ -38,6 +38,15 @@ RENDERING_VIEW='front'
 # Output directory 
 OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
 
+# Orient the circuit upwards where the up vector is the Y axis, 'yes' or 'no'
+ORIENT_CIRCUIT_UPWARDS='yes'
+
+# Unify branch radii, 'yes' or 'no'
+UNIFY_BRANCH_RADII='yes'
+
+# Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
+RENDER_CLOSEUP='yes'
+
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
 SAVE_BLENDER_SCENE='yes'
 
@@ -45,6 +54,15 @@ SAVE_BLENDER_SCENE='yes'
 BOOL_ARGS=''
 if [ "$SAVE_BLENDER_SCENE" == 'yes' ];
     then BOOL_ARGS+=' --save-blender-scene '; fi
+
+if [ "$RENDER_CLOSEUP" == 'yes' ];
+    then BOOL_ARGS+=' --render-closeup '; fi
+
+if [ "$UNIFY_BRANCH_RADII" == 'yes' ];
+    then BOOL_ARGS+=' --unify-branch-radii '; fi
+
+if [ "$ORIENT_CIRCUIT_UPWARDS" == 'yes' ];
+    then BOOL_ARGS+=' --orient-circuit-upwards '; fi
 
 
 ####################################################################################################

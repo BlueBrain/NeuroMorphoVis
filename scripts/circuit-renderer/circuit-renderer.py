@@ -57,6 +57,8 @@ def run_rendering_taks(options):
     # TODO: Add a check for the colormap file
     colors = utilities.get_colors()
     
+    soma_positions = []
+    
     # Draw the gids and get the neuron objects 
     for gid in gids:
         neuron_object = morphology.draw_morphology_in_position(
@@ -64,6 +66,7 @@ def run_rendering_taks(options):
         
         # In case needed for any processing
         position = sonata.get_position(nodes, gid)
+        soma_positions.append(position)
         rotation = sonata.get_orientation(nodes, gid)
         
         # Get the neuron transformation 
@@ -74,11 +77,25 @@ def run_rendering_taks(options):
         
         # neuron_object.matrix_world = gloabl_inverse_transformation @ neuron_object.matrix_world
     
-    
-    camera.create_camera(resolution=options.image_resolution, square_resolution=True)
+    # Default rendering 
+    camera.create_camera(resolution=options.image_resolution, square_resolution=True, camera_name='Main Camera')
     
     camera.render_scene_to_png(f'{options.output_directory}/{options.population}.png', 
                                add_white_background=True, add_shadow=False)
+    
+    if options.render_closeup:
+        
+        # From the soma positions, get the bounds 
+        pmin, pmax = utilities.compute_bounds_from_positions(positions=soma_positions)
+        
+        # Create the new camera 
+        camera.create_camera(
+            resolution=options.image_resolution, square_resolution=True, camera_name='CloseUp Camera', 
+            pmin=pmin, pmax=pmax)
+        
+        camera.render_scene_to_png(f'{options.output_directory}/{options.population}_closeup.png', 
+                               add_white_background=True, add_shadow=False)
+    
 
 ####################################################################################################
 # @parse_command_line_arguments
@@ -116,7 +133,6 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--rendering-view',
                         action='store', dest='rendering_view', help=arg_help)
     
-    
     arg_help = 'Output directory where the resulting data or images will be written'
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
@@ -124,6 +140,18 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Save the circuit as a Blender file'
     parser.add_argument('--save-blender-scene',
                         action='store_true', dest='save_blender_scene', default=False, help=arg_help)
+    
+    arg_help = 'Render close-up images of the circuit based on the somata positions'
+    parser.add_argument('--render-closeup',
+                        action='store_true', dest='render_closeup', default=False, help=arg_help)
+    
+    arg_help = 'Use a unified radius for the branches of the morphology'
+    parser.add_argument('--unify-branch-radii',
+                        action='store_true', dest='unify_branch_radii', default=False, help=arg_help)
+    
+    arg_help = 'Orient the circuit upwards'
+    parser.add_argument('--orient-circuit-upwards',
+                        action='store_true', dest='orient_circuit_upwards', default=False, help=arg_help)
                         
     # Parse the arguments
     return parser.parse_args()
