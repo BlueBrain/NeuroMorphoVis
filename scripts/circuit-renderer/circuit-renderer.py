@@ -141,7 +141,7 @@ def parse_command_line_arguments(arguments=None):
     """
 
     # add all the options
-    description = 'Resampling neurons to make them lighter while preserving skeletons'
+    description = 'An add-on that renders a circuit in Blender using the NeuroMorphoVis library.'
     parser = argparse.ArgumentParser(description=description)
     
     arg_help = 'A circuit in sonata format'
