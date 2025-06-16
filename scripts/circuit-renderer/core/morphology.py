@@ -21,7 +21,9 @@ import nmv.enums
 ####################################################################################################
 # @draw_morphology_in_position
 ####################################################################################################
-def draw_morphology_in_position(circuit_config, gid, population, color=(0, 0, 0), location=None, scale=1.0):
+def draw_morphology_in_position(circuit_config, gid, population, 
+                                unified_radii_value=0.0,
+                                color=(0, 0, 0), location=None, scale=1.0):
     
     # Create default NMV options with fixed radius value for the visualization
     nmv_options = nmv.options.NeuroMorphoVisOptions()
@@ -34,11 +36,16 @@ def draw_morphology_in_position(circuit_config, gid, population, color=(0, 0, 0)
     nmv_options.morphology.axon_branch_order = 1
     nmv_options.morphology.resampling_method = nmv.enums.Skeleton.Resampling.FIXED_STEP
     nmv_options.morphology.resampling_step = 1.0
-    nmv_options.morphology.arbor_style = nmv.enums.Skeleton.Style.TAPERED
-    # nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
-    nmv_options.morphology.sections_radii_scale = 1.15
-    nmv_options.morphology.samples_unified_radii_value = 1.0
     nmv_options.shading.morphology_material = nmv.enums.Shader.FLAT
+    
+    if (unified_radii_value > 0.0):
+        nmv_options.morphology.sections_radii_scale = 1.0
+        nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.UNIFIED
+        nmv_options.morphology.samples_unified_radii_value = unified_radii_value
+    else:
+        nmv_options.morphology.arbor_style = nmv.enums.Skeleton.Style.TAPERED
+        nmv_options.morphology.sections_radii_scale = 1.15
+        nmv_options.morphology.arbors_radii = nmv.enums.Skeleton.Radii.SCALED
     
     # Create a morphology object 
     morphology_object = nmv.file.readers.read_morphology_from_libsonata_circuit(options=nmv_options)

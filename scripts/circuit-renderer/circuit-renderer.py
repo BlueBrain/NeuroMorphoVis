@@ -67,7 +67,9 @@ def run_rendering_tasks(options):
     # Draw the gids and get the neuron objects 
     for gid in gids:
         neuron_object = morphology.draw_morphology_in_position(
-            options.circuit_config, gid, population, color=colors[gid])
+            options.circuit_config, gid, population, 
+            unified_radii_value=options.unified_branch_radius,
+            color=colors[gid])
         
         # In case needed for any processing
         position = sonata.get_position(nodes, gid)
@@ -161,6 +163,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Image resolution for the circuit rendering (for the shortest side of the image)'
     parser.add_argument('--image-resolution',
                         action='store', dest='image_resolution', type=int, help=arg_help)
+    
+    arg_help = 'Unified branch radius for the morphology rendering (default is 0.0)'
+    parser.add_argument('--unified-branch-radius',
+                        action='store', dest='unified_branch_radius', 
+                        type=float, default=0.0, help=arg_help)
     
     arg_help = 'Rendering view or the camera view to use for the circuit rendering (e.g., "top", "side", "front")'
     parser.add_argument('--rendering-view',

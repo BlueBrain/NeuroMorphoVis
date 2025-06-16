@@ -44,22 +44,22 @@ RENDERING_VIEW='front'
 RENDER_OUTLINE='yes'
 
 # Render shadows for better visualization
-RENDER_SHADOWS='no'
+RENDER_SHADOWS='yes'
 
 # If you want to render transparent images, set this to 'yes'
-TRANSPARENT_BACKGROUND='no'
+TRANSPARENT_BACKGROUND='yes'
 
 # If you want to render square aspect ratio images, set this to 'yes'
-SQUARE_ASPECT_RATIO='no'
+SQUARE_ASPECT_RATIO='yes'
+
+# Use a unified radius of the branches, if the value is greater than 0, it will be used as the radius
+UNIFIED_BRANCH_RADIUS='0.0'
 
 # Output directory 
-OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/'
+OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v2-16.06.2025'
 
 # Orient the circuit upwards where the up vector is the Y axis, 'yes' or 'no'
 ORIENT_CIRCUIT_UPWARDS='yes'
-
-# Unify branch radii, 'yes' or 'no'
-UNIFY_BRANCH_RADII='no'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
 RENDER_CLOSEUP='yes'
@@ -74,9 +74,6 @@ if [ "$SAVE_BLENDER_SCENE" == 'yes' ];
 
 if [ "$RENDER_CLOSEUP" == 'yes' ];
     then BOOL_ARGS+=' --render-closeup '; fi
-
-if [ "$UNIFY_BRANCH_RADII" == 'yes' ];
-    then BOOL_ARGS+=' --unify-branch-radii '; fi
 
 if [ "$ORIENT_CIRCUIT_UPWARDS" == 'yes' ];
     then BOOL_ARGS+=' --orient-circuit-upwards '; fi
@@ -103,6 +100,7 @@ $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
     --rendering-view="$RENDERING_VIEW" \
     --colormap-file="$COLORMAP_FILE" \
     --colormap-palette="$COLORMAP" \
+    --unified-branch-radius="$UNIFIED_BRANCH_RADIUS" \
     $BOOL_ARGS
 ####################################################################################################
 
