@@ -85,16 +85,6 @@ def run_rendering_tasks(options):
         if options.orient_circuit_upwards:
             neuron_object.matrix_world = global_orientation_matrix @ neuron_object.matrix_world
     
-    # Create the default camera 
-    rendering.create_camera(
-        resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
-        camera_name='Main Camera')
-    
-    # Render the full scene 
-    rendering.render_scene_to_png(
-        f'{prefix}.png', add_white_background=not options.transparent_background, 
-        add_shadow=False, add_outline=False) # Do not use any effects for the main image
-    
     # Only for close up rendering
     if options.render_closeup:
         
@@ -120,6 +110,18 @@ def run_rendering_tasks(options):
         rendering.render_scene_to_png(f'{prefix}_closeup.png', 
             add_white_background=not options.transparent_background, add_shadow=options.render_shadows,
             add_outline=options.render_outlines)
+    
+    else:
+        # Create the default camera 
+        rendering.create_camera(
+            resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
+            camera_name='Main Camera')
+        
+        # Render the full scene 
+        rendering.render_scene_to_png(
+            f'{prefix}.png', add_white_background=not options.transparent_background, 
+            add_shadow=False, add_outline=False) # Do not use any effects for the main image
+    
     
     # Save the scene as a Blender file
     if options.save_blender_scene:
@@ -227,6 +229,8 @@ def parse_command_line_arguments(arguments=None):
 ####################################################################################################
 if __name__ == "__main__":
 
+    print("Command line arguments:", sys.argv)
+    
     # Get all arguments after the '--'
     args = sys.argv
     sys.argv = args[args.index("--") + 0:]
