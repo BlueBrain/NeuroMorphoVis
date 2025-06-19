@@ -29,10 +29,11 @@ POPULATION='S1nonbarrel_neurons'
 # 'tab10', 'tab20', 'viridis', 'plasma', 'inferno', 'magma', 'cividis'
 # If you want to use a custom colormap, set COLORMAP_FILE to the path of the colormap file
 # and set COLORMAP to 'custom'
-COLORMAP='tab10'
+COLORMAP='custom'
+
 
 # Colormap file (optional, if not provided, the default colormaps will be used)
-COLORMAP_FILE='None'
+COLORMAP_FILE='/home/abdellah/Downloads/colors_tab10.txt'
 
 # Image resolution 
 IMAGE_RESOLUTION=3000

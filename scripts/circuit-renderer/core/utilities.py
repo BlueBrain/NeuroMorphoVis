@@ -206,6 +206,7 @@ def get_neurons_colors(options, number_neurons):
             colormap = parse_colormap_file(file_path=options.colormap_file)
             if len(colormap) < number_neurons or len(colormap) > number_neurons:
                 raise ValueError(f"Custom colormap file must contain {number_neurons} colors.")
+            return colormap
     else:
         try:
             # Load the colormap from the specified file
