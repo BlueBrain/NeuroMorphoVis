@@ -31,7 +31,6 @@ POPULATION='S1nonbarrel_neurons'
 # and set COLORMAP to 'custom'
 COLORMAP='custom'
 
-
 # Colormap file (optional, if not provided, the default colormaps will be used)
 COLORMAP_FILE='/home/abdellah/Downloads/colors_tab10.txt'
 

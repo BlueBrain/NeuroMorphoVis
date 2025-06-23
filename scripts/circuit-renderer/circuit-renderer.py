@@ -34,9 +34,12 @@ import morphology
 ####################################################################################################
 def run_rendering_tasks(options):
     
-    # Scen prefix
-    prefix = f'{options.output_directory}/{options.population}'
-    
+    # Scene prefix
+    if options.prefix is not None:
+        prefix = f'{options.output_directory}/{options.population}'
+    else:
+        prefix = f'{options.output_directory}/{options.prefix}'
+        
     # Clearing the scene 
     utilities.clear_scene()
     
@@ -165,6 +168,11 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'Image resolution for the circuit rendering (for the shortest side of the image)'
     parser.add_argument('--image-resolution',
                         action='store', dest='image_resolution', type=int, help=arg_help)
+    
+    arg_help = 'A prefix that will be used to name the output files. If not provided, the ' \
+               'population name will be used.'
+    parser.add_argument('--prefix',
+                        action='store', dest='prefix', default=None, help=arg_help)
     
     arg_help = 'Unified branch radius for the morphology rendering (default is 0.0)'
     parser.add_argument('--unified-branch-radius',
