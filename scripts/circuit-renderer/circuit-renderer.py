@@ -100,7 +100,7 @@ def run_rendering_tasks(options):
         
         # Add an extra margin to the bounds to capture all the somata 
         bounds = pmax - pmin
-        margin = 0.75 * bounds
+        margin = options.closeup_margin_factor * bounds
         pmin -= margin
         pmax += margin
                 
@@ -123,8 +123,7 @@ def run_rendering_tasks(options):
         # Render the full scene 
         rendering.render_scene_to_png(
             f'{prefix}.png', add_white_background=not options.transparent_background, 
-            add_shadow=False, add_outline=False) # Do not use any effects for the main image
-    
+            add_shadow=options.render_shadows, add_outline=options.render_outlines) 
     
     # Save the scene as a Blender file
     if options.save_blender_scene:
@@ -196,6 +195,10 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--render-closeup',
                         action='store_true', dest='render_closeup', 
                         default=False, help=arg_help)
+    
+    arg_help = 'The factor used to enlarge the close-up bounds (default is 0.5)'
+    parser.add_argument('--closeup-margin-factor',
+                        action='store', dest='closeup_margin_factor', type=float, help=arg_help)
     
     arg_help = 'Use a unified radius for the branches of the morphology'
     parser.add_argument('--unify-branch-radii',
