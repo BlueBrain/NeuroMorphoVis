@@ -40,6 +40,8 @@ def run_rendering_tasks(options):
     else:
         prefix = f'{options.output_directory}/{options.prefix}'
         
+    print(f'Output files will be prefixed with: {prefix}')
+        
     # Clearing the scene 
     utilities.clear_scene()
     
