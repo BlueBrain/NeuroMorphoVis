@@ -35,7 +35,7 @@ import morphology
 def run_rendering_tasks(options):
     
     # Scene prefix
-    if options.prefix is not None:
+    if options.prefix == "None":
         prefix = f'{options.output_directory}/{options.population}'
     else:
         prefix = f'{options.output_directory}/{options.prefix}'
@@ -171,7 +171,7 @@ def parse_command_line_arguments(arguments=None):
     arg_help = 'A prefix that will be used to name the output files. If not provided, the ' \
                'population name will be used.'
     parser.add_argument('--prefix',
-                        action='store', dest='prefix', default=None, help=arg_help)
+                        action='store', dest='prefix', default="None", help=arg_help)
     
     arg_help = 'Unified branch radius for the morphology rendering (default is 0.0)'
     parser.add_argument('--unified-branch-radius',
