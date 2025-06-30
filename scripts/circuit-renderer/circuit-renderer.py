@@ -108,7 +108,7 @@ def run_rendering_tasks(options):
                 
         # Create the close-up camera 
         rendering.create_camera(
-            resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
+            resolution=options.image_resolution, aspect_ratio=options.image_aspect_ratio, 
             camera_name='CloseUp Camera', pmin=pmin, pmax=pmax)
         
         # Render the close-up image
@@ -119,7 +119,7 @@ def run_rendering_tasks(options):
     else:
         # Create the default camera 
         rendering.create_camera(
-            resolution=options.image_resolution, square_resolution=options.square_aspect_ratio, 
+            resolution=options.image_resolution, aspect_ratio=options.image_aspect_ratio, 
             camera_name='Main Camera')
         
         # Render the full scene 
@@ -188,6 +188,11 @@ def parse_command_line_arguments(arguments=None):
     parser.add_argument('--output-directory',
                         action='store', dest='output_directory', help=arg_help)
     
+    arg_help = 'The aspect ratio of the rendered images'
+    parser.add_argument('--image-aspect-ratio',
+                        action='store', dest='image_aspect_ratio', 
+                        default="1:1", help=arg_help)       
+    
     arg_help = 'Save the circuit as a Blender file'
     parser.add_argument('--save-blender-scene',
                         action='store_true', dest='save_blender_scene', 
@@ -228,11 +233,7 @@ def parse_command_line_arguments(arguments=None):
                         action='store_true', dest='transparent_background', 
                         default=False, help=arg_help)
     
-    arg_help = 'Use a square aspect ratio for the rendered images'
-    parser.add_argument('--square-aspect-ratio',
-                        action='store_true', dest='square_aspect_ratio', 
-                        default=False, help=arg_help)
-                        
+    
     # Parse the arguments
     return parser.parse_args()
 
@@ -250,6 +251,11 @@ if __name__ == "__main__":
 
     # Parse the command line arguments
     args = parse_command_line_arguments()
+    
+    # Create the output directory if it does not exist
+    if not os.path.exists(args.output_directory):
+        os.makedirs(args.output_directory)
+        print(f'Created output directory: {args.output_directory}')
     
     # Run the rendering task
     run_rendering_tasks(options=args)    

@@ -69,23 +69,46 @@ def enable_effects(shadows=True, outline=True):
 ####################################################################################################
 # @create_camera
 ####################################################################################################
+import bpy
+import mathutils
+
 def create_camera(resolution=1024,
-                  pmin=None, pmax=None, 
-                  camera_name="Camera", 
-                  square_resolution=False):
+                  pmin=None, pmax=None,
+                  camera_name="Camera",
+                  aspect_ratio="1:1",
+                  padding=1.05):
+    """
+    Create a top-down orthographic camera that frames all visible mesh objects
+    according to a user-specified aspect ratio.
+
+    Parameters:
+        resolution (int): Base resolution (width or height depending on aspect).
+        pmin, pmax (tuple): Optional bounding box override (min, max corners).
+        camera_name (str): Name of the camera.
+        aspect_ratio (str): Desired aspect ratio, e.g., "16:9", "1:1", "3:2".
+        padding (float): Optional padding factor to avoid tight framing.
+    """
     # Delete existing camera with the same name
     if camera_name in bpy.data.objects:
         bpy.data.objects.remove(bpy.data.objects[camera_name], do_unlink=True)
 
-    if pmin is None and pmax is None:
-        # Get all mesh objects
-        mesh_objects = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
+    # Parse aspect ratio string
+    try:
+        aspect_x, aspect_y = map(float, aspect_ratio.strip().split(":"))
+        image_aspect = aspect_x / aspect_y
+        print(f"[create_camera] Aspect ratio set to {aspect_x}:{aspect_y}.")
+    except Exception:
+        print(f"[create_camera] Invalid aspect ratio format '{aspect_ratio}'. "
+              "Expected format 'width:height' (e.g., '16:9').")
+        return None
 
+    # Compute scene bounding box
+    if pmin is None or pmax is None:
+        mesh_objects = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
         if not mesh_objects:
-            print("No mesh objects in the scene.")
+            print("[create_camera] No mesh objects in the scene.")
             return None
 
-        # Compute global bounding box
         min_corner = mathutils.Vector((float('inf'),) * 3)
         max_corner = mathutils.Vector((float('-inf'),) * 3)
 
@@ -95,15 +118,24 @@ def create_camera(resolution=1024,
                 min_corner = mathutils.Vector(map(min, min_corner, world_corner))
                 max_corner = mathutils.Vector(map(max, max_corner, world_corner))
     else:
-        # Use provided bounding box corners
         min_corner = mathutils.Vector(pmin)
         max_corner = mathutils.Vector(pmax)
 
     center = (min_corner + max_corner) * 0.5
     size = max_corner - min_corner
+    scene_width = size.x
+    scene_height = size.y
 
-    # Determine ortho scale (fit X and Y)
-    ortho_scale = max(size.x, size.y)
+    # Compute ortho scale to preserve full scene with aspect ratio
+    scene_aspect = scene_width / scene_height
+    if scene_aspect > image_aspect:
+        # Scene is wider than desired image: fit width, extend height
+        ortho_scale = (scene_width / image_aspect)
+    else:
+        # Scene is taller or equal: fit height directly
+        ortho_scale = scene_height
+
+    ortho_scale *= padding  # Add optional margin
 
     # Create orthographic camera
     cam_data = bpy.data.cameras.new(name=camera_name)
@@ -113,30 +145,25 @@ def create_camera(resolution=1024,
     cam_obj = bpy.data.objects.new(camera_name, cam_data)
     bpy.context.collection.objects.link(cam_obj)
 
-    # Position the camera above the center and look down -Z (top-down)
-    cam_height = size.z + 1.0  # 1 unit above the bounding box
+    # Position camera above the center and look down
+    cam_height = size.z + 1.0
     cam_obj.location = (center.x, center.y, max_corner.z + cam_height)
-    cam_obj.data.clip_end = 1e5 # Set a large clip end for visibility
-    
-    # Set this camera as active
-    bpy.context.scene.camera = cam_obj
- 
-    # Set render resolution proportionally
-    if square_resolution:
-        bpy.context.scene.render.resolution_y = resolution
-        bpy.context.scene.render.resolution_x = resolution
-    else:
-        
-        aspect_x = size.x
-        aspect_y = size.y
-        if aspect_x > aspect_y:
-            bpy.context.scene.render.resolution_x = resolution
-            bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
-        else:
-            bpy.context.scene.render.resolution_y = resolution
-            bpy.context.scene.render.resolution_x = int(resolution * (aspect_x / aspect_y))
+    cam_obj.rotation_euler = (0, 0, 0)  # Pointing -Z in Blender's default orientation
+    cam_data.clip_end = 1e5
 
-        return cam_obj
+    # Set as active camera
+    bpy.context.scene.camera = cam_obj
+
+    # Apply render resolution based on aspect ratio
+    bpy.context.scene.render.resolution_x = resolution
+    bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
+
+    print(f"[create_camera] Camera '{camera_name}' created with resolution "
+          f"{bpy.context.scene.render.resolution_x}x{bpy.context.scene.render.resolution_y} "
+          f"and ortho scale {ortho_scale:.3f}")
+
+    return cam_obj
+
 
 ####################################################################################################
 # @render_scene_to_png

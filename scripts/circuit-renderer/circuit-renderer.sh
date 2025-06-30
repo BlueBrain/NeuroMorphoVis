@@ -47,22 +47,25 @@ RENDER_OUTLINE='yes'
 RENDER_SHADOWS='yes'
 
 # If you want to render transparent images, set this to 'yes'
-TRANSPARENT_BACKGROUND='yes'
+TRANSPARENT_BACKGROUND='no'
 
-# If you want to render square aspect ratio images, set this to 'yes'
-SQUARE_ASPECT_RATIO='yes'
+# The aspect ratio of the resulting image, either [1:1], [2:3] or [circuit] 
+IMAGE_ASPECT_RATIO="3:2"
 
 # Use a unified radius of the branches, if the value is greater than 0, it will be used as the radius
 UNIFIED_BRANCH_RADIUS='0.0'
 
 # Output directory 
-OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v2-16.06.2025'
+OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v3-30.06.2025'
 
 # Orient the circuit upwards where the up vector is the Y axis, 'yes' or 'no'
 ORIENT_CIRCUIT_UPWARDS='yes'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
 RENDER_CLOSEUP='yes'
+
+# Close up margin factor 
+CLOSEUP_MARGIN_FACTOR=0.5
 
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
 SAVE_BLENDER_SCENE='yes'
@@ -87,9 +90,6 @@ if [ "$RENDER_OUTLINE" == 'yes' ];
 if [ "$TRANSPARENT_BACKGROUND" == 'yes' ];
     then BOOL_ARGS+=' --transparent-background '; fi
 
-if [ "$SQUARE_ASPECT_RATIO" == 'yes' ];
-    then BOOL_ARGS+=' --square-aspect-ratio '; fi
-
 ####################################################################################################
 # NOTE: This is the command line and you can run it directly in a terminal. 
 $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
@@ -100,7 +100,9 @@ $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
     --rendering-view="$RENDERING_VIEW" \
     --colormap-file="$COLORMAP_FILE" \
     --colormap-palette="$COLORMAP" \
+    --closeup-margin-factor="$CLOSEUP_MARGIN_FACTOR" \
     --unified-branch-radius="$UNIFIED_BRANCH_RADIUS" \
+    --image-aspect-ratio="$IMAGE_ASPECT_RATIO" \
     $BOOL_ARGS
 ####################################################################################################
 
