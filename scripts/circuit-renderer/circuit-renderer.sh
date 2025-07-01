@@ -50,7 +50,7 @@ RENDER_SHADOWS='yes'
 TRANSPARENT_BACKGROUND='no'
 
 # The aspect ratio of the resulting image, either [1:1], [2:3] or [circuit] 
-IMAGE_ASPECT_RATIO="3:2"
+IMAGE_ASPECT_RATIO="2:3"
 
 # Use a unified radius of the branches, if the value is greater than 0, it will be used as the radius
 UNIFIED_BRANCH_RADIUS='0.0'
@@ -62,7 +62,7 @@ OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v3-30.06.2025'
 ORIENT_CIRCUIT_UPWARDS='yes'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
-RENDER_CLOSEUP='no'
+RENDER_CLOSEUP='yes'
 
 # Close up margin factor 
 CLOSEUP_MARGIN_FACTOR=0.5
@@ -71,7 +71,7 @@ CLOSEUP_MARGIN_FACTOR=0.5
 SAVE_BLENDER_SCENE='yes'
 
 # Prefix 
-PREFIX="3:2"
+PREFIX="None"
 
 ####################################################################################################
 BOOL_ARGS=''

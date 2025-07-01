@@ -71,7 +71,8 @@ def enable_effects(shadows=True, outline=True):
 ####################################################################################################
 def create_camera(resolution=1024,
                   pmin=None, pmax=None,
-                  camera_name="Camera"):
+                  camera_name="Camera", 
+                  square_aspect=False):
     """
     Create a top-down orthographic camera that frames all visible mesh objects
     according to a user-specified aspect ratio.
@@ -129,12 +130,16 @@ def create_camera(resolution=1024,
     bpy.context.scene.camera = cam_obj
  
     # Set render resolution proportionally
-    if aspect_x > aspect_y:
+    if square_aspect:
         bpy.context.scene.render.resolution_x = resolution
-        bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
-    else:
         bpy.context.scene.render.resolution_y = resolution
-        bpy.context.scene.render.resolution_x = int(resolution * (aspect_x / aspect_y))
+    else:
+        if aspect_x > aspect_y:
+            bpy.context.scene.render.resolution_x = resolution
+            bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
+        else:
+            bpy.context.scene.render.resolution_y = resolution
+            bpy.context.scene.render.resolution_x = int(resolution * (aspect_x / aspect_y))
 
     return cam_obj
 
