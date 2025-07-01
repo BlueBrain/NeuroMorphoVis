@@ -187,7 +187,7 @@ def render_scene_to_png(filepath, add_white_background=False, add_shadow=False, 
 def adjust_aspect_ratio(image_path, required_aspect_ratio):
     """
     Adjusts the aspect ratio of an image by padding it to match the desired aspect ratio.
-    
+
     Parameters:
         image_path (str): Path to the input image.
         required_aspect_ratio (str): Desired aspect ratio as a string, e.g., "16:9".
@@ -204,21 +204,28 @@ def adjust_aspect_ratio(image_path, required_aspect_ratio):
         current_aspect_ratio = original_width / original_height
 
         if current_aspect_ratio > required_aspect_ratio_float:
-            # Too wide: pad top/bottom
-            new_height = int(original_width / required_aspect_ratio_float)
+            # Too wide → pad vertically
+            new_height = int(round(original_width / required_aspect_ratio_float))
             new_width = original_width
         elif current_aspect_ratio < required_aspect_ratio_float:
-            # Too tall: pad left/right
-            new_width = int(original_height * required_aspect_ratio_float)
+            # Too tall → pad horizontally
+            new_width = int(round(original_height * required_aspect_ratio_float))
             new_height = original_height
         else:
-            # Already the right aspect ratio
+            # Already correct aspect ratio
+            print("Image already matches the required aspect ratio.")
             return
 
-        # Create a new image with padding
-        new_img = Image.new(img.mode, (new_width, new_height), color=(255, 255, 255))
-        paste_x = (new_width - original_width) // 2
-        paste_y = (new_height - original_height) // 2
+        # Calculate even padding (left/right or top/bottom)
+        pad_x = (new_width - original_width)
+        pad_y = (new_height - original_height)
+        paste_x = pad_x // 2
+        paste_y = pad_y // 2
+
+        # Create padded image
+        background_color = (255, 255, 255) if img.mode == 'RGBA' else (255, 255, 255)
+        new_img = Image.new(img.mode, (new_width, new_height), color=background_color)
         new_img.paste(img, (paste_x, paste_y))
         new_img.save(image_path)
+
         print(f"Aspect ratio adjusted and saved to: {image_path}")

@@ -62,7 +62,7 @@ OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v3-30.06.2025'
 ORIENT_CIRCUIT_UPWARDS='yes'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
-RENDER_CLOSEUP='yes'
+RENDER_CLOSEUP='no'
 
 # Close up margin factor 
 CLOSEUP_MARGIN_FACTOR=0.5
