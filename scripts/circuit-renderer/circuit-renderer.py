@@ -126,11 +126,11 @@ def run_rendering_tasks(options):
             f'{prefix}.png', add_white_background=not options.transparent_background, 
             add_shadow=options.render_shadows, add_outline=options.render_outlines) 
         
-         # Adjust the aspect ratio of the rendered image
+        # Adjust the aspect ratio of the rendered image
         rendering.adjust_aspect_ratio(
             image_path=f'{prefix}.png', 
             required_aspect_ratio=options.image_aspect_ratio)
-    
+
     # Save the scene as a Blender file
     if options.save_blender_scene:
         blend_file_path = f'{prefix}.blend'

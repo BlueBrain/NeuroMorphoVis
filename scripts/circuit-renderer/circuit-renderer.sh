@@ -20,7 +20,7 @@
 BLENDER=$PWD/../../../../../../blender
 
 # libSonata Circuit file 
-CIRCUIT_CONFIG='/data/circuits/cns-circuit/v2/N_10__selection1__swc/circuit_config.json'
+CIRCUIT_CONFIG='/data/circuits/OneDrive_1_7-1-2025/nbS1-O1-sSub-post-dim6-nCN-HEX0-L3-01/circuit_config.json'
 
 # Population name
 POPULATION='S1nonbarrel_neurons'
@@ -56,7 +56,7 @@ IMAGE_ASPECT_RATIO="2:3"
 UNIFIED_BRANCH_RADIUS='0.0'
 
 # Output directory 
-OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v3-30.06.2025'
+OUTPUT_DIRECTORY='/data/circuits/OneDrive_1_7-1-2025/nbS1-O1-sSub-post-dim6-nCN-HEX0-L3-01/renderings'
 
 # Orient the circuit upwards where the up vector is the Y axis, 'yes' or 'no'
 ORIENT_CIRCUIT_UPWARDS='yes'

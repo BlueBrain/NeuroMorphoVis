@@ -16,6 +16,7 @@
 ####################################################################################################
 
 import bpy
+import bmesh
 import mathutils
 import os 
 from PIL import Image
@@ -65,7 +66,62 @@ def enable_effects(shadows=True, outline=True):
     if not any(obj.type == 'LIGHT' for obj in scene.objects):
         bpy.ops.object.light_add(type='SUN')
         print("Added a Sun light to enable shadows.")
-        
+
+####################################################################################################
+# @draw_bounding_box
+####################################################################################################
+def draw_bounding_box(pmin, pmax, name="BoundingBox"):
+    """
+    Draw a wireframe box from pmin to pmax coordinates in the scene.
+    """
+    # Delete existing object with the same name if it exists
+    if name in bpy.data.objects:
+        bpy.data.objects.remove(bpy.data.objects[name], do_unlink=True)
+
+    # Create a new mesh
+    mesh = bpy.data.meshes.new(name + "_mesh")
+    bm = bmesh.new()
+
+    # Define the 8 corners of the box
+    corners = [
+        (pmin[0], pmin[1], pmin[2]),  # 0: Bottom-front-left
+        (pmax[0], pmin[1], pmin[2]),  # 1: Bottom-front-right
+        (pmax[0], pmax[1], pmin[2]),  # 2: Bottom-back-right
+        (pmin[0], pmax[1], pmin[2]),  # 3: Bottom-back-left
+        (pmin[0], pmin[1], pmax[2]),  # 4: Top-front-left
+        (pmax[0], pmin[1], pmax[2]),  # 5: Top-front-right
+        (pmax[0], pmax[1], pmax[2]),  # 6: Top-back-right
+        (pmin[0], pmax[1], pmax[2])   # 7: Top-back-left
+    ]
+
+    # Add vertices to bmesh
+    for x, y, z in corners:
+        bm.verts.new((x, y, z))
+
+    bm.verts.ensure_lookup_table()
+
+    # Define edges (wireframe connections)
+    edges = [
+        (0, 1), (1, 2), (2, 3), (3, 0),  # Bottom face
+        (4, 5), (5, 6), (6, 7), (7, 4),  # Top face
+        (0, 4), (1, 5), (2, 6), (3, 7)   # Vertical edges
+    ]
+
+    for v1, v2 in edges:
+        bm.edges.new((bm.verts[v1], bm.verts[v2]))
+
+    # Convert bmesh to mesh
+    bm.to_mesh(mesh)
+    bm.free()
+
+    # Create object from mesh
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+
+    # Set object as wireframe
+    obj.show_wire = True
+    obj.show_all_edges = True
+    
 ####################################################################################################
 # @create_camera
 ####################################################################################################
@@ -93,14 +149,21 @@ def create_camera(resolution=1024,
             print("[create_camera] No mesh objects in the scene.")
             return None
 
+        depsgraph = bpy.context.evaluated_depsgraph_get()
+
         min_corner = mathutils.Vector((float('inf'),) * 3)
         max_corner = mathutils.Vector((float('-inf'),) * 3)
 
         for obj in mesh_objects:
-            for corner in obj.bound_box:
-                world_corner = obj.matrix_world @ mathutils.Vector(corner)
-                min_corner = mathutils.Vector(map(min, min_corner, world_corner))
-                max_corner = mathutils.Vector(map(max, max_corner, world_corner))
+            eval_obj = obj.evaluated_get(depsgraph)
+            mesh = eval_obj.to_mesh()
+
+            for vertex in mesh.vertices:
+                world_vertex = eval_obj.matrix_world @ vertex.co
+                min_corner = mathutils.Vector(map(min, min_corner, world_vertex))
+                max_corner = mathutils.Vector(map(max, max_corner, world_vertex))
+
+            eval_obj.to_mesh_clear()
     else:
         min_corner = mathutils.Vector(pmin)
         max_corner = mathutils.Vector(pmax)
@@ -108,15 +171,19 @@ def create_camera(resolution=1024,
     center = (min_corner + max_corner) * 0.5
     size = max_corner - min_corner
     
-    # Determine ortho scale (fit X and Y)
-    aspect_x = size.x
-    aspect_y = size.y
-    ortho_scale = max(aspect_x, aspect_y)
+    # 'FRONT' : bounds[0] & bounds[1]
+    orthographic_scale = size[0]
+    if orthographic_scale < size[1]:
+        orthographic_scale = size[1]
+
+    x_bounds = size[0]
+    y_bounds = size[1]
 
     # Create orthographic camera
     cam_data = bpy.data.cameras.new(name=camera_name)
     cam_data.type = 'ORTHO'
-    cam_data.ortho_scale = ortho_scale
+    cam_data.clip_end = 1000000
+    cam_data.ortho_scale = orthographic_scale
 
     cam_obj = bpy.data.objects.new(camera_name, cam_data)
     bpy.context.collection.objects.link(cam_obj)
@@ -134,12 +201,9 @@ def create_camera(resolution=1024,
         bpy.context.scene.render.resolution_x = resolution
         bpy.context.scene.render.resolution_y = resolution
     else:
-        if aspect_x > aspect_y:
-            bpy.context.scene.render.resolution_x = resolution
-            bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
-        else:
-            bpy.context.scene.render.resolution_y = resolution
-            bpy.context.scene.render.resolution_x = int(resolution * (aspect_x / aspect_y))
+        
+        bpy.context.scene.render.resolution_x = int(resolution * x_bounds / orthographic_scale)
+        bpy.context.scene.render.resolution_y = int(resolution * y_bounds / orthographic_scale)
 
     return cam_obj
 
