@@ -74,7 +74,8 @@ class libSonataCircuit(Circuit):
         import os 
         
         # Let's contruct a file path for the morphology and try to load it 
-        folder, morphology, type = self.get_neuron_morphology_attributes(gid=gid, population=population)
+        folder, morphology, type = self.get_neuron_morphology_attributes(
+            gid=gid, population=population)
         morpholoyg_file_path = f"{folder}/{morphology}.{type}"
         if os.path.exists(morpholoyg_file_path):
             return Morphology(morpholoyg_file_path)
@@ -112,7 +113,7 @@ class libSonataCircuit(Circuit):
                 "Could not determine morphology folder and/or extension")
 
         nodes = self.circuit.node_population(population)
-        morphology = nodes.get_attribute("morphology", gid)
+        morphology = nodes.get_attribute("morphology", gid) 
         return (folder, morphology, type)
         
     ################################################################################################

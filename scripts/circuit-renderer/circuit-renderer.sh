@@ -62,13 +62,16 @@ OUTPUT_DIRECTORY='/data/circuits/cns-circuit/v2/renderings/v3-30.06.2025'
 ORIENT_CIRCUIT_UPWARDS='yes'
 
 # Render a close-up of the circuit based on the somata positions, 'yes' or 'no'
-RENDER_CLOSEUP='yes'
+RENDER_CLOSEUP='no'
 
 # Close up margin factor 
 CLOSEUP_MARGIN_FACTOR=0.5
 
 # Export the final mesh in a .BLEND file, 'yes' or 'no'
 SAVE_BLENDER_SCENE='yes'
+
+# Prefix 
+PREFIX="3:2"
 
 ####################################################################################################
 BOOL_ARGS=''
@@ -103,6 +106,7 @@ $BLENDER -b --verbose 0 --python circuit-renderer.py -- \
     --closeup-margin-factor="$CLOSEUP_MARGIN_FACTOR" \
     --unified-branch-radius="$UNIFIED_BRANCH_RADIUS" \
     --image-aspect-ratio="$IMAGE_ASPECT_RATIO" \
+    --prefix="$PREFIX" \
     $BOOL_ARGS
 ####################################################################################################
 

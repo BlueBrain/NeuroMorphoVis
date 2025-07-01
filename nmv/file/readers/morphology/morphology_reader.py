@@ -297,8 +297,13 @@ def read_morphology_from_libsonata_circuit(options):
     circuit = libSonataCircuit(path)
         
     # Get the data from the circuit and update the necessary fields in NMV
-    nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list(population)
-    nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list(population)
+    try:
+        nmv.consts.Circuit.MTYPES = circuit.get_mtype_strings_list(population)
+        nmv.consts.Circuit.ETYPES = circuit.get_etype_strings_list(population)
+    except Exception as e:
+        nmv.logger.log('ERROR: Could not get mtype or etype strings from the circuit: %s' % e)
+    
+    # Add the circuit 
     nmv.interface.ui_circuit = circuit
 
     # Get the MorphIO morphology object 

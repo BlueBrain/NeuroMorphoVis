@@ -17,8 +17,8 @@
 
 import bpy
 import mathutils
-import numpy as np 
 import os 
+from PIL import Image
 
 ####################################################################################################
 # @enable_effects
@@ -69,14 +69,9 @@ def enable_effects(shadows=True, outline=True):
 ####################################################################################################
 # @create_camera
 ####################################################################################################
-import bpy
-import mathutils
-
 def create_camera(resolution=1024,
                   pmin=None, pmax=None,
-                  camera_name="Camera",
-                  aspect_ratio="1:1",
-                  padding=1.05):
+                  camera_name="Camera"):
     """
     Create a top-down orthographic camera that frames all visible mesh objects
     according to a user-specified aspect ratio.
@@ -85,22 +80,10 @@ def create_camera(resolution=1024,
         resolution (int): Base resolution (width or height depending on aspect).
         pmin, pmax (tuple): Optional bounding box override (min, max corners).
         camera_name (str): Name of the camera.
-        aspect_ratio (str): Desired aspect ratio, e.g., "16:9", "1:1", "3:2".
-        padding (float): Optional padding factor to avoid tight framing.
     """
     # Delete existing camera with the same name
     if camera_name in bpy.data.objects:
         bpy.data.objects.remove(bpy.data.objects[camera_name], do_unlink=True)
-
-    # Parse aspect ratio string
-    try:
-        aspect_x, aspect_y = map(float, aspect_ratio.strip().split(":"))
-        image_aspect = aspect_x / aspect_y
-        print(f"[create_camera] Aspect ratio set to {aspect_x}:{aspect_y}.")
-    except Exception:
-        print(f"[create_camera] Invalid aspect ratio format '{aspect_ratio}'. "
-              "Expected format 'width:height' (e.g., '16:9').")
-        return None
 
     # Compute scene bounding box
     if pmin is None or pmax is None:
@@ -123,19 +106,11 @@ def create_camera(resolution=1024,
 
     center = (min_corner + max_corner) * 0.5
     size = max_corner - min_corner
-    scene_width = size.x
-    scene_height = size.y
-
-    # Compute ortho scale to preserve full scene with aspect ratio
-    scene_aspect = scene_width / scene_height
-    if scene_aspect > image_aspect:
-        # Scene is wider than desired image: fit width, extend height
-        ortho_scale = (scene_width / image_aspect)
-    else:
-        # Scene is taller or equal: fit height directly
-        ortho_scale = scene_height
-
-    ortho_scale *= padding  # Add optional margin
+    
+    # Determine ortho scale (fit X and Y)
+    aspect_x = size.x
+    aspect_y = size.y
+    ortho_scale = max(aspect_x, aspect_y)
 
     # Create orthographic camera
     cam_data = bpy.data.cameras.new(name=camera_name)
@@ -145,22 +120,21 @@ def create_camera(resolution=1024,
     cam_obj = bpy.data.objects.new(camera_name, cam_data)
     bpy.context.collection.objects.link(cam_obj)
 
-    # Position camera above the center and look down
-    cam_height = size.z + 1.0
+    # Position the camera above the center and look down -Z (top-down)
+    cam_height = size.z + 1.0  # 1 unit above the bounding box
     cam_obj.location = (center.x, center.y, max_corner.z + cam_height)
-    cam_obj.rotation_euler = (0, 0, 0)  # Pointing -Z in Blender's default orientation
-    cam_data.clip_end = 1e5
-
-    # Set as active camera
+    cam_obj.data.clip_end = 1e5 # Set a large clip end for visibility
+    
+    # Set this camera as active
     bpy.context.scene.camera = cam_obj
-
-    # Apply render resolution based on aspect ratio
-    bpy.context.scene.render.resolution_x = resolution
-    bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
-
-    print(f"[create_camera] Camera '{camera_name}' created with resolution "
-          f"{bpy.context.scene.render.resolution_x}x{bpy.context.scene.render.resolution_y} "
-          f"and ortho scale {ortho_scale:.3f}")
+ 
+    # Set render resolution proportionally
+    if aspect_x > aspect_y:
+        bpy.context.scene.render.resolution_x = resolution
+        bpy.context.scene.render.resolution_y = int(resolution * (aspect_y / aspect_x))
+    else:
+        bpy.context.scene.render.resolution_y = resolution
+        bpy.context.scene.render.resolution_x = int(resolution * (aspect_x / aspect_y))
 
     return cam_obj
 
@@ -200,3 +174,46 @@ def render_scene_to_png(filepath, add_white_background=False, add_shadow=False, 
     bpy.ops.render.render(write_still=True)
 
     print(f"Image rendered and saved to: {filepath}")
+    
+
+####################################################################################################
+# @adjust_aspect_ratio
+####################################################################################################
+def adjust_aspect_ratio(image_path, required_aspect_ratio):
+    """
+    Adjusts the aspect ratio of an image by padding it to match the desired aspect ratio.
+    
+    Parameters:
+        image_path (str): Path to the input image.
+        required_aspect_ratio (str): Desired aspect ratio as a string, e.g., "16:9".
+    """
+    try:
+        width_ratio, height_ratio = map(float, required_aspect_ratio.split(':'))
+        required_aspect_ratio_float = width_ratio / height_ratio
+    except ValueError:
+        print(f"Invalid aspect ratio format: {required_aspect_ratio}. Expected 'width:height'.")
+        return
+
+    with Image.open(image_path) as img:
+        original_width, original_height = img.size
+        current_aspect_ratio = original_width / original_height
+
+        if current_aspect_ratio > required_aspect_ratio_float:
+            # Too wide: pad top/bottom
+            new_height = int(original_width / required_aspect_ratio_float)
+            new_width = original_width
+        elif current_aspect_ratio < required_aspect_ratio_float:
+            # Too tall: pad left/right
+            new_width = int(original_height * required_aspect_ratio_float)
+            new_height = original_height
+        else:
+            # Already the right aspect ratio
+            return
+
+        # Create a new image with padding
+        new_img = Image.new(img.mode, (new_width, new_height), color=(255, 255, 255))
+        paste_x = (new_width - original_width) // 2
+        paste_y = (new_height - original_height) // 2
+        new_img.paste(img, (paste_x, paste_y))
+        new_img.save(image_path)
+        print(f"Aspect ratio adjusted and saved to: {image_path}")

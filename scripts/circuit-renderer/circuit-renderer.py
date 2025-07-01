@@ -108,8 +108,7 @@ def run_rendering_tasks(options):
                 
         # Create the close-up camera 
         rendering.create_camera(
-            resolution=options.image_resolution, aspect_ratio=options.image_aspect_ratio, 
-            camera_name='CloseUp Camera', pmin=pmin, pmax=pmax)
+            resolution=options.image_resolution, camera_name='Close Up Camera', pmin=pmin, pmax=pmax)
         
         # Render the close-up image
         rendering.render_scene_to_png(f'{prefix}_closeup.png', 
@@ -119,13 +118,17 @@ def run_rendering_tasks(options):
     else:
         # Create the default camera 
         rendering.create_camera(
-            resolution=options.image_resolution, aspect_ratio=options.image_aspect_ratio, 
-            camera_name='Main Camera')
+            resolution=options.image_resolution, camera_name='Main Camera')
         
         # Render the full scene 
         rendering.render_scene_to_png(
             f'{prefix}.png', add_white_background=not options.transparent_background, 
             add_shadow=options.render_shadows, add_outline=options.render_outlines) 
+    
+    # Adjust the aspect ratio of the rendered image
+    rendering.adjust_aspect_ratio(
+        image_path=f'{prefix}.png', 
+        required_aspect_ratio=options.image_aspect_ratio)
     
     # Save the scene as a Blender file
     if options.save_blender_scene:
