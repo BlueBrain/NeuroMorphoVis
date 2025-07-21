@@ -58,6 +58,9 @@ class ColorCoding:
     # Color code the different arbors in the morphology by type
     ARBORS_BY_TYPE = 'ARBORS_BY_TYPE'
 
+    # Color code the morphology by random colors
+    RANDOM_COLORING = 'RANDOM_COLORING'
+
     ################################################################################################
     # Segments color-coding items to be added to the interface list
     ################################################################################################
@@ -156,7 +159,12 @@ class ColorCoding:
         # Number of samples
         (BY_NUMBER_SAMPLES,
          'Number of Samples',
-         'Color-code the morphology based on the number of samples along the section')
+         'Color-code the morphology based on the number of samples along the section'),
+        
+        # RAndom
+        (RANDOM_COLORING,
+         'Random Colors',
+         'Assign random colors to the morphology components for visualization purposes')
     ]
 
     ################################################################################################

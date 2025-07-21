@@ -109,6 +109,15 @@ def draw_demo_options(layout, scene):
 
 
 ####################################################################################################
+# @draw_single_object_option
+####################################################################################################
+def draw_single_object_option(layout, scene, options):
+    option_row = layout.row()
+    option_row.prop(scene, 'NMV_CreateSingleMorphologyObject')
+    options.morphology.draw_single_object = scene.NMV_CreateSingleMorphologyObject
+    
+
+####################################################################################################
 # @draw_morphology_skeleton_display_options
 ####################################################################################################
 def draw_morphology_skeleton_display_options(layout, scene, options, morphology):
@@ -141,3 +150,5 @@ def draw_morphology_skeleton_display_options(layout, scene, options, morphology)
                 layout=layout, scene=scene, options=options, morphology=morphology)
     else:
         draw_demo_options(layout=layout, scene=scene)
+        
+    draw_single_object_option(layout=layout, scene=scene, options=options)

@@ -83,6 +83,14 @@ bpy.types.Scene.NMV_ApicalDendritesBranchingOrder = bpy.props.IntProperty(
     description='Branching order for the apical dendrite',
     default=nmv.consts.Skeleton.MAX_BRANCHING_ORDER, min=0, max=1000)
 
+
+# Create a single morphology object
+bpy.types.Scene.NMV_CreateSingleMorphologyObject = bpy.props.BoolProperty(
+    name='Display Morphology as a Single Object',
+    description='Display the entire morphology as a single object',
+    default=False)
+
+
 # Morphology material or shading
 bpy.types.Scene.NMV_MorphologyMaterial = bpy.props.EnumProperty(
     items=nmv.enums.Shader.MATERIAL_ITEMS,

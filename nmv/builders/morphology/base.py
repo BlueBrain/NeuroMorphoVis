@@ -615,6 +615,31 @@ class MorphologyBuilderBase:
 
         nmv.utilities.create_collection_with_objects(
             name='%s %s' % (name, self.morphology.label), objects_list=self.morphology_objects)
+        
+        # If the draw_single_object option is enabled, we create a single object from the 
+        # morphology curves
+        if self.options.morphology.draw_single_object:
+            
+            ########################################################################################
+            # @get_branch_objects
+            ########################################################################################
+            def get_branch_objects():
+                # Construct a list of branch objects, excluding the cross-section curves
+                branch_objects = list()
+                for scene_object in self.morphology_objects:
+                    if 'CURVE' in scene_object.type: 
+                        if 'Cross Section' in scene_object.name: 
+                            continue
+                        branch_objects.append(scene_object)
+                
+                # Return a reference to the active object
+                return branch_objects
+            
+            # Get all the curves in the morphology object
+            curve_objects = get_branch_objects()
+            if curve_objects:
+                branches = nmv.scene.join_objects(scene_objects=curve_objects) 
+                branches.name = '%s %s - Brancehs' % (name, self.morphology.label)
 
     ################################################################################################
     # @update_soma_profile_in_morphology_object

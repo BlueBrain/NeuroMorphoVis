@@ -85,6 +85,9 @@ class MorphologyOptions:
 
         # Enable/Disable apical dendrite reconstruction (if exists)
         self.ignore_apical_dendrites = False
+        
+        # Draw the morphology as a single object
+        self.draw_single_object = False
 
         # Axon branching order
         self.axon_branch_order = nmv.consts.Skeleton.AXON_DEFAULT_BRANCHING_ORDER
